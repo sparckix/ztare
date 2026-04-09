@@ -5,7 +5,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import anthropic
 from google import genai
@@ -119,6 +119,82 @@ def fmt_paths(paths: List[str], limit: int = 40) -> str:
     if len(paths) > limit:
         out.append(f"- … ({len(paths) - limit} more)")
     return "\n".join(out)
+
+
+def sidecar_text_path(path: Path, label: str) -> Path:
+    return path.with_name(f"{path.stem}.{label}.txt")
+
+
+def load_json_if_valid(path: Path) -> Optional[Dict[str, Any]]:
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(read_text(path))
+    except Exception:  # noqa: BLE001
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def repair_json_payload(raw_text: str, step: str) -> str:
+    if ACTIVE_LLM is None:
+        raise RuntimeError("ACTIVE_LLM is not configured.")
+    prompt = "\n\n".join(
+        [
+            "You repair malformed JSON.",
+            "Return strict valid JSON only.",
+            "Do not add commentary, markdown fences, or explanation.",
+            "Preserve the original keys, values, and structure as faithfully as possible.",
+            "Only make the minimum syntax repairs needed to produce valid JSON.",
+            f"Stage: {step}",
+            "Malformed JSON:",
+            raw_text,
+        ]
+    )
+    return ACTIVE_LLM.call(prompt, retries=2).strip()
+
+
+def parse_json_step_response(
+    raw_text: str,
+    *,
+    step: str,
+    output_path: Path,
+    failure_message: str,
+    cache_validator: Optional[Callable[[Dict[str, Any]], bool]] = None,
+) -> Dict[str, Any]:
+    try:
+        return utils.parse_llm_json(raw_text)
+    except Exception as initial_exc:  # noqa: BLE001
+        raw_path = sidecar_text_path(output_path, "raw")
+        write_text(raw_path, raw_text)
+        dbg(f"{step}: saved malformed JSON payload to {raw_path}")
+
+        repaired_path = sidecar_text_path(output_path, "repaired")
+        repair_note = "no repaired payload was written"
+        last_exc: Exception = initial_exc
+        try:
+            repaired = repair_json_payload(raw_text, step)
+            write_text(repaired_path, repaired)
+            repair_note = f"repair attempt saved to {repaired_path}"
+            dbg(f"{step}: attempting repaired JSON payload from {repaired_path}")
+            return utils.parse_llm_json(repaired)
+        except Exception as repair_exc:  # noqa: BLE001
+            last_exc = repair_exc
+
+        if cache_validator is not None:
+            cached = load_json_if_valid(output_path)
+            if cached is not None and cache_validator(cached):
+                dbg(f"{step}: repaired parse failed; reusing cached JSON at {output_path}")
+                return cached
+
+        raise SynthesisStepError(
+            step,
+            (
+                f"{failure_message}: {last_exc}. "
+                f"Malformed model output saved to {raw_path}; "
+                f"{repair_note}."
+            ),
+            output_path=output_path,
+        ) from last_exc
 
 
 def normalize_qa_payload(qa: Dict[str, Any]) -> Dict[str, Any]:
@@ -422,6 +498,21 @@ class LLMClient:
         raise RuntimeError(f"LLM call failed after {retries} attempts: {last_error}") from last_error
 
 
+class SynthesisStepError(RuntimeError):
+    def __init__(
+        self,
+        step: str,
+        message: str,
+        *,
+        output_path: Optional[Path] = None,
+        can_retry: bool = True,
+    ) -> None:
+        super().__init__(message)
+        self.step = step
+        self.output_path = output_path
+        self.can_retry = can_retry
+
+
 def build_context_preview(project_dir: Path) -> str:
     snippets = []
     for name in ("evidence.txt", "thesis.md", "current_iteration.md"):
@@ -582,7 +673,24 @@ def summarize_history(project_dir: Path, context: Dict[str, Any]) -> Dict[str, A
             artifact_bundle,
         ]
     )
-    summary = utils.parse_llm_json(ACTIVE_LLM.call(prompt))
+    try:
+        raw_response = ACTIVE_LLM.call(prompt)
+        summary = parse_json_step_response(
+            raw_response,
+            step="summarize_history",
+            output_path=summary_path,
+            failure_message="Could not summarize history",
+            cache_validator=lambda _cached: True,
+        )
+    except SynthesisStepError as exc:
+        if summary_path.exists():
+            try:
+                cached = json.loads(read_text(summary_path))
+                dbg(f"Summarize history failed; reusing cached history summary at {summary_path}")
+                return cached
+            except Exception:  # noqa: BLE001
+                pass
+        raise exc
     summary["_meta"] = {
         "project_name": context["project_name"],
         "project_type": context["project_type"],
@@ -608,6 +716,16 @@ def refresh_context_artifacts(project_dir: Path, context: Dict[str, Any]) -> Dic
     return updated
 
 
+def cached_ledger_matches_context(cached: Dict[str, Any], context: Dict[str, Any]) -> bool:
+    meta = cached.get("_meta")
+    if not isinstance(meta, dict):
+        return False
+    cached_paths = meta.get("artifact_paths")
+    if not isinstance(cached_paths, list):
+        return False
+    return [str(path) for path in cached_paths] == [str(path) for path in context.get("artifact_paths", [])]
+
+
 def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]:
     if ACTIVE_LLM is None:
         raise RuntimeError("ACTIVE_LLM is not configured.")
@@ -622,7 +740,15 @@ def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]
             artifact_bundle,
         ]
     )
-    ledger = utils.parse_llm_json(ACTIVE_LLM.call(prompt))
+    ledger_output_path = synthesis_paths(project_dir)["ledger"]
+    raw_response = ACTIVE_LLM.call(prompt)
+    ledger = parse_json_step_response(
+        raw_response,
+        step="extract_ledger",
+        output_path=ledger_output_path,
+        failure_message="Could not extract insight ledger",
+        cache_validator=lambda cached: cached_ledger_matches_context(cached, context),
+    )
     dbg("Extract ledger: parsed ledger.json")
     ledger["_meta"] = {
         "project_name": context["project_name"],
@@ -630,7 +756,7 @@ def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]
         "artifact_paths": context["artifact_paths"],
     }
     # Ledger is canonical and shared across renderers for the same project snapshot.
-    write_json(synthesis_paths(project_dir)["ledger"], ledger)
+    write_json(ledger_output_path, ledger)
     return ledger
 
 
@@ -696,13 +822,20 @@ def derive_brief(project_dir: Path, ledger: Dict[str, Any], context: Dict[str, A
             json.dumps(ledger, indent=2, sort_keys=True),
         ]
     )
-    brief = utils.parse_llm_json(ACTIVE_LLM.call(prompt))
+    brief_output_path = Path(context["output_paths"]["brief"])
+    raw_response = ACTIVE_LLM.call(prompt)
+    brief = parse_json_step_response(
+        raw_response,
+        step="derive_brief",
+        output_path=brief_output_path,
+        failure_message=f"Could not derive planning brief for renderer '{renderer_type}'",
+    )
     brief["_meta"] = {
         "renderer_type": renderer_type,
         "audience": context["audience"],
         "tone": context["tone"],
     }
-    write_json(Path(context["output_paths"]["brief"]), brief)
+    write_json(brief_output_path, brief)
     return brief
 
 
@@ -727,7 +860,14 @@ def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict
             json.dumps(ledger, indent=2, sort_keys=True),
         ]
     )
-    report = ACTIVE_LLM.call(prompt).strip()
+    try:
+        report = ACTIVE_LLM.call(prompt).strip()
+    except Exception as exc:  # noqa: BLE001
+        raise SynthesisStepError(
+            "render_artifact",
+            f"Could not render artifact for renderer '{context['renderer_type']}': {exc}",
+            output_path=Path(context["output_paths"]["candidate_report"]),
+        ) from exc
     refined = refine_artifact(report, ledger, brief, context)
     write_text(Path(context["output_paths"]["candidate_report"]), refined)
     return refined
@@ -755,7 +895,14 @@ def refine_artifact(report: str, ledger: Dict[str, Any], brief: Dict[str, Any], 
             report,
         ]
     )
-    return ACTIVE_LLM.call(prompt).strip()
+    try:
+        return ACTIVE_LLM.call(prompt).strip()
+    except Exception as exc:  # noqa: BLE001
+        raise SynthesisStepError(
+            "refine_artifact",
+            f"Could not refine artifact for renderer '{renderer_type}': {exc}",
+            output_path=Path(context["output_paths"]["candidate_report"]),
+        ) from exc
 
 
 def qa_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], report: str, context: Dict[str, Any]) -> Dict[str, Any]:
@@ -775,7 +922,16 @@ def qa_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], report: str, cont
             report,
         ]
     )
-    qa = normalize_qa_payload(utils.parse_llm_json(ACTIVE_QA_LLM.call(prompt)))
+    qa_output_path = Path(context["output_paths"]["qa"])
+    raw_response = ACTIVE_QA_LLM.call(prompt)
+    qa = normalize_qa_payload(
+        parse_json_step_response(
+            raw_response,
+            step="qa_artifact",
+            output_path=qa_output_path,
+            failure_message=f"Could not QA artifact for renderer '{context['renderer_type']}'",
+        )
+    )
     final_path = Path(context.get("output_paths", {}).get("final_report") or synthesis_paths(project_dir)["final_report"])
     qa["_meta"] = {
         "qa_threshold": ACTIVE_QA_THRESHOLD,
@@ -789,7 +945,7 @@ def qa_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], report: str, cont
     else:
         qa["_meta"]["report_written"] = False
 
-    write_json(Path(context["output_paths"]["qa"]), qa)
+    write_json(qa_output_path, qa)
     return qa
 
 
@@ -907,77 +1063,91 @@ def main() -> int:
     ACTIVE_QA_LLM = LLMClient(args.qa_model or args.model)
     ACTIVE_QA_THRESHOLD = args.qa_threshold
 
-    if args.pack == "founder":
-        # Step 1: Founder memo
-        memo_context = sniff_context(
+    try:
+        if args.pack == "founder":
+            # Step 1: Founder memo
+            memo_context = sniff_context(
+                project_dir,
+                renderer_override="founder_memo",
+                history_mode_override=args.history_mode,
+            )
+            summarize_history(project_dir, memo_context)
+            memo_context = refresh_context_artifacts(project_dir, memo_context)
+            ledger = extract_ledger(project_dir, memo_context)
+            memo_brief = derive_brief(project_dir, ledger, memo_context)
+            memo_report = render_artifact(ledger, memo_brief, memo_context)
+            memo_qa = qa_artifact(ledger, memo_brief, memo_report, memo_context)
+
+            # Step 2: Quantitative appendix, scoped by the memo brief.
+            appendix_context = sniff_context(
+                project_dir,
+                renderer_override="quantitative_appendix",
+                history_mode_override=args.history_mode,
+            )
+            appendix_context["memo_brief_path"] = memo_context["output_paths"]["brief"]
+            summarize_history(project_dir, appendix_context)
+            appendix_context = refresh_context_artifacts(project_dir, appendix_context)
+            ledger = extract_ledger(project_dir, appendix_context)
+            appendix_brief = derive_brief(project_dir, ledger, appendix_context)
+            appendix_report = render_artifact(ledger, appendix_brief, appendix_context)
+            appendix_qa = qa_artifact(ledger, appendix_brief, appendix_report, appendix_context)
+
+            print_status("Memo", Path(memo_context["output_paths"]["final_report"]))
+            print_status("Appendix", Path(appendix_context["output_paths"]["final_report"]))
+            consolidated_path = write_consolidated_report(
+                project_dir,
+                Path(memo_context["output_paths"]["final_report"]),
+                Path(appendix_context["output_paths"]["final_report"]),
+            )
+            print_status("Consolidated", consolidated_path)
+
+            if memo_qa.get("_meta", {}).get("report_written") and appendix_qa.get("_meta", {}).get("report_written"):
+                print(f"QA passed (memo={memo_qa.get('score')}, appendix={appendix_qa.get('score')}).")
+                return 0
+
+            print("Pack failed QA; see renderer-scoped qa.*.json files under synthesis/.")
+            return 1
+
+        # Single-renderer mode.
+        context = sniff_context(
             project_dir,
-            renderer_override="founder_memo",
+            renderer_override=args.renderer_type,
             history_mode_override=args.history_mode,
         )
-        summarize_history(project_dir, memo_context)
-        memo_context = refresh_context_artifacts(project_dir, memo_context)
-        ledger = extract_ledger(project_dir, memo_context)
-        memo_brief = derive_brief(project_dir, ledger, memo_context)
-        memo_report = render_artifact(ledger, memo_brief, memo_context)
-        memo_qa = qa_artifact(ledger, memo_brief, memo_report, memo_context)
+        summarize_history(project_dir, context)
+        context = refresh_context_artifacts(project_dir, context)
+        ledger = extract_ledger(project_dir, context)
+        brief = derive_brief(project_dir, ledger, context)
+        report = render_artifact(ledger, brief, context)
+        qa = qa_artifact(ledger, brief, report, context)
 
-        # Step 2: Quantitative appendix, scoped by the memo brief.
-        appendix_context = sniff_context(
-            project_dir,
-            renderer_override="quantitative_appendix",
-            history_mode_override=args.history_mode,
-        )
-        appendix_context["memo_brief_path"] = memo_context["output_paths"]["brief"]
-        summarize_history(project_dir, appendix_context)
-        appendix_context = refresh_context_artifacts(project_dir, appendix_context)
-        ledger = extract_ledger(project_dir, appendix_context)
-        appendix_brief = derive_brief(project_dir, ledger, appendix_context)
-        appendix_report = render_artifact(ledger, appendix_brief, appendix_context)
-        appendix_qa = qa_artifact(ledger, appendix_brief, appendix_report, appendix_context)
+        print_status("Context", Path(context["output_paths"]["context"]))
+        print_status("History summary", base_paths["history_summary"])
+        print_status("Ledger", base_paths["ledger"])
+        print_status("Brief", Path(context["output_paths"]["brief"]))
+        print_status("QA", Path(context["output_paths"]["qa"]))
+        print_status("Candidate report", Path(context["output_paths"]["candidate_report"]))
 
-        print_status("Memo", Path(memo_context["output_paths"]["final_report"]))
-        print_status("Appendix", Path(appendix_context["output_paths"]["final_report"]))
-        consolidated_path = write_consolidated_report(
-            project_dir,
-            Path(memo_context["output_paths"]["final_report"]),
-            Path(appendix_context["output_paths"]["final_report"]),
-        )
-        print_status("Consolidated", consolidated_path)
-
-        if memo_qa.get("_meta", {}).get("report_written") and appendix_qa.get("_meta", {}).get("report_written"):
-            print(f"QA passed (memo={memo_qa.get('score')}, appendix={appendix_qa.get('score')}).")
+        if qa["_meta"]["report_written"]:
+            print_status("Final report", Path(context["output_paths"]["final_report"]))
+            print(f"QA passed with score {qa.get('score')}.")
             return 0
 
-        print("Pack failed QA; see renderer-scoped qa.*.json files under synthesis/.")
+        print(f"QA failed or scored below threshold ({args.qa_threshold}). Final report was not written.")
         return 1
-
-    # Single-renderer mode.
-    context = sniff_context(
-        project_dir,
-        renderer_override=args.renderer_type,
-        history_mode_override=args.history_mode,
-    )
-    summarize_history(project_dir, context)
-    context = refresh_context_artifacts(project_dir, context)
-    ledger = extract_ledger(project_dir, context)
-    brief = derive_brief(project_dir, ledger, context)
-    report = render_artifact(ledger, brief, context)
-    qa = qa_artifact(ledger, brief, report, context)
-
-    print_status("Context", Path(context["output_paths"]["context"]))
-    print_status("History summary", base_paths["history_summary"])
-    print_status("Ledger", base_paths["ledger"])
-    print_status("Brief", Path(context["output_paths"]["brief"]))
-    print_status("QA", Path(context["output_paths"]["qa"]))
-    print_status("Candidate report", Path(context["output_paths"]["candidate_report"]))
-
-    if qa["_meta"]["report_written"]:
-        print_status("Final report", Path(context["output_paths"]["final_report"]))
-        print(f"QA passed with score {qa.get('score')}.")
-        return 0
-
-    print(f"QA failed or scored below threshold ({args.qa_threshold}). Final report was not written.")
-    return 1
+    except SynthesisStepError as exc:
+        print(
+            f"Synthesis stopped during '{exc.step}': {exc}",
+            file=sys.stderr,
+        )
+        if exc.output_path is not None:
+            print(f"Last relevant output path: {exc.output_path}", file=sys.stderr)
+        print(
+            "No final report was written. Partial artifacts under synthesis/ were preserved. "
+            "Retry the same command, switch --model/--qa-model, or rerun later if the provider is under load.",
+            file=sys.stderr,
+        )
+        return 2
 
 
 if __name__ == "__main__":

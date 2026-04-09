@@ -14,15 +14,28 @@ Check for:
 - any new insights introduced that are not present in the ledger
 - any overstatement of hypotheses as market truth
 - any inclusion of generic advice not grounded in the ledger
+- any house jargon or internal workflow language that an informed outsider would not readily understand
 
 Renderer-specific checks:
 
-If Renderer type is "founder_memo" or "research_note" or "architectural_memo":
+If Renderer type is "founder_memo" or "research_note" or "architectural_memo" or "research_postmortem":
 - any distortion, omission, or disregard of the planning brief's sequence, opening judgment, prerequisite action, main experiment, core tradeoff, or decision rule
 - any omission of major supported hypotheses
 - any omission or softening of the hardest conclusion
 - any omission or softening of the most likely false belief
 - any weakening or distortion of the dependency chain
+- if the ledger or planning brief includes a claim-strength / confirmation-status field, whether the artifact's language outruns that status
+- whether the artifact leaks house jargon or internal method terms instead of using normal reader-facing language
+- for "research_postmortem" specifically:
+  - whether the artifact clearly distinguishes the best surviving thesis from stronger variants that failed
+  - whether it preserves the main adversarially surfaced lessons rather than flattening them into one generic conclusion
+  - whether the hardest conclusion is surfaced distinctly when the ledger or planning brief provides one
+  - whether it explicitly names unresolved blockers and overclaims to avoid
+  - whether the Executive Summary, Bottom Line, and any section stating the main conclusion preserve any requirement that decisive confirmation is still deferred or only directional
+  - whether the artifact improperly upgrades a directionally supported or deferred-confirmation thesis into present-tense proof using phrases like "established", "demonstrates", "proves", or equivalent high-certainty wording
+  - whether the most likely false belief is surfaced as a concrete mistaken belief with its grounding when the planning brief provides it, rather than being flattened into a generic list of things not to say
+  - whether any epistemic note is preserved naturally in reader-facing language when the ledger or planning brief provides one
+  - whether labels like `adversarial pressure`, `surviving thesis`, `failed variants`, `branch`, `champion`, or similar internal terms appear where a normal research reader would expect plainer phrasing
 - for "founder_memo" specifically:
   - whether the memo is understandable to a smart outsider founder without relying on thesis-native, finance-heavy, or consultant-heavy jargon when plain language would suffice
   - whether the memo avoids artificial memo theater such as "MEMORANDUM", vague sender identities, or formal To/From blocks unless explicitly required

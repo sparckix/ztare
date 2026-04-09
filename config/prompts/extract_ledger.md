@@ -16,6 +16,7 @@ Important rules:
 - Treat the materials as adversarially filtered hypothesis prioritization, not proof of reality.
 - Only include conclusions that were repeated, survived attack, or emerged as the strongest remaining explanation after alternatives failed.
 - If the materials do not support a conclusion, omit it.
+- Avoid house jargon or internal workflow terms in output fields. Do not use phrases like `adversarial pressure`, `surviving thesis`, `failed variant`, `baseline`, `champion`, `branch`, `underidentified`, or similar internal labels when a plain-language equivalent exists.
 - Translate all internal thesis variables, acronyms, and symbolic notation into plain business language. Do not carry forward metric names, thresholds, or symbolic variables unless they are directly decision-relevant and self-explanatory to a non-technical reader.
 - Separate the underlying business or strategic conclusion from the machinery used to derive it. Preserve the conclusion in audience-facing language; keep technical thresholds, simulation details, and modeled evidence only where they materially sharpen the claim.
 - For founder- or operator-facing outputs, treat concepts like sample size, coefficients, dominance margins, simulation labels, and experimental notation as supporting evidence rather than headline framing. Prefer plain phrases such as "small pilot," "clear enough signal," "organic growth," and "repeat attendance" unless the exact term is necessary to avoid ambiguity.
@@ -65,6 +66,10 @@ Return valid JSON only using this schema:
     "confidence": "low | medium | high",
     "why_it_matters": "string"
   },
+  "confirmation_status": {
+    "label": "decisively_confirmed | directionally_supported | deferred_confirmation | unresolved | rejected",
+    "why": "string"
+  },
   "most_likely_false_belief": {
     "belief": "string",
     "confidence": "low | medium | high",
@@ -102,6 +107,9 @@ Return valid JSON only using this schema:
   "generalization_risks": [
     "string"
   ],
+  "overclaim_boundary": [
+    "string"
+  ],
   "key_takeaways": [
     "string"
   ],
@@ -114,8 +122,12 @@ Extraction guidance:
 - "supported_hypotheses" should include only the 3-5 strongest adversarially surfaced conclusions.
 - "unsupported_narratives" should include attractive claims that repeatedly failed or remained under-supported.
 - "hardest_conclusion" should name the most consequential uncomfortable conclusion the materials support.
+- "confirmation_status" should classify the strongest surviving thesis by current evidentiary strength.
 - "most_likely_false_belief" should name the attractive but repeatedly failing belief management is most at risk of holding onto.
 - "core_question", "hardest_conclusion", "most_likely_false_belief", "key_takeaways", and "decision_rule" are headline fields. Write them in plain audience-facing language first. Avoid symbolic variables, simulation terminology, statistical labels, internal metric names, or raw thresholds unless they are necessary to make the decision intelligible.
+- If "confirmation_status.label" is `directionally_supported` or `deferred_confirmation`, do not phrase the strongest surviving thesis as established fact. Preserve the distinction between present directional support and decisive confirmation.
+- Use `deferred_confirmation` when the current materials support the mechanism directionally but explicitly defer decisive confirmation of the central discriminator to a future observable, future episode, or future econometric test.
+- Use `decisively_confirmed` only when the current materials directly confirm the central discriminator now rather than only aligning with it directionally.
 - "decision_rule" should state the management consequence in plain language first. Use exact thresholds or technical cutoffs only when the decision truly depends on them.
 - "decision_path" should be ordered as management would actually execute it. If one operational prerequisite must be fixed before the main experiment or decision is valid, put that prerequisite first.
 - When a variable is identified as the highest-sensitivity upstream blocker, surface it as a sequencing constraint rather than merely another finding.
@@ -126,6 +138,7 @@ Extraction guidance:
 - "decision_rule" should translate the next test into a management choice.
 - "decision_path" should describe what management should do if the test succeeds and if it fails.
 - "generalization_risks" should capture risks such as early-user behavior not extending to the broader business.
+- "overclaim_boundary" should list the claims or phrasings the final artifact must explicitly avoid because they outrun the current evidentiary status.
 - "epistemic_note" must explicitly clarify that these are prioritized hypotheses, not proof of market truth.
 
 Output JSON only. No prose before or after.
