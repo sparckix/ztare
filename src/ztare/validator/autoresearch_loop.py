@@ -30,6 +30,7 @@ from src.ztare.validator.information_yield import (
     LoopControlAction,
     evaluate_information_yield,
 )
+from src.ztare.validator.proxy_signature import extract_anchor_proxies_from_charter
 from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
 
 SESSION_TOKENS = 0
@@ -151,7 +152,7 @@ JUDGE_MODEL_ID = _MODEL_MAP[args.judge_model]
 # Escalation model follows the mutator family
 _DIRECTOR_MAP = {
     "gemini": "gemini-3.1-pro-preview",
-    "claude": "claude-opus-4-6",
+    "claude": "claude-sonnet-4-6",
     "claude-opus": "claude-opus-4-6",
     "gpt4o": "o1",
 }
@@ -166,7 +167,16 @@ THESIS_PATH = f"{PROJECT_DIR}/thesis.md"
 WORKING_PATH = f"{PROJECT_DIR}/current_iteration.md"
 EVIDENCE_PATH = f"{PROJECT_DIR}/evidence.txt"
 AXIOM_PATH = f"{PROJECT_DIR}/verified_axioms.json"
+PROJECT_CHARTER_PATH = f"{PROJECT_DIR}/project_charter.md"
+LATEST_EVAL_RESULTS_PATH = f"{PROJECT_DIR}/latest_eval_results.json"
+CHAMPION_EVAL_RESULTS_PATH = f"{PROJECT_DIR}/champion_eval_results.json"
+LATEST_PROBABILITY_DAG_PATH = f"{PROJECT_DIR}/latest_probability_dag.json"
+CHAMPION_PROBABILITY_DAG_PATH = f"{PROJECT_DIR}/champion_probability_dag.json"
+LATEST_EVIDENCE_GAPS_PATH = f"{PROJECT_DIR}/workspace/latest_evidence_gaps.json"
+CHAMPION_EVIDENCE_GAPS_PATH = f"{PROJECT_DIR}/workspace/champion_evidence_gaps.json"
 MAIN_RUBRIC_PATH = RUBRICS_DIR / f"{args.rubric}.json"
+BEST_ITERATION_RE = re.compile(r"best_iteration:\s*([A-Za-z0-9_.-]+)")
+HISTORY_SCORE_RE = re.compile(r"_score_(\d+)_")
 
 
 def read_file(filepath):
@@ -179,13 +189,191 @@ def write_file(filepath, content):
         f.write(content)
 
 
+def read_json(filepath: str) -> dict | None:
+    path = Path(filepath)
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text())
+    except Exception:
+        return None
+
+
+def write_json(filepath: str, payload: dict) -> None:
+    path = Path(filepath)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _strip_best_iteration_marker(text: str) -> str:
+    cleaned = re.sub(r"\n\n<!--\s*best_iteration:\s*[A-Za-z0-9_.-]+\s*-->\s*$", "", text)
+    return cleaned.rstrip()
+
+
+def _current_saved_best_stem() -> str | None:
+    if not os.path.exists(THESIS_PATH):
+        return None
+    match = BEST_ITERATION_RE.search(read_file(THESIS_PATH))
+    if not match:
+        return None
+    return match.group(1)
+
+
+def _current_saved_best_score() -> int | None:
+    history_stem = _current_saved_best_stem()
+    if not history_stem:
+        return None
+    meta_path = Path(HISTORY_DIR) / f"{history_stem}_meta.json"
+    if meta_path.exists():
+        try:
+            meta = json.loads(read_file(str(meta_path)))
+            score = meta.get("score")
+            return int(score) if score is not None else None
+        except Exception:
+            pass
+    match = HISTORY_SCORE_RE.search(history_stem)
+    if not match:
+        return None
+    return int(match.group(1))
+
+
+def _current_saved_best_meta() -> dict | None:
+    history_stem = _current_saved_best_stem()
+    if not history_stem:
+        return None
+    meta_path = Path(HISTORY_DIR) / f"{history_stem}_meta.json"
+    if not meta_path.exists():
+        return None
+    try:
+        payload = json.loads(read_file(str(meta_path)))
+    except Exception:
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _score_regime_fingerprint_from_score_contract(score_contract) -> str | None:
+    if not isinstance(score_contract, dict):
+        return None
+    fingerprint = score_contract.get("regime_fingerprint")
+    if isinstance(fingerprint, str) and fingerprint.strip():
+        return fingerprint.strip()
+    return None
+
+
+def _score_regime_fingerprint_from_meta(meta: dict | None) -> str | None:
+    if not isinstance(meta, dict):
+        return None
+    fingerprint = meta.get("score_regime_fingerprint")
+    if isinstance(fingerprint, str) and fingerprint.strip():
+        return fingerprint.strip()
+    score_contract = meta.get("score_contract")
+    return _score_regime_fingerprint_from_score_contract(score_contract)
+
+
+def _saved_best_comparison_anchor(current_eval: dict) -> dict:
+    raw_saved_score = _current_saved_best_score()
+    if raw_saved_score is None:
+        return {
+            "compare_score": None,
+            "raw_saved_score": None,
+            "status": "none",
+            "label": "none",
+        }
+
+    current_fingerprint = _score_regime_fingerprint_from_score_contract(
+        current_eval.get("score_contract")
+    )
+    if current_fingerprint is None:
+        return {
+            "compare_score": raw_saved_score,
+            "raw_saved_score": raw_saved_score,
+            "status": "current_regime_unknown",
+            "label": str(raw_saved_score),
+        }
+
+    saved_meta = _current_saved_best_meta()
+    if saved_meta is None:
+        return {
+            "compare_score": None,
+            "raw_saved_score": raw_saved_score,
+            "status": "legacy_missing_meta",
+            "label": f"legacy_missing_meta:{raw_saved_score}",
+        }
+
+    saved_fingerprint = _score_regime_fingerprint_from_meta(saved_meta)
+    if saved_fingerprint is None:
+        return {
+            "compare_score": None,
+            "raw_saved_score": raw_saved_score,
+            "status": "legacy_missing_regime",
+            "label": f"legacy_missing_regime:{raw_saved_score}",
+        }
+
+    if saved_fingerprint != current_fingerprint:
+        return {
+            "compare_score": None,
+            "raw_saved_score": raw_saved_score,
+            "status": "regime_mismatch",
+            "label": f"regime_mismatch:{raw_saved_score}",
+        }
+
+    return {
+        "compare_score": raw_saved_score,
+        "raw_saved_score": raw_saved_score,
+        "status": "compatible",
+        "label": str(raw_saved_score),
+    }
+
+
+def _persist_best_candidate(
+    thesis_content: str,
+    *,
+    score: int,
+    weakest_point: str,
+    iteration: int,
+    run_id: int,
+    mutator_model_id: str,
+    judge_model_id: str,
+    score_contract: dict | None = None,
+) -> str:
+    clean_content = _strip_best_iteration_marker(thesis_content)
+    history_stem = f"{run_id}_iter{iteration}_score_{score}_{args.rubric}"
+    write_file(f"{HISTORY_DIR}/{history_stem}.md", clean_content)
+    thesis_with_marker = clean_content + f"\n\n<!-- best_iteration: {history_stem} -->"
+    write_file(THESIS_PATH, thesis_with_marker)
+    write_file(WORKING_PATH, thesis_with_marker)
+
+    meta = {
+        "run_id": run_id,
+        "iteration": iteration,
+        "score": score,
+        "rubric": args.rubric,
+        "dynamic": args.dynamic,
+        "mutator_model": mutator_model_id,
+        "judge_model": judge_model_id,
+        "weakest_point": weakest_point,
+        "timestamp": datetime.now().isoformat(),
+        "score_contract": score_contract or {},
+        "score_regime_fingerprint": _score_regime_fingerprint_from_score_contract(score_contract),
+    }
+    write_file(
+        f"{HISTORY_DIR}/{history_stem}_meta.json",
+        json.dumps(meta, indent=2),
+    )
+
+    dag_src = LATEST_PROBABILITY_DAG_PATH
+    if os.path.exists(dag_src):
+        shutil.copy(dag_src, f"{HISTORY_DIR}/{history_stem}_dag.json")
+
+    return history_stem
+
+
 def _project_state_paths(project_dir: str) -> tuple[str, ...]:
     return (
         THESIS_PATH,
         WORKING_PATH,
         f"{project_dir}/test_model.py",
         EVIDENCE_PATH,
-        f"{project_dir}/probability_dag.json",
     )
 
 
@@ -211,6 +399,84 @@ def _latest_debate_log_text(project_dir: str) -> str:
     if not candidates:
         return ""
     return candidates[-1].read_text()
+
+
+def _artifact_regime_fingerprint(payload: dict | None) -> str | None:
+    if not isinstance(payload, dict):
+        return None
+    fingerprint = payload.get("score_regime_fingerprint")
+    if isinstance(fingerprint, str) and fingerprint.strip():
+        return fingerprint.strip()
+    score_contract = payload.get("score_contract")
+    return _score_regime_fingerprint_from_score_contract(score_contract)
+
+
+def _champion_eval_payload() -> dict | None:
+    return read_json(CHAMPION_EVAL_RESULTS_PATH)
+
+
+def _set_artifact_role(payload: dict, artifact_role: str) -> dict:
+    updated = dict(payload)
+    updated["artifact_role"] = artifact_role
+    updated["describes_baseline"] = artifact_role
+    fingerprint = _artifact_regime_fingerprint(updated)
+    if fingerprint:
+        updated["score_regime_fingerprint"] = fingerprint
+    return updated
+
+
+def _promote_latest_artifacts_to_champion() -> dict:
+    latest_eval = read_json(LATEST_EVAL_RESULTS_PATH)
+    champion_eval = None
+    regime_fingerprint = None
+    if latest_eval is not None:
+        champion_eval = _set_artifact_role(latest_eval, "champion")
+        write_json(CHAMPION_EVAL_RESULTS_PATH, champion_eval)
+        regime_fingerprint = _artifact_regime_fingerprint(champion_eval)
+
+    if os.path.exists(LATEST_PROBABILITY_DAG_PATH):
+        shutil.copy(LATEST_PROBABILITY_DAG_PATH, CHAMPION_PROBABILITY_DAG_PATH)
+
+    latest_gaps = read_json(LATEST_EVIDENCE_GAPS_PATH)
+    if latest_gaps is not None:
+        champion_gaps = _set_artifact_role(latest_gaps, "champion")
+        write_json(CHAMPION_EVIDENCE_GAPS_PATH, champion_gaps)
+
+    return {
+        "regime_fingerprint": regime_fingerprint,
+        "champion_eval_written": champion_eval is not None,
+        "champion_gap_written": latest_gaps is not None,
+        "champion_dag_written": os.path.exists(CHAMPION_PROBABILITY_DAG_PATH),
+    }
+
+
+def _print_latest_artifact_status(payload: dict, previous_champion_fingerprint: str | None) -> None:
+    latest_fingerprint = _artifact_regime_fingerprint(payload)
+    shifted = (
+        latest_fingerprint is not None
+        and previous_champion_fingerprint is not None
+        and latest_fingerprint != previous_champion_fingerprint
+    )
+    shifted_label = "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
+    fingerprint_label = latest_fingerprint or "unknown"
+    print(
+        f"🧾 LATEST artifacts updated: latest_eval_results / latest_probability_dag / latest_evidence_gaps "
+        f"(regime fingerprint: {fingerprint_label}; shifted vs champion: {shifted_label})"
+    )
+
+
+def _print_champion_artifact_status(previous_champion_fingerprint: str | None, new_champion_fingerprint: str | None) -> None:
+    shifted = (
+        new_champion_fingerprint is not None
+        and previous_champion_fingerprint is not None
+        and new_champion_fingerprint != previous_champion_fingerprint
+    )
+    shifted_label = "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
+    fingerprint_label = new_champion_fingerprint or "unknown"
+    print(
+        f"🏆 CHAMPION artifacts updated: champion_eval_results / champion_probability_dag / champion_evidence_gaps "
+        f"(regime fingerprint: {fingerprint_label}; shifted vs previous champion: {shifted_label})"
+    )
 
 
 def _dynamic_rubric_path(project: str) -> Path:
@@ -600,6 +866,7 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
 # --- CHANGED: Added model_id to the signature ---
 def mutate_thesis(
     current_content,
+    current_test_model,
     weakest_point,
     evidence,
     persona,
@@ -612,6 +879,8 @@ def mutate_thesis(
     pivot_instruction = ""
     primitive_context = ""
     axioms = []
+    project_charter = read_file(PROJECT_CHARTER_PATH) if os.path.exists(PROJECT_CHARTER_PATH) else ""
+    anchor_proxies = extract_anchor_proxies_from_charter(project_charter)
     if os.path.exists(AXIOM_PATH):
         with open(AXIOM_PATH, "r") as f:
             axioms = json.load(f)
@@ -874,6 +1143,32 @@ def mutate_thesis(
                 + "- Your falsification suite must explicitly test the transfer condition you rely on.\n"
             )
 
+    charter_context = ""
+    if project_charter:
+        charter_context = f"""
+    PROJECT CHARTER (MANDATORY CONTEXT):
+    {project_charter}
+    """
+        if anchor_proxies:
+            anchor_lines = "\n".join([f"    - {name}" for name in anchor_proxies])
+            charter_context += f"""
+
+    ANCHOR PROXY PRESERVATION (MANDATORY):
+    - This project declares Anchor Proxies. The scorer computes deterministic coverage of these exact names.
+    - If your new `test_model.py` drops below 50% anchor coverage, the candidate will be hard-capped at 50.
+    - Preserve the anchor set by editing the current harness in place, not by replacing it with a new naming scheme.
+    - Do NOT satisfy anchors with dead imports, dead code, comments, or wrappers that hide the names.
+    - Keep anchored `test:*` items as executable top-level `test_...` functions. Do NOT convert them into class methods.
+    - Keep anchored `proxy:*` items as executable top-level helper functions that are actually used by the asserts.
+    - Unless you are intentionally accepting a capped basin-jump, keep these exact anchors alive:
+{anchor_lines}
+
+    CURRENT ANCHORED TEST HARNESS:
+    ```python
+    {current_test_model}
+    ```
+    """
+
     base_prompt = f"""{persona}
     
     AXIOMS (PREVIOUSLY VERIFIED TRUTHS):
@@ -888,6 +1183,7 @@ def mutate_thesis(
     GROUNDING DATA (IMMUTABLE CONSTANTS): 
     {evidence}
     
+    {charter_context}
     {document_context}
     {failure_context}
     {primitive_context}
@@ -1069,6 +1365,7 @@ if __name__ == "__main__":
         "--rubric", args.rubric,
         "--judge_model", args.judge_model,
         "--mutator_model", args.mutator_model,
+        "--eval_results_path", LATEST_EVAL_RESULTS_PATH,
     ]
     if args.dynamic:
         test_cmd.append("--dynamic")
@@ -1100,8 +1397,12 @@ if args.dynamic:
         check=True,
     )
 subprocess.run(test_cmd, check=True)
-with open("eval_results.json", "r") as f:
+with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
     res = json.load(f)
+previous_champion_fingerprint = _artifact_regime_fingerprint(_champion_eval_payload())
+if previous_champion_fingerprint is None:
+    previous_champion_fingerprint = _score_regime_fingerprint_from_meta(_current_saved_best_meta())
+_print_latest_artifact_status(res, previous_champion_fingerprint)
 judge_usage = res.get("usage_telemetry")
 if isinstance(judge_usage, dict):
     _accumulate_usage(
@@ -1116,6 +1417,39 @@ if isinstance(judge_usage, dict):
 
 best_score = res["score"]
 best_weakest_point = res["weakest_point"]
+saved_best_anchor = _saved_best_comparison_anchor(res)
+saved_best_score = saved_best_anchor["compare_score"]
+if saved_best_anchor["status"] not in {"none", "compatible", "current_regime_unknown"}:
+    print(
+        "⚠️ Saved best score "
+        f"{saved_best_anchor['raw_saved_score']} ignored for baseline comparison "
+        f"because the scoring regime is {saved_best_anchor['status']}. Rebaselining under the current regime."
+    )
+if saved_best_score is None or res["score"] > saved_best_score:
+    previous_label = saved_best_anchor["label"]
+    _persist_best_candidate(
+        read_file(THESIS_PATH),
+        score=res["score"],
+        weakest_point=res["weakest_point"],
+        iteration=0,
+        run_id=RUN_ID,
+        mutator_model_id=MUTATOR_MODEL_ID,
+        judge_model_id=JUDGE_MODEL_ID,
+        score_contract=res.get("score_contract"),
+    )
+    champion_artifacts = _promote_latest_artifacts_to_champion()
+    _print_champion_artifact_status(
+        previous_champion_fingerprint,
+        champion_artifacts.get("regime_fingerprint"),
+    )
+    print(f"💾 BASELINE PROMOTED: {previous_label} -> {res['score']}")
+elif _champion_eval_payload() is None:
+    champion_artifacts = _promote_latest_artifacts_to_champion()
+    _print_champion_artifact_status(
+        previous_champion_fingerprint,
+        champion_artifacts.get("regime_fingerprint"),
+    )
+    print("💾 CHAMPION ARTIFACTS INITIALIZED from the current saved best state.")
 # GP-002: separate best-state memory from mutator-facing control signal.
 # best_weakest_point tracks the critique attached to the retained best state.
 # current_target_weakest_point is what we feed to mutate_thesis() every iteration.
@@ -1181,6 +1515,7 @@ for i in range(ITERATIONS):
     try:
         new_content = mutate_thesis(
             current_thesis,
+            current_test_model,
             current_target_weakest_point,  # GP-002: use current evaluated target, not best-state memory
             evidence_text,
             rubric_data["persona"],
@@ -1307,8 +1642,10 @@ for i in range(ITERATIONS):
 
     try:
         subprocess.run(test_cmd, check=True)
-        with open("eval_results.json", "r") as f:
+        with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
             new_eval = json.load(f)
+        champion_fingerprint_before_iteration = _artifact_regime_fingerprint(_champion_eval_payload())
+        _print_latest_artifact_status(new_eval, champion_fingerprint_before_iteration)
         judge_usage = new_eval.get("usage_telemetry")
         if isinstance(judge_usage, dict):
             _accumulate_usage(
@@ -1396,31 +1733,21 @@ for i in range(ITERATIONS):
             last_failure_reason = None
             pending_loop_action = yield_decision.action
 
-            history_stem = f"{RUN_ID}_iter{i + 1}_score_{best_score}_{args.rubric}"
-            write_file(f"{HISTORY_DIR}/{history_stem}.md", new_content)
-
-            # Keep thesis.md in sync with the current best thesis
-            write_file(THESIS_PATH, new_content + f"\n\n<!-- best_iteration: {history_stem} -->")
-
-            meta = {
-                "run_id": RUN_ID,
-                "iteration": i + 1,
-                "score": best_score,
-                "rubric": args.rubric,
-                "dynamic": args.dynamic,
-                "mutator_model": current_mutator,
-                "judge_model": JUDGE_MODEL_ID,
-                "weakest_point": best_weakest_point,
-                "timestamp": datetime.now().isoformat(),
-            }
-            write_file(
-                f"{HISTORY_DIR}/{history_stem}_meta.json",
-                json.dumps(meta, indent=2)
+            _persist_best_candidate(
+                new_content,
+                score=best_score,
+                weakest_point=best_weakest_point,
+                iteration=i + 1,
+                run_id=RUN_ID,
+                mutator_model_id=current_mutator,
+                judge_model_id=JUDGE_MODEL_ID,
+                score_contract=new_eval.get("score_contract"),
             )
-
-            dag_src = f"{PROJECT_DIR}/probability_dag.json"
-            if os.path.exists(dag_src):
-                shutil.copy(dag_src, f"{HISTORY_DIR}/{history_stem}_dag.json")
+            champion_artifacts = _promote_latest_artifacts_to_champion()
+            _print_champion_artifact_status(
+                champion_fingerprint_before_iteration,
+                champion_artifacts.get("regime_fingerprint"),
+            )
 
             new_axioms = new_eval.get("verified_axioms", [])
             approved_retirements = new_eval.get("retired_axioms_approved", [])
@@ -1487,6 +1814,7 @@ for i in range(ITERATIONS):
                     new_rubric_name,
                     "--judge_model", args.judge_model,
                     "--mutator_model", args.mutator_model,
+                    "--eval_results_path", LATEST_EVAL_RESULTS_PATH,
                 ]
                 if args.dynamic:
                     test_cmd.append("--dynamic")

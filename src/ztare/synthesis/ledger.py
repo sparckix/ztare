@@ -1,7 +1,7 @@
 """
 ledger.py — Prediction Track Record
 
-Scans all projects/*/probability_dag.json and appends new predictions
+Scans all projects/*/champion_probability_dag.json (falling back to latest) and appends new predictions
 to track_record.csv. Run this after every engine run.
 
 Once a prediction resolves, open track_record.csv and fill in:
@@ -95,7 +95,7 @@ def load_best_run_meta(project):
 def find_best_dag(project):
     """
     Returns (dag, meta) for the highest-scoring run that has a saved DAG.
-    Falls back to probability_dag.json if no history DAGs exist yet.
+    Falls back to champion_probability_dag.json, then latest_probability_dag.json if no history DAGs exist yet.
     """
     history_dir = os.path.join(PROJECTS_DIR, project, "history")
     best_score = -1
@@ -140,13 +140,17 @@ def find_best_dag(project):
     if best_dag is not None:
         return best_dag, best_meta
 
-    # Fallback: current probability_dag.json (no thesis stem available)
-    fallback = os.path.join(PROJECTS_DIR, project, "probability_dag.json")
-    if os.path.exists(fallback):
-        with open(fallback) as f:
-            best_dag = json.load(f)
-        run_meta = load_best_run_meta(project)
-        return best_dag, {"score": run_meta["score"], "rubric": run_meta["rubric"], "thesis_stem": "legacy"}
+    # Fallback: current champion / latest DAG (no thesis stem available)
+    fallback_candidates = [
+        os.path.join(PROJECTS_DIR, project, "champion_probability_dag.json"),
+        os.path.join(PROJECTS_DIR, project, "latest_probability_dag.json"),
+    ]
+    for fallback in fallback_candidates:
+        if os.path.exists(fallback):
+            with open(fallback) as f:
+                best_dag = json.load(f)
+            run_meta = load_best_run_meta(project)
+            return best_dag, {"score": run_meta["score"], "rubric": run_meta["rubric"], "thesis_stem": "legacy"}
 
     return None, {}
 

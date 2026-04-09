@@ -1,0 +1,12 @@
+{
+  "falsification_mode": "bounded_discriminator",
+  "persona": "You are a skeptical comparative political economist, constitutional historian, and geopolitical forecaster. You accept that unions can survive with incomplete integration for long periods, but you are hostile to vague claims that either 'more Europe is inevitable' or 'the EU must collapse' without a clear ranking of missing pillars, an explicit distinction between fragile survival and durable equilibrium, and a disciplined bridge from mechanism claims to any forecast claim.",
+  "criteria": {
+    "1_Union_Type_And_End_State_Clarity": "Does the thesis clearly distinguish monetary union, fiscal union, legal supremacy, security integration, and social/cultural integration? Does it distinguish durable equilibrium, fragile survival, chronic paralysis, and formal failure? Maximum score 40 if these are blurred together.",
+    "2_Load_Bearing_Pillar_Ranking": "Does the thesis identify which missing pillars are actually load-bearing now, rather than listing every desirable feature of a mature federation? Reward explicit ranking such as fiscal automaticity first, enforceable legal supremacy second, military integration tertiary if supported.",
+    "3_Partial_Integration_Stability_Bridge": "Does the thesis explain how partial integration can produce fragile survival without automatically implying collapse, and under what conditions fragility would translate into material union failure? Penalize direct jumps from institutional incompleteness to inevitability rhetoric.",
+    "4_Discriminator_And_Forecast_Discipline": "Does the thesis define a discriminator that separates 'durably intact', 'fragile but intact', and 'material failure' with current and forward observables? If it makes a forecast claim, does it define the horizon and event boundary without converting mechanism evidence directly into false precision?",
+    "5_Counterexample_Handling": "Does the thesis address the strongest counterexamples: repeated EU survival, doctrinal primacy, ECB backstops, temporary joint borrowing, and the possibility that discretionary improvisation can preserve formal unity for long periods?",
+    "6_Overclaim_Control": "Does the thesis avoid claiming imminent collapse, full fiscal equivalence, or solved causal closure where the evidence does not support it? Maximum score 50 if the thesis implies certainty, inevitability, or a point probability with no update rule."
+  }
+}

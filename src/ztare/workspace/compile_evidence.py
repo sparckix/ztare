@@ -257,6 +257,95 @@ def read_json(path: Path) -> Dict[str, Any]:
     return json.loads(read_text(path))
 
 
+def load_active_evidence_gaps(workspace_dir: Path) -> Tuple[Optional[Dict[str, Any]], Optional[Path], List[str]]:
+    candidate_paths = [
+        workspace_dir / "champion_evidence_gaps.json",
+        workspace_dir / "latest_evidence_gaps.json",
+    ]
+    warnings: List[str] = []
+    for gap_path in candidate_paths:
+        if not gap_path.exists():
+            continue
+        try:
+            payload = read_json(gap_path)
+        except Exception as exc:  # pragma: no cover - defensive path
+            warnings.append(f"Could not parse {gap_path.name}: {exc}")
+            continue
+
+        gaps = payload.get("evidence_gaps")
+        if not isinstance(gaps, list):
+            warnings.append(f"{gap_path.name} exists but does not contain an evidence_gaps list.")
+            continue
+        return payload, gap_path, warnings
+    return None, None, warnings
+
+
+def render_evidence_gap_brief(project_name: str, gap_payload: Dict[str, Any]) -> str:
+    generated_on = str(gap_payload.get("generated_on", "") or "unknown")
+    judge_model = str(gap_payload.get("judge_model", "") or "unknown")
+    described_baseline = str(gap_payload.get("describes_baseline", "") or "unknown")
+    artifact_role = str(gap_payload.get("artifact_role", "") or described_baseline or "unknown")
+    regime_fingerprint = str(gap_payload.get("score_regime_fingerprint", "") or "unknown")
+    weakest_point = str(gap_payload.get("weakest_point", "") or "").strip()
+    cap_reason = str(gap_payload.get("cap_reason", "") or "").strip()
+    cap_reason_detail = str(gap_payload.get("cap_reason_detail", "") or "").strip()
+    boundary_detected = bool(gap_payload.get("evidence_boundary_ceiling_detected", False))
+    score = gap_payload.get("score")
+    gaps = gap_payload.get("evidence_gaps", [])
+
+    grouped: Dict[str, List[Dict[str, Any]]] = {
+        "blocking": [],
+        "degrading": [],
+        "enriching": [],
+    }
+    for gap in gaps:
+        severity = str(gap.get("severity", "degrading") or "degrading").lower()
+        grouped.setdefault(severity, []).append(gap)
+
+    lines: List[str] = [
+        f"# Evidence Gap Brief: {project_name}",
+        "",
+        f"- Generated on: {generated_on}",
+        f"- Judge model: {judge_model}",
+        f"- Artifact role: {artifact_role}",
+        f"- Describes baseline: {described_baseline}",
+        f"- Regime fingerprint: {regime_fingerprint}",
+        f"- Last score: {score}",
+        f"- Evidence boundary detected: {'yes' if boundary_detected else 'no'}",
+    ]
+    if cap_reason and cap_reason != "none":
+        lines.append(f"- Cap reason: {cap_reason}")
+    if cap_reason_detail:
+        lines.append(f"- Cap detail: {cap_reason_detail}")
+    if weakest_point:
+        lines.extend(["", "## Current weakest point", "", weakest_point])
+
+    for severity in ("blocking", "degrading", "enriching"):
+        items = grouped.get(severity, [])
+        lines.extend(["", f"## {severity.title()} gaps", ""])
+        if not items:
+            lines.append("- None.")
+            continue
+        for gap in items:
+            lines.append(
+                f"- [{gap.get('gap_type', 'other')}] {gap.get('target', 'unspecified_target')}"
+            )
+            description = str(gap.get("description", "") or "").strip()
+            producer = str(gap.get("producer", "") or "").strip()
+            producer_rationale = str(gap.get("producer_rationale", "") or "").strip()
+            fetch_query = str(gap.get("fetch_query", "") or "").strip()
+            if description:
+                lines.append(f"  - Description: {description}")
+            if producer:
+                lines.append(f"  - Producer: {producer}")
+            if producer_rationale:
+                lines.append(f"  - Why evidence-boundary: {producer_rationale}")
+            if fetch_query:
+                lines.append(f"  - Suggested adversarial query: {fetch_query}")
+
+    return "\n".join(lines).strip() + "\n"
+
+
 def load_prompt(name: str) -> str:
     return read_text(PROMPTS_DIR / name).strip()
 
@@ -746,11 +835,30 @@ def main() -> int:
     write_json(packet_output_path, packet)
     compiler_manifest["output_path"] = str(output_path)
     compiler_manifest["packet_output_path"] = str(packet_output_path)
+
+    gap_payload, gap_source_path, gap_warnings = load_active_evidence_gaps(workspace_dir)
+    warnings = list(compiler_manifest.get("warnings", []))
+    warnings.extend(gap_warnings)
+    compiler_manifest["warnings"] = warnings
+    if gap_payload:
+        evidence_gap_brief_path = workspace_dir / "evidence_gap_brief.md"
+        write_text(
+            evidence_gap_brief_path,
+            render_evidence_gap_brief(project_dir.name, gap_payload),
+        )
+        if gap_source_path is not None:
+            compiler_manifest["evidence_gap_source_path"] = str(gap_source_path)
+            compiler_manifest["evidence_gap_baseline"] = gap_payload.get("describes_baseline", "unknown")
+        compiler_manifest["evidence_gap_brief_path"] = str(evidence_gap_brief_path)
+        compiler_manifest["evidence_gap_count"] = len(gap_payload.get("evidence_gaps", []))
+
     write_json(provenance_output_path, compiler_manifest)
 
     print(f"Evidence: {output_path}")
     print(f"Evidence packet: {packet_output_path}")
     print(f"Compiler provenance: {provenance_output_path}")
+    if gap_payload:
+        print(f"Evidence gap brief: {workspace_dir / 'evidence_gap_brief.md'}")
     print(f"Mode: {'workspace' if use_workspace else 'raw'}")
     warnings = compiler_manifest.get("warnings", [])
     if warnings:

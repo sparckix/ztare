@@ -1,7 +1,7 @@
 """
 bayesian_updater.py — V2 Epistemic Engine
 
-Reads a probability_dag.json produced by V1, accepts a real-world observation
+Reads a champion_probability_dag.json (falling back to latest_probability_dag.json), accepts a real-world observation
 for one node, and recalculates all downstream probabilities using exponential
 decay (from recursive_bayesian v2_score_65 spec).
 
@@ -9,7 +9,7 @@ Usage:
     python -m src.ztare.experiments.bayesian_updater --project ai_inference_collapse \
         --node hyperscaler_routing --actual 0.55 --market 0.80
 
-    --node      : the node id to update (from probability_dag.json)
+    --node      : the node id to update (from champion_probability_dag.json / latest_probability_dag.json)
     --actual    : the observed real-world value (0.0 - 1.0)
     --market    : the market's current implied probability (for EV calculation)
 """
@@ -29,7 +29,8 @@ parser.add_argument("--market", type=float, default=None, help="Market implied p
 args = parser.parse_args()
 
 PROJECT_DIR = str(PROJECTS_DIR / args.project)
-DAG_PATH = f"{PROJECT_DIR}/probability_dag.json"
+PRIMARY_DAG_PATH = f"{PROJECT_DIR}/champion_probability_dag.json"
+FALLBACK_DAG_PATH = f"{PROJECT_DIR}/latest_probability_dag.json"
 WEIGHTS_PATH = f"{PROJECT_DIR}/axiom_weights.json"
 AXIOM_PATH = f"{PROJECT_DIR}/verified_axioms.json"
 
@@ -40,11 +41,12 @@ EPSILON = 1e-9
 
 
 def load_dag():
-    if not os.path.exists(DAG_PATH):
-        print(f"❌ No probability_dag.json found at {DAG_PATH}")
+    dag_path = PRIMARY_DAG_PATH if os.path.exists(PRIMARY_DAG_PATH) else FALLBACK_DAG_PATH
+    if not os.path.exists(dag_path):
+        print(f"❌ No champion_probability_dag.json or latest_probability_dag.json found in {PROJECT_DIR}")
         print("   Run V1 first: python -m src.ztare.validator.autoresearch_loop --project <project> --rubric <rubric> --dynamic")
         exit(1)
-    with open(DAG_PATH) as f:
+    with open(dag_path) as f:
         return json.load(f)
 
 

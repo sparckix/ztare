@@ -4,6 +4,7 @@ import argparse
 import time
 import subprocess
 import tempfile
+import hashlib
 from pathlib import Path
 from google import genai
 from google.genai import types
@@ -23,6 +24,10 @@ from src.ztare.validator.primitive_routing import route_primitives_for_v4
 from src.ztare.validator.semantic_gate_stabilization import (
     derive_self_reference_gate,
     persist_semantic_gate_analysis,
+)
+from src.ztare.validator.proxy_signature import (
+    compute_anchor_proxy_coverage,
+    extract_anchor_proxies_from_charter,
 )
 from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
 from src.ztare.validator.v4_family import is_v4_family_project
@@ -119,9 +124,30 @@ def _load_v4_stage_index() -> int | None:
 PROJECT_DIR = str(PROJECTS_DIR / args.project)
 WORKING_PATH = f"{PROJECT_DIR}/current_iteration.md"
 EVIDENCE_PATH = f"{PROJECT_DIR}/evidence.txt"
+PROJECT_CHARTER_PATH = f"{PROJECT_DIR}/project_charter.md"
+WORKSPACE_DIR = f"{PROJECT_DIR}/workspace"
+LATEST_EVAL_RESULTS_PATH = f"{PROJECT_DIR}/latest_eval_results.json"
+LATEST_PROBABILITY_DAG_PATH = f"{PROJECT_DIR}/latest_probability_dag.json"
+LATEST_EVIDENCE_GAPS_PATH = f"{WORKSPACE_DIR}/latest_evidence_gaps.json"
 MAIN_RUBRIC_PATH = str(RUBRICS_DIR / f"{args.rubric}.json")
 DYNAMIC_RUBRIC_PATH = str(RUBRICS_DIR / f"dynamic_{args.project}.json")
+SCORE_REGIME_VERSION_MAP = {
+    "deterministic_gates": 7,
+    "raw_llm_score": 1,
+}
+ANCHOR_PROXY_MIN_COVERAGE = 0.5
 test_path = f"{PROJECT_DIR}/test_model.py"
+EVIDENCE_GAP_TYPES = {
+    "missing_external_comparator",
+    "missing_threshold_grounding",
+    "missing_independent_taxonomy",
+    "missing_external_validation",
+    "missing_rival_mechanism",
+    "missing_scope_boundary_evidence",
+    "other",
+}
+EVIDENCE_GAP_SEVERITIES = {"blocking", "degrading", "enriching"}
+EVIDENCE_GAP_PRODUCERS = {"meta_judge", "firing_squad", "adjudicator", "inferred"}
 
 # --- HELPER FUNCTIONS ---
 def read_file(filepath):
@@ -129,9 +155,262 @@ def read_file(filepath):
         return f.read()
 
 
+def read_optional_file(filepath):
+    if not os.path.exists(filepath):
+        return None
+    return read_file(filepath)
+
+
 test_code_content = (
     read_file(test_path) if os.path.exists(test_path) else "No code provided."
 )
+project_charter_content = read_optional_file(PROJECT_CHARTER_PATH)
+project_charter_anchor_proxies = extract_anchor_proxies_from_charter(project_charter_content)
+
+
+def _normalize_evidence_gap_type(value: str | None) -> str:
+    normalized = (value or "").strip().lower()
+    return normalized if normalized in EVIDENCE_GAP_TYPES else "other"
+
+
+def _normalize_evidence_gap_severity(value: str | None) -> str:
+    normalized = (value or "").strip().lower()
+    return normalized if normalized in EVIDENCE_GAP_SEVERITIES else "degrading"
+
+
+def _normalize_evidence_gap_producer(value: str | None) -> str:
+    normalized = (value or "").strip().lower()
+    return normalized if normalized in EVIDENCE_GAP_PRODUCERS else "meta_judge"
+
+
+def _infer_fetch_query(gap_type: str, target: str, description: str) -> str:
+    base = f"{target} {description}".strip().lower()
+    if gap_type == "missing_external_comparator":
+        return f"{base} historical comparator case contrary evidence".strip()
+    if gap_type == "missing_threshold_grounding":
+        return f"{base} threshold historical range contrary evidence".strip()
+    if gap_type == "missing_independent_taxonomy":
+        return f"{base} external classification framework taxonomy".strip()
+    if gap_type == "missing_external_validation":
+        return f"{base} external validation comparative case".strip()
+    if gap_type == "missing_rival_mechanism":
+        return f"{base} rival mechanism evidence counterexample".strip()
+    if gap_type == "missing_scope_boundary_evidence":
+        return f"{base} scope boundary counterexample".strip()
+    return f"{base} counterexample evidence".strip()
+
+
+def _build_evidence_gap(
+    *,
+    gap_type: str,
+    target: str,
+    description: str,
+    severity: str = "degrading",
+    producer: str = "meta_judge",
+    producer_rationale: str = "",
+    fetch_query: str | None = None,
+    adversarial_direction: bool = True,
+) -> dict:
+    target = (target or "").strip() or "unspecified_target"
+    description = (description or "").strip() or "No description provided."
+    producer_rationale = (producer_rationale or "").strip() or description
+    gap_type = _normalize_evidence_gap_type(gap_type)
+    severity = _normalize_evidence_gap_severity(severity)
+    producer = _normalize_evidence_gap_producer(producer)
+    return {
+        "gap_type": gap_type,
+        "target": target,
+        "description": description,
+        "severity": severity,
+        "producer": producer,
+        "producer_rationale": producer_rationale,
+        "fetch_query": (fetch_query or _infer_fetch_query(gap_type, target, description)).strip(),
+        "adversarial_direction": bool(adversarial_direction),
+    }
+
+
+def _infer_evidence_gaps_from_text(evaluation: dict) -> list[dict]:
+    inferred: list[dict] = []
+    weakest_point = str(evaluation.get("weakest_point", "") or "")
+    logic_gaps = [str(item) for item in evaluation.get("logic_gaps", [])]
+    all_text = " ".join([weakest_point] + logic_gaps).lower()
+
+    if "comparator" in all_text:
+        inferred.append(
+            _build_evidence_gap(
+                gap_type="missing_external_comparator",
+                target="external comparator",
+                description=weakest_point or "Need an external comparator to test the current boundary.",
+                severity="blocking",
+                producer="inferred",
+            )
+        )
+    if any(token in all_text for token in ["threshold", "sizeable", "sufficient", "material fiscal", "fiscal capacity"]):
+        inferred.append(
+            _build_evidence_gap(
+                gap_type="missing_threshold_grounding",
+                target="threshold grounding",
+                description=weakest_point or "Need independent threshold grounding.",
+                severity="blocking",
+                producer="inferred",
+            )
+        )
+    if any(token in all_text for token in ["taxonomy", "classification", "ontology", "external validation"]):
+        inferred.append(
+            _build_evidence_gap(
+                gap_type="missing_external_validation",
+                target="external validation",
+                description=weakest_point or "Need external validation of the classification boundary.",
+                severity="blocking",
+                producer="inferred",
+            )
+        )
+    if "rival" in all_text:
+        inferred.append(
+            _build_evidence_gap(
+                gap_type="missing_rival_mechanism",
+                target="rival mechanism",
+                description=weakest_point or "Need external evidence addressing the rival mechanism.",
+                severity="degrading",
+                producer="inferred",
+            )
+        )
+
+    deduped: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+    for gap in inferred:
+        key = (gap["gap_type"], gap["target"])
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(gap)
+    return deduped
+
+
+def sanitize_evidence_gaps(evaluation: dict) -> list[dict]:
+    raw_gaps = evaluation.get("evidence_gaps")
+    cleaned: list[dict] = []
+    if isinstance(raw_gaps, list):
+        for item in raw_gaps:
+            if not isinstance(item, dict):
+                continue
+            cleaned.append(
+                _build_evidence_gap(
+                    gap_type=str(item.get("gap_type", "other")),
+                    target=str(item.get("target", "") or ""),
+                    description=str(item.get("description", "") or ""),
+                    severity=str(item.get("severity", "degrading")),
+                    producer=str(item.get("producer", "meta_judge")),
+                    producer_rationale=str(item.get("producer_rationale", "") or ""),
+                    fetch_query=str(item.get("fetch_query", "") or "") or None,
+                    adversarial_direction=bool(item.get("adversarial_direction", True)),
+                )
+            )
+    if not cleaned:
+        cleaned = _infer_evidence_gaps_from_text(evaluation)
+    return cleaned
+
+
+def _score_regime_fingerprint_from_evaluation(evaluation: dict) -> str:
+    score_contract = evaluation.get("score_contract", {})
+    if not isinstance(score_contract, dict):
+        return ""
+    fingerprint = score_contract.get("regime_fingerprint")
+    return str(fingerprint).strip() if fingerprint else ""
+
+
+def _evaluation_artifact_payload(evaluation: dict, *, artifact_role: str) -> dict:
+    payload = dict(evaluation)
+    payload["artifact_role"] = artifact_role
+    payload["describes_baseline"] = artifact_role
+    fingerprint = _score_regime_fingerprint_from_evaluation(evaluation)
+    if fingerprint:
+        payload["score_regime_fingerprint"] = fingerprint
+    return payload
+
+
+def persist_evidence_gap_artifact(evaluation: dict, *, artifact_role: str = "latest", output_path: Path | None = None) -> None:
+    workspace_dir = Path(WORKSPACE_DIR)
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    gap_path = output_path or Path(LATEST_EVIDENCE_GAPS_PATH)
+    gaps = sanitize_evidence_gaps(evaluation)
+    fingerprint = _score_regime_fingerprint_from_evaluation(evaluation)
+    payload = {
+        "project": args.project,
+        "judge_model": JUDGE_MODEL_ID,
+        "generated_on": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "artifact_role": artifact_role,
+        "describes_baseline": artifact_role,
+        "score": evaluation.get("score"),
+        "weakest_point": evaluation.get("weakest_point", ""),
+        "evidence_boundary_ceiling_detected": bool(
+            evaluation.get("score_contract", {}).get("evidence_boundary_ceiling_detected", False)
+        ),
+        "cap_reason": evaluation.get("score_contract", {}).get("cap_reason", "none"),
+        "cap_reason_detail": evaluation.get("score_contract", {}).get("cap_reason_detail", ""),
+        "score_regime_fingerprint": fingerprint,
+        "evidence_gaps": gaps,
+    }
+    gap_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _evidence_gap_response_schema() -> dict:
+    return {
+        "type": "ARRAY",
+        "items": {
+            "type": "OBJECT",
+            "properties": {
+                "gap_type": {"type": "STRING"},
+                "target": {"type": "STRING"},
+                "description": {"type": "STRING"},
+                "severity": {"type": "STRING"},
+                "producer": {"type": "STRING"},
+                "producer_rationale": {"type": "STRING"},
+                "fetch_query": {"type": "STRING"},
+                "adversarial_direction": {"type": "BOOLEAN"},
+            },
+            "required": [
+                "gap_type",
+                "target",
+                "description",
+                "severity",
+                "producer",
+                "producer_rationale",
+                "fetch_query",
+                "adversarial_direction",
+            ],
+        },
+    }
+
+
+def attach_evidence_gap_metadata(evaluation: dict) -> dict:
+    gaps = sanitize_evidence_gaps(evaluation)
+    blocking = [gap for gap in gaps if gap.get("severity") == "blocking"]
+    degrading = [gap for gap in gaps if gap.get("severity") == "degrading"]
+    enriching = [gap for gap in gaps if gap.get("severity") == "enriching"]
+
+    existing = evaluation.get("score_contract")
+    if not isinstance(existing, dict):
+        existing = {}
+
+    existing.update(
+        {
+            "evidence_gap_count": len(gaps),
+            "blocking_evidence_gap_count": len(blocking),
+            "degrading_evidence_gap_count": len(degrading),
+            "enriching_evidence_gap_count": len(enriching),
+            "evidence_gap_types": sorted({str(gap.get("gap_type", "other")) for gap in gaps}),
+            "evidence_gap_targets": [str(gap.get("target", "")) for gap in gaps if gap.get("target")],
+            "evidence_boundary_ceiling_detected": bool(blocking),
+            "evidence_boundary_detail": "; ".join(
+                f"{gap.get('gap_type', 'other')}::{gap.get('target', 'unspecified_target')}"
+                for gap in blocking[:3]
+            ),
+        }
+    )
+    evaluation["evidence_gaps"] = gaps
+    evaluation["score_contract"] = existing
+    return evaluation
 
 def _call_anthropic_judge(prompt, model_id):
     """Call Claude for judging. Returns a fake response-like object with .text."""
@@ -576,6 +855,15 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
 
     --- KNOWN FAILURE PRECEDENTS ---
     {primitive_context}
+
+    --- PROJECT CHARTER ---
+    {project_charter_content or "No project charter provided for this project."}
+
+    PROJECT DRIFT CHECK (MANDATORY):
+    If a project charter is present, evaluate whether the thesis still answers the charter's Core Question and stays inside its intended scope.
+    A thesis has drifted if it materially narrows into a subproblem that the charter marks as insufficient, collapses distinct end states that the charter requires to be separated, makes claims the charter marks out of scope, or otherwise stops answering the broader project object.
+    Do NOT mark drift merely because the thesis became sharper, more bounded, or more testable. Mark drift only when the sharpened thesis ceases to answer the chartered project.
+    IMPORTANT: your `drift_detected` verdict is advisory only. Mathematical drift is computed independently from the charter's `Anchor Proxies` section and is the primary enforcement signal.
     
     CRITICAL MANDATE (THE POPPERIAN CONSTRAINT):
     Before grading the logic against the rubric, you must evaluate Falsifiability. Does this thesis make a specific, testable prediction that could theoretically be proven wrong by a future data point or simulation?
@@ -658,6 +946,73 @@ You must also output a structured `self_reference_evidence` record for Python-si
 - `counterevidence_lines`: array of short strings
 - `confidence`: one of `high|medium|low`
 
+You must also output a structured quarantine assessment:
+- `quarantined_load_bearing_dependency`: boolean
+- `quarantine_target`: one of `background_only|causal_mechanism|named_discriminator|falsification_environment|unknown`
+- `quarantine_legitimate`: boolean
+- `quarantine_rationale`: string
+- `quarantine_gates_causal_mechanism`: boolean
+- `quarantine_gates_named_discriminator`: boolean
+- `quarantine_gates_falsification_environment`: boolean
+
+Quarantine rule:
+- explicit acknowledgment of an unresolved variable does NOT automatically make it non-score-bearing
+- if the unresolved variable still gates the central causal mechanism, the named discriminator, or the falsification environment, it remains score-bearing even if the thesis explicitly quarantines it
+- use `background_only` only when the unresolved variable genuinely does not gate the scored claim
+- if the unresolved variable still determines whether the thesis's named discriminator actually discriminates between the thesis and the rival, set `quarantine_target = named_discriminator`
+- if the unresolved variable still determines whether the test suite constitutes an independent falsification environment for the claim being made, set `quarantine_target = falsification_environment`
+- if the unresolved variable still gates the central mechanism but not the named discriminator directly, set `quarantine_target = causal_mechanism`
+- if you cannot localize the dependency precisely but it is still load-bearing, set `quarantine_target = unknown`
+- set the three `quarantine_gates_*` booleans independently and conservatively
+- if `quarantine_gates_named_discriminator` is true, then `quarantine_gates_causal_mechanism` should normally also be true
+- if `quarantine_gates_falsification_environment` is true, that is score-bearing even if the named discriminator is otherwise well-phrased
+- use `quarantine_target` only as a summary label; the booleans are the authoritative structural record
+
+You must also output a structured present-vs-future confirmation assessment:
+- `current_discriminator_directly_confirmed`: boolean
+- `current_support_is_directional_only`: boolean
+- `decisive_confirmation_deferred_to_forward_observable`: boolean
+- `confirmation_rationale`: string
+
+Confirmation rule:
+- a thesis cannot earn a perfect score merely because it is well-scoped and falsifiable if decisive confirmation of its central discriminator is explicitly deferred to a future observable
+- if the current support is only directional, proxy-based, or historical-calibration-based rather than a direct current test of the named discriminator, set `current_support_is_directional_only = true`
+- if the thesis says the decisive econometric, observational, or policy-separation confirmation will only arrive in a future episode / forward observable, set `decisive_confirmation_deferred_to_forward_observable = true`
+- set `current_discriminator_directly_confirmed = true` only when the current evidence directly tests and confirms the named discriminator in the present, rather than merely aligning with it directionally
+- if decisive confirmation is deferred but there is still substantial directional support now, that is a strong bounded thesis but not a perfect one
+- if decisive confirmation is deferred and there is no meaningful direct present confirmation, prefer the more conservative classification
+
+You must also output a project-drift assessment:
+- `drift_detected`: boolean
+- `drift_rationale`: string
+
+Drift rule:
+- if no project charter is present, set `drift_detected = false` and `drift_rationale = ""`
+- if a charter is present, set `drift_detected = true` only when the thesis materially stops answering the chartered project
+- examples of drift include: replacing a broad pillar-ranking project with a single narrow mechanism as if it answers the whole question; converting a mechanism project into a forecast project without explicit event boundaries; collapsing distinct chartered end states into one rhetorical outcome; or making claims the charter explicitly marks out of scope
+- examples of non-drift include: sharpening a discriminator, narrowing an unwieldy thesis into a bounded version that still answers the charter, or deferring subordinate questions while preserving the primary project object
+- use `drift_rationale` to explain the mismatch succinctly in plain language
+- this `drift_detected` field is secondary and advisory; Python will compute a separate deterministic drift check from `Anchor Proxies`
+
+You must also output a structured evidence-gap assessment:
+- `evidence_gaps`: array of objects with:
+  - `gap_type`: one of `missing_external_comparator|missing_threshold_grounding|missing_independent_taxonomy|missing_external_validation|missing_rival_mechanism|missing_scope_boundary_evidence|other`
+  - `target`: short string naming the missing evidence object
+  - `description`: short string describing what evidence is missing
+  - `severity`: one of `blocking|degrading|enriching`
+  - `producer`: one of `meta_judge|firing_squad|adjudicator`
+  - `producer_rationale`: short string for why this is an evidence gap rather than a pure logic flaw
+  - `fetch_query`: adversarial search string aimed at finding evidence that could test or break the relevant claim
+  - `adversarial_direction`: boolean
+
+Evidence-gap rule:
+- include only missing evidence that could plausibly be reduced by new sources, datasets, comparators, or threshold-grounding material
+- do NOT put pure logic defects, evaluator design flaws, or project-drift complaints into `evidence_gaps` unless the missing evidence is the actual blocker
+- if the current weakest point is "the boundary is thesis-authored because there is no external comparator / taxonomy / threshold grounding", that belongs in `evidence_gaps`
+- `producer` records which layer surfaced the gap; it does not change the artifact schema
+- regardless of producer, `fetch_query` must be adversarially phrased toward testing the claim, not confirmatory phrasing like "evidence supporting X"
+- if no evidence-solvable gap exists, return an empty array
+
 Backward-compatibility rule:
 - still provide `proof_is_self_referential`
 - but populate `self_reference_evidence` carefully, because Python will derive the final semantic gate from that structured record
@@ -729,11 +1084,36 @@ Required fields:
     "counterevidence_lines": [<string>, ...],
     "confidence": <string>
   },
+  "quarantined_load_bearing_dependency": <boolean>,
+  "quarantine_target": <string>,
+  "quarantine_legitimate": <boolean>,
+  "quarantine_rationale": <string>,
+  "quarantine_gates_causal_mechanism": <boolean>,
+  "quarantine_gates_named_discriminator": <boolean>,
+  "quarantine_gates_falsification_environment": <boolean>,
+  "current_discriminator_directly_confirmed": <boolean>,
+  "current_support_is_directional_only": <boolean>,
+  "decisive_confirmation_deferred_to_forward_observable": <boolean>,
+  "confirmation_rationale": <string>,
+  "drift_detected": <boolean>,
+  "drift_rationale": <string>,
   "criteria_passed": [<string>, ...],
   "criteria_failed": [<string>, ...],
   "weakest_point": <string>,
   "verified_axioms": [<string>, ...],
   "retired_axioms_approved": [<string>, ...],
+  "evidence_gaps": [
+    {
+      "gap_type": <string>,
+      "target": <string>,
+      "description": <string>,
+      "severity": <string>,
+      "producer": <string>,
+      "producer_rationale": <string>,
+      "fetch_query": <string>,
+      "adversarial_direction": <boolean>
+    }
+  ],
   "logic_gaps": [<string>, ...],
   "debate_summary": <string>,
   "adversarial_alignment": <string>,
@@ -754,6 +1134,18 @@ Required fields:
   "weakest_point": <string>,
   "verified_axioms": [<string>, ...],
   "retired_axioms_approved": [<string>, ...],
+  "evidence_gaps": [
+    {
+      "gap_type": <string>,
+      "target": <string>,
+      "description": <string>,
+      "severity": <string>,
+      "producer": <string>,
+      "producer_rationale": <string>,
+      "fetch_query": <string>,
+      "adversarial_direction": <boolean>
+    }
+  ],
   "logic_gaps": [<string>, ...],
   "debate_summary": <string>,
   "adversarial_alignment": <string>,
@@ -807,6 +1199,19 @@ Required fields:
                         "confidence": {"type": "STRING"},
                     },
                 },
+                "quarantined_load_bearing_dependency": {"type": "BOOLEAN"},
+                "quarantine_target": {"type": "STRING"},
+                "quarantine_legitimate": {"type": "BOOLEAN"},
+                "quarantine_rationale": {"type": "STRING"},
+                "quarantine_gates_causal_mechanism": {"type": "BOOLEAN"},
+                "quarantine_gates_named_discriminator": {"type": "BOOLEAN"},
+                "quarantine_gates_falsification_environment": {"type": "BOOLEAN"},
+                "current_discriminator_directly_confirmed": {"type": "BOOLEAN"},
+                "current_support_is_directional_only": {"type": "BOOLEAN"},
+                "decisive_confirmation_deferred_to_forward_observable": {"type": "BOOLEAN"},
+                "confirmation_rationale": {"type": "STRING"},
+                "drift_detected": {"type": "BOOLEAN"},
+                "drift_rationale": {"type": "STRING"},
                 "criteria_passed": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "criteria_failed": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "weakest_point": {"type": "STRING"},
@@ -818,6 +1223,7 @@ Required fields:
                     "type": "ARRAY",
                     "items": {"type": "STRING"},
                 },
+                "evidence_gaps": _evidence_gap_response_schema(),
                 "logic_gaps": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "debate_summary": {"type": "STRING"},
                 "adversarial_alignment": {"type": "STRING"},
@@ -866,9 +1272,23 @@ Required fields:
                 "contains_infallible_aggregator",
                 "proof_is_self_referential",
                 "self_reference_evidence",
+                "quarantined_load_bearing_dependency",
+                "quarantine_target",
+                "quarantine_legitimate",
+                "quarantine_rationale",
+                "quarantine_gates_causal_mechanism",
+                "quarantine_gates_named_discriminator",
+                "quarantine_gates_falsification_environment",
+                "current_discriminator_directly_confirmed",
+                "current_support_is_directional_only",
+                "decisive_confirmation_deferred_to_forward_observable",
+                "confirmation_rationale",
+                "drift_detected",
+                "drift_rationale",
                 "criteria_passed",
                 "criteria_failed",
                 "weakest_point",
+                "evidence_gaps",
                 "logic_gaps",
                 "verified_axioms",
                 "retired_axioms_approved",
@@ -891,6 +1311,7 @@ Required fields:
                     "items": {"type": "STRING"},
                     "description": "List of proposed axiom retirements that the Judge agrees are valid for the new domain.",
                 },
+                "evidence_gaps": _evidence_gap_response_schema(),
                 "logic_gaps": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "debate_summary": {"type": "STRING"},
                 "adversarial_alignment": {
@@ -937,6 +1358,7 @@ Required fields:
             "required": [
                 "score",
                 "weakest_point",
+                "evidence_gaps",
                 "logic_gaps",
                 "verified_axioms",
                 "retired_axioms_approved",
@@ -1043,6 +1465,63 @@ Required fields:
     return utils.parse_llm_json(response.text)
 
 
+def _rubric_fingerprint(main_rubric_data):
+    canonical = json.dumps(main_rubric_data, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
+
+
+def _evidence_fingerprint(path: str) -> str:
+    evidence_path = Path(path)
+    if not evidence_path.exists():
+        return "missing"
+    return hashlib.sha256(evidence_path.read_bytes()).hexdigest()[:16]
+
+
+def _score_regime_payload(main_rubric_data):
+    mode = "deterministic_gates" if args.deterministic_score_gates else "raw_llm_score"
+    return {
+        "mode": mode,
+        "version": SCORE_REGIME_VERSION_MAP[mode],
+        "rubric_name": args.rubric,
+        "rubric_fingerprint": _rubric_fingerprint(main_rubric_data),
+        "judge_model": JUDGE_MODEL_ID,
+        "dynamic_committee": bool(args.dynamic),
+        "primitive_support": bool(args.use_primitives),
+        "evidence_path": EVIDENCE_PATH,
+        "evidence_fingerprint": _evidence_fingerprint(EVIDENCE_PATH),
+    }
+
+
+def attach_score_regime_metadata(evaluation, main_rubric_data, test_suite_status):
+    regime = _score_regime_payload(main_rubric_data)
+    regime_fingerprint = hashlib.sha256(
+        json.dumps(regime, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()[:16]
+
+    existing = evaluation.get("score_contract")
+    if not isinstance(existing, dict):
+        existing = {}
+
+    existing.update(
+        {
+            "mode": regime["mode"],
+            "version": regime["version"],
+            "regime": regime,
+            "regime_fingerprint": regime_fingerprint,
+            "judge_model": regime["judge_model"],
+            "rubric_name": regime["rubric_name"],
+            "rubric_fingerprint": regime["rubric_fingerprint"],
+            "dynamic_committee": regime["dynamic_committee"],
+            "primitive_support": regime["primitive_support"],
+            "evidence_path": regime["evidence_path"],
+            "evidence_fingerprint": regime["evidence_fingerprint"],
+            "test_suite_status": existing.get("test_suite_status", test_suite_status),
+        }
+    )
+    evaluation["score_contract"] = existing
+    return evaluation
+
+
 def apply_semantic_gate_stabilization(evaluation):
     raw_flag = bool(evaluation.get("proof_is_self_referential", False))
     analysis = derive_self_reference_gate(
@@ -1109,13 +1588,152 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
             }
         )
 
+    quarantined_load_bearing_dependency = bool(
+        evaluation.get("quarantined_load_bearing_dependency", False)
+    )
+    quarantine_target = str(evaluation.get("quarantine_target", "unknown") or "unknown")
+    quarantine_legitimate = bool(evaluation.get("quarantine_legitimate", False))
+    quarantine_rationale = str(evaluation.get("quarantine_rationale", "") or "").strip()
+    quarantine_gates_causal_mechanism = bool(
+        evaluation.get("quarantine_gates_causal_mechanism", False)
+    )
+    quarantine_gates_named_discriminator = bool(
+        evaluation.get("quarantine_gates_named_discriminator", False)
+    )
+    quarantine_gates_falsification_environment = bool(
+        evaluation.get("quarantine_gates_falsification_environment", False)
+    )
+    # Backward-compatible fallback for older evaluations or mis-specified outputs.
+    if quarantined_load_bearing_dependency:
+        if quarantine_target == "causal_mechanism":
+            quarantine_gates_causal_mechanism = True
+        elif quarantine_target == "named_discriminator":
+            quarantine_gates_causal_mechanism = True
+            quarantine_gates_named_discriminator = True
+        elif quarantine_target == "falsification_environment":
+            quarantine_gates_falsification_environment = True
+        elif quarantine_target == "unknown" and not (
+            quarantine_gates_causal_mechanism
+            or quarantine_gates_named_discriminator
+            or quarantine_gates_falsification_environment
+        ):
+            quarantine_gates_causal_mechanism = True
+    if quarantined_load_bearing_dependency:
+        if quarantine_gates_named_discriminator or quarantine_gates_falsification_environment:
+            soft_score_caps.append(
+                {
+                    "reason": (
+                        "Meta-Judge found a quarantined unresolved variable still gates the central "
+                        "scored discriminator or falsification environment. "
+                        f"{quarantine_rationale}".strip()
+                    ),
+                    "cap": 67,
+                }
+            )
+        elif quarantine_gates_causal_mechanism:
+            soft_score_caps.append(
+                {
+                    "reason": (
+                        "Meta-Judge found a quarantined unresolved variable still gates the central "
+                        f"causal mechanism. {quarantine_rationale}".strip()
+                    ),
+                    "cap": 83,
+                }
+            )
+        elif quarantine_target == "background_only" and quarantine_legitimate:
+            pass
+        else:
+            soft_score_caps.append(
+                {
+                    "reason": (
+                        "Meta-Judge found a quarantined load-bearing unresolved dependency with "
+                        f"unclear scope. {quarantine_rationale}".strip()
+                    ),
+                    "cap": 83,
+                }
+            )
+
+    current_discriminator_directly_confirmed = bool(
+        evaluation.get("current_discriminator_directly_confirmed", False)
+    )
+    current_support_is_directional_only = bool(
+        evaluation.get("current_support_is_directional_only", False)
+    )
+    decisive_confirmation_deferred_to_forward_observable = bool(
+        evaluation.get("decisive_confirmation_deferred_to_forward_observable", False)
+    )
+    confirmation_rationale = str(evaluation.get("confirmation_rationale", "") or "").strip()
+    if decisive_confirmation_deferred_to_forward_observable:
+        if current_support_is_directional_only:
+            soft_score_caps.append(
+                {
+                    "reason": (
+                        "Meta-Judge found the central discriminator is only directionally "
+                        "supported by current evidence and decisive confirmation is deferred "
+                        f"to a forward observable. {confirmation_rationale}".strip()
+                    ),
+                    "cap": 83,
+                }
+            )
+        elif not current_discriminator_directly_confirmed:
+            soft_score_caps.append(
+                {
+                    "reason": (
+                        "Meta-Judge found decisive confirmation of the central discriminator "
+                        "is deferred to a forward observable without direct present confirmation. "
+                        f"{confirmation_rationale}".strip()
+                    ),
+                    "cap": 67,
+                }
+            )
+
+    anchor_proxy_coverage = None
+    anchor_proxy_overlap = []
+    anchor_proxy_active = []
+    anchor_proxy_total = 0
+    mathematical_drift_detected = False
+    drift_distance = 0.0
+    if os.path.exists(test_path) and project_charter_anchor_proxies:
+        anchor_proxy_result = compute_anchor_proxy_coverage(
+            Path(test_path),
+            project_charter_anchor_proxies,
+        )
+        anchor_proxy_coverage = float(anchor_proxy_result["coverage"])
+        anchor_proxy_overlap = list(anchor_proxy_result["overlap"])
+        anchor_proxy_active = list(anchor_proxy_result["active_proxies"])
+        anchor_proxy_total = int(anchor_proxy_result["anchor_total"])
+        drift_distance = float(anchor_proxy_result["drift_distance"])
+        mathematical_drift_detected = anchor_proxy_coverage < ANCHOR_PROXY_MIN_COVERAGE
+        if mathematical_drift_detected:
+            soft_score_caps.append(
+                {
+                    "reason": (
+                        "Deterministic charter drift check found the active suite covers only "
+                        f"{anchor_proxy_coverage:.2f} of declared Anchor Proxies "
+                        f"(threshold={ANCHOR_PROXY_MIN_COVERAGE:.2f})."
+                    ),
+                    "cap": 50,
+                }
+            )
+
+    drift_detected = bool(evaluation.get("drift_detected", False))
+    drift_rationale = str(evaluation.get("drift_rationale", "") or "").strip()
+
     criterion_score = round(100 * len(passed) / len(criteria_keys)) if criteria_keys else 0
     final_score = criterion_score
+    cap_reason = "none"
+    cap_reason_detail = ""
     if hard_fail_reasons:
         final_score = 0
+        cap_reason = "hard_fail"
+        cap_reason_detail = hard_fail_reasons[0]
     else:
         for cap in soft_score_caps:
             final_score = min(final_score, cap["cap"])
+        if soft_score_caps:
+            active_cap = min(soft_score_caps, key=lambda item: item["cap"])
+            cap_reason = "soft_cap"
+            cap_reason_detail = str(active_cap.get("reason", "") or "")
         final_score = max(0, min(100, final_score))
 
     evaluation["criteria_passed"] = passed
@@ -1128,6 +1746,29 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
         "soft_score_caps": soft_score_caps,
         "semantic_gate_status": evaluation.get("semantic_gate_status"),
         "self_reference_rule_fired": evaluation.get("self_reference_rule_fired"),
+        "quarantined_load_bearing_dependency": quarantined_load_bearing_dependency,
+        "quarantine_target": quarantine_target,
+        "quarantine_legitimate": quarantine_legitimate,
+        "quarantine_gates_causal_mechanism": quarantine_gates_causal_mechanism,
+        "quarantine_gates_named_discriminator": quarantine_gates_named_discriminator,
+        "quarantine_gates_falsification_environment": quarantine_gates_falsification_environment,
+        "current_discriminator_directly_confirmed": current_discriminator_directly_confirmed,
+        "current_support_is_directional_only": current_support_is_directional_only,
+        "decisive_confirmation_deferred_to_forward_observable": decisive_confirmation_deferred_to_forward_observable,
+        "confirmation_rationale": confirmation_rationale,
+        "project_charter_present": bool(project_charter_content),
+        "anchor_proxies_declared": list(project_charter_anchor_proxies),
+        "anchor_proxy_total": anchor_proxy_total,
+        "anchor_proxy_overlap": anchor_proxy_overlap,
+        "anchor_proxy_coverage": anchor_proxy_coverage,
+        "anchor_proxy_min_coverage": ANCHOR_PROXY_MIN_COVERAGE,
+        "drift_distance": drift_distance,
+        "mathematical_drift_detected": mathematical_drift_detected,
+        "active_proxy_signature": anchor_proxy_active,
+        "drift_detected": drift_detected,
+        "drift_rationale": drift_rationale,
+        "cap_reason": cap_reason,
+        "cap_reason_detail": cap_reason_detail,
     }
     evaluation["score"] = final_score
     if hard_fail_reasons:
@@ -1247,6 +1888,9 @@ if __name__ == "__main__":
         if args.deterministic_score_gates:
             evaluation = apply_semantic_gate_stabilization(evaluation)
             evaluation = finalize_deterministic_score(evaluation, main_rubric, test_suite_status)
+        evaluation = attach_evidence_gap_metadata(evaluation)
+        evaluation = attach_score_regime_metadata(evaluation, main_rubric, test_suite_status)
+        persist_evidence_gap_artifact(evaluation)
         log.write(f"# Final Score: {evaluation['score']}\n")
         log.write(f"**Weakest Point:** {evaluation['weakest_point']}\n")
         log.write(f"**Rationale:** {evaluation.get('debate_summary', 'N/A')}\n")
@@ -1264,10 +1908,20 @@ if __name__ == "__main__":
         print("█" * 60 + "\n")
 
     evaluation["usage_telemetry"] = dict(JUDGE_USAGE)
-    with open(args.eval_results_path, "w") as f:
-        json.dump(evaluation, f, indent=2)
+    latest_eval_payload = _evaluation_artifact_payload(evaluation, artifact_role="latest")
+    eval_results_path = Path(args.eval_results_path)
+    eval_results_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(eval_results_path, "w") as f:
+        json.dump(latest_eval_payload, f, indent=2)
+
+    latest_eval_path = Path(LATEST_EVAL_RESULTS_PATH)
+    if latest_eval_path.resolve() != eval_results_path.resolve():
+        latest_eval_path.parent.mkdir(parents=True, exist_ok=True)
+        latest_eval_path.write_text(json.dumps(latest_eval_payload, indent=2), encoding="utf-8")
 
     if "probability_dag" in evaluation:
-        with open(f"{PROJECT_DIR}/probability_dag.json", "w") as f:
+        latest_probability_dag_path = Path(LATEST_PROBABILITY_DAG_PATH)
+        latest_probability_dag_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(latest_probability_dag_path, "w") as f:
             json.dump(evaluation["probability_dag"], f, indent=2)
-        print(f"📊 Probability DAG saved to: {PROJECT_DIR}/probability_dag.json")
+        print(f"📊 Probability DAG saved to: {LATEST_PROBABILITY_DAG_PATH}")
