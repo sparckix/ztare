@@ -140,6 +140,48 @@ make benchmark-supervisor-staging
 make benchmark-supervisor-report
 ```
 
+### Step 0: Scope-Anchor Broad Projects
+
+Before the first serious run on a broad project, scaffold and edit a charter:
+
+```bash
+python -m src.ztare.common.scaffold_project_charter \
+  --project <project> \
+  --mode broad
+```
+
+Use `project_charter.md` when:
+
+- the question has multiple plausible sub-questions
+- a project could drift into a narrower seam and still look good rhetorically
+- end states need to remain distinct
+- the project inherits from another project
+
+The charter is advisory in prose and deterministic in anchors:
+
+- `Core Question` / `Out Of Scope` / `End States` guide the judge
+- `Anchor Proxies` drive mathematical drift detection
+
+### Artifact roles
+
+Validation runs now maintain two explicit artifact families:
+
+- `latest_*`
+  - the most recent evaluated attempt
+- `champion_*`
+  - the current promoted best result for the active regime
+
+This matters because the newest evaluated candidate may be worse than the promoted champion.
+
+For domain projects, expect:
+
+- `projects/<project>/latest_eval_results.json`
+- `projects/<project>/champion_eval_results.json`
+- `projects/<project>/latest_probability_dag.json`
+- `projects/<project>/champion_probability_dag.json`
+- `projects/<project>/workspace/latest_evidence_gaps.json`
+- `projects/<project>/workspace/champion_evidence_gaps.json`
+
 ### Step 1: Update The Workspace
 
 ```bash
@@ -165,12 +207,16 @@ The minimum useful files to inspect are:
 - `projects/<project>/workspace/contradictions.md`
 - `projects/<project>/workspace/open_questions.md`
 - `projects/<project>/workspace/candidate_claims.md`
+- `projects/<project>/workspace/champion_evidence_gaps.json` (preferred, if present)
+- `projects/<project>/workspace/latest_evidence_gaps.json` (if present)
+- `projects/<project>/workspace/evidence_gap_brief.md` (after compile, if present)
 
 Human job here:
 
 - make sure obvious contradictions were preserved
 - make sure important unknowns were not smoothed away
 - decide what claim or thesis is worth testing next
+- if typed evidence gaps exist, decide whether the next bottleneck is evidence collection rather than more blind iterations
 
 ### Step 3: Compile Evidence
 
@@ -183,6 +229,7 @@ Default outputs:
 - `projects/<project>/compiled_evidence.txt`
 - `projects/<project>/compiled_evidence_packet.json`
 - `projects/<project>/compiled_evidence_provenance.json`
+- `projects/<project>/workspace/evidence_gap_brief.md` (if champion/latest gap artifacts exist)
 
 ### Step 4: Promote The Snapshot For The Current Validator
 
@@ -191,6 +238,13 @@ ZTARE still reads `projects/<project>/evidence.txt`, so for now:
 ```bash
 cp projects/<project>/compiled_evidence.txt projects/<project>/evidence.txt
 ```
+
+Important:
+
+- the active score regime fingerprints the byte content of `evidence.txt`
+- promoting `compiled_evidence.txt` into `evidence.txt` is therefore a rebaseline event
+- old champions from the prior evidence frontier are intentionally treated as `regime_mismatch` after promotion
+- the evidence compiler prefers `champion_evidence_gaps.json` when present and falls back to `latest_evidence_gaps.json`
 
 ### Step 5: Run ZTARE
 
@@ -220,7 +274,39 @@ make v4-meta-run-current
 make v4-meta-reset
 ```
 
-### Step 5a: Branch After `UNDERIDENTIFIED`
+### Step 5a: Use A Short Probe Budget Before Declaring Closure
+
+Do not treat a single `iter0 = 0` or similar hard baseline as automatic proof that the current project has no viable on-charter basin.
+
+A baseline is a local readout, not a proof of global exhaustion.
+
+Use a short additional probe budget (`2-3` iterations) before declaring the current framing closed when all of the following are true:
+
+- the falsification suite passes
+- drift is controlled or not firing
+- the failure is substantive rather than infrastructure/provider noise
+- the project, regime, or charter was recently reframed, hardened, or rebaselined
+
+Why:
+
+- the mutator may still discover a different basin inside the same charter and evidence frontier
+- the operator's "there is nothing here" instinct can itself be wrong
+
+Do **not** turn this into open-ended grinding.
+
+If the same hard failure repeats with no meaningful basin movement after the probe budget:
+
+- stop iterating
+- change the evidence frontier
+- or branch the hypothesis explicitly
+
+If a materially better on-charter basin appears during the probe budget:
+
+- treat that as genuine new information
+- update the active champion
+- and continue from there rather than from the earlier failed baseline
+
+### Step 5b: Branch After `UNDERIDENTIFIED`
 
 If a project reaches `UNDERIDENTIFIED`, do not overwrite the active thesis ad hoc.
 

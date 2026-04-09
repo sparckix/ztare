@@ -35,6 +35,11 @@ The generator cannot influence its own evaluation. The judge never reads prose. 
 
 At a high level, ZTARE is a zero-trust adversarial neurosymbolic system: LLMs generate and attack candidate theses, while deterministic code execution, parsers, and score gates constrain what counts as success. The contribution here is not the invention of debate, code execution, or neurosymbolic AI as such; it is the empirical finding that LLMs can systematically game self-authored falsification suites, and the verification architecture built to catch and harden against that behavior.
 
+For domain projects, the validator now writes explicit `latest_*` and `champion_*` artifacts so operators can distinguish:
+
+- the newest evaluated attempt
+- the currently promoted best result for the active regime
+
 ---
 
 ## Current Critical Path
@@ -230,9 +235,16 @@ python -m src.ztare.experiments.cognitive_camouflage_experiment
 ```bash
 # 1. Create a project directory
 mkdir projects/your_domain
+
+# 2. Add a charter unless the project is provably narrow
+python -m src.ztare.common.scaffold_project_charter \
+  --project projects/your_domain \
+  --mode broad
+
+# 3. Seed initial evidence
 echo "Your domain description and seed claim here." > projects/your_domain/evidence.txt
 
-# 2. Run the loop
+# 4. Run the loop
 python -m src.ztare.validator.autoresearch_loop --rubric recursive_bayesian --project your_domain
 
 # Equivalent shortcut
@@ -241,6 +253,22 @@ make loop PROJECT=your_domain RUBRIC=recursive_bayesian
 # Debate logs appear in projects/your_domain/
 # Best thesis auto-syncs to projects/your_domain/thesis.md
 ```
+
+For projects that use the full evidence workflow, the current loop is:
+
+```text
+raw/ -> workspace/ -> compiled_evidence.txt -> evidence.txt -> validator
+```
+
+If the validator emits typed evidence gaps, they are written to:
+
+- `projects/<project>/workspace/latest_evidence_gaps.json`
+- `projects/<project>/workspace/evidence_gap_brief.md` (after `compile_evidence.py`)
+
+Important:
+
+- the active score regime now fingerprints the contents of `evidence.txt`
+- once `compiled_evidence.txt` is promoted into `evidence.txt`, the next run automatically rebaselines under the richer evidence boundary
 
 ## Paper 1 Legacy Runs
 

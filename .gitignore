@@ -36,6 +36,7 @@ projects/*/debate_reports/
 !projects/eu_union_stability/
 projects/eu_union_stability/*
 !projects/eu_union_stability/promote_hypothesis.py
+projects/eu_union_stability/.active_bundle.json
 !projects/eu_union_stability/hypotheses/
 projects/eu_union_stability/hypotheses/*
 !projects/eu_union_stability/hypotheses/README.md

@@ -48,6 +48,23 @@ thesis/history/debates -> src/ztare/synthesis/synthesize.py -> Report.md / Appen
 
 The validator never reads `workspace/` directly.
 
+The validator may, however, emit typed evidence-boundary diagnostics back into `workspace/`:
+
+- `workspace/latest_evidence_gaps.json`
+- `workspace/champion_evidence_gaps.json`
+- `workspace/evidence_gap_brief.md` (written by the compiler when gap artifacts exist)
+
+This is a human-gated feedback loop, not autonomous retrieval. The operator still decides what enters `raw/` and what gets promoted into active `evidence.txt`.
+
+The validator/output layer also distinguishes between:
+
+- `latest_*`
+  - the newest evaluated candidate
+- `champion_*`
+  - the promoted best candidate for the active regime
+
+This separation is load-bearing because the most recent evaluated attempt may fail while the promoted champion remains valid.
+
 ### Control Plane
 
 The repo now has a separate control plane for program-level hardening work:
@@ -124,15 +141,17 @@ The same separation pattern recurs across layers, but the names should stay dist
 
 1. **Evidence substrate**
    - `raw/`, `workspace/`, compiled evidence
-2. **ZTARE validator**
+2. **Project charter**
+   - `project_charter.md`, consumed as scope anchor and deterministic drift surface
+3. **ZTARE validator**
    - the adversarial domain-validation loop over bounded evidence
-3. **V4 kernel**
+4. **V4 kernel**
    - the evaluator being hardened
-4. **Meta-runner**
+5. **Meta-runner**
    - the kernel-local deterministic promotion runner for V4 stage advancement
-5. **Supervisor**
+6. **Supervisor**
    - the multi-program control plane for bounded work packets
-6. **Publication layer**
+7. **Publication layer**
    - paper bundles and reader-facing artifacts
 
 These layers are fractal in structure because each introduces some separation between generation and evaluation. They are **not** interchangeable in responsibility:
@@ -164,6 +183,9 @@ These are load-bearing.
 5. Audience artifacts are downstream views, not canonical truth stores.
 6. The canonical machine-readable artifact for synthesis is `ledger.json`.
 7. The knowledge workspace is external infrastructure, not part of the validator proof.
+8. Broad projects should declare a `project_charter.md`; drift control is not left to prose judgment alone.
+9. Score comparability breaks when active `evidence.txt` changes; the score regime now fingerprints the evidence boundary.
+10. Operator-facing artifacts must distinguish the promoted champion from the latest failed or exploratory candidate.
 
 ---
 
