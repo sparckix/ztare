@@ -32,6 +32,13 @@ from src.ztare.validator.information_yield import (
 )
 from src.ztare.validator.proxy_signature import extract_anchor_proxies_from_charter
 from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
+from src.ztare.validator.champion_artifacts import (
+    artifact_regime_fingerprint,
+    build_champion_eval_from_saved_best,
+    build_champion_gap_payload_from_saved_best,
+    champion_artifacts_out_of_sync_with_saved_best,
+    set_artifact_role,
+)
 
 SESSION_TOKENS = 0
 SESSION_MUTATOR_USAGE = {
@@ -401,28 +408,73 @@ def _latest_debate_log_text(project_dir: str) -> str:
     return candidates[-1].read_text()
 
 
-def _artifact_regime_fingerprint(payload: dict | None) -> str | None:
-    if not isinstance(payload, dict):
-        return None
-    fingerprint = payload.get("score_regime_fingerprint")
-    if isinstance(fingerprint, str) and fingerprint.strip():
-        return fingerprint.strip()
-    score_contract = payload.get("score_contract")
-    return _score_regime_fingerprint_from_score_contract(score_contract)
-
-
 def _champion_eval_payload() -> dict | None:
     return read_json(CHAMPION_EVAL_RESULTS_PATH)
 
 
-def _set_artifact_role(payload: dict, artifact_role: str) -> dict:
-    updated = dict(payload)
-    updated["artifact_role"] = artifact_role
-    updated["describes_baseline"] = artifact_role
-    fingerprint = _artifact_regime_fingerprint(updated)
-    if fingerprint:
-        updated["score_regime_fingerprint"] = fingerprint
-    return updated
+def _saved_best_history_payload() -> tuple[str | None, dict | None]:
+    history_stem = _current_saved_best_stem()
+    if not history_stem:
+        return None, None
+    meta_path = Path(HISTORY_DIR) / f"{history_stem}_meta.json"
+    if not meta_path.exists():
+        return history_stem, None
+    return history_stem, read_json(str(meta_path))
+
+
+def _reconstruct_champion_artifacts_from_saved_best() -> dict:
+    history_stem, meta = _saved_best_history_payload()
+    if not history_stem or not isinstance(meta, dict):
+        return {
+            "reconstructed": False,
+            "reason": "saved_best_missing",
+            "regime_fingerprint": None,
+        }
+
+    champion_eval = build_champion_eval_from_saved_best(
+        meta,
+        history_stem,
+        project_rubric=args.rubric,
+        project_dynamic=args.dynamic,
+        project_mutator_model_id=MUTATOR_MODEL_ID,
+        project_judge_model_id=JUDGE_MODEL_ID,
+        score_regime_fingerprint_from_meta=_score_regime_fingerprint_from_meta,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+    )
+    write_json(CHAMPION_EVAL_RESULTS_PATH, champion_eval)
+
+    history_dag_path = Path(HISTORY_DIR) / f"{history_stem}_dag.json"
+    if history_dag_path.exists():
+        shutil.copy(history_dag_path, CHAMPION_PROBABILITY_DAG_PATH)
+
+    champion_gap_payload = build_champion_gap_payload_from_saved_best(
+        meta,
+        project_name=args.project,
+        score_regime_fingerprint_from_meta=_score_regime_fingerprint_from_meta,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+    )
+    write_json(CHAMPION_EVIDENCE_GAPS_PATH, champion_gap_payload)
+
+    return {
+        "reconstructed": True,
+        "reason": "saved_best_history",
+        "regime_fingerprint": artifact_regime_fingerprint(
+            champion_eval,
+            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        ),
+    }
+
+
+def _champion_artifacts_out_of_sync_with_saved_best() -> bool:
+    champion_eval = _champion_eval_payload()
+    history_stem, saved_meta = _saved_best_history_payload()
+    return champion_artifacts_out_of_sync_with_saved_best(
+        champion_eval,
+        history_stem=history_stem,
+        saved_meta=saved_meta,
+        score_regime_fingerprint_from_meta=_score_regime_fingerprint_from_meta,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+    )
 
 
 def _promote_latest_artifacts_to_champion() -> dict:
@@ -430,16 +482,27 @@ def _promote_latest_artifacts_to_champion() -> dict:
     champion_eval = None
     regime_fingerprint = None
     if latest_eval is not None:
-        champion_eval = _set_artifact_role(latest_eval, "champion")
+        champion_eval = set_artifact_role(
+            latest_eval,
+            "champion",
+            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        )
         write_json(CHAMPION_EVAL_RESULTS_PATH, champion_eval)
-        regime_fingerprint = _artifact_regime_fingerprint(champion_eval)
+        regime_fingerprint = artifact_regime_fingerprint(
+            champion_eval,
+            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        )
 
     if os.path.exists(LATEST_PROBABILITY_DAG_PATH):
         shutil.copy(LATEST_PROBABILITY_DAG_PATH, CHAMPION_PROBABILITY_DAG_PATH)
 
     latest_gaps = read_json(LATEST_EVIDENCE_GAPS_PATH)
     if latest_gaps is not None:
-        champion_gaps = _set_artifact_role(latest_gaps, "champion")
+        champion_gaps = set_artifact_role(
+            latest_gaps,
+            "champion",
+            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        )
         write_json(CHAMPION_EVIDENCE_GAPS_PATH, champion_gaps)
 
     return {
@@ -451,7 +514,10 @@ def _promote_latest_artifacts_to_champion() -> dict:
 
 
 def _print_latest_artifact_status(payload: dict, previous_champion_fingerprint: str | None) -> None:
-    latest_fingerprint = _artifact_regime_fingerprint(payload)
+    latest_fingerprint = artifact_regime_fingerprint(
+        payload,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+    )
     shifted = (
         latest_fingerprint is not None
         and previous_champion_fingerprint is not None
@@ -475,6 +541,20 @@ def _print_champion_artifact_status(previous_champion_fingerprint: str | None, n
     fingerprint_label = new_champion_fingerprint or "unknown"
     print(
         f"🏆 CHAMPION artifacts updated: champion_eval_results / champion_probability_dag / champion_evidence_gaps "
+        f"(regime fingerprint: {fingerprint_label}; shifted vs previous champion: {shifted_label})"
+    )
+
+
+def _print_champion_reconstruction_status(previous_champion_fingerprint: str | None, new_champion_fingerprint: str | None) -> None:
+    shifted = (
+        new_champion_fingerprint is not None
+        and previous_champion_fingerprint is not None
+        and new_champion_fingerprint != previous_champion_fingerprint
+    )
+    shifted_label = "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
+    fingerprint_label = new_champion_fingerprint or "unknown"
+    print(
+        f"🛠️ CHAMPION artifacts reconstructed from saved best history "
         f"(regime fingerprint: {fingerprint_label}; shifted vs previous champion: {shifted_label})"
     )
 
@@ -1399,9 +1479,20 @@ if args.dynamic:
 subprocess.run(test_cmd, check=True)
 with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
     res = json.load(f)
-previous_champion_fingerprint = _artifact_regime_fingerprint(_champion_eval_payload())
+previous_champion_fingerprint = artifact_regime_fingerprint(
+    _champion_eval_payload(),
+    score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+)
 if previous_champion_fingerprint is None:
     previous_champion_fingerprint = _score_regime_fingerprint_from_meta(_current_saved_best_meta())
+if _champion_artifacts_out_of_sync_with_saved_best():
+    reconstructed = _reconstruct_champion_artifacts_from_saved_best()
+    if reconstructed.get("reconstructed"):
+        _print_champion_reconstruction_status(
+            previous_champion_fingerprint,
+            reconstructed.get("regime_fingerprint"),
+        )
+        previous_champion_fingerprint = reconstructed.get("regime_fingerprint") or previous_champion_fingerprint
 _print_latest_artifact_status(res, previous_champion_fingerprint)
 judge_usage = res.get("usage_telemetry")
 if isinstance(judge_usage, dict):
@@ -1449,7 +1540,7 @@ elif _champion_eval_payload() is None:
         previous_champion_fingerprint,
         champion_artifacts.get("regime_fingerprint"),
     )
-    print("💾 CHAMPION ARTIFACTS INITIALIZED from the current saved best state.")
+    print("💾 CHAMPION ARTIFACTS INITIALIZED from the current latest artifacts.")
 # GP-002: separate best-state memory from mutator-facing control signal.
 # best_weakest_point tracks the critique attached to the retained best state.
 # current_target_weakest_point is what we feed to mutate_thesis() every iteration.
@@ -1644,7 +1735,10 @@ for i in range(ITERATIONS):
         subprocess.run(test_cmd, check=True)
         with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
             new_eval = json.load(f)
-        champion_fingerprint_before_iteration = _artifact_regime_fingerprint(_champion_eval_payload())
+        champion_fingerprint_before_iteration = artifact_regime_fingerprint(
+            _champion_eval_payload(),
+            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        )
         _print_latest_artifact_status(new_eval, champion_fingerprint_before_iteration)
         judge_usage = new_eval.get("usage_telemetry")
         if isinstance(judge_usage, dict):

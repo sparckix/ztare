@@ -182,6 +182,14 @@ For domain projects, expect:
 - `projects/<project>/workspace/latest_evidence_gaps.json`
 - `projects/<project>/workspace/champion_evidence_gaps.json`
 
+If `champion_*` artifacts are missing or stale relative to the project's saved-best history marker, the loop now reconstructs them from history before trusting them as the active baseline.
+
+This migration path is covered by a local regression:
+
+```bash
+python -m src.ztare.validator.champion_artifacts_fixture_regression
+```
+
 ### Step 1: Update The Workspace
 
 ```bash
