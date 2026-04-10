@@ -1,0 +1,83 @@
+{
+  "run_id": "stage2_derivation_009",
+  "revision": 5,
+  "state": "D",
+  "active_program": "stage2_derivation_seam_hardening",
+  "active_target": "derivation_boundary",
+  "last_actor": "human",
+  "next_actor": "human",
+  "status_reason": "program_closed",
+  "debate_file": "research_areas/debates/kernel/stage2_derivation_seam_hardening.md",
+  "debate_last_turn": 15,
+  "owner_mode": "frozen",
+  "genesis_path": "/Users/daalami/figs_activist_loop/supervisor/program_genesis/stage2_derivation_seam_hardening.json",
+  "seed_spec_path": "research_areas/stage2_derivation_seam.md",
+  "contract_boundary": "TextInput -> HingeObject / derivation record, including tightened live pass/fail criteria at the derivation seam without changing HingeObject shape or downstream contracts.",
+  "success_condition": "Safe-harbor disclaimers are independently grounded or fail closed using the existing HingeObject schema and the existing downstream contracts.",
+  "out_of_scope": [
+    "adding new fields to HingeObject",
+    "changing the R1 MutationDeclaration wire format",
+    "changing Stages 3-6 contracts",
+    "reopening V4 historical promotion evidence"
+  ],
+  "artifact_paths": {
+    "spec": "research_areas/debates/kernel/stage2_derivation_seam_hardening.md",
+    "implementation": [
+      "src/ztare/validator/hinge_handoff.py",
+      "src/ztare/validator/stage2_derivation.py",
+      "src/ztare/validator/stage24_bridge_fixture_regression.py",
+      "src/ztare/validator/stage4_fixture_regression.py"
+    ],
+    "verification_report": "/tmp/stage2_derivation_009/verification_report.txt",
+    "error_report": null
+  },
+  "spec_snapshot": [
+    {
+      "path": "research_areas/debates/kernel/stage2_derivation_seam_hardening.md",
+      "sha256": "3f3fae41dfe8452f43def26559d1a0ed8833b93fefad9a756f1e4a592b80dd5a"
+    }
+  ],
+  "implementation_snapshot": [
+    {
+      "path": "src/ztare/validator/hinge_handoff.py",
+      "sha256": "c998de7fc1a61b7a9fa94e98ec50039c2b428b00f9623fc8982587d05e189e11"
+    },
+    {
+      "path": "src/ztare/validator/stage2_derivation.py",
+      "sha256": "36794ce30a93644081d27fadcfbc2d7d9e7bbee0babcbe63602eeb30d87e8071"
+    },
+    {
+      "path": "src/ztare/validator/stage24_bridge_fixture_regression.py",
+      "sha256": "da6dcd81b61d8528dc136e7c06a410f3da026852668ffdc7166f2b5aa0aa1cdd"
+    },
+    {
+      "path": "src/ztare/validator/stage4_fixture_regression.py",
+      "sha256": "34207aba8ec3f67b0cd8e47463a7e43bd13d4c4aa723ca25194917a03d931ea1"
+    }
+  ],
+  "verification_command": "python -m src.ztare.validator.stage2_derivation_fixture_regression && python -m src.ztare.validator.stage24_bridge_fixture_regression && python -m src.ztare.validator.stage4_fixture_regression",
+  "gate_on_verifier_pass": true,
+  "consecutive_build_failures": 0,
+  "spec_refinement_rounds": 0,
+  "last_turn_usage": {
+    "model_name": "human_gate",
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "estimated_cost_usd": 0.0,
+    "telemetry_captured": false
+  },
+  "program_cost_usd": 0.64631685,
+  "refinement_cost_usd": 0.0,
+  "max_refinement_cost_usd": null,
+  "human_gate_reason": "contract_promotion",
+  "human_gate_resolved": true,
+  "closed_programs": [
+    "epistemic_engine_v4",
+    "epistemic_engine_v4_bridge_hardening",
+    "runner_hardening",
+    "stage2_derivation_seam_hardening",
+    "supervisor_loop"
+  ]
+}
