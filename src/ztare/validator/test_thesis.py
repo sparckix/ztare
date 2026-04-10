@@ -5,14 +5,12 @@ import time
 import subprocess
 import tempfile
 import hashlib
-from pathlib import Path
-from google import genai
-from google.genai import types
-import anthropic
-from openai import OpenAI
-from src.ztare.common import utils
-from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import concurrent.futures
+from pathlib import Path
+from google.genai import types
+from src.ztare.common import utils
+from src.ztare.common.llm_runtime import LLMRuntime, pricing_model_name, resolve_model_id
+from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import re
 from src.ztare.primitives.primitive_library import (
     format_attack_templates,
@@ -28,6 +26,7 @@ from src.ztare.validator.semantic_gate_stabilization import (
 from src.ztare.validator.proxy_signature import (
     compute_anchor_proxy_coverage,
     extract_anchor_proxies_from_charter,
+    extract_forecast_type_from_charter,
 )
 from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
 from src.ztare.validator.v4_family import is_v4_family_project
@@ -83,23 +82,15 @@ if getattr(args, "use_transfer_hypotheses", False):
 if args.use_mutator_primitives:
     args.use_primitives = True
 
-_MODEL_MAP = {
-    "gemini": "gemini-2.5-flash",
-    "claude": "claude-sonnet-4-6",
-    "claude-opus": "claude-opus-4-6",
-    "gpt4o": "gpt-4o",
-}
-JUDGE_MODEL_ID = _MODEL_MAP[args.judge_model]
+JUDGE_MODEL_ID = resolve_model_id(args.judge_model)
 MUTATOR_MODEL_ID = args.mutator_model
 print(f"⚖️  Judge: {JUDGE_MODEL_ID}")
 print(f"🧬 Mutator: {MUTATOR_MODEL_ID}")
 
-gemini_client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY")) if os.environ.get("OPENAI_API_KEY") else None
+RUNTIME = LLMRuntime()
 
 # Keep legacy `client` pointing to Gemini for ATTACKER_CONFIG function calling
-client = gemini_client
+client = RUNTIME.require_gemini_client()
 JUDGE_USAGE = {
     "model_name": None,
     "input_tokens": 0,
@@ -166,6 +157,7 @@ test_code_content = (
 )
 project_charter_content = read_optional_file(PROJECT_CHARTER_PATH)
 project_charter_anchor_proxies = extract_anchor_proxies_from_charter(project_charter_content)
+project_charter_forecast_type = extract_forecast_type_from_charter(project_charter_content)
 
 
 def _normalize_evidence_gap_type(value: str | None) -> str:
@@ -412,38 +404,6 @@ def attach_evidence_gap_metadata(evaluation: dict) -> dict:
     evaluation["score_contract"] = existing
     return evaluation
 
-def _call_anthropic_judge(prompt, model_id):
-    """Call Claude for judging. Returns a fake response-like object with .text."""
-    message = anthropic_client.messages.create(
-        model=model_id,
-        max_tokens=16000,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    class _Resp:
-        text = message.content[0].text
-        usage = getattr(message, "usage", None)
-        model = getattr(message, "model", model_id)
-        candidates = None
-        prompt_feedback = None
-    return _Resp()
-
-
-def _call_openai_judge(prompt, model_id):
-    """Call OpenAI for judging. Returns a fake response-like object with .text."""
-    response = openai_client.chat.completions.create(
-        model=model_id,
-        max_tokens=16000,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    class _Resp:
-        text = response.choices[0].message.content
-        usage = getattr(response, "usage", None)
-        model = getattr(response, "model", model_id)
-        candidates = None
-        prompt_feedback = None
-    return _Resp()
-
-
 def _accumulate_judge_usage(
     *,
     model_name,
@@ -475,7 +435,8 @@ def _accumulate_judge_usage(
         )
     )
     JUDGE_USAGE["estimated_cost_usd"] += estimated_cost
-    if direct_cost_usd is not None or model_name in pricing:
+    normalized_model_name = pricing_model_name(model_name)
+    if direct_cost_usd is not None or (normalized_model_name is not None and normalized_model_name in pricing):
         JUDGE_USAGE["cost_known"] = True
 
 
@@ -483,98 +444,26 @@ def safe_generate(prompt, config=None, model_id=None):
     """Exponential backoff with dynamic model routing."""
     if model_id is None:
         model_id = JUDGE_MODEL_ID
-
-    is_claude = model_id.startswith("claude")
-    is_openai = model_id.startswith("gpt") or model_id.startswith("o1") or model_id.startswith("o3")
-
-    for i in range(12):
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-        try:
-            print(f"📡 [DEBUG] Dispatching request to {model_id}... (Attempt {i + 1})")
-            start_time = time.time()
-
-            if is_claude:
-                future = executor.submit(_call_anthropic_judge, prompt, model_id)
-            elif is_openai:
-                future = executor.submit(_call_openai_judge, prompt, model_id)
-            else:
-                future = executor.submit(
-                    client.models.generate_content,
-                    model=model_id, contents=prompt, config=config
-                )
-
-            response = future.result(timeout=300)
-            elapsed = time.time() - start_time
-            print(f"✅ [DEBUG] Response received in {elapsed:.1f}s")
-            if is_claude:
-                usage = getattr(response, "usage", None)
-                _accumulate_judge_usage(
-                    model_name=getattr(response, "model", None) or model_id,
-                    input_tokens=getattr(usage, "input_tokens", 0) if usage is not None else 0,
-                    output_tokens=getattr(usage, "output_tokens", 0) if usage is not None else 0,
-                    cache_creation_input_tokens=getattr(usage, "cache_creation_input_tokens", 0)
-                    if usage is not None
-                    else 0,
-                    cache_read_input_tokens=getattr(usage, "cache_read_input_tokens", 0)
-                    if usage is not None
-                    else 0,
-                )
-            elif is_openai:
-                usage = getattr(response, "usage", None)
-                input_tokens = 0
-                output_tokens = 0
-                cache_read_input_tokens = 0
-                if usage is not None:
-                    input_tokens = int(
-                        getattr(usage, "prompt_tokens", getattr(usage, "input_tokens", 0)) or 0
-                    )
-                    output_tokens = int(
-                        getattr(usage, "completion_tokens", getattr(usage, "output_tokens", 0)) or 0
-                    )
-                    prompt_details = getattr(usage, "prompt_tokens_details", None)
-                    input_details = getattr(usage, "input_tokens_details", None)
-                    cache_read_input_tokens = int(
-                        getattr(prompt_details, "cached_tokens", 0)
-                        or getattr(input_details, "cached_tokens", 0)
-                        or 0
-                    )
-                _accumulate_judge_usage(
-                    model_name=getattr(response, "model", None) or model_id,
-                    input_tokens=input_tokens,
-                    output_tokens=output_tokens,
-                    cache_read_input_tokens=cache_read_input_tokens,
-                )
-            else:
-                usage_metadata = getattr(response, "usage_metadata", None)
-                if usage_metadata is not None:
-                    _accumulate_judge_usage(
-                        model_name=model_id,
-                        input_tokens=getattr(usage_metadata, "prompt_token_count", 0),
-                        output_tokens=getattr(usage_metadata, "candidates_token_count", 0),
-                        cache_read_input_tokens=getattr(usage_metadata, "cached_content_token_count", 0),
-                    )
-            return response
-
-        except concurrent.futures.TimeoutError:
-            wait_time = (i + 1) * 15
-            print(f"⚠️ Zombie Connection Killed (200s Timeout). Retrying in {wait_time}s...")
-            time.sleep(wait_time)
-        except Exception as e:
-            error_str = str(e)
-            if "400" in error_str or "404" in error_str:
-                print(f"❌ Configuration/Model Error: {e}")
-                raise e
-            if any(code in error_str for code in ["429", "500", "502", "503", "504"]):
-                wait_time = (i + 1) * 20
-                print(f"⚠️ API Transient Issue ({error_str[:15]}...). Retrying in {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                print(f"❌ Unhandled Exception: {error_str}")
-                raise e
-        finally:
-            executor.shutdown(wait=False, cancel_futures=True)
-
-    raise Exception("Max retries exceeded due to persistent API issues.")
+    response = RUNTIME.call_text(
+        prompt,
+        model_id=model_id,
+        config=config,
+        retries=12,
+        timeout_seconds=300,
+        request_label="request",
+        progress_printer=print,
+        transient_wait_seconds=20,
+        timeout_wait_seconds=15,
+    )
+    _accumulate_judge_usage(
+        model_name=response.usage.model_name or model_id,
+        input_tokens=response.usage.input_tokens,
+        output_tokens=response.usage.output_tokens,
+        cache_creation_input_tokens=response.usage.cache_creation_input_tokens,
+        cache_read_input_tokens=response.usage.cache_read_input_tokens,
+        direct_cost_usd=response.usage.direct_cost_usd,
+    )
+    return response
 
 # --- LEVEL 3: THE TOOL ---
 def execute_python_code(code: str) -> str:
@@ -864,6 +753,12 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
     A thesis has drifted if it materially narrows into a subproblem that the charter marks as insufficient, collapses distinct end states that the charter requires to be separated, makes claims the charter marks out of scope, or otherwise stops answering the broader project object.
     Do NOT mark drift merely because the thesis became sharper, more bounded, or more testable. Mark drift only when the sharpened thesis ceases to answer the chartered project.
     IMPORTANT: your `drift_detected` verdict is advisory only. Mathematical drift is computed independently from the charter's `Anchor Proxies` section and is the primary enforcement signal.
+
+    FORECAST TYPE CHECK (MANDATORY):
+    The charter may declare a `Forecast Type`.
+    - If it is `directional_forecast`, bounded tilt language is allowed, but unsupported point-probability claims should be treated as out of scope / overclaim.
+    - If it is `probabilistic_forecast`, a point probability is allowed only if the thesis clearly defines the forecast target, horizon, and the model basis for the number.
+    - If it is `none` or absent, do not require a forecast layer and do not reward an irrelevant one.
     
     CRITICAL MANDATE (THE POPPERIAN CONSTRAINT):
     Before grading the logic against the rubric, you must evaluate Falsifiability. Does this thesis make a specific, testable prediction that could theoretically be proven wrong by a future data point or simulation?
@@ -982,6 +877,17 @@ Confirmation rule:
 - if decisive confirmation is deferred but there is still substantial directional support now, that is a strong bounded thesis but not a perfect one
 - if decisive confirmation is deferred and there is no meaningful direct present confirmation, prefer the more conservative classification
 
+You must also output a forecast overclaim assessment:
+- `unsupported_point_probability_claim`: boolean
+- `forecast_overclaim_rationale`: string
+
+Forecast overclaim rule:
+- if the charter declares `directional_forecast`, set `unsupported_point_probability_claim = true` when the thesis states or implies a point probability, percentage, odds, or similarly precise numeric forecast claim for the future outcome
+- a probability DAG does NOT by itself authorize a `%` forecast claim in a directional project
+- if the charter declares `probabilistic_forecast`, a point probability is allowed only when the target event, horizon, and model basis are explicit
+- if the project is not a forecast project or no point-probability overclaim is present, set `unsupported_point_probability_claim = false`
+- use `forecast_overclaim_rationale` to explain the issue briefly
+
 You must also output a project-drift assessment:
 - `drift_detected`: boolean
 - `drift_rationale`: string
@@ -1095,6 +1001,8 @@ Required fields:
   "current_support_is_directional_only": <boolean>,
   "decisive_confirmation_deferred_to_forward_observable": <boolean>,
   "confirmation_rationale": <string>,
+  "unsupported_point_probability_claim": <boolean>,
+  "forecast_overclaim_rationale": <string>,
   "drift_detected": <boolean>,
   "drift_rationale": <string>,
   "criteria_passed": [<string>, ...],
@@ -1210,6 +1118,8 @@ Required fields:
                 "current_support_is_directional_only": {"type": "BOOLEAN"},
                 "decisive_confirmation_deferred_to_forward_observable": {"type": "BOOLEAN"},
                 "confirmation_rationale": {"type": "STRING"},
+                "unsupported_point_probability_claim": {"type": "BOOLEAN"},
+                "forecast_overclaim_rationale": {"type": "STRING"},
                 "drift_detected": {"type": "BOOLEAN"},
                 "drift_rationale": {"type": "STRING"},
                 "criteria_passed": {"type": "ARRAY", "items": {"type": "STRING"}},
@@ -1283,6 +1193,8 @@ Required fields:
                 "current_support_is_directional_only",
                 "decisive_confirmation_deferred_to_forward_observable",
                 "confirmation_rationale",
+                "unsupported_point_probability_claim",
+                "forecast_overclaim_rationale",
                 "drift_detected",
                 "drift_rationale",
                 "criteria_passed",
@@ -1687,6 +1599,25 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
                 }
             )
 
+    project_forecast_type = project_charter_forecast_type or "unspecified"
+    unsupported_point_probability_claim = bool(
+        evaluation.get("unsupported_point_probability_claim", False)
+    )
+    forecast_overclaim_rationale = str(
+        evaluation.get("forecast_overclaim_rationale", "") or ""
+    ).strip()
+    if project_forecast_type == "directional_forecast" and unsupported_point_probability_claim:
+        soft_score_caps.append(
+            {
+                "reason": (
+                    "Meta-Judge found an unsupported point-probability claim inside a "
+                    "directional forecast project. "
+                    f"{forecast_overclaim_rationale}".strip()
+                ),
+                "cap": 50,
+            }
+        )
+
     anchor_proxy_coverage = None
     anchor_proxy_overlap = []
     anchor_proxy_active = []
@@ -1756,7 +1687,10 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
         "current_support_is_directional_only": current_support_is_directional_only,
         "decisive_confirmation_deferred_to_forward_observable": decisive_confirmation_deferred_to_forward_observable,
         "confirmation_rationale": confirmation_rationale,
+        "unsupported_point_probability_claim": unsupported_point_probability_claim,
+        "forecast_overclaim_rationale": forecast_overclaim_rationale,
         "project_charter_present": bool(project_charter_content),
+        "project_forecast_type": project_forecast_type,
         "anchor_proxies_declared": list(project_charter_anchor_proxies),
         "anchor_proxy_total": anchor_proxy_total,
         "anchor_proxy_overlap": anchor_proxy_overlap,
@@ -1770,6 +1704,8 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
         "cap_reason": cap_reason,
         "cap_reason_detail": cap_reason_detail,
     }
+    evaluation["unsupported_point_probability_claim"] = unsupported_point_probability_claim
+    evaluation["forecast_overclaim_rationale"] = forecast_overclaim_rationale
     evaluation["score"] = final_score
     if hard_fail_reasons:
         strongest_reason = hard_fail_reasons[0]

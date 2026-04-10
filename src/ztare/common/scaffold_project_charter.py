@@ -8,6 +8,7 @@ MODE_DESCRIPTIONS = {
     "broad": "Use when the project has multiple plausible sub-questions or drift attractors.",
     "mechanism": "Use when the project tests one bounded causal or strategic mechanism.",
     "forecast": "Use when the project centers on an event boundary, horizon, and forecast discipline.",
+    "probabilistic": "Use when the project explicitly targets a point probability for a defined event and horizon.",
 }
 
 
@@ -32,6 +33,7 @@ MODE_HINTS = {
             "laundry-list thesis with no ranking or discriminator",
             "forecast claims without explicit event boundary",
         ],
+        "forecast_type": "none",
         "anchor_examples": [
             "proxy:classify_primary_state",
             "proxy:rank_load_bearing_factors",
@@ -58,6 +60,7 @@ MODE_HINTS = {
             "latent-variable explanation with no observable proxy",
             "test suite that only recomputes thesis-authored targets",
         ],
+        "forecast_type": "none",
         "anchor_examples": [
             "proxy:compute_mechanism_score",
             "proxy:evaluate_rival_case",
@@ -85,12 +88,40 @@ MODE_HINTS = {
             "horizon slippage",
             "directional support presented as decisive forecast proof",
         ],
+        "forecast_type": "directional_forecast",
         "anchor_examples": [
             "proxy:classify_event_boundary",
             "proxy:forecast_tilt_by_horizon",
             "test:test_current_evidence_supports_directional_tilt",
             "test:test_event_boundary_dominates_if_triggered",
             "test:test_forecast_is_horizon_bounded",
+        ],
+    },
+    "probabilistic": {
+        "core_question": (
+            "What explicit event probability is being estimated, for what horizon, and from what reference class or model basis?"
+        ),
+        "out_of_scope": [
+            "smuggling in a naked percentage without explicit event semantics",
+            "using a probability DAG alone as justification for a point probability",
+            "mixing directional mechanism claims with probabilistic output without calibration discipline",
+        ],
+        "success_states": [
+            "event_occurs_by_horizon",
+            "event_does_not_occur_by_horizon",
+        ],
+        "failure_states": [
+            "undefined event ontology",
+            "uncalibrated point probability theater",
+            "probability claim unsupported by explicit modeling basis",
+        ],
+        "forecast_type": "probabilistic_forecast",
+        "anchor_examples": [
+            "proxy:estimate_event_probability",
+            "proxy:classify_event_outcome",
+            "test:test_probability_target_is_explicit",
+            "test:test_event_boundary_is_horizon_bounded",
+            "test:test_probability_model_changes_when_load_bearing_inputs_change",
         ],
     },
 }
@@ -133,6 +164,9 @@ The project should cleanly distinguish:
 ### Failure
 The project has failed if it drifts into any of the following:
 {failure_states}
+
+## Forecast Type
+- {hints["forecast_type"]}
 
 ## Inheritance
 - none

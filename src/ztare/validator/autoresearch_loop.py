@@ -8,14 +8,17 @@ from pathlib import Path
 import argparse
 import sys
 from datetime import datetime
-from google import genai
+import concurrent.futures
 from google.genai import types
-import anthropic
-from openai import OpenAI
 from src.ztare.common import utils
+from src.ztare.common.llm_runtime import (
+    LLMRuntime,
+    resolve_model_id,
+    resolve_director_model_id,
+    pricing_model_name,
+)
 from src.ztare.common.paths import PROJECTS_DIR, RUBRICS_DIR
 import re
-import concurrent.futures
 from src.ztare.primitives.primitive_library import format_transfer_hypotheses, retrieve_primitives
 from src.ztare.validator.mutation_contract import (
     MutationMismatchCode,
@@ -30,7 +33,11 @@ from src.ztare.validator.information_yield import (
     LoopControlAction,
     evaluate_information_yield,
 )
-from src.ztare.validator.proxy_signature import extract_anchor_proxies_from_charter
+from src.ztare.validator.pivot_heuristics import select_pivot_profile
+from src.ztare.validator.proxy_signature import (
+    extract_anchor_proxies_from_charter,
+    extract_forecast_type_from_charter,
+)
 from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
 from src.ztare.validator.champion_artifacts import (
     artifact_regime_fingerprint,
@@ -126,12 +133,10 @@ if is_v4_family_project(args.project) and not args.runner_r1_contract:
     args.runner_r1_contract = True
     print(f"INFO: Enforcing --runner_r1_contract for V4-family project [{args.project}].")
 
-gemini_client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY")) if os.environ.get("OPENAI_API_KEY") else None
+RUNTIME = LLMRuntime()
 
 # Keep legacy `client` pointing to Gemini — Firing Squad and Meta-Judge always use it
-client = gemini_client
+client = RUNTIME.require_gemini_client()
 
 
 def _load_v4_stage_index() -> int | None:
@@ -148,22 +153,10 @@ def _load_v4_stage_index() -> int | None:
 ITERATIONS = args.iters
 
 # Resolve Mutator model ID from --mutator_model flag
-_MODEL_MAP = {
-    "gemini": "gemini-2.5-flash",
-    "claude": "claude-sonnet-4-6",
-    "claude-opus": "claude-opus-4-6",
-    "gpt4o": "gpt-4o",
-}
-MUTATOR_MODEL_ID = _MODEL_MAP[args.mutator_model]
-JUDGE_MODEL_ID = _MODEL_MAP[args.judge_model]
+MUTATOR_MODEL_ID = resolve_model_id(args.mutator_model)
+JUDGE_MODEL_ID = resolve_model_id(args.judge_model)
 # Escalation model follows the mutator family
-_DIRECTOR_MAP = {
-    "gemini": "gemini-3.1-pro-preview",
-    "claude": "claude-sonnet-4-6",
-    "claude-opus": "claude-opus-4-6",
-    "gpt4o": "o1",
-}
-DIRECTOR_MODEL_ID = _DIRECTOR_MAP[args.mutator_model]
+DIRECTOR_MODEL_ID = resolve_director_model_id(args.mutator_model)
 
 print(f"🧠 Mutator: {MUTATOR_MODEL_ID} | Judge: {JUDGE_MODEL_ID}")
 
@@ -750,33 +743,6 @@ def _prepare_mutation_candidate(
 
     return declaration, validation_record, clean_thesis, python_code, working_text
 
-
-def _call_anthropic(prompt, model_id):
-    """Call Anthropic Claude. Returns response text."""
-    message = anthropic_client.messages.create(
-        model=model_id,
-        max_tokens=16000,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return message
-
-
-def _call_openai(prompt, model_id):
-    """Call OpenAI. Returns response text."""
-    # o1/o3 models use max_completion_tokens instead of max_tokens
-    is_reasoning = model_id.startswith("o1") or model_id.startswith("o3")
-    kwargs = {
-        "model": model_id,
-        "messages": [{"role": "user", "content": prompt}],
-    }
-    if is_reasoning:
-        kwargs["max_completion_tokens"] = 16000
-    else:
-        kwargs["max_tokens"] = 16000
-    response = openai_client.chat.completions.create(**kwargs)
-    return response
-
-
 def _accumulate_usage(
     bucket,
     *,
@@ -818,7 +784,8 @@ def _accumulate_usage(
         )
     )
     bucket["estimated_cost_usd"] += estimated_cost
-    if direct_cost_usd is not None or model_name in pricing:
+    normalized_model_name = pricing_model_name(model_name)
+    if direct_cost_usd is not None or (normalized_model_name is not None and normalized_model_name in pricing):
         bucket["cost_known"] = True
 
 
@@ -833,114 +800,27 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
         f.write(f"MODEL USED: {model_id}\n")
         f.write("=" * 30 + "\n")
         f.write(prompt)
-
-    is_claude = model_id.startswith("claude")
-    is_openai = model_id.startswith("gpt") or model_id.startswith("o1") or model_id.startswith("o3")
-
-    """Retries for both 429 (Rate Limit) and 503 (Server Overload)."""
-    for i in range(12):
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-        try:
-            print(f"📡 [DEBUG] Dispatching Mutator request to {model_id}... (Attempt {i + 1})")
-            start_time = time.time()
-
-            if is_claude:
-                future = executor.submit(_call_anthropic, prompt, model_id)
-            elif is_openai:
-                future = executor.submit(_call_openai, prompt, model_id)
-            else:
-                future = executor.submit(
-                    client.models.generate_content,
-                    model=model_id, contents=prompt, config=config
-                )
-
-            response = future.result(timeout=300)
-            elapsed = time.time() - start_time
-            print(f"✅ [DEBUG] Response received in {elapsed:.1f}s")
-
-            if is_claude:
-                usage = getattr(response, "usage", None)
-                _accumulate_usage(
-                    SESSION_MUTATOR_USAGE,
-                    model_name=getattr(response, "model", None) or model_id,
-                    input_tokens=getattr(usage, "input_tokens", 0) if usage is not None else 0,
-                    output_tokens=getattr(usage, "output_tokens", 0) if usage is not None else 0,
-                    cache_creation_input_tokens=getattr(usage, "cache_creation_input_tokens", 0)
-                    if usage is not None
-                    else 0,
-                    cache_read_input_tokens=getattr(usage, "cache_read_input_tokens", 0)
-                    if usage is not None
-                    else 0,
-                )
-                return response.content[0].text
-
-            if is_openai:
-                usage = getattr(response, "usage", None)
-                input_tokens = 0
-                output_tokens = 0
-                cache_read_input_tokens = 0
-                if usage is not None:
-                    input_tokens = int(
-                        getattr(usage, "prompt_tokens", getattr(usage, "input_tokens", 0)) or 0
-                    )
-                    output_tokens = int(
-                        getattr(usage, "completion_tokens", getattr(usage, "output_tokens", 0)) or 0
-                    )
-                    prompt_details = getattr(usage, "prompt_tokens_details", None)
-                    input_details = getattr(usage, "input_tokens_details", None)
-                    cache_read_input_tokens = int(
-                        getattr(prompt_details, "cached_tokens", 0)
-                        or getattr(input_details, "cached_tokens", 0)
-                        or 0
-                    )
-                _accumulate_usage(
-                    SESSION_MUTATOR_USAGE,
-                    model_name=getattr(response, "model", None) or model_id,
-                    input_tokens=input_tokens,
-                    output_tokens=output_tokens,
-                    cache_read_input_tokens=cache_read_input_tokens,
-                )
-                return response.choices[0].message.content
-
-            usage_metadata = getattr(response, "usage_metadata", None)
-            if usage_metadata:
-                _accumulate_usage(
-                    SESSION_MUTATOR_USAGE,
-                    model_name=model_id,
-                    input_tokens=getattr(usage_metadata, "prompt_token_count", 0),
-                    output_tokens=getattr(usage_metadata, "candidates_token_count", 0),
-                    cache_read_input_tokens=getattr(usage_metadata, "cached_content_token_count", 0),
-                )
-            return response.text
-
-        except concurrent.futures.TimeoutError:
-            wait_time = (i + 1) * 15
-            print(
-                f"⚠️ Zombie Connection Killed. Retrying in {wait_time}s..."
-            )
-            time.sleep(wait_time)
-        except Exception as e:
-            error_str = str(e)
-            # Catch transient networking/Read errors (like Errno 54)
-            is_transient_network_error = any(msg in error_str for msg in [
-                "readerror", "connection reset", "broken pipe", "remoteprotocolerror"
-            ])
-            if "400" in error_str or "404" in error_str:
-                print(f"❌ Configuration/Model Error: {e}")
-                raise e
-            # Catch 500, 502, 503, 504, 529 and 429 as transient retryable errors
-            if any(code in error_str for code in ["429", "500", "502", "503", "504", "529", "overloaded"]) or is_transient_network_error:
-                wait_time = (i + 1) * 20
-                print(f"⚠️ API Transient Issue ({error_str[:15]}...). Retrying in {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                print(f"❌ Unhandled Exception: {error_str}")
-                raise e
-            
-        finally:
-            # CRITICAL FIX: Force thread abandonment on timeout
-            executor.shutdown(wait=False, cancel_futures=True)
-    raise Exception("Mutation failed after multiple retries.")
+    response = RUNTIME.call_text(
+        prompt,
+        model_id=model_id,
+        config=config,
+        retries=12,
+        timeout_seconds=300,
+        request_label="Mutator request",
+        progress_printer=print,
+        transient_wait_seconds=20,
+        timeout_wait_seconds=15,
+    )
+    _accumulate_usage(
+        SESSION_MUTATOR_USAGE,
+        model_name=response.usage.model_name or model_id,
+        input_tokens=response.usage.input_tokens,
+        output_tokens=response.usage.output_tokens,
+        cache_creation_input_tokens=response.usage.cache_creation_input_tokens,
+        cache_read_input_tokens=response.usage.cache_read_input_tokens,
+        direct_cost_usd=response.usage.direct_cost_usd,
+    )
+    return response.text
 
 
 # --- CHANGED: Added model_id to the signature ---
@@ -961,6 +841,7 @@ def mutate_thesis(
     axioms = []
     project_charter = read_file(PROJECT_CHARTER_PATH) if os.path.exists(PROJECT_CHARTER_PATH) else ""
     anchor_proxies = extract_anchor_proxies_from_charter(project_charter)
+    forecast_type = extract_forecast_type_from_charter(project_charter)
     if os.path.exists(AXIOM_PATH):
         with open(AXIOM_PATH, "r") as f:
             axioms = json.load(f)
@@ -968,6 +849,11 @@ def mutate_thesis(
     axiom_str = "\n".join([f"- {a}" for a in axioms]) if axioms else "None yet."
     is_v4_project = is_v4_family_project(args.project)
     v4_stage_index = _load_v4_stage_index()
+    pivot_profile = select_pivot_profile(
+        is_v4_project=is_v4_project,
+        falsification_mode=falsification_mode,
+        stagnation_count=stagnation_count,
+    )
     style_guide = ""
     output_requirements = ""
 
@@ -975,6 +861,13 @@ def mutate_thesis(
     if is_v4_project:
         document_context = f"### CURRENT SYSTEM STATE (FOR ANALYSIS ONLY)\n{current_content}"
         if stagnation_count >= 3:
+            profile_summary = ", ".join(pivot_profile.modules) if pivot_profile else "none"
+            print(
+                "🚨 V4 bounded mutation override injected "
+                f"(profile={pivot_profile.name if pivot_profile else 'none'}; "
+                f"modules=[{profile_summary}]; "
+                f"stagnation_count={stagnation_count}; generic topological pivot disabled)."
+            )
             task_header = "🚨 V4 DISCIPLINE OVERRIDE: BOUNDED KERNEL MUTATION 🚨"
             pivot_instruction = """
                 ### V4 MUTATION DISCIPLINE
@@ -999,6 +892,8 @@ def mutate_thesis(
         - Prefer narrower, more auditable logic over elegant global pivots.
         - If the current mechanism fails, mutate the gate contract, not the ontology of the whole project.
         """
+            if pivot_profile:
+                pivot_instruction += "\n" + pivot_profile.instruction
         else:
             task_header = "TASK: Resolve the following Systemic Inconsistency:"
 
@@ -1054,6 +949,13 @@ def mutate_thesis(
         """
     elif stagnation_count >= 4:
         print("🚨 EMERGENCY MANDATE: EXECUTING TOPOLOGICAL PIVOT 🚨")
+        if pivot_profile:
+            profile_summary = ", ".join(pivot_profile.modules)
+            print(
+                "🚨 Emergency pivot profile injected "
+                f"(profile={pivot_profile.name}; modules=[{profile_summary}]; "
+                f"stagnation_count={stagnation_count})."
+            )
         print("🧹 Purging toxic axioms to allow true architectural reset...")
         
         if os.path.exists(AXIOM_PATH):
@@ -1063,6 +965,12 @@ def mutate_thesis(
         document_context = "🚨 [SYSTEM STATE PURGED]: Your previous logic was fundamentally and repeatedly rejected by the Auditor. You are starting from a BLANK SLATE. You must derive a new architecture using ONLY the Grounding Data and First Principles. Do NOT iterative-fix; RE-ENGINEER. 🚨"
         task_header = "🚨 EMERGENCY MANDATE: EXECUTE TOPOLOGICAL PIVOT 🚨"   
     elif stagnation_count >= 3:
+        profile_summary = ", ".join(pivot_profile.modules) if pivot_profile else "none"
+        print(
+            "🚨 Topological pivot profile injected "
+            f"(profile={pivot_profile.name if pivot_profile else 'none'}; "
+            f"modules=[{profile_summary}]; stagnation_count={stagnation_count})."
+        )
         document_context = "🚨 [SYSTEM STATE PURGED]: Current logic has reached a terminal friction point. You must derive a NEW Transformation Function. 🚨"
         task_header = "🚨 EMERGENCY MANDATE: EXECUTE TOPOLOGICAL PIVOT 🚨"
     else:
@@ -1070,24 +978,8 @@ def mutate_thesis(
             f"### CURRENT SYSTEM STATE (FOR ANALYSIS ONLY)\n{current_content}"
         )
 
-    if not is_v4_project and stagnation_count >= 3:
-        pivot_instruction = """
-                ### 🚨 METACOGNITIVE OVERRIDE: FIRST-PRINCIPLES RE-ENGINEERING 🚨
-        The Auditor has identified a terminal friction in the current logic. You are forbidden from iterative refinement. You must execute a structural mutation using these Zero-Domain Heuristics:
-
-        1. STATE INCOMPATIBILITY (Critique as Invariant): Treat the Auditor's critique as an immutable Physical Law of the environment. If this constraint is absolute, what entirely new System Architecture must be derived to reach the Target State ($Z$)?
-        2. THE EIGENVALUE (Primary Degree of Freedom): Identify the single, irreducible variable where a change in state forces a deterministic reconfiguration of the entire system. Define the cascading logic-gates that follow this shift.
-        3. ZERO-TRUST AUTOPSY (Failure Topology): Fast-forward to the state of System Collapse. Map the 3 specific nodes of failure. Erase the assumptions supporting those nodes and build a bypass that does not rely on their stability.
-        4. ENTROPY STRIPPING (Mercenary Utility): Remove all qualitative descriptors and sentimental "narratives." Evaluate the system strictly as a Mercerary Arbitrage. What cold, quantifiable Utility Vector is actually being transferred between participants?
-        5. DIMENSIONALITY SHIFT (Category Defiance): If the problem is unsolvable in the current Domain (e.g., as an 'Object' or 'Product'), you must shift the system to a higher Dimensionality (e.g., a 'Service', 'Network', or 'Annuity').
-        6. RECIPROCAL OPERATIONS (The Base Variable Attack): If the primary Vector ($X$) required for the goal is locked by systemic friction, identify the Reciprocal Variable ($Y$) that can be manipulated to force the same Resultant State ($Z$). If you cannot expand the Numerator, you must aggressively contract the Denominator.
-        7. ADVERSARIAL STRESS-TEST (Archetype Shadow Board): Subject the new logic to a board of three opposing archetypes: The Forensic Skeptic (Entropy Hunter), The Minimalist Purist (Complexity Hunter), and The Disruptive Interloper (Moat Hunter).
-        8. SYSTEMIC BACK-PRESSURE (The Success-Liability): If the mechanism functions perfectly, identify the new technical, legal, or competitive resistance created by that very success. Solve for this "Success Trap" within the primary architecture.
-        9. COERCIVE VECTORS (Asymmetric Leverage): Identify the specific participant with the absolute power to Veto the State-Change. You must derive a mechanism of Asymmetric Leverage (e.g., legal, mechanical, or existential) that makes the current state more painful for the Veto Player than the transition to the Target State. Logic is a suggestion; leverage is a mandate.
-        10. COEFFICIENT OF FRICTION (Inertia Constant): Assume a non-zero systemic resistance factor. Quantify how this friction (e.g., implementation lag) degrades Velocity ($V$) and forces a near-term performance trough.
-        
-        TASK: Execute a structural mutation. Concede the lost state, apply the new mechanism, and define the exact systemic trade-offs. 
-        """
+    if not is_v4_project and pivot_profile:
+        pivot_instruction = pivot_profile.instruction
     if not is_v4_project:
         # GP-003: branch on falsification_mode from rubric.
         # Absent or "numerical_proof" -> legacy behavior unchanged (Paper 1 safe).
@@ -1229,6 +1121,23 @@ def mutate_thesis(
     PROJECT CHARTER (MANDATORY CONTEXT):
     {project_charter}
     """
+        if forecast_type:
+            charter_context += f"""
+
+    FORECAST TYPE CONTRACT (MANDATORY):
+    - This charter declares `{forecast_type}`.
+"""
+            if forecast_type == "directional_forecast":
+                charter_context += """
+    - Keep any forecast claim bounded to directional tilt language unless the project is explicitly re-chartered.
+    - Do NOT convert this project into a point-probability forecast project by smuggling in percentages.
+    - A probability DAG may still express confidence structure, but it does not authorize a `%` forecast claim by itself.
+"""
+            elif forecast_type == "probabilistic_forecast":
+                charter_context += """
+    - Point probabilities are allowed only if the thesis makes the target event, horizon, and modeling basis explicit.
+    - Do NOT emit a naked percentage without clear event semantics and a testable probabilistic object.
+"""
         if anchor_proxies:
             anchor_lines = "\n".join([f"    - {name}" for name in anchor_proxies])
             charter_context += f"""

@@ -136,6 +136,49 @@ def normalize_anchor_proxy_name(name: str) -> str:
     return f"proxy:{normalized}"
 
 
+def normalize_forecast_type_name(name: str) -> str:
+    normalized = name.strip().lower().replace("`", "")
+    aliases = {
+        "none": "none",
+        "no_forecast": "none",
+        "directional": "directional_forecast",
+        "directional_forecast": "directional_forecast",
+        "bounded_directional": "directional_forecast",
+        "bounded_directional_forecast": "directional_forecast",
+        "probabilistic": "probabilistic_forecast",
+        "probabilistic_forecast": "probabilistic_forecast",
+        "point_probability": "probabilistic_forecast",
+        "point_probability_forecast": "probabilistic_forecast",
+    }
+    return aliases.get(normalized, "")
+
+
+def extract_forecast_type_from_charter(charter_text: str | None) -> str:
+    if not charter_text:
+        return ""
+
+    lines = charter_text.splitlines()
+    in_section = False
+    for raw_line in lines:
+        stripped = raw_line.strip()
+        if stripped.startswith("## "):
+            in_section = stripped == "## Forecast Type"
+            continue
+        if not in_section:
+            continue
+        if not stripped:
+            continue
+        if stripped.startswith("### "):
+            break
+        candidate = stripped
+        if candidate.startswith("- "):
+            candidate = candidate[2:].strip()
+        normalized = normalize_forecast_type_name(candidate)
+        if normalized:
+            return normalized
+    return ""
+
+
 def extract_anchor_proxies_from_charter(charter_text: str | None) -> list[str]:
     if not charter_text:
         return []
