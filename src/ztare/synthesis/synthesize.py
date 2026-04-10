@@ -1,17 +1,13 @@
 import argparse
 import json
-import os
 import re
 import sys
 import time
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-import anthropic
-from google import genai
-from openai import OpenAI
-
 from src.ztare.common import utils
+from src.ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
 from src.ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, RENDERERS_DIR, REPO_ROOT
 
 
@@ -33,13 +29,6 @@ ACTIVE_LLM: Optional["LLMClient"] = None
 ACTIVE_QA_LLM: Optional["LLMClient"] = None
 ACTIVE_QA_THRESHOLD = DEFAULT_QA_THRESHOLD
 DEBUG = False
-
-MODEL_MAP = {
-    "gemini": "gemini-2.5-flash",
-    "claude": "claude-sonnet-4-6",
-    "claude-opus": "claude-opus-4-6",
-    "gpt4o": "gpt-4o",
-}
 
 PROJECT_TYPE_DEFAULTS = {
     "startup": {
@@ -78,7 +67,15 @@ RENDERER_OVERRIDES = {
     "decision_brief": {
         "audience": "decision-maker",
         "tone": "compressed, decision-forcing",
-    }
+    },
+    "field_manual": {
+        "audience": "case-method instructor or executive",
+        "tone": "boardroom-plain, scannable, non-technical",
+    },
+    "teaching_note": {
+        "audience": "case-method instructor preparing a single class",
+        "tone": "operational, instructor-facing, project-specific",
+    },
 }
 
 
@@ -453,49 +450,24 @@ class LLMClient:
             raise ValueError(f"Unsupported model family: {model_family}")
         self.model_family = model_family
         self.model_id = MODEL_MAP[model_family]
-        self.gemini_client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY")) if os.environ.get("GEMINI_API_KEY") else None
-        self.anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY")) if os.environ.get("ANTHROPIC_API_KEY") else None
-        self.openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY")) if os.environ.get("OPENAI_API_KEY") else None
-
-    def _call_once(self, prompt: str) -> str:
-        if self.model_family == "gemini":
-            if not self.gemini_client:
-                raise RuntimeError("GEMINI_API_KEY is not set.")
-            response = self.gemini_client.models.generate_content(model=self.model_id, contents=prompt)
-            return response.text
-        if self.model_family in {"claude", "claude-opus"}:
-            if not self.anthropic_client:
-                raise RuntimeError("ANTHROPIC_API_KEY is not set.")
-            message = self.anthropic_client.messages.create(
-                model=self.model_id,
-                max_tokens=16000,
-                messages=[{"role": "user", "content": prompt}],
-            )
-            return message.content[0].text
-        if self.model_family == "gpt4o":
-            if not self.openai_client:
-                raise RuntimeError("OPENAI_API_KEY is not set.")
-            response = self.openai_client.chat.completions.create(
-                model=self.model_id,
-                max_tokens=16000,
-                messages=[{"role": "user", "content": prompt}],
-            )
-            return response.choices[0].message.content
-        raise ValueError(f"Unsupported model family: {self.model_family}")
+        self.runtime = LLMRuntime()
 
     def call(self, prompt: str, retries: int = 3) -> str:
-        last_error: Optional[Exception] = None
-        for attempt in range(1, retries + 1):
-            try:
-                dbg(f"LLM call: family={self.model_family} model={self.model_id} attempt={attempt}/{retries}")
-                return self._call_once(prompt)
-            except Exception as exc:  # noqa: BLE001
-                last_error = exc
-                dbg(f"LLM call failed: attempt={attempt}/{retries} error={type(exc).__name__}: {exc}")
-                if attempt == retries:
-                    break
-                time.sleep(5 * attempt)
-        raise RuntimeError(f"LLM call failed after {retries} attempts: {last_error}") from last_error
+        try:
+            dbg(f"LLM call: family={self.model_family} model={self.model_id} retries={retries}")
+            response = self.runtime.call_text(
+                prompt,
+                model_id=self.model_id,
+                retries=retries,
+                timeout_seconds=300,
+                request_label="synthesis request",
+                progress_printer=dbg,
+                transient_wait_seconds=5,
+                timeout_wait_seconds=2,
+            )
+            return response.text
+        except LLMRuntimeError as exc:
+            raise RuntimeError(f"LLM call failed after {retries} attempts: {exc}") from exc
 
 
 class SynthesisStepError(RuntimeError):
@@ -642,6 +614,13 @@ def summarize_history(project_dir: Path, context: Dict[str, Any]) -> Dict[str, A
     history_source_paths = context.get("history_source_paths", [])
     summary_path = synthesis_paths(project_dir)["history_summary"]
     dbg(f"Summarize history: sources={len(history_source_paths)} -> {summary_path}")
+
+    # Skip re-summarization if a valid cached summary with recurring_failures_tagged exists.
+    cached = load_json_if_valid(summary_path)
+    if cached and cached.get("recurring_failures_tagged") is not None:
+        dbg(f"Summarize history: using cached summary with {len(cached['recurring_failures_tagged'])} tagged failures")
+        return cached
+
     if not history_source_paths:
         summary = {
             "_meta": {
@@ -839,6 +818,123 @@ def derive_brief(project_dir: Path, ledger: Dict[str, Any], context: Dict[str, A
     return brief
 
 
+def derive_project_domain(project_name: str) -> str:
+    # Cheap heuristic: collapse a project name to a coarse domain bucket so the
+    # provenance counter can compute "distinct domains" for Confirmed promotion.
+    # Anything not matched falls back to the first underscore-separated token.
+    name = project_name.lower()
+    if name.startswith("eu_") or "european" in name or "_eu_" in name:
+        return "eu_political_economy"
+    if name.startswith("central_station") or "startup" in name or "founder" in name:
+        return "startup_diligence"
+    if "tsmc" in name or "semiconductor" in name:
+        return "geopolitical_supply_chain"
+    if "ai_inference" in name or "inference_collapse" in name:
+        return "ai_market_structure"
+    if "climate" in name or "energy" in name:
+        return "climate_policy"
+    return name.split("_", 1)[0] or "misc"
+
+
+def aggregate_field_manual_corpus(project_dirs: List[Path]) -> Dict[str, Any]:
+    """Build a multi-project aggregated corpus for the field_manual renderer.
+
+    For each project, ensures a history_summary.json exists (running summarize_history
+    if needed), unions the recurring_failures_tagged arrays, and computes a provenance
+    table mapping each canonical family to the list of distinct projects (and domains)
+    in which it was observed.
+    """
+    projects_payload: List[Dict[str, Any]] = []
+    union: List[Dict[str, Any]] = []
+    family_to_projects: Dict[str, set] = {}
+    family_to_domains: Dict[str, set] = {}
+
+    for project_dir in project_dirs:
+        project_name = project_dir.name
+        domain = derive_project_domain(project_name)
+        history_summary_path = synthesis_paths(project_dir)["history_summary"]
+
+        if not history_summary_path.exists():
+            dbg(f"Aggregation: history_summary missing for {project_name}; running summarize_history")
+            tmp_context = sniff_context(project_dir, renderer_override="field_manual")
+            summarize_history(project_dir, tmp_context)
+
+        if not history_summary_path.exists():
+            dbg(f"Aggregation: history_summary still missing for {project_name}; skipping")
+            continue
+
+        try:
+            history_summary = json.loads(read_text(history_summary_path))
+        except Exception:  # noqa: BLE001
+            dbg(f"Aggregation: failed to parse history_summary for {project_name}; skipping")
+            continue
+
+        tagged = history_summary.get("recurring_failures_tagged") or []
+        projects_payload.append(
+            {
+                "project": project_name,
+                "domain": domain,
+                "recurring_failures": history_summary.get("recurring_failures") or [],
+                "recurring_failures_tagged": tagged,
+                "cross_run_patterns": history_summary.get("cross_run_patterns") or [],
+                "major_pivots": history_summary.get("major_pivots") or [],
+                "recurring_survivors": history_summary.get("recurring_survivors") or [],
+                "summary_scope": history_summary.get("summary_scope") or "",
+            }
+        )
+
+        for entry in tagged:
+            if not isinstance(entry, dict):
+                continue
+            family = (entry.get("canonical_family") or "").strip()
+            if not family:
+                continue
+            enriched = dict(entry)
+            enriched["project"] = project_name
+            enriched["domain"] = domain
+            union.append(enriched)
+            if family != "unmapped":
+                family_to_projects.setdefault(family, set()).add(project_name)
+                family_to_domains.setdefault(family, set()).add(domain)
+
+    provenance_table: Dict[str, Dict[str, Any]] = {}
+    for family, project_set in family_to_projects.items():
+        domains = family_to_domains.get(family, set())
+        if len(project_set) >= 3 and len(domains) >= 2:
+            tag = "Confirmed"
+        elif len(project_set) >= 2:
+            tag = "Probable"
+        else:
+            tag = "Tentative"
+        provenance_table[family] = {
+            "projects": sorted(project_set),
+            "domains": sorted(domains),
+            "project_count": len(project_set),
+            "domain_count": len(domains),
+            "provenance_tag": tag,
+        }
+
+    return {
+        "_meta": {
+            "mode": "multi_project_field_manual",
+            "project_count": len(projects_payload),
+        },
+        "projects": projects_payload,
+        "recurring_failures_tagged": union,
+        "provenance_table": provenance_table,
+    }
+
+
+def load_history_summary_for_context(context: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    history_summary_path = Path(context.get("history_summary_path", ""))
+    if history_summary_path and history_summary_path.exists():
+        try:
+            return json.loads(read_text(history_summary_path))
+        except Exception:  # noqa: BLE001
+            return None
+    return None
+
+
 def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict[str, Any]) -> str:
     if ACTIVE_LLM is None:
         raise RuntimeError("ACTIVE_LLM is not configured.")
@@ -847,19 +943,25 @@ def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict
     # Provide a stable "today" anchor to prevent the renderer from fabricating dates.
     run_date = time.strftime("%B %d, %Y")
     dbg(f"Render artifact: renderer_type={context['renderer_type']} run_date={run_date}")
-    prompt = "\n\n".join(
-        [
-            renderer_prompt,
-            f"Run date: {run_date}",
-            f"Audience: {context['audience']}",
-            f"Tone: {context['tone']}",
-            f"Project type: {context['project_type']}",
-            "Planning brief JSON:",
-            json.dumps(brief, indent=2, sort_keys=True),
-            "Insight ledger JSON:",
-            json.dumps(ledger, indent=2, sort_keys=True),
-        ]
-    )
+    history_summary = load_history_summary_for_context(context) or {}
+    aggregated_corpus = context.get("aggregated_corpus")
+    prompt_parts = [
+        renderer_prompt,
+        f"Run date: {run_date}",
+        f"Audience: {context['audience']}",
+        f"Tone: {context['tone']}",
+        f"Project type: {context['project_type']}",
+        "Planning brief JSON:",
+        json.dumps(brief, indent=2, sort_keys=True),
+        "Insight ledger JSON:",
+        json.dumps(ledger, indent=2, sort_keys=True),
+        "History summary JSON:",
+        json.dumps(history_summary, indent=2, sort_keys=True),
+    ]
+    if aggregated_corpus is not None:
+        prompt_parts.append("Aggregated corpus JSON (multi-project mode):")
+        prompt_parts.append(json.dumps(aggregated_corpus, indent=2, sort_keys=True))
+    prompt = "\n\n".join(prompt_parts)
     try:
         report = ACTIVE_LLM.call(prompt).strip()
     except Exception as exc:  # noqa: BLE001
@@ -910,18 +1012,24 @@ def qa_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], report: str, cont
         raise RuntimeError("ACTIVE_QA_LLM is not configured.")
     project_dir = Path(context["project_dir"])
     dbg(f"QA artifact: renderer_type={context['renderer_type']} threshold={ACTIVE_QA_THRESHOLD}")
-    prompt = "\n\n".join(
-        [
-            load_prompt(PROMPTS_DIR / "qa_artifact.md"),
-            f"Renderer type: {context['renderer_type']}",
-            "Planning brief JSON:",
-            json.dumps(brief, indent=2, sort_keys=True),
-            "Insight ledger JSON:",
-            json.dumps(ledger, indent=2, sort_keys=True),
-            "Rendered artifact:",
-            report,
-        ]
-    )
+    history_summary = load_history_summary_for_context(context) or {}
+    aggregated_corpus = context.get("aggregated_corpus")
+    qa_parts = [
+        load_prompt(PROMPTS_DIR / "qa_artifact.md"),
+        f"Renderer type: {context['renderer_type']}",
+        "Planning brief JSON:",
+        json.dumps(brief, indent=2, sort_keys=True),
+        "Insight ledger JSON:",
+        json.dumps(ledger, indent=2, sort_keys=True),
+        "History summary JSON:",
+        json.dumps(history_summary, indent=2, sort_keys=True),
+    ]
+    if aggregated_corpus is not None:
+        qa_parts.append("Aggregated corpus JSON (multi-project mode):")
+        qa_parts.append(json.dumps(aggregated_corpus, indent=2, sort_keys=True))
+    qa_parts.append("Rendered artifact:")
+    qa_parts.append(report)
+    prompt = "\n\n".join(qa_parts)
     qa_output_path = Path(context["output_paths"]["qa"])
     raw_response = ACTIVE_QA_LLM.call(prompt)
     qa = normalize_qa_payload(
@@ -1005,9 +1113,94 @@ def write_consolidated_report(project_dir: Path, memo_path: Path, appendix_path:
     return consolidated
 
 
+def run_multi_project_field_manual(project_names: List[str], args: argparse.Namespace) -> int:
+    """Multi-project aggregation path for the field_manual renderer.
+
+    Resolves each project, ensures each has a history_summary.json (running
+    summarize_history if not), aggregates the tagged failures into a unioned
+    payload with a provenance table, then runs render_artifact + qa_artifact
+    once with the aggregated payload attached to the context.
+
+    Output is written to research_areas/private/distribution/field_manual_auto.md
+    so the v0 hand-crafted artifact remains as the comparison baseline.
+    """
+    project_dirs = [resolve_project_dir(name) for name in project_names]
+    dbg(f"Multi-project field manual: projects={project_names}")
+
+    aggregated = aggregate_field_manual_corpus(project_dirs)
+    if not aggregated["projects"]:
+        print("No projects with usable history_summary.json found.", file=sys.stderr)
+        return 2
+
+    # Use the first project as the anchor for context resolution (audience/tone, output paths).
+    anchor_dir = project_dirs[0]
+    anchor_paths = synthesis_paths(anchor_dir)
+    anchor_paths["dir"].mkdir(parents=True, exist_ok=True)
+
+    context = sniff_context(
+        anchor_dir,
+        renderer_override="field_manual",
+        history_mode_override=args.history_mode,
+    )
+    context["aggregated_corpus"] = aggregated
+    context["multi_project"] = True
+    context["multi_project_names"] = project_names
+
+    # Persist the aggregated corpus alongside the anchor project for inspection.
+    aggregated_path = anchor_paths["dir"] / "field_manual_aggregated_corpus.json"
+    write_json(aggregated_path, aggregated)
+    dbg(f"Aggregated corpus written to {aggregated_path}")
+
+    # Build a minimal brief and ledger for the renderer call. The field manual
+    # renderer is instructed to use aggregated_corpus as the source of truth in
+    # multi-project mode, so the brief and ledger are intentionally lightweight.
+    brief = {
+        "_meta": {
+            "derived_from": "multi_project_aggregation",
+            "renderer_type": "field_manual",
+            "project_names": project_names,
+        },
+    }
+    ledger = {
+        "_meta": {
+            "derived_from": "multi_project_aggregation",
+            "project_count": len(aggregated["projects"]),
+        },
+    }
+
+    try:
+        report = render_artifact(ledger, brief, context)
+    except SynthesisStepError as exc:
+        print(f"Multi-project render failed: {exc}", file=sys.stderr)
+        return 2
+
+    qa = qa_artifact(ledger, brief, report, context)
+
+    distribution_path = REPO_ROOT / "research_areas" / "private" / "distribution" / "field_manual_auto.md"
+    if qa.get("faithful") and int(qa.get("score", 0)) >= ACTIVE_QA_THRESHOLD:
+        write_text(distribution_path, report)
+        print(f"Multi-project field manual: QA passed with score {qa.get('score')}.")
+        print(f"Written to: {distribution_path}")
+        print(f"Aggregated corpus: {aggregated_path}")
+        return 0
+
+    print(
+        f"Multi-project field manual: QA failed (score {qa.get('score')}, threshold {ACTIVE_QA_THRESHOLD}).",
+        file=sys.stderr,
+    )
+    print(f"Candidate report kept at: {context['output_paths']['candidate_report']}", file=sys.stderr)
+    print(f"Aggregated corpus: {aggregated_path}", file=sys.stderr)
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Synthesize a project into a ledger, report, and QA gate.")
-    parser.add_argument("--project", required=True, help="Project name under projects/ or a direct project path.")
+    project_group = parser.add_mutually_exclusive_group(required=True)
+    project_group.add_argument("--project", help="Project name under projects/ or a direct project path.")
+    project_group.add_argument(
+        "--projects",
+        help="Comma-separated list of project names for multi-project aggregation. Currently only supported with --renderer-type field_manual.",
+    )
     parser.add_argument(
         "--model",
         default="gemini",
@@ -1050,18 +1243,39 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    project_dir = resolve_project_dir(args.project)
-    base_paths = synthesis_paths(project_dir)
-    base_paths["dir"].mkdir(parents=True, exist_ok=True)
-
     global ACTIVE_LLM, ACTIVE_QA_LLM, ACTIVE_QA_THRESHOLD
     global DEBUG
     DEBUG = bool(args.debug)
-    dbg(f"Start: project={args.project} project_dir={project_dir}")
-    dbg(f"Models: model={args.model} qa_model={args.qa_model or args.model} qa_threshold={args.qa_threshold}")
     ACTIVE_LLM = LLMClient(args.model)
     ACTIVE_QA_LLM = LLMClient(args.qa_model or args.model)
     ACTIVE_QA_THRESHOLD = args.qa_threshold
+    dbg(f"Models: model={args.model} qa_model={args.qa_model or args.model} qa_threshold={args.qa_threshold}")
+
+    if args.projects:
+        if args.renderer_type != "field_manual":
+            print(
+                "--projects is currently only supported with --renderer-type field_manual.",
+                file=sys.stderr,
+            )
+            return 2
+        project_names = [p.strip() for p in args.projects.split(",") if p.strip()]
+        if not project_names:
+            print("--projects must contain at least one project name.", file=sys.stderr)
+            return 2
+        return run_multi_project_field_manual(project_names, args)
+
+    if args.renderer_type == "field_manual":
+        print(
+            "--renderer-type field_manual requires --projects (multi-project aggregation). "
+            "Use: --projects p1,p2,p3 --renderer-type field_manual",
+            file=sys.stderr,
+        )
+        return 2
+
+    project_dir = resolve_project_dir(args.project)
+    base_paths = synthesis_paths(project_dir)
+    base_paths["dir"].mkdir(parents=True, exist_ok=True)
+    dbg(f"Start: project={args.project} project_dir={project_dir}")
 
     try:
         if args.pack == "founder":

@@ -67,6 +67,31 @@ If Renderer type is "decision_brief":
 - whether it preserves the hardest conclusion and most likely false belief if present in the ledger
 - whether it avoids introducing new claims or generic advice
 
+If Renderer type is "field_manual":
+- The field manual is a META-ARTIFACT that translates structural failure families surfaced by the source corpus into boardroom-language pattern entries. It is NOT supposed to preserve the planning brief's opening judgment, decision rule, sequence, or main experiment — those are project-specific findings, not failure-pattern findings. Do not penalize the artifact for "omitting" them.
+- Evaluate instead:
+  - whether every project name appearing in any "Provenance" line literally appears in the history summary's `_meta.project_name`, the history summary's `_meta.source_paths` (project name is the path segment after `/projects/`), or the planning brief. Any invented project name is a fatal `unsupported_addition`.
+  - whether each entry is grounded in a specific item from the history summary's `recurring_failures`, `cross_run_patterns`, `major_pivots`, or `recurring_survivors` arrays. Generic logical-fallacy descriptions with no traceable link to the input corpus are `generic_advice` and should be penalized hard.
+  - whether the provenance tags are calibrated correctly: if only one distinct project name appears in the inputs, every entry must be marked "Tentative." "Probable" requires 2+ projects in the inputs; "Confirmed" requires 3+ projects across 2+ domains in the inputs. Over-claiming provenance is a `distortion`.
+  - whether the boardroom names used match the canonical translation key in the field manual renderer template (Promissory Note, Coin-Toss Metric, Elephant-in-the-Room Pass, Ghost Metric, Defining Yourself Into Victory, Wrong Yardstick, Misfile, False Either/Or, Untestable Forecast). Inventing new boardroom names without an "Unmapped Patterns" section is a `distortion`.
+  - whether the artifact avoids mentioning the engine, scores, debate logs, simulations, JSON, or other internal-process language.
+  - whether the "Boardroom Translation" quotes are flagged as hypothetical (e.g., "Imagine a CFO saying...") rather than presented as real attributions.
+  - whether the entry count honestly reflects what the corpus supports — fewer well-grounded entries is better than 8-9 hallucinated ones.
+- Do NOT apply the founder_memo / research_note checks below to a field_manual artifact.
+
+If Renderer type is "teaching_note":
+- The teaching note is a SINGLE-PROJECT case-method instructor lesson plan. It is NOT supposed to preserve the planning brief's opening judgment, decision rule, sequence, or main experiment — those are project findings, not the artifact's purpose. The artifact's purpose is to give an instructor a per-trap script for leading a live discussion about THIS one specific project. Do not penalize it for omitting standard memo fields.
+- Evaluate instead:
+  - whether the project name used in the framing paragraph and any references literally appears in the history summary's `_meta.project_name`, the history summary's `_meta.source_paths` (project name is the path segment after `/projects/`), or the planning brief. Any invented project name is a fatal `unsupported_addition`.
+  - whether every numbered entry corresponds 1:1 to an item in the history summary's `recurring_failures_tagged` array. If `recurring_failures_tagged` has N entries, the teaching note must have at most N entries (plus any unmapped entries in a separate "Unmapped Risks" section). Inventing entries that do not trace back to a tagged failure is a fatal `unsupported_addition`.
+  - whether each entry's "The Real Quote From This Case" blockquote is the actual `evidence_quote` from the matching `recurring_failures_tagged` entry (or a close paraphrase). Fabricated quotes are a fatal `distortion`.
+  - whether each entry uses one of the canonical 9 boardroom names (Promissory Note, Coin-Toss Metric, Elephant-in-the-Room Pass, Ghost Metric, Defining Yourself Into Victory, Wrong Yardstick, Misfile, False Either/Or, Untestable Forecast). Tagged failures with `canonical_family: "unmapped"` must be routed to a final "Unmapped Risks" section instead of being coerced into the canonical 9 — coercion is a `distortion`. Inventing new boardroom names is a `distortion`.
+  - whether the "Student's Likely Conclusion" reads like a plausible misreading of THIS project's actual content rather than a generic strawman. If the conclusion could be lifted into any other case unchanged, that is `generic_advice`.
+  - whether the "Killer Question" is specific to the case content (references the student's actual conclusion, the project's actual evidence, or the project's actual framing). Generic "what's your evidence?" or "how would you disprove this?" questions that could be asked of any argument are `generic_advice`.
+  - whether the "Instructor's Follow-Up" references actual content from this project (what the project's analysis ultimately concluded, where the genuine load-bearing argument lives, what part of the case the student should re-read). Abstract case-method advice with no project-specific anchor is `generic_advice`.
+  - whether the artifact avoids mentioning the engine, ZTARE, scores, debate logs, simulations, JSON, the firing squad, the meta-judge, or any other internal-process language. The instructor reading this should not need to know how the artifact was generated.
+- Do NOT apply the founder_memo / research_note checks to a teaching_note artifact.
+
 If Renderer type is "quantitative_appendix":
 - evaluate against the appendix planning brief fields and the appendix artifact contract, not the founder-memo contract.
 - whether the artifact includes:
