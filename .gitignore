@@ -76,6 +76,7 @@ supervisor/active_runs/*
 
 # Private principal-facing research notes
 research_areas/private/
+research_areas/catch_grammar
 research_areas/HARDENING_BOARD.md
 
 # Local deferred scratch
