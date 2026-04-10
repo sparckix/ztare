@@ -42,22 +42,19 @@ For domain projects, the validator now writes explicit `latest_*` and `champion_
 
 ---
 
-## Current Critical Path
+## Repository Scope
 
-There is no active kernel critical-path seed open right now.
+The public repo currently has three active surfaces:
 
-The most recent completed critical-path seed/program was:
+1. the adversarial validator and workspace pipeline
+2. the synthesis / distribution pipeline
+3. the work-tracking and hardening stack
 
-- `research_areas/seeds/active/stage2_derivation_seam.md`
-- closed via `stage2_derivation_seam_hardening`
+Useful entry points:
 
-That seam is complete. The next kernel hardening packet has not yet been formally opened.
-
-The supervisor/control-plane entry point is:
-
+- `docs/WORKFLOW.md`
+- `docs/ARCHITECTURE.md`
 - `supervisor/USER_MANUAL.md`
-- `supervisor/agent_wrappers.json`
-- `supervisor/model_pricing.json`
 
 ---
 
@@ -216,10 +213,9 @@ export GEMINI_API_KEY=your_key_here
 make help
 
 # Run the adversarial loop on an existing domain
-python -m src.ztare.validator.autoresearch_loop --rubric epistemic_engine_v3_evolved --project epistemic_engine_v3
-
-# Shortcut list
-make help
+python -m src.ztare.validator.autoresearch_loop \
+  --project epistemic_engine_v3 \
+  --rubric epistemic_engine_v3_evolved
 
 # Run the detectability baseline (isolated snippets)
 python -m src.ztare.experiments.baseline_experiment
@@ -234,11 +230,11 @@ python -m src.ztare.experiments.cognitive_camouflage_experiment
 
 ```bash
 # 1. Create a project directory
-mkdir projects/your_domain
+mkdir -p projects/your_domain
 
 # 2. Add a charter unless the project is provably narrow
 python -m src.ztare.common.scaffold_project_charter \
-  --project projects/your_domain \
+  --project your_domain \
   --mode broad
 
 # 3. Seed initial evidence
@@ -263,12 +259,36 @@ raw/ -> workspace/ -> compiled_evidence.txt -> evidence.txt -> validator
 If the validator emits typed evidence gaps, they are written to:
 
 - `projects/<project>/workspace/latest_evidence_gaps.json`
+- `projects/<project>/workspace/champion_evidence_gaps.json`
 - `projects/<project>/workspace/evidence_gap_brief.md` (after `compile_evidence.py`)
+- `projects/<project>/workspace/latest_compile_failure.json` (only if `compile_evidence.py` fails closed)
 
 Important:
 
 - the active score regime now fingerprints the contents of `evidence.txt`
 - once `compiled_evidence.txt` is promoted into `evidence.txt`, the next run automatically rebaselines under the richer evidence boundary
+- if the compiler hits a provider outage, it exits `1`, writes `latest_compile_failure.json`, and leaves the active evidence frontier unchanged
+
+Charter note:
+
+- if the project contains any forward-looking claim, declare a `Forecast Type` in `project_charter.md`
+- use `directional_forecast` for bounded tilt claims
+- use `probabilistic_forecast` only when the project is explicitly trying to justify a `%` forecast
+
+## Provider Runtime
+
+ZTARE now uses a shared provider/runtime layer for:
+
+- model-family to model-id resolution
+- retry and transient-error handling
+- token-usage extraction across Gemini / Anthropic / OpenAI
+- pricing-name normalization for cost estimation
+
+Cost estimates are driven by:
+
+- `supervisor/model_pricing.json`
+
+If pricing is enabled there, validator runs can show estimated mutator/judge cost again even when provider responses return versioned model names such as `models/gemini-2.5-flash` or `claude-sonnet-4-6-20260401`.
 
 ## Paper 1 Legacy Runs
 
@@ -391,10 +411,28 @@ Paper 2 adds evaluator-hardening benchmarks:
 - gates plus primitives (`C`)
 - crux-first ablation (`C2`)
 
-The current open work is not “does gaming exist?” but:
+The current public work is not “does gaming exist?” but:
 - how stable semantic gates can become
 - how far evaluator hardening generalizes across exploit families
 - how much benchmark evidence is needed beyond the audited historical core
+
+---
+
+## Collaboration
+
+The most useful outside engagement for this repo is not generic feedback. It is one of:
+
+- independent replication on new domains
+- adversarial review of evaluator-hardening claims
+- careful criticism of the evidence and forecast workflow
+- collaboration on synthesis, distribution, or benchmark design
+
+Best starting points:
+
+- `docs/ARCHITECTURE.md`
+- `docs/WORKFLOW.md`
+
+If you are reaching out about a specific claim, benchmark, or failure mode, include the exact project, rubric, and artifact path.
 
 ---
 

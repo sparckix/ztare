@@ -160,7 +160,24 @@ Use `project_charter.md` when:
 The charter is advisory in prose and deterministic in anchors:
 
 - `Core Question` / `Out Of Scope` / `End States` guide the judge
+- `Forecast Type` tells the system whether bounded tilt or `%` claims are even in-bounds
 - `Anchor Proxies` drive mathematical drift detection
+
+Forecast typing rule:
+
+- use `directional_forecast` when the project may include a bounded forward-looking tilt but is not a calibrated `%` forecast project
+- use `probabilistic_forecast` only when the project explicitly targets a point probability for a defined event and horizon
+- do not let the existence of a probability DAG silently convert a directional project into a probabilistic one
+- directional projects that sneak in unsupported `%` claims are now intended to be capped by the scorer, not merely discouraged in the prompt
+
+Stagnation pivoting:
+
+- at `stagnation_count >= 3`, the loop now injects a named pivot profile rather than a silent monolithic prompt
+- profiles currently include:
+  - `legacy_generic`
+  - `bounded_discriminator`
+  - `kernel_bounded`
+- stdout reports which profile and heuristic modules were injected
 
 ### Artifact roles
 
@@ -238,6 +255,14 @@ Default outputs:
 - `projects/<project>/compiled_evidence_packet.json`
 - `projects/<project>/compiled_evidence_provenance.json`
 - `projects/<project>/workspace/evidence_gap_brief.md` (if champion/latest gap artifacts exist)
+- `projects/<project>/workspace/latest_compile_failure.json` (only on fail-closed compile errors)
+
+If the compiler hits a provider outage or other compile-time exception, it now fails closed:
+
+- exit code is `1`
+- no Python traceback is required for the operator path
+- a structured failure artifact is written to `workspace/latest_compile_failure.json`
+- recovery is: retry later or switch model, then rerun `compile_evidence.py`
 
 ### Step 4: Promote The Snapshot For The Current Validator
 
@@ -273,6 +298,19 @@ Legacy Paper 1 shortcuts:
 make paper1-tsmc-legacy
 make paper1-epistemic-legacy
 ```
+
+Stagnation handling is now explicit:
+
+- on non-V4 projects, the generic topological-pivot prompt is injected only once `stagnation_count >= 3`
+- at `stagnation_count >= 4`, the loop also purges visible axiom context and forces a blank-slate reset
+- on V4-family projects, the generic pivot is intentionally suppressed; `stagnation_count >= 3` injects a bounded mutation override instead of a free-form pivot
+- these modes are now announced in loop stdout so the operator can see when the prompt contract changes
+
+## Runtime Notes
+
+- provider/model resolution, retry handling, and usage extraction now come from `src/ztare/common/llm_runtime.py`
+- cost estimates depend on `supervisor/model_pricing.json`
+- versioned provider model names are normalized before pricing lookup, so telemetry can still price runs when providers return names like `models/gemini-2.5-flash`
 
 V4 kernel meta-runner shell shortcuts:
 

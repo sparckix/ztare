@@ -53,6 +53,7 @@ The validator may, however, emit typed evidence-boundary diagnostics back into `
 - `workspace/latest_evidence_gaps.json`
 - `workspace/champion_evidence_gaps.json`
 - `workspace/evidence_gap_brief.md` (written by the compiler when gap artifacts exist)
+- `workspace/latest_compile_failure.json` (written by the compiler only when a compile step fails closed)
 
 This is a human-gated feedback loop, not autonomous retrieval. The operator still decides what enters `raw/` and what gets promoted into active `evidence.txt`.
 
@@ -64,6 +65,22 @@ The validator/output layer also distinguishes between:
   - the promoted best candidate for the active regime
 
 This separation is load-bearing because the most recent evaluated attempt may fail while the promoted champion remains valid.
+
+### Provider Runtime
+
+Provider-specific API plumbing is now centralized in:
+
+- `src/ztare/common/llm_runtime.py`
+
+That layer owns:
+
+- model-family alias resolution
+- provider client initialization
+- timeout / retry / transient-error policy
+- usage extraction into a common token/cost shape
+- pricing-name normalization before cost estimation
+
+The point is to stop landing the same provider fix independently in validator, compiler, synthesis, and workspace flows.
 
 ### Control Plane
 
@@ -142,7 +159,7 @@ The same separation pattern recurs across layers, but the names should stay dist
 1. **Evidence substrate**
    - `raw/`, `workspace/`, compiled evidence
 2. **Project charter**
-   - `project_charter.md`, consumed as scope anchor and deterministic drift surface
+   - `project_charter.md`, consumed as scope anchor, forecast-type contract, and deterministic drift surface
 3. **ZTARE validator**
    - the adversarial domain-validation loop over bounded evidence
 4. **V4 kernel**
@@ -184,8 +201,10 @@ These are load-bearing.
 6. The canonical machine-readable artifact for synthesis is `ledger.json`.
 7. The knowledge workspace is external infrastructure, not part of the validator proof.
 8. Broad projects should declare a `project_charter.md`; drift control is not left to prose judgment alone.
-9. Score comparability breaks when active `evidence.txt` changes; the score regime now fingerprints the evidence boundary.
-10. Operator-facing artifacts must distinguish the promoted champion from the latest failed or exploratory candidate.
+9. Forecast projects must distinguish bounded directional forecasts from probabilistic `%` forecasts at the charter level.
+10. Score comparability breaks when active `evidence.txt` changes; the score regime now fingerprints the evidence boundary.
+11. Operator-facing artifacts must distinguish the promoted champion from the latest failed or exploratory candidate.
+12. Stagnation pivots should be selected as reusable heuristic profiles, not left as one monolithic prompt or a binary on/off switch.
 
 ---
 
@@ -376,6 +395,12 @@ evidence.txt + thesis.md + rubric
   -> best surviving iteration is retained
   -> stagnation triggers pivots / escalations
 ```
+
+The pivot policy is deliberately asymmetric:
+
+- non-V4 projects can enter a generic topological-pivot prompt once `stagnation_count >= 3`
+- V4-family projects suppress that generic pivot and substitute a bounded mutation override tied to the active kernel stage
+- once a non-V4 run reaches `stagnation_count >= 4`, the loop can also purge visible axiom context to force a stronger blank-slate reset
 
 ### Invariants Inside The Core
 
