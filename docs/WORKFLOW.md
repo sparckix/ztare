@@ -7,7 +7,7 @@ This document describes the day-to-day operating loop for projects that use:
 - the stateless ZTARE validator
 - the downstream synthesis pipeline
 
-It does **not** replace `README.md`. It is the operational workflow reference.
+It does **not** replace `README.md`. This is the operator-facing workflow reference.
 
 ---
 
@@ -198,6 +198,9 @@ For domain projects, expect:
 - `projects/<project>/champion_probability_dag.json`
 - `projects/<project>/workspace/latest_evidence_gaps.json`
 - `projects/<project>/workspace/champion_evidence_gaps.json`
+- `projects/<project>/workspace/latest_constraint_proposals.json`
+- `projects/<project>/workspace/derived_constraints.json`
+- `projects/<project>/workspace/derived_constraints_brief.md`
 
 If `champion_*` artifacts are missing or stale relative to the project's saved-best history marker, the loop now reconstructs them from history before trusting them as the active baseline.
 
@@ -234,6 +237,8 @@ The minimum useful files to inspect are:
 - `projects/<project>/workspace/candidate_claims.md`
 - `projects/<project>/workspace/champion_evidence_gaps.json` (preferred, if present)
 - `projects/<project>/workspace/latest_evidence_gaps.json` (if present)
+- `projects/<project>/workspace/derived_constraints.json` (confirmed structural limits)
+- `projects/<project>/workspace/latest_constraint_proposals.json` (fresh candidate constraints from the latest run)
 - `projects/<project>/workspace/evidence_gap_brief.md` (after compile, if present)
 
 Human job here:
@@ -242,6 +247,7 @@ Human job here:
 - make sure important unknowns were not smoothed away
 - decide what claim or thesis is worth testing next
 - if typed evidence gaps exist, decide whether the next bottleneck is evidence collection rather than more blind iterations
+- if confirmed derived constraints exist, treat them as read-only structural limits rather than new evidence
 
 ### Step 3: Compile Evidence
 
@@ -309,8 +315,10 @@ Stagnation handling is now explicit:
 ## Runtime Notes
 
 - provider/model resolution, retry handling, and usage extraction now come from `src/ztare/common/llm_runtime.py`
+- persistent transient provider failures can trigger automatic cross-provider failover instead of killing the run immediately
 - cost estimates depend on `supervisor/model_pricing.json`
 - versioned provider model names are normalized before pricing lookup, so telemetry can still price runs when providers return names like `models/gemini-2.5-flash`
+- if a judge call falls back to a different effective model, the scoring regime fingerprint changes on purpose so mixed-provider evaluations do not masquerade as directly comparable
 
 V4 kernel meta-runner shell shortcuts:
 

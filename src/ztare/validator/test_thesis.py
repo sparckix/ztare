@@ -28,6 +28,10 @@ from src.ztare.validator.proxy_signature import (
     extract_anchor_proxies_from_charter,
     extract_forecast_type_from_charter,
 )
+from src.ztare.validator.derived_constraints import (
+    render_confirmed_constraints_prompt_section,
+    sanitize_constraint_proposals,
+)
 from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
 from src.ztare.validator.v4_family import is_v4_family_project
 
@@ -100,6 +104,8 @@ JUDGE_USAGE = {
     "estimated_cost_usd": 0.0,
     "cost_known": False,
 }
+JUDGE_EFFECTIVE_MODELS_USED: set[str] = set()
+JUDGE_FALLBACK_EVENTS: list[dict[str, str]] = []
 
 
 def _load_v4_stage_index() -> int | None:
@@ -120,6 +126,8 @@ WORKSPACE_DIR = f"{PROJECT_DIR}/workspace"
 LATEST_EVAL_RESULTS_PATH = f"{PROJECT_DIR}/latest_eval_results.json"
 LATEST_PROBABILITY_DAG_PATH = f"{PROJECT_DIR}/latest_probability_dag.json"
 LATEST_EVIDENCE_GAPS_PATH = f"{WORKSPACE_DIR}/latest_evidence_gaps.json"
+LATEST_CONSTRAINT_PROPOSALS_PATH = f"{WORKSPACE_DIR}/latest_constraint_proposals.json"
+DERIVED_CONSTRAINTS_PATH = f"{WORKSPACE_DIR}/derived_constraints.json"
 MAIN_RUBRIC_PATH = str(RUBRICS_DIR / f"{args.rubric}.json")
 DYNAMIC_RUBRIC_PATH = str(RUBRICS_DIR / f"dynamic_{args.project}.json")
 SCORE_REGIME_VERSION_MAP = {
@@ -404,6 +412,54 @@ def attach_evidence_gap_metadata(evaluation: dict) -> dict:
     evaluation["score_contract"] = existing
     return evaluation
 
+
+def persist_constraint_proposal_artifact(
+    evaluation: dict,
+    *,
+    artifact_role: str = "latest",
+    output_path: Path | None = None,
+) -> None:
+    workspace_dir = Path(WORKSPACE_DIR)
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    proposal_path = output_path or Path(LATEST_CONSTRAINT_PROPOSALS_PATH)
+    proposals = sanitize_constraint_proposals(evaluation.get("derived_constraints"))
+    fingerprint = _score_regime_fingerprint_from_evaluation(evaluation)
+    payload = {
+        "project": args.project,
+        "judge_model": JUDGE_MODEL_ID,
+        "generated_on": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "artifact_role": artifact_role,
+        "describes_baseline": artifact_role,
+        "score": evaluation.get("score"),
+        "weakest_point": evaluation.get("weakest_point", ""),
+        "score_regime_fingerprint": fingerprint,
+        "derived_constraints": proposals,
+    }
+    proposal_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def attach_constraint_proposal_metadata(evaluation: dict) -> dict:
+    proposals = sanitize_constraint_proposals(evaluation.get("derived_constraints"))
+    existing = evaluation.get("score_contract")
+    if not isinstance(existing, dict):
+        existing = {}
+    existing.update(
+        {
+            "derived_constraint_proposal_count": len(proposals),
+            "derived_constraint_failure_families": sorted(
+                {str(item.get("failure_family", "other")) for item in proposals}
+            ),
+            "derived_constraint_targets": [
+                str(item.get("applies_to", ""))
+                for item in proposals
+                if item.get("applies_to")
+            ],
+        }
+    )
+    evaluation["derived_constraints"] = proposals
+    evaluation["score_contract"] = existing
+    return evaluation
+
 def _accumulate_judge_usage(
     *,
     model_name,
@@ -455,6 +511,16 @@ def safe_generate(prompt, config=None, model_id=None):
         transient_wait_seconds=20,
         timeout_wait_seconds=15,
     )
+    effective_model_name = response.usage.model_name or response.effective_model_id or model_id
+    canonical_effective_model = pricing_model_name(effective_model_name) or effective_model_name
+    JUDGE_EFFECTIVE_MODELS_USED.add(canonical_effective_model)
+    if response.fallback_from_model_id:
+        fallback_event = {
+            "from": response.fallback_from_model_id,
+            "to": canonical_effective_model,
+        }
+        if fallback_event not in JUDGE_FALLBACK_EVENTS:
+            JUDGE_FALLBACK_EVENTS.append(fallback_event)
     _accumulate_judge_usage(
         model_name=response.usage.model_name or model_id,
         input_tokens=response.usage.input_tokens,
@@ -728,6 +794,9 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
     - Use failure precedents only to pressure-test the crux; do not let them redefine the crux or soften a claim-test mismatch.
     - If `test_targets_claim` is false or `mismatch_risk` is high, scrutinize selective rigor, halo validation, suite omission, and tautological verification before granting credit for passing tests.
 """
+    confirmed_constraint_context = render_confirmed_constraints_prompt_section(
+        Path(DERIVED_CONSTRAINTS_PATH)
+    )
     prompt = f"""
     {main_rubric_data["persona"]}
     MANDATE: You are the Meta-Judge (Bar-Raiser). Synthesize the attacks and score the thesis.
@@ -747,6 +816,9 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
 
     --- PROJECT CHARTER ---
     {project_charter_content or "No project charter provided for this project."}
+
+    --- CONFIRMED DERIVED CONSTRAINTS ---
+    {confirmed_constraint_context or "No confirmed derived constraints recorded yet."}
 
     PROJECT DRIFT CHECK (MANDATORY):
     If a project charter is present, evaluate whether the thesis still answers the charter's Core Question and stays inside its intended scope.
@@ -919,6 +991,23 @@ Evidence-gap rule:
 - regardless of producer, `fetch_query` must be adversarially phrased toward testing the claim, not confirmatory phrasing like "evidence supporting X"
 - if no evidence-solvable gap exists, return an empty array
 
+You must also output a structured derived-constraint proposal lane:
+- `derived_constraints`: array of objects with:
+  - `constraint`: short structural limit future theses in this project should respect
+  - `applies_to`: short string naming the claim family, mechanism, or variable this constrains
+  - `failure_family`: short snake_case family tag for the failure pattern that produced the constraint
+  - `severity`: one of `blocking|degrading|enriching`
+  - `producer`: one of `meta_judge|firing_squad|adjudicator`
+  - `rationale`: brief explanation grounded in evaluator-side critique
+  - `non_applicability_condition`: short clause naming when this constraint would genuinely not apply
+
+Derived-constraint rule:
+- include only reusable structural limits discovered from the critique/evaluation side
+- do NOT restate primary evidence facts, project charter text, or one-off tactical advice
+- prefer compact rules like "X must be separated from Y" or "A cannot be treated as proof of B"
+- if no reusable structural limit was surfaced, return an empty array
+- treat previously confirmed constraints as read-only context; do not rewrite them unless the current critique clearly narrows or supersedes them
+
 Backward-compatibility rule:
 - still provide `proof_is_self_referential`
 - but populate `self_reference_evidence` carefully, because Python will derive the final semantic gate from that structured record
@@ -1022,6 +1111,17 @@ Required fields:
       "adversarial_direction": <boolean>
     }
   ],
+  "derived_constraints": [
+    {
+      "constraint": <string>,
+      "applies_to": <string>,
+      "failure_family": <string>,
+      "severity": <string>,
+      "producer": <string>,
+      "rationale": <string>,
+      "non_applicability_condition": <string>
+    }
+  ],
   "logic_gaps": [<string>, ...],
   "debate_summary": <string>,
   "adversarial_alignment": <string>,
@@ -1052,6 +1152,17 @@ Required fields:
       "producer_rationale": <string>,
       "fetch_query": <string>,
       "adversarial_direction": <boolean>
+    }
+  ],
+  "derived_constraints": [
+    {
+      "constraint": <string>,
+      "applies_to": <string>,
+      "failure_family": <string>,
+      "severity": <string>,
+      "producer": <string>,
+      "rationale": <string>,
+      "non_applicability_condition": <string>
     }
   ],
   "logic_gaps": [<string>, ...],
@@ -1134,6 +1245,30 @@ Required fields:
                     "items": {"type": "STRING"},
                 },
                 "evidence_gaps": _evidence_gap_response_schema(),
+                "derived_constraints": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "constraint": {"type": "STRING"},
+                            "applies_to": {"type": "STRING"},
+                            "failure_family": {"type": "STRING"},
+                            "severity": {"type": "STRING"},
+                            "producer": {"type": "STRING"},
+                            "rationale": {"type": "STRING"},
+                            "non_applicability_condition": {"type": "STRING"},
+                        },
+                        "required": [
+                            "constraint",
+                            "applies_to",
+                            "failure_family",
+                            "severity",
+                            "producer",
+                            "rationale",
+                            "non_applicability_condition",
+                        ],
+                    },
+                },
                 "logic_gaps": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "debate_summary": {"type": "STRING"},
                 "adversarial_alignment": {"type": "STRING"},
@@ -1201,6 +1336,7 @@ Required fields:
                 "criteria_failed",
                 "weakest_point",
                 "evidence_gaps",
+                "derived_constraints",
                 "logic_gaps",
                 "verified_axioms",
                 "retired_axioms_approved",
@@ -1224,6 +1360,30 @@ Required fields:
                     "description": "List of proposed axiom retirements that the Judge agrees are valid for the new domain.",
                 },
                 "evidence_gaps": _evidence_gap_response_schema(),
+                "derived_constraints": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "constraint": {"type": "STRING"},
+                            "applies_to": {"type": "STRING"},
+                            "failure_family": {"type": "STRING"},
+                            "severity": {"type": "STRING"},
+                            "producer": {"type": "STRING"},
+                            "rationale": {"type": "STRING"},
+                            "non_applicability_condition": {"type": "STRING"},
+                        },
+                        "required": [
+                            "constraint",
+                            "applies_to",
+                            "failure_family",
+                            "severity",
+                            "producer",
+                            "rationale",
+                            "non_applicability_condition",
+                        ],
+                    },
+                },
                 "logic_gaps": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "debate_summary": {"type": "STRING"},
                 "adversarial_alignment": {
@@ -1271,6 +1431,7 @@ Required fields:
                 "score",
                 "weakest_point",
                 "evidence_gaps",
+                "derived_constraints",
                 "logic_gaps",
                 "verified_axioms",
                 "retired_axioms_approved",
@@ -1391,16 +1552,21 @@ def _evidence_fingerprint(path: str) -> str:
 
 def _score_regime_payload(main_rubric_data):
     mode = "deterministic_gates" if args.deterministic_score_gates else "raw_llm_score"
+    effective_judge_models = sorted(JUDGE_EFFECTIVE_MODELS_USED) or [JUDGE_MODEL_ID]
     return {
         "mode": mode,
         "version": SCORE_REGIME_VERSION_MAP[mode],
         "rubric_name": args.rubric,
         "rubric_fingerprint": _rubric_fingerprint(main_rubric_data),
         "judge_model": JUDGE_MODEL_ID,
+        "requested_judge_model": JUDGE_MODEL_ID,
+        "effective_judge_models": effective_judge_models,
+        "judge_fallback_used": bool(JUDGE_FALLBACK_EVENTS),
         "dynamic_committee": bool(args.dynamic),
         "primitive_support": bool(args.use_primitives),
         "evidence_path": EVIDENCE_PATH,
         "evidence_fingerprint": _evidence_fingerprint(EVIDENCE_PATH),
+        "project_forecast_type": project_charter_forecast_type or "unspecified",
     }
 
 
@@ -1421,12 +1587,16 @@ def attach_score_regime_metadata(evaluation, main_rubric_data, test_suite_status
             "regime": regime,
             "regime_fingerprint": regime_fingerprint,
             "judge_model": regime["judge_model"],
+            "requested_judge_model": regime["requested_judge_model"],
+            "effective_judge_models": regime["effective_judge_models"],
+            "judge_fallback_used": regime["judge_fallback_used"],
             "rubric_name": regime["rubric_name"],
             "rubric_fingerprint": regime["rubric_fingerprint"],
             "dynamic_committee": regime["dynamic_committee"],
             "primitive_support": regime["primitive_support"],
             "evidence_path": regime["evidence_path"],
             "evidence_fingerprint": regime["evidence_fingerprint"],
+            "project_forecast_type": regime["project_forecast_type"],
             "test_suite_status": existing.get("test_suite_status", test_suite_status),
         }
     )
@@ -1706,6 +1876,9 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
     }
     evaluation["unsupported_point_probability_claim"] = unsupported_point_probability_claim
     evaluation["forecast_overclaim_rationale"] = forecast_overclaim_rationale
+    evaluation["project_forecast_type"] = project_forecast_type
+    evaluation["effective_judge_models"] = sorted(JUDGE_EFFECTIVE_MODELS_USED) or [JUDGE_MODEL_ID]
+    evaluation["judge_fallback_used"] = bool(JUDGE_FALLBACK_EVENTS)
     evaluation["score"] = final_score
     if hard_fail_reasons:
         strongest_reason = hard_fail_reasons[0]
@@ -1825,8 +1998,10 @@ if __name__ == "__main__":
             evaluation = apply_semantic_gate_stabilization(evaluation)
             evaluation = finalize_deterministic_score(evaluation, main_rubric, test_suite_status)
         evaluation = attach_evidence_gap_metadata(evaluation)
+        evaluation = attach_constraint_proposal_metadata(evaluation)
         evaluation = attach_score_regime_metadata(evaluation, main_rubric, test_suite_status)
         persist_evidence_gap_artifact(evaluation)
+        persist_constraint_proposal_artifact(evaluation)
         log.write(f"# Final Score: {evaluation['score']}\n")
         log.write(f"**Weakest Point:** {evaluation['weakest_point']}\n")
         log.write(f"**Rationale:** {evaluation.get('debate_summary', 'N/A')}\n")

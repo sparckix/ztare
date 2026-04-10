@@ -1,6 +1,13 @@
 # ZTARE Architecture
 
-This architecture can look overbuilt at first glance. That is a fair reaction. The working bet in this repo is that the extra structure is justified only if it buys clearer separation between generation, evaluation, and promotion under adversarial pressure.
+ZTARE separates four things that are often collapsed in ordinary LLM workflows:
+
+- source accumulation
+- bounded evidence compilation
+- stateless adversarial validation
+- downstream synthesis / reporting
+
+The architecture is only worth its complexity if those separations stay explicit under adversarial pressure.
 
 ## 1. System Thesis
 
@@ -52,10 +59,22 @@ The validator may, however, emit typed evidence-boundary diagnostics back into `
 
 - `workspace/latest_evidence_gaps.json`
 - `workspace/champion_evidence_gaps.json`
+- `workspace/latest_constraint_proposals.json`
+- `workspace/derived_constraints.json`
+- `workspace/derived_constraints_brief.md`
 - `workspace/evidence_gap_brief.md` (written by the compiler when gap artifacts exist)
 - `workspace/latest_compile_failure.json` (written by the compiler only when a compile step fails closed)
 
 This is a human-gated feedback loop, not autonomous retrieval. The operator still decides what enters `raw/` and what gets promoted into active `evidence.txt`.
+
+Derived constraints are intentionally separate from primary evidence:
+
+- `evidence.txt`
+  - externally sourced facts and compiled evidence boundary
+- `derived_constraints.json`
+  - adversarially surfaced structural limits confirmed across multiple runs
+
+The first expands the evidence boundary. The second narrows the allowable thesis space inside that boundary.
 
 The validator/output layer also distinguishes between:
 
@@ -77,6 +96,7 @@ That layer owns:
 - model-family alias resolution
 - provider client initialization
 - timeout / retry / transient-error policy
+- cross-provider failover policy for persistent transient outages
 - usage extraction into a common token/cost shape
 - pricing-name normalization before cost estimation
 

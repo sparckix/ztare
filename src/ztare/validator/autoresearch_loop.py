@@ -34,6 +34,13 @@ from src.ztare.validator.information_yield import (
     evaluate_information_yield,
 )
 from src.ztare.validator.pivot_heuristics import select_pivot_profile
+from src.ztare.catch_grammar.rule_3_profile_check import check_profile_contains
+from src.ztare.validator.derived_constraints import (
+    render_confirmed_constraints_prompt_section,
+    sanitize_constraint_proposals,
+    update_derived_constraints_ledger,
+    write_derived_constraints_brief,
+)
 from src.ztare.validator.proxy_signature import (
     extract_anchor_proxies_from_charter,
     extract_forecast_type_from_charter,
@@ -56,6 +63,8 @@ SESSION_MUTATOR_USAGE = {
     "estimated_cost_usd": 0.0,
     "cost_known": False,
 }
+SESSION_MUTATOR_MODELS_USED: set[str] = set()
+SESSION_MUTATOR_FALLBACK_EVENTS: list[dict[str, str]] = []
 SESSION_JUDGE_USAGE = {
     "input_tokens": 0,
     "output_tokens": 0,
@@ -174,6 +183,9 @@ LATEST_PROBABILITY_DAG_PATH = f"{PROJECT_DIR}/latest_probability_dag.json"
 CHAMPION_PROBABILITY_DAG_PATH = f"{PROJECT_DIR}/champion_probability_dag.json"
 LATEST_EVIDENCE_GAPS_PATH = f"{PROJECT_DIR}/workspace/latest_evidence_gaps.json"
 CHAMPION_EVIDENCE_GAPS_PATH = f"{PROJECT_DIR}/workspace/champion_evidence_gaps.json"
+LATEST_CONSTRAINT_PROPOSALS_PATH = f"{PROJECT_DIR}/workspace/latest_constraint_proposals.json"
+DERIVED_CONSTRAINTS_PATH = f"{PROJECT_DIR}/workspace/derived_constraints.json"
+DERIVED_CONSTRAINTS_BRIEF_PATH = f"{PROJECT_DIR}/workspace/derived_constraints_brief.md"
 MAIN_RUBRIC_PATH = RUBRICS_DIR / f"{args.rubric}.json"
 BEST_ITERATION_RE = re.compile(r"best_iteration:\s*([A-Za-z0-9_.-]+)")
 HISTORY_SCORE_RE = re.compile(r"_score_(\d+)_")
@@ -351,6 +363,10 @@ def _persist_best_candidate(
         "dynamic": args.dynamic,
         "mutator_model": mutator_model_id,
         "judge_model": judge_model_id,
+        "effective_mutator_models": sorted(SESSION_MUTATOR_MODELS_USED) or [mutator_model_id],
+        "mutator_fallback_used": bool(SESSION_MUTATOR_FALLBACK_EVENTS),
+        "effective_judge_models": list((score_contract or {}).get("effective_judge_models", [judge_model_id])),
+        "judge_fallback_used": bool((score_contract or {}).get("judge_fallback_used", False)),
         "weakest_point": weakest_point,
         "timestamp": datetime.now().isoformat(),
         "score_contract": score_contract or {},
@@ -549,6 +565,35 @@ def _print_champion_reconstruction_status(previous_champion_fingerprint: str | N
     print(
         f"🛠️ CHAMPION artifacts reconstructed from saved best history "
         f"(regime fingerprint: {fingerprint_label}; shifted vs previous champion: {shifted_label})"
+    )
+
+
+def _refresh_derived_constraints_from_eval(
+    evaluation: dict,
+    *,
+    run_id: int,
+    iteration_index: int,
+    artifact_role: str = "latest",
+) -> None:
+    proposals = sanitize_constraint_proposals(evaluation.get("derived_constraints"))
+    ledger = update_derived_constraints_ledger(
+        project=args.project,
+        ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
+        proposals=proposals,
+        run_id=run_id,
+        iteration_index=iteration_index,
+        source_score=evaluation.get("score"),
+        weakest_point=str(evaluation.get("weakest_point", "") or ""),
+        score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
+            evaluation.get("score_contract")
+        ),
+        artifact_role=artifact_role,
+    )
+    write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
+    print(
+        "🧷 Derived constraints updated: "
+        f"{ledger.get('confirmed_constraint_count', 0)} confirmed / "
+        f"{ledger.get('provisional_constraint_count', 0)} provisional"
     )
 
 
@@ -811,6 +856,16 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
         transient_wait_seconds=20,
         timeout_wait_seconds=15,
     )
+    effective_model_name = response.usage.model_name or response.effective_model_id or model_id
+    canonical_effective_model = pricing_model_name(effective_model_name) or effective_model_name
+    SESSION_MUTATOR_MODELS_USED.add(canonical_effective_model)
+    if response.fallback_from_model_id:
+        fallback_event = {
+            "from": response.fallback_from_model_id,
+            "to": canonical_effective_model,
+        }
+        if fallback_event not in SESSION_MUTATOR_FALLBACK_EVENTS:
+            SESSION_MUTATOR_FALLBACK_EVENTS.append(fallback_event)
     _accumulate_usage(
         SESSION_MUTATOR_USAGE,
         model_name=response.usage.model_name or model_id,
@@ -820,6 +875,11 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
         cache_read_input_tokens=response.usage.cache_read_input_tokens,
         direct_cost_usd=response.usage.direct_cost_usd,
     )
+    if response.fallback_from_model_id:
+        print(
+            "🔁 Provider fallback preserved mutation continuity: "
+            f"{response.fallback_from_model_id} -> {canonical_effective_model}"
+        )
     return response.text
 
 
@@ -838,10 +898,14 @@ def mutate_thesis(
     task_header = "TASK: Resolve the following Systemic Inconsistency:"
     pivot_instruction = ""
     primitive_context = ""
+    constraint_context = ""
     axioms = []
     project_charter = read_file(PROJECT_CHARTER_PATH) if os.path.exists(PROJECT_CHARTER_PATH) else ""
     anchor_proxies = extract_anchor_proxies_from_charter(project_charter)
     forecast_type = extract_forecast_type_from_charter(project_charter)
+    confirmed_constraint_context = render_confirmed_constraints_prompt_section(
+        Path(DERIVED_CONSTRAINTS_PATH)
+    )
     if os.path.exists(AXIOM_PATH):
         with open(AXIOM_PATH, "r") as f:
             axioms = json.load(f)
@@ -1138,7 +1202,7 @@ def mutate_thesis(
     - Point probabilities are allowed only if the thesis makes the target event, horizon, and modeling basis explicit.
     - Do NOT emit a naked percentage without clear event semantics and a testable probabilistic object.
 """
-        if anchor_proxies:
+    if anchor_proxies:
             anchor_lines = "\n".join([f"    - {name}" for name in anchor_proxies])
             charter_context += f"""
 
@@ -1158,6 +1222,12 @@ def mutate_thesis(
     ```
     """
 
+    if confirmed_constraint_context:
+        constraint_context = f"""
+    CONFIRMED DERIVED CONSTRAINTS (READ-ONLY):
+    {confirmed_constraint_context}
+    """
+
     base_prompt = f"""{persona}
     
     AXIOMS (PREVIOUSLY VERIFIED TRUTHS):
@@ -1173,6 +1243,7 @@ def mutate_thesis(
     {evidence}
     
     {charter_context}
+    {constraint_context}
     {document_context}
     {failure_context}
     {primitive_context}
@@ -1403,6 +1474,12 @@ if _champion_artifacts_out_of_sync_with_saved_best():
         )
         previous_champion_fingerprint = reconstructed.get("regime_fingerprint") or previous_champion_fingerprint
 _print_latest_artifact_status(res, previous_champion_fingerprint)
+_refresh_derived_constraints_from_eval(
+    res,
+    run_id=RUN_ID,
+    iteration_index=0,
+    artifact_role="latest",
+)
 judge_usage = res.get("usage_telemetry")
 if isinstance(judge_usage, dict):
     _accumulate_usage(
@@ -1456,6 +1533,26 @@ elif _champion_eval_payload() is None:
 current_target_weakest_point = best_weakest_point or ""
 # GP-003: read falsification_mode from rubric; absent or "numerical_proof" -> legacy behavior.
 rubric_falsification_mode = rubric_data.get("falsification_mode", "numerical_proof")
+# GP-020 Amendment 2 / catch grammar rule 3: if this run will use the
+# bounded_discriminator pivot profile, refuse to start unless that profile
+# still wires the four modules the GP-023 Planck pre-registration assumes.
+# This is the non-LLM existence proof the multi-agent scorer contract demands.
+if (rubric_falsification_mode or "").strip().lower() == "bounded_discriminator":
+    _profile_check = check_profile_contains(
+        "bounded_discriminator",
+        [
+            "state_incompatibility",
+            "entropy_stripping",
+            "dimensional_shift",
+            "interface_discipline",
+        ],
+    )
+    if _profile_check["verdict"] != "pass":
+        raise RuntimeError(
+            "GP-020 rule 3 pre-run assert failed: "
+            + _profile_check["message"]
+            + " (see src/ztare/catch_grammar/rule_3_profile_check.py)"
+        )
 stagnation_count = 0
 last_failure_reason = None
 best_state = _capture_project_state(_project_state_paths(PROJECT_DIR))
@@ -1649,6 +1746,12 @@ for i in range(ITERATIONS):
             score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
         )
         _print_latest_artifact_status(new_eval, champion_fingerprint_before_iteration)
+        _refresh_derived_constraints_from_eval(
+            new_eval,
+            run_id=RUN_ID,
+            iteration_index=i + 1,
+            artifact_role="latest",
+        )
         judge_usage = new_eval.get("usage_telemetry")
         if isinstance(judge_usage, dict):
             _accumulate_usage(

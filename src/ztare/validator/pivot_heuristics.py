@@ -72,11 +72,15 @@ PROFILE_MODULES = {
         "back_pressure",
     ),
     "bounded_discriminator": (
+        "state_incompatibility",
         "primary_degree_of_freedom",
         "failure_topology",
+        "entropy_stripping",
+        "dimensional_shift",
         "reciprocal_variable",
         "success_liability",
         "back_pressure",
+        "interface_discipline",
     ),
     "kernel_bounded": (
         "failure_topology",

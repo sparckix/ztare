@@ -25,6 +25,15 @@ DIRECTOR_MODEL_MAP = {
     "gpt4o": "o1",
 }
 
+FALLBACK_MODEL_CHAINS = {
+    "gemini-2.5-flash": ("claude-sonnet-4-6", "gpt-4o"),
+    "gemini-3.1-pro-preview": ("claude-sonnet-4-6", "gpt-4o"),
+    "claude-opus-4-6": ("claude-sonnet-4-6", "gpt-4o", "gemini-2.5-flash"),
+    "claude-sonnet-4-6": ("gpt-4o", "gemini-2.5-flash"),
+    "gpt-4o": ("claude-sonnet-4-6", "gemini-2.5-flash"),
+    "o1": ("claude-sonnet-4-6", "gemini-2.5-flash"),
+}
+
 
 def resolve_model_id(model_family: str) -> str:
     if model_family not in MODEL_MAP:
@@ -88,6 +97,9 @@ class LLMTextResponse:
     model_name: str | None
     usage: LLMUsage
     raw_response: Any
+    requested_model_id: str | None = None
+    effective_model_id: str | None = None
+    fallback_from_model_id: str | None = None
 
 
 class LLMRuntimeError(RuntimeError):
@@ -131,6 +143,24 @@ class LLMRuntime:
         if client is None:
             raise RuntimeError("GEMINI_API_KEY is not set.")
         return client
+
+    def model_is_configured(self, model_id: str) -> bool:
+        if is_claude_model(model_id):
+            return bool(os.environ.get("ANTHROPIC_API_KEY"))
+        if is_openai_model(model_id):
+            return bool(os.environ.get("OPENAI_API_KEY"))
+        return bool(os.environ.get("GEMINI_API_KEY"))
+
+    def default_fallback_model_ids(self, model_id: str) -> tuple[str, ...]:
+        configured: list[str] = []
+        seen: set[str] = {model_id}
+        for candidate in FALLBACK_MODEL_CHAINS.get(model_id, ()):
+            if candidate in seen:
+                continue
+            seen.add(candidate)
+            if self.model_is_configured(candidate):
+                configured.append(candidate)
+        return tuple(configured)
 
     def _error_status_code(self, exc: Exception) -> int | None:
         status_code = getattr(exc, "status_code", None)
@@ -202,7 +232,18 @@ class LLMRuntime:
             config=config,
         )
 
-    def _response_to_text_result(self, response: Any, requested_model_id: str) -> LLMTextResponse:
+    def _response_to_text_result(
+        self,
+        response: Any,
+        requested_model_id: str,
+        *,
+        original_requested_model_id: str | None = None,
+    ) -> LLMTextResponse:
+        effective_model_id = requested_model_id
+        original_model_id = original_requested_model_id or requested_model_id
+        fallback_from_model_id = (
+            original_model_id if original_model_id != effective_model_id else None
+        )
         if is_claude_model(requested_model_id):
             usage = getattr(response, "usage", None)
             model_name = getattr(response, "model", None) or requested_model_id
@@ -222,6 +263,9 @@ class LLMRuntime:
                     else 0,
                 ),
                 raw_response=response,
+                requested_model_id=original_model_id,
+                effective_model_id=effective_model_id,
+                fallback_from_model_id=fallback_from_model_id,
             )
 
         if is_openai_model(requested_model_id):
@@ -255,6 +299,9 @@ class LLMRuntime:
                     direct_cost_usd=direct_cost_usd,
                 ),
                 raw_response=response,
+                requested_model_id=original_model_id,
+                effective_model_id=effective_model_id,
+                fallback_from_model_id=fallback_from_model_id,
             )
 
         usage_metadata = getattr(response, "usage_metadata", None)
@@ -273,6 +320,9 @@ class LLMRuntime:
                 else 0,
             ),
             raw_response=response,
+            requested_model_id=original_model_id,
+            effective_model_id=effective_model_id,
+            fallback_from_model_id=fallback_from_model_id,
         )
 
     def call_text(
@@ -280,6 +330,7 @@ class LLMRuntime:
         prompt: str,
         *,
         model_id: str,
+        fallback_model_ids: tuple[str, ...] | None = None,
         config: Any = None,
         max_tokens: int = 16000,
         retries: int = 4,
@@ -289,78 +340,110 @@ class LLMRuntime:
         transient_wait_seconds: int = 20,
         timeout_wait_seconds: int = 15,
     ) -> LLMTextResponse:
+        candidate_model_ids = [model_id]
+        fallback_candidates = (
+            self.default_fallback_model_ids(model_id)
+            if fallback_model_ids is None
+            else fallback_model_ids
+        )
+        for candidate in fallback_candidates:
+            if candidate not in candidate_model_ids:
+                candidate_model_ids.append(candidate)
+
         last_error: Exception | None = None
-        for attempt in range(1, retries + 1):
-            executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-            try:
-                if progress_printer is not None:
-                    progress_printer(
-                        f"📡 [DEBUG] Dispatching {request_label} to {model_id}... (Attempt {attempt})"
-                    )
-                start_time = time.time()
-                future = executor.submit(
-                    self._call_once,
-                    prompt,
-                    model_id,
-                    config=config,
-                    max_tokens=max_tokens,
+        last_attempted_model_id = model_id
+        for model_index, active_model_id in enumerate(candidate_model_ids):
+            if model_index > 0 and progress_printer is not None:
+                progress_printer(
+                    "🔁 Provider fallback engaged for "
+                    f"{request_label}: {model_id} -> {active_model_id}"
                 )
-                response = future.result(timeout=timeout_seconds)
-                elapsed = time.time() - start_time
-                if progress_printer is not None:
-                    progress_printer(f"✅ [DEBUG] Response received in {elapsed:.1f}s")
-                return self._response_to_text_result(response, model_id)
-            except concurrent.futures.TimeoutError as exc:
-                last_error = exc
-                wait_time = min(180, timeout_wait_seconds * attempt)
-                if progress_printer is not None:
-                    progress_printer(
-                        f"⚠️ Zombie Connection Killed. Retrying in {wait_time}s..."
-                    )
-                if attempt == retries:
-                    break
-                time.sleep(wait_time)
-            except Exception as exc:  # noqa: BLE001
-                last_error = exc
-                error_str = str(exc)
-                status_code = self._error_status_code(exc)
-                if status_code in {400, 404}:
-                    if progress_printer is not None:
-                        progress_printer(f"❌ Configuration/Model Error: {exc}")
-                    raise LLMRuntimeError(
-                        error_str,
-                        model_id=model_id,
-                        transient=False,
-                        status_code=status_code,
-                    ) from exc
-                if self.is_transient_error(exc):
-                    wait_time = self.retry_delay_seconds(
-                        attempt,
-                        exc,
-                        base_delay=transient_wait_seconds,
-                    )
+            for attempt in range(1, retries + 1):
+                last_attempted_model_id = active_model_id
+                executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+                try:
                     if progress_printer is not None:
                         progress_printer(
-                            f"⚠️ API Transient Issue ({error_str[:15]}...). Retrying in {wait_time}s..."
+                            f"📡 [DEBUG] Dispatching {request_label} to {active_model_id}... (Attempt {attempt})"
+                        )
+                    start_time = time.time()
+                    future = executor.submit(
+                        self._call_once,
+                        prompt,
+                        active_model_id,
+                        config=config,
+                        max_tokens=max_tokens,
+                    )
+                    response = future.result(timeout=timeout_seconds)
+                    elapsed = time.time() - start_time
+                    if progress_printer is not None:
+                        progress_printer(f"✅ [DEBUG] Response received in {elapsed:.1f}s")
+                        if active_model_id != model_id:
+                            progress_printer(
+                                "🧭 Effective model changed due to provider failover: "
+                                f"{model_id} -> {active_model_id}"
+                            )
+                    return self._response_to_text_result(
+                        response,
+                        active_model_id,
+                        original_requested_model_id=model_id,
+                    )
+                except concurrent.futures.TimeoutError as exc:
+                    last_error = exc
+                    wait_time = min(180, timeout_wait_seconds * attempt)
+                    if progress_printer is not None:
+                        progress_printer(
+                            f"⚠️ Zombie Connection Killed. Retrying in {wait_time}s..."
                         )
                     if attempt == retries:
                         break
                     time.sleep(wait_time)
-                else:
-                    if progress_printer is not None:
-                        progress_printer(f"❌ Unhandled Exception: {error_str}")
-                    raise LLMRuntimeError(
-                        error_str,
-                        model_id=model_id,
-                        transient=False,
-                        status_code=status_code,
-                    ) from exc
-            finally:
-                executor.shutdown(wait=False, cancel_futures=True)
+                except Exception as exc:  # noqa: BLE001
+                    last_error = exc
+                    error_str = str(exc)
+                    status_code = self._error_status_code(exc)
+                    if status_code in {400, 404}:
+                        if progress_printer is not None:
+                            progress_printer(f"❌ Configuration/Model Error: {exc}")
+                        raise LLMRuntimeError(
+                            error_str,
+                            model_id=active_model_id,
+                            transient=False,
+                            status_code=status_code,
+                        ) from exc
+                    if self.is_transient_error(exc):
+                        wait_time = self.retry_delay_seconds(
+                            attempt,
+                            exc,
+                            base_delay=transient_wait_seconds,
+                        )
+                        if progress_printer is not None:
+                            progress_printer(
+                                f"⚠️ API Transient Issue ({error_str[:15]}...). Retrying in {wait_time}s..."
+                            )
+                        if attempt == retries:
+                            break
+                        time.sleep(wait_time)
+                    else:
+                        if progress_printer is not None:
+                            progress_printer(f"❌ Unhandled Exception: {error_str}")
+                        raise LLMRuntimeError(
+                            error_str,
+                            model_id=active_model_id,
+                            transient=False,
+                            status_code=status_code,
+                        ) from exc
+                finally:
+                    executor.shutdown(wait=False, cancel_futures=True)
+
+            if model_index < len(candidate_model_ids) - 1 and progress_printer is not None:
+                progress_printer(
+                    f"⚠️ Exhausted {active_model_id} after persistent transient failures; trying fallback provider."
+                )
 
         raise LLMRuntimeError(
-            f"Max retries exceeded due to persistent API issues: {last_error}",
-            model_id=model_id,
+            f"Max retries exceeded across provider chain starting at {model_id}: {last_error}",
+            model_id=last_attempted_model_id,
             transient=self.is_transient_error(last_error) if last_error is not None else False,
             status_code=self._error_status_code(last_error) if last_error is not None else None,
         ) from last_error
