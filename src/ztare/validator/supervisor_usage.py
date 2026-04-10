@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from src.ztare.common.llm_runtime import pricing_model_name
 from src.ztare.common.paths import REPO_ROOT
 from src.ztare.validator.supervisor_state import TurnUsageTelemetry
 
@@ -116,7 +117,8 @@ def estimate_cost_usd(
     if not model_name:
         return 0.0
     pricing = load_model_pricing(pricing_path)
-    model_pricing = pricing.get(model_name)
+    canonical_model_name = pricing_model_name(model_name)
+    model_pricing = pricing.get(canonical_model_name or model_name)
     if model_pricing is None:
         return 0.0
 

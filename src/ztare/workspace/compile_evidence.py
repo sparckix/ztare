@@ -8,22 +8,12 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import anthropic
-from google import genai
-from openai import OpenAI
-
 from src.ztare.common import utils
+from src.ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
 from src.ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, REPO_ROOT
 
 
 ROOT_DIR = REPO_ROOT
-
-MODEL_MAP = {
-    "gemini": "gemini-2.5-flash",
-    "claude": "claude-sonnet-4-6",
-    "claude-opus": "claude-opus-4-6",
-    "gpt4o": "gpt-4o",
-}
 
 TEXT_EXTENSIONS = {
     ".md",
@@ -43,6 +33,7 @@ TEXT_EXTENSIONS = {
 }
 
 DEBUG = False
+COMPILE_FAILURE_ARTIFACT = "latest_compile_failure.json"
 
 SOURCE_TYPE_EVIDENCE = "source_evidence"
 SOURCE_TYPE_SEED = "seed_hypothesis"
@@ -70,6 +61,25 @@ def dbg(msg: str) -> None:
         return
     ts = time.strftime("%H:%M:%S")
     print(f"[compile_evidence {ts}] {msg}", file=sys.stderr)
+
+
+class CompileEvidenceError(RuntimeError):
+    def __init__(
+        self,
+        message: str,
+        *,
+        phase: str,
+        model_family: str | None = None,
+        model_id: str | None = None,
+        transient: bool = False,
+        status_code: int | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.phase = phase
+        self.model_family = model_family
+        self.model_id = model_id
+        self.transient = transient
+        self.status_code = status_code
 
 
 def read_text(path: Path) -> str:
@@ -366,86 +376,31 @@ class LLMClient:
             raise ValueError(f"Unsupported model family: {model_family}")
         self.model_family = model_family
         self.model_id = MODEL_MAP[model_family]
-        self.gemini_client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY")) if os.environ.get("GEMINI_API_KEY") else None
-        self.anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY")) if os.environ.get("ANTHROPIC_API_KEY") else None
-        self.openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY")) if os.environ.get("OPENAI_API_KEY") else None
-
-    def _call_once(self, prompt: str) -> str:
-        if self.model_family == "gemini":
-            if not self.gemini_client:
-                raise RuntimeError("GEMINI_API_KEY is not set.")
-            response = self.gemini_client.models.generate_content(model=self.model_id, contents=prompt)
-            return response.text
-        if self.model_family in {"claude", "claude-opus"}:
-            if not self.anthropic_client:
-                raise RuntimeError("ANTHROPIC_API_KEY is not set.")
-            message = self.anthropic_client.messages.create(
-                model=self.model_id,
-                max_tokens=16000,
-                messages=[{"role": "user", "content": prompt}],
-            )
-            return message.content[0].text
-        if self.model_family == "gpt4o":
-            if not self.openai_client:
-                raise RuntimeError("OPENAI_API_KEY is not set.")
-            response = self.openai_client.chat.completions.create(
-                model=self.model_id,
-                max_tokens=16000,
-                messages=[{"role": "user", "content": prompt}],
-            )
-            return response.choices[0].message.content
-        raise ValueError(f"Unsupported model family: {self.model_family}")
-
-    def _error_status_code(self, exc: Exception) -> Optional[int]:
-        status_code = getattr(exc, "status_code", None)
-        if isinstance(status_code, int):
-            return status_code
-        response = getattr(exc, "response", None)
-        response_status = getattr(response, "status_code", None)
-        if isinstance(response_status, int):
-            return response_status
-        return None
-
-    def _is_transient_error(self, exc: Exception) -> bool:
-        status_code = self._error_status_code(exc)
-        if status_code in {408, 409, 429, 500, 502, 503, 504}:
-            return True
-        message = str(exc).upper()
-        transient_markers = [
-            "UNAVAILABLE",
-            "RESOURCE_EXHAUSTED",
-            "RATE LIMIT",
-            "TIMEOUT",
-            "TIMED OUT",
-            "CONNECTION RESET",
-            "TEMPORARY",
-            "OVERLOADED",
-            "HIGH DEMAND",
-        ]
-        return any(marker in message for marker in transient_markers)
-
-    def _retry_delay_seconds(self, attempt: int, exc: Exception) -> int:
-        if self._is_transient_error(exc):
-            return min(60, 5 * (2 ** (attempt - 1)))
-        return min(15, 2 * attempt)
+        self.runtime = LLMRuntime()
 
     def call(self, prompt: str, retries: int = 4) -> str:
-        last_error: Optional[Exception] = None
-        for attempt in range(1, retries + 1):
-            try:
-                dbg(f"LLM call: family={self.model_family} model={self.model_id} attempt={attempt}/{retries}")
-                return self._call_once(prompt)
-            except Exception as exc:  # noqa: BLE001
-                last_error = exc
-                delay_seconds = self._retry_delay_seconds(attempt, exc)
-                dbg(
-                    f"LLM call failed: attempt={attempt}/{retries} error={type(exc).__name__}: {exc} "
-                    f"| transient={self._is_transient_error(exc)} | next_delay={delay_seconds}s"
-                )
-                if attempt == retries:
-                    break
-                time.sleep(delay_seconds)
-        raise RuntimeError(f"LLM call failed after {retries} attempts: {last_error}") from last_error
+        try:
+            dbg(f"LLM call: family={self.model_family} model={self.model_id} retries={retries}")
+            response = self.runtime.call_text(
+                prompt,
+                model_id=self.model_id,
+                retries=retries,
+                timeout_seconds=300,
+                request_label="compile_evidence request",
+                progress_printer=dbg,
+                transient_wait_seconds=5,
+                timeout_wait_seconds=2,
+            )
+            return response.text
+        except LLMRuntimeError as exc:
+            raise CompileEvidenceError(
+                f"LLM call failed after {retries} attempts: {exc}",
+                phase="llm_call",
+                model_family=self.model_family,
+                model_id=self.model_id,
+                transient=exc.transient,
+                status_code=exc.status_code,
+            ) from exc
 
 
 def collect_sources(
@@ -751,6 +706,73 @@ def compile_from_workspace(
     return packet, manifest, evidence_text
 
 
+def compile_failure_payload(
+    *,
+    project_dir: Path,
+    mode: str,
+    model: str,
+    error: Exception,
+) -> Dict[str, Any]:
+    payload: Dict[str, Any] = {
+        "project_dir": str(project_dir),
+        "mode": mode,
+        "model_family": model,
+        "model_id": MODEL_MAP.get(model, model),
+        "failed_on": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "error_type": type(error).__name__,
+        "message": str(error),
+        "fail_closed": True,
+    }
+    if isinstance(error, CompileEvidenceError):
+        payload["phase"] = error.phase
+        payload["transient"] = error.transient
+        if error.status_code is not None:
+            payload["status_code"] = error.status_code
+        if error.model_family:
+            payload["model_family"] = error.model_family
+        if error.model_id:
+            payload["model_id"] = error.model_id
+    return payload
+
+
+def write_compile_failure_artifact(
+    *,
+    workspace_dir: Path,
+    project_dir: Path,
+    mode: str,
+    model: str,
+    error: Exception,
+) -> Path:
+    failure_path = workspace_dir / COMPILE_FAILURE_ARTIFACT
+    write_json(
+        failure_path,
+        compile_failure_payload(
+            project_dir=project_dir,
+            mode=mode,
+            model=model,
+            error=error,
+        ),
+    )
+    return failure_path
+
+
+def clear_compile_failure_artifact(workspace_dir: Path) -> None:
+    failure_path = workspace_dir / COMPILE_FAILURE_ARTIFACT
+    if failure_path.exists():
+        failure_path.unlink()
+
+
+def print_compile_failure_summary(failure_path: Path, error: Exception) -> None:
+    print("Compile evidence failed closed.")
+    print(f"Failure artifact: {failure_path}")
+    print(f"Reason: {error}")
+    if isinstance(error, CompileEvidenceError):
+        if error.transient:
+            print("Transient provider failure detected. Retry later or switch model.")
+        if error.status_code is not None:
+            print(f"Status code: {error.status_code}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Compile raw sources or a workspace snapshot into a structured evidence.txt for ZTARE.")
     parser.add_argument("--project", required=True, help="Project name under projects/ or an explicit project path.")
@@ -816,20 +838,33 @@ def main() -> int:
     else:
         use_workspace = (workspace_dir / "workspace_snapshot.json").exists()
 
-    if use_workspace:
-        packet, compiler_manifest, evidence_text = compile_from_workspace(
-            project_dir=project_dir,
+    try:
+        if use_workspace:
+            packet, compiler_manifest, evidence_text = compile_from_workspace(
+                project_dir=project_dir,
+                workspace_dir=workspace_dir,
+            )
+        else:
+            packet, compiler_manifest, evidence_text = compile_from_raw(
+                project_dir=project_dir,
+                raw_dir=raw_dir,
+                model=args.model,
+                max_files=args.max_files,
+                max_chars_per_file=args.max_chars_per_file,
+                max_total_chars=args.max_total_chars,
+            )
+    except Exception as error:  # noqa: BLE001
+        failure_path = write_compile_failure_artifact(
             workspace_dir=workspace_dir,
-        )
-    else:
-        packet, compiler_manifest, evidence_text = compile_from_raw(
             project_dir=project_dir,
-            raw_dir=raw_dir,
+            mode="workspace" if use_workspace else "raw",
             model=args.model,
-            max_files=args.max_files,
-            max_chars_per_file=args.max_chars_per_file,
-            max_total_chars=args.max_total_chars,
+            error=error,
         )
+        print_compile_failure_summary(failure_path, error)
+        return 1
+
+    clear_compile_failure_artifact(workspace_dir)
 
     write_text(output_path, evidence_text)
     write_json(packet_output_path, packet)

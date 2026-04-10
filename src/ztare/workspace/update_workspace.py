@@ -7,9 +7,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from src.ztare.common import utils
+from src.ztare.common.llm_runtime import MODEL_MAP
 from src.ztare.workspace.compile_evidence import (
     LLMClient,
-    MODEL_MAP,
     PROMPTS_DIR,
     SOURCE_TYPE_UNTYPED,
     TEXT_EXTENSIONS,
