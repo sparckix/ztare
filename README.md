@@ -1,24 +1,70 @@
 # ZTARE — Zero-Trust Adversarial Reasoning Engine
 
-**Papers:**
-- [Paper 1: Cognitive Camouflage](papers/paper1/draft.md)
-- [Paper 2: Adversarial Precedent Memory](papers/paper2/draft.md)
-- [Paper 3: Contract-Governed Adversarial Evaluator Hardening](papers/paper3/draft.md)
-- [Paper 4: The Cognitive Firm](papers/paper4/draft.md)
+ZTARE is a zero-trust adversarial reasoning engine for stress-testing claims, forecasts, and strategic theses. It separates source accumulation, bounded evidence compilation, adversarial evaluation, and downstream synthesis so that fluent generation is not allowed to grade itself.
 
-> The repo now contains four paper bundles: specification gaming (Paper 1), evaluator hardening (Paper 2), contract-governed kernel hardening (Paper 3), and AI governance / managerial capitalism (Paper 4).
+## Start Here
 
----
+- [Workflow / Operator Manual](docs/WORKFLOW.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Supervisor Manual](supervisor/USER_MANUAL.md)
+- [Papers Overview](papers/README.md)
 
-## Three Interpretations
+## Recommended Interface
 
-There are at least three plausible readings of this repo:
+ZTARE is usable from the shell, but it is easier to operate with an agentic coding assistant such as **Claude Code** or **Codex**.
 
-1. It is an overbuilt response to a problem that did not justify this much machinery.
-2. It is an instructive failure: a concrete record of how quickly language-model systems can generate bureaucratic complexity.
-3. It is evidence that a single researcher, working for roughly 10 days and spending about $212 in model tokens, can build a surprisingly capable stack: four papers, a hardened evaluator path, a supervisor control plane, and a reproducible benchmark harness.
+Why:
 
-My view is that the third interpretation is at least plausible enough to be worth publishing. If that view is wrong, the repo still exposes the costs, failure modes, and control surfaces in a way that is easier to inspect than vague claims about autonomous agents.
+- the repo has multiple workflows, not one
+- the meaningful state is spread across project artifacts, not just code
+- the right next move is often "read the latest artifacts and decide" rather than "run another loop"
+
+Recommended pattern:
+
+1. ask the agent to read `README.md`, `docs/WORKFLOW.md`, and `docs/ARCHITECTURE.md`
+2. point it at the specific `projects/<project>/` directory or hardening item you care about
+3. have it recommend whether the next move is:
+   - evidence work
+   - another validator run
+   - synthesis
+   - or a new seam/spec
+
+### Sample Prompts
+
+Use prompts like these with Claude Code or Codex:
+
+```text
+Read README.md, docs/WORKFLOW.md, and docs/ARCHITECTURE.md, then explain the layers of ZTARE and tell me which workflow I should use for my task.
+```
+
+```text
+Inspect projects/<project>/ and summarize the current state: latest vs champion, evidence gaps, derived constraints, and the best next move.
+```
+
+```text
+I want to start a new ZTARE project on <topic>. Scaffold the charter, tell me what should go into raw/, and give me the exact commands to run.
+```
+
+```text
+Explain the difference between the validator, the V4 kernel, the meta-runner, and the supervisor in this repo, using the actual files.
+```
+
+```text
+Given this latest score/result, tell me whether I should run more iterations, do an evidence pass, or stop and open a new seam/spec.
+```
+
+```text
+Take project <project> and generate the right downstream artifact: founder memo, teaching note, field manual entry, or research postmortem.
+```
+
+## Published Papers
+
+- [Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution](papers/paper1/draft.md) | [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512960)
+- [Adversarial Precedent Memory: Hardening LLM Evaluators Through Mined Failure Constraints](papers/paper2/draft.md) | [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6525598)
+- [Contract-Governed Adversarial Evaluator Hardening: Stage-Gated Recursive Improvement with Typed Promotion Contracts](papers/paper3/draft.md) | [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6542998)
+- [The Cognitive Firm: Managerial Capitalism for Artificial Intelligence](papers/paper4/draft.md) | [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6543019)
+
+Each paper bundle includes the public manuscript sources under `papers/`. Local scratch workspaces such as `paper1/` and `paper2/` are gitignored and not part of the public source layer.
 
 ---
 
@@ -48,66 +94,13 @@ The public repo currently has three active surfaces:
 
 1. the adversarial validator and workspace pipeline
 2. the synthesis / distribution pipeline
-3. the work-tracking and hardening stack
+3. the hardening / control-plane stack
 
 Useful entry points:
 
 - `docs/WORKFLOW.md`
 - `docs/ARCHITECTURE.md`
 - `supervisor/USER_MANUAL.md`
-
----
-
-## Two Loops
-
-There are now two distinct loops in this repo.
-
-### 1. Kernel Loop
-
-This is the logic hardening path for the epistemic engine itself:
-
-- derivation
-- hinge extraction
-- gates
-- bridge / runner / stage contracts
-
-Goal:
-- improve truth-handling and fail-closed behavior inside V4
-
-Example:
-- `research_areas/seeds/active/stage2_derivation_seam.md`
-
-### 2. Supervisor Loop
-
-This is the infrastructure path for how bounded packets get routed and executed:
-
-- seeds
-- proposals
-- genesis
-- manifests
-- wrappers
-- state routing
-
-Goal:
-- improve work routing, write-scope discipline, telemetry, and human gates
-
-Important:
-- the supervisor loop does **not** supersede kernel hardening
-- it exists to make kernel hardening and future program work less manual
-
-Public technical provenance for the hardening path lives in:
-- `research_areas/debates/kernel/v4_core.md`
-- `research_areas/debates/kernel/runner_hardening.md`
-- `research_areas/debates/kernel/v4_bridge_hardening.md`
-- `research_areas/debates/kernel/stage2_derivation_seam_hardening.md`
-- `research_areas/debates/supervisor/supervisor_loop.md`
-
-In short:
-
-- kernel loop = improve the evaluator
-- supervisor loop = improve the factory around evaluator work
-
----
 
 ## Layer Glossary
 
@@ -260,6 +253,9 @@ If the validator emits typed evidence gaps, they are written to:
 
 - `projects/<project>/workspace/latest_evidence_gaps.json`
 - `projects/<project>/workspace/champion_evidence_gaps.json`
+- `projects/<project>/workspace/latest_constraint_proposals.json`
+- `projects/<project>/workspace/derived_constraints.json`
+- `projects/<project>/workspace/derived_constraints_brief.md`
 - `projects/<project>/workspace/evidence_gap_brief.md` (after `compile_evidence.py`)
 - `projects/<project>/workspace/latest_compile_failure.json` (only if `compile_evidence.py` fails closed)
 
@@ -281,6 +277,7 @@ ZTARE now uses a shared provider/runtime layer for:
 
 - model-family to model-id resolution
 - retry and transient-error handling
+- cross-provider failover on persistent transient outages
 - token-usage extraction across Gemini / Anthropic / OpenAI
 - pricing-name normalization for cost estimation
 
@@ -290,9 +287,13 @@ Cost estimates are driven by:
 
 If pricing is enabled there, validator runs can show estimated mutator/judge cost again even when provider responses return versioned model names such as `models/gemini-2.5-flash` or `claude-sonnet-4-6-20260401`.
 
-## Paper 1 Legacy Runs
+Important:
 
-The legacy Paper 1 commands are now:
+- if a run falls back to a different effective judge model, the score regime changes and comparability is intentionally broken rather than hidden
+
+## Legacy Benchmark Shortcuts
+
+The legacy Paper 1 benchmark shortcuts are:
 
 ```bash
 make paper1-tsmc-legacy
