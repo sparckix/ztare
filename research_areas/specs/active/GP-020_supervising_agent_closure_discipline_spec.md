@@ -138,4 +138,3 @@ Phase 3:
 - which existing artifact should own closure signals?
 - should GP-020 live in validator output, supervisor output, or both?
 - what is the minimal verifier that proves real gain without overbuilding?
-

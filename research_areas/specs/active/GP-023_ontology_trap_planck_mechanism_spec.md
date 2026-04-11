@@ -213,4 +213,3 @@ That belongs to the next execution phase once the protocol is frozen.
 - does the contamination audit need more than one verifier model family?
 - should the trace-emergence rule be tightened further before the first run?
 - is 100 iterations the right first-run budget, or only the floor?
-

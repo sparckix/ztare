@@ -4,9 +4,7 @@
   "origin_programs": [
     "paper4_drafting"
   ],
-  "origin_turn_refs": [
-    "research_areas/private/papers/paper4.md#Turn8"
-  ],
+  "origin_turn_refs": [],
   "problem_statement": "Convert the frozen Paper 4 outline into manuscript prose while explicitly addressing principal scalability, the native-primitive question, and title framing.",
   "contract_boundary": "Draft manuscript prose against the frozen outline and manuscript seed without silently reopening locked claims.",
   "success_condition": "A first-pass manuscript artifact that carries the frozen outline into prose, addresses the mandatory manuscript pressure points, and ends in State D for human review.",

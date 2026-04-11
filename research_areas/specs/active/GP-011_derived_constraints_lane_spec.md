@@ -144,4 +144,3 @@ Phase 3:
 - should violating a confirmed constraint eventually trigger a scorer penalty?
 - should confirmation threshold remain `2` distinct runs or become project-configurable?
 - when should derived constraints become a cross-project mining asset rather than a per-project lane?
-
