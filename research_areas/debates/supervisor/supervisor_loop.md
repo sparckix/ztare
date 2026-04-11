@@ -1539,7 +1539,7 @@ So the seed portfolio now has three classes:
 ### Naming / grouping rule now adopted
 - seed specs: `research_areas/*.md`
 - debate families:
-  - `research_areas/debates/papers/`
+  - `research_areas/private/papers/`
   - `research_areas/debates/kernel/`
   - `research_areas/debates/supervisor/`
   - `research_areas/debates/product/`
@@ -3907,7 +3907,7 @@ The failed manuscript A2 artifacts were archived under:
 - `supervisor/active_runs/paper4_manuscript_001/failed/cycle3_unauthorized_repo_write/`
 
 Then the workspace was restored to the last committed state:
-- `research_areas/debates/papers/paper4_manuscript.md` back through `Turn 4`
+- `research_areas/private/papers/paper4_manuscript.md` back through `Turn 4`
 - stale `Turn 5` removed from the live debate
 - stale prose spec removed from the live workspace
 - stale `staging/codex_a2.json` and its launch sidecars removed
@@ -4801,7 +4801,7 @@ So the outer loop still automates packet sequencing, assembly, and packet launch
 
 The clean path is:
 
-1. if no live run is executing, append a **Human** turn to `research_areas/debates/papers/paper4_manuscript.md`
+1. if no live run is executing, append a **Human** turn to `research_areas/private/papers/paper4_manuscript.md`
 2. let the next `A1/A2` cycle absorb it naturally
 
 Do **not** write into the debate file while a run is live, or you risk contaminating the active packet.
