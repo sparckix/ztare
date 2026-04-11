@@ -341,11 +341,18 @@ class LLMRuntime:
         timeout_wait_seconds: int = 15,
     ) -> LLMTextResponse:
         candidate_model_ids = [model_id]
-        fallback_candidates = (
-            self.default_fallback_model_ids(model_id)
-            if fallback_model_ids is None
-            else fallback_model_ids
-        )
+        if os.environ.get("ZTARE_DISABLE_MODEL_FALLBACK") == "1":
+            # Hard lock: no cross-model fallback. The caller has declared that
+            # an off-family silent failover would invalidate the run (e.g. a
+            # pre-registered experiment where the runtime family is sealed).
+            # On primary failure we raise rather than quietly switch.
+            fallback_candidates: tuple[str, ...] = ()
+        else:
+            fallback_candidates = (
+                self.default_fallback_model_ids(model_id)
+                if fallback_model_ids is None
+                else fallback_model_ids
+            )
         for candidate in fallback_candidates:
             if candidate not in candidate_model_ids:
                 candidate_model_ids.append(candidate)

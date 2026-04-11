@@ -41,7 +41,8 @@ from src.ztare.validator.derived_constraints import (
     update_derived_constraints_ledger,
     write_derived_constraints_brief,
 )
-from src.ztare.validator.proxy_signature import (
+from src.ztare.validator.mutation_suite_guard import validate_python_suite_candidate
+from src.ztare.validator.charter_parsing import (
     extract_anchor_proxies_from_charter,
     extract_forecast_type_from_charter,
 )
@@ -53,6 +54,7 @@ from src.ztare.validator.champion_artifacts import (
     champion_artifacts_out_of_sync_with_saved_best,
     set_artifact_role,
 )
+from src.ztare.validator.latent_distance import record_latent_distance
 
 SESSION_TOKENS = 0
 SESSION_MUTATOR_USAGE = {
@@ -130,7 +132,37 @@ parser.add_argument(
     action="store_true",
     help="Require a declaration-first MutationDeclaration header before each mutator thesis body.",
 )
+parser.add_argument(
+    "--no_model_fallback",
+    action="store_true",
+    help=(
+        "Hard-lock the runtime model family: disable all cross-provider "
+        "fallback in llm_runtime.call_text. On primary-model failure the "
+        "run will raise instead of silently switching to another family. "
+        "Required for pre-registered experiments where runtime family is sealed."
+    ),
+)
+parser.add_argument(
+    "--underidentified_after",
+    type=int,
+    default=None,
+    help=(
+        "Minimum catastrophic-streak length (in iterations) before the "
+        "UNDERIDENTIFIED exit fires in bounded_discriminator mode. Defaults "
+        "to pivot_after=3 (legacy behavior). Set higher for pre-registered "
+        "experiments that require sustained starvation before UNDERIDENTIFIED "
+        "is a valid conclusion — otherwise the exit fires before the pivot has "
+        "had any chance to produce structural moves."
+    ),
+)
 args = parser.parse_args()
+if args.no_model_fallback:
+    os.environ["ZTARE_DISABLE_MODEL_FALLBACK"] = "1"
+    print(
+        "🔒 Model fallback DISABLED (--no_model_fallback). "
+        "Runtime will fail loudly on primary-model errors rather than "
+        "switch families. This is the correct mode for sealed pre-registered runs."
+    )
 if getattr(args, "use_transfer_hypotheses", False):
     args.use_mutator_primitives = True
 if args.use_mutator_primitives:
@@ -215,6 +247,13 @@ def write_json(filepath: str, payload: dict) -> None:
     path = Path(filepath)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def append_jsonl(filepath: str, payload: dict) -> None:
+    path = Path(filepath)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, ensure_ascii=True) + "\n")
 
 
 def _strip_best_iteration_marker(text: str) -> str:
@@ -661,6 +700,40 @@ def _write_latest_information_yield(
     )
 
 
+def _record_loop_event(
+    workspace_dir: Path,
+    *,
+    event_type: str,
+    iteration_index: int,
+    stagnation_count: int,
+    falsification_mode: str,
+    is_v4_project: bool,
+    pivot_profile,
+    pending_loop_action: str,
+    mutator_model_id: str,
+    judge_model_id: str,
+) -> None:
+    profile_name = pivot_profile.name if pivot_profile else None
+    profile_modules = list(pivot_profile.modules) if pivot_profile else []
+    payload = {
+        "run_id": RUN_ID,
+        "timestamp": datetime.now().isoformat(),
+        "event_type": event_type,
+        "project": args.project,
+        "iteration_index": iteration_index,
+        "stagnation_count": stagnation_count,
+        "falsification_mode": falsification_mode,
+        "is_v4_project": is_v4_project,
+        "pivot_profile": profile_name,
+        "pivot_modules": profile_modules,
+        "pending_loop_action": pending_loop_action,
+        "mutator_model_id": mutator_model_id,
+        "judge_model_id": judge_model_id,
+    }
+    write_json(str(workspace_dir / "latest_loop_event.json"), payload)
+    append_jsonl(str(workspace_dir / "loop_events.jsonl"), payload)
+
+
 def _latest_low_yield_tail(history: list[IterationSignal]) -> list[IterationSignal]:
     tail: list[IterationSignal] = []
     for item in reversed(history):
@@ -764,6 +837,8 @@ def _prepare_mutation_candidate(
         if code_match
         else working_text.strip()
     )
+
+    validate_python_suite_candidate(python_code)
 
     if (
         python_code is not None
@@ -1598,6 +1673,13 @@ for i in range(ITERATIONS):
     current_test_model = read_file(f"{PROJECT_DIR}/test_model.py") if os.path.exists(f"{PROJECT_DIR}/test_model.py") else ""
     workspace_dir = Path(PROJECT_DIR) / "workspace"
     workspace_dir.mkdir(parents=True, exist_ok=True)
+    current_falsification_mode = (rubric_falsification_mode or "numerical_proof").strip().lower()
+    current_is_v4_project = is_v4_family_project(args.project)
+    current_pivot_profile = select_pivot_profile(
+        is_v4_project=current_is_v4_project,
+        falsification_mode=current_falsification_mode,
+        stagnation_count=stagnation_count,
+    )
     if pending_loop_action == LoopControlAction.UNDERIDENTIFIED:
         print("🛑 R4 ACTION UNDERIDENTIFIED: bounded-discriminator search exhausted.")
         _write_underidentification_verdict(
@@ -1609,6 +1691,45 @@ for i in range(ITERATIONS):
             "   Options: evidence_hardening | claim_narrowing | freeze"
         )
         break
+    if current_is_v4_project and stagnation_count >= 3:
+        _record_loop_event(
+            workspace_dir,
+            event_type="v4_bounded_mutation_override",
+            iteration_index=i + 1,
+            stagnation_count=stagnation_count,
+            falsification_mode=current_falsification_mode,
+            is_v4_project=current_is_v4_project,
+            pivot_profile=current_pivot_profile,
+            pending_loop_action=pending_loop_action.value,
+            mutator_model_id=current_mutator,
+            judge_model_id=JUDGE_MODEL_ID,
+        )
+    elif stagnation_count >= 4:
+        _record_loop_event(
+            workspace_dir,
+            event_type="topological_pivot_emergency",
+            iteration_index=i + 1,
+            stagnation_count=stagnation_count,
+            falsification_mode=current_falsification_mode,
+            is_v4_project=current_is_v4_project,
+            pivot_profile=current_pivot_profile,
+            pending_loop_action=pending_loop_action.value,
+            mutator_model_id=current_mutator,
+            judge_model_id=JUDGE_MODEL_ID,
+        )
+    elif stagnation_count >= 3:
+        _record_loop_event(
+            workspace_dir,
+            event_type="topological_pivot_profile_injected",
+            iteration_index=i + 1,
+            stagnation_count=stagnation_count,
+            falsification_mode=current_falsification_mode,
+            is_v4_project=current_is_v4_project,
+            pivot_profile=current_pivot_profile,
+            pending_loop_action=pending_loop_action.value,
+            mutator_model_id=current_mutator,
+            judge_model_id=JUDGE_MODEL_ID,
+        )
     try:
         new_content = mutate_thesis(
             current_thesis,
@@ -1639,7 +1760,7 @@ for i in range(ITERATIONS):
             prior_committee_digest=iteration_prior_committee_digest,
         )
         iteration_history.append(signal)
-        yield_decision = evaluate_information_yield(iteration_history)
+        yield_decision = evaluate_information_yield(iteration_history, underidentified_after=args.underidentified_after)
         _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
         last_failure_reason = f"Runner R1 rejection: {exc}"
         stagnation_count = yield_decision.stagnant_window
@@ -1701,7 +1822,7 @@ for i in range(ITERATIONS):
             prior_committee_digest=iteration_prior_committee_digest,
         )
         iteration_history.append(signal)
-        yield_decision = evaluate_information_yield(iteration_history)
+        yield_decision = evaluate_information_yield(iteration_history, underidentified_after=args.underidentified_after)
         _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
         last_failure_reason = (
             f"Runner R1 mismatch {mutation_validation.mismatch_code.value}: "
@@ -1726,16 +1847,6 @@ for i in range(ITERATIONS):
         # Clean the markdown so the code doesn't clutter the thesis text
         write_file(WORKING_PATH, clean_thesis)
         print(f"💾 Falsification Suite saved to: {test_model_path}")
-    else:
-        # If the AI fails to write a test, we force a failure to maintain rigor
-        write_file(
-            test_model_path,
-            "assert False, 'AI failed to provide a testable falsification suite.'",
-        )
-        write_file(WORKING_PATH, clean_thesis)
-        print(
-            "⚠️ Warning: No Python block found. Forcing a test failure to ensure rigor."
-        )
 
     try:
         subprocess.run(test_cmd, check=True)
@@ -1792,6 +1903,17 @@ for i in range(ITERATIONS):
             ),
         )
 
+        # GP-029 first slice — passive latent-distance observability.
+        # Fires for every iter, including rejected candidates, because the
+        # score trace can't see motion through rejected candidates but
+        # GP-029 should. Writes to workspace/latent_distance.jsonl. Never
+        # read by score path, mutation path, or loop control. Fail-silent.
+        record_latent_distance(
+            project_dir=Path(PROJECT_DIR),
+            iteration_index=i + 1,
+            score=new_eval.get("score"),
+        )
+
         if not selection_record.candidate_admissible:
             print(f"⚠️ Runner R3 rejection: {selection_record.rationale}")
             signal = IterationSignal(
@@ -1804,7 +1926,7 @@ for i in range(ITERATIONS):
                 prior_committee_digest=iteration_prior_committee_digest,
             )
             iteration_history.append(signal)
-            yield_decision = evaluate_information_yield(iteration_history)
+            yield_decision = evaluate_information_yield(iteration_history, underidentified_after=args.underidentified_after)
             _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
             last_failure_reason = f"Runner R3 rejection: {selection_record.rationale}"
             stagnation_count = yield_decision.stagnant_window
@@ -1826,7 +1948,7 @@ for i in range(ITERATIONS):
             verified_axioms_added=len(new_eval.get("verified_axioms", [])),
         )
         iteration_history.append(signal)
-        yield_decision = evaluate_information_yield(iteration_history)
+        yield_decision = evaluate_information_yield(iteration_history, underidentified_after=args.underidentified_after)
         _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
 
         if new_eval["score"] > best_score:
@@ -1959,7 +2081,7 @@ for i in range(ITERATIONS):
             prior_committee_digest=iteration_prior_committee_digest,
         )
         iteration_history.append(signal)
-        yield_decision = evaluate_information_yield(iteration_history)
+        yield_decision = evaluate_information_yield(iteration_history, underidentified_after=args.underidentified_after)
         _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
         stagnation_count = yield_decision.stagnant_window
         pending_loop_action = yield_decision.action

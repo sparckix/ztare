@@ -1,9 +1,31 @@
+"""Anchor-proxy signature extraction from a project's test harness.
+
+Originally this module was a junk drawer holding proxy extraction,
+generic set distance, charter parsing, and forecast-type normalization.
+The 2026-04-11 split moved:
+
+- ``jaccard_distance`` → ``set_distance.py``
+- charter parsers and name normalizers → ``charter_parsing.py``
+
+Re-exports of the moved symbols are intentionally NOT provided. There
+were only two callers in-tree (``test_thesis.py``, ``autoresearch_loop.py``),
+both updated in the same commit, so a transitional shim would just be
+dead code.
+
+What remains here is the original concern the file was named for:
+walking ``test_model.py`` and producing the set of identifiers the
+test suite actually exercises (its "proxy signature"), plus the
+anchor-vs-active drift comparison built on top of it.
+"""
+
 from __future__ import annotations
 
 import ast
 import re
 import symtable
 from pathlib import Path
+
+from src.ztare.validator.charter_parsing import normalize_anchor_proxy_name
 
 
 def _collect_name_targets(target: ast.AST) -> set[str]:
@@ -116,95 +138,6 @@ def extract_proxy_set(test_model_path: Path) -> set[str]:
 
     proxies.update(_extract_unresolved_tokens(source))
     return proxies
-
-
-def jaccard_distance(set_a: set[str], set_b: set[str]) -> float:
-    union = set_a | set_b
-    if not union:
-        return 0.0
-    return 1.0 - (len(set_a & set_b) / len(union))
-
-
-def normalize_anchor_proxy_name(name: str) -> str:
-    normalized = name.strip()
-    if not normalized:
-        return ""
-    if normalized.startswith(("proxy:", "test:", "unresolved:")):
-        return normalized
-    if normalized.startswith("test_"):
-        return f"test:{normalized}"
-    return f"proxy:{normalized}"
-
-
-def normalize_forecast_type_name(name: str) -> str:
-    normalized = name.strip().lower().replace("`", "")
-    aliases = {
-        "none": "none",
-        "no_forecast": "none",
-        "directional": "directional_forecast",
-        "directional_forecast": "directional_forecast",
-        "bounded_directional": "directional_forecast",
-        "bounded_directional_forecast": "directional_forecast",
-        "probabilistic": "probabilistic_forecast",
-        "probabilistic_forecast": "probabilistic_forecast",
-        "point_probability": "probabilistic_forecast",
-        "point_probability_forecast": "probabilistic_forecast",
-    }
-    return aliases.get(normalized, "")
-
-
-def extract_forecast_type_from_charter(charter_text: str | None) -> str:
-    if not charter_text:
-        return ""
-
-    lines = charter_text.splitlines()
-    in_section = False
-    for raw_line in lines:
-        stripped = raw_line.strip()
-        if stripped.startswith("## "):
-            in_section = stripped == "## Forecast Type"
-            continue
-        if not in_section:
-            continue
-        if not stripped:
-            continue
-        if stripped.startswith("### "):
-            break
-        candidate = stripped
-        if candidate.startswith("- "):
-            candidate = candidate[2:].strip()
-        normalized = normalize_forecast_type_name(candidate)
-        if normalized:
-            return normalized
-    return ""
-
-
-def extract_anchor_proxies_from_charter(charter_text: str | None) -> list[str]:
-    if not charter_text:
-        return []
-
-    lines = charter_text.splitlines()
-    in_section = False
-    anchors: list[str] = []
-    for raw_line in lines:
-        line = raw_line.rstrip()
-        stripped = line.strip()
-        if stripped.startswith("## "):
-            in_section = stripped == "## Anchor Proxies"
-            continue
-        if not in_section:
-            continue
-        if not stripped:
-            continue
-        if stripped.startswith("### "):
-            break
-        match = re.match(r"^-\s+(.+?)\s*$", stripped)
-        if not match:
-            continue
-        normalized = normalize_anchor_proxy_name(match.group(1))
-        if normalized:
-            anchors.append(normalized)
-    return anchors
 
 
 def compute_anchor_proxy_coverage(

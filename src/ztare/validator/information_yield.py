@@ -69,7 +69,19 @@ def evaluate_information_yield(
     *,
     refresh_after: int = 2,
     pivot_after: int = 3,
+    underidentified_after: int | None = None,
 ) -> InformationYieldDecision:
+    """Evaluate information yield and return the next loop control action.
+
+    underidentified_after: minimum catastrophic-streak length before the
+    UNDERIDENTIFIED exit fires in bounded_discriminator mode. Defaults to
+    pivot_after (preserving legacy behavior). Set higher (e.g. 50 or 100)
+    for pre-registered experiments that require sustained starvation before
+    the UNDERIDENTIFIED conclusion is valid — otherwise the exit fires before
+    the pivot has had any chance to produce structural moves.
+    """
+    if underidentified_after is None:
+        underidentified_after = pivot_after
     if not history:
         return InformationYieldDecision(
             action=LoopControlAction.CONTINUE,
@@ -121,13 +133,13 @@ def evaluate_information_yield(
     latest_falsification_mode = (latest.falsification_mode or "numerical_proof").strip().lower()
     if (
         latest_falsification_mode == "bounded_discriminator"
-        and stagnant_window >= pivot_after
-        and len(flat_tail) >= pivot_after
+        and stagnant_window >= underidentified_after
+        and len(flat_tail) >= underidentified_after
         and all(
             item.catastrophic_failure
             and not item.runtime_failure
             and not item.is_r1_failure()
-            for item in flat_tail[-pivot_after:]
+            for item in flat_tail[-underidentified_after:]
         )
     ):
         return InformationYieldDecision(

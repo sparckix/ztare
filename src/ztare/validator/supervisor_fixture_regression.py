@@ -90,7 +90,7 @@ def build_supervisor_fixture_cases(*, research_spec_path: str) -> list[Superviso
             "active_program": "paper4_drafting",
             "active_target": "paper_outline",
             "pipeline_type": "research",
-            "debate_file": "research_areas/debates/papers/paper4.md",
+            "debate_file": "research_areas/private/papers/paper4.md",
             "next_actor": Actor.CODEX,
         }
     )
@@ -163,7 +163,7 @@ def build_supervisor_fixture_cases(*, research_spec_path: str) -> list[Superviso
                     "active_program": "paper4_drafting",
                     "active_target": "paper_outline",
                     "pipeline_type": "research",
-                    "debate_file": "research_areas/debates/papers/paper4.md",
+                    "debate_file": "research_areas/private/papers/paper4.md",
                 }
             ),
             request=TransitionInput(
