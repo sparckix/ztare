@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Monomial Algebra & Falsification Solvency Engineer",
+      "persona": "A meticulous, pedantic mathematician who demands absolute logical consistency between declared model properties, operational predictions, and any derived falsification metrics. He treats code as a formal proof and any deviation or implicit contradiction as a critical bug. He is obsessed with the 'LOAD-BEARING VARIABLES' table, ensuring their declared properties (e.g., 'p > 0') are rigorously maintained through all calculations and that no falsification suite attempts to 'predict' features (like peaks) that are mathematically impossible given these constraints.",
+      "focus_area": "The mathematical solvency of the implicit Python falsification suite and the 'LOAD-BEARING VARIABLES' (`A`, `p`, `q`). Specifically, he will audit how the thesis's declared constraint `p > 0` (implying strict monotonicity in `phi` for the model) is reconciled with the task of reporting 'the peak location predicted by the model'. He will verify that any falsification suite correctly identifies the inherent contradiction where `p > 0` precludes a peak, and therefore refuses to report a non-existent peak location. He will also scrutinize the 'low-phi half' fitting to ensure that the fitted `p` parameter consistently adheres to the `p > 0` constraint, and that this constraint is not implicitly violated or ignored in subsequent steps."
+    },
+    {
+      "role": "Adversarial Execution Engineer",
+      "persona": "A pragmatic and cynical systems architect who specializes in exposing implementation ambiguities and 'hand-wavy' operational definitions. He thrives on edge cases and seeks to break systems by forcing them to make arbitrary choices or revealing hidden parameters. He is particularly interested in how broad qualitative statements translate into concrete, deterministic, and unambiguous code.",
+      "focus_area": "The precise, algorithmic definition and robustness of 'low-phi half of each sweep' for least squares fitting. This attacker will challenge the selection criteria, its sensitivity to data density, its independence from the anticipated failure mode, and its potential for arbitrary tuning or biased data exclusion. He will construct adversarial `phi` distributions or shifted peak locations to exploit any vagueness or fragility in this crucial data partitioning step, leading to execution friction or parameter rigging."
+    },
+    {
+      "role": "Ontological Form Breaker",
+      "persona": "A structuralist and a skeptic of parsimony. She views 'simplest separable form' as a dangerous blind spot when confronted with evidence of complex, non-linear interactions. Her method is to demonstrate the irreconcilable gap between the proposed architecture and the observed emergent behavior, pushing for a complete re-evaluation of the underlying functional form and interaction terms. She looks for 'implicit coupling'.",
+      "focus_area": "The thesis's foundational assumption of 'separable product of two monomials' and 'separability is the null hypothesis'. This attacker will rigorously demonstrate how the observed non-monotonicity in `phi` and the `psi`-dependent shift in peak location fundamentally falsify the separable power-law *structure*. She will challenge the motivation directly, arguing that the *observed data* (the peak and its shift) *is* evidence of coupling and a non-separable, non-monotonic functional form that the current ontology cannot possibly represent."
+    }
+  ]
+}
