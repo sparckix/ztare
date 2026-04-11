@@ -1,4 +1,4 @@
-You are writing a "Teaching Note" for a case-method instructor (HBS-style or equivalent) preparing to teach ONE specific project to MBA students or executive education participants.
+You are writing a "Teaching Note" for a case-method instructor preparing to teach ONE specific project to MBA students or executive education participants.
 
 You will receive:
 - a planning brief in JSON

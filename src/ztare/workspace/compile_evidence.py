@@ -1,7 +1,7 @@
 import argparse
 import copy
+import hashlib
 import json
-import os
 import re
 import sys
 import time
@@ -34,6 +34,10 @@ TEXT_EXTENSIONS = {
 
 DEBUG = False
 COMPILE_FAILURE_ARTIFACT = "latest_compile_failure.json"
+RAW_COMPILE_CACHE_INDEX = "compiled_evidence_cache_index.json"
+LATEST_COMPILE_CACHE_HIT = "latest_compile_cache_hit.json"
+RAW_COMPILE_CACHE_DIRNAME = "compiled_evidence_cache"
+RAW_COMPILE_CACHE_SCHEMA_VERSION = 1
 
 SOURCE_TYPE_EVIDENCE = "source_evidence"
 SOURCE_TYPE_SEED = "seed_hypothesis"
@@ -84,6 +88,10 @@ class CompileEvidenceError(RuntimeError):
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="ignore")
+
+
+def sha256_text(content: str) -> str:
+    return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
 def parse_source_frontmatter(raw_text: str) -> Tuple[Dict[str, str], str]:
@@ -452,6 +460,7 @@ def collect_sources(
             "path": str(path.relative_to(raw_dir)),
             "kind": path.suffix.lower().lstrip(".") or "text",
             "source_type": source_type,
+            "full_sha256": sha256_text(raw_text),
             "chars_used": len(trimmed),
             "truncated": truncated,
             "content": trimmed,
@@ -622,10 +631,142 @@ def load_workspace_packet(workspace_dir: Path) -> Dict[str, Any]:
     return packet
 
 
+def build_raw_compile_cache_key(
+    *,
+    project_dir: Path,
+    model: str,
+    max_files: int,
+    max_chars_per_file: int,
+    max_total_chars: int,
+    sources: List[Dict[str, Any]],
+) -> str:
+    prompt_hash = sha256_text(load_prompt("compile_evidence.md"))
+    payload = {
+        "schema_version": RAW_COMPILE_CACHE_SCHEMA_VERSION,
+        "mode": "raw",
+        "project_name": project_dir.name,
+        "model_family": model,
+        "model_id": MODEL_MAP[model],
+        "prompt_sha256": prompt_hash,
+        "max_files": max_files,
+        "max_chars_per_file": max_chars_per_file,
+        "max_total_chars": max_total_chars,
+        "sources": [
+            {
+                "path": source["path"],
+                "kind": source["kind"],
+                "source_type": source["source_type"],
+                "full_sha256": source["full_sha256"],
+                "chars_used": source["chars_used"],
+                "truncated": source["truncated"],
+            }
+            for source in sources
+        ],
+    }
+    return sha256_text(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+
+
+def load_raw_compile_cache_index(workspace_dir: Path) -> Dict[str, Any]:
+    index_path = workspace_dir / RAW_COMPILE_CACHE_INDEX
+    if not index_path.exists():
+        return {
+            "schema_version": RAW_COMPILE_CACHE_SCHEMA_VERSION,
+            "entries": {},
+        }
+    try:
+        payload = read_json(index_path)
+    except Exception:  # noqa: BLE001
+        return {
+            "schema_version": RAW_COMPILE_CACHE_SCHEMA_VERSION,
+            "entries": {},
+        }
+    entries = payload.get("entries")
+    if not isinstance(entries, dict):
+        return {
+            "schema_version": RAW_COMPILE_CACHE_SCHEMA_VERSION,
+            "entries": {},
+        }
+    return payload
+
+
+def write_raw_compile_cache_index(workspace_dir: Path, payload: Dict[str, Any]) -> Path:
+    index_path = workspace_dir / RAW_COMPILE_CACHE_INDEX
+    write_json(index_path, payload)
+    return index_path
+
+
+def raw_compile_cache_entry_dir(workspace_dir: Path, cache_key: str) -> Path:
+    return workspace_dir / RAW_COMPILE_CACHE_DIRNAME / cache_key
+
+
+def load_raw_compile_cache_entry(
+    *,
+    workspace_dir: Path,
+    cache_key: str,
+) -> Optional[Tuple[Dict[str, Any], Dict[str, Any]]]:
+    entry_dir = raw_compile_cache_entry_dir(workspace_dir, cache_key)
+    packet_path = entry_dir / "packet.json"
+    manifest_path = entry_dir / "manifest.json"
+    if not packet_path.exists() or not manifest_path.exists():
+        return None
+    packet = read_json(packet_path)
+    validate_packet_shape(packet)
+    manifest = read_json(manifest_path)
+    return packet, manifest
+
+
+def persist_raw_compile_cache_entry(
+    *,
+    workspace_dir: Path,
+    cache_key: str,
+    packet: Dict[str, Any],
+    manifest: Dict[str, Any],
+    evidence_text: str,
+) -> Path:
+    entry_dir = raw_compile_cache_entry_dir(workspace_dir, cache_key)
+    write_json(entry_dir / "packet.json", packet)
+    write_json(entry_dir / "manifest.json", manifest)
+    write_text(entry_dir / "evidence.txt", evidence_text)
+    return entry_dir
+
+
+def write_latest_compile_cache_hit(
+    *,
+    workspace_dir: Path,
+    cache_key: str,
+    entry_dir: Path,
+    model: str,
+    source_count: int,
+    generated_on: str,
+) -> Path:
+    hit_path = workspace_dir / LATEST_COMPILE_CACHE_HIT
+    write_json(
+        hit_path,
+        {
+            "schema_version": RAW_COMPILE_CACHE_SCHEMA_VERSION,
+            "mode": "raw",
+            "cache_key": cache_key,
+            "entry_dir": str(entry_dir),
+            "model_family": model,
+            "model_id": MODEL_MAP[model],
+            "source_count": source_count,
+            "reused_on": generated_on,
+        },
+    )
+    return hit_path
+
+
+def clear_latest_compile_cache_hit(workspace_dir: Path) -> None:
+    hit_path = workspace_dir / LATEST_COMPILE_CACHE_HIT
+    if hit_path.exists():
+        hit_path.unlink()
+
+
 def compile_from_raw(
     *,
     project_dir: Path,
     raw_dir: Path,
+    workspace_dir: Path,
     model: str,
     max_files: int,
     max_chars_per_file: int,
@@ -644,8 +785,40 @@ def compile_from_raw(
         raise RuntimeError(f"No supported text-like source files found in {raw_dir}")
 
     compiler_date = time.strftime("%B %d, %Y")
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    cache_key = build_raw_compile_cache_key(
+        project_dir=project_dir,
+        model=model,
+        max_files=max_files,
+        max_chars_per_file=max_chars_per_file,
+        max_total_chars=max_total_chars,
+        sources=sources,
+    )
+    cache_index = load_raw_compile_cache_index(workspace_dir)
+    cached = load_raw_compile_cache_entry(workspace_dir=workspace_dir, cache_key=cache_key)
+    if cached is not None:
+        cached_packet, cached_manifest = cached
+        cached_entry_dir = raw_compile_cache_entry_dir(workspace_dir, cache_key)
+        write_latest_compile_cache_hit(
+            workspace_dir=workspace_dir,
+            cache_key=cache_key,
+            entry_dir=cached_entry_dir,
+            model=model,
+            source_count=len(sources),
+            generated_on=compiler_date,
+        )
+        manifest = copy.deepcopy(cached_manifest)
+        manifest["generated_on"] = compiler_date
+        manifest["cache_hit"] = True
+        manifest["cache_key"] = cache_key
+        manifest["cache_entry_dir"] = str(cached_entry_dir)
+        manifest["cache_original_generated_on"] = cached_manifest.get("generated_on")
+        evidence_text = render_evidence_markdown(cached_packet, project_dir.name, compiler_date)
+        return cached_packet, manifest, evidence_text
+
+    clear_latest_compile_cache_hit(workspace_dir)
     prompt = build_prompt(project_dir.name, compiler_date, sources)
-    dbg(f"Source count={len(sources)} prompt_chars={len(prompt)}")
+    dbg(f"Source count={len(sources)} prompt_chars={len(prompt)} cache_key={cache_key}")
 
     llm = LLMClient(model)
     raw_response = llm.call(prompt)
@@ -663,11 +836,34 @@ def compile_from_raw(
         "model_id": MODEL_MAP[model],
         "generated_on": compiler_date,
         "prompt_path": str(PROMPTS_DIR / "compile_evidence.md"),
+        "prompt_sha256": sha256_text(load_prompt("compile_evidence.md")),
+        "cache_schema_version": RAW_COMPILE_CACHE_SCHEMA_VERSION,
+        "cache_hit": False,
+        "cache_key": cache_key,
         "source_count": len(sources),
         "sources": [{k: v for k, v in source.items() if k != "content"} for source in sources],
         "warnings": warnings,
     }
     evidence_text = render_evidence_markdown(packet, project_dir.name, compiler_date)
+    cache_entry_dir = persist_raw_compile_cache_entry(
+        workspace_dir=workspace_dir,
+        cache_key=cache_key,
+        packet=packet,
+        manifest=manifest,
+        evidence_text=evidence_text,
+    )
+    cache_index.setdefault("entries", {})
+    cache_index["schema_version"] = RAW_COMPILE_CACHE_SCHEMA_VERSION
+    cache_index["entries"][cache_key] = {
+        "cache_key": cache_key,
+        "entry_dir": str(cache_entry_dir),
+        "generated_on": compiler_date,
+        "model_family": model,
+        "model_id": MODEL_MAP[model],
+        "source_count": len(sources),
+    }
+    write_raw_compile_cache_index(workspace_dir, cache_index)
+    manifest["cache_entry_dir"] = str(cache_entry_dir)
     return packet, manifest, evidence_text
 
 
@@ -848,6 +1044,7 @@ def main() -> int:
             packet, compiler_manifest, evidence_text = compile_from_raw(
                 project_dir=project_dir,
                 raw_dir=raw_dir,
+                workspace_dir=workspace_dir,
                 model=args.model,
                 max_files=args.max_files,
                 max_chars_per_file=args.max_chars_per_file,
@@ -895,6 +1092,10 @@ def main() -> int:
     if gap_payload:
         print(f"Evidence gap brief: {workspace_dir / 'evidence_gap_brief.md'}")
     print(f"Mode: {'workspace' if use_workspace else 'raw'}")
+    if not use_workspace:
+        print(f"Cache: {'hit' if compiler_manifest.get('cache_hit') else 'miss'}")
+        if compiler_manifest.get("cache_key"):
+            print(f"Cache key: {compiler_manifest['cache_key']}")
     warnings = compiler_manifest.get("warnings", [])
     if warnings:
         print(f"Warnings: {len(warnings)}")

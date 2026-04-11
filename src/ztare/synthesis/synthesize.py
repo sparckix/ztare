@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -95,6 +96,10 @@ def write_json(path: Path, payload: Dict[str, Any]) -> None:
 
 def load_prompt(path: Path) -> str:
     return read_text(path).strip()
+
+
+def prompt_hash(path: Path) -> str:
+    return hashlib.sha1(read_text(path).encode("utf-8")).hexdigest()
 
 
 def dbg(msg: str) -> None:
@@ -273,6 +278,32 @@ def final_report_path(project_dir: Path, renderer_type: str) -> Path:
     if "appendix" in safe.lower():
         return project_dir / f"Appendix.{safe}.md"
     return project_dir / f"Report.{safe}.md"
+
+
+def multi_project_scope_id(project_names: List[str]) -> str:
+    normalized = ",".join(sorted(project_names))
+    return hashlib.sha1(normalized.encode("utf-8")).hexdigest()[:10]
+
+
+def multi_project_scoped_paths(project_dir: Path, renderer_type: str, project_names: List[str]) -> Dict[str, Path]:
+    base = synthesis_paths(project_dir)
+    renderer_safe = renderer_tag(renderer_type)
+    scope_id = multi_project_scope_id(project_names)
+    suffix = f"multi_project.{renderer_safe}.{scope_id}"
+    final_name = f"Report.{suffix}.md"
+    if "appendix" in renderer_safe.lower():
+        final_name = f"Appendix.{suffix}.md"
+    return {
+        "dir": base["dir"],
+        "context": base["dir"] / f"context.{suffix}.json",
+        "ledger": base["dir"] / f"ledger.{suffix}.json",
+        "brief": base["dir"] / f"brief.{suffix}.json",
+        "history_summary": base["dir"] / f"history_summary.{suffix}.json",
+        "qa": base["dir"] / f"qa.{suffix}.json",
+        "candidate_report": base["dir"] / f"Report.{suffix}.candidate.md",
+        "final_report": project_dir / final_name,
+        "aggregated_corpus": base["dir"] / f"aggregated_corpus.{suffix}.json",
+    }
 
 
 def latest_history_files(project_dir: Path, limit: int) -> List[Path]:
@@ -568,6 +599,8 @@ def sniff_context(
     merged["history_mode"] = history_mode_override or default_history_mode(merged["renderer_type"])
     merged["history_source_paths"] = [str(path) for path in all_relevant_history_paths(project_dir, project_type)]
     merged["artifact_paths"] = select_artifact_paths(project_dir, project_type, merged["history_mode"], merged["renderer_type"])
+    merged["history_summary_prompt_hash"] = prompt_hash(PROMPTS_DIR / "summarize_history.md")
+    merged["ledger_prompt_hash"] = prompt_hash(PROMPTS_DIR / "extract_ledger.md")
 
     out_paths = renderer_scoped_paths(project_dir, merged["renderer_type"])
     merged["output_paths"] = {key: str(path) for key, path in out_paths.items()}
@@ -613,11 +646,20 @@ def summarize_history(project_dir: Path, context: Dict[str, Any]) -> Dict[str, A
 
     history_source_paths = context.get("history_source_paths", [])
     summary_path = synthesis_paths(project_dir)["history_summary"]
+    summary_prompt_hash = context.get("history_summary_prompt_hash") or prompt_hash(PROMPTS_DIR / "summarize_history.md")
     dbg(f"Summarize history: sources={len(history_source_paths)} -> {summary_path}")
 
-    # Skip re-summarization if a valid cached summary with recurring_failures_tagged exists.
+    # Skip re-summarization only when the cache matches the current history mode, sources, and prompt.
     cached = load_json_if_valid(summary_path)
-    if cached and cached.get("recurring_failures_tagged") is not None:
+    cached_meta = cached.get("_meta") if isinstance(cached, dict) else None
+    if (
+        cached
+        and isinstance(cached_meta, dict)
+        and cached.get("recurring_failures_tagged") is not None
+        and cached_meta.get("history_mode") == context["history_mode"]
+        and cached_meta.get("source_paths") == history_source_paths
+        and cached_meta.get("prompt_hash") == summary_prompt_hash
+    ):
         dbg(f"Summarize history: using cached summary with {len(cached['recurring_failures_tagged'])} tagged failures")
         return cached
 
@@ -628,6 +670,7 @@ def summarize_history(project_dir: Path, context: Dict[str, Any]) -> Dict[str, A
                 "project_type": context["project_type"],
                 "history_mode": context["history_mode"],
                 "source_paths": [],
+                "prompt_hash": summary_prompt_hash,
             },
             "summary_scope": "No historical artifacts available.",
             "major_pivots": [],
@@ -642,9 +685,10 @@ def summarize_history(project_dir: Path, context: Dict[str, Any]) -> Dict[str, A
 
     artifact_bundle = load_artifact_bundle(history_source_paths)
     dbg(f"Summarize history: bundle_chars={len(artifact_bundle)}")
+    prompt_body = load_prompt(PROMPTS_DIR / "summarize_history.md")
     prompt = "\n\n".join(
         [
-            load_prompt(PROMPTS_DIR / "summarize_history.md"),
+            prompt_body,
             f"Project name: {context['project_name']}",
             f"Project type: {context['project_type']}",
             f"History mode: {context['history_mode']}",
@@ -675,6 +719,7 @@ def summarize_history(project_dir: Path, context: Dict[str, Any]) -> Dict[str, A
         "project_type": context["project_type"],
         "history_mode": context["history_mode"],
         "source_paths": history_source_paths,
+        "prompt_hash": summary_prompt_hash,
     }
     write_json(summary_path, summary)
     return summary
@@ -702,7 +747,23 @@ def cached_ledger_matches_context(cached: Dict[str, Any], context: Dict[str, Any
     cached_paths = meta.get("artifact_paths")
     if not isinstance(cached_paths, list):
         return False
+    if meta.get("prompt_hash") != context.get("ledger_prompt_hash"):
+        return False
     return [str(path) for path in cached_paths] == [str(path) for path in context.get("artifact_paths", [])]
+
+
+def cached_multi_project_ledger_matches_context(cached: Dict[str, Any], context: Dict[str, Any]) -> bool:
+    meta = cached.get("_meta")
+    if not isinstance(meta, dict):
+        return False
+    if meta.get("project_names") != context.get("multi_project_names", []):
+        return False
+    if meta.get("renderer_type") != context.get("renderer_type"):
+        return False
+    if meta.get("prompt_hash") != context.get("ledger_prompt_hash"):
+        return False
+    expected_digest = aggregated_corpus_digest(context.get("aggregated_corpus") or {})
+    return meta.get("aggregated_corpus_digest") == expected_digest
 
 
 def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]:
@@ -710,9 +771,10 @@ def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]
         raise RuntimeError("ACTIVE_LLM is not configured.")
     artifact_bundle = load_artifact_bundle(context["artifact_paths"])
     dbg(f"Extract ledger: artifact_paths={len(context['artifact_paths'])} bundle_chars={len(artifact_bundle)}")
+    prompt_body = load_prompt(PROMPTS_DIR / "extract_ledger.md")
     prompt = "\n\n".join(
         [
-            load_prompt(PROMPTS_DIR / "extract_ledger.md"),
+            prompt_body,
             f"Project name: {context['project_name']}",
             f"Project type: {context['project_type']}",
             "Artifacts:",
@@ -733,8 +795,46 @@ def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]
         "project_name": context["project_name"],
         "project_type": context["project_type"],
         "artifact_paths": context["artifact_paths"],
+        "prompt_hash": context.get("ledger_prompt_hash"),
     }
     # Ledger is canonical and shared across renderers for the same project snapshot.
+    write_json(ledger_output_path, ledger)
+    return ledger
+
+
+def extract_multi_project_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]:
+    if ACTIVE_LLM is None:
+        raise RuntimeError("ACTIVE_LLM is not configured.")
+    aggregated_corpus = context.get("aggregated_corpus") or {}
+    prompt_body = load_prompt(PROMPTS_DIR / "extract_ledger_multi_project.md")
+    prompt = "\n\n".join(
+        [
+            prompt_body,
+            f"Anchor project: {context['project_name']}",
+            f"Project type: {context['project_type']}",
+            f"Renderer type: {context['renderer_type']}",
+            "Aggregated multi-project corpus JSON:",
+            json.dumps(aggregated_corpus, indent=2, sort_keys=True),
+        ]
+    )
+    ledger_output_path = Path(context["output_paths"]["ledger"])
+    raw_response = ACTIVE_LLM.call(prompt)
+    ledger = parse_json_step_response(
+        raw_response,
+        step="extract_multi_project_ledger",
+        output_path=ledger_output_path,
+        failure_message="Could not extract multi-project insight ledger",
+        cache_validator=lambda cached: cached_multi_project_ledger_matches_context(cached, context),
+    )
+    ledger["_meta"] = {
+        "multi_project": True,
+        "project_name": context["project_name"],
+        "project_type": context["project_type"],
+        "project_names": context["multi_project_names"],
+        "renderer_type": context["renderer_type"],
+        "aggregated_corpus_digest": aggregated_corpus_digest(aggregated_corpus),
+        "prompt_hash": context.get("ledger_prompt_hash"),
+    }
     write_json(ledger_output_path, ledger)
     return ledger
 
@@ -834,6 +934,118 @@ def derive_project_domain(project_name: str) -> str:
     if "climate" in name or "energy" in name:
         return "climate_policy"
     return name.split("_", 1)[0] or "misc"
+
+
+def aggregated_corpus_digest(payload: Dict[str, Any]) -> str:
+    serialized = json.dumps(payload, indent=2, sort_keys=True)
+    return hashlib.sha1(serialized.encode("utf-8")).hexdigest()
+
+
+def dedupe_strings(items: List[str], limit: int = 12) -> List[str]:
+    out: List[str] = []
+    seen = set()
+    for item in items:
+        if not isinstance(item, str):
+            continue
+        cleaned = item.strip()
+        if not cleaned or cleaned in seen:
+            continue
+        seen.add(cleaned)
+        out.append(cleaned)
+        if len(out) >= limit:
+            break
+    return out
+
+
+def build_multi_project_history_summary(project_payloads: List[Dict[str, Any]]) -> Dict[str, Any]:
+    cross_project_patterns: List[str] = []
+    recurring_survivors: List[str] = []
+    recurring_failures: List[str] = []
+    major_pivots: List[str] = []
+    projects: List[Dict[str, Any]] = []
+    project_names: List[str] = []
+
+    for payload in project_payloads:
+        project_name = payload.get("project", "")
+        project_names.append(project_name)
+        history_summary = payload.get("history_summary") or {}
+        projects.append(
+            {
+                "project": project_name,
+                "domain": payload.get("domain", ""),
+                "summary_scope": history_summary.get("summary_scope", ""),
+                "cross_run_patterns": history_summary.get("cross_run_patterns") or [],
+                "recurring_survivors": history_summary.get("recurring_survivors") or [],
+                "recurring_failures": history_summary.get("recurring_failures") or [],
+                "major_pivots": history_summary.get("major_pivots") or [],
+            }
+        )
+        cross_project_patterns.extend(history_summary.get("cross_run_patterns") or [])
+        recurring_survivors.extend(history_summary.get("recurring_survivors") or [])
+        recurring_failures.extend(history_summary.get("recurring_failures") or [])
+        major_pivots.extend(history_summary.get("major_pivots") or [])
+
+    return {
+        "_meta": {
+            "mode": "multi_project_history_summary",
+            "project_count": len(project_payloads),
+            "project_names": project_names,
+        },
+        "summary_scope": f"Combined synthesis across {', '.join(project_names)}.",
+        "projects": projects,
+        "cross_project_patterns": dedupe_strings(cross_project_patterns),
+        "recurring_survivors": dedupe_strings(recurring_survivors),
+        "recurring_failures": dedupe_strings(recurring_failures),
+        "major_pivots": dedupe_strings(major_pivots),
+    }
+
+
+def aggregate_multi_project_corpus(
+    project_dirs: List[Path],
+    renderer_type: str,
+    history_mode: Optional[str],
+) -> Dict[str, Any]:
+    projects_payload: List[Dict[str, Any]] = []
+    for project_dir in project_dirs:
+        project_name = project_dir.name
+        domain = derive_project_domain(project_name)
+        project_context = sniff_context(
+            project_dir,
+            renderer_override=renderer_type,
+            history_mode_override=history_mode,
+        )
+        history_summary = summarize_history(project_dir, project_context)
+        project_context = refresh_context_artifacts(project_dir, project_context)
+        ledger = extract_ledger(project_dir, project_context)
+        projects_payload.append(
+            {
+                "project": project_name,
+                "domain": domain,
+                "project_type": project_context.get("project_type"),
+                "audience": project_context.get("audience"),
+                "tone": project_context.get("tone"),
+                "artifact_paths": project_context.get("artifact_paths", []),
+                "history_summary": history_summary,
+                "ledger": ledger,
+            }
+        )
+
+    project_types = sorted(
+        {
+            payload.get("project_type")
+            for payload in projects_payload
+            if isinstance(payload.get("project_type"), str) and payload.get("project_type")
+        }
+    )
+    return {
+        "_meta": {
+            "mode": "multi_project_renderer",
+            "renderer_type": renderer_type,
+            "project_count": len(projects_payload),
+            "project_types": project_types,
+        },
+        "projects": projects_payload,
+    }
 
 
 def aggregate_field_manual_corpus(project_dirs: List[Path]) -> Dict[str, Any]:
@@ -1193,13 +1405,71 @@ def run_multi_project_field_manual(project_names: List[str], args: argparse.Name
     return 1
 
 
+def run_multi_project_renderer(project_names: List[str], args: argparse.Namespace) -> int:
+    project_dirs = [resolve_project_dir(name) for name in project_names]
+    renderer_type = args.renderer_type or "research_note"
+    anchor_dir = project_dirs[0]
+    chosen_history_mode = args.history_mode or "focused"
+    dbg(f"Multi-project renderer: projects={project_names} renderer={renderer_type}")
+
+    context = sniff_context(
+        anchor_dir,
+        renderer_override=renderer_type,
+        history_mode_override=chosen_history_mode,
+    )
+    aggregated = aggregate_multi_project_corpus(project_dirs, renderer_type, chosen_history_mode)
+    context["multi_project"] = True
+    context["multi_project_names"] = project_names
+    context["aggregated_corpus"] = aggregated
+    context["project_name"] = f"multi_project::{','.join(project_names)}"
+    context["history_mode"] = chosen_history_mode
+    context["history_summary_prompt_hash"] = prompt_hash(PROMPTS_DIR / "summarize_history.md")
+    context["ledger_prompt_hash"] = prompt_hash(PROMPTS_DIR / "extract_ledger_multi_project.md")
+    if len(set(aggregated.get("_meta", {}).get("project_types", []))) > 1:
+        context["project_type"] = "general_analysis"
+    scoped_paths = multi_project_scoped_paths(anchor_dir, renderer_type, project_names)
+    context["output_paths"] = {key: str(path) for key, path in scoped_paths.items()}
+    context["history_summary_path"] = str(scoped_paths["history_summary"])
+
+    write_json(Path(context["output_paths"]["context"]), context)
+    write_json(Path(context["output_paths"]["aggregated_corpus"]), aggregated)
+
+    merged_history_summary = build_multi_project_history_summary(aggregated.get("projects", []))
+    write_json(Path(scoped_paths["history_summary"]), merged_history_summary)
+
+    try:
+        ledger = extract_multi_project_ledger(anchor_dir, context)
+        brief = derive_brief(anchor_dir, ledger, context)
+        report = render_artifact(ledger, brief, context)
+    except SynthesisStepError as exc:
+        print(f"Multi-project render failed: {exc}", file=sys.stderr)
+        return 2
+
+    qa = qa_artifact(ledger, brief, report, context)
+    final_path = Path(context["output_paths"]["final_report"])
+    if qa.get("faithful") and int(qa.get("score", 0)) >= ACTIVE_QA_THRESHOLD:
+        write_text(final_path, report)
+        print(f"Multi-project render: QA passed with score {qa.get('score')}.")
+        print(f"Written to: {final_path}")
+        print(f"Aggregated corpus: {context['output_paths']['aggregated_corpus']}")
+        return 0
+
+    print(
+        f"Multi-project render: QA failed (score {qa.get('score')}, threshold {ACTIVE_QA_THRESHOLD}).",
+        file=sys.stderr,
+    )
+    print(f"Candidate report kept at: {context['output_paths']['candidate_report']}", file=sys.stderr)
+    print(f"Aggregated corpus: {context['output_paths']['aggregated_corpus']}", file=sys.stderr)
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Synthesize a project into a ledger, report, and QA gate.")
     project_group = parser.add_mutually_exclusive_group(required=True)
     project_group.add_argument("--project", help="Project name under projects/ or a direct project path.")
     project_group.add_argument(
         "--projects",
-        help="Comma-separated list of project names for multi-project aggregation. Currently only supported with --renderer-type field_manual.",
+        help="Comma-separated list of project names for multi-project aggregation. Requires --renderer-type.",
     )
     parser.add_argument(
         "--model",
@@ -1252,17 +1522,19 @@ def main() -> int:
     dbg(f"Models: model={args.model} qa_model={args.qa_model or args.model} qa_threshold={args.qa_threshold}")
 
     if args.projects:
-        if args.renderer_type != "field_manual":
-            print(
-                "--projects is currently only supported with --renderer-type field_manual.",
-                file=sys.stderr,
-            )
+        if args.pack:
+            print("--pack is not supported with --projects.", file=sys.stderr)
+            return 2
+        if not args.renderer_type:
+            print("--projects requires --renderer-type (for example research_note or decision_brief).", file=sys.stderr)
             return 2
         project_names = [p.strip() for p in args.projects.split(",") if p.strip()]
         if not project_names:
             print("--projects must contain at least one project name.", file=sys.stderr)
             return 2
-        return run_multi_project_field_manual(project_names, args)
+        if args.renderer_type == "field_manual":
+            return run_multi_project_field_manual(project_names, args)
+        return run_multi_project_renderer(project_names, args)
 
     if args.renderer_type == "field_manual":
         print(

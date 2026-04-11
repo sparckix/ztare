@@ -70,6 +70,10 @@ Return valid JSON only using this schema:
     "label": "decisively_confirmed | directionally_supported | deferred_confirmation | unresolved | rejected",
     "why": "string"
   },
+  "forecast_status": {
+    "label": "full_forecast_earned | bounded_working_range | component_only | no_defensible_range",
+    "why": "string"
+  },
   "most_likely_false_belief": {
     "belief": "string",
     "confidence": "low | medium | high",
@@ -107,6 +111,23 @@ Return valid JSON only using this schema:
   "generalization_risks": [
     "string"
   ],
+  "quantitative_anchors": [
+    {
+      "label": "string",
+      "value_or_range": "string",
+      "status": "measured | bounded | illustrative | unresolved",
+      "why_it_matters": "string"
+    }
+  ],
+  "working_priors": [
+    {
+      "variable": "string",
+      "range": "string",
+      "status": "measured | bounded | illustrative | unresolved",
+      "scope": "string",
+      "why": "string"
+    }
+  ],
   "overclaim_boundary": [
     "string"
   ],
@@ -124,6 +145,7 @@ Extraction guidance:
 - "hardest_conclusion" should name the most consequential uncomfortable conclusion the materials support.
 - "confirmation_status" should classify the strongest surviving thesis by current evidentiary strength.
 - "most_likely_false_belief" should name the attractive but repeatedly failing belief management is most at risk of holding onto.
+- "forecast_status" should state whether the materials earn a full forecast, only a bounded working range, only a component-level conclusion, or no defensible range at all.
 - "core_question", "hardest_conclusion", "most_likely_false_belief", "key_takeaways", and "decision_rule" are headline fields. Write them in plain audience-facing language first. Avoid symbolic variables, simulation terminology, statistical labels, internal metric names, or raw thresholds unless they are necessary to make the decision intelligible.
 - If "confirmation_status.label" is `directionally_supported` or `deferred_confirmation`, do not phrase the strongest surviving thesis as established fact. Preserve the distinction between present directional support and decisive confirmation.
 - Use `deferred_confirmation` when the current materials support the mechanism directionally but explicitly defer decisive confirmation of the central discriminator to a future observable, future episode, or future econometric test.
@@ -138,6 +160,8 @@ Extraction guidance:
 - "decision_rule" should translate the next test into a management choice.
 - "decision_path" should describe what management should do if the test succeeds and if it fails.
 - "generalization_risks" should capture risks such as early-user behavior not extending to the broader business.
+- "quantitative_anchors" should preserve the few numeric bounds or thresholds that materially constrain interpretation. Do not omit them just because the top-line thesis remains partially unresolved.
+- "working_priors" should explicitly surface bounded or illustrative ranges when they materially shape the object under study. If the top-level probability or forecast is not yet earned, still extract the working ranges and mark them as bounded or illustrative rather than dropping them.
 - "overclaim_boundary" should list the claims or phrasings the final artifact must explicitly avoid because they outrun the current evidentiary status.
 - "epistemic_note" must explicitly clarify that these are prioritized hypotheses, not proof of market truth.
 
