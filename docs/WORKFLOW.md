@@ -40,6 +40,21 @@ Rule:
 
 The supervisor is for bounded programs, not for every thought.
 
+## 0b. Two Audiences
+
+This repo now serves two distinct readers. If you can identify which one you are, you can skip most of the document.
+
+1. **General-purpose engine users** — you want to test a thesis or a claim on a domain (startup, activist target, strategy question, research area). You do not care about kernel internals, benchmarks, or the supervisor.
+   - Read: §1 (When to use), §2 (Mental model), §3 (Standard loop), §3a (Rerun cadence), §4 commands for `workspace-update` / `evidence-compile` / `loop` / `synth`, §5 (Human role), and whichever of §6–§8 matches your project type.
+   - Skip: §0a modes 1 and 2, §15 (Program hardening), the supervisor-specific command blocks.
+   - Your entire loop is: `raw -> workspace -> evidence -> validator -> synthesis`. Nothing else should be load-bearing for you.
+
+2. **Developers / researchers playing with the engine** — you are modifying the validator, the workspace compiler, the V4 kernel, primitives, or the supervisor control plane.
+   - Read everything, but pay special attention to §0a (mode choice), §14 (primitive workflow), §15 (program hardening workflow), and the supervisor command surface. Pair this doc with `docs/ARCHITECTURE.md` and `supervisor/USER_MANUAL.md`.
+   - The V4 six-stage kernel hardening path and supervisor-routed programs are for you, not for the general-purpose user.
+
+If you are not sure which you are: start as a general-purpose engine user. You almost certainly do not need the hardening machinery on day one.
+
 Inside the supervisor path:
 
 - verifier success advances the active manifest automatically
@@ -107,6 +122,28 @@ For a real project, the loop is:
 6. run ZTARE
 7. synthesize the result
 8. repeat when new evidence arrives
+
+---
+
+## 3a. Rerun Cadence (General-Purpose Engine Users)
+
+The most common question for general-purpose users is "which step do I have to rerun when X changes?" This table answers it. The rule is: only rerun downstream of what changed; upstream artifacts stay valid.
+
+| Trigger                                                         | Rerun starting at                                   | Why                                                                                                 |
+|-----------------------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| You added or edited files under `projects/<project>/raw/`      | `workspace-update`                                  | Workspace is derived from raw. Anything downstream is stale until the workspace reflects new sources. |
+| `contradictions.md` / `facts.md` / `open_questions.md` changed from a workspace update | `evidence-compile`                          | Evidence snapshot is derived from workspace memory.                                                 |
+| `compiled_evidence.txt` changed (new bounded snapshot)          | promote to `evidence.txt`, then `loop`              | Promotion is a rebaseline event: score regime fingerprints the bytes of `evidence.txt`; prior champions become `regime_mismatch` by design. |
+| You changed the rubric, model pairing, or iteration budget      | `loop`                                              | Validator is stateless. No upstream rerun needed — workspace and evidence are independent of rubric. |
+| You want a fresh report for the current champion                | `synth`                                             | Synthesis is downstream of `champion_*` artifacts; earlier stages are untouched.                    |
+| Provider outage / compile failed closed (`latest_compile_failure.json` written) | `evidence-compile` (retry), then promote + `loop` | Compiler fails closed for a reason. Retry the compile rather than skipping it.                      |
+| `thesis.md` changed (new claim to test) but same evidence base  | `loop` (optionally `synth` after)                   | Thesis lives with the validator input, not with the workspace.                                      |
+| You reach `UNDERIDENTIFIED` and want to branch                  | See §5b — use `hypotheses/<candidate>/`             | Do not overwrite the active thesis ad hoc; preserve the current branch and promote a candidate.     |
+
+Two rules to keep rerun cost bounded:
+
+1. **Do not rerun `workspace-update` just because you reran the loop.** Workspace is expensive and deterministic against `raw/`; if raw did not change, workspace is still fresh.
+2. **Do not skip the `compiled_evidence.txt -> evidence.txt` promotion step silently.** Promotion is a rebaseline; if you skip it, the validator is running against an older frontier than the compiler just produced, and champions will look better than they are.
 
 ---
 
@@ -439,6 +476,12 @@ Single artifact:
 
 ```bash
 python -m src.ztare.synthesis.synthesize --project <project> --model gemini --renderer-type founder_memo
+```
+
+Multi-project artifact:
+
+```bash
+python -m src.ztare.synthesis.synthesize --projects p1,p2 --model gemini --renderer-type research_note
 ```
 
 ---

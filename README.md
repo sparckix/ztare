@@ -2,6 +2,18 @@
 
 ZTARE is a zero-trust adversarial reasoning engine for stress-testing claims, forecasts, and strategic theses. It separates source accumulation, bounded evidence compilation, adversarial evaluation, and downstream synthesis so that fluent generation is not allowed to grade itself.
 
+## Who This Repo Is For
+
+Two audiences, two entry paths. Pick the one that matches you and ignore the rest.
+
+1. **You want to pressure-test a thesis on a domain** (startup diligence, activist target, strategy question, research claim). You are a **general-purpose engine user**.
+   - Start at [docs/WORKFLOW.md §0b + §1–§5](docs/WORKFLOW.md) and the `Quickstart` and `Run on a New Domain` sections below.
+   - Your loop is `raw -> workspace -> evidence -> validator -> synthesis`. You do not need the V4 kernel hardening, primitive library internals, or the supervisor control plane. Skip them.
+2. **You want to play with the engine itself** (modify the validator, V4 kernel, primitives, supervisor, or synthesis pipeline). You are a **developer / researcher**.
+   - Start at [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the layer map, then [docs/WORKFLOW.md](docs/WORKFLOW.md) §0a (mode choice) and §15 (program hardening), and [supervisor/USER_MANUAL.md](supervisor/USER_MANUAL.md) for the control plane.
+
+If you are not sure: start as a general-purpose user. The hardening machinery is orthogonal to using the engine on a real project.
+
 ## Start Here
 
 - [Workflow / Operator Manual](docs/WORKFLOW.md)
@@ -399,23 +411,21 @@ Get a Gemini key at [aistudio.google.com](https://aistudio.google.com). Gemini 2
 
 ---
 
-## Replication Status
+## What's Actually In This Repo Now
 
-Paper 1 now includes cross-mutator replication:
-- Gemini / Gemini
-- Claude / Gemini
-- GPT-4o / Gemini
+The public work is no longer a single "does gaming exist?" claim. It is a four-paper stack plus the engine that produced it.
 
-Paper 2 adds evaluator-hardening benchmarks:
-- baseline soft judge (`A`)
-- deterministic gates (`B`)
-- gates plus primitives (`C`)
-- crux-first ablation (`C2`)
+- **Paper 1 — Cognitive Camouflage.** Specification gaming in LLM-generated code evades holistic evaluation but not adversarial execution. Cross-mutator replication across Gemini, Claude, and GPT-4o (all judged by Gemini). Establishes that gaming is a reproducible property of the loop topology, not an artifact of one model family.
+- **Paper 2 — Adversarial Precedent Memory.** Evaluator hardening via mined failure constraints, benchmarked across soft judge (`A`), deterministic gates (`B`), gates-plus-primitives (`C`), and crux-first ablation (`C2`). Shows that reusable, defeasible precedents transfer across exploit families.
+- **Paper 3 — Contract-Governed Evaluator Hardening.** Stage-gated recursive improvement with typed promotion contracts. Six kernel stages plus a Stage 2→4 bridge, each with its own deterministic gate. This is the kernel-hardening spine.
+- **Paper 4 — The Cognitive Firm.** Managerial capitalism for AI: the M-form governance layer (supervisor + program manifests + human gates) that sits on top of the kernel, with constrained self-hosting as the distinguishing architectural claim.
 
-The current public work is not “does gaming exist?” but:
-- how stable semantic gates can become
-- how far evaluator hardening generalizes across exploit families
-- how much benchmark evidence is needed beyond the audited historical core
+What this means for different readers:
+
+- if you want to **use the engine**, everything from Paper 1 is downstream of the validator and synthesis you already get in the `Quickstart` below — you do not need to read Papers 2–4 to run a domain project
+- if you want to **extend the engine**, Papers 2–4 describe the hardening, primitive, and control-plane layers in the same order they sit in the codebase
+
+This is a single-principal, single-system research program (N=1 by construction). The claims are scoped to that.
 
 ---
 
@@ -439,16 +449,41 @@ If you are reaching out about a specific claim, benchmark, or failure mode, incl
 
 ## Citation
 
+If you cite this work, please cite the specific paper you are engaging with rather than the repo as a whole. All four are SSRN preprints.
+
 ```bibtex
-@misc{alami2025cognitivecamouflage,
+@misc{alami2026cognitivecamouflage,
   title   = {Cognitive Camouflage: Specification Gaming in LLM-Generated Code
              Evades Holistic Evaluation but Not Adversarial Execution},
   author  = {Alami, Daniel},
-  year    = {2025},
-  note    = {Preprint. Code: github.com/sparckix/ztare}
+  year    = {2026},
+  note    = {SSRN preprint 6512960. Code: github.com/sparckix/ztare},
+  url     = {https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512960}
+}
+
+@misc{alami2026adversarialprecedent,
+  title   = {Adversarial Precedent Memory: Hardening LLM Evaluators Through
+             Mined Failure Constraints},
+  author  = {Alami, Daniel},
+  year    = {2026},
+  note    = {SSRN preprint 6525598. Code: github.com/sparckix/ztare},
+  url     = {https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6525598}
+}
+
+@misc{alami2026contractgoverned,
+  title   = {Contract-Governed Adversarial Evaluator Hardening: Stage-Gated
+             Recursive Improvement with Typed Promotion Contracts},
+  author  = {Alami, Daniel},
+  year    = {2026},
+  note    = {SSRN preprint 6542998. Code: github.com/sparckix/ztare},
+  url     = {https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6542998}
+}
+
+@misc{alami2026cognitivefirm,
+  title   = {The Cognitive Firm: Managerial Capitalism for Artificial Intelligence},
+  author  = {Alami, Daniel},
+  year    = {2026},
+  note    = {SSRN preprint 6543019. Code: github.com/sparckix/ztare},
+  url     = {https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6543019}
 }
 ```
-
----
-
-*Daniel Alami — MBA Candidate, Harvard Business School*

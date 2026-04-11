@@ -9,6 +9,23 @@ ZTARE separates four things that are often collapsed in ordinary LLM workflows:
 
 The architecture is only worth its complexity if those separations stay explicit under adversarial pressure.
 
+## 0. Who This Document Is For
+
+This repo now has two distinct audiences, and this document is heavier on the second one:
+
+1. **General-purpose engine users** — you want to pressure-test a thesis on a domain (startup diligence, activist target, strategy question, research claim). You probably do not need most of this document. You need:
+   - the system thesis in §1 (why state is not the enemy, but unearned trust is)
+   - the four-layer boundary in §2
+   - the workspace / compiler / validator / synthesis sections at a conceptual level
+   - and then `docs/WORKFLOW.md` §0b, §1–§5 for the actual loop
+   You can ignore the V4 kernel hardening, primitive library internals, supervisor control plane, and program-birth chain sections. They are implementation concerns, not usage concerns.
+
+2. **Developers / researchers playing with the engine** — you are modifying the validator, the workspace compiler, the V4 kernel, the primitive library, or the supervisor control plane. This document is written for you. Read it in order, and pair it with `supervisor/USER_MANUAL.md` for the control plane, `research_areas/HARDENING_BOARD.md` for the active seam list, and `docs/WORKFLOW.md` §15 for the program hardening workflow.
+
+If you are not sure which audience you are, start as a general-purpose user. The hardening machinery is orthogonal to using the engine on a domain project.
+
+---
+
 ## 1. System Thesis
 
 ZTARE is a **stateless adversarial validator** for claims, theses, and strategic logic.
@@ -493,6 +510,7 @@ Current renderers include:
 - `architectural_memo`
 - `research_note`
 - `quantitative_appendix`
+- multi-project mode is available for `field_manual` and explicit report renderers via `--projects ... --renderer-type ...`; combined outputs are scoped so single-project synthesis artifacts are not overwritten
 
 ### History Control
 
