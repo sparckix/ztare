@@ -5,7 +5,7 @@ This program turns the frozen Paper 4 outline into first-pass manuscript prose w
 Upstream frozen contract:
 - `research_areas/drafts/paper4_drafting_paper_outline.md`
 - `research_areas/specs/paper4_drafting_paper_outline_prose_spec.json`
-- `research_areas/debates/papers/paper4.md`
+- `research_areas/private/papers/paper4.md`
 
 Manuscript pressure points that must be handled explicitly:
 1. Principal scalability:

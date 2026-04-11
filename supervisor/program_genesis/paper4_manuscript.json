@@ -5,7 +5,7 @@
     "paper4_drafting"
   ],
   "origin_turn_refs": [
-    "research_areas/debates/papers/paper4.md#Turn8"
+    "research_areas/private/papers/paper4.md#Turn8"
   ],
   "problem_statement": "Convert the frozen Paper 4 outline into manuscript prose while explicitly addressing principal scalability, the native-primitive question, and title framing.",
   "contract_boundary": "Draft manuscript prose against the frozen outline and manuscript seed without silently reopening locked claims.",

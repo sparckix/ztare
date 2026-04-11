@@ -13,3 +13,4 @@ Files:
 - `refs.bib` — bibliography
 - `main.pdf` — public mirror PDF
 - `evidence/stage2_derivation_009/` — frozen replication bundle for the Section 5.6 build-pipeline evidence claim
+- `evidence/recursive_epistemic_gain_session_log.md` — sanitized public evidence note for the recursive epistemic gain claim discussed in Section 5.7
