@@ -79,5 +79,14 @@ research_areas/private/
 research_areas/catch_grammar
 research_areas/HARDENING_BOARD.md
 
+# Agent instructions
+AGENTS.md
+CLAUDE.md
+
+# Confidential domain projects — never commit
+projects/figs
+projects/figs_hbs_turnaround_2026
+rubrics/figs*
+
 # Local deferred scratch
 research_areas/seeds/deferred/systems_to_algorithms.md
