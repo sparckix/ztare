@@ -1,0 +1,75 @@
+EU_UNION_LOAD_BEARING_PILLARS — COMPILED EVIDENCE (April 09, 2026)
+
+This file is a structured evidence brief for adversarial validation.
+It preserves contradictions and unknowns instead of smoothing them away.
+
+# 1. IMMUTABLE GROUND TRUTH
+- A euro-area central fiscal capacity should be large enough to provide meaningful macroeconomic stabilization, not just exist institutionally. [Strength: medium; Sources: S002]
+- Existing euro-area cross-border stabilization is thin relative to a mature federation, smoothing about 20% of idiosyncratic shocks compared to roughly 75% across US states. [Strength: medium; Sources: S002]
+- Second-generation automatic stabilizers are valuable because they can deliver larger and more rules-based responses than ordinary discretionary action in severe downturns. [Strength: medium; Sources: S003]
+- Mature or more developed federal-style stabilization systems are associated with larger standing automatic stabilizers. [Strength: medium; Sources: S003]
+- The US Constitution, federal laws made pursuant to it, and treaties are the 'supreme Law of the Land' (Article VI). [Strength: high; Sources: S004]
+- US state judges are bound by federal law notwithstanding contrary state constitutions or laws. [Strength: high; Sources: S004]
+- Article VI of the US Constitution makes federal law higher than state and local law. [Strength: high; Sources: S004]
+- Primacy is a core principle of EU law developed through CJEU jurisprudence. [Strength: high; Sources: S005]
+- The principle of EU law primacy is challenged or not applied in certain EU member states. [Strength: high; Sources: S005]
+- National constitutional courts in a number of EU member states have refused to draw the consequences of CJEU judgments. [Strength: high; Sources: S005]
+- Systemic challenges to EU primacy threaten the EU legal order and the uniformity/effectiveness of EU law. [Strength: high; Sources: S005]
+- In existing federations (US, Canada, Australia), fiscal transfers largely operate through automatic stabilizers embedded in a central budget, primarily through federal taxes and transfers to individuals. [Strength: high; Sources: S006]
+- In existing federations, fiscal smoothing does not mainly operate through discretionary transfers from the center to subnational state budgets. [Strength: high; Sources: S006]
+- Article 31 of Germany's Basic Law states that federal law takes precedence over Land law. [Strength: high; Sources: S007]
+- Germany's Basic Law allocates powers between the Federation and the Länder within an explicit constitutional hierarchy. [Strength: high; Sources: S007]
+
+# 2. NUMERICAL RANGES & CONSTRAINTS (LOAD-BEARING VARIABLES / CONSTRAINTS)
+- euro-area central fund annual contribution (IMF baseline): 0.35% of GDP | Kind: exact | Sources: S002 | Notes: Per country contribution to a central fund.
+- euro-area central fund transfers per 1 percentage point unemployment deviation (IMF baseline): 0.5% of GDP | Kind: exact | Sources: S002 | Notes: Transfers for every 1 percentage point unemployment deviation above trend.
+- accumulated euro-area central fund assets before GFC (IMF baseline): 1.6% of euro-area GDP | Kind: exact | Sources: S002 | Notes: Estimated accumulation before the global financial crisis.
+- aggregate annual gross transfers (IMF peak estimate): 1.1% of euro-area GDP | Kind: exact | Sources: S002 | Notes: Estimated peak aggregate annual gross transfers.
+- euro-area central fund annual contributions (IMF lower bound for effectiveness): 0.1% of GDP | Kind: constraint | Sources: S002 | Notes: Explicitly treated as 'too small' by IMF, forcing continual borrowing.
+- euro-area central fund annual contributions (IMF upper bound for asset accumulation): 0.5% of GDP per year | Kind: constraint | Sources: S002 | Notes: Above this level would lead to excessive asset accumulation.
+- euro-area aggregate automatic fiscal stabilizer (ECB estimate): 0.48 ESCB semi-elasticity | Kind: exact | Sources: S003 | Notes: Using the ESCB semi-elasticity approach.
+- euro-area aggregate automatic fiscal stabilizer (European Commission estimate): 0.56 semi-elasticity | Kind: exact | Sources: S003 | Notes: On the same concept as ECB estimate.
+- GDP shock cushioning by euro-area automatic stabilizers: 10-30% of a standard GDP shock | Kind: range | Sources: S003 | Notes: ECB model simulations estimate output smoothing range.
+- automatic stabilizer contribution to 2020 euro-area deficit during COVID-19: 2.8% of GDP | Kind: exact | Sources: S003 | Notes: Out of an 8.5% GDP deficit in 2020.
+- cumulative automatic stabilizer contribution to 2020-21 euro-area deficit during COVID-19: 5.2% of GDP | Kind: exact | Sources: S003 | Notes: Cumulative over 2020-21.
+- US automatic stabilizer estimates: 0.3-0.4 semi-elasticity | Kind: range | Sources: S003 | Notes: Smaller than euro-area estimates.
+- fiscal transfers offsetting idiosyncratic regional shocks in federations (US, Canada, Australia): 4-11% of idiosyncratic regional shocks | Kind: range | Sources: S006 | Notes: Study of US, Canada, Australia.
+- fiscal transfers offsetting permanent shocks in federations (US, Canada, Australia): 13-24% of permanent shocks | Kind: range | Sources: S006 | Notes: Study of US, Canada, Australia.
+- application of EU primacy by national courts: vast majority of courts apply it qualitative | Kind: qualitative | Sources: S005 | Notes: Despite challenges, the general application rate is high.
+
+# 3. IDENTIFIED CONTRADICTIONS
+- Legal Supremacy Entrenchment
+  - Claim A: Legal supremacy in established federations (US, Germany) is textually entrenched in the primary constitutional document, making federal law explicitly supreme and binding on subnational courts. [Sources: S004, S007]
+  - Claim B: Legal supremacy in the EU (primacy) is a core principle developed through CJEU jurisprudence, not a freestanding treaty article, and is actively challenged or not applied by national constitutional courts in some member states. [Sources: S005]
+  - Why it matters: The difference in entrenchment mechanism (textual vs. jurisprudential) and the ongoing 'recurrent constitutional contestation' in the EU vs. the established hierarchy in federations is a crucial discriminator for the 'durable equilibrium' legal pillar. It affects the stability and predictability of the legal order and the vulnerability to political challenges.
+- Nature of Federal Fiscal Stabilization
+  - Claim A: Fiscal stabilization in established federations (US, Canada, Australia) largely operates through automatic stabilizers embedded in a central budget, primarily via federal taxes and transfers to individuals, not through discretionary transfers to subnational governments. [Sources: S006]
+  - Claim B: The EU's current fiscal architecture relies heavily on discretionary or temporary responses to crises, rather than fully matching the scale and rules-based nature of standing automatic stabilizers found in more developed federal-style systems, despite observed effectiveness of EU automatic stabilizers during shocks like COVID-19. [Sources: S003, S002]
+  - Why it matters: This contradiction highlights the distinction between ad hoc, discretionary crisis management and standing, automatic, rules-based shock absorption, which is central to determining if the EU possesses 'durable-equilibrium-grade' fiscal pillars. The presence or absence of a preauthorized, automatic mechanism for a significant share of shocks impacts long-term stability and resilience.
+
+# 4. EPISTEMIC VOIDS (OPEN PROBLEMS / UNKNOWNS)
+- What specific threshold constitutes 'functionally material' fiscal capacity independently grounded outside the thesis's own ontology?
+  - Why it matters: The absence of an externally validated, concrete threshold makes the thesis's claim of insufficient fiscal capacity self-referential and untestable against real-world comparators. This prevents objective assessment of whether current or proposed EU fiscal mechanisms meet a 'durable equilibrium' standard.
+  - Blocking effect: Independent validation of the 'material' threshold for the fiscal pillar.
+- What specific indicators or thresholds define 'reduced recurrent constitutional contestation' concerning legal supremacy, independently grounded outside the thesis's own ontology?
+  - Why it matters: Without externally grounded indicators for what constitutes 'reduced recurrent constitutional contestation' in a legal pillar, it is difficult to objectively assess if the EU's primacy doctrine (with its ongoing challenges) meets a 'durable equilibrium' standard. This blocks objective comparison with established federal systems.
+  - Blocking effect: Independent validation of the 'reduced recurrent constitutional contestation' threshold for the legal pillar.
+
+# 5. PROVENANCE
+- S001 | 00_collection_plan.md | md | collection_todo
+  - Summary: Outlines the evidence collection plan, identifies current blockers related to ungrounded thresholds for 'functionally material' fiscal capacity and 'reduced recurrent constitutional contestation', and lists priority source classes and concrete targets for the next evidence pass.
+- S002 | 10_imf_central_fiscal_capacity_thresholds.md | md | source_evidence
+  - Summary: An IMF staff discussion note providing externally grounded calibrations and thresholds for a 'material' euro-area central fiscal stabilization capacity, including contribution rates, transfer capacities, and comparisons with US shock smoothing. It defines what constitutes 'meaningful macroeconomic stabilization' versus merely symbolic existence.
+- S003 | 11_ecb_automatic_stabilisers_comparator.md | md | source_evidence
+  - Summary: An ECB article grounding the scale and effectiveness of automatic fiscal stabilizers in the euro area, comparing them against US estimates, and quantifying their cushioning effect during economic shocks like COVID-19. It helps translate the concept of 'material' stabilization into measurable magnitudes.
+- S004 | 12_us_supremacy_clause_comparator.md | md | source_evidence
+  - Summary: A transcription of Article VI of the US Constitution, serving as an official comparator for a mature union with explicit, textually entrenched legal supremacy binding on subnational judges. It highlights the contrast with the EU's jurisprudential primacy doctrine.
+- S005 | 13_eu_primacy_contestation_official.md | md | source_evidence
+  - Summary: An official European Parliament summary confirming that EU law primacy, while a core principle, is challenged or not applied in certain member states, with national constitutional courts refusing to follow CJEU judgments. It recognizes 'recurrent constitutional contestation' as a live problem, supporting its relevance for the legal pillar.
+- S006 | 14_imf_existing_federations_risk_sharing.md | md | source_evidence
+  - Summary: An IMF working paper studying fiscal transfers in existing federations (US, Canada, Australia), finding that shock smoothing largely operates through automatic stabilizers embedded in a central budget, not discretionary transfers. This directly addresses whether durable federations rely on standing fiscal mechanisms or discretionary resilience.
+- S007 | 15_germany_basic_law_supremacy_comparator.md | md | source_evidence
+  - Summary: Article 31 of Germany's Basic Law, providing a second mature-federation legal comparator. It explicitly states that federal law takes precedence over Land law, demonstrating textual entrenchment of supremacy within an established federal system.
+
+# 6. CANDIDATE CLAIMS TO TEST
+- None identified.

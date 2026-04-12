@@ -46,6 +46,35 @@ projects/eu_union_stability/hypotheses/*/*
 !projects/eu_union_stability/hypotheses/*/notes.md
 !projects/eu_union_stability/hypotheses/*/test_model.py
 
+!projects/eu_union_load_bearing_pillars/
+projects/eu_union_load_bearing_pillars/*
+!projects/eu_union_load_bearing_pillars/README.md
+!projects/eu_union_load_bearing_pillars/project_charter.md
+!projects/eu_union_load_bearing_pillars/evidence.txt
+!projects/eu_union_load_bearing_pillars/compiled_evidence.txt
+!projects/eu_union_load_bearing_pillars/raw/
+projects/eu_union_load_bearing_pillars/raw/*
+!projects/eu_union_load_bearing_pillars/raw/*.md
+!projects/eu_union_load_bearing_pillars/thesis.md
+!projects/eu_union_load_bearing_pillars/test_model.py
+!projects/eu_union_load_bearing_pillars/verified_axioms.json
+!projects/eu_union_load_bearing_pillars/Report.field_manual.md
+!projects/eu_union_load_bearing_pillars/Report.teaching_note.md
+!projects/eu_union_load_bearing_pillars/Report.multi_project.research_note.44feeb1afe.md
+
+!projects/eu_union_failure_probability_2035/
+projects/eu_union_failure_probability_2035/*
+!projects/eu_union_failure_probability_2035/README.md
+!projects/eu_union_failure_probability_2035/project_charter.md
+!projects/eu_union_failure_probability_2035/evidence.txt
+!projects/eu_union_failure_probability_2035/compiled_evidence.txt
+!projects/eu_union_failure_probability_2035/raw/
+projects/eu_union_failure_probability_2035/raw/*
+!projects/eu_union_failure_probability_2035/raw/*.md
+!projects/eu_union_failure_probability_2035/thesis.md
+!projects/eu_union_failure_probability_2035/test_model.py
+!projects/eu_union_failure_probability_2035/verified_axioms.json
+
 # 7. Local paper workspaces and compiled artifacts
 # Public paper bundles live under `papers/`.
 /paper1/
