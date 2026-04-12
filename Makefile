@@ -68,6 +68,8 @@ help:
 	@echo "  make benchmark-supervisor-program-autoloop"
 	@echo "  make benchmark-supervisor-report"
 	@echo "  make benchmark-supervisor-gate-resolution"
+	@echo "  make benchmark-supervisor-findings-debate"
+	@echo "  make benchmark-supervisor-findings-runner"
 	@echo "  make benchmark-prose-verifier"
 	@echo "  make benchmark-document-assembler"
 	@echo "  make benchmark-supervisor-factory"
@@ -219,6 +221,12 @@ benchmark-supervisor-report:
 benchmark-supervisor-gate-resolution:
 	$(PYTHON) -m src.ztare.validator.supervisor_gate_resolution_fixture_regression
 
+benchmark-supervisor-findings-debate:
+	$(PYTHON) -m src.ztare.validator.supervisor_findings_debate_fixture_regression
+
+benchmark-supervisor-findings-runner:
+	$(PYTHON) -m src.ztare.validator.supervisor_findings_runner_fixture_regression
+
 benchmark-prose-verifier:
 	$(PYTHON) -m src.ztare.validator.prose_verifier_fixture_regression
 
@@ -234,6 +242,8 @@ benchmark-supervisor-factory:
 	$(MAKE) benchmark-supervisor-program-autoloop
 	$(MAKE) benchmark-prose-verifier
 	$(MAKE) benchmark-document-assembler
+	$(MAKE) benchmark-supervisor-findings-debate
+	$(MAKE) benchmark-supervisor-findings-runner
 
 assemble-document:
 	$(PYTHON) -m src.ztare.validator.document_assembler \

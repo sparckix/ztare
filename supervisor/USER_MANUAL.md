@@ -394,53 +394,166 @@ Effect:
 
 Use this for terminal packets that should pause instead of automatically returning to `A1`.
 
+## Findings-Debate Runner (Pre-Seed Layer)
+
+The findings-debate runner automates the "ur turn" loop for findings-track seams. It replaces the manual operator cycle of copy-pasting debate turns between Claude and Gemini.
+
+### Lifecycle: When To Use What
+
+The supervisor has two layers with a hard boundary between them:
+
+```
+  FINDINGS RUNNER (pre-seed)              M-FORM SUPERVISOR (post-seed)
+  ──────────────────────────              ────────────────────────────
+  1. Operator creates a seam file         4. promote_findings_seam() writes
+     with a ## Debate Log header             seed_registry.json entry
+                                          5. Write program_genesis/<id>.json
+  2. Runner debates the seam:             6. Add to program_registry.json
+     Claude + Gemini alternate            7. Supervisor executes:
+     turns → sentinel convergence            A1 → A2 → B → C → D
+                                             (all existing infrastructure)
+  3. Runner exits:
+     CONVERGED / ESCALATED_CAP /
+     MAX_CYCLES / COST_BUDGET
+        ↓
+     Operator reviews result
+        ↓
+     If converged: promote (step 4)
+     If not: re-run or close
+```
+
+**The promotion edge is the type boundary.** Before promotion, the object is a debated finding (a seam file). After promotion, it becomes a seed in the supervisor's registry and the existing A1/A2/B/C/D machinery takes over.
+
+**Decision guide:**
+
+| You want to... | Use |
+|---|---|
+| Debate a new runtime-discovered finding to convergence | Findings runner |
+| Execute a converged finding as an implementation program | M-form supervisor (after promotion) |
+| Draft/revise a paper section or manuscript | M-form supervisor (research pipeline) |
+| Build a kernel feature from a spec | M-form supervisor (build pipeline) |
+
+### Architecture Note: Shared Utilities and Duplication
+
+The findings runner currently shares only two utilities with the supervisor stack:
+
+- `TurnUsageTelemetry` (token count / cost tracking dataclass)
+- `estimate_cost_usd` (pricing lookup)
+
+It does **not** use the supervisor's state machine (`SupervisorState` A1/A2/B/C/D), actor routing (`actor_for_pipeline_state`), wrapper transport (`_call_anthropic_research_b_api`), prose verifier, write-scope guard, human gates, refinement caps, or manifest/packet sequencing. Instead it has its own LLM call functions, its own state enum (`DebateStatus`), and its own stop-condition logic.
+
+This duplication was a deliberate first-slice decision (GP-031 Turn 2: keep findings-debate outside the seed registry so the object boundary is preserved). The convergence detector is genuinely different from `prose_verifier` (semantic sentinel vs. structural conformance) and is not duplication. The LLM transport and state tracking are duplication that should converge — the natural path is to decouple the wrapper transport from `HandoffStatus` so the runner can reuse it without pretending the seam is a seed.
+
+### Commands
+
+**Run a findings debate:**
+
+```bash
+python -m src.ztare.validator.supervisor_findings_runner \
+  --seam-path research_areas/private/seams/<SEAM_FILE>.md \
+  --max-cycles 6 \
+  --max-cost-usd 0.50 \
+  --execute
+```
+
+Flags:
+
+- `--seam-path` — path to a seam file with a `## Debate Log` header (required)
+- `--max-cycles` — per-run cap on appended turns (default 6; hard cap is 12 total in the debate primitive)
+- `--max-cost-usd` — per-run dollar budget (default $0.50; checked pre-call so the limit is never breached)
+- `--claude-model` — default `claude-sonnet-4-6`
+- `--gemini-model` — default `gemini-2.5-flash`
+- `--execute` — required for real API calls; without it, dry-run only
+- `--today` — override today's date in ISO form (for the turn header)
+
+Without `--execute`, the runner parses the seam, checks convergence state, and reports what it would do — useful for verifying the seam is parseable before spending tokens.
+
+**Promote a converged finding to a seed:**
+
+```python
+from src.ztare.validator.supervisor_findings_promotion import promote_findings_seam
+
+promote_findings_seam(
+    seam_path="research_areas/private/seams/GP-034_..._seam.md",
+    spec_path="research_areas/specs/active/GP-034_..._spec.md",
+    seed_id="gp034_dual_channel_loop_control",
+    pipeline_type="build",
+    # allow_unconverged=True  # only if operator overrides an ESCALATED_CAP
+)
+```
+
+Five fail-closed guardrails: seam must exist, debate must be CONVERGED (unless `allow_unconverged=True`), spec must exist on disk, seed_id must not already be in the registry, closed-on-arrival promotions are refused.
+
+After promotion, the seed is in `seed_registry.json` and the standard supervisor workflow takes over (genesis → registry → A1/A2/B/C/D).
+
+### Debate Agents
+
+The runner alternates **Claude** (Anthropic Messages API) and **Gemini** (Google GenAI SDK). Each agent reads the full seam text and contributes one debate turn, ending with:
+
+- `SENTINEL_DECISION: raise` — no new load-bearing claim; ready to converge from this agent's side
+- `SENTINEL_DECISION: hold` — still introducing or rebutting a load-bearing claim
+
+Convergence requires both agents to raise in consecutive turns with a minimum of 2 turns per agent. At the hard cap (12 total turns), the runner exits with `ESCALATED_CAP` and the operator decides.
+
+Codex (OpenAI CLI) is intentionally not a runner participant — findings debates exceed Codex's input-token wall. Codex's role is operator-level review at convergence/promotion time.
+
+### Validation
+
+```bash
+make benchmark-supervisor-findings-debate
+make benchmark-supervisor-findings-runner
+```
+
 ## Current Critical Path
 
-The current V4-critical-path seed is:
+The `stage2_derivation_seam_hardening` program closed at Turn 55 of the supervisor loop debate (2026-04-11).
 
-- `research_areas/seeds/active/stage2_derivation_seam.md`
+Current active work is tracked on the ZTARE Board (`research_areas/ZTARE_BOARD.md` public, `research_areas/private/ZTARE_BOARD.md` full detail). Key items:
 
-The current routed program is:
+- **GP-023** — Ontology Trap / Planck Mechanism. Phase 2 closed as `non-diagnostic / pre-reg deviation`. GP-035 apparatus fix is the next move.
+- **GP-035** — Mutator Missing Fit Primitive. Spec written (`research_areas/private/specs/active/GP-035_mutator_fit_primitive_spec.md`). Next: implement fit primitive → 3b substrate-swap verifier.
+- **GP-031** — Findings-Birth Bridge. First two primitives shipped (debate + promotion). Runner is live.
 
-- `stage2_derivation_seam_hardening`
+Active seeds:
 
-Its active backlog file is:
-
-- `supervisor/program_manifests/stage2_derivation_seam_hardening.json`
+- `research_areas/seeds/active/paper4_manuscript.md`
+- `research_areas/seeds/active/paper4_managerial_capitalism.md`
 
 Deferred future seeds:
 
 - `research_areas/seeds/deferred/systems_to_algorithms.md`
 - `research_areas/seeds/deferred/ztare_open_source.md`
+- `research_areas/seeds/deferred/supervisor_artifact_lifecycle.md`
+- `research_areas/seeds/deferred/vnext_semantic_gate_stabilization.md`
 
 Those stay in the seed layer until a genesis file is written and a human accepts opening them.
 
-## Start The Current Program
+## Start A Program
 
 ```bash
-make supervisor-init \
-  SUP_PROGRAM=stage2_derivation_seam_hardening \
-  SUP_TARGET=derivation_boundary \
-  SUP_RUN_ID=stage2_derivation_001 \
-  SUP_STATUS=/tmp/stage2_derivation_001/status.json
+python -m src.ztare.validator.supervisor_loop init \
+  --status-path supervisor/active_runs/<run>/status.json \
+  --run-id <run_id> \
+  --program <program_id> \
+  --target <target_name>
 
-make supervisor-emit \
-  SUP_STATUS=/tmp/stage2_derivation_001/status.json \
-  SUP_STAGING=/tmp/stage2_derivation_001/staging
+python -m src.ztare.validator.supervisor_loop emit-staging \
+  --status-path supervisor/active_runs/<run>/status.json \
+  --staging-dir supervisor/active_runs/<run>/staging
 
-make supervisor-launch \
-  SUP_STATUS=/tmp/stage2_derivation_001/status.json \
-  SUP_STAGING=/tmp/stage2_derivation_001/staging
+python -m src.ztare.validator.supervisor_loop launch-staging \
+  --status-path supervisor/active_runs/<run>/status.json \
+  --staging-dir supervisor/active_runs/<run>/staging
 ```
 
 After the actor fills the emitted staging request:
 
 ```bash
-make supervisor-commit \
-  SUP_STATUS=/tmp/stage2_derivation_001/status.json \
-  SUP_EVENTS=/tmp/stage2_derivation_001/events.jsonl \
-  SUP_STAGING=/tmp/stage2_derivation_001/staging \
-  SUP_REQUEST=/tmp/stage2_derivation_001/staging/claude_a1.json
+python -m src.ztare.validator.supervisor_loop commit-staging \
+  --status-path supervisor/active_runs/<run>/status.json \
+  --events-path supervisor/active_runs/<run>/events.jsonl \
+  --staging-dir supervisor/active_runs/<run>/staging \
+  --staging-path supervisor/active_runs/<run>/staging/<actor_state>.json
 ```
 
 ## Validation Commands
@@ -454,6 +567,8 @@ make benchmark-supervisor-staging
 make benchmark-supervisor-wrappers
 make benchmark-supervisor-refinement
 make benchmark-supervisor-usage
+make benchmark-supervisor-findings-debate
+make benchmark-supervisor-findings-runner
 ```
 
 ## Rules
@@ -467,3 +582,5 @@ make benchmark-supervisor-usage
 - if bounded spec refinement is used, cap `A2 -> A1` at `2` rounds before forcing `B` or `D`
 - budget-aware refinement is optional and remains off until pricing + telemetry are configured
 - exact pricing mode means unknown-model runs stay financially silent rather than inventing cost
+- findings-debate runner is for pre-seed work only — do not route it through the seed registry
+- promotion from finding to seed is always human-gated — no auto-promotion
