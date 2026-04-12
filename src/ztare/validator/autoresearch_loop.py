@@ -55,6 +55,18 @@ from src.ztare.validator.champion_artifacts import (
     set_artifact_role,
 )
 from src.ztare.validator.latent_distance import record_latent_distance
+from src.ztare.validator.fit_primitive import (
+    FitDeclaration,
+    FitFailure,
+    FitSuccess,
+    diagnose_residual_pattern,
+    fit_parameters,
+    fit_result_to_json,
+    format_diagnostic_for_prompt,
+    format_residual_map_for_prompt,
+    parse_fit_declaration,
+    substitute_fitted_params,
+)
 
 SESSION_TOKENS = 0
 SESSION_MUTATOR_USAGE = {
@@ -969,6 +981,7 @@ def mutate_thesis(
     model_id=MUTATOR_MODEL_ID,
     failure_log=None,
     falsification_mode=None,
+    fit_context="",
 ):
     task_header = "TASK: Resolve the following Systemic Inconsistency:"
     pivot_instruction = ""
@@ -1303,29 +1316,59 @@ def mutate_thesis(
     {confirmed_constraint_context}
     """
 
+    # GP-035: fit primitive prompt contract (opt-in via rubric)
+    fit_primitive_context = ""
+    if fit_context:
+        fit_primitive_context = f"""
+    ### GP-035 FIT PRIMITIVE CONTRACT
+
+    This project uses a post-LLM numerical fitting step. You MUST include a
+    ```fit_declaration block in your response — a JSON object with:
+
+    Required fields:
+    - "expression": math expression using your independent variables and named
+      free parameters. Only arithmetic (+, -, *, /, **) and math.* functions allowed.
+    - "independent_vars": list of independent variable names
+    - "parameter_names": list of free parameter names in the expression
+
+    Optional fields:
+    - "initial_guesses": dict of parameter name to initial guess (default: 1.0)
+    - "bounds": dict of parameter name to [lower, upper] bounds
+
+    Your code must expose MODEL_PARAMS (dict) if you want fitted values
+    substituted into the candidate before evaluation. The fitter relies on
+    FIT_DECLARATION plus exact key matching against MODEL_PARAMS. It does NOT
+    require any specific function name, argument names, or variable naming.
+    Omitting the fit_declaration block is recorded as a fit failure.
+
+    ### PREVIOUS ITERATION FIT RESULT
+    {fit_context}
+    """
+
     base_prompt = f"""{persona}
-    
+
     AXIOMS (PREVIOUSLY VERIFIED TRUTHS):
     {axiom_str}
-    
-    CRITICAL CONSTRAINT (THE AXIOMATIC GATE): 
-    The axioms above have been verified by the Firing Squad and the Meta-Judge. 
-    You are FORBIDDEN from contradicting them within their original domain. 
+
+    CRITICAL CONSTRAINT (THE AXIOMATIC GATE):
+    The axioms above have been verified by the Firing Squad and the Meta-Judge.
+    You are FORBIDDEN from contradicting them within their original domain.
     HOWEVER, if you are executing a TOPOLOGICAL PIVOT, you are granted 'Axiom Retirement' authority. If an axiom is mathematically true but structurally irrelevant to the new domain (e.g., applying Black Hole limits to a biological brain), you must explicitly drop it by writing: "RETIRED AXIOM: [Axiom Concept] - [Reason it does not apply to this scale/domain]."
-    
-    
-    GROUNDING DATA (IMMUTABLE CONSTANTS): 
+
+
+    GROUNDING DATA (IMMUTABLE CONSTANTS):
     {evidence}
-    
+
     {charter_context}
     {constraint_context}
     {document_context}
     {failure_context}
     {primitive_context}
-    
+    {fit_primitive_context}
+
     ---
-    
-    ### {task_header} 
+
+    ### {task_header}
     
     "THIS IS THE WEAKEST LINK IN THE CURRENT LOGIC CHAIN: {weakest_point}"
 
@@ -1730,6 +1773,39 @@ for i in range(ITERATIONS):
             mutator_model_id=current_mutator,
             judge_model_id=JUDGE_MODEL_ID,
         )
+    # GP-035: load previous iteration's fit result for prompt injection
+    _fit_ctx = ""
+    if rubric_data.get("enable_fit_primitive", False):
+        _fit_result_path = workspace_dir / "fit_result.json"
+        if _fit_result_path.exists():
+            try:
+                _prev_fit = json.loads(_fit_result_path.read_text())
+                if _prev_fit.get("status") == "success":
+                    _fr = FitSuccess(
+                        fitted_params=_prev_fit["fitted_params"],
+                        max_abs_residual=_prev_fit["max_abs_residual"],
+                        mean_abs_residual=_prev_fit["mean_abs_residual"],
+                        rmse=_prev_fit["rmse"],
+                        residual_map=_prev_fit["residual_map"],
+                    )
+                    _fit_ctx = format_residual_map_for_prompt(_fr)
+                    # GP-037 finding: structural residual diagnostic
+                    # Only inject when the fit materially fails (residual >> gate threshold)
+                    _indep_vars = _prev_fit.get("independent_vars", [])
+                    _gate_threshold = rubric_data.get("gate_residual_threshold", 0.05)
+                    if _indep_vars and _fr.max_abs_residual > _gate_threshold * 2:
+                        _diag = diagnose_residual_pattern(_fr, _indep_vars)
+                        if _diag.classification != "parametric_noise":
+                            _fit_ctx += "\n\n" + format_diagnostic_for_prompt(_diag)
+                else:
+                    _fit_ctx = (
+                        f"PREVIOUS ITERATION FIT RESULT: FAILURE\n"
+                        f"  Class: {_prev_fit.get('failure_class', 'unknown')}\n"
+                        f"  Diagnostics: {_prev_fit.get('solver_diagnostics', '')[:200]}"
+                    )
+            except (json.JSONDecodeError, KeyError):
+                pass
+
     try:
         new_content = mutate_thesis(
             current_thesis,
@@ -1741,6 +1817,7 @@ for i in range(ITERATIONS):
             model_id=current_mutator,
             failure_log=last_failure_reason,
             falsification_mode=rubric_falsification_mode,  # GP-003: pass rubric mode
+            fit_context=_fit_ctx,
         )
         mutation_declaration, mutation_validation, clean_thesis, python_code, full_candidate = _prepare_mutation_candidate(
             raw_text=new_content,
@@ -1748,6 +1825,40 @@ for i in range(ITERATIONS):
             current_test_model=current_test_model,
             falsification_mode=rubric_falsification_mode,
         )
+        # GP-035: post-LLM fit primitive (opt-in via rubric)
+        if rubric_data.get("enable_fit_primitive", False) and python_code and evidence_text:
+            try:
+                _fit_decl = parse_fit_declaration(new_content)
+                if _fit_decl is not None:
+                    _fit_dimensionality = rubric_data.get("fit_required_dimensionality")
+                    _fit_result = fit_parameters(
+                        _fit_decl, evidence_text,
+                        required_dimensionality=_fit_dimensionality,
+                    )
+                    if isinstance(_fit_result, FitSuccess):
+                        python_code = substitute_fitted_params(python_code, _fit_result.fitted_params)
+                        print(
+                            f"🔧 GP-035 fit: SUCCESS "
+                            f"(max |res|={_fit_result.max_abs_residual:.5f}, "
+                            f"params={_fit_result.fitted_params})"
+                        )
+                    else:
+                        print(
+                            f"🔧 GP-035 fit: FAILURE "
+                            f"({_fit_result.failure_class}: "
+                            f"{_fit_result.solver_diagnostics[:80]})"
+                        )
+                    _fit_json = fit_result_to_json(_fit_result, _fit_decl)
+                    (workspace_dir / "fit_result.json").write_text(_fit_json)
+                    (workspace_dir / f"fit_result_iter_{i+1:03d}.json").write_text(_fit_json)
+                else:
+                    print("🔧 GP-035 fit: FAILURE — no FIT_DECLARATION block found")
+                    _missing = json.dumps({"status": "failure", "failure_class": "missing_declaration",
+                                           "attempted_template": "", "solver_diagnostics": "No FIT_DECLARATION block."}, indent=2)
+                    (workspace_dir / "fit_result.json").write_text(_missing)
+                    (workspace_dir / f"fit_result_iter_{i+1:03d}.json").write_text(_missing)
+            except Exception as fit_exc:
+                print(f"🔧 GP-035 fit: error — {fit_exc}")
     except Exception as exc:
         print(f"⚠️ Runner R1 rejection: {exc}")
         signal = IterationSignal(
