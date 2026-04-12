@@ -64,7 +64,8 @@ supervisor/program_manifests/foo.json         (live mutable manifest)
 research_areas/program_plans/foo.md           (readable view — not source of truth)
   ↓ supervisor routes A1/A2/B/C
 research_areas/debates/kernel/foo.md          (debate turns, append-only)
-research_areas/specs/active/foo.md            (locked ProseSpec after debate)
+research_areas/specs/active/foo.md            (locked ProseSpec after debate, if public)
+research_areas/private/specs/active/foo.md    (locked ProseSpec after debate, if private)
 research_areas/drafts/foo_fragment.md         (generated output from B)
   ↓ run state
 supervisor/active_runs/<run_id>/status.json   (machine state, gitignored)

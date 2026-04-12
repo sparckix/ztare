@@ -4,10 +4,19 @@ Spec files are the blueprint layer.
 
 They should be clean, implementation-facing, and separate from the messy debate.
 
+Specs follow the same visibility rule as seams/drafts/board rows:
+
+- public when shipped/closed and free of exploit content / first-mover IP
+- private otherwise
+
+When in doubt, default private.
+
 Layout:
 
 - `research_areas/specs/active/`
 - `research_areas/specs/archive/`
+- `research_areas/private/specs/active/`
+- `research_areas/private/specs/archive/`
 
 Naming rule:
 
