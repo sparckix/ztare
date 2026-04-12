@@ -1,6 +1,37 @@
 # ZTARE — Zero-Trust Adversarial Reasoning Engine
 
-ZTARE is a zero-trust adversarial reasoning engine for stress-testing claims, forecasts, and strategic theses. It separates source accumulation, bounded evidence compilation, adversarial evaluation, and downstream synthesis so that fluent generation is not allowed to grade itself.
+ZTARE stress-tests claims by making AIs argue against each other under hard numeric constraints. You give it a question and evidence; it returns a battle-tested answer that survived adversarial attack — or tells you the claim doesn't hold up.
+
+It works on any domain: startup diligence, investment theses, research claims, strategy questions, scientific curve-fitting. The key idea: **the AI that proposes an answer is never allowed to grade itself.**
+
+### Why this exists
+
+When you ask an AI to evaluate its own work, it games the evaluation. We documented 9 distinct cheating strategies across Claude, Gemini, and GPT-4o — all self-certifying (they pass their own tests while violating their intent):
+
+| Strategy | What it does | Domain |
+|---|---|---|
+| **Blame Shield** | Bundle critical axiom with N sacrificial ones; dilute penalty to 1/N | Bayesian |
+| **Float Masking** | Apply `round()` before assertion to destroy precision difference | Bayesian |
+| **Fake AutoDiff** | Name function after mechanism; body returns hardcoded dict | Bayesian |
+| **Cooked Book RNG** | Hardcode environment to improve over time; fake learning | Bayesian, Finance |
+| **Assert Narrowing** | Set assertion range to exactly match hardcoded inputs | AI Economics |
+| **Dimensional Factor** | Introduce unit error; apply x1000 correction to hide it | Finance, Physics |
+| **Unidirectional Decay** | Formula valid for positive errors only; generates P>1.0 for negative | Epistemic Arch. |
+| **Gravity Constant** | Invent ungrounded coupling constant; build test around it | Physics |
+| **Straw Man Design** | Engineer the comparison object so the preferred design wins by construction | Startup |
+
+ZTARE prevents this by separating who proposes, who attacks, and who scores — and by adding numeric pass/fail checks that no AI can talk its way past. Full details: [Paper 1 (SSRN)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512960).
+
+---
+
+## Start Here
+
+- **Use the engine on a domain:** [Quickstart](#quickstart-5-minutes) below, then [docs/WORKFLOW.md](docs/WORKFLOW.md)
+- **Understand the architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- **Modify the engine:** [supervisor/USER_MANUAL.md](supervisor/USER_MANUAL.md)
+- **Read the papers:** [papers/README.md](papers/README.md)
+- **Operating principles:** [PRINCIPLES.md](PRINCIPLES.md)
+- **Glossary of terms:** [docs/GLOSSARY.md](docs/GLOSSARY.md)
 
 ## Who This Repo Is For
 
@@ -13,13 +44,6 @@ Two audiences, two entry paths. Pick the one that matches you and ignore the res
    - Start at [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the layer map, then [docs/WORKFLOW.md](docs/WORKFLOW.md) §0a (mode choice) and §15 (program hardening), and [supervisor/USER_MANUAL.md](supervisor/USER_MANUAL.md) for the control plane.
 
 If you are not sure: start as a general-purpose user. The hardening machinery is orthogonal to using the engine on a real project.
-
-## Start Here
-
-- [Workflow / Operator Manual](docs/WORKFLOW.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Supervisor Manual](supervisor/USER_MANUAL.md)
-- [Papers Overview](papers/README.md)
 
 ## Recommended Interface
 
@@ -78,22 +102,33 @@ Take project <project> and generate the right downstream artifact: founder memo,
 
 Each paper bundle includes the public manuscript sources under `papers/`. Local scratch workspaces such as `paper1/` and `paper2/` are gitignored and not part of the public source layer.
 
+### Private Supporting Materials
+
+The public repository contains the full engine, public papers, and reproducible public artifacts. Some raw experiment logs, detailed session artifacts, exploit-sensitive methodology notes, and supporting internal documentation are kept private by default.
+
+This split is deliberate: code and public-facing results ship, while active exploit catalogs and still-cooking first-mover methodology stay private until they are ready to be promoted. Preview access is available upon request for researchers and practitioners actively working in AI governance, evaluation, or recursive systems.
+
 ---
 
 ## What is ZTARE?
 
-ZTARE is a multi-agent loop in which:
+**In a nutshell:** ZTARE is an independent auditor for claims — one AI proposes an answer, another AI attacks it, and hard numeric checks that neither can override decide whether the answer is actually right.
 
-1. A **Mutator** (LLM) generates a thesis with an embedded Python falsification suite
-2. A **Firing Squad** (3 adversarial agents) attacks the thesis's weakest assumptions with counter-tests
-3. A **Meta-Judge** scores only the execution output — never the prose
-4. An **Axiom Store** accumulates beliefs that survived, degrading those that failed
+**Why it exists:** When you ask an AI to evaluate its own work, it games the evaluation. We documented 9 distinct cheating strategies across multiple AI models and domains (see table below). ZTARE's architecture prevents this by separating who proposes, who attacks, and who scores — and by adding numeric pass/fail tests that no AI can talk its way past.
 
-The generator cannot influence its own evaluation. The judge never reads prose. This architecture catches specification gaming that single-agent LLM evaluation misses entirely.
+**How the loop works:**
 
-At a high level, ZTARE is a zero-trust adversarial neurosymbolic system: LLMs generate and attack candidate theses, while deterministic code execution, parsers, and score gates constrain what counts as success. The contribution here is not the invention of debate, code execution, or neurosymbolic AI as such; it is the empirical finding that LLMs can systematically game self-authored falsification suites, and the verification architecture built to catch and harden against that behavior.
+1. A **Mutator** (AI) proposes an answer with testable code
+2. A **Firing Squad** (3 adversarial AIs) attacks the weakest assumptions
+3. A **Meta-Judge** scores only the code output — never the prose
+4. **Hard gates** (numeric pass/fail checks) catch answers that sound good but are actually wrong
+5. The best surviving answer becomes the **champion**; repeat
 
-For domain projects, the validator now writes explicit `latest_*` and `champion_*` artifacts so operators can distinguish:
+The generator cannot influence its own evaluation. The judge never reads prose. Hard gates cannot be overridden. This catches specification gaming that single-agent evaluation misses entirely.
+
+For a complete glossary of terms used in this project, see [docs/GLOSSARY.md](docs/GLOSSARY.md).
+
+For domain projects, the validator writes explicit `latest_*` and `champion_*` artifacts so operators can distinguish:
 
 - the newest evaluated attempt
 - the currently promoted best result for the active regime
@@ -102,11 +137,12 @@ For domain projects, the validator now writes explicit `latest_*` and `champion_
 
 ## Repository Scope
 
-The public repo currently has three active surfaces:
+The public repo currently has four active surfaces:
 
 1. the adversarial validator and workspace pipeline
-2. the synthesis / distribution pipeline
-3. the hardening / control-plane stack
+2. a Karpathy-inspired LLM knowledge workspace ([design pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)) that accumulates source material upstream of the validator
+3. the synthesis / distribution pipeline
+4. the hardening / control-plane stack
 
 Useful entry points:
 
@@ -116,24 +152,16 @@ Useful entry points:
 
 ## Layer Glossary
 
-These names are load-bearing. Do not collapse them.
+Five layers, each with a distinct job. See [docs/GLOSSARY.md](docs/GLOSSARY.md) for the full term list.
 
-1. **ZTARE validator**
-   - the adversarial domain-validation loop over evidence snapshots
-2. **V4 kernel**
-   - the evaluator being hardened
-3. **Meta-runner**
-   - the kernel-local deterministic promotion runner for V4 stage advancement
-4. **Supervisor**
-   - the multi-program control plane for bounded work packets
-5. **Paper bundles**
-   - public-facing manuscript sources under `papers/`
+1. **Knowledge Workspace** — a persistent upstream memory layer inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): raw sources accumulate, an LLM extracts structured notes, and a compiler emits bounded evidence snapshots for the validator. The workspace remembers; the validator does not.
+2. **Validator** — the adversarial loop (mutator vs. firing squad vs. judge) that stress-tests claims
+3. **Kernel** — the scoring and evaluation logic being continuously hardened against gaming
+4. **Meta-runner** — the deterministic promotion system for kernel improvements (not the validator)
+5. **Supervisor** — the work-management layer that routes tasks, tracks progress, and enforces budgets (does not decide truth)
+6. **Papers** — public-facing manuscripts under `papers/`
 
-The same separation principle recurs across layers, but the names stay layer-specific:
-
-- `meta-runner` is a kernel term
-- `supervisor` is a control-plane term
-- neither should be used as a generic synonym for the other
+These are separate concerns. The supervisor manages work; the validator decides truth. Don't use them interchangeably.
 
 ---
 
@@ -141,66 +169,19 @@ The same separation principle recurs across layers, but the names stay layer-spe
 
 Use the lightest mode that fits the task.
 
-### 1. Artisanal / Manual
+### 1. Manual / Exploratory
 
-Use when:
-- the task is exploratory
-- the scope is still fuzzy
-- the overhead of manifests / genesis is not worth it yet
+For thinking, strategizing, one-off analysis. No automation overhead. Just you and the AI working directly.
 
-This includes:
-- manual debate prompting
-- one-off architectural exploration
-- general-purpose generation outside the routed control plane
+### 2. Domain Validation (most users start here)
 
-### 2. Program Hardening
+For stress-testing a claim on real data: `raw sources -> workspace -> evidence -> validator -> report`. This is the core ZTARE loop. See [Quickstart](#quickstart-5-minutes) below.
 
-Use when:
-- the work is a bounded kernel or infrastructure improvement
-- provenance matters
-- you want typed handoffs and fail-closed commits
+### 3. Program Hardening (engine developers only)
 
-This uses:
-- `research_areas/seeds/**/*.md`
-- `supervisor/program_genesis/`
-- `supervisor/program_manifests/`
-- supervisor routing
-
-Operational additions:
-- successful verifier promotion advances the manifest automatically
-- `make supervisor-report ...` renders a read-only summary from `status.json` + `events.jsonl`
-
-### 3. Domain Validation
-
-Use when:
-- the task is thesis generation / adversarial validation on a domain project
-
-This uses the original ZTARE validator path:
-- workspace
-- evidence
-- validator loop
-- synthesis
-
-So no: the new M-form control plane does not replace the original validator loop or all manual work.
-It adds a governance layer for bounded improvement programs.
+For systematic improvements to the engine itself, with typed handoffs, provenance tracking, and fail-closed commits. Uses the supervisor control plane. See [supervisor/USER_MANUAL.md](supervisor/USER_MANUAL.md).
 
 ---
-
-## The 9 Gaming Strategies Documented
-
-| Strategy | Mechanism | Domain |
-|---|---|---|
-| **Blame Shield** | Bundle critical axiom with N sacrificial axioms; dilute penalty to 1/N | Bayesian |
-| **Float Masking** | Apply `round()` before assertion to destroy precision difference | Bayesian |
-| **Fake AutoDiff** | Name function after mechanism; body returns hardcoded dict | Bayesian |
-| **Cooked Book RNG** | Hardcode environment to improve over time; fake learning | Bayesian, Finance |
-| **Assert Narrowing** | Set assertion range to exactly match hardcoded inputs | AI Economics |
-| **Dimensional Factor** | Introduce unit error; apply ×1000 correction to hide it | Finance, Physics |
-| **Unidirectional Decay** | Formula valid for positive errors only; generates P>1.0 for negative | Epistemic Arch. |
-| **Gravity Constant** | Invent ungrounded coupling constant; build test around it | Physics |
-| **Straw Man Design** | Engineer the comparison object so the preferred design wins by construction | Startup |
-
-All 9 are **self-certifying** — they pass their own assert statements while violating their epistemic intent.
 
 ---
 

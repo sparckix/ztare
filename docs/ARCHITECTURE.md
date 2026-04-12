@@ -1,13 +1,15 @@
 # ZTARE Architecture
 
-ZTARE separates four things that are often collapsed in ordinary LLM workflows:
+ZTARE keeps four things separate that most AI workflows collapse together:
 
-- source accumulation
-- bounded evidence compilation
-- stateless adversarial validation
-- downstream synthesis / reporting
+1. **Collecting sources** — gathering raw material (documents, data, reports)
+2. **Compiling evidence** — extracting the testable facts from those sources
+3. **Adversarial validation** — having AIs argue over whether a claim holds up against the evidence
+4. **Reporting** — turning the battle-tested conclusions into audience-appropriate artifacts
 
-The architecture is only worth its complexity if those separations stay explicit under adversarial pressure.
+The whole point of the architecture is that the AI proposing an answer never gets to grade itself, and the judge never gets to override hard numeric checks. If these separations break, the system degrades to "AI writing convincing essays about itself."
+
+For a plain-English glossary of all terms, see [GLOSSARY.md](GLOSSARY.md).
 
 ## 0. Who This Document Is For
 
@@ -28,22 +30,288 @@ If you are not sure which audience you are, start as a general-purpose user. The
 
 ## 1. System Thesis
 
-ZTARE is a **stateless adversarial validator** for claims, theses, and strategic logic.
+ZTARE is a **stateless adversarial validator** — it stress-tests claims without remembering previous runs.
 
-It is surrounded by two external layers:
+It sits between two layers that DO remember things:
 
-1. a **stateful knowledge workspace** that accumulates sources and compresses them into a bounded evidence snapshot
-2. a **synthesis layer** that turns adversarial outputs into audience-facing artifacts
+1. A **workspace** upstream that accumulates source material over time
+2. A **synthesis layer** downstream that turns results into reports
 
-The important rule is:
+The key rule:
 
-**State is not the enemy. Unearned trust is the enemy.**
+**Memory is fine. Unearned trust is the enemy.**
 
-That is why:
+The workspace can grow and remember. But the validator never trusts previous conclusions just because they exist. Every run starts fresh from a bounded evidence snapshot. This prevents "the AI said it was right last time, so it must still be right."
 
-- the workspace is allowed to be stateful
-- the validator is not allowed to inherit that state as authority
-- every validation run still starts from a bounded input snapshot
+---
+
+## 1a. System Diagrams
+
+Four diagrams: the full pipeline, the validator internals, cross-cutting services, and the separation invariants that hold the whole thing together.
+
+### Figure 1 — Full System Pipeline
+
+```text
+                    ╔═══════════════════════════════════════════╗
+                    ║            OPERATOR  (human)               ║
+                    ║                                            ║
+                    ║  decides: what sources to ingest            ║
+                    ║           what question to test             ║
+                    ║           what rubric and model pairing     ║
+                    ║           what iteration budget             ║
+                    ║                                            ║
+                    ║  gates:   evidence promotion (L2 → L3)     ║
+                    ║           synthesis audience (L4)           ║
+                    ║           program D-gate (control plane)    ║
+                    ╚═════════════════════╤═════════════════════╝
+                                          │
+              ┌───────────────────────────┼───────────────────────────┐
+              │                           │                           │
+              v                           v                           v
+    ┌──────────────────┐     ┌──────────────────┐      ┌──────────────────┐
+    │    raw/ sources   │     │  project_charter  │      │   rubric JSON    │
+    │                   │     │                   │      │                  │
+    │  .md .txt .json   │     │  core question    │      │  scoring rules   │
+    │  .csv .yaml .html │     │  forecast type    │      │  gate config     │
+    │  .py .js .ts      │     │  anchor proxies   │      │  fit primitive   │
+    │                   │     │  determ. gates ────│──┐   │  flags           │
+    └────────┬─────────┘     └────────┬──────────┘  │   └────────┬─────────┘
+             │                        │              │            │
+    ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─
+    L1: KNOWLEDGE WORKSPACE            │              │            │
+    (Karpathy LLM Wiki adaptation)     │              │            │
+                                       │              │            │
+    update_workspace.py                │              │            │
+      per-source extraction            │              │            │
+      + cross-source merge             │              │            │
+                                       │              │            │
+    ──> workspace/                     │              │            │
+        source_notes/*.json            │              │            │
+        workspace_snapshot.json        │              │            │
+        facts.md                       │              │            │
+        contradictions.md              │              │            │
+        open_questions.md              │              │            │
+        candidate_claims.md            │              │            │
+             │                         │              │            │
+    ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─
+    L2: EVIDENCE COMPILER              │              │            │
+                                       │              │            │
+    compile_evidence.py                │              │            │
+    (mode: raw | workspace | auto)     │              │            │
+                                       │              │            │
+    ──> compiled_evidence.txt          │              │            │
+    ──> compiled_evidence_packet.json  │              │            │
+    ──> provenance.json                │              │            │
+                                       │              │            │
+    fail-closed on error               │              │            │
+             │                         │              │            │
+    ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─
+             │                         │              │            │
+    [operator promotes]                │              │            │
+             │                         │              │            │
+             v                         │              │            │
+    ┌──────────────────┐               │              │            │
+    │   evidence.txt   │◄── score      │              │            │
+    │ (bounded snapshot)│   regime      │              │            │
+    │                  │   fingerprints│              │            │
+    └────────┬─────────┘               │              │            │
+             │                         │              │            │
+    ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─│─ ─ ─ ─ ─
+    L3: ADVERSARIAL VALIDATOR          │              │            │
+    (autoresearch_loop.py)             │              │            │
+                                       │              │            │
+    ┌────────┐  ┌───────────┐  ┌───────┴──┐  ┌───────┴────────────┴──┐
+    │MUTATOR │─>│  FIRING   │─>│  META    │─>│      HARD GATES       │
+    │        │  │  SQUAD    │  │  JUDGE   │  │                       │
+    │proposes│  │3 AIs      │  │scores    │  │ GP-030 charter gates  │
+    │thesis +│  │attack the │  │exec out- │  │ + project gate harness│
+    │code    │  │weakest    │  │put only, │  │                       │
+    │        │  │assumptions│  │never     │  │ deterministic,        │
+    │[fit    │  │           │  │prose     │  │ fail-closed,          │
+    │ primi- │  │           │  │          │  │ cannot be overridden  │
+    │ tive]  │  │           │  │          │  │                       │
+    └──▲─────┘  └───────────┘  └──────────┘  └──────────┬────────────┘
+       │                                                 │
+       │  ┌──────────────────────────────────┐           │
+       │  │ STAGNATION ENGINE                 │           │
+       │  │  stag >= 3: pivot profile inject  │           │
+       │  │  stag >= 4: axiom purge           │           │
+       │  │  V4 projects: bounded override    │           │
+       │  └──────────────────────────────────┘           │
+       │                                                 v
+       │  ┌──────────────────────────────────────────────────┐
+       │  │ score improved?  ─ yes ─> promote to champion    │
+       └──│ continue?        ─ yes ─> next iteration         │
+          │ budget exhausted? ─ yes ─> exit loop              │
+          └──────────────────────────────────────────────────┘
+
+    OUTPUTS:                          FEEDBACK ──> workspace:
+    thesis.md (updated)                latest_evidence_gaps.json
+    debate_log_iter_*.md               champion_evidence_gaps.json
+    history/*.md                       latest_constraint_proposals.json
+    latest_eval_results.json           derived_constraints.json
+    champion_eval_results.json         iteration_telemetry.jsonl
+    fit_result*.json
+    latest_* vs champion_*
+             │
+    ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+    L4: SYNTHESIS PIPELINE
+    (synthesize.py)
+
+    sniff ──> history ──> ledger ──> brief ──> render ──> QA
+
+    ┌────────────┐  ┌────────────┐  ┌─────────────────┐  ┌──────────┐
+    │ledger.json │─>│ brief.json │─>│Report.candidate  │─>│ qa.json  │
+    │ (canonical)│  │ (audience) │  │    .md (draft)   │  │ (gate)   │
+    └────────────┘  └────────────┘  └─────────────────┘  └──────────┘
+                                                                │
+                                            QA passes? ─ yes ─> Report.md
+                                                    no ─> inspect candidate
+
+    Renderers:
+      founder_memo | decision_brief | architectural_memo
+      research_note | quantitative_appendix | field_manual
+```
+
+### Figure 2 — Feedback Loops
+
+```text
+    The system has three feedback loops. All are human-gated.
+
+    ┌───────────────┐                      ┌───────────────┐
+    │   VALIDATOR    │  evidence_gaps.json  │   WORKSPACE   │
+    │   (L3)        │─────────────────────>│   (L1)        │
+    │               │  constraint_         │               │
+    │               │  proposals.json      │  operator     │
+    │               │─────────────────────>│  decides what │
+    │               │                      │  enters raw/  │
+    │               │  derived_            │  and what gets│
+    │               │  constraints.json    │  promoted     │
+    │               │─────────────────────>│               │
+    └───────────────┘                      └───────┬───────┘
+                                                   │
+                                          [compile + promote]
+                                                   │
+                                                   v
+                                           ┌───────────────┐
+                                           │ evidence.txt   │
+                                           │ (next run)     │
+                                           └───────────────┘
+
+    ┌───────────────┐                      ┌───────────────┐
+    │   VALIDATOR    │  debate logs,        │   GLOBAL      │
+    │   (L3)        │  history files        │  PRIMITIVES   │
+    │               │─────────────────────>│               │
+    │               │  extract_incidents    │  incidents/   │
+    │               │                      │  ──> review/  │
+    │               │  approved primitives  │  ──> approved/│
+    │               │<─────────────────────│               │
+    │               │  (attacker/judge side)│  [human gate] │
+    └───────────────┘                      └───────────────┘
+```
+
+### Figure 3 — Cross-Cutting Services
+
+```text
+    ┌───────────────────────────────────────────────────────────────────┐
+    │ PROVIDER RUNTIME  (src/ztare/common/llm_runtime.py)               │
+    │                                                                   │
+    │  model-family ──> model-id resolution                             │
+    │  retry + transient-error handling                                 │
+    │  cross-provider failover on persistent outages                    │
+    │  token-usage extraction (Gemini / Anthropic / OpenAI)             │
+    │  pricing normalization via supervisor/model_pricing.json          │
+    │                                                                   │
+    │  Consumed by: L1 workspace | L2 compiler | L3 validator |         │
+    │               L4 synthesis | supervisor wrappers                  │
+    └───────────────────────────────────────────────────────────────────┘
+
+    ┌───────────────────────────────────────────────────────────────────┐
+    │ GLOBAL PRIMITIVES  (global_primitives/)                           │
+    │ Cross-project adversarial precedent memory                        │
+    │                                                                   │
+    │  debate logs ──> extract_incidents ──> incidents/*.jsonl           │
+    │  ──> draft_primitives ──> review/                                 │
+    │  ──> [human promotes/rejects] ──> approved/                       │
+    │                                                                   │
+    │  Validator flags:                                                 │
+    │    --use_primitives            attacker/judge side (safe default)  │
+    │    --use_transfer_hypotheses   + mutator side (opt-in, stronger)   │
+    │                                                                   │
+    │  Never injected as evidence.  Never treated as axioms.            │
+    └───────────────────────────────────────────────────────────────────┘
+```
+
+### Figure 4 — Control Plane (Orthogonal to Data Pipeline)
+
+```text
+    ┌───────────────────────────────────────────────────────────────────┐
+    │ SUPERVISOR  (supervisor/)                                         │
+    │                                                                   │
+    │  Decides: what work exists, who does it, what's in scope          │
+    │  Does NOT decide: epistemic truth                                 │
+    │                                                                   │
+    │  seeds/                                                           │
+    │  (active | deferred | legacy)                                     │
+    │       │                                                           │
+    │       v                                                           │
+    │  seed_registry.json                                               │
+    │       │                                                           │
+    │  [human accepts] ──> program_genesis/ (immutable birth contracts) │
+    │                           │                                       │
+    │                           v                                       │
+    │                      program_registry.json                        │
+    │                           │                                       │
+    │                           v                                       │
+    │       ┌────────────────────────────────────────────────┐           │
+    │       │  SUPERVISOR LOOP                               │           │
+    │       │                                                │           │
+    │       │   A1 ───> A2 ───> B ───> C ───> [D]          │           │
+    │       │  (debate) (spec) (build) (verify) (human gate) │           │
+    │       │                                                │           │
+    │       │   optional: A2 ──> A1 refinement (≤ 2 rounds) │           │
+    │       └───────────────────────────────────────────────┘           │
+    │                                                                   │
+    │  agent_wrappers.json     model_pricing.json                       │
+    └───────────────────────────────────────────────────────────────────┘
+```
+
+### Figure 5 — Separation Invariants
+
+```text
+    The system's integrity depends on these separations never collapsing.
+
+    ┌──────────┐          ┌──────────┐          ┌──────────┐
+    │ PROPOSER │    ≠     │  JUDGE   │    ≠     │   GATE   │
+    │ (mutator)│          │(meta-    │          │ (GP-030) │
+    │          │          │ judge)   │          │          │
+    │ generates│          │ scores   │          │ enforces │
+    │ thesis + │          │ exec     │          │ numeric  │
+    │ code     │          │ output   │          │ pass/fail│
+    │          │          │ only     │          │          │
+    │ NEVER    │          │ NEVER    │          │ CANNOT   │
+    │ grades   │          │ reads    │          │ be over- │
+    │ itself   │          │ prose    │          │ ridden   │
+    └──────────┘          └──────────┘          └──────────┘
+
+    ┌──────────┐          ┌──────────┐
+    │WORKSPACE │    ≠     │VALIDATOR │
+    │ (L1)     │          │ (L3)     │
+    │          │          │          │
+    │ remembers│          │ attacks  │
+    │accumulates│         │ forgets  │
+    │ compounds│          │ re-proves│
+    └──────────┘          └──────────┘
+
+    ┌──────────┐          ┌──────────┐
+    │ CONTROL  │    ≠     │EPISTEMIC │
+    │  PLANE   │          │  ENGINE  │
+    │(supervisor)│        │(validator)│
+    │          │          │          │
+    │ routes   │          │ decides  │
+    │ work     │          │ truth    │
+    └──────────┘          └──────────┘
+```
 
 ---
 
@@ -250,6 +518,10 @@ These are load-bearing.
 ### Purpose
 
 The workspace is the persistent memory layer for source accumulation, but constrained for ZTARE's zero-trust needs.
+
+### Design Inspiration
+
+The workspace layer is an adaptation of [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): raw sources accumulate, an LLM extracts structured per-source notes, and the system maintains cross-referenced knowledge that compounds over time. The key adaptation is that ZTARE intentionally stops short of a full autonomous wiki — the workspace accumulates and compiles, but the validator never trusts accumulated knowledge as authority. The boundary is: workspace remembers, validator attacks a snapshot. See [DECISION_LOG.md §14](../DECISION_LOG.md) for the full architectural reasoning.
 
 Its job is to:
 

@@ -1,13 +1,12 @@
 # ZTARE Workflow
 
-This document describes the day-to-day operating loop for projects that use:
+The day-to-day guide for running ZTARE on a real project. The basic loop:
 
-- a persistent upstream knowledge workspace
-- a bounded evidence snapshot
-- the stateless ZTARE validator
-- the downstream synthesis pipeline
+```
+Gather sources -> Build workspace -> Extract evidence -> Run adversarial loop -> Generate report
+```
 
-It does **not** replace `README.md`. This is the operator-facing workflow reference.
+For a plain-English glossary of terms, see [GLOSSARY.md](GLOSSARY.md). This is the operator-facing reference — it does **not** replace `README.md`.
 
 ---
 
@@ -96,7 +95,7 @@ There are four layers:
 1. `raw/`
    - the source bucket
 2. `workspace/`
-   - persistent structured memory
+   - persistent structured memory, inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — raw sources accumulate, an LLM extracts structured notes, and the system compounds knowledge over time without the validator ever trusting it as authority
 3. `evidence.txt`
    - bounded validation snapshot
 4. ZTARE + synthesis
