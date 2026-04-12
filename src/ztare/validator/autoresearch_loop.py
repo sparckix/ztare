@@ -981,6 +981,7 @@ def mutate_thesis(
     model_id=MUTATOR_MODEL_ID,
     failure_log=None,
     falsification_mode=None,
+    fit_primitive_enabled=False,
     fit_context="",
 ):
     task_header = "TASK: Resolve the following Systemic Inconsistency:"
@@ -1318,8 +1319,8 @@ def mutate_thesis(
 
     # GP-035: fit primitive prompt contract (opt-in via rubric)
     fit_primitive_context = ""
-    if fit_context:
-        fit_primitive_context = f"""
+    if fit_primitive_enabled:
+        fit_primitive_context = """
     ### GP-035 FIT PRIMITIVE CONTRACT
 
     This project uses a post-LLM numerical fitting step. You MUST include a
@@ -1340,6 +1341,9 @@ def mutate_thesis(
     FIT_DECLARATION plus exact key matching against MODEL_PARAMS. It does NOT
     require any specific function name, argument names, or variable naming.
     Omitting the fit_declaration block is recorded as a fit failure.
+    """
+        if fit_context:
+            fit_primitive_context += f"""
 
     ### PREVIOUS ITERATION FIT RESULT
     {fit_context}
@@ -1364,14 +1368,14 @@ def mutate_thesis(
     {document_context}
     {failure_context}
     {primitive_context}
-    {fit_primitive_context}
 
     ---
 
     ### {task_header}
-    
+
     "THIS IS THE WEAKEST LINK IN THE CURRENT LOGIC CHAIN: {weakest_point}"
 
+    {fit_primitive_context}
     {style_guide}
     {output_requirements}
     {pivot_instruction}
@@ -1817,6 +1821,7 @@ for i in range(ITERATIONS):
             model_id=current_mutator,
             failure_log=last_failure_reason,
             falsification_mode=rubric_falsification_mode,  # GP-003: pass rubric mode
+            fit_primitive_enabled=rubric_data.get("enable_fit_primitive", False),
             fit_context=_fit_ctx,
         )
         mutation_declaration, mutation_validation, clean_thesis, python_code, full_candidate = _prepare_mutation_candidate(
