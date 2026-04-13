@@ -695,3 +695,33 @@ def format_residual_map_for_prompt(result: FitSuccess, max_rows: int = 30) -> st
     if len(sorted_map) > max_rows:
         lines.append(f"    ... ({len(sorted_map) - max_rows} more points omitted)")
     return "\n".join(lines)
+
+
+def format_residual_surface_for_prompt(
+    result: FitSuccess,
+    *,
+    include_observed: bool = False,
+    include_predicted: bool = False,
+) -> str:
+    """Format the full residual surface in raw row order for cold successor runs."""
+    lines = [
+        "FULL VISIBLE-SLICE RESIDUAL SURFACE:",
+        f"  Max |residual|: {result.max_abs_residual:.6f}",
+        f"  Mean |residual|: {result.mean_abs_residual:.6f}",
+        f"  RMSE: {result.rmse:.6f}",
+        "",
+        "  Rows:",
+    ]
+    for pt in result.residual_map:
+        var_parts = " ".join(
+            f"{k}={v:.4f}"
+            for k, v in pt.items()
+            if k not in ("observed", "predicted", "residual")
+        )
+        row = [f"    {var_parts}", f"residual={pt['residual']:+.5f}"]
+        if include_observed:
+            row.append(f"obs={pt['observed']:.5f}")
+        if include_predicted:
+            row.append(f"pred={pt['predicted']:.5f}")
+        lines.append("  ".join(row))
+    return "\n".join(lines)

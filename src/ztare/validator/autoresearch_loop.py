@@ -4,10 +4,12 @@ import subprocess
 import time
 import shutil
 import ast
+import atexit
+import signal
 from pathlib import Path
 import argparse
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 import concurrent.futures
 from google.genai import types
 from src.ztare.common import utils
@@ -31,6 +33,7 @@ from src.ztare.validator.v4_family import is_v4_family_project
 from src.ztare.validator.information_yield import (
     IterationSignal,
     LoopControlAction,
+    apply_latent_motion_veto,
     evaluate_information_yield,
 )
 from src.ztare.validator.pivot_heuristics import select_pivot_profile
@@ -54,7 +57,10 @@ from src.ztare.validator.champion_artifacts import (
     champion_artifacts_out_of_sync_with_saved_best,
     set_artifact_role,
 )
-from src.ztare.validator.latent_distance import record_latent_distance
+from src.ztare.validator.latent_distance import (
+    record_latent_distance,
+    summarize_recent_latent_motion,
+)
 from src.ztare.validator.fit_primitive import (
     FitDeclaration,
     FitFailure,
@@ -64,8 +70,21 @@ from src.ztare.validator.fit_primitive import (
     fit_result_to_json,
     format_diagnostic_for_prompt,
     format_residual_map_for_prompt,
+    format_residual_surface_for_prompt,
     parse_fit_declaration,
     substitute_fitted_params,
+)
+from src.ztare.validator.structural_memory import (
+    render_structural_memory_prompt_section,
+    update_structural_memory,
+)
+from src.ztare.validator.fit_declaration_retry import (
+    validate_and_retry_fit_declaration,
+)
+from src.ztare.validator.gp048_feedback import (
+    render_farther_tail_veto_prompt_section,
+    render_primitive_cohort_prompt_section,
+    write_telemetry_line,
 )
 
 SESSION_TOKENS = 0
@@ -266,6 +285,215 @@ def append_jsonl(filepath: str, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(payload, ensure_ascii=True) + "\n")
+
+
+def _utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _usage_bucket_snapshot(bucket: dict) -> dict:
+    return {
+        "input_tokens": int(bucket.get("input_tokens", 0) or 0),
+        "output_tokens": int(bucket.get("output_tokens", 0) or 0),
+        "cache_creation_input_tokens": int(bucket.get("cache_creation_input_tokens", 0) or 0),
+        "cache_read_input_tokens": int(bucket.get("cache_read_input_tokens", 0) or 0),
+        "estimated_cost_usd": float(bucket.get("estimated_cost_usd", 0.0) or 0.0),
+        "cost_known": bool(bucket.get("cost_known", False)),
+    }
+
+
+def _usage_delta(before: dict, after: dict) -> dict:
+    input_tokens = max(0, int(after["input_tokens"]) - int(before["input_tokens"]))
+    output_tokens = max(0, int(after["output_tokens"]) - int(before["output_tokens"]))
+    cache_read_tokens = max(
+        0,
+        int(after["cache_read_input_tokens"]) - int(before["cache_read_input_tokens"]),
+    )
+    cache_write_tokens = max(
+        0,
+        int(after["cache_creation_input_tokens"]) - int(before["cache_creation_input_tokens"]),
+    )
+    has_usage = any(
+        value > 0
+        for value in (
+            input_tokens,
+            output_tokens,
+            cache_read_tokens,
+            cache_write_tokens,
+        )
+    )
+    cost_known = True if not has_usage else bool(after.get("cost_known", False))
+    estimated_cost_usd = (
+        round(
+            max(
+                0.0,
+                float(after["estimated_cost_usd"]) - float(before["estimated_cost_usd"]),
+            ),
+            6,
+        )
+        if has_usage and cost_known
+        else 0.0 if not has_usage else None
+    )
+    return {
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "cache_read_tokens": cache_read_tokens,
+        "cache_write_tokens": cache_write_tokens,
+        "estimated_cost_usd": estimated_cost_usd,
+        "cost_known": cost_known,
+        "has_usage": has_usage,
+    }
+
+
+def _combined_iteration_cost_usd(mutator_usage: dict, judge_usage: dict) -> float | None:
+    total = 0.0
+    for usage in (mutator_usage, judge_usage):
+        if not usage.get("has_usage", False):
+            continue
+        if not usage.get("cost_known", False):
+            return None
+        total += float(usage.get("estimated_cost_usd", 0.0) or 0.0)
+    return round(total, 6)
+
+
+def _extract_iteration_gate_metrics(evaluation: dict | None) -> tuple[bool, int, list[str]]:
+    if not isinstance(evaluation, dict):
+        return False, 0, []
+    score_contract = evaluation.get("score_contract")
+    if not isinstance(score_contract, dict):
+        score_contract = {}
+    payload = score_contract.get("deterministic_charter_gates", evaluation.get("deterministic_charter_gates"))
+    if not isinstance(payload, dict):
+        return False, 0, []
+
+    declared = payload.get("declared", [])
+    results = payload.get("results", [])
+    gate_engagement = bool(payload.get("harness_invoked", False)) or bool(declared)
+    failed_gate_ids: list[str] = []
+    if isinstance(results, list):
+        for item in results:
+            if isinstance(item, dict) and not bool(item.get("passed", False)):
+                name = item.get("name")
+                if isinstance(name, str) and name:
+                    failed_gate_ids.append(name)
+    failure_count = int(payload.get("failure_count", len(failed_gate_ids)) or 0)
+    if failed_gate_ids:
+        failure_count = len(failed_gate_ids)
+    return gate_engagement, failure_count, failed_gate_ids
+
+
+def _extract_iteration_escalation_flags(evaluation: dict | None) -> dict:
+    if not isinstance(evaluation, dict):
+        return {"self_reference": False, "semantic_escalation": False}
+    score_contract = evaluation.get("score_contract")
+    if not isinstance(score_contract, dict):
+        score_contract = {}
+    rule = str(
+        evaluation.get("self_reference_rule_fired")
+        or score_contract.get("self_reference_rule_fired")
+        or ""
+    )
+    unresolved_diagnosis = str(evaluation.get("semantic_gate_unresolved_diagnosis") or "")
+    return {
+        "self_reference": "self_reference" in rule,
+        "semantic_escalation": (
+            rule == "claim_test_mismatch_escalation" or bool(unresolved_diagnosis)
+        ),
+    }
+
+
+def _current_loop_control_action(
+    *,
+    pending_loop_action,
+    dynamic_enabled: bool,
+    is_v4_project: bool,
+    stagnation_count: int,
+) -> str:
+    if dynamic_enabled and pending_loop_action in {
+        LoopControlAction.REFRESH_SPECIALISTS,
+        LoopControlAction.PIVOT_REQUIRED,
+    }:
+        return "refresh_specialists"
+    if is_v4_project and stagnation_count >= 3:
+        return "stagnation_pivot"
+    if stagnation_count >= 4:
+        return "emergency_pivot"
+    if stagnation_count >= 3:
+        return "stagnation_pivot"
+    return "normal"
+
+
+def _append_run_boundary_telemetry(
+    workspace_dir: Path,
+    payload: dict,
+) -> None:
+    append_jsonl(str(workspace_dir / "iteration_telemetry.jsonl"), payload)
+
+
+def _append_iteration_telemetry(
+    workspace_dir: Path,
+    *,
+    iteration_index: int,
+    iteration_start_utc: str,
+    loop_control_action: str,
+    score: int | None,
+    score_improved: bool,
+    champion_promoted: bool,
+    stagnation_count: int,
+    gate_engagement: bool,
+    gate_failure_count: int,
+    failed_gate_ids: list[str],
+    escalation_flags: dict,
+    falsification_mode: str,
+    mutator_model_id: str,
+    judge_model_id: str,
+    mutator_usage: dict,
+    judge_usage: dict,
+    pending_loop_action: str,
+) -> None:
+    iteration_end_utc = _utc_now_iso()
+    payload = {
+        "record_type": "iteration",
+        "run_id": RUN_ID,
+        "iteration_index": iteration_index,
+        "iteration_start_utc": iteration_start_utc,
+        "iteration_end_utc": iteration_end_utc,
+        "wall_clock_seconds": round(
+            max(
+                0.0,
+                datetime.fromisoformat(iteration_end_utc).timestamp()
+                - datetime.fromisoformat(iteration_start_utc).timestamp(),
+            ),
+            6,
+        ),
+        "loop_control_action": loop_control_action,
+        "score": score,
+        "score_improved": score_improved,
+        "champion_promoted": champion_promoted,
+        "stagnation_count": stagnation_count,
+        "gate_engagement": gate_engagement,
+        "gate_failure_count": gate_failure_count,
+        "failed_gate_ids": failed_gate_ids,
+        "escalation_flags": escalation_flags,
+        "falsification_mode": falsification_mode,
+        "mutator_model_id": mutator_model_id,
+        "judge_model_id": judge_model_id,
+        "mutator_usage": {
+            "input_tokens": mutator_usage["input_tokens"],
+            "output_tokens": mutator_usage["output_tokens"],
+            "cache_read_tokens": mutator_usage["cache_read_tokens"],
+            "cache_write_tokens": mutator_usage["cache_write_tokens"],
+        },
+        "judge_usage": {
+            "input_tokens": judge_usage["input_tokens"],
+            "output_tokens": judge_usage["output_tokens"],
+            "cache_read_tokens": judge_usage["cache_read_tokens"],
+            "cache_write_tokens": judge_usage["cache_write_tokens"],
+        },
+        "estimated_cost_usd": _combined_iteration_cost_usd(mutator_usage, judge_usage),
+        "pending_loop_action": pending_loop_action,
+    }
+    append_jsonl(str(workspace_dir / "iteration_telemetry.jsonl"), payload)
 
 
 def _strip_best_iteration_marker(text: str) -> str:
@@ -573,6 +801,35 @@ def _promote_latest_artifacts_to_champion() -> dict:
     }
 
 
+def _format_gate_surface_for_prompt(eval_payload: dict) -> str:
+    """Format latest gate surface for cold successor prompting."""
+    score_contract = eval_payload.get("score_contract", {}) if isinstance(eval_payload, dict) else {}
+    det = score_contract.get("deterministic_charter_gates", {})
+    results = det.get("results", [])
+    lines = ["LATEST GATE SURFACE:"]
+    if results:
+        for item in results:
+            name = item.get("name", "unknown")
+            passed = bool(item.get("passed", False))
+            status = "PASS" if passed else "FAIL"
+            lines.append(f"  - {name}: {status}")
+            reason = str(item.get("reason", "") or "")
+            if reason:
+                lines.append(f"    reason: {reason}")
+    else:
+        hard_fail_reasons = score_contract.get("hard_fail_reasons", [])
+        soft_caps = score_contract.get("soft_score_caps", [])
+        if hard_fail_reasons:
+            lines.append("  Hard fail reasons:")
+            for reason in hard_fail_reasons:
+                lines.append(f"    - {reason}")
+        if soft_caps:
+            lines.append("  Soft caps:")
+            for cap in soft_caps:
+                lines.append(f"    - cap={cap.get('cap')}: {cap.get('reason', '')}")
+    return "\n".join(lines)
+
+
 def _print_latest_artifact_status(payload: dict, previous_champion_fingerprint: str | None) -> None:
     latest_fingerprint = artifact_regime_fingerprint(
         payload,
@@ -679,37 +936,81 @@ def _write_latest_information_yield(
     *,
     signal: IterationSignal,
     decision,
+    latent_motion_summary: dict | None = None,
 ) -> None:
+    payload = {
+        "signal": {
+            "iteration_index": signal.iteration_index,
+            "score": signal.score,
+            "weakest_point": signal.weakest_point,
+            "score_improved": signal.score_improved,
+            "runtime_failure": signal.runtime_failure,
+            "catastrophic_failure": signal.catastrophic_failure,
+            "novel_attack_ids": list(signal.novel_attack_ids),
+            "novel_hinge_ids": list(signal.novel_hinge_ids),
+            "novel_primitive_ids": list(signal.novel_primitive_ids),
+            "verified_axioms_added": signal.verified_axioms_added,
+            "falsification_mode": signal.falsification_mode,
+            "mutation_r1_mismatch": signal.mutation_r1_mismatch,
+            "claim_delta_type": signal.claim_delta_type,
+            "committee_digest": signal.committee_digest,
+            "prior_committee_digest": signal.prior_committee_digest,
+        },
+        "decision": {
+            "action": decision.action.value,
+            "stagnant_window": decision.stagnant_window,
+            "rationale": decision.rationale,
+        },
+    }
+    if latent_motion_summary is not None:
+        payload["latent_motion_summary"] = latent_motion_summary
     write_file(
         str(workspace_dir / "latest_information_yield.json"),
         json.dumps(
-            {
-                "signal": {
-                    "iteration_index": signal.iteration_index,
-                    "score": signal.score,
-                    "weakest_point": signal.weakest_point,
-                    "score_improved": signal.score_improved,
-                    "runtime_failure": signal.runtime_failure,
-                    "catastrophic_failure": signal.catastrophic_failure,
-                    "novel_attack_ids": list(signal.novel_attack_ids),
-                    "novel_hinge_ids": list(signal.novel_hinge_ids),
-                    "novel_primitive_ids": list(signal.novel_primitive_ids),
-                    "verified_axioms_added": signal.verified_axioms_added,
-                    "falsification_mode": signal.falsification_mode,
-                    "mutation_r1_mismatch": signal.mutation_r1_mismatch,
-                    "claim_delta_type": signal.claim_delta_type,
-                    "committee_digest": signal.committee_digest,
-                    "prior_committee_digest": signal.prior_committee_digest,
-                },
-                "decision": {
-                    "action": decision.action.value,
-                    "stagnant_window": decision.stagnant_window,
-                    "rationale": decision.rationale,
-                },
-            },
+            payload,
             indent=2,
         ),
     )
+
+
+def _evaluate_post_eval_loop_control(
+    workspace_dir: Path,
+    *,
+    signal: IterationSignal,
+) -> tuple[object, dict | None]:
+    raw_decision = evaluate_information_yield(
+        iteration_history,
+        underidentified_after=args.underidentified_after,
+    )
+    latent_motion_payload: dict | None = None
+    final_decision = raw_decision
+    if (signal.falsification_mode or "").strip().lower() == "bounded_discriminator":
+        latent_motion = summarize_recent_latent_motion(project_dir=Path(PROJECT_DIR))
+        if latent_motion is not None:
+            final_decision = apply_latent_motion_veto(
+                raw_decision,
+                records_considered=latent_motion.records_considered,
+                mean_max_set_distance=latent_motion.mean_max_set_distance,
+                threshold=latent_motion.threshold,
+            )
+            latent_motion_payload = {
+                "records_considered": latent_motion.records_considered,
+                "window_size": latent_motion.window_size,
+                "mean_max_set_distance": latent_motion.mean_max_set_distance,
+                "structural_move_count": latent_motion.structural_move_count,
+                "motion_classes": list(latent_motion.motion_classes),
+                "threshold": latent_motion.threshold,
+                "veto_applied": final_decision.action != raw_decision.action,
+                "base_action": raw_decision.action.value,
+                "final_action": final_decision.action.value,
+            }
+    _write_latest_information_yield(
+        workspace_dir,
+        signal=signal,
+        decision=final_decision,
+        latent_motion_summary=latent_motion_payload,
+    )
+    return final_decision, latent_motion_payload
 
 
 def _record_loop_event(
@@ -983,6 +1284,11 @@ def mutate_thesis(
     falsification_mode=None,
     fit_primitive_enabled=False,
     fit_context="",
+    structural_memory_context="",
+    cold_residual_mode=False,
+    residual_mode_context="",
+    gp048_cohort_context="",
+    farther_tail_veto_context="",
 ):
     task_header = "TASK: Resolve the following Systemic Inconsistency:"
     pivot_instruction = ""
@@ -1009,6 +1315,8 @@ def mutate_thesis(
     )
     style_guide = ""
     output_requirements = ""
+    grounding_heading = "GROUNDING DATA (IMMUTABLE CONSTANTS):"
+    grounding_payload = evidence
 
     # --- DYNAMIC CONTEXT MANAGEMENT ---
     if is_v4_project:
@@ -1319,6 +1627,9 @@ def mutate_thesis(
 
     # GP-035: fit primitive prompt contract (opt-in via rubric)
     fit_primitive_context = ""
+    fit_declaration_reminder = ""
+    structural_memory_prompt = ""
+    residual_mode_prompt = ""
     if fit_primitive_enabled:
         fit_primitive_context = """
     ### GP-035 FIT PRIMITIVE CONTRACT
@@ -1342,11 +1653,45 @@ def mutate_thesis(
     require any specific function name, argument names, or variable naming.
     Omitting the fit_declaration block is recorded as a fit failure.
     """
+        # Also append to output_requirements so it survives pivot-mode attention hijack
+        output_requirements += """
+    FIT DECLARATION (MANDATORY — DO NOT OMIT):
+        - You MUST include a ```fit_declaration block in your response (see GP-035 FIT PRIMITIVE CONTRACT above).
+        - Omitting it will be treated as a fit failure and your candidate will not be optimized.
+    """
+        # Trailing reminder — last line the model reads before generating
+        fit_declaration_reminder = "REMINDER: Your response MUST include a fenced ```fit_declaration block. If it is absent, your candidate will be recorded as a fit failure and will not be numerically optimized."
         if fit_context:
             fit_primitive_context += f"""
 
     ### PREVIOUS ITERATION FIT RESULT
     {fit_context}
+    """
+        if structural_memory_context:
+            structural_memory_prompt = f"""
+
+    {structural_memory_context}
+    """
+    if cold_residual_mode and residual_mode_context:
+        grounding_heading = "COLD SUCCESSOR ARTIFACTS (PRIMARY SEARCH OBJECT):"
+        grounding_payload = residual_mode_context
+        residual_mode_prompt = """
+    ### GP-045 COLD RESIDUAL SUCCESSOR MODE
+
+    Treat the current fitted family as a base approximation only, not as the final law.
+    Your primary search object is the cold artifact surface below:
+    - full visible-slice residual matrix
+    - latest gate pass/fail surface
+    - structural memory from families already discovered by the system
+    - generic residual diagnostics already emitted by the kernel
+
+    Constraints:
+    - Do NOT assume a named repair axis.
+    - Do NOT assume any fixed recombination rule such as addition.
+    - If you preserve, transform, replace, or combine the current family with a new term,
+      you must choose and express that relation explicitly in your candidate.
+    - Original visible evidence values are intentionally not the primary object in this mode.
+      Work from the residual geometry unless your candidate itself requires the broader harness context.
     """
 
     base_prompt = f"""{persona}
@@ -1359,9 +1704,8 @@ def mutate_thesis(
     You are FORBIDDEN from contradicting them within their original domain.
     HOWEVER, if you are executing a TOPOLOGICAL PIVOT, you are granted 'Axiom Retirement' authority. If an axiom is mathematically true but structurally irrelevant to the new domain (e.g., applying Black Hole limits to a biological brain), you must explicitly drop it by writing: "RETIRED AXIOM: [Axiom Concept] - [Reason it does not apply to this scale/domain]."
 
-
-    GROUNDING DATA (IMMUTABLE CONSTANTS):
-    {evidence}
+    {grounding_heading}
+    {grounding_payload}
 
     {charter_context}
     {constraint_context}
@@ -1375,10 +1719,15 @@ def mutate_thesis(
 
     "THIS IS THE WEAKEST LINK IN THE CURRENT LOGIC CHAIN: {weakest_point}"
 
+    {residual_mode_prompt}
     {fit_primitive_context}
+    {structural_memory_prompt}
+    {gp048_cohort_context}
+    {farther_tail_veto_context}
     {style_guide}
     {output_requirements}
     {pivot_instruction}
+    {fit_declaration_reminder}
     """
     if args.runner_r1_contract:
         declaration_prompt = base_prompt + """
@@ -1681,11 +2030,65 @@ best_state = _capture_project_state(_project_state_paths(PROJECT_DIR))
 iteration_history: list[IterationSignal] = []
 pending_loop_action = LoopControlAction.CONTINUE
 current_committee_digest = _load_current_committee_digest(args.project) if args.dynamic else ""
+workspace_dir = Path(PROJECT_DIR) / "workspace"
+workspace_dir.mkdir(parents=True, exist_ok=True)
+run_exit_reason = "budget_exhausted"
+last_completed_iteration = 0
+_run_telemetry_state = {"finalized": False}
+
+
+def _finalize_run_telemetry_once() -> None:
+    if _run_telemetry_state["finalized"]:
+        return
+    _run_telemetry_state["finalized"] = True
+    _append_run_boundary_telemetry(
+        workspace_dir,
+        {
+            "record_type": "run_end",
+            "run_id": RUN_ID,
+            "timestamp_utc": _utc_now_iso(),
+            "final_iteration": last_completed_iteration,
+            "final_score": best_score,
+            "run_exit_reason": run_exit_reason,
+        },
+    )
+
+
+_previous_sigint_handler = signal.getsignal(signal.SIGINT)
+
+
+def _handle_sigint(signum, frame):
+    global run_exit_reason
+    run_exit_reason = "operator_stop"
+    _finalize_run_telemetry_once()
+    if callable(_previous_sigint_handler):
+        _previous_sigint_handler(signum, frame)
+    raise KeyboardInterrupt
+
+
+atexit.register(_finalize_run_telemetry_once)
+signal.signal(signal.SIGINT, _handle_sigint)
+_append_run_boundary_telemetry(
+    workspace_dir,
+    {
+        "record_type": "run_start",
+        "run_id": RUN_ID,
+        "project": args.project,
+        "timestamp_utc": _utc_now_iso(),
+        "rubric": args.rubric,
+        "iteration_budget": ITERATIONS,
+        "mutator_model": MUTATOR_MODEL_ID,
+        "judge_model": JUDGE_MODEL_ID,
+    },
+)
 
 for i in range(ITERATIONS):
     print(
         f"\n--- Iteration {i + 1} (Score: {best_score} | Stagnation: {stagnation_count}) ---"
     )
+    iteration_start_utc = _utc_now_iso()
+    iteration_mutator_usage_before = _usage_bucket_snapshot(SESSION_MUTATOR_USAGE)
+    iteration_judge_usage_before = _usage_bucket_snapshot(SESSION_JUDGE_USAGE)
     current_thesis = read_file(WORKING_PATH)
     current_mutator = MUTATOR_MODEL_ID
     iteration_prior_committee_digest = current_committee_digest
@@ -1718,10 +2121,14 @@ for i in range(ITERATIONS):
         current_committee_digest = _load_current_committee_digest(args.project)
 
     current_test_model = read_file(f"{PROJECT_DIR}/test_model.py") if os.path.exists(f"{PROJECT_DIR}/test_model.py") else ""
-    workspace_dir = Path(PROJECT_DIR) / "workspace"
-    workspace_dir.mkdir(parents=True, exist_ok=True)
     current_falsification_mode = (rubric_falsification_mode or "numerical_proof").strip().lower()
     current_is_v4_project = is_v4_family_project(args.project)
+    current_loop_control_action = _current_loop_control_action(
+        pending_loop_action=pending_loop_action,
+        dynamic_enabled=args.dynamic,
+        is_v4_project=current_is_v4_project,
+        stagnation_count=stagnation_count,
+    )
     current_pivot_profile = select_pivot_profile(
         is_v4_project=current_is_v4_project,
         falsification_mode=current_falsification_mode,
@@ -1729,6 +2136,7 @@ for i in range(ITERATIONS):
     )
     if pending_loop_action == LoopControlAction.UNDERIDENTIFIED:
         print("🛑 R4 ACTION UNDERIDENTIFIED: bounded-discriminator search exhausted.")
+        run_exit_reason = "underidentified"
         _write_underidentification_verdict(
             workspace_dir,
             history=iteration_history,
@@ -1779,6 +2187,9 @@ for i in range(ITERATIONS):
         )
     # GP-035: load previous iteration's fit result for prompt injection
     _fit_ctx = ""
+    _structural_memory_ctx = ""
+    _residual_mode_ctx = ""
+    _cold_residual_mode = bool(rubric_data.get("cold_residual_successor_mode", False))
     if rubric_data.get("enable_fit_primitive", False):
         _fit_result_path = workspace_dir / "fit_result.json"
         if _fit_result_path.exists():
@@ -1793,6 +2204,20 @@ for i in range(ITERATIONS):
                         residual_map=_prev_fit["residual_map"],
                     )
                     _fit_ctx = format_residual_map_for_prompt(_fr)
+                    if _cold_residual_mode:
+                        _residual_mode_parts = [
+                            "BASE FITTED FAMILY (READ-ONLY):",
+                            f"  expression: {_prev_fit.get('expression', '')}",
+                            f"  fitted_params: {_prev_fit.get('fitted_params', {})}",
+                            "",
+                            format_residual_surface_for_prompt(_fr),
+                        ]
+                        _latest_eval_payload = read_json(LATEST_EVAL_RESULTS_PATH)
+                        if _latest_eval_payload is not None:
+                            _residual_mode_parts.extend(
+                                ["", _format_gate_surface_for_prompt(_latest_eval_payload)]
+                            )
+                        _residual_mode_ctx = "\n".join(_residual_mode_parts)
                     # GP-037 finding: structural residual diagnostic
                     # Only inject when the fit materially fails (residual >> gate threshold)
                     _indep_vars = _prev_fit.get("independent_vars", [])
@@ -1809,6 +2234,38 @@ for i in range(ITERATIONS):
                     )
             except (json.JSONDecodeError, KeyError):
                 pass
+        _structural_memory_ctx = render_structural_memory_prompt_section(workspace_dir)
+
+    # GP-048 apparatus-feedback surfaces (all flag-gated, independent).
+    # Rubric key contract (source of truth — these match the sandbox_04 rubric):
+    #   gp048_telemetry                    : bool
+    #   gp048_stagnation_injection_mode    : "primitive_cone" | "off" | absent
+    #   gp048_farther_tail_veto_mode       : "sanitized"      | "off" | absent
+    _gp048_cohort_ctx = ""
+    _farther_tail_veto_ctx = ""
+    _cone_mode = str(rubric_data.get("gp048_stagnation_injection_mode", "") or "").lower()
+    if _cone_mode == "primitive_cone" and stagnation_count >= 3:
+        try:
+            _gp048_cohort_ctx = render_primitive_cohort_prompt_section(workspace_dir)
+        except Exception as _cohort_exc:
+            print(f"🔧 GP-048 cohort injection: error — {_cohort_exc}")
+            _gp048_cohort_ctx = ""
+    _veto_mode = str(rubric_data.get("gp048_farther_tail_veto_mode", "") or "").lower()
+    if _veto_mode == "sanitized":
+        try:
+            _veto_payload = read_json(LATEST_EVAL_RESULTS_PATH)
+            # Renderer self-extracts visible_threshold from the payload's
+            # hidden_global_residual gate. No hardcoded fallback — if the
+            # threshold is not discoverable, the renderer returns "" and
+            # the block is silently skipped rather than rendered with a lie.
+            _farther_tail_veto_ctx = render_farther_tail_veto_prompt_section(
+                _veto_payload,
+                workspace_dir=workspace_dir,
+                iteration=i + 1,
+            )
+        except Exception as _veto_exc:
+            print(f"🔧 GP-048 farther-tail veto: error — {_veto_exc}")
+            _farther_tail_veto_ctx = ""
 
     try:
         new_content = mutate_thesis(
@@ -1823,6 +2280,11 @@ for i in range(ITERATIONS):
             falsification_mode=rubric_falsification_mode,  # GP-003: pass rubric mode
             fit_primitive_enabled=rubric_data.get("enable_fit_primitive", False),
             fit_context=_fit_ctx,
+            structural_memory_context=_structural_memory_ctx,
+            cold_residual_mode=_cold_residual_mode,
+            residual_mode_context=_residual_mode_ctx,
+            gp048_cohort_context=_gp048_cohort_ctx,
+            farther_tail_veto_context=_farther_tail_veto_ctx,
         )
         mutation_declaration, mutation_validation, clean_thesis, python_code, full_candidate = _prepare_mutation_candidate(
             raw_text=new_content,
@@ -1832,10 +2294,30 @@ for i in range(ITERATIONS):
         )
         # GP-035: post-LLM fit primitive (opt-in via rubric)
         if rubric_data.get("enable_fit_primitive", False) and python_code and evidence_text:
+            # GP-035 Turn 10: FIT_DECLARATION drought retry — one targeted
+            # retry if the mutator emitted a response without a parseable
+            # fit_declaration block. Splices the retry block into
+            # new_content so downstream parsing is unchanged.
+            try:
+                _drought_outcome = validate_and_retry_fit_declaration(
+                    raw_response=new_content,
+                    model_id=current_mutator,
+                    parse_fn=parse_fit_declaration,
+                    mutator_callable=safe_mutate,
+                )
+                if _drought_outcome.fired:
+                    if _drought_outcome.recovered:
+                        print(f"🔧 GP-035 drought retry: recovered ({_drought_outcome.reason})")
+                        new_content = _drought_outcome.spliced_content
+                    else:
+                        print(f"🔧 GP-035 drought retry: unresolved ({_drought_outcome.reason})")
+            except Exception as _retry_exc:
+                print(f"🔧 GP-035 drought retry: error — {_retry_exc}")
             try:
                 _fit_decl = parse_fit_declaration(new_content)
                 if _fit_decl is not None:
                     _fit_dimensionality = rubric_data.get("fit_required_dimensionality")
+                    _diag_classification = ""
                     _fit_result = fit_parameters(
                         _fit_decl, evidence_text,
                         required_dimensionality=_fit_dimensionality,
@@ -1847,6 +2329,36 @@ for i in range(ITERATIONS):
                             f"(max |res|={_fit_result.max_abs_residual:.5f}, "
                             f"params={_fit_result.fitted_params})"
                         )
+                        _diag_indep = _fit_decl.independent_vars if _fit_decl else []
+                        _gate_thr = rubric_data.get("gate_residual_threshold", 0.05)
+                        if _diag_indep and _fit_result.max_abs_residual > _gate_thr * 2:
+                            _diag = diagnose_residual_pattern(_fit_result, _diag_indep)
+                            _diag_classification = _diag.classification
+                            if _diag.classification != "parametric_noise":
+                                print(f"🔧 GP-035 residual diagnostic: {_diag.classification}")
+                                print(format_diagnostic_for_prompt(_diag))
+                        update_structural_memory(
+                            workspace_dir=workspace_dir,
+                            declaration=_fit_decl,
+                            fit_result=_fit_result,
+                            iteration_index=i + 1,
+                            diagnostic_classification=_diag_classification,
+                        )
+                        # GP-048 Mode 1: append telemetry line (flag-gated, non-fatal).
+                        if rubric_data.get("gp048_telemetry", False):
+                            try:
+                                write_telemetry_line(
+                                    workspace_dir,
+                                    iteration=i + 1,
+                                    fit_result_data={
+                                        "expression": _fit_decl.expression,
+                                        "independent_vars": list(_fit_decl.independent_vars),
+                                        "parameter_names": list(_fit_decl.parameter_names),
+                                        "status": "success",
+                                    },
+                                )
+                            except Exception as _tel_exc:
+                                print(f"🔧 GP-048 telemetry: error — {_tel_exc}")
                     else:
                         print(
                             f"🔧 GP-035 fit: FAILURE "
@@ -1881,6 +2393,33 @@ for i in range(ITERATIONS):
         last_failure_reason = f"Runner R1 rejection: {exc}"
         stagnation_count = yield_decision.stagnant_window
         pending_loop_action = yield_decision.action
+        _append_iteration_telemetry(
+            workspace_dir,
+            iteration_index=i + 1,
+            iteration_start_utc=iteration_start_utc,
+            loop_control_action=current_loop_control_action,
+            score=None,
+            score_improved=False,
+            champion_promoted=False,
+            stagnation_count=stagnation_count,
+            gate_engagement=False,
+            gate_failure_count=0,
+            failed_gate_ids=[],
+            escalation_flags={"self_reference": False, "semantic_escalation": False},
+            falsification_mode=rubric_falsification_mode,
+            mutator_model_id=current_mutator,
+            judge_model_id=JUDGE_MODEL_ID,
+            mutator_usage=_usage_delta(
+                iteration_mutator_usage_before,
+                _usage_bucket_snapshot(SESSION_MUTATOR_USAGE),
+            ),
+            judge_usage=_usage_delta(
+                iteration_judge_usage_before,
+                _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
+            ),
+            pending_loop_action=pending_loop_action.value,
+        )
+        last_completed_iteration = i + 1
         _restore_project_state(best_state)
         time.sleep(1)
         continue
@@ -1946,6 +2485,33 @@ for i in range(ITERATIONS):
         )
         stagnation_count = yield_decision.stagnant_window
         pending_loop_action = yield_decision.action
+        _append_iteration_telemetry(
+            workspace_dir,
+            iteration_index=i + 1,
+            iteration_start_utc=iteration_start_utc,
+            loop_control_action=current_loop_control_action,
+            score=None,
+            score_improved=False,
+            champion_promoted=False,
+            stagnation_count=stagnation_count,
+            gate_engagement=False,
+            gate_failure_count=0,
+            failed_gate_ids=[],
+            escalation_flags={"self_reference": False, "semantic_escalation": False},
+            falsification_mode=rubric_falsification_mode,
+            mutator_model_id=current_mutator,
+            judge_model_id=JUDGE_MODEL_ID,
+            mutator_usage=_usage_delta(
+                iteration_mutator_usage_before,
+                _usage_bucket_snapshot(SESSION_MUTATOR_USAGE),
+            ),
+            judge_usage=_usage_delta(
+                iteration_judge_usage_before,
+                _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
+            ),
+            pending_loop_action=pending_loop_action.value,
+        )
+        last_completed_iteration = i + 1
         _restore_project_state(best_state)
         time.sleep(1)
         continue
@@ -2029,6 +2595,8 @@ for i in range(ITERATIONS):
             iteration_index=i + 1,
             score=new_eval.get("score"),
         )
+        gate_engagement, gate_failure_count, failed_gate_ids = _extract_iteration_gate_metrics(new_eval)
+        escalation_flags = _extract_iteration_escalation_flags(new_eval)
 
         if not selection_record.candidate_admissible:
             print(f"⚠️ Runner R3 rejection: {selection_record.rationale}")
@@ -2042,11 +2610,40 @@ for i in range(ITERATIONS):
                 prior_committee_digest=iteration_prior_committee_digest,
             )
             iteration_history.append(signal)
-            yield_decision = evaluate_information_yield(iteration_history, underidentified_after=args.underidentified_after)
-            _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
+            yield_decision, _ = _evaluate_post_eval_loop_control(
+                workspace_dir,
+                signal=signal,
+            )
             last_failure_reason = f"Runner R3 rejection: {selection_record.rationale}"
             stagnation_count = yield_decision.stagnant_window
             pending_loop_action = yield_decision.action
+            _append_iteration_telemetry(
+                workspace_dir,
+                iteration_index=i + 1,
+                iteration_start_utc=iteration_start_utc,
+                loop_control_action=current_loop_control_action,
+                score=new_eval["score"],
+                score_improved=False,
+                champion_promoted=False,
+                stagnation_count=stagnation_count,
+                gate_engagement=gate_engagement,
+                gate_failure_count=gate_failure_count,
+                failed_gate_ids=failed_gate_ids,
+                escalation_flags=escalation_flags,
+                falsification_mode=rubric_falsification_mode,
+                mutator_model_id=current_mutator,
+                judge_model_id=JUDGE_MODEL_ID,
+                mutator_usage=_usage_delta(
+                    iteration_mutator_usage_before,
+                    _usage_bucket_snapshot(SESSION_MUTATOR_USAGE),
+                ),
+                judge_usage=_usage_delta(
+                    iteration_judge_usage_before,
+                    _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
+                ),
+                pending_loop_action=pending_loop_action.value,
+            )
+            last_completed_iteration = i + 1
             _restore_project_state(best_state)
             time.sleep(1)
             continue
@@ -2064,8 +2661,10 @@ for i in range(ITERATIONS):
             verified_axioms_added=len(new_eval.get("verified_axioms", [])),
         )
         iteration_history.append(signal)
-        yield_decision = evaluate_information_yield(iteration_history, underidentified_after=args.underidentified_after)
-        _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
+        yield_decision, _ = _evaluate_post_eval_loop_control(
+            workspace_dir,
+            signal=signal,
+        )
 
         if new_eval["score"] > best_score:
             print(f"✅ IMPROVEMENT: {best_score} -> {new_eval['score']}")
@@ -2172,6 +2771,34 @@ for i in range(ITERATIONS):
                     test_cmd.append("--deterministic_score_gates")
                 best_score = 20
 
+            _append_iteration_telemetry(
+                workspace_dir,
+                iteration_index=i + 1,
+                iteration_start_utc=iteration_start_utc,
+                loop_control_action=current_loop_control_action,
+                score=new_eval["score"],
+                score_improved=True,
+                champion_promoted=True,
+                stagnation_count=stagnation_count,
+                gate_engagement=gate_engagement,
+                gate_failure_count=gate_failure_count,
+                failed_gate_ids=failed_gate_ids,
+                escalation_flags=escalation_flags,
+                falsification_mode=rubric_falsification_mode,
+                mutator_model_id=current_mutator,
+                judge_model_id=JUDGE_MODEL_ID,
+                mutator_usage=_usage_delta(
+                    iteration_mutator_usage_before,
+                    _usage_bucket_snapshot(SESSION_MUTATOR_USAGE),
+                ),
+                judge_usage=_usage_delta(
+                    iteration_judge_usage_before,
+                    _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
+                ),
+                pending_loop_action=pending_loop_action.value,
+            )
+            last_completed_iteration = i + 1
+
         else:
             print(f"❌ REVERTED: {new_eval['score']} <= {best_score}")
             print(f"Failed to Resolve: {new_eval['weakest_point']}")
@@ -2179,6 +2806,33 @@ for i in range(ITERATIONS):
             last_failure_reason = new_eval["weakest_point"]
             current_target_weakest_point = new_eval["weakest_point"]  # GP-002: update targeting even on non-improving iterations
             pending_loop_action = yield_decision.action
+            _append_iteration_telemetry(
+                workspace_dir,
+                iteration_index=i + 1,
+                iteration_start_utc=iteration_start_utc,
+                loop_control_action=current_loop_control_action,
+                score=new_eval["score"],
+                score_improved=False,
+                champion_promoted=False,
+                stagnation_count=stagnation_count,
+                gate_engagement=gate_engagement,
+                gate_failure_count=gate_failure_count,
+                failed_gate_ids=failed_gate_ids,
+                escalation_flags=escalation_flags,
+                falsification_mode=rubric_falsification_mode,
+                mutator_model_id=current_mutator,
+                judge_model_id=JUDGE_MODEL_ID,
+                mutator_usage=_usage_delta(
+                    iteration_mutator_usage_before,
+                    _usage_bucket_snapshot(SESSION_MUTATOR_USAGE),
+                ),
+                judge_usage=_usage_delta(
+                    iteration_judge_usage_before,
+                    _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
+                ),
+                pending_loop_action=pending_loop_action.value,
+            )
+            last_completed_iteration = i + 1
             _restore_project_state(best_state)
             if os.path.exists(f"{AXIOM_PATH}.bak"):
                 shutil.copy(f"{AXIOM_PATH}.bak", AXIOM_PATH)
@@ -2201,27 +2855,55 @@ for i in range(ITERATIONS):
         _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
         stagnation_count = yield_decision.stagnant_window
         pending_loop_action = yield_decision.action
+        _append_iteration_telemetry(
+            workspace_dir,
+            iteration_index=i + 1,
+            iteration_start_utc=iteration_start_utc,
+            loop_control_action=current_loop_control_action,
+            score=None,
+            score_improved=False,
+            champion_promoted=False,
+            stagnation_count=stagnation_count,
+            gate_engagement=False,
+            gate_failure_count=0,
+            failed_gate_ids=[],
+            escalation_flags={"self_reference": False, "semantic_escalation": False},
+            falsification_mode=rubric_falsification_mode,
+            mutator_model_id=current_mutator,
+            judge_model_id=JUDGE_MODEL_ID,
+            mutator_usage=_usage_delta(
+                iteration_mutator_usage_before,
+                _usage_bucket_snapshot(SESSION_MUTATOR_USAGE),
+            ),
+            judge_usage=_usage_delta(
+                iteration_judge_usage_before,
+                _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
+            ),
+            pending_loop_action=pending_loop_action.value,
+        )
+        last_completed_iteration = i + 1
         _restore_project_state(best_state)
         time.sleep(5)
 
     time.sleep(1)
 
-    # End of loop
-    print("\n" + "=" * 50)
-    print("🏁 OPTIMIZATION LOOP COMPLETE")
-    print(f"Final Score: {best_score}")
-    print(
-        "Mutator Usage: "
-        f"input={SESSION_MUTATOR_USAGE['input_tokens']:,} "
-        f"output={SESSION_MUTATOR_USAGE['output_tokens']:,} "
-        f"cache_read={SESSION_MUTATOR_USAGE['cache_read_input_tokens']:,}"
-    )
-    print(f"Estimated Mutator Cost: {_format_cost_label(SESSION_MUTATOR_USAGE)}")
-    print(
-        "Judge Usage: "
-        f"input={SESSION_JUDGE_USAGE['input_tokens']:,} "
-        f"output={SESSION_JUDGE_USAGE['output_tokens']:,} "
-        f"cache_read={SESSION_JUDGE_USAGE['cache_read_input_tokens']:,}"
-    )
-    print(f"Estimated Judge Cost: {_format_cost_label(SESSION_JUDGE_USAGE)}")
-    print("=" * 50 + "\n")
+# End of loop
+_finalize_run_telemetry_once()
+print("\n" + "=" * 50)
+print("🏁 OPTIMIZATION LOOP COMPLETE")
+print(f"Final Score: {best_score}")
+print(
+    "Mutator Usage: "
+    f"input={SESSION_MUTATOR_USAGE['input_tokens']:,} "
+    f"output={SESSION_MUTATOR_USAGE['output_tokens']:,} "
+    f"cache_read={SESSION_MUTATOR_USAGE['cache_read_input_tokens']:,}"
+)
+print(f"Estimated Mutator Cost: {_format_cost_label(SESSION_MUTATOR_USAGE)}")
+print(
+    "Judge Usage: "
+    f"input={SESSION_JUDGE_USAGE['input_tokens']:,} "
+    f"output={SESSION_JUDGE_USAGE['output_tokens']:,} "
+    f"cache_read={SESSION_JUDGE_USAGE['cache_read_input_tokens']:,}"
+)
+print(f"Estimated Judge Cost: {_format_cost_label(SESSION_JUDGE_USAGE)}")
+print("=" * 50 + "\n")

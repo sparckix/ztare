@@ -108,6 +108,18 @@ class LatentDistanceRecord:
     status: str = "ok"
 
 
+@dataclass(frozen=True)
+class LatentMotionWindow:
+    """Recent latent-motion summary for loop-control consumption."""
+
+    records_considered: int
+    window_size: int
+    mean_max_set_distance: float | None
+    structural_move_count: int
+    motion_classes: tuple[str, ...]
+    threshold: float
+
+
 # ---------------------------------------------------------------------------
 # Signature extraction
 # ---------------------------------------------------------------------------
@@ -457,3 +469,73 @@ def _append_record(path: Path, record: LatentDistanceRecord) -> None:
         # Deliberate: observability writer must be fail-silent.
         # The record is lost for this iter but the loop continues.
         pass
+
+
+def summarize_recent_latent_motion(
+    *,
+    project_dir: Path,
+    window_size: int = 5,
+    threshold: float = 0.30,
+) -> LatentMotionWindow | None:
+    """Summarize recent latent-distance records for GP-034 loop control.
+
+    This stays intentionally coarse: it reads only persisted ``ok``
+    records and computes the mean of the strongest set-distance axis in
+    the recent window. It is a veto aid, not a replacement for the
+    scalar information-yield channel.
+    """
+
+    artifact_path = project_dir / "workspace" / LATENT_DISTANCE_FILENAME
+    if not artifact_path.exists():
+        return None
+    try:
+        lines = artifact_path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return None
+
+    parsed: list[dict[str, Any]] = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        try:
+            payload = json.loads(stripped)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(payload, dict) or payload.get("status") != "ok":
+            continue
+        parsed.append(payload)
+
+    if not parsed:
+        return None
+
+    recent = parsed[-window_size:]
+    max_set_distances: list[float] = []
+    motion_classes: list[str] = []
+    structural_move_count = 0
+    for item in recent:
+        distances = item.get("distances")
+        if not isinstance(distances, dict):
+            continue
+        max_set_distance = max(
+            float(distances.get("jaccard_failure_families", 0.0) or 0.0),
+            float(distances.get("jaccard_attack_surface", 0.0) or 0.0),
+            float(distances.get("jaccard_named_primitives", 0.0) or 0.0),
+        )
+        max_set_distances.append(max_set_distance)
+        motion_class = str(item.get("motion_class", "") or "")
+        motion_classes.append(motion_class)
+        if motion_class == "structural_move":
+            structural_move_count += 1
+
+    if not max_set_distances:
+        return None
+
+    return LatentMotionWindow(
+        records_considered=len(max_set_distances),
+        window_size=window_size,
+        mean_max_set_distance=sum(max_set_distances) / len(max_set_distances),
+        structural_move_count=structural_move_count,
+        motion_classes=tuple(motion_classes),
+        threshold=threshold,
+    )

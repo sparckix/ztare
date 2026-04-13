@@ -64,6 +64,38 @@ class InformationYieldDecision:
     rationale: str
 
 
+def apply_latent_motion_veto(
+    decision: InformationYieldDecision,
+    *,
+    records_considered: int,
+    mean_max_set_distance: float | None,
+    threshold: float,
+    min_records: int = 3,
+) -> InformationYieldDecision:
+    """Block REFRESH_SPECIALISTS when recent latent motion is still high.
+
+    GP-034 is intentionally asymmetric in slice 1: latent motion is a
+    veto on disruptive refresh, not a replacement for the scalar yield
+    channel and not a veto on pivot / underidentification.
+    """
+
+    if decision.action != LoopControlAction.REFRESH_SPECIALISTS:
+        return decision
+    if mean_max_set_distance is None or records_considered < min_records:
+        return decision
+    if mean_max_set_distance < threshold:
+        return decision
+    return InformationYieldDecision(
+        action=LoopControlAction.CONTINUE,
+        stagnant_window=decision.stagnant_window,
+        rationale=(
+            f"{decision.rationale} GP-034 veto: recent latent-distance window "
+            f"still shows structural movement "
+            f"(mean_max_set_distance={mean_max_set_distance:.3f} >= {threshold:.3f})."
+        ),
+    )
+
+
 def evaluate_information_yield(
     history: list[IterationSignal],
     *,

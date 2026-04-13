@@ -26,7 +26,11 @@ from src.ztare.validator.semantic_gate_stabilization import (
 from src.ztare.validator.proxy_signature import compute_anchor_proxy_coverage
 from src.ztare.validator.charter_parsing import (
     extract_anchor_proxies_from_charter,
+    extract_asymptotic_claim_contract_from_charter,
     extract_forecast_type_from_charter,
+)
+from src.ztare.validator.asymptotic_claim_discipline import (
+    assess_asymptotic_claim_discipline,
 )
 from src.ztare.validator.deterministic_charter_gates import (
     declared_gate_names,
@@ -179,6 +183,9 @@ test_code_content = (
 project_charter_content = read_optional_file(PROJECT_CHARTER_PATH)
 project_charter_anchor_proxies = extract_anchor_proxies_from_charter(project_charter_content)
 project_charter_forecast_type = extract_forecast_type_from_charter(project_charter_content)
+project_charter_asymptotic_contract = extract_asymptotic_claim_contract_from_charter(
+    project_charter_content
+)
 
 
 def _normalize_evidence_gap_type(value: str | None) -> str:
@@ -1812,6 +1819,18 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
             }
         )
 
+    asymptotic_claim_assessment = assess_asymptotic_claim_discipline(
+        thesis,
+        project_charter_asymptotic_contract,
+    )
+    if asymptotic_claim_assessment.cap is not None:
+        soft_score_caps.append(
+            {
+                "reason": asymptotic_claim_assessment.reason,
+                "cap": asymptotic_claim_assessment.cap,
+            }
+        )
+
     anchor_proxy_coverage = None
     anchor_proxy_overlap = []
     anchor_proxy_active = []
@@ -1900,6 +1919,7 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
         "confirmation_rationale": confirmation_rationale,
         "unsupported_point_probability_claim": unsupported_point_probability_claim,
         "forecast_overclaim_rationale": forecast_overclaim_rationale,
+        "asymptotic_claim_discipline": asymptotic_claim_assessment.to_dict(),
         "project_charter_present": bool(project_charter_content),
         "project_forecast_type": project_forecast_type,
         "anchor_proxies_declared": list(project_charter_anchor_proxies),

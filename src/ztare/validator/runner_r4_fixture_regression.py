@@ -8,6 +8,8 @@ from pathlib import Path
 from src.ztare.validator.information_yield import (
     IterationSignal,
     LoopControlAction,
+    InformationYieldDecision,
+    apply_latent_motion_veto,
     evaluate_information_yield,
 )
 
@@ -17,6 +19,17 @@ class R4FixtureCase:
     case_id: str
     description: str
     history: tuple[IterationSignal, ...]
+    expected_action: LoopControlAction
+
+
+@dataclass(frozen=True)
+class LatentVetoFixtureCase:
+    case_id: str
+    description: str
+    base_decision: InformationYieldDecision
+    records_considered: int
+    mean_max_set_distance: float | None
+    threshold: float
     expected_action: LoopControlAction
 
 
@@ -136,8 +149,66 @@ def build_r4_fixture_cases() -> list[R4FixtureCase]:
     ]
 
 
+def build_latent_veto_fixture_cases() -> list[LatentVetoFixtureCase]:
+    return [
+        LatentVetoFixtureCase(
+            case_id="refresh_vetoed_by_structural_motion",
+            description="High recent latent motion should veto REFRESH_SPECIALISTS.",
+            base_decision=InformationYieldDecision(
+                action=LoopControlAction.REFRESH_SPECIALISTS,
+                stagnant_window=5,
+                rationale="Information yield is low; refresh specialists before attempting a broader pivot.",
+            ),
+            records_considered=5,
+            mean_max_set_distance=0.9,
+            threshold=0.3,
+            expected_action=LoopControlAction.CONTINUE,
+        ),
+        LatentVetoFixtureCase(
+            case_id="refresh_not_vetoed_with_too_few_records",
+            description="The veto should stay off until enough latent-motion records exist.",
+            base_decision=InformationYieldDecision(
+                action=LoopControlAction.REFRESH_SPECIALISTS,
+                stagnant_window=2,
+                rationale="Information yield is low; refresh specialists before attempting a broader pivot.",
+            ),
+            records_considered=2,
+            mean_max_set_distance=1.0,
+            threshold=0.3,
+            expected_action=LoopControlAction.REFRESH_SPECIALISTS,
+        ),
+        LatentVetoFixtureCase(
+            case_id="refresh_not_vetoed_when_motion_is_low",
+            description="Low latent motion should not block REFRESH_SPECIALISTS.",
+            base_decision=InformationYieldDecision(
+                action=LoopControlAction.REFRESH_SPECIALISTS,
+                stagnant_window=4,
+                rationale="Information yield is low; refresh specialists before attempting a broader pivot.",
+            ),
+            records_considered=5,
+            mean_max_set_distance=0.1,
+            threshold=0.3,
+            expected_action=LoopControlAction.REFRESH_SPECIALISTS,
+        ),
+        LatentVetoFixtureCase(
+            case_id="pivot_not_touched_by_veto",
+            description="The latent-motion veto should not override pivot decisions.",
+            base_decision=InformationYieldDecision(
+                action=LoopControlAction.PIVOT_REQUIRED,
+                stagnant_window=3,
+                rationale="No new evidence across the pivot window; the same weakest point keeps repeating.",
+            ),
+            records_considered=5,
+            mean_max_set_distance=1.0,
+            threshold=0.3,
+            expected_action=LoopControlAction.PIVOT_REQUIRED,
+        ),
+    ]
+
+
 def run_r4_fixture_regression() -> dict[str, object]:
     cases = build_r4_fixture_cases()
+    latent_veto_cases = build_latent_veto_fixture_cases()
     results: list[dict[str, object]] = []
     all_passed = True
 
@@ -162,10 +233,41 @@ def run_r4_fixture_regression() -> dict[str, object]:
             }
         )
 
+    for case in latent_veto_cases:
+        first = apply_latent_motion_veto(
+            case.base_decision,
+            records_considered=case.records_considered,
+            mean_max_set_distance=case.mean_max_set_distance,
+            threshold=case.threshold,
+        )
+        second = apply_latent_motion_veto(
+            case.base_decision,
+            records_considered=case.records_considered,
+            mean_max_set_distance=case.mean_max_set_distance,
+            threshold=case.threshold,
+        )
+        passed = first.action == case.expected_action and first == second
+        all_passed = all_passed and passed
+        results.append(
+            {
+                "case_id": case.case_id,
+                "description": case.description,
+                "expected_action": case.expected_action.value,
+                "actual_action": first.action.value,
+                "deterministic_repeat_match": first == second,
+                "passed": passed,
+                "decision": {
+                    "action": first.action.value,
+                    "stagnant_window": first.stagnant_window,
+                    "rationale": first.rationale,
+                },
+            }
+        )
+
     return {
         "suite": "runner_r4_fixture_regression",
         "all_passed": all_passed,
-        "num_cases": len(cases),
+        "num_cases": len(cases) + len(latent_veto_cases),
         "num_passed": sum(1 for r in results if r["passed"]),
         "results": results,
     }
