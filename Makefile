@@ -1,12 +1,14 @@
 PYTHON ?= python
 PROJECT ?= your_project
-RUBRIC ?= recursive_bayesian
 MODEL ?= gemini
 MUTATOR_MODEL ?= gemini
 JUDGE_MODEL ?= gemini
 QA_MODEL ?= claude
+MODE ?= factory
 ITERS ?= 10
+RUBRIC ?= $(if $(filter honeypot,$(MODE)),honeypot_minimal,recursive_bayesian)
 RENDERER ?= founder_memo
+PDF ?= 0
 BENCH_JUDGE ?= gemini
 BENCH_JOBS ?= 3
 PRIMITIVE_KEY ?= cooked_books
@@ -20,8 +22,10 @@ SUP_PROGRAM ?= supervisor_loop
 SUP_SEED ?=
 SUP_TARGET ?= current_target
 SUP_REQUEST ?=
+SEVERITY ?= degrading
+MAX_FETCHES ?= 3
 
-.PHONY: help workspace-update evidence-compile loop synth committee benchmark benchmark-stage1 benchmark-stage1-ood benchmark-stage2 benchmark-stage3 benchmark-stage4 benchmark-stage5 benchmark-stage6 benchmark-stage24-bridge benchmark-bridge-scope benchmark-bridge-discovery benchmark-runner-r1 benchmark-runner-r2 benchmark-runner-r3 benchmark-runner-r4 benchmark-supervisor benchmark-supervisor-registry benchmark-supervisor-seed-registry benchmark-supervisor-genesis benchmark-supervisor-manifest benchmark-supervisor-backlog benchmark-supervisor-proposal benchmark-supervisor-staging benchmark-supervisor-wrappers benchmark-supervisor-refinement benchmark-supervisor-usage benchmark-supervisor-autoloop benchmark-supervisor-program-autoloop benchmark-supervisor-report benchmark-supervisor-gate-resolution benchmark-prose-verifier benchmark-document-assembler benchmark-supervisor-factory assemble-document supervisor-init supervisor-show supervisor-what-next supervisor-backlog supervisor-proposal supervisor-emit supervisor-commit supervisor-launch supervisor-autoloop supervisor-program-autoloop supervisor-report supervisor-resolve-gate bridge-meta-show bridge-meta-run-current bridge-meta-reset baseline camouflage \
+.PHONY: help workspace-update evidence-compile evidence-fetch rubric-review setup-project honeypot-loop loop synth committee benchmark benchmark-stage1 benchmark-stage1-ood benchmark-stage2 benchmark-stage3 benchmark-stage4 benchmark-stage5 benchmark-stage6 benchmark-stage24-bridge benchmark-bridge-scope benchmark-bridge-discovery benchmark-runner-r1 benchmark-runner-r2 benchmark-runner-r3 benchmark-runner-r4 benchmark-supervisor benchmark-supervisor-registry benchmark-supervisor-seed-registry benchmark-supervisor-genesis benchmark-supervisor-manifest benchmark-supervisor-backlog benchmark-supervisor-proposal benchmark-supervisor-staging benchmark-supervisor-wrappers benchmark-supervisor-refinement benchmark-supervisor-usage benchmark-supervisor-autoloop benchmark-supervisor-program-autoloop benchmark-supervisor-report benchmark-supervisor-gate-resolution benchmark-prose-verifier benchmark-document-assembler benchmark-supervisor-factory assemble-document supervisor-init supervisor-show supervisor-what-next supervisor-backlog supervisor-proposal supervisor-emit supervisor-commit supervisor-launch supervisor-autoloop supervisor-program-autoloop supervisor-report supervisor-resolve-gate bridge-meta-show bridge-meta-run-current bridge-meta-reset baseline camouflage \
 	primitives-extract primitives-draft primitive-approve paper1-legacy paper1-tsmc-legacy paper1-epistemic-legacy \
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
 	v4-debate-init v4-debate-merge v4-debate-show
@@ -31,11 +35,20 @@ help:
 	@echo ""
 	@echo "Variables:"
 	@echo "  PROJECT=<project> RUBRIC=<rubric> MODEL=<model> MUTATOR_MODEL=<model> JUDGE_MODEL=<model>"
+	@echo "  MODE=factory|honeypot  (default: factory; honeypot sets ITERS=50 and skips pre-run pipeline)"
+	@echo ""
+	@echo "Run modes:"
+	@echo "  factory  — tight rubric, GP-054 pre-run, 5-10 iters, synthesis output (default)"
+	@echo "  honeypot — loose rubric, no pre-run, 50 iters, debate log is the output"
 	@echo ""
 	@echo "Targets:"
+	@echo "  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]   # factory pre-run: fetch→compile→review→pause"
+	@echo "  make honeypot-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=50]       # honeypot run: no pre-run, MODE=honeypot"
 	@echo "  make workspace-update PROJECT=<project> MODEL=gemini"
 	@echo "  make evidence-compile PROJECT=<project> MODEL=gemini"
-	@echo "  make loop PROJECT=<project> RUBRIC=<rubric> ITERS=10 MUTATOR_MODEL=gemini JUDGE_MODEL=gemini"
+	@echo "  make evidence-fetch PROJECT=<project> [SEVERITY=degrading] [MAX_FETCHES=3] [MODEL=gemini]"
+	@echo "  make rubric-review PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]"
+	@echo "  make loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [MODE=factory|honeypot] MUTATOR_MODEL=gemini JUDGE_MODEL=gemini"
 	@echo "  make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo"
 	@echo "  make committee PROJECT=<project>"
 	@echo "  make benchmark BENCH_JUDGE=gemini BENCH_JOBS=3"
@@ -106,11 +119,49 @@ help:
 	@echo "  make v4-debate-show TASK_ID=<task_id>"
 	@echo "  make v4-debate-merge TASK_ID=<task_id>"
 
+setup-project:
+	@if [ "$(MODE)" = "honeypot" ]; then \
+		echo ""; \
+		echo "WARNING: MODE=honeypot — pre-run pipeline suppressed."; \
+		echo "Honeypot runs skip evidence-fetch, evidence-compile, and rubric-review."; \
+		echo "Run directly: make honeypot-loop PROJECT=$(PROJECT) RUBRIC=$(RUBRIC)"; \
+		echo ""; \
+	else \
+		mkdir -p projects/$(PROJECT)/workspace projects/$(PROJECT)/raw; \
+		if [ ! -f "projects/$(PROJECT)/workspace/latest_evidence_gaps.json" ]; then \
+			echo "Fresh project — running rubric-review to generate initial evidence gaps..."; \
+			$(MAKE) rubric-review PROJECT=$(PROJECT) RUBRIC=$(RUBRIC) MODEL=$(MODEL) || true; \
+		fi; \
+		if $(MAKE) evidence-fetch PROJECT=$(PROJECT) MODEL=$(MODEL) SEVERITY=$(SEVERITY) MAX_FETCHES=$(MAX_FETCHES) \
+			&& $(MAKE) evidence-compile PROJECT=$(PROJECT) MODEL=$(MODEL) \
+			&& $(MAKE) rubric-review PROJECT=$(PROJECT) RUBRIC=$(RUBRIC) MODEL=$(MODEL); then \
+			echo ""; \
+			echo "Review complete. Check projects/$(PROJECT)/workspace/rubric_patch_*.json."; \
+			echo "Approve patch, then run: make loop PROJECT=$(PROJECT) RUBRIC=$(RUBRIC)"; \
+			echo ""; \
+		else \
+			echo ""; \
+			echo "setup-project pipeline failed. Check errors above."; \
+			echo ""; \
+			exit 1; \
+		fi; \
+	fi
+
+honeypot-loop:
+	$(MAKE) loop PROJECT=$(PROJECT) RUBRIC=$(RUBRIC) ITERS=$(ITERS) \
+		MUTATOR_MODEL=$(MUTATOR_MODEL) JUDGE_MODEL=$(JUDGE_MODEL) MODE=honeypot
+
 workspace-update:
 	$(PYTHON) -m src.ztare.workspace.update_workspace --project $(PROJECT) --model $(MODEL)
 
 evidence-compile:
 	$(PYTHON) -m src.ztare.workspace.compile_evidence --project $(PROJECT) --mode workspace --model $(MODEL)
+
+evidence-fetch:
+	$(PYTHON) -m src.ztare.workspace.fetch_evidence --project $(PROJECT) --severity $(SEVERITY) --max-fetches $(MAX_FETCHES) --model $(MODEL)
+
+rubric-review:
+	$(PYTHON) -m src.ztare.rubrics.review_rubric --project $(PROJECT) --rubric $(RUBRIC) --model $(MODEL)
 
 loop:
 	$(PYTHON) -m src.ztare.validator.autoresearch_loop \
@@ -119,6 +170,7 @@ loop:
 		--iters $(ITERS) \
 		--mutator_model $(MUTATOR_MODEL) \
 		--judge_model $(JUDGE_MODEL) \
+		--run-mode $(MODE) \
 		$(EXTRA_ARGS)
 
 synth:
@@ -126,7 +178,8 @@ synth:
 		--project $(PROJECT) \
 		--model $(MODEL) \
 		--qa-model $(QA_MODEL) \
-		--renderer-type $(RENDERER)
+		--renderer-type $(RENDERER) \
+		$(if $(filter 1,$(PDF)),--pdf,)
 
 committee:
 	$(PYTHON) -m src.ztare.validator.generate_committee --project $(PROJECT)

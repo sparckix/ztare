@@ -625,7 +625,13 @@ def validate_packet_shape(packet: Dict[str, Any]) -> None:
 def load_workspace_packet(workspace_dir: Path) -> Dict[str, Any]:
     snapshot_path = workspace_dir / "workspace_snapshot.json"
     if not snapshot_path.exists():
-        raise FileNotFoundError(f"Workspace snapshot not found: {snapshot_path}")
+        project_name = workspace_dir.parent.name
+        raise FileNotFoundError(
+            f"Workspace snapshot not found: {snapshot_path}\n"
+            f"Run workspace-update first, then retry:\n"
+            f"  make workspace-update PROJECT={project_name} MODEL=gemini\n"
+            f"  make evidence-compile PROJECT={project_name} MODEL=gemini"
+        )
     packet = read_json(snapshot_path)
     validate_packet_shape(packet)
     return packet
@@ -983,7 +989,7 @@ def main() -> int:
     parser.add_argument("--model", default="gemini", choices=sorted(MODEL_MAP.keys()))
     parser.add_argument(
         "--output",
-        help="Optional explicit evidence output path. Defaults to <project>/compiled_evidence.txt.",
+        help="Optional explicit evidence output path. Defaults to <project>/evidence.txt (compiled_evidence.txt kept as audit copy).",
     )
     parser.add_argument(
         "--packet-output",
@@ -1016,7 +1022,8 @@ def main() -> int:
     raw_dir = Path(args.raw_dir).resolve() if args.raw_dir else project_dir / "raw"
     workspace_dir = Path(args.workspace_dir).resolve() if args.workspace_dir else project_dir / "workspace"
 
-    output_path = Path(args.output).resolve() if args.output else project_dir / "compiled_evidence.txt"
+    output_path = Path(args.output).resolve() if args.output else project_dir / "evidence.txt"
+    audit_copy_path = project_dir / "compiled_evidence.txt"
     packet_output_path = (
         Path(args.packet_output).resolve() if args.packet_output else project_dir / "compiled_evidence_packet.json"
     )
@@ -1064,6 +1071,8 @@ def main() -> int:
     clear_compile_failure_artifact(workspace_dir)
 
     write_text(output_path, evidence_text)
+    if output_path != audit_copy_path:
+        write_text(audit_copy_path, evidence_text)
     write_json(packet_output_path, packet)
     compiler_manifest["output_path"] = str(output_path)
     compiler_manifest["packet_output_path"] = str(packet_output_path)
