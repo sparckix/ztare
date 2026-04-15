@@ -1196,8 +1196,10 @@ Required fields:
     "edges": [{"from": <string>, "to": <string>, "weight": <number>}]
   }
 }"""
-        response = safe_generate(prompt, config=None, model_id=JUDGE_MODEL_ID)
-        evaluation = utils.parse_llm_json(response.text)
+        evaluation = utils.parse_llm_json_with_retry(
+            lambda: safe_generate(prompt, config=None, model_id=JUDGE_MODEL_ID).text,
+            call_site="run_meta_judge_unstructured",
+        )
         if crux_analysis:
             evaluation["crux_analysis"] = crux_analysis
         if routing_decision:
@@ -1463,8 +1465,10 @@ Required fields:
         response_mime_type="application/json",
         response_schema=schema,
     )
-    response = safe_generate(prompt, config=config)
-    evaluation = utils.parse_llm_json(response.text)
+    evaluation = utils.parse_llm_json_with_retry(
+        lambda: safe_generate(prompt, config=config).text,
+        call_site="run_meta_judge",
+    )
     if crux_analysis:
         evaluation["crux_analysis"] = crux_analysis
     if routing_decision:
@@ -1527,8 +1531,10 @@ Required fields:
   "mismatch_reason": <string>,
   "crux_keywords": [<string>, ...]
 }"""
-        response = safe_generate(prompt, config=None, model_id=JUDGE_MODEL_ID)
-        return utils.parse_llm_json(response.text)
+        return utils.parse_llm_json_with_retry(
+            lambda: safe_generate(prompt, config=None, model_id=JUDGE_MODEL_ID).text,
+            call_site="identify_crux_analysis_unstructured",
+        )
 
     schema = {
         "type": "OBJECT",
@@ -1555,8 +1561,10 @@ Required fields:
         response_mime_type="application/json",
         response_schema=schema,
     )
-    response = safe_generate(prompt, config=config, model_id=JUDGE_MODEL_ID)
-    return utils.parse_llm_json(response.text)
+    return utils.parse_llm_json_with_retry(
+        lambda: safe_generate(prompt, config=config, model_id=JUDGE_MODEL_ID).text,
+        call_site="identify_crux_analysis",
+    )
 
 
 def _rubric_fingerprint(main_rubric_data):
