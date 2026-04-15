@@ -99,6 +99,14 @@ _ALLOWED_MATH_ATTRS = frozenset(
     }
 )
 
+_ALLOWED_DIRECT_CALLS = frozenset({"eml"})
+
+# Pure-constant math attributes permitted in ``eml_only`` fit expressions.
+# These are attribute reads (not calls) and cannot introduce nonlinearity —
+# they are required for the depth-1 Planck representation
+# ``eml((gamma*phi/psi)**q, math.e)`` to be reachable under the EML grammar.
+_EML_ONLY_CONSTANT_ATTRS = frozenset({"e", "pi"})
+
 _ALLOWED_NODE_TYPES = (
     ast.Expression,
     ast.BinOp,
@@ -129,7 +137,11 @@ _ALLOWED_NODE_TYPES = (
 
 
 def _validate_expression(
-    expr_str: str, allowed_names: frozenset[str]
+    expr_str: str,
+    allowed_names: frozenset[str],
+    *,
+    allowed_math_attrs: frozenset[str] = _ALLOWED_MATH_ATTRS,
+    allowed_direct_calls: frozenset[str] = frozenset(),
 ) -> ast.Expression:
     """Parse expression and walk AST to enforce the safe-operation whitelist."""
     try:
@@ -150,28 +162,45 @@ def _validate_expression(
         if isinstance(node, ast.Attribute):
             if not (isinstance(node.value, ast.Name) and node.value.id == "math"):
                 raise ValueError("Attribute access only allowed on 'math' module.")
-            if node.attr not in _ALLOWED_MATH_ATTRS:
+            if node.attr not in allowed_math_attrs:
                 raise ValueError(f"math.{node.attr} not in allowed function list.")
         if isinstance(node, ast.Call):
             if isinstance(node.func, ast.Attribute):
                 pass  # validated above
             elif isinstance(node.func, ast.Name):
-                raise ValueError(
-                    f"Direct call '{node.func.id}()' not allowed; use math.{node.func.id}()."
-                )
+                if node.func.id not in allowed_direct_calls:
+                    raise ValueError(
+                        f"Direct call '{node.func.id}()' not allowed here."
+                    )
             else:
                 raise ValueError("Complex call expressions not allowed.")
     return tree
 
 
-def _build_model_callable(declaration: FitDeclaration):
+def _build_model_callable(
+    declaration: FitDeclaration,
+    *,
+    expression_grammar: str | None = None,
+):
     """Compile a validated expression into a callable for curve_fit."""
+    grammar = (expression_grammar or "").strip().lower()
     allowed = (
         frozenset(declaration.independent_vars)
         | frozenset(declaration.parameter_names)
         | frozenset({"math"})
     )
-    tree = _validate_expression(declaration.expression, allowed)
+    allowed_math_attrs = _ALLOWED_MATH_ATTRS
+    allowed_direct_calls = frozenset()
+    if grammar == "eml_only":
+        allowed_math_attrs = _EML_ONLY_CONSTANT_ATTRS
+        allowed_direct_calls = _ALLOWED_DIRECT_CALLS
+        allowed = allowed | frozenset(_ALLOWED_DIRECT_CALLS)
+    tree = _validate_expression(
+        declaration.expression,
+        allowed,
+        allowed_math_attrs=allowed_math_attrs,
+        allowed_direct_calls=allowed_direct_calls,
+    )
     code = compile(tree, "<fit_declaration>", "eval")
 
     def model_fn(xdata, *params):
@@ -183,6 +212,8 @@ def _build_model_callable(declaration: FitDeclaration):
         out = np.empty(n_pts)
         for i in range(n_pts):
             ns = {"math": math}
+            if grammar == "eml_only":
+                ns["eml"] = lambda x, y: math.exp(x) - math.log(y)
             for j, vname in enumerate(declaration.independent_vars):
                 ns[vname] = float(xdata[j, i])
             ns.update(param_dict)
@@ -302,6 +333,7 @@ def fit_parameters(
     evidence_text: str,
     *,
     required_dimensionality: int | None = None,
+    expression_grammar: str | None = None,
 ) -> FitResult:
     """Fit parameters for a declared functional form against visible-slice evidence.
 
@@ -342,7 +374,10 @@ def fit_parameters(
     ydata = np.array(ydata_list)
 
     try:
-        model_fn = _build_model_callable(declaration)
+        model_fn = _build_model_callable(
+            declaration,
+            expression_grammar=expression_grammar,
+        )
     except ValueError as exc:
         return FitFailure(
             failure_class="expression_validation_error",

@@ -86,6 +86,7 @@ from src.ztare.validator.gp048_feedback import (
     render_primitive_cohort_prompt_section,
     write_telemetry_line,
 )
+from src.ztare.rubrics.review_rubric import review_exit_code, run_rubric_review
 
 SESSION_TOKENS = 0
 SESSION_MUTATOR_USAGE = {
@@ -122,14 +123,14 @@ parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
     help="Model family to use as Mutator.",
 )
 parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
     help="Model family to use as Firing Squad and Meta-Judge.",
 )
 parser.add_argument(
@@ -184,6 +185,26 @@ parser.add_argument(
         "experiments that require sustained starvation before UNDERIDENTIFIED "
         "is a valid conclusion — otherwise the exit fires before the pivot has "
         "had any chance to produce structural moves."
+    ),
+)
+parser.add_argument(
+    "--run-mode",
+    type=str,
+    default="factory",
+    dest="run_mode",
+    help=(
+        "Declared operating mode for this run: 'factory' (tight rubric, GP-054 pre-run, "
+        "short iteration budget) or 'honeypot' (loose rubric, no pre-run, long iteration "
+        "budget for discovery). Written to run_start telemetry. Accepts any string so "
+        "future modes (e.g. 'sandbox') work without code changes."
+    ),
+)
+parser.add_argument(
+    "--rubric_review_before_run",
+    action="store_true",
+    help=(
+        "Run GP-054 pre-run rubric review before iteration 1 and abort the loop "
+        "if scenario validity fails or any structural rubric checks fail."
     ),
 )
 args = parser.parse_args()
@@ -1238,7 +1259,7 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
         model_id=model_id,
         config=config,
         retries=12,
-        timeout_seconds=300,
+        timeout_seconds=600,
         request_label="Mutator request",
         progress_printer=print,
         transient_wait_seconds=20,
@@ -1631,6 +1652,7 @@ def mutate_thesis(
     structural_memory_prompt = ""
     residual_mode_prompt = ""
     if fit_primitive_enabled:
+        fit_expression_grammar = str(rubric_data.get("fit_expression_grammar", "") or "").strip().lower()
         fit_primitive_context = """
     ### GP-035 FIT PRIMITIVE CONTRACT
 
@@ -1652,6 +1674,22 @@ def mutate_thesis(
     FIT_DECLARATION plus exact key matching against MODEL_PARAMS. It does NOT
     require any specific function name, argument names, or variable naming.
     Omitting the fit_declaration block is recorded as a fit failure.
+    """
+        if fit_expression_grammar == "eml_only":
+            fit_primitive_context += """
+
+    ### SANDBOX 07 EML-ONLY GRAMMAR
+
+    This project restricts nonlinear structure to the direct primitive:
+    - `eml(x, y)` defined as `exp(x) - ln(y)`
+
+    Enforcement:
+    - Your `expression` may use arithmetic scaffolding (`+`, `-`, `*`, `/`, `**`)
+      and declared variables / parameters.
+    - You may NOT call `math.exp`, `math.log`, or any other `math.*` nonlinear
+      function directly.
+    - The only allowed nonlinear call in `expression` is direct `eml(...)`.
+    - Any other direct call or `math.*` call will be rejected as a fit-grammar failure.
     """
         # Also append to output_requirements so it survives pivot-mode attention hijack
         output_requirements += """
@@ -1862,6 +1900,168 @@ def evolve_rubric(current_rubric_data, winning_thesis):
     return utils.parse_llm_json(response_text)
 
 
+def _validate_eml_helper_body(eml_def: ast.FunctionDef) -> str | None:
+    """Verify that an ``eml`` FunctionDef is the pristine Odrzywołek primitive.
+
+    Required shape (rejects anything else):
+
+        def eml(x, y):
+            return math.exp(x) - math.log(y)
+
+    - Must take exactly two positional parameters (no defaults, *args, **kwargs).
+    - Body must be a single ``Return`` whose value is the BinOp
+      ``math.exp(<arg0>) - math.log(<arg1>)``, with each call passing
+      exactly the corresponding parameter by name.
+    - No other statements, no nested helpers, no default values.
+
+    Returns an error string on violation, ``None`` on success.
+    """
+
+    args = eml_def.args
+    if (
+        args.vararg is not None
+        or args.kwarg is not None
+        or args.kwonlyargs
+        or args.posonlyargs
+        or args.defaults
+        or args.kw_defaults
+    ):
+        return "EML-only grammar violation: eml(x, y) must take exactly two positional parameters with no defaults."
+    if len(args.args) != 2:
+        return "EML-only grammar violation: eml helper must have signature eml(x, y)."
+    param0_name = args.args[0].arg
+    param1_name = args.args[1].arg
+
+    body = list(eml_def.body)
+    # Allow a leading docstring; everything after must be a single Return.
+    if (
+        body
+        and isinstance(body[0], ast.Expr)
+        and isinstance(body[0].value, ast.Constant)
+        and isinstance(body[0].value.value, str)
+    ):
+        body = body[1:]
+    if len(body) != 1 or not isinstance(body[0], ast.Return):
+        return "EML-only grammar violation: eml helper body must be exactly `return math.exp(x) - math.log(y)` (docstring optional)."
+    ret_value = body[0].value
+    if ret_value is None:
+        return "EML-only grammar violation: eml helper return statement is empty."
+
+    if not (isinstance(ret_value, ast.BinOp) and isinstance(ret_value.op, ast.Sub)):
+        return "EML-only grammar violation: eml body must be `math.exp(x) - math.log(y)` (subtraction form)."
+
+    def _is_math_call(node: ast.AST, func_name: str, expected_arg: str) -> bool:
+        if not isinstance(node, ast.Call):
+            return False
+        if node.keywords:
+            return False
+        if len(node.args) != 1:
+            return False
+        func = node.func
+        if not isinstance(func, ast.Attribute):
+            return False
+        if not (isinstance(func.value, ast.Name) and func.value.id == "math"):
+            return False
+        if func.attr != func_name:
+            return False
+        arg = node.args[0]
+        return isinstance(arg, ast.Name) and arg.id == expected_arg
+
+    if not _is_math_call(ret_value.left, "exp", param0_name):
+        return (
+            "EML-only grammar violation: left side of eml body must be "
+            f"`math.exp({param0_name})`."
+        )
+    if not _is_math_call(ret_value.right, "log", param1_name):
+        return (
+            "EML-only grammar violation: right side of eml body must be "
+            f"`math.log({param1_name})`."
+        )
+    return None
+
+
+def validate_python_model_grammar(
+    python_code: str,
+    grammar: str | None,
+) -> str | None:
+    """Return None when the candidate code satisfies the requested model grammar.
+
+    Current project-specific use:
+    - ``eml_only``: inside ``I_model`` the only allowed function call is
+      direct ``eml(...)``. The module must also define a pristine ``eml``
+      helper whose body is exactly ``return math.exp(x) - math.log(y)`` —
+      the mutator writes ``test_model.py`` and could otherwise smuggle
+      additional nonlinearity into the helper body.
+    """
+
+    normalized = (grammar or "").strip().lower()
+    if normalized != "eml_only":
+        return None
+
+    try:
+        tree = ast.parse(python_code)
+    except SyntaxError as exc:
+        return f"Python model grammar check could not parse candidate code: {exc}"
+
+    i_model = None
+    eml_defs: list[ast.FunctionDef] = []
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef):
+            if node.name == "I_model":
+                i_model = node
+            elif node.name == "eml":
+                eml_defs.append(node)
+    if i_model is None:
+        return "EML-only grammar requires a top-level I_model(phi, psi, params=...) function."
+    if not eml_defs:
+        return "EML-only grammar requires a top-level eml(x, y) helper defined as `math.exp(x) - math.log(y)`."
+    if len(eml_defs) > 1:
+        return "EML-only grammar violation: eml helper must be defined exactly once at module level."
+    eml_error = _validate_eml_helper_body(eml_defs[0])
+    if eml_error is not None:
+        return eml_error
+
+    found_eml = False
+    for node in ast.walk(i_model):
+        if not isinstance(node, ast.Call):
+            continue
+        func = node.func
+        if isinstance(func, ast.Name):
+            if func.id == "eml":
+                found_eml = True
+                continue
+            return f"EML-only grammar violation in I_model: direct call '{func.id}(...)' is not allowed."
+        if isinstance(func, ast.Attribute):
+            if isinstance(func.value, ast.Name) and func.value.id == "math":
+                return (
+                    "EML-only grammar violation in I_model: direct math.* calls are not allowed; "
+                    "route nonlinear structure through eml(...)."
+                )
+            return "EML-only grammar violation in I_model: attribute call is not allowed."
+        return "EML-only grammar violation in I_model: unsupported call structure."
+
+    if not found_eml:
+        return "EML-only grammar violation in I_model: model must use at least one direct eml(...) call."
+    return None
+
+
+def build_model_grammar_failure_code(message: str) -> str:
+    """Return a fail-closed harness candidate when a model grammar is violated."""
+
+    safe_message = message.replace('"', "'")
+    return f'''MODEL_PARAMS = {{}}
+
+def I_model(phi, psi, params=MODEL_PARAMS):
+    return float("nan")
+
+def test_model_grammar_contract():
+    assert False, "{safe_message}"
+
+if __name__ == "__main__":
+    test_model_grammar_contract()
+'''
+
+
 if __name__ == "__main__":
     if not os.path.exists(HISTORY_DIR):
         os.makedirs(HISTORY_DIR)
@@ -1872,7 +2072,31 @@ if __name__ == "__main__":
     with open(MAIN_RUBRIC_PATH, "r") as f:
         rubric_data = json.load(f)
 
-    evidence_text = read_file(EVIDENCE_PATH)
+    if args.rubric_review_before_run:
+        print("🛂 GP-054 preflight: running rubric review before iteration 1...")
+        rubric_review_result = run_rubric_review(
+            project=args.project,
+            rubric=args.rubric,
+            model_family=args.judge_model,
+        )
+        rubric_review_payload = rubric_review_result["review_payload"]
+        rubric_review_code = review_exit_code(rubric_review_payload)
+        print(
+            "🛂 GP-054 preflight result: "
+            f"scenario={rubric_review_payload['scenario_validity']['status']} "
+            f"checks_failed={len(rubric_review_payload['checks_failed'])}/{len(rubric_review_payload['checks'])}"
+        )
+        print(f"🧾 Rubric review artifact: {rubric_review_result['review_path']}")
+        if rubric_review_result["patch_path"] is not None:
+            print(f"🧾 Rubric patch artifact: {rubric_review_result['patch_path']}")
+        if rubric_review_code != 0:
+            print(
+                "🛑 Aborting before iteration 1 because GP-054 rubric review did not pass. "
+                "Revise the rubric/charter or rerun without --rubric_review_before_run."
+            )
+            raise SystemExit(rubric_review_code)
+
+    evidence_text = read_file(EVIDENCE_PATH) if os.path.exists(EVIDENCE_PATH) else ""
     shutil.copy(THESIS_PATH, WORKING_PATH)
     baseline_test_model_path = f"{PROJECT_DIR}/test_model.py"
     if not os.path.exists(baseline_test_model_path):
@@ -2076,6 +2300,7 @@ _append_run_boundary_telemetry(
         "project": args.project,
         "timestamp_utc": _utc_now_iso(),
         "rubric": args.rubric,
+        "run_mode": args.run_mode,
         "iteration_budget": ITERATIONS,
         "mutator_model": MUTATOR_MODEL_ID,
         "judge_model": JUDGE_MODEL_ID,
@@ -2292,6 +2517,15 @@ for i in range(ITERATIONS):
             current_test_model=current_test_model,
             falsification_mode=rubric_falsification_mode,
         )
+        _python_model_grammar = rubric_data.get("python_model_grammar")
+        if python_code and _python_model_grammar:
+            _grammar_error = validate_python_model_grammar(
+                python_code,
+                _python_model_grammar,
+            )
+            if _grammar_error:
+                print(f"🧱 Model grammar violation: {_grammar_error}")
+                python_code = build_model_grammar_failure_code(_grammar_error)
         # GP-035: post-LLM fit primitive (opt-in via rubric)
         if rubric_data.get("enable_fit_primitive", False) and python_code and evidence_text:
             # GP-035 Turn 10: FIT_DECLARATION drought retry — one targeted
@@ -2317,10 +2551,12 @@ for i in range(ITERATIONS):
                 _fit_decl = parse_fit_declaration(new_content)
                 if _fit_decl is not None:
                     _fit_dimensionality = rubric_data.get("fit_required_dimensionality")
+                    _fit_expression_grammar = rubric_data.get("fit_expression_grammar")
                     _diag_classification = ""
                     _fit_result = fit_parameters(
                         _fit_decl, evidence_text,
                         required_dimensionality=_fit_dimensionality,
+                        expression_grammar=_fit_expression_grammar,
                     )
                     if isinstance(_fit_result, FitSuccess):
                         python_code = substitute_fitted_params(python_code, _fit_result.fitted_params)
