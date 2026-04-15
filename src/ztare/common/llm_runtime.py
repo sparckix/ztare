@@ -13,6 +13,7 @@ from openai import OpenAI
 
 MODEL_MAP = {
     "gemini": "gemini-2.5-flash",
+    "gemini-pro": "gemini-3.1-pro-preview",
     "claude": "claude-sonnet-4-6",
     "claude-opus": "claude-opus-4-6",
     "gpt4o": "gpt-4o",
@@ -20,6 +21,7 @@ MODEL_MAP = {
 
 DIRECTOR_MODEL_MAP = {
     "gemini": "gemini-3.1-pro-preview",
+    "gemini-pro": "gemini-3.1-pro-preview",
     "claude": "claude-sonnet-4-6",
     "claude-opus": "claude-opus-4-6",
     "gpt4o": "o1",

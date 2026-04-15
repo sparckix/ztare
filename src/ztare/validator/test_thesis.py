@@ -61,12 +61,13 @@ parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
 )
 parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
+    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
 )
 parser.add_argument("--use_primitives", action="store_true")
 parser.add_argument(
@@ -2098,6 +2099,27 @@ if __name__ == "__main__":
         if args.deterministic_score_gates:
             evaluation = apply_semantic_gate_stabilization(evaluation)
             evaluation = finalize_deterministic_score(evaluation, main_rubric, test_suite_status)
+        else:
+            # H-JUDGE-01: in the raw-LLM-score path (no --deterministic_score_gates),
+            # the HARNESS DEFECT banner is shown to the judge but not enforced.
+            # Observed: judge scored 108 despite a ModuleNotFoundError, ignoring its
+            # own "MUST NOT rationalize" instruction under structural compliance pressure.
+            # Programmatically cap at 50 when the harness did not run to completion.
+            if test_suite_status in ("fail_runtime", "fail_other"):
+                llm_score = evaluation.get("score") or 0
+                if llm_score > 50:
+                    evaluation["score"] = 50
+                    evaluation["cap_reason"] = "harness_defect_cap"
+                    evaluation["cap_reason_detail"] = (
+                        f"Score capped at 50 (was {llm_score}): "
+                        f"test_suite_status={test_suite_status!r}. "
+                        "Harness tooling failure — thesis was not tested. "
+                        "See H-JUDGE-01 in ztare_mission_hypothesis_ledger_seam.md."
+                    )
+                    print(
+                        f"🔒 Harness defect cap applied: score {llm_score} → 50 "
+                        f"({test_suite_status})"
+                    )
         evaluation = attach_evidence_gap_metadata(evaluation)
         evaluation = attach_constraint_proposal_metadata(evaluation)
         evaluation = attach_score_regime_metadata(evaluation, main_rubric, test_suite_status)

@@ -26,7 +26,7 @@ def load_prompt(name: str) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Draft candidate primitive cards from extracted incident records.")
-    parser.add_argument("--model", default="gemini", choices=["gemini", "claude", "claude-opus", "gpt4o"])
+    parser.add_argument("--model", default="gemini", choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"])
     parser.add_argument("--incidents", help="Path to primitive_incidents.jsonl. Defaults to global_primitives/incidents/primitive_incidents.jsonl.")
     parser.add_argument("--min-incidents", type=int, default=2, help="Minimum incidents required to draft a candidate.")
     parser.add_argument("--primitive-key", action="append", help="Restrict drafting to one or more primitive keys.")
