@@ -28,6 +28,7 @@ ZTARE prevents this by separating who proposes, who attacks, and who scores — 
 
 - **Use the engine on a domain:** [Quickstart](#quickstart-5-minutes) below, then [docs/WORKFLOW.md](docs/WORKFLOW.md)
 - **Understand the architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- **Run ZTARE as an experiment (pre-regs, contamination, gates, replication):** [docs/FOR_RESEARCHERS.md](docs/FOR_RESEARCHERS.md)
 - **Modify the engine:** [supervisor/USER_MANUAL.md](supervisor/USER_MANUAL.md)
 - **Read the papers:** [papers/README.md](papers/README.md)
 - **Operating principles:** [PRINCIPLES.md](PRINCIPLES.md)

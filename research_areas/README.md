@@ -25,10 +25,18 @@ Nothing supervisor-owned lives inside `research_areas/`, and nothing human-autho
 | `seams/` | Cross-project hardening seam writeups (GP-0* generics) | Human, standalone from programs |
 | `catch_grammar/` | Paper-4 evidence log, rule-auditor specs, corpus notes | Human, ad hoc |
 | `HARDENING_BOARD.md`, `ZTARE_BOARD.md` | Cross-cutting seam trackers | Human |
+| `EXPERIMENT_TRACK_RECORD.md` | Public sanitized track record of experiments and promoted knowledge claims | Human, manually |
 | `private/` (gitignored) | Principal-facing notes, planning, private product thinking | Human, private |
 | `archive/` | Frozen artifacts from closed programs kept for provenance | One-time archival moves |
 
 `program_plans/` and `proposal_plans/` are **views** rendered from supervisor JSON. Treat them as read-only outputs, not sources of truth. If a `program_plans/foo.md` and `supervisor/program_manifests/foo.json` disagree, the JSON wins.
+
+The experiment / hypothesis reporting split is:
+
+- `research_areas/EXPERIMENT_TRACK_RECORD.md` — public sanitized mirror
+- `research_areas/private/EXPERIMENT_TRACK_RECORD.md` — canonical private ledger
+
+These are not replacements for seams or boards. They are the compressed cross-program track record.
 
 ---
 

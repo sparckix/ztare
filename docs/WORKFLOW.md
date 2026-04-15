@@ -68,6 +68,18 @@ Inside the supervisor path:
 - cross-model `A1/A2` debate and optional manual ZTARE passes remain outside the runtime for now
 - active runs should live under `supervisor/active_runs/<run_id>/` rather than `/tmp/` so wrapper sandboxes can access staging files reliably
 
+## 0c. Researcher Discipline (Read If You Care Whether A Run Counts As Evidence)
+
+If you are running ZTARE as an experiment — not just pressure-testing a domain thesis — three rules govern whether the run is diagnostic. Full version in [`docs/FOR_RESEARCHERS.md`](FOR_RESEARCHERS.md).
+
+1. **Charter contamination.** `autoresearch_loop.py:1319` injects `project_charter.md` verbatim into the mutator prompt every turn. Any target form, parameter values, or derivation you write to "motivate" or "explain" the target becomes a turn-1 cheat sheet. The target itself lives only in the sealed pre-reg under `research_areas/private/seams/`. Before sealing a charter, sha256 it, grep it for GT substrings, and ask whether a stranger could reconstruct the target from it alone. Origin: GP-023 sandbox_07, 2026-04-14 — two mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimals. Neither run was diagnostic.
+
+2. **Visibility rule: closed = public, open/testing = private.** Closed seams and pre-regs move to `research_areas/seams/` at close time. In-flight experiment artifacts — pre-regs, GT derivations, blind oracle details — stay in `research_areas/private/seams/` until the experiment closes, even if other materials are public. One seam, one place. No toggle, no symlink. Full rule in `AGENTS.md` §4a.
+
+3. **Honeypot mode is bug-bounty, not discovery-proof.** `rubrics/honeypot_minimal.json` uses a loose discovery rubric (max 115 including +15 gaming bonus). A high honeypot score is a free bug report — it names something the factory gate battery missed. Those bugs are candidates for new deterministic gates. A 115 honeypot run does *not* mean discovery; read the judge's weakest-point note and treat it as the handle to grab next. Honeypot scores are not comparable to factory scores.
+
+If you are a general-purpose engine user (§0b path 1), you can skip this section. If you are running experiments whose outcomes will be cited, read `docs/FOR_RESEARCHERS.md` end-to-end before sealing your first pre-reg.
+
 ---
 
 ## 1. When To Use This Workflow
