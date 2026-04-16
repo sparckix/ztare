@@ -25,7 +25,7 @@ SUP_REQUEST ?=
 SEVERITY ?= degrading
 MAX_FETCHES ?= 3
 
-.PHONY: help workspace-update evidence-compile evidence-fetch rubric-review setup-project honeypot-loop loop synth committee benchmark benchmark-stage1 benchmark-stage1-ood benchmark-stage2 benchmark-stage3 benchmark-stage4 benchmark-stage5 benchmark-stage6 benchmark-stage24-bridge benchmark-bridge-scope benchmark-bridge-discovery benchmark-runner-r1 benchmark-runner-r2 benchmark-runner-r3 benchmark-runner-r4 benchmark-supervisor benchmark-supervisor-registry benchmark-supervisor-seed-registry benchmark-supervisor-genesis benchmark-supervisor-manifest benchmark-supervisor-backlog benchmark-supervisor-proposal benchmark-supervisor-staging benchmark-supervisor-wrappers benchmark-supervisor-refinement benchmark-supervisor-usage benchmark-supervisor-autoloop benchmark-supervisor-program-autoloop benchmark-supervisor-report benchmark-supervisor-gate-resolution benchmark-prose-verifier benchmark-document-assembler benchmark-supervisor-factory assemble-document supervisor-init supervisor-show supervisor-what-next supervisor-backlog supervisor-proposal supervisor-emit supervisor-commit supervisor-launch supervisor-autoloop supervisor-program-autoloop supervisor-report supervisor-resolve-gate bridge-meta-show bridge-meta-run-current bridge-meta-reset baseline camouflage \
+.PHONY: help workspace-update evidence-compile evidence-prepare evidence-fetch rubric-review setup-project honeypot-loop loop synth committee benchmark benchmark-stage1 benchmark-stage1-ood benchmark-stage2 benchmark-stage3 benchmark-stage4 benchmark-stage5 benchmark-stage6 benchmark-stage24-bridge benchmark-bridge-scope benchmark-bridge-discovery benchmark-runner-r1 benchmark-runner-r2 benchmark-runner-r3 benchmark-runner-r4 benchmark-supervisor benchmark-supervisor-registry benchmark-supervisor-seed-registry benchmark-supervisor-genesis benchmark-supervisor-manifest benchmark-supervisor-backlog benchmark-supervisor-proposal benchmark-supervisor-staging benchmark-supervisor-wrappers benchmark-supervisor-refinement benchmark-supervisor-usage benchmark-supervisor-autoloop benchmark-supervisor-program-autoloop benchmark-supervisor-report benchmark-supervisor-gate-resolution benchmark-prose-verifier benchmark-document-assembler benchmark-supervisor-factory assemble-document supervisor-init supervisor-show supervisor-what-next supervisor-backlog supervisor-proposal supervisor-emit supervisor-commit supervisor-launch supervisor-autoloop supervisor-program-autoloop supervisor-report supervisor-resolve-gate bridge-meta-show bridge-meta-run-current bridge-meta-reset baseline camouflage \
 	primitives-extract primitives-draft primitive-approve paper1-legacy paper1-tsmc-legacy paper1-epistemic-legacy \
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
 	v4-debate-init v4-debate-merge v4-debate-show
@@ -44,6 +44,7 @@ help:
 	@echo "Targets:"
 	@echo "  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]   # factory pre-run: fetch→compile→review→pause"
 	@echo "  make honeypot-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=50]       # honeypot run: no pre-run, MODE=honeypot"
+	@echo "  make evidence-prepare PROJECT=<project> MODEL=gemini                    # workspace-update + evidence-compile in one step"
 	@echo "  make workspace-update PROJECT=<project> MODEL=gemini"
 	@echo "  make evidence-compile PROJECT=<project> MODEL=gemini"
 	@echo "  make evidence-fetch PROJECT=<project> [SEVERITY=degrading] [MAX_FETCHES=3] [MODEL=gemini]"
@@ -156,6 +157,10 @@ workspace-update:
 
 evidence-compile:
 	$(PYTHON) -m src.ztare.workspace.compile_evidence --project $(PROJECT) --mode workspace --model $(MODEL)
+
+evidence-prepare:
+	$(MAKE) workspace-update PROJECT=$(PROJECT) MODEL=$(MODEL)
+	$(MAKE) evidence-compile PROJECT=$(PROJECT) MODEL=$(MODEL)
 
 evidence-fetch:
 	$(PYTHON) -m src.ztare.workspace.fetch_evidence --project $(PROJECT) --severity $(SEVERITY) --max-fetches $(MAX_FETCHES) --model $(MODEL)

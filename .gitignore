@@ -117,5 +117,13 @@ projects/figs
 projects/figs_hbs_turnaround_2026
 rubrics/figs*
 
+# Sandbox and experiment rubrics — contain GT params, grammar constraints, hidden gate configs
+# These are cheat sheets for the mutator if public. Domain rubrics stay public.
+rubrics/gp0*.json
+rubrics/gp023_planck_sandbox_0[1-9].json
+rubrics/gp023_sandbox_*.json
+rubrics/gp061_*.json
+rubrics/treatise_rule0_self_pass.json
+
 # Local deferred scratch
 research_areas/seeds/deferred/systems_to_algorithms.md
