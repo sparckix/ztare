@@ -10,7 +10,15 @@ from typing import Any
 
 
 CONSTRAINT_SEVERITIES = {"blocking", "degrading", "enriching"}
-CONSTRAINT_PRODUCERS = {"meta_judge", "firing_squad", "adjudicator", "inferred"}
+CONSTRAINT_PRODUCERS = {
+    "meta_judge",
+    "firing_squad",
+    "adjudicator",
+    "inferred",
+    "structural_extractor",
+    "trajectory_extractor",
+    "negative_space_extractor",
+}
 DEFAULT_NON_APPLICABILITY = (
     "Only non-applicable when the thesis no longer makes this class of claim."
 )
@@ -268,6 +276,111 @@ def update_derived_constraints_ledger(
         "provisional_constraint_count": len(provisional),
         "confirmed_constraints": confirmed,
         "provisional_constraints": provisional,
+    }
+    ledger_path.parent.mkdir(parents=True, exist_ok=True)
+    ledger_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return payload
+
+
+DOWNGRADABLE_PRODUCERS = {
+    "structural_extractor",
+    "trajectory_extractor",
+    "negative_space_extractor",
+}
+DEFAULT_STAGNATION_DOWNGRADE_THRESHOLD = 6
+
+
+def downgrade_constraints_on_stagnation(
+    *,
+    ledger_path: Path,
+    stagnation_count: int,
+    threshold: int = DEFAULT_STAGNATION_DOWNGRADE_THRESHOLD,
+    producer_filter: set[str] | None = None,
+) -> dict[str, Any] | None:
+    """Demote one confirmed constraint back to provisional when the loop is
+    starving under its own prior. Narrow by design: only acts on producers in
+    ``producer_filter`` (default: the two cross-artifact extractors), never on
+    judge-produced constraints. Picks the most recently confirmed entry in the
+    filter and strips it from the confirmed bucket for the current run.
+
+    This is a retraction *mechanism*, not a retraction *trigger*. It is not
+    called from `_refresh_derived_constraints_from_eval`. The caller (loop
+    control / emergency-pivot path) is responsible for deciding when to invoke
+    it. Keeping the trigger out of this module prevents stagnation-count
+    semantics from leaking into constraint-ledger code.
+
+    Returns the updated ledger payload, or None if nothing was changed.
+    """
+    if stagnation_count < threshold:
+        return None
+    filter_set = producer_filter or DOWNGRADABLE_PRODUCERS
+
+    ledger = _load_json(ledger_path)
+    if not ledger:
+        return None
+    confirmed = [
+        item
+        for item in ledger.get("confirmed_constraints", [])
+        if isinstance(item, dict)
+    ]
+    provisional = [
+        item
+        for item in ledger.get("provisional_constraints", [])
+        if isinstance(item, dict)
+    ]
+
+    candidates = [
+        item for item in confirmed if item.get("producer") in filter_set
+    ]
+    if not candidates:
+        return None
+
+    candidates.sort(
+        key=lambda item: (
+            int(item.get("last_seen_run_id") or 0),
+            int(item.get("latest_iteration_index") or 0),
+        ),
+        reverse=True,
+    )
+    victim = candidates[0]
+    victim_signature = victim.get("signature")
+    if not victim_signature:
+        return None
+
+    new_confirmed = [
+        item for item in confirmed if item.get("signature") != victim_signature
+    ]
+    demoted = dict(victim)
+    demoted["status"] = "provisional"
+    history = demoted.get("downgrade_history", [])
+    if not isinstance(history, list):
+        history = []
+    history.append(
+        {
+            "downgraded_on": _now_iso(),
+            "stagnation_count": int(stagnation_count),
+            "threshold": int(threshold),
+            "reason": "stagnation_downgrade",
+        }
+    )
+    demoted["downgrade_history"] = history
+    new_provisional = provisional + [demoted]
+
+    for index, item in enumerate(new_confirmed, start=1):
+        item["constraint_id"] = f"DC-{index:03d}"
+    for index, item in enumerate(new_provisional, start=1):
+        item["constraint_id"] = f"PC-{index:03d}"
+
+    payload = {
+        "project": ledger.get("project", ""),
+        "updated_on": _now_iso(),
+        "confirmation_threshold_runs": int(
+            ledger.get("confirmation_threshold_runs", 2) or 2
+        ),
+        "confirmed_constraint_count": len(new_confirmed),
+        "provisional_constraint_count": len(new_provisional),
+        "confirmed_constraints": new_confirmed,
+        "provisional_constraints": new_provisional,
     }
     ledger_path.parent.mkdir(parents=True, exist_ok=True)
     ledger_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")

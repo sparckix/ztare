@@ -9,7 +9,12 @@ import concurrent.futures
 from pathlib import Path
 from google.genai import types
 from src.ztare.common import utils
-from src.ztare.common.llm_runtime import LLMRuntime, pricing_model_name, resolve_model_id
+from src.ztare.common.llm_runtime import (
+    LLMRuntime,
+    PRODUCTION_CALL_RETRIES,
+    pricing_model_name,
+    resolve_model_id,
+)
 from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import re
 from src.ztare.primitives.primitive_library import (
@@ -61,13 +66,13 @@ parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
 )
 parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
 )
 parser.add_argument("--use_primitives", action="store_true")
 parser.add_argument(
@@ -525,7 +530,7 @@ def safe_generate(prompt, config=None, model_id=None):
         prompt,
         model_id=model_id,
         config=config,
-        retries=12,
+        retries=PRODUCTION_CALL_RETRIES,
         timeout_seconds=300,
         request_label="request",
         progress_printer=print,
@@ -553,30 +558,36 @@ def safe_generate(prompt, config=None, model_id=None):
     return response
 
 # --- LEVEL 3: THE TOOL ---
+# SECURITY: this runs attacker-authored code. It used to cwd into REPO_ROOT
+# with PYTHONPATH=REPO_ROOT, which let a gemini-pro attacker exfiltrate the
+# full repo (sibling projects' test_model.py, AGENTS.md, git status, etc.)
+# by writing a "counter-test" that just calls os.listdir / subprocess find.
+# That is a contamination vector in any paired A/B experiment where sealed
+# hash sets define the mutator-visible fileset — the attacker path bypasses
+# the seal. We now execute inside an isolated tempdir with a stripped env,
+# so the attacker's python has no ambient view of the repo.
 def execute_python_code(code: str) -> str:
-    """Executes Python code with console transparency."""
-    #print("\n" + "·" * 40)
-    #print("🖥️  LEVEL 3 AGENT EXECUTING PYTHON:")
-    #indented_code = "\n".join(["    " + line for line in code.strip().split("\n")])
-    #print(indented_code)
-    #print("·" * 40 + "\n")
-
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
+    """Executes attacker-authored Python code inside an isolated sandbox dir."""
+    sandbox_dir = tempfile.mkdtemp(prefix="ztare_attacker_sbx_")
+    tmp_path = os.path.join(sandbox_dir, "counter_test.py")
+    with open(tmp_path, "w") as tmp:
         tmp.write(code)
-        tmp_path = tmp.name
     try:
-        env = os.environ.copy()
-        repo_root = str(REPO_ROOT)
-        existing_pythonpath = env.get("PYTHONPATH", "")
-        env["PYTHONPATH"] = (
-            repo_root if not existing_pythonpath else f"{repo_root}{os.pathsep}{existing_pythonpath}"
-        )
+        env = {
+            "PATH": os.environ.get("PATH", ""),
+            "HOME": sandbox_dir,
+            "TMPDIR": sandbox_dir,
+            "LANG": os.environ.get("LANG", "C.UTF-8"),
+            "PYTHONPATH": "",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONNOUSERSITE": "1",
+        }
         res = subprocess.run(
             ["python", tmp_path],
             capture_output=True,
             text=True,
             timeout=10,
-            cwd=repo_root,
+            cwd=sandbox_dir,
             env=env,
         )
         if res.stdout:
@@ -585,7 +596,14 @@ def execute_python_code(code: str) -> str:
             print(f"⚠️ ERROR: {res.stderr.strip()}")
         return res.stdout if not res.stderr else f"Error: {res.stderr}"
     finally:
-        os.remove(tmp_path)
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
+        try:
+            os.rmdir(sandbox_dir)
+        except OSError:
+            pass
 
 
 # --- CONFIGURATION (Defined once to stay DRY/Clean) ---
@@ -672,7 +690,16 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
     Your output MUST be entirely sterile, clinical, and strictly academic/financial. 
     You are forbidden from using dramatic, aggressive, or sensational metaphors. Do not use terms related to physical destruction, biological harm, or catastrophic violence. Instead, use precise systemic/symbolic terms.
     
-    FINAL MANDATE: 
+    STRUCTURAL FAILURE PATTERNS (check the thesis against each):
+    1. Cooked Constants: Are any numerical constants hardcoded to match evidence rather than derived from first principles? Test: perturb each constant by 10% — does the thesis narrative still hold?
+    2. Smuggled Parameters: Does the model use non-fitted constants (grid scales, modular bases, rounding thresholds) that are not counted in the parameter budget? A model with 4 "free" parameters and 3 hidden constants is really a 7-parameter model.
+    3. Overfitting Disguised as Structure: Does the expression have enough free parameters to interpolate the visible evidence regardless of the generating rule? Test: could a generic polynomial of the same parameter count achieve similar residuals?
+    4. Dimensional Incoherence: Do the units of the claimed physical/mathematical constants match their usage in the expression? Are conversion factors silently absorbed into fitted parameters?
+    5. Domain Extrapolation Failure: Does the proposed model make physically/mathematically absurd predictions outside the evidence range? Test the model at 2x, 5x, and 10x the evidence domain boundaries.
+    6. Suite Omission: Does the test suite avoid testing the most fragile claim? Look for what the tests do NOT check — the gap is often where the thesis breaks.
+    7. Structural Mimicry: Does the expression structurally resemble the evidence pattern without capturing the generating mechanism? A sum of sines can approximate any periodic signal but reveals nothing about the true generator.
+
+    FINAL MANDATE:
     You must synthesize the "So What" for the Meta-Judge before writing your Python block.
 
     KNOWN ADVERSARIAL PRECEDENTS:

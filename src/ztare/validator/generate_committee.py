@@ -4,6 +4,7 @@ import argparse
 from google import genai
 from google.genai import types
 from src.ztare.common import utils
+from src.ztare.common.llm_runtime import PRODUCTION_CALL_RETRIES
 from src.ztare.common.paths import PROJECTS_DIR, RUBRICS_DIR
 import time
 import concurrent.futures
@@ -33,7 +34,7 @@ def read_file(filepath):
 
 def safe_generate_committee(prompt, config=None):
     """Retries for 503 (High Demand) and 429 (Rate Limits)."""
-    for i in range(12):
+    for i in range(PRODUCTION_CALL_RETRIES):
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         try:
             print(f"📡 [DEBUG] Dispatching request to {MODEL_ID}... (Attempt {i+1})")

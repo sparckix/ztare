@@ -13,6 +13,7 @@ from openai import OpenAI
 
 MODEL_MAP = {
     "gemini": "gemini-2.5-flash",
+    "gemini-lite": "gemini-3.1-flash-lite-preview",
     "gemini-pro": "gemini-3.1-pro-preview",
     "claude": "claude-sonnet-4-6",
     "claude-opus": "claude-opus-4-6",
@@ -21,14 +22,24 @@ MODEL_MAP = {
 
 DIRECTOR_MODEL_MAP = {
     "gemini": "gemini-3.1-pro-preview",
+    "gemini-lite": "gemini-3.1-pro-preview",
     "gemini-pro": "gemini-3.1-pro-preview",
     "claude": "claude-sonnet-4-6",
     "claude-opus": "claude-opus-4-6",
     "gpt4o": "o1",
 }
 
+# Retry budget for production mutator/judge calls. Bumped from 12 to 25
+# on 2026-04-15 after a gemini 503 flap threatened phase-2 run integrity
+# under --no_model_fallback (where each retry is a primary-model attempt,
+# not a cross-provider fallback). Import this from caller sites instead of
+# hardcoding the number so both mutator and judge stay in lockstep.
+PRODUCTION_CALL_RETRIES = 25
+
+
 FALLBACK_MODEL_CHAINS = {
     "gemini-2.5-flash": ("claude-sonnet-4-6", "gpt-4o"),
+    "gemini-3.1-flash-lite-preview": ("gemini-2.5-flash", "claude-sonnet-4-6"),
     "gemini-3.1-pro-preview": ("claude-sonnet-4-6", "gpt-4o"),
     "claude-opus-4-6": ("claude-sonnet-4-6", "gpt-4o", "gemini-2.5-flash"),
     "claude-sonnet-4-6": ("gpt-4o", "gemini-2.5-flash"),
@@ -72,6 +83,8 @@ def pricing_model_name(model_name: str | None) -> str | None:
         return "claude-sonnet-4-6"
     if lowered.startswith("claude-opus-4"):
         return "claude-opus-4-6"
+    if lowered.startswith("gemini-3.1-flash-lite"):
+        return "gemini-3.1-flash-lite-preview"
     if lowered.startswith("gemini-2.5-flash"):
         return "gemini-2.5-flash"
     if lowered.startswith("gemini-3.1-pro-preview"):

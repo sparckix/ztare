@@ -15,6 +15,7 @@ from google.genai import types
 from src.ztare.common import utils
 from src.ztare.common.llm_runtime import (
     LLMRuntime,
+    PRODUCTION_CALL_RETRIES,
     resolve_model_id,
     resolve_director_model_id,
     pricing_model_name,
@@ -38,6 +39,15 @@ from src.ztare.validator.information_yield import (
 )
 from src.ztare.validator.pivot_heuristics import select_pivot_profile
 from src.ztare.catch_grammar.rule_3_profile_check import check_profile_contains
+from src.ztare.validator.structural_constraint_extractor import (
+    run_structural_extractor,
+)
+from src.ztare.validator.trajectory_thrash_detector import (
+    run_trajectory_thrash_detector,
+)
+from src.ztare.validator.negative_space_extractor import (
+    run_negative_space_extractor,
+)
 from src.ztare.validator.derived_constraints import (
     render_confirmed_constraints_prompt_section,
     sanitize_constraint_proposals,
@@ -115,6 +125,28 @@ parser.add_argument("--rubric", required=True)
 parser.add_argument("--dynamic", action="store_true")
 parser.add_argument("--iters", type=int, default=10, help="Number of iterations to run")
 parser.add_argument(
+    "--disable_attacker_tools",
+    action="store_true",
+    help=(
+        "Forward --disable_attacker_tools to test_thesis.py. Disables Gemini "
+        "automatic function calling in the single-attacker fallback path and "
+        "prevents attacker-authored python from running under any tool-use "
+        "config. Belt-and-suspenders alongside the hardened execute_python_code "
+        "sandbox. Phase-2 paired A/B runs should always set this."
+    ),
+)
+parser.add_argument(
+    "--disable-negative-space-extractor",
+    action="store_true",
+    help=(
+        "GP-061.B live-harvest discipline: skip Component B (negative space extractor) "
+        "post-eval hook entirely. Used during cold-harvest runs where Component B output "
+        "must not contaminate derived_constraints.json while a corpus of failed families "
+        "is being gathered for a separate cold test. See "
+        "research_areas/private/specs/active/GP-061_component_b_generalization_target_spec.md."
+    ),
+)
+parser.add_argument(
     "--auto-evolve",
     action="store_true",
     help="Level 5: AI autonomously rewrites its rubric upon reaching a high score.",
@@ -123,14 +155,14 @@ parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
     help="Model family to use as Mutator.",
 )
 parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
     help="Model family to use as Firing Squad and Meta-Judge.",
 )
 parser.add_argument(
@@ -273,7 +305,6 @@ DERIVED_CONSTRAINTS_BRIEF_PATH = f"{PROJECT_DIR}/workspace/derived_constraints_b
 MAIN_RUBRIC_PATH = RUBRICS_DIR / f"{args.rubric}.json"
 BEST_ITERATION_RE = re.compile(r"best_iteration:\s*([A-Za-z0-9_.-]+)")
 HISTORY_SCORE_RE = re.compile(r"_score_(\d+)_")
-
 
 def read_file(filepath):
     with open(filepath, "r") as f:
@@ -925,6 +956,112 @@ def _refresh_derived_constraints_from_eval(
         f"{ledger.get('provisional_constraint_count', 0)} provisional"
     )
 
+    # GP-061 Component A: structural constraint extractor.
+    # Reads workspace/structural_memory.json, looks for a skeleton shared by
+    # all failed families, emits a have-to-believe constraint into the ledger.
+    try:
+        _, _, structural_proposal = run_structural_extractor(
+            project_dir=Path(PROJECT_DIR),
+            run_id=run_id,
+            iteration_index=iteration_index,
+        )
+    except Exception as exc:  # pragma: no cover - extractor is best-effort
+        print(f"⚠️  structural_extractor skipped: {exc}")
+        structural_proposal = None
+
+    if structural_proposal is not None:
+        ledger = update_derived_constraints_ledger(
+            project=args.project,
+            ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
+            proposals=[structural_proposal],
+            run_id=run_id,
+            iteration_index=iteration_index,
+            source_score=evaluation.get("score"),
+            weakest_point="structural_extractor: cross-family invariant in structural_memory",
+            score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
+                evaluation.get("score_contract")
+            ),
+            artifact_role=artifact_role,
+        )
+        write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
+        print(
+            "🧭 structural_extractor emitted have-to-believe constraint "
+            f"(coupling={structural_proposal.get('failure_family','?')})"
+        )
+
+    # GP-062: trajectory thrash detector. Reads latent_distance.jsonl +
+    # structural_memory.json for the same-run trajectory signal and emits a
+    # constraint naming preserved skeleton features when the mutator rewrites
+    # semantic surface while keeping the outer skeleton. Same provisional gate
+    # as GP-061 — two distinct runs required before confirmed injection.
+    try:
+        _, thrash_proposal = run_trajectory_thrash_detector(
+            project_dir=Path(PROJECT_DIR),
+        )
+    except Exception as exc:  # pragma: no cover - detector is best-effort
+        print(f"⚠️  trajectory_thrash_detector skipped: {exc}")
+        thrash_proposal = None
+
+    if thrash_proposal is not None:
+        ledger = update_derived_constraints_ledger(
+            project=args.project,
+            ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
+            proposals=[thrash_proposal],
+            run_id=run_id,
+            iteration_index=iteration_index,
+            source_score=evaluation.get("score"),
+            weakest_point="trajectory_extractor: semantic-high / structural-zero thrash across iterations",
+            score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
+                evaluation.get("score_contract")
+            ),
+            artifact_role=artifact_role,
+        )
+        write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
+        print(
+            "🧭 trajectory_extractor emitted thrash constraint "
+            f"(preserved_features_count={len(thrash_proposal.get('constraint','').split(':')[-1].split(','))})"
+        )
+
+    # GP-061.B: negative-space extractor. Reads structural_memory.json via the
+    # generalized AST feature matrix and emits a constraint listing (function
+    # × arg_pos × operator) slots that every failed family left empty. Same
+    # provisional gate as Component A — stays in the provisional bucket until
+    # a second distinct run confirms the surfaced voids.
+    if getattr(args, "disable_negative_space_extractor", False):
+        print(
+            "🚫 negative_space_extractor disabled via --disable-negative-space-extractor "
+            "(GP-061.B cold-harvest discipline)"
+        )
+        void_proposal = None
+    else:
+        try:
+            _, void_proposal = run_negative_space_extractor(
+                project_dir=Path(PROJECT_DIR),
+            )
+        except Exception as exc:  # pragma: no cover - detector is best-effort
+            print(f"⚠️  negative_space_extractor skipped: {exc}")
+            void_proposal = None
+
+    if void_proposal is not None:
+        ledger = update_derived_constraints_ledger(
+            project=args.project,
+            ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
+            proposals=[void_proposal],
+            run_id=run_id,
+            iteration_index=iteration_index,
+            source_score=evaluation.get("score"),
+            weakest_point="negative_space_extractor: unexplored structural slots across failed families",
+            score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
+                evaluation.get("score_contract")
+            ),
+            artifact_role=artifact_role,
+        )
+        write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
+        print(
+            "🧭 negative_space_extractor emitted void constraint "
+            f"(void_count={void_proposal.get('constraint','').count(chr(10) + '  - ')})"
+        )
+
 
 def _dynamic_rubric_path(project: str) -> Path:
     return RUBRICS_DIR / f"dynamic_{project}.json"
@@ -1258,7 +1395,7 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
         prompt,
         model_id=model_id,
         config=config,
-        retries=12,
+        retries=PRODUCTION_CALL_RETRIES,
         timeout_seconds=600,
         request_label="Mutator request",
         progress_printer=print,
@@ -1691,6 +1828,25 @@ def mutate_thesis(
     - The only allowed nonlinear call in `expression` is direct `eml(...)`.
     - Any other direct call or `math.*` call will be rejected as a fit-grammar failure.
     """
+        elif fit_expression_grammar == "math_exp_only":
+            fit_primitive_context += """
+
+    ### SANDBOX 09 MATH-EXP-ONLY GRAMMAR
+
+    This project restricts the nonlinear vocabulary of your `fit_declaration`
+    expression to the following `math.*` attributes only:
+    - `math.exp`, `math.log`, `math.sqrt`
+    - constants `math.e`, `math.pi`
+
+    Enforcement:
+    - Your `expression` may use arithmetic scaffolding (`+`, `-`, `*`, `/`, `**`)
+      and declared variables / parameters.
+    - You may call `math.exp(...)`, `math.log(...)`, `math.sqrt(...)` directly.
+    - You may NOT call `eml(...)`, `math.sin`, `math.cos`, `math.tan`, `math.sinh`,
+      `math.cosh`, `math.tanh`, `math.pow`, `math.fabs`, `math.ceil`, `math.floor`,
+      or any other function not in the allowed list.
+    - Any forbidden call will be rejected as a fit-grammar failure.
+    """
         # Also append to output_requirements so it survives pivot-mode attention hijack
         output_requirements += """
     FIT DECLARATION (MANDATORY — DO NOT OMIT):
@@ -1980,6 +2136,56 @@ def _validate_eml_helper_body(eml_def: ast.FunctionDef) -> str | None:
     return None
 
 
+_MATH_EXP_ONLY_MODEL_ATTRS = frozenset({"e", "pi", "exp", "log", "sqrt"})
+
+
+def _validate_math_exp_only_python_model(tree: ast.AST) -> str | None:
+    """GP-061 sandbox_09 ``math_exp_only`` grammar for the Python model body.
+
+    Contract:
+    - Must define a top-level ``I_model`` function (any positional signature).
+    - Inside ``I_model``: direct ``Name`` calls are forbidden (no ``eml(...)``,
+      no re-imported helpers). Only ``math.exp``, ``math.log``, ``math.sqrt``
+      attribute calls are permitted, and ``math.*`` attribute access is
+      restricted to ``{e, pi, exp, log, sqrt}``. Any other ``math.*`` reference
+      (e.g. ``math.sin``) or any non-``math`` attribute call is rejected.
+    """
+
+    i_model: ast.FunctionDef | None = None
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name == "I_model":
+            i_model = node
+            break
+    if i_model is None:
+        return "math_exp_only grammar requires a top-level I_model(...) function."
+
+    for node in ast.walk(i_model):
+        if isinstance(node, ast.Attribute):
+            if not (isinstance(node.value, ast.Name) and node.value.id == "math"):
+                return (
+                    "math_exp_only grammar violation in I_model: attribute access "
+                    "only allowed on the 'math' module."
+                )
+            if node.attr not in _MATH_EXP_ONLY_MODEL_ATTRS:
+                return (
+                    f"math_exp_only grammar violation in I_model: math.{node.attr} "
+                    "is not in the allowed set {e, pi, exp, log, sqrt}."
+                )
+        if isinstance(node, ast.Call):
+            func = node.func
+            if isinstance(func, ast.Name):
+                return (
+                    f"math_exp_only grammar violation in I_model: direct call "
+                    f"'{func.id}(...)' is not allowed; route nonlinearity through "
+                    "math.exp / math.log / math.sqrt."
+                )
+            if isinstance(func, ast.Attribute):
+                # Already validated above by the Attribute branch.
+                continue
+            return "math_exp_only grammar violation in I_model: unsupported call structure."
+    return None
+
+
 def validate_python_model_grammar(
     python_code: str,
     grammar: str | None,
@@ -1995,13 +2201,16 @@ def validate_python_model_grammar(
     """
 
     normalized = (grammar or "").strip().lower()
-    if normalized != "eml_only":
+    if normalized not in ("eml_only", "math_exp_only"):
         return None
 
     try:
         tree = ast.parse(python_code)
     except SyntaxError as exc:
         return f"Python model grammar check could not parse candidate code: {exc}"
+
+    if normalized == "math_exp_only":
+        return _validate_math_exp_only_python_model(tree)
 
     i_model = None
     eml_defs: list[ast.FunctionDef] = []
@@ -2132,6 +2341,8 @@ if __name__ == "__main__":
         test_cmd.extend(["--primitive_top_k", str(args.primitive_top_k)])
     if args.deterministic_score_gates:
         test_cmd.append("--deterministic_score_gates")
+    if getattr(args, "disable_attacker_tools", False):
+        test_cmd.append("--disable_attacker_tools")
 
 # --- INITIALIZATION ---
 if args.dynamic:
@@ -2459,7 +2670,12 @@ for i in range(ITERATIONS):
                     )
             except (json.JSONDecodeError, KeyError):
                 pass
-        _structural_memory_ctx = render_structural_memory_prompt_section(workspace_dir)
+        _structural_memory_ctx = render_structural_memory_prompt_section(
+            workspace_dir,
+            complexity_penalty_enabled=bool(
+                rubric_data.get("complexity_penalty_enabled", False)
+            ),
+        )
 
     # GP-048 apparatus-feedback surfaces (all flag-gated, independent).
     # Rubric key contract (source of truth — these match the sandbox_04 rubric):
@@ -2553,10 +2769,12 @@ for i in range(ITERATIONS):
                     _fit_dimensionality = rubric_data.get("fit_required_dimensionality")
                     _fit_expression_grammar = rubric_data.get("fit_expression_grammar")
                     _diag_classification = ""
+                    _fit_score_mode = rubric_data.get("fit_score_mode", "continuous_l2")
                     _fit_result = fit_parameters(
                         _fit_decl, evidence_text,
                         required_dimensionality=_fit_dimensionality,
                         expression_grammar=_fit_expression_grammar,
+                        score_mode=_fit_score_mode,
                     )
                     if isinstance(_fit_result, FitSuccess):
                         python_code = substitute_fitted_params(python_code, _fit_result.fitted_params)

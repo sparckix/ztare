@@ -136,6 +136,8 @@ def update_structural_memory(
             break
 
     current_best = float(fit_result.max_abs_residual)
+    current_bic = float(getattr(fit_result, "bic", 0.0) or 0.0)
+    current_k = int(getattr(fit_result, "k_params", len(declaration.parameter_names)) or 0)
     if existing is None:
         existing = {
             "fingerprint": signature.fingerprint,
@@ -149,6 +151,12 @@ def update_structural_memory(
             "latest_visible_max_abs_residual": current_best,
             "best_rmse": float(fit_result.rmse),
             "latest_diagnostic_classification": diagnostic_classification,
+            # GP-069 complexity-penalty telemetry (wired 2026-04-15). Always
+            # recorded; consumed by render_structural_memory_prompt_section
+            # only when complexity_penalty_enabled is set in the rubric.
+            "best_bic": current_bic,
+            "latest_bic": current_bic,
+            "latest_k_params": current_k,
         }
         families.append(existing)
     else:
@@ -156,10 +164,16 @@ def update_structural_memory(
         existing["seen_count"] = int(existing.get("seen_count", 0) or 0) + 1
         existing["latest_visible_max_abs_residual"] = current_best
         existing["latest_diagnostic_classification"] = diagnostic_classification
-        if current_best < float(existing.get("best_visible_max_abs_residual", float("inf"))):
+        existing["latest_bic"] = current_bic
+        existing["latest_k_params"] = current_k
+        existing_best_res = existing.get("best_visible_max_abs_residual")
+        if existing_best_res is None or current_best < float(existing_best_res):
             existing["best_visible_max_abs_residual"] = current_best
             existing["best_rmse"] = float(fit_result.rmse)
             existing["example_expression"] = declaration.expression
+        existing_best_bic = existing.get("best_bic")
+        if existing_best_bic is None or current_bic < float(existing_best_bic):
+            existing["best_bic"] = current_bic
 
     prior_family = str(memory.get("most_recent_family_fingerprint", "") or "")
     if prior_family and prior_family != signature.fingerprint:
@@ -176,8 +190,16 @@ def render_structural_memory_prompt_section(
     workspace_dir: Path,
     *,
     max_families: int = 4,
+    complexity_penalty_enabled: bool = False,
 ) -> str:
-    """Render a read-only prompt block for structurally distinct prior families."""
+    """Render a read-only prompt block for structurally distinct prior families.
+
+    When ``complexity_penalty_enabled`` is True, cross-family ordering is by
+    ``best_bic`` ascending (GP-069 apparatus fix — charges parameter count so
+    a smooth sigmoid-limit family does not out-rank a lower-k hinge family on
+    finite-sample L2 alone). Default False preserves legacy L2 ordering so
+    running sandboxes are unaffected until they opt in via the rubric flag.
+    """
 
     memory = load_structural_memory(workspace_dir)
     families = memory.get("families", [])
@@ -195,21 +217,44 @@ def render_structural_memory_prompt_section(
     if escape_fp and escape_fp in family_by_fp:
         ordered.append(family_by_fp.pop(escape_fp))
         has_escape = True
-    ordered.extend(
-        sorted(
-            family_by_fp.values(),
-            key=lambda item: (
-                float(item.get("best_visible_max_abs_residual", float("inf"))),
+    def _numeric_or_inf(value: Any) -> float:
+        # Legacy memory files can store numeric fields as None (observed on
+        # gp023_sandbox_10). float(None) raises TypeError, which would crash
+        # the render for any project that has ever recorded a None value
+        # here. Treat None / missing as "worst possible rank" so the sort
+        # degrades gracefully instead of taking out the whole prompt.
+        if value is None:
+            return float("inf")
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return float("inf")
+
+    if complexity_penalty_enabled:
+        def sort_key(item: dict[str, Any]) -> tuple[float, int]:
+            return (
+                _numeric_or_inf(item.get("best_bic")),
                 -int(item.get("last_seen_iteration", 0) or 0),
-            ),
-        )
-    )
+            )
+    else:
+        def sort_key(item: dict[str, Any]) -> tuple[float, int]:
+            return (
+                _numeric_or_inf(item.get("best_visible_max_abs_residual")),
+                -int(item.get("last_seen_iteration", 0) or 0),
+            )
+    ordered.extend(sorted(family_by_fp.values(), key=sort_key))
 
     lines = [
         "### GP-042 STRUCTURAL MEMORY (READ-ONLY)",
         "Distinct structural families already reached in this run. This memory survives pivot resets.",
         "Use it to avoid unintentional collapse back to a prior family. Leave a family only for an evidence-grounded reason.",
     ]
+    if complexity_penalty_enabled:
+        lines.append(
+            "NOTE: Families are ranked under a complexity-penalized scorer (BIC). "
+            "Lower BIC beats lower L2 when parameter counts differ — a family with "
+            "fewer parameters can win even at slightly higher residual."
+        )
     if has_escape:
         lines.append("")
         lines.append("Most recent structural escape is listed first below.")
@@ -219,6 +264,8 @@ def render_structural_memory_prompt_section(
         label = str(item.get("family_label", "") or "")
         example_expression = str(item.get("example_expression", "") or "")
         best_residual = item.get("best_visible_max_abs_residual")
+        best_bic = item.get("best_bic")
+        last_k = item.get("latest_k_params")
         last_iter = item.get("last_seen_iteration")
         diagnostic = str(item.get("latest_diagnostic_classification", "") or "unknown")
         lines.append(
@@ -226,6 +273,8 @@ def render_structural_memory_prompt_section(
         )
         lines.append(f"  example_expression: {example_expression}")
         lines.append(f"  best_visible_max_abs_residual: {best_residual}")
+        if complexity_penalty_enabled:
+            lines.append(f"  best_bic: {best_bic}  (k_params={last_k})")
         lines.append(f"  latest_diagnostic: {diagnostic}")
     return "\n".join(lines)
 

@@ -57,6 +57,14 @@ class FitSuccess:
     mean_abs_residual: float
     rmse: float
     residual_map: list[dict[str, float]]
+    # GP-069 / INS-011 complexity-penalty telemetry (added 2026-04-15).
+    # Recorded but NOT used for candidate selection — selection logic
+    # change is a separate commit so pre-registered runs remain unaffected.
+    n_samples: int = 0
+    k_params: int = 0
+    sse: float = 0.0
+    bic: float = 0.0
+    aic: float = 0.0
 
 
 @dataclass
@@ -106,6 +114,13 @@ _ALLOWED_DIRECT_CALLS = frozenset({"eml"})
 # they are required for the depth-1 Planck representation
 # ``eml((gamma*phi/psi)**q, math.e)`` to be reachable under the EML grammar.
 _EML_ONLY_CONSTANT_ATTRS = frozenset({"e", "pi"})
+
+# ``math_exp_only`` grammar (GP-061 Component B generalization target, sandbox_09
+# RC step response): permits only the minimal set needed to express a
+# first-order exponential with real-valued prefactors. Forbids direct ``eml``
+# calls and all other ``math.*`` nonlinearities. Closes the charter contract
+# that RC grammar is disjoint from sandbox_07/08's ``eml_only``.
+_MATH_EXP_ONLY_ATTRS = frozenset({"e", "pi", "exp", "log", "sqrt"})
 
 _ALLOWED_NODE_TYPES = (
     ast.Expression,
@@ -195,6 +210,9 @@ def _build_model_callable(
         allowed_math_attrs = _EML_ONLY_CONSTANT_ATTRS
         allowed_direct_calls = _ALLOWED_DIRECT_CALLS
         allowed = allowed | frozenset(_ALLOWED_DIRECT_CALLS)
+    elif grammar == "math_exp_only":
+        allowed_math_attrs = _MATH_EXP_ONLY_ATTRS
+        allowed_direct_calls = frozenset()
     tree = _validate_expression(
         declaration.expression,
         allowed,
@@ -328,25 +346,113 @@ def parse_evidence_for_fitting(
 _MAX_FEVAL = 10_000
 
 
+def _evaluate_discrete_exact(
+    declaration: FitDeclaration,
+    evidence_text: str,
+    *,
+    expression_grammar: str | None = None,
+) -> FitResult:
+    """Evaluate a fully-specified expression against integer-valued evidence.
+
+    No parameter fitting (curve_fit is unsuitable for discrete/modular
+    landscapes).  The LLM must propose concrete constants, not free
+    parameters.  Score = exact-match fraction after rounding both sides
+    to nearest integer.
+    """
+    parsed = parse_evidence_for_fitting(evidence_text, declaration.independent_vars)
+    if parsed is None:
+        return FitFailure(
+            failure_class="evidence_parse_error",
+            attempted_template=declaration.expression,
+            solver_diagnostics="Could not parse evidence for the declared independent variables.",
+        )
+
+    xdata_lists, ydata_list = parsed
+    if not _SCIPY_AVAILABLE:
+        return FitFailure(
+            failure_class="no_scipy",
+            attempted_template=declaration.expression,
+            solver_diagnostics="scipy/numpy is not installed",
+        )
+    xdata = np.array(xdata_lists)
+    ydata = np.array(ydata_list)
+
+    try:
+        model_fn = _build_model_callable(
+            declaration,
+            expression_grammar=expression_grammar,
+        )
+    except ValueError as exc:
+        return FitFailure(
+            failure_class="expression_validation_error",
+            attempted_template=declaration.expression,
+            solver_diagnostics=str(exc),
+        )
+
+    if declaration.parameter_names:
+        params = [
+            declaration.initial_guesses.get(name, 0.0)
+            for name in declaration.parameter_names
+        ]
+        y_pred = model_fn(xdata, *params)
+        fitted_params = dict(zip(declaration.parameter_names, params))
+    else:
+        y_pred = model_fn(xdata)
+        fitted_params = {}
+
+    y_pred_int = np.round(y_pred).astype(int)
+    y_true_int = np.round(ydata).astype(int)
+    matches = y_pred_int == y_true_int
+    exact_match_fraction = float(np.mean(matches))
+    mismatch_fraction = 1.0 - exact_match_fraction
+
+    if xdata.ndim == 1:
+        xdata = xdata.reshape(1, -1)
+
+    residual_map: list[dict[str, float]] = []
+    for i in range(len(ydata)):
+        pt: dict[str, float] = {}
+        for j, vname in enumerate(declaration.independent_vars):
+            pt[vname] = float(xdata[j, i])
+        pt["observed"] = float(ydata[i])
+        pt["predicted"] = float(y_pred[i])
+        pt["residual"] = 0.0 if matches[i] else 1.0
+        residual_map.append(pt)
+
+    n_samples = int(len(ydata))
+    k_params = int(len(declaration.parameter_names))
+
+    return FitSuccess(
+        fitted_params=fitted_params,
+        max_abs_residual=mismatch_fraction,
+        mean_abs_residual=mismatch_fraction,
+        rmse=mismatch_fraction,
+        residual_map=residual_map,
+        n_samples=n_samples,
+        k_params=k_params,
+        sse=float(np.sum(~matches)),
+        bic=0.0,
+        aic=0.0,
+    )
+
+
 def fit_parameters(
     declaration: FitDeclaration,
     evidence_text: str,
     *,
     required_dimensionality: int | None = None,
     expression_grammar: str | None = None,
+    score_mode: str = "continuous_l2",
 ) -> FitResult:
     """Fit parameters for a declared functional form against visible-slice evidence.
 
     If required_dimensionality is set, reject declarations whose independent_vars
     count doesn't match (Finding 5: prevent 1-var fits on 2-var sandboxes).
-    """
-    if not _SCIPY_AVAILABLE:
-        return FitFailure(
-            failure_class="no_scipy",
-            attempted_template=declaration.expression,
-            solver_diagnostics="scipy is not installed",
-        )
 
+    score_mode:
+      - "continuous_l2" (default): scipy curve_fit, L2 residual
+      - "discrete_exact": no fitting; count exact integer matches
+    """
     if (
         required_dimensionality is not None
         and len(declaration.independent_vars) != required_dimensionality
@@ -359,6 +465,20 @@ def fit_parameters(
                 f"({declaration.independent_vars}) but project requires "
                 f"{required_dimensionality}. Declare all required variables."
             ),
+        )
+
+    if score_mode == "discrete_exact":
+        return _evaluate_discrete_exact(
+            declaration,
+            evidence_text,
+            expression_grammar=expression_grammar,
+        )
+
+    if not _SCIPY_AVAILABLE:
+        return FitFailure(
+            failure_class="no_scipy",
+            attempted_template=declaration.expression,
+            solver_diagnostics="scipy is not installed",
         )
 
     parsed = parse_evidence_for_fitting(evidence_text, declaration.independent_vars)
@@ -440,12 +560,29 @@ def fit_parameters(
         pt["residual"] = float(residuals[i])
         residual_map.append(pt)
 
+    n_samples = int(len(ydata))
+    k_params = int(len(declaration.parameter_names))
+    sse = float(np.sum((ydata - y_pred) ** 2))
+    sse_safe = sse if sse > 0 else 1e-300
+    if n_samples > 0:
+        log_term = math.log(sse_safe / n_samples)
+        bic = n_samples * log_term + k_params * math.log(n_samples)
+        aic = n_samples * log_term + 2.0 * k_params
+    else:
+        bic = 0.0
+        aic = 0.0
+
     return FitSuccess(
         fitted_params=fitted_params,
         max_abs_residual=float(np.max(residuals)),
         mean_abs_residual=float(np.mean(residuals)),
         rmse=float(np.sqrt(np.mean(residuals**2))),
         residual_map=residual_map,
+        n_samples=n_samples,
+        k_params=k_params,
+        sse=sse,
+        bic=bic,
+        aic=aic,
     )
 
 

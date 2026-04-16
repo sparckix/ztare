@@ -344,8 +344,11 @@ def build_evidence_gaps_payload(
     normalized_review: dict[str, Any],
 ) -> dict[str, Any] | None:
     gaps = normalized_review.get("evidence_gaps", [])
-    if evidence_surface_ready_flag or not gaps:
+    if not gaps:
         return None
+    # Write gaps regardless of evidence_surface_ready — an existing baseline
+    # evidence.txt does not mean all gaps are filled; fetch_evidence uses the
+    # gap list to enrich the surface further.
     return {
         "project": project_name,
         "judge_model": MODEL_MAP[model_family],
