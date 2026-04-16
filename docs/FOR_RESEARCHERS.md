@@ -40,6 +40,8 @@ The target itself lives only in the sealed pre-reg under `research_areas/private
 2. Grep the charter for any substring of the GT form and its parameter names.
 3. Ask: if a stranger read only this charter, could they reconstruct the target? If yes, scrub.
 
+**The canonical checklist.** `docs/PRE_RUN_CHECKLIST.md` is the single document that gates a scaffold from "drafted" to "runnable": grep denylist (§1), strip test (§2), identifiability protocol (§3), pre-reg seal (§4), smoke gate (§5), dry-run (§6). Every box must be checked before the first `autoresearch_loop.py` invocation. A sandbox without a completed checklist is a warm-up, not a data point.
+
 ---
 
 ## 3. The gate battery — how to read a score

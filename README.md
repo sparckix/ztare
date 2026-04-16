@@ -100,6 +100,7 @@ Take project <project> and generate the right downstream artifact: founder memo,
 - [Adversarial Precedent Memory: Hardening LLM Evaluators Through Mined Failure Constraints](papers/paper2/draft.md) | [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6525598)
 - [Contract-Governed Adversarial Evaluator Hardening: Stage-Gated Recursive Improvement with Typed Promotion Contracts](papers/paper3/draft.md) | [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6542998)
 - [The Cognitive Firm: Managerial Capitalism for Artificial Intelligence](papers/paper4/draft.md) | [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6543019)
+- *The Principles of Epistemic Verification: A Treatise, After Taylor, on the Decomposition of Judgment Work Into Named, Repeatable Operations* (work in progress)
 
 Each paper bundle includes the public manuscript sources under `papers/`. Local scratch workspaces such as `paper1/` and `paper2/` are gitignored and not part of the public source layer.
 
@@ -138,12 +139,13 @@ For domain projects, the validator writes explicit `latest_*` and `champion_*` a
 
 ## Repository Scope
 
-The public repo currently has four active surfaces:
+The public repo currently has five active surfaces:
 
 1. the adversarial validator and workspace pipeline
 2. a Karpathy-inspired LLM knowledge workspace ([design pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)) that accumulates source material upstream of the validator
 3. the synthesis / distribution pipeline
-4. the hardening / control-plane stack
+4. the hardening / control-plane stack (supervisor + goal orchestrator)
+5. the evidence compiler (`compile_evidence.py`) with `source_type_map.json` support for typing raw sources without modifying their content
 
 Useful entry points:
 
@@ -153,16 +155,20 @@ Useful entry points:
 
 ## Layer Glossary
 
-Five layers, each with a distinct job. See [docs/GLOSSARY.md](docs/GLOSSARY.md) for the full term list.
+Six layers, each with a distinct job. See [docs/GLOSSARY.md](docs/GLOSSARY.md) for the full term list.
 
 1. **Knowledge Workspace** — a persistent upstream memory layer inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): raw sources accumulate, an LLM extracts structured notes, and a compiler emits bounded evidence snapshots for the validator. The workspace remembers; the validator does not.
 2. **Validator** — the adversarial loop (mutator vs. firing squad vs. judge) that stress-tests claims
 3. **Kernel** — the scoring and evaluation logic being continuously hardened against gaming
 4. **Meta-runner** — the deterministic promotion system for kernel improvements (not the validator)
-5. **Supervisor** — the work-management layer that routes tasks, tracks progress, and enforces budgets (does not decide truth)
+5. **Supervisor** — the work-management layer that routes tasks, tracks progress, and enforces budgets (does not decide truth). Internally organized as three sub-layers: **OS** (state machine driver with hard gates), **Config** (typed goal-lifecycle contracts), and **App** (agent runtime within fences)
 6. **Papers** — public-facing manuscripts under `papers/`
 
 These are separate concerns. The supervisor manages work; the validator decides truth. Don't use them interchangeably.
+
+### Goal Orchestrator (GP-070)
+
+The supervisor now includes a goal orchestrator that tracks active goals in `AGENTS.md` and routes agent work through typed lifecycle stages (e.g., `RUNNING`, `CLOSED`). Goals are advanced via `python -m src.ztare.orchestration.cli advance <goal_id>`. The orchestrator sits in the Config layer — it defines the goal contract but does not replace the OS state machine or the App agent runtime.
 
 ---
 
@@ -426,6 +432,23 @@ Best starting points:
 - `docs/WORKFLOW.md`
 
 If you are reaching out about a specific claim, benchmark, or failure mode, include the exact project, rubric, and artifact path.
+
+---
+
+## Intellectual Lineage
+
+ZTARE builds on ideas from several sources that shaped its architecture:
+
+- **Andrej Karpathy's LLM wiki pattern** ([gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)) — the upstream knowledge workspace that accumulates structured source material before the validator runs. The workspace remembers; the validator does not.
+- **Andrzej Odrzywołek's EML primitive** — `eml(x,y) = exp(x) - ln(y)`, a single binary operator that [generates all elementary functions](https://arxiv.org/abs/2603.21852) (Odrzywołek, 2026). In ZTARE, this removes the mutator's regression-toolbox comfort bias by replacing familiar named functions with a uniform compositional grammar: `S -> 1 | eml(S,S)`. Used in expression grammars for curve-fitting sandboxes.
+
+---
+
+## Support This Work
+
+This is an independent research project built and funded by a student. If you find it useful, consider supporting it:
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?style=flat&logo=buy-me-a-coffee)](https://buymeacoffee.com/sparckix)
 
 ---
 

@@ -132,3 +132,49 @@ A correction document created when something goes wrong. Sealed artifacts (scori
 
 **Scoring Sheet**
 A sealed record of what was believed at the end of a run. Immutable — never edited after the run. If the conclusions change, the correction goes in a post-mortem.
+
+---
+
+## Supervisor Sub-Layers
+
+**OS Layer**
+The state machine driver inside the supervisor. Owns hard gates and state transitions (A1 → A2 → B → C → D). No agent can bypass an OS-level gate.
+
+**Config Layer**
+Typed goal-lifecycle contracts that sit between the OS state machine and the agent runtime. The goal orchestrator (GP-070) lives here — it tracks active goals, defines their stages, and routes advancement commands.
+
+**App Layer**
+The agent runtime that operates within the fences set by OS and Config. Agents read staged requests, produce artifacts, and submit them back through the supervisor's commit path.
+
+**Goal Orchestrator (GP-070)**
+A Config-layer component that tracks active goals in `AGENTS.md` and advances them through typed lifecycle stages via `python -m src.ztare.orchestration.cli advance <goal_id>`.
+
+---
+
+## Governance Concepts
+
+**M-Form (Multi-Divisional Form)**
+The organizational structure borrowed from Chandler/Williamson applied to AI governance. In ZTARE, Division A generates and Division B verifies, with structural separation enforced by the supervisor. See Paper 4.
+
+**Division A / Division B**
+The two structural divisions in the M-Form. Division A is the generation side (mutator, workspace, synthesis). Division B is the verification side (firing squad, judge, hard gates). The governance claim is that they must not share a gradient.
+
+**Subliminal Learning**
+A training-time phenomenon (Cloud et al. 2026, Nature 652) where models sharing base initialization transmit behavioral traits through semantically unrelated data during fine-tuning. Distinct from steganography — the signal is not human-readable. Operates during gradient descent, not during inference-time in-context reading.
+
+---
+
+## Evidence Pipeline
+
+**Source Type Map (source_type_map.json)**
+A JSON file in a project's `raw/` directory that maps filenames to source types (e.g., `source_evidence`, `source_counter`). Used by `compile_evidence.py` as a fallback for raw files that lack frontmatter, so sources can be typed without modifying their content.
+
+---
+
+## Extraction Components
+
+**Structural Constraint Extractor (GP-061 Component A)**
+Extracts structural constraints from failed candidate families by computing feature-bag intersections across iterations. Lives in `src/ztare/validator/`.
+
+**Negative Space Extractor (GP-061 Component B)**
+Detects void operators — mathematical operations absent from all tried candidate families. Identifies what the search space has systematically avoided, which may indicate structural gaps in the mutator's exploration.
