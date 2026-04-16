@@ -53,6 +53,35 @@ SOURCE_TYPE_VALUES = {
     SOURCE_TYPE_UNTYPED,
 }
 
+SOURCE_TYPE_MAP_FILENAME = "source_type_map.json"
+
+
+def load_source_type_map(raw_dir: Path) -> Dict[str, str]:
+    """Load optional source_type_map.json from raw_dir.
+
+    Maps filenames (or relative paths) to source_type strings. Used as a
+    fallback for files that have no source_type frontmatter, so external
+    documents can be typed without modifying their content.
+
+    Example source_type_map.json::
+
+        {
+            "treatise_principles_of_epistemic_verification.md": "source_evidence"
+        }
+    """
+    map_path = raw_dir / SOURCE_TYPE_MAP_FILENAME
+    if not map_path.exists():
+        return {}
+    try:
+        raw = json.loads(map_path.read_text(encoding="utf-8"))
+        return {
+            k: normalize_source_type(v)
+            for k, v in raw.items()
+            if isinstance(k, str) and isinstance(v, str)
+        }
+    except Exception:
+        return {}
+
 IMMUTABLE_ELIGIBLE_SOURCE_TYPES = {SOURCE_TYPE_EVIDENCE}
 CONSTRAINT_ELIGIBLE_SOURCE_TYPES = {SOURCE_TYPE_EVIDENCE}
 CONTRADICTION_ELIGIBLE_SOURCE_TYPES = {SOURCE_TYPE_EVIDENCE}
@@ -229,6 +258,7 @@ def resolve_source_type_map(
     source_type_by_id: Dict[str, str] = {}
     warnings: List[str] = []
     raw_dir = project_dir / "raw"
+    source_type_overrides = load_source_type_map(raw_dir)
 
     for source in sources:
         source_id = source.get("source_id")
@@ -240,6 +270,12 @@ def resolve_source_type_map(
             continue
         relative_path = source.get("path")
         if relative_path:
+            # Check source_type_map.json override before re-reading the file
+            filename = Path(relative_path).name
+            override = source_type_overrides.get(filename) or source_type_overrides.get(relative_path)
+            if override and override != SOURCE_TYPE_UNTYPED:
+                source_type_by_id[source_id] = override
+                continue
             raw_path = raw_dir / relative_path
             if raw_path.exists():
                 _, inferred_type, had_invalid_type = read_typed_source(raw_path)
@@ -421,8 +457,14 @@ def collect_sources(
     sources: List[Dict[str, Any]] = []
     total_chars = 0
 
+    source_type_overrides = load_source_type_map(raw_dir)
+
     all_files = sorted(path for path in raw_dir.rglob("*") if path.is_file())
-    supported_files = [path for path in all_files if path.suffix.lower() in TEXT_EXTENSIONS]
+    # Exclude source_type_map.json itself from ingest
+    supported_files = [
+        path for path in all_files
+        if path.suffix.lower() in TEXT_EXTENSIONS and path.name != SOURCE_TYPE_MAP_FILENAME
+    ]
     skipped_files = [path for path in all_files if path.suffix.lower() not in TEXT_EXTENSIONS]
 
     if skipped_files:
@@ -436,10 +478,21 @@ def collect_sources(
         if not raw_text:
             warnings.append(f"Skipped empty file: {path.relative_to(raw_dir)}")
             continue
+
+        # Apply source_type_map.json override for untyped files
         if source_type == SOURCE_TYPE_UNTYPED:
-            warnings.append(
-                f"Source {path.relative_to(raw_dir)} has no valid source_type frontmatter; defaulting to untyped."
-            )
+            relative = str(path.relative_to(raw_dir))
+            override = source_type_overrides.get(path.name) or source_type_overrides.get(relative)
+            if override and override != SOURCE_TYPE_UNTYPED:
+                source_type = override
+            elif had_invalid_type:
+                warnings.append(
+                    f"Source {relative} declared an invalid source_type; defaulting to untyped."
+                )
+            else:
+                warnings.append(
+                    f"Source {relative} has no source_type frontmatter; defaulting to untyped."
+                )
         elif had_invalid_type:
             warnings.append(
                 f"Source {path.relative_to(raw_dir)} declared an invalid source_type; defaulting to untyped."
@@ -628,9 +681,8 @@ def load_workspace_packet(workspace_dir: Path) -> Dict[str, Any]:
         project_name = workspace_dir.parent.name
         raise FileNotFoundError(
             f"Workspace snapshot not found: {snapshot_path}\n"
-            f"Run workspace-update first, then retry:\n"
-            f"  make workspace-update PROJECT={project_name} MODEL=gemini\n"
-            f"  make evidence-compile PROJECT={project_name} MODEL=gemini"
+            f"Run evidence-prepare (workspace-update + evidence-compile in one step):\n"
+            f"  make evidence-prepare PROJECT={project_name} MODEL=gemini"
         )
     packet = read_json(snapshot_path)
     validate_packet_shape(packet)
@@ -1040,6 +1092,34 @@ def main() -> int:
         use_workspace = False
     else:
         use_workspace = (workspace_dir / "workspace_snapshot.json").exists()
+
+    # Auto-run workspace update if workspace mode is selected but snapshot is missing.
+    if use_workspace and not (workspace_dir / "workspace_snapshot.json").exists():
+        print("Workspace snapshot not found — running workspace-update automatically...")
+        import subprocess
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "src.ztare.workspace.update_workspace",
+                "--project",
+                args.project,
+                "--model",
+                args.model,
+            ],
+            capture_output=False,
+        )
+        if result.returncode != 0:
+            project_name = project_dir.name
+            print(
+                f"ERROR: workspace-update failed (exit {result.returncode}).\n"
+                f"Fix the error above, then run:\n"
+                f"  make evidence-prepare PROJECT={project_name} MODEL={args.model}",
+                file=sys.stderr,
+            )
+            return 1
+        print()  # blank line before compile output
 
     try:
         if use_workspace:

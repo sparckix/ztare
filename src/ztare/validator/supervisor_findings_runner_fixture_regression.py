@@ -20,12 +20,26 @@ from src.ztare.validator.supervisor_findings_debate import (
     DebateState,
     DebateStatus,
     DebateTurn,
+    append_turn,
+    parse_debate_log,
     read_debate_state,
 )
 from src.ztare.validator.supervisor_findings_runner import (
+    AgentMode,
+    RunnerStopReason,
+    RunnerWriteScopeError,
+    SINGLE_CLAUDE_AUTHOR,
+    SINGLE_CLAUDE_SKEPTIC,
     build_turn_prompt,
     choose_next_agent,
+    emit_gate_escalation,
     parse_sentinel_decision,
+    validate_findings_write_scope,
+)
+from src.ztare.validator.findings_context import (
+    DEFAULT_TOKEN_BUDGET,
+    build_findings_context,
+    format_context_tiers,
 )
 
 
@@ -158,6 +172,8 @@ def test_build_turn_prompt_contains_seam_text_and_agent() -> None:
     assert "**Claude**" in prompt
     assert "0 prior turns" in prompt
     assert "SENTINEL_DECISION:" in prompt
+    # No seam_path argument → no context block
+    assert "--- BEGIN CONTEXT ---" not in prompt
 
 
 def test_build_turn_prompt_reports_correct_turn_count() -> None:
@@ -197,7 +213,278 @@ def test_runner_sees_real_seam_state() -> None:
         assert state.status == DebateStatus.PENDING
 
 
+def test_single_claude_mode_starts_with_author() -> None:
+    state = _state_with_turns(())
+    assert choose_next_agent(state, agent_mode=AgentMode.SINGLE_CLAUDE) == SINGLE_CLAUDE_AUTHOR
+
+
+def test_single_claude_mode_alternates_author_skeptic() -> None:
+    turns = (DebateTurn(index=1, agent=SINGLE_CLAUDE_AUTHOR, body="x", no_new_load_bearing=False),)
+    assert choose_next_agent(_state_with_turns(turns), agent_mode=AgentMode.SINGLE_CLAUDE) == SINGLE_CLAUDE_SKEPTIC
+    turns2 = turns + (DebateTurn(index=2, agent=SINGLE_CLAUDE_SKEPTIC, body="y", no_new_load_bearing=False),)
+    assert choose_next_agent(_state_with_turns(turns2), agent_mode=AgentMode.SINGLE_CLAUDE) == SINGLE_CLAUDE_AUTHOR
+
+
+def test_single_claude_mode_mixed_seam_defaults_to_author_on_tie() -> None:
+    # Legacy Claude/Gemini turns on a seam that then switches to single_claude.
+    # Routing picks whichever single_claude seat has fewer turns; tie → Author.
+    turns = (
+        DebateTurn(index=1, agent="Claude", body="x", no_new_load_bearing=False),
+        DebateTurn(index=2, agent="Gemini", body="y", no_new_load_bearing=False),
+    )
+    assert choose_next_agent(_state_with_turns(turns), agent_mode=AgentMode.SINGLE_CLAUDE) == SINGLE_CLAUDE_AUTHOR
+
+
+def test_validate_findings_write_scope_accepts_private_seam() -> None:
+    # Any file under research_areas/private/seams/ is allowed
+    from src.ztare.common.paths import REPO_ROOT
+    seam = REPO_ROOT / "research_areas" / "private" / "seams" / "GP-036_findings_runner_supervisor_convergence_seam.md"
+    validate_findings_write_scope(seam)  # should not raise
+
+
+def test_validate_findings_write_scope_rejects_outside() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        outside = Path(tmpdir) / "not_a_seam.md"
+        outside.write_text("x")
+        raised = False
+        try:
+            validate_findings_write_scope(outside)
+        except RunnerWriteScopeError:
+            raised = True
+        assert raised, "seam path outside findings dirs must raise"
+
+
+def test_validate_findings_write_scope_rejects_src_path() -> None:
+    from src.ztare.common.paths import REPO_ROOT
+    inside_repo_wrong_dir = REPO_ROOT / "src" / "ztare" / "validator" / "supervisor_findings_runner.py"
+    raised = False
+    try:
+        validate_findings_write_scope(inside_repo_wrong_dir)
+    except RunnerWriteScopeError:
+        raised = True
+    assert raised, "src/ paths are not findings dirs"
+
+
+def test_build_findings_context_returns_empty_when_no_refs() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seam = Path(tmpdir) / "GP-999_synthetic_seam.md"
+        seam.write_text("No references here, just prose.")
+        tiers = build_findings_context(
+            seam_path=seam,
+            seam_text=seam.read_text(),
+            token_budget=DEFAULT_TOKEN_BUDGET,
+        )
+        # GP-999 is not a real board row, and no seam/artifact refs exist.
+        assert tiers == []
+
+
+def test_build_findings_context_injects_related_seam() -> None:
+    # A real seam from the repo referenced by path — the context builder
+    # must emit a RELATED_SEAM_EXCERPT tier with the right provenance.
+    from src.ztare.common.paths import REPO_ROOT
+    real_related = "research_areas/private/seams/GP-031_findings_birth_bridge_seam.md"
+    if not (REPO_ROOT / real_related).exists():
+        return  # skip if the referenced file moved
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seam = Path(tmpdir) / "GP-036_test_seam.md"
+        seam_body = f"This seam references {real_related} inline."
+        seam.write_text(seam_body)
+        tiers = build_findings_context(
+            seam_path=seam,
+            seam_text=seam_body,
+            token_budget=DEFAULT_TOKEN_BUDGET,
+        )
+        labels = [t.label for t in tiers]
+        assert "RELATED_SEAM_EXCERPT" in labels
+        related_tier = next(t for t in tiers if t.label == "RELATED_SEAM_EXCERPT")
+        assert related_tier.source_path == real_related
+
+
+def test_build_findings_context_injects_related_spec() -> None:
+    # A seam that cites a spec file under research_areas/(private/)?specs/active/
+    # must auto-inject a SPEC_EXCERPT tier — this is what makes
+    # "debate the spec inside the seam" work without the operator
+    # pasting spec excerpts into turn bodies by hand.
+    from src.ztare.common.paths import REPO_ROOT
+    real_spec = "research_areas/private/specs/active/GP-036_findings_runner_supervisor_convergence_spec.md"
+    if not (REPO_ROOT / real_spec).exists():
+        return  # skip if the referenced spec moved
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seam = Path(tmpdir) / "GP-036_test_seam.md"
+        seam_body = f"Turn N reopens scope, see {real_spec} for current contract."
+        seam.write_text(seam_body)
+        tiers = build_findings_context(
+            seam_path=seam,
+            seam_text=seam_body,
+            token_budget=DEFAULT_TOKEN_BUDGET,
+        )
+        labels = [t.label for t in tiers]
+        assert "SPEC_EXCERPT" in labels, f"expected SPEC_EXCERPT in {labels}"
+        spec_tier = next(t for t in tiers if t.label == "SPEC_EXCERPT")
+        assert spec_tier.source_path == real_spec
+
+
+def test_format_context_tiers_includes_provenance_headers() -> None:
+    from src.ztare.validator.findings_context import ContextTier
+    tiers = [
+        ContextTier(
+            label="BOARD_ROW",
+            source_path="research_areas/private/ZTARE_BOARD.md",
+            content="| GP-036 | findings | ... |",
+            token_estimate=10,
+        )
+    ]
+    rendered = format_context_tiers(tiers)
+    assert "--- BOARD_ROW (source: research_areas/private/ZTARE_BOARD.md) ---" in rendered
+    assert "GP-036" in rendered
+
+
+def test_build_turn_prompt_injects_context_when_seam_path_given() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seam = Path(tmpdir) / "GP-036_dummy_seam.md"
+        seam_body = "Seam body referencing research_areas/private/seams/GP-031_findings_birth_bridge_seam.md"
+        seam.write_text(seam_body)
+        state = _state_with_turns(())
+        prompt = build_turn_prompt(
+            seam_text=seam_body,
+            agent=SINGLE_CLAUDE_AUTHOR,
+            debate_state=state,
+            seam_path=seam,
+        )
+        from src.ztare.common.paths import REPO_ROOT
+        if (REPO_ROOT / "research_areas/private/seams/GP-031_findings_birth_bridge_seam.md").exists():
+            assert "--- BEGIN CONTEXT ---" in prompt
+            assert "--- END CONTEXT ---" in prompt
+        assert f"**{SINGLE_CLAUDE_AUTHOR}**" in prompt
+
+
+def test_emit_gate_escalation_writes_payload_to_disk() -> None:
+    import json
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        gate_dir = Path(tmpdir) / "gates" / "pending"
+        seam = Path(tmpdir) / "GP-036_dummy_seam.md"
+        seam.write_text("dummy seam body")
+        gate_file = emit_gate_escalation(
+            seam_path=seam,
+            stop_reason=RunnerStopReason.COST_BUDGET,
+            cycles=(),
+            total_cost_usd=1.234,
+            notes=("cost budget reached before cycle 3",),
+            gate_dir=gate_dir,
+        )
+        assert gate_file.exists(), "gate file must land on disk"
+        assert gate_file.parent == gate_dir
+        payload = json.loads(gate_file.read_text(encoding="utf-8"))
+        for key in (
+            "seam_path",
+            "escalation_reason",
+            "equivalent_gate_reason",
+            "cycle_count",
+            "total_cost_usd",
+            "notes",
+            "timestamp_utc",
+            "advisory",
+        ):
+            assert key in payload, f"missing key: {key}"
+        assert payload["escalation_reason"] == RunnerStopReason.COST_BUDGET.value
+        assert payload["advisory"] is True
+        assert payload["total_cost_usd"] == 1.234
+
+
+def _seam_with_empty_debate_log(tmpdir: Path) -> Path:
+    seam = tmpdir / "GP-000_roundtrip_test_seam.md"
+    seam.write_text(
+        "# Seam\n\n## Problem\n\nBody.\n\n## Debate Log\n",
+        encoding="utf-8",
+    )
+    return seam
+
+
+def test_append_turn_single_claude_author_round_trips() -> None:
+    """Regression: the _TURN_HEADER regex must accept hyphenated agent
+    names like ``Claude-Author`` and ``Claude-Skeptic``. Before the fix,
+    the regex stopped at the hyphen, ``parse_debate_log`` returned zero
+    turns after the write, and the runner silently re-appended Turn 1 on
+    every cycle, burning budget without making progress."""
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seam = _seam_with_empty_debate_log(Path(tmpdir))
+        turn = append_turn(
+            seam_path=seam,
+            agent=SINGLE_CLAUDE_AUTHOR,
+            date="2026-04-15",
+            title="Autonomous runner turn",
+            body="Author opening position.",
+            no_new_load_bearing=False,
+        )
+        assert turn.index == 1
+        assert turn.agent == SINGLE_CLAUDE_AUTHOR
+        parsed = parse_debate_log(seam)
+        assert len(parsed) == 1, f"expected 1 turn, got {len(parsed)}"
+        assert parsed[0].agent == SINGLE_CLAUDE_AUTHOR
+        assert parsed[0].index == 1
+
+
+def test_append_turn_single_claude_skeptic_round_trips() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seam = _seam_with_empty_debate_log(Path(tmpdir))
+        append_turn(
+            seam_path=seam,
+            agent=SINGLE_CLAUDE_AUTHOR,
+            date="2026-04-15",
+            title="Opening",
+            body="Author body.",
+            no_new_load_bearing=False,
+        )
+        turn2 = append_turn(
+            seam_path=seam,
+            agent=SINGLE_CLAUDE_SKEPTIC,
+            date="2026-04-15",
+            title="Counter",
+            body="Skeptic body.",
+            no_new_load_bearing=False,
+        )
+        assert turn2.index == 2
+        parsed = parse_debate_log(seam)
+        assert len(parsed) == 2
+        assert parsed[0].agent == SINGLE_CLAUDE_AUTHOR
+        assert parsed[1].agent == SINGLE_CLAUDE_SKEPTIC
+        assert parsed[0].index == 1
+        assert parsed[1].index == 2
+
+
+def test_append_turn_rejects_unparseable_body_and_rolls_back() -> None:
+    """Round-trip safety: if the body contains an h2 header that
+    terminates the ## Debate Log section, append_turn must raise and
+    leave the file unchanged."""
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        seam = _seam_with_empty_debate_log(Path(tmpdir))
+        pre = seam.read_text(encoding="utf-8")
+        # An h2 inside the body is not itself the failure; the failure is
+        # any body that breaks round-trip. Simulate by patching the regex
+        # via a poison agent name the regex can't match.
+        try:
+            append_turn(
+                seam_path=seam,
+                agent="Bad\nAgent",  # newline makes header span two lines
+                date="2026-04-15",
+                title="will fail to parse",
+                body="body",
+                no_new_load_bearing=False,
+            )
+        except ValueError:
+            post = seam.read_text(encoding="utf-8")
+            assert post == pre, "file must be rolled back on round-trip failure"
+            return
+        raise AssertionError("expected ValueError on unparseable turn")
+
+
 _TESTS = (
+    test_append_turn_single_claude_author_round_trips,
+    test_append_turn_single_claude_skeptic_round_trips,
+    test_append_turn_rejects_unparseable_body_and_rolls_back,
     test_parse_sentinel_raise_clean_body,
     test_parse_sentinel_hold,
     test_parse_sentinel_missing_defaults_to_hold,
@@ -214,6 +501,18 @@ _TESTS = (
     test_build_turn_prompt_contains_seam_text_and_agent,
     test_build_turn_prompt_reports_correct_turn_count,
     test_runner_sees_real_seam_state,
+    test_single_claude_mode_starts_with_author,
+    test_single_claude_mode_alternates_author_skeptic,
+    test_single_claude_mode_mixed_seam_defaults_to_author_on_tie,
+    test_validate_findings_write_scope_accepts_private_seam,
+    test_validate_findings_write_scope_rejects_outside,
+    test_validate_findings_write_scope_rejects_src_path,
+    test_build_findings_context_returns_empty_when_no_refs,
+    test_build_findings_context_injects_related_seam,
+    test_build_findings_context_injects_related_spec,
+    test_format_context_tiers_includes_provenance_headers,
+    test_build_turn_prompt_injects_context_when_seam_path_given,
+    test_emit_gate_escalation_writes_payload_to_disk,
 )
 
 

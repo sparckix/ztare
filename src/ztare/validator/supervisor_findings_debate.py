@@ -57,9 +57,14 @@ convergence rule can fire. Prevents a drive-by single-turn "no new
 claim" from closing the debate prematurely."""
 
 # Matches: "### Turn 3 — Claude (2026-04-11) — Optional title"
+# Also matches compound agent names used in single_claude mode, e.g.
+# "### Turn 4 — Claude-Author (2026-04-15) — Autonomous runner turn"
+# (the hyphen in ``Claude-Author`` / ``Claude-Skeptic`` must be in the
+# character class, or single_claude turns silently fail to parse and the
+# runner burns budget re-appending Turn 1 each cycle).
 # Agent name is captured loosely; we normalize downstream.
 _TURN_HEADER = re.compile(
-    r"^###\s+Turn\s+(\d+)\s*[—\-]\s*([A-Za-z][A-Za-z0-9 _]*?)\s*(?:\(|—|$)",
+    r"^###\s+Turn\s+(\d+)\s*[—\-]\s*([A-Za-z][A-Za-z0-9 _\-]*?)\s*(?:\(|—|$)",
     re.MULTILINE,
 )
 
@@ -242,6 +247,25 @@ def append_turn(
 
     with seam_path.open("a", encoding="utf-8") as handle:
         handle.write(formatted)
+
+    # Round-trip safety: re-parse the seam and confirm the just-written
+    # turn is recoverable. If not, the regex, the agent name, or the body
+    # has broken re-parsing and the runner would otherwise burn budget
+    # appending the same turn index on every cycle. Rollback by
+    # truncating the file to its prior length and raise.
+    rechecked = parse_debate_log(seam_path)
+    recovered = any(
+        t.index == next_index and t.agent == normalized_agent for t in rechecked
+    )
+    if not recovered:
+        seam_path.write_text(existing_text, encoding="utf-8")
+        raise ValueError(
+            f"append_turn wrote Turn {next_index} — {normalized_agent} but "
+            f"parse_debate_log could not recover it; file rolled back. "
+            f"Likely cause: turn header regex does not accept the agent "
+            f"name, or body contains a ##-level header that terminates "
+            f"the ## Debate Log section."
+        )
 
     return DebateTurn(
         index=next_index,
