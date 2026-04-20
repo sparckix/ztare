@@ -55,6 +55,22 @@ MODULE_TEXT = {
         "11. INTERFACE DISCIPLINE: Keep the mutation at the interface/gate layer. Do not solve a local "
         "failure by inventing a new global ontology or replacing the whole architecture."
     ),
+    "inversion": (
+        "12. INVERSION (always invert): Stop asking how to make the hypothesis work. Ask what "
+        "single observation, input, or condition would destroy it. If direct optimization of the "
+        "target variable has stalled, optimize its inverse, its rate of change, or the error "
+        "between prediction and observation. The question that breaks the deadlock is almost never "
+        "the question you have been asking."
+    ),
+    "coordinate_compression": (
+        "13. COORDINATE COMPRESSION: If the gap between model and reality spans orders of magnitude "
+        "or grows without bound, you are working in the wrong units. Change the coordinate system: "
+        "absolute values to ratios, levels to rates of change, raw magnitudes to log-scale. The "
+        "transform must be justified by the observed structure of the failure — state what pattern "
+        "you see in the residual and why this specific change of coordinates makes it bounded. "
+        "After transforming, check for hidden structure (periodicity, alternating sign, phase "
+        "transitions) that was invisible in the original coordinates."
+    ),
 }
 
 
@@ -81,6 +97,8 @@ PROFILE_MODULES = {
         "success_liability",
         "back_pressure",
         "interface_discipline",
+        "inversion",
+        "coordinate_compression",
     ),
     "kernel_bounded": (
         "failure_topology",

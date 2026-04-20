@@ -26,6 +26,9 @@ MUTATOR_VISIBLE_FILENAMES = {
     "thesis.md",
     "test_model.py",
     "evidence.txt",
+    "evidence_holdout.txt",
+    "evidence_farther_tail.txt",
+    "gate_harness.py",
 }
 
 
@@ -55,6 +58,15 @@ def _scan_file(filepath: Path, patterns: list[re.Pattern]) -> list[tuple[int, st
     return hits
 
 
+def _scan_name(name: str, patterns: list[re.Pattern]) -> list[tuple[int, str, str]]:
+    """Scan a bare name (directory, filename) for denylist hits."""
+    hits = []
+    for pat in patterns:
+        if pat.search(name):
+            hits.append((0, pat.pattern, name))
+    return hits
+
+
 def run_sentinel(
     project_dir: Path,
     rubric_path: Path,
@@ -71,6 +83,7 @@ def run_sentinel(
 
     all_hits: dict[str, list[tuple[int, str, str]]] = {}
 
+    # Phase 4.1 — file contents of mutator-visible files
     for fname in MUTATOR_VISIBLE_FILENAMES:
         fpath = project_dir / fname
         if fpath.exists():
@@ -82,6 +95,39 @@ def run_sentinel(
         hits = _scan_file(rubric_path, compiled)
         if hits:
             all_hits[str(rubric_path)] = hits
+
+    # Phase 4.2 — project directory name and rubric filename
+    dir_hits = _scan_name(project_dir.name, compiled)
+    if dir_hits:
+        all_hits[f"<project_dir_name>:{project_dir.name}"] = dir_hits
+
+    rubric_hits = _scan_name(rubric_path.name, compiled)
+    if rubric_hits:
+        all_hits[f"<rubric_filename>:{rubric_path.name}"] = rubric_hits
+
+    # Phase 4.2 — Python string literals and docstrings in Division B .py files
+    for py_file in project_dir.glob("*.py"):
+        if py_file.name in MUTATOR_VISIBLE_FILENAMES:
+            continue  # already scanned above
+        hits = _scan_file(py_file, compiled)
+        if hits:
+            all_hits[str(py_file)] = hits
+
+    # Phase 4.3 — evidence file headers/comments
+    for evidence_file in ["evidence.txt", "evidence_holdout.txt", "evidence_farther_tail.txt"]:
+        fpath = project_dir / evidence_file
+        if fpath.exists():
+            # scan comment lines only (lines starting with #)
+            comment_hits = []
+            for lineno, line in enumerate(fpath.read_text(encoding="utf-8").splitlines(), 1):
+                stripped = line.strip()
+                if stripped.startswith("#"):
+                    for pat in compiled:
+                        if pat.search(stripped):
+                            comment_hits.append((lineno, pat.pattern, stripped))
+            if comment_hits:
+                key = f"<evidence_comments>:{evidence_file}"
+                all_hits.setdefault(key, []).extend(comment_hits)
 
     return all_hits
 

@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Callable, Literal
 
 from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.validator.forensic_reporter import build_report, write_report
+from src.ztare.reports.forensic_reporter import build_report, write_report
 
 ContractVerdict = Literal["pass", "fail", "blocked"]
 Priority = Literal["P0", "P1"]

@@ -4,7 +4,7 @@ No Streamlit import. No UI state. Just the four primitives the wrapper
 needs: list_pending, load_seam_text, resolve_gate, reconcile_pending_resolved.
 
 Payload schema is the one written by
-``validator.supervisor_findings_runner.emit_gate_escalation`` — see
+``supervisor.supervisor_findings_runner.emit_gate_escalation`` — see
 GP-071 spec §3 for the contract this module codes against.
 """
 

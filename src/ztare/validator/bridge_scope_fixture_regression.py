@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.validator.bridge_scope_contract import (
+from src.ztare.gates.bridge_scope_contract import (
     BridgeScopeMismatchCode,
     evaluate_bridge_scope,
 )

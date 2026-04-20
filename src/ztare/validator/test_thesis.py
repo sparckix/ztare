@@ -24,20 +24,20 @@ from src.ztare.primitives.primitive_library import (
     retrieve_primitives_by_keys,
 )
 from src.ztare.validator.primitive_routing import route_primitives_for_v4
-from src.ztare.validator.semantic_gate_stabilization import (
+from src.ztare.gates.semantic_gate_stabilization import (
     derive_self_reference_gate,
     persist_semantic_gate_analysis,
 )
-from src.ztare.validator.proxy_signature import compute_anchor_proxy_coverage
+from src.ztare.findings.proxy_signature import compute_anchor_proxy_coverage
 from src.ztare.validator.charter_parsing import (
     extract_anchor_proxies_from_charter,
     extract_asymptotic_claim_contract_from_charter,
     extract_forecast_type_from_charter,
 )
-from src.ztare.validator.asymptotic_claim_discipline import (
+from src.ztare.gates.asymptotic_claim_discipline import (
     assess_asymptotic_claim_discipline,
 )
-from src.ztare.validator.deterministic_charter_gates import (
+from src.ztare.gates.deterministic_charter_gates import (
     declared_gate_names,
     evaluate_deterministic_charter_gates,
     gate_results_to_dicts,
@@ -50,11 +50,11 @@ from src.ztare.validator.harness_failure_mode import (
     classify_harness_failure,
     harness_defect_banner,
 )
-from src.ztare.validator.derived_constraints import (
+from src.ztare.gates.derived_constraints import (
     render_confirmed_constraints_prompt_section,
     sanitize_constraint_proposals,
 )
-from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
+from src.ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
 from src.ztare.validator.v4_family import is_v4_family_project
 
 # 1. Setup & Args
@@ -66,13 +66,13 @@ parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini"],
 )
 parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini"],
 )
 parser.add_argument("--use_primitives", action="store_true")
 parser.add_argument(
@@ -2155,6 +2155,82 @@ if __name__ == "__main__":
                         f"🔒 Harness defect cap applied: score {llm_score} → 50 "
                         f"({test_suite_status})"
                     )
+        # F-GP073-S15-04: Holdout hard-gate. If the rubric declares
+        # holdout_hard_gate and a gate_harness.py + evidence_holdout.txt
+        # exist, run the holdout gate. If it fails, score → 0. A compelling
+        # derivation of a wrong formula is not science.
+        if main_rubric.get("holdout_hard_gate"):
+            holdout_evidence_path = os.path.join(PROJECT_DIR, "evidence_holdout.txt")
+            holdout_harness_path = os.path.join(PROJECT_DIR, "gate_harness.py")
+            if os.path.exists(holdout_evidence_path) and os.path.exists(holdout_harness_path):
+                try:
+                    holdout_res = subprocess.run(
+                        ["python", holdout_harness_path, "--emit-deterministic-gates"],
+                        capture_output=True, text=True, timeout=15,
+                        cwd=PROJECT_DIR,
+                    )
+                    if holdout_res.returncode == 0:
+                        holdout_payload = json.loads(holdout_res.stdout)
+                        if "harness_ok" not in holdout_payload:
+                            raise KeyError(
+                                "gate_harness.py output missing required key 'harness_ok'. "
+                                f"Got keys: {list(holdout_payload.keys())}"
+                            )
+                        # Check harness_ok AND that every declared gate actually passed.
+                        # exit code 0 alone is not sufficient — older harnesses return 0
+                        # whenever harness_ok=True regardless of gate outcomes.
+                        gate_results = holdout_payload.get("gates", {})
+                        if isinstance(gate_results, dict):
+                            gate_values = list(gate_results.values())
+                        else:
+                            gate_values = []
+                        all_gates_passed = holdout_payload["harness_ok"] and all(
+                            g.get("passed", False) for g in gate_values
+                        )
+                        failed_gates = [
+                            f"{name}: {g.get('value', '?')} >= {g.get('threshold', '?')}"
+                            for name, g in (gate_results.items() if isinstance(gate_results, dict) else [])
+                            if not g.get("passed", False)
+                        ]
+                        if not all_gates_passed:
+                            pre_cap_score = evaluation.get("score", 0)
+                            evaluation["score"] = 0
+                            evaluation["holdout_hard_gate_fired"] = True
+                            evaluation["holdout_hard_gate_detail"] = (
+                                f"harness_ok={holdout_payload['harness_ok']}. "
+                                f"Failed gates: {failed_gates}. "
+                                f"Score {pre_cap_score} → 0."
+                            )
+                            print(
+                                f"🚫 Holdout hard-gate FIRED: failed_gates={failed_gates}, "
+                                f"score {pre_cap_score} → 0"
+                            )
+                        else:
+                            evaluation["holdout_hard_gate_fired"] = False
+                            print(f"✅ Holdout hard-gate passed: all {len(gate_values)} gate(s) OK")
+                    else:
+                        evaluation["holdout_hard_gate_fired"] = True
+                        pre_cap_score = evaluation.get("score", 0)
+                        evaluation["score"] = 0
+                        evaluation["holdout_hard_gate_detail"] = (
+                            f"gate_harness.py returned non-zero ({holdout_res.returncode}). "
+                            f"Fail-closed: score {pre_cap_score} → 0. "
+                            f"stderr: {holdout_res.stderr[:200]}"
+                        )
+                        print(
+                            f"🚫 Holdout hard-gate FIRED (harness error): "
+                            f"score {pre_cap_score} → 0"
+                        )
+                except (subprocess.TimeoutExpired, json.JSONDecodeError, Exception) as exc:
+                    evaluation["holdout_hard_gate_fired"] = True
+                    pre_cap_score = evaluation.get("score", 0)
+                    evaluation["score"] = 0
+                    evaluation["holdout_hard_gate_detail"] = (
+                        f"Holdout gate exception: {type(exc).__name__}: {exc}. "
+                        f"Fail-closed: score {pre_cap_score} → 0"
+                    )
+                    print(f"🚫 Holdout hard-gate FIRED (exception): score → 0")
+
         evaluation = attach_evidence_gap_metadata(evaluation)
         evaluation = attach_constraint_proposal_metadata(evaluation)
         evaluation = attach_score_regime_metadata(evaluation, main_rubric, test_suite_status)

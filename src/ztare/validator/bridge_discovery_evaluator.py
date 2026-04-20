@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.validator.bridge_scope_contract import BridgeScopeMismatchCode, evaluate_bridge_scope
+from src.ztare.gates.bridge_scope_contract import BridgeScopeMismatchCode, evaluate_bridge_scope
 from src.ztare.validator.mutation_contract import MutationDeclaration, parse_mutation_declaration
 
 

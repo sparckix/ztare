@@ -11,7 +11,7 @@ import json
 import sys
 from dataclasses import asdict, dataclass
 
-from src.ztare.validator.fit_primitive import (
+from src.ztare.fit.fit_primitive import (
     FitDeclaration,
     FitFailure,
     FitSuccess,

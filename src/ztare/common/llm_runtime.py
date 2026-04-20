@@ -18,6 +18,8 @@ MODEL_MAP = {
     "claude": "claude-sonnet-4-6",
     "claude-opus": "claude-opus-4-6",
     "gpt4o": "gpt-4o",
+    "gpt4.1": "gpt-4.1",
+    "gpt4.1-mini": "gpt-4.1-mini",
 }
 
 DIRECTOR_MODEL_MAP = {
@@ -27,6 +29,8 @@ DIRECTOR_MODEL_MAP = {
     "claude": "claude-sonnet-4-6",
     "claude-opus": "claude-opus-4-6",
     "gpt4o": "o1",
+    "gpt4.1": "gpt-4.1",
+    "gpt4.1-mini": "gpt-4.1-mini",
 }
 
 # Retry budget for production mutator/judge calls. Bumped from 12 to 25
@@ -44,6 +48,8 @@ FALLBACK_MODEL_CHAINS = {
     "claude-opus-4-6": ("claude-sonnet-4-6", "gpt-4o", "gemini-2.5-flash"),
     "claude-sonnet-4-6": ("gpt-4o", "gemini-2.5-flash"),
     "gpt-4o": ("claude-sonnet-4-6", "gemini-2.5-flash"),
+    "gpt-4.1": ("claude-sonnet-4-6", "gemini-2.5-flash"),
+    "gpt-4.1-mini": ("gpt-4.1", "claude-sonnet-4-6", "gemini-2.5-flash"),
     "o1": ("claude-sonnet-4-6", "gemini-2.5-flash"),
 }
 
@@ -89,6 +95,10 @@ def pricing_model_name(model_name: str | None) -> str | None:
         return "gemini-2.5-flash"
     if lowered.startswith("gemini-3.1-pro-preview"):
         return "gemini-3.1-pro-preview"
+    if lowered.startswith("gpt-4.1-mini"):
+        return "gpt-4.1-mini"
+    if lowered.startswith("gpt-4.1"):
+        return "gpt-4.1"
     if lowered.startswith("gpt-4o"):
         return "gpt-4o"
     if lowered.startswith("o1"):
@@ -103,6 +113,7 @@ class LLMUsage:
     output_tokens: int = 0
     cache_creation_input_tokens: int = 0
     cache_read_input_tokens: int = 0
+    thinking_tokens: int = 0
     direct_cost_usd: float | None = None
 
 
@@ -331,6 +342,9 @@ class LLMRuntime:
                 if usage_metadata is not None
                 else 0,
                 cache_read_input_tokens=getattr(usage_metadata, "cached_content_token_count", 0)
+                if usage_metadata is not None
+                else 0,
+                thinking_tokens=(getattr(usage_metadata, "thoughts_token_count", 0) or 0)
                 if usage_metadata is not None
                 else 0,
             ),

@@ -1,5 +1,7 @@
 import os
 import json
+import importlib
+import importlib.util
 import subprocess
 import time
 import shutil
@@ -39,27 +41,27 @@ from src.ztare.validator.information_yield import (
 )
 from src.ztare.validator.pivot_heuristics import select_pivot_profile
 from src.ztare.catch_grammar.rule_3_profile_check import check_profile_contains
-from src.ztare.validator.structural_constraint_extractor import (
+from src.ztare.gates.structural_constraint_extractor import (
     run_structural_extractor,
 )
-from src.ztare.validator.trajectory_thrash_detector import (
+from src.ztare.motion.trajectory_thrash_detector import (
     run_trajectory_thrash_detector,
 )
-from src.ztare.validator.negative_space_extractor import (
+from src.ztare.gates.negative_space_extractor import (
     run_negative_space_extractor,
 )
-from src.ztare.validator.derived_constraints import (
+from src.ztare.gates.derived_constraints import (
     render_confirmed_constraints_prompt_section,
     sanitize_constraint_proposals,
     update_derived_constraints_ledger,
     write_derived_constraints_brief,
 )
-from src.ztare.validator.mutation_suite_guard import validate_python_suite_candidate
+from src.ztare.fit.mutation_suite_guard import validate_python_suite_candidate
 from src.ztare.validator.charter_parsing import (
     extract_anchor_proxies_from_charter,
     extract_forecast_type_from_charter,
 )
-from src.ztare.validator.supervisor_usage import estimate_cost_usd, load_model_pricing
+from src.ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
 from src.ztare.validator.champion_artifacts import (
     artifact_regime_fingerprint,
     build_champion_eval_from_saved_best,
@@ -67,11 +69,11 @@ from src.ztare.validator.champion_artifacts import (
     champion_artifacts_out_of_sync_with_saved_best,
     set_artifact_role,
 )
-from src.ztare.validator.latent_distance import (
+from src.ztare.motion.latent_distance import (
     record_latent_distance,
     summarize_recent_latent_motion,
 )
-from src.ztare.validator.fit_primitive import (
+from src.ztare.fit.fit_primitive import (
     FitDeclaration,
     FitFailure,
     FitSuccess,
@@ -84,19 +86,36 @@ from src.ztare.validator.fit_primitive import (
     parse_fit_declaration,
     substitute_fitted_params,
 )
-from src.ztare.validator.structural_memory import (
+from src.ztare.composition.structural_memory import (
+    detect_additive_composite_opportunity,
+    generate_additive_composite_seeds,
     render_structural_memory_prompt_section,
     update_structural_memory,
 )
-from src.ztare.validator.fit_declaration_retry import (
+from src.ztare.composition.topology_synthesizer import (
+    detect_feynman_wall,
+    run_composition_loop,
+)
+from src.ztare.fit.fit_declaration_retry import (
     validate_and_retry_fit_declaration,
 )
-from src.ztare.validator.gp048_feedback import (
+from src.ztare.reports.gp048_feedback import (
     render_farther_tail_veto_prompt_section,
     render_primitive_cohort_prompt_section,
     write_telemetry_line,
 )
+from src.ztare.motion.residual_analyzer import (
+    ShapeDescriptor,
+    analyze_residual,
+    format_descriptor_for_prompt,
+    reset_stagnation_on_holdout_pass,
+)
+from src.ztare.gates.corrector_library import filter_by_descriptor
+from src.ztare.validator.predictive_divergence_sweep import (
+    run_sweep as run_divergence_sweep,
+)
 from src.ztare.rubrics.review_rubric import review_exit_code, run_rubric_review
+from src.ztare.gates.global_gates import run_global_gates, merge_into_score_contract
 
 SESSION_TOKENS = 0
 SESSION_MUTATOR_USAGE = {
@@ -104,6 +123,7 @@ SESSION_MUTATOR_USAGE = {
     "output_tokens": 0,
     "cache_creation_input_tokens": 0,
     "cache_read_input_tokens": 0,
+    "thinking_tokens": 0,
     "estimated_cost_usd": 0.0,
     "cost_known": False,
 }
@@ -114,6 +134,7 @@ SESSION_JUDGE_USAGE = {
     "output_tokens": 0,
     "cache_creation_input_tokens": 0,
     "cache_read_input_tokens": 0,
+    "thinking_tokens": 0,
     "estimated_cost_usd": 0.0,
     "cost_known": False,
 }
@@ -155,14 +176,14 @@ parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini"],
     help="Model family to use as Mutator.",
 )
 parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini"],
     help="Model family to use as Firing Squad and Meta-Judge.",
 )
 parser.add_argument(
@@ -339,6 +360,83 @@ def append_jsonl(filepath: str, payload: dict) -> None:
         handle.write(json.dumps(payload, ensure_ascii=True) + "\n")
 
 
+def _pop_seed_queue(workspace_dir: Path, injected: bool) -> None:
+    """Pop the front of the Component D seed queue after a failed iteration.
+
+    Called from every early-exit path (R1 exception, R1 mismatch, R3 rejection,
+    subprocess crash) to prevent infinite retry of a crashing candidate.
+    On success the queue is cleared entirely (handled separately).
+    """
+    if not injected:
+        return
+    _seed_file = workspace_dir / "composition_seed.json"
+    if not _seed_file.exists():
+        return
+    try:
+        _q = json.loads(_seed_file.read_text())
+        if isinstance(_q, list) and len(_q) > 1:
+            _q.pop(0)
+            _seed_file.write_text(json.dumps(_q, indent=2) + "\n")
+            print(f"    🧬 Seed queue: popped failed candidate, {len(_q)} remaining")
+        else:
+            _seed_file.unlink()
+            print("    🧬 Seed queue exhausted (all candidates tested)")
+    except Exception:
+        _seed_file.unlink()
+
+
+def _format_sweep_context(sweep_state: dict) -> str:
+    """Format GP-076 sweep state for mutator prompt injection."""
+    if not sweep_state:
+        return ""
+    parts: list[str] = []
+    if sweep_state.get("library_exhausted"):
+        parts.append(
+            "GP-076 DIVERGENCE SWEEP — LIBRARY EXHAUSTED:\n"
+            "The deterministic corrector library has been fully searched. "
+            "No library form survived the holdout gate. You must propose a "
+            "NOVEL functional form for the corrector — do not reuse any "
+            "standard form (step, heaviside, round, floor, ceil, etc.).\n"
+        )
+    query_history = sweep_state.get("query_history", [])
+    if query_history:
+        parts.append("GP-076 DIVERGENCE QUERY OBSERVATIONS (verified data points):")
+        # Accumulate surviving forms across all queries (intersection)
+        all_surviving: list[str] | None = None
+        for q in query_history:
+            surviving = q.get("surviving_forms", [])
+            k_vals = q.get("surviving_k_values", {})
+            k_str = ""
+            if k_vals:
+                k_str = "  fitted k: " + ", ".join(
+                    f"{form}→k={k:.4f}" for form, k in k_vals.items()
+                )
+            parts.append(
+                f"  corrector(v={q['query_v']}) = {q['observed']}  "
+                f"[eliminated {len(q.get('eliminated', []))} candidates, "
+                f"{q.get('survivors_after', '?')} remain: {surviving}]{k_str}"
+            )
+            if all_surviving is None:
+                all_surviving = list(surviving)
+            else:
+                all_surviving = [s for s in all_surviving if s in surviving]
+        parts.append(
+            "These observations are confirmed experimental results. "
+            "Your proposed corrector MUST match these values exactly.\n"
+        )
+        if all_surviving:
+            parts.append(
+                "SURVIVING LIBRARY FORMS (consistent with all query observations):\n"
+                + "\n".join(f"  - {f}" for f in all_surviving)
+                + "\n\nDIRECT INSTRUCTION: Fit the surviving form(s) above to the visible "
+                "corrector data to find the best free parameter k. Do NOT invent a new "
+                "topology — use one of the surviving forms exactly. Show your derivation "
+                "of k from visible (v, corrector) pairs and verify it matches all query "
+                "observations before writing the final expression.\n"
+            )
+    return "\n".join(parts)
+
+
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -349,6 +447,7 @@ def _usage_bucket_snapshot(bucket: dict) -> dict:
         "output_tokens": int(bucket.get("output_tokens", 0) or 0),
         "cache_creation_input_tokens": int(bucket.get("cache_creation_input_tokens", 0) or 0),
         "cache_read_input_tokens": int(bucket.get("cache_read_input_tokens", 0) or 0),
+        "thinking_tokens": int(bucket.get("thinking_tokens", 0) or 0),
         "estimated_cost_usd": float(bucket.get("estimated_cost_usd", 0.0) or 0.0),
         "cost_known": bool(bucket.get("cost_known", False)),
     }
@@ -365,6 +464,10 @@ def _usage_delta(before: dict, after: dict) -> dict:
         0,
         int(after["cache_creation_input_tokens"]) - int(before["cache_creation_input_tokens"]),
     )
+    thinking_tokens = max(
+        0,
+        int(after.get("thinking_tokens", 0)) - int(before.get("thinking_tokens", 0)),
+    )
     has_usage = any(
         value > 0
         for value in (
@@ -372,6 +475,7 @@ def _usage_delta(before: dict, after: dict) -> dict:
             output_tokens,
             cache_read_tokens,
             cache_write_tokens,
+            thinking_tokens,
         )
     )
     cost_known = True if not has_usage else bool(after.get("cost_known", False))
@@ -391,6 +495,7 @@ def _usage_delta(before: dict, after: dict) -> dict:
         "output_tokens": output_tokens,
         "cache_read_tokens": cache_read_tokens,
         "cache_write_tokens": cache_write_tokens,
+        "thinking_tokens": thinking_tokens,
         "estimated_cost_usd": estimated_cost_usd,
         "cost_known": cost_known,
         "has_usage": has_usage,
@@ -535,12 +640,14 @@ def _append_iteration_telemetry(
             "output_tokens": mutator_usage["output_tokens"],
             "cache_read_tokens": mutator_usage["cache_read_tokens"],
             "cache_write_tokens": mutator_usage["cache_write_tokens"],
+            "thinking_tokens": mutator_usage.get("thinking_tokens", 0),
         },
         "judge_usage": {
             "input_tokens": judge_usage["input_tokens"],
             "output_tokens": judge_usage["output_tokens"],
             "cache_read_tokens": judge_usage["cache_read_tokens"],
             "cache_write_tokens": judge_usage["cache_write_tokens"],
+            "thinking_tokens": judge_usage.get("thinking_tokens", 0),
         },
         "estimated_cost_usd": _combined_iteration_cost_usd(mutator_usage, judge_usage),
         "pending_loop_action": pending_loop_action,
@@ -721,6 +828,7 @@ def _project_state_paths(project_dir: str) -> tuple[str, ...]:
         WORKING_PATH,
         f"{project_dir}/test_model.py",
         EVIDENCE_PATH,
+        f"{project_dir}/workspace/fit_result.json",
     )
 
 
@@ -880,6 +988,156 @@ def _format_gate_surface_for_prompt(eval_payload: dict) -> str:
             for cap in soft_caps:
                 lines.append(f"    - cap={cap.get('cap')}: {cap.get('reason', '')}")
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# GP-087 Slim: Residual-driven primitive injection
+# ---------------------------------------------------------------------------
+
+# Primitives that produce a correction term decaying toward zero at large u.
+# These are candidates when the farther-tail gate fails because the model
+# overshoots or undershoots the true asymptote.
+# Parameter prefix "tail_" avoids collision with Component D's "d2_" prefix.
+# The champion expression may already contain d2_a, d2_b, d2_c from a prior
+# depth-2 composition — reusing those names would create duplicate assignments
+# in test_model.py and break the fit.
+_GP087_TAIL_CORRECTION_PRIMITIVES: list[tuple[str, str, list[str]]] = [
+    ("reciprocal",      "tail_a / {var} + tail_b",                       ["tail_a", "tail_b"]),
+    ("harmonic",        "tail_a / {var} + tail_b / {var}**2 + tail_c",   ["tail_a", "tail_b", "tail_c"]),
+    ("log_reciprocal",  "tail_a * math.log({var}) / {var} + tail_b",     ["tail_a", "tail_b"]),
+    ("sqrt_reciprocal", "tail_a / math.sqrt({var}) + tail_b",            ["tail_a", "tail_b"]),
+    ("exp_decay",       "tail_a * math.exp(-tail_b * {var}) + tail_c",   ["tail_a", "tail_b", "tail_c"]),
+]
+
+
+def _gp087_propose_tail_correction_seeds(
+    eval_results: dict,
+    workspace_dir: Path,
+    rubric_data: dict,
+    iteration_index: int,
+    stagnation_count: int = 0,
+) -> list[dict] | None:
+    """GP-087 Slim: when farther-tail gate fails, propose composition seeds
+    from the tail-correction primitive library.
+
+    Returns a list of seed candidates (same format as composition_seed.json)
+    or None if GP-087 does not fire.
+
+    Information boundary: emits only primitive names + expressions.
+    No farther-tail residual values leak into the seed.
+
+    Two firing modes:
+    1. Gate mode: a deterministic_charter_gates result with "farther_tail" in
+       its name is present and failed. This is the standard path for rubrics
+       with explicit farther-tail hard gates.
+    2. Contract-stagnation mode: rubric declares farther_tail_contract: True
+       (no explicit gate) and the eval score is < 100 and stagnation_count >= 1.
+       This covers rubrics that use gp048_farther_tail_veto_mode (prompt-level)
+       instead of a deterministic gate — the judge's weakest_point reflects the
+       farther-tail failure but it never appears in deterministic_charter_gates.
+    """
+    score_contract = eval_results.get("score_contract", {})
+    if not isinstance(score_contract, dict):
+        return None
+
+    det = score_contract.get("deterministic_charter_gates", {})
+    if not isinstance(det, dict):
+        return None
+
+    results = det.get("results", [])
+    if not isinstance(results, list):
+        return None
+
+    # Mode 1: Check if any farther-tail gate explicitly failed
+    farther_tail_failed = False
+    for item in results:
+        name = str(item.get("name", ""))
+        if "farther_tail" in name and not bool(item.get("passed", False)):
+            farther_tail_failed = True
+            break
+
+    # Mode 2: Contract-stagnation fallback — fires when the rubric declares a
+    # farther_tail_contract but has NO explicit farther-tail gate (veto-mode
+    # rubrics where the judge's weakest_point is the only signal).
+    # Must NOT fire when an explicit farther_tail gate already exists in
+    # deterministic_charter_gates — Mode 1 is the authoritative path for those.
+    if not farther_tail_failed and rubric_data.get("farther_tail_contract"):
+        explicit_tail_gate_exists = any(
+            "farther_tail" in str(item.get("name", ""))
+            for item in results
+        )
+        if not explicit_tail_gate_exists:
+            current_score = eval_results.get("score", 100)
+            if (
+                isinstance(current_score, (int, float))
+                and current_score < 100
+                and stagnation_count >= 1
+            ):
+                farther_tail_failed = True
+                print(
+                    f"    >> GP-087: farther_tail_contract active, score={current_score}, "
+                    f"stagnation={stagnation_count} — contract-stagnation mode"
+                )
+
+    if not farther_tail_failed:
+        return None
+
+    # Read the current best expression from fit_result.json
+    fit_result_path = workspace_dir / "fit_result.json"
+    if not fit_result_path.exists():
+        return None
+
+    try:
+        fit_result = json.loads(fit_result_path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return None
+
+    champion_expr = fit_result.get("expression", "")
+    champion_params = list(fit_result.get("fitted_params", {}).keys())
+    if not champion_expr:
+        return None
+
+    # Build the variable name from rubric
+    ind_vars: list[str] = rubric_data.get("fit_required_vars", ["n"])
+    var_name: str = ind_vars[0] if ind_vars else "n"
+
+    # Grammar filter
+    grammar = str(rubric_data.get("fit_expression_grammar", "") or "").strip().lower()
+    forbidden_re = None
+    if grammar == "math_exp_only":
+        forbidden_re = re.compile(
+            r"math\.(sin|cos|tan|sinh|cosh|tanh|asin|acos|atan)"
+        )
+
+    # Compose each tail-correction primitive with the champion expression
+    seeds: list[dict] = []
+    for prim_name, prim_template, prim_params in _GP087_TAIL_CORRECTION_PRIMITIVES:
+        correction_expr = prim_template.format(var=var_name)
+
+        # Grammar check
+        if forbidden_re and forbidden_re.search(correction_expr):
+            continue
+
+        # Skip if the correction primitive's params are already present in the
+        # champion expression — prevents double-composition when GP-087 runs
+        # against a champion that was itself a prior GP-087 tail-corrected seed.
+        if any(p in champion_params for p in prim_params):
+            continue
+
+        composed_expr = f"({champion_expr}) + ({correction_expr})"
+        all_params = champion_params + prim_params
+
+        seeds.append({
+            "source": "gp087_residual_driven",
+            "expression": composed_expr,
+            "independent_vars": ind_vars,
+            "parameter_names": all_params,
+            "correction_primitive": prim_name,
+            "iteration_synthesized": iteration_index,
+            "round": f"gp087_tail_correction/{prim_name}/+",
+        })
+
+    return seeds if seeds else None
 
 
 def _print_latest_artifact_status(payload: dict, previous_champion_fingerprint: str | None) -> None:
@@ -1342,6 +1600,7 @@ def _accumulate_usage(
     output_tokens,
     cache_creation_input_tokens=0,
     cache_read_input_tokens=0,
+    thinking_tokens=0,
     direct_cost_usd=None,
 ):
     global SESSION_TOKENS
@@ -1350,16 +1609,19 @@ def _accumulate_usage(
     output_tokens = int(output_tokens or 0)
     cache_creation_input_tokens = int(cache_creation_input_tokens or 0)
     cache_read_input_tokens = int(cache_read_input_tokens or 0)
+    thinking_tokens = int(thinking_tokens or 0)
 
     bucket["input_tokens"] += input_tokens
     bucket["output_tokens"] += output_tokens
     bucket["cache_creation_input_tokens"] += cache_creation_input_tokens
     bucket["cache_read_input_tokens"] += cache_read_input_tokens
+    bucket["thinking_tokens"] += thinking_tokens
     SESSION_TOKENS += (
         input_tokens
         + output_tokens
         + cache_creation_input_tokens
         + cache_read_input_tokens
+        + thinking_tokens
     )
 
     pricing = load_model_pricing()
@@ -1372,6 +1634,7 @@ def _accumulate_usage(
             output_tokens=output_tokens,
             cache_creation_input_tokens=cache_creation_input_tokens,
             cache_read_input_tokens=cache_read_input_tokens,
+            thinking_tokens=thinking_tokens,
         )
     )
     bucket["estimated_cost_usd"] += estimated_cost
@@ -1419,6 +1682,7 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
         output_tokens=response.usage.output_tokens,
         cache_creation_input_tokens=response.usage.cache_creation_input_tokens,
         cache_read_input_tokens=response.usage.cache_read_input_tokens,
+        thinking_tokens=response.usage.thinking_tokens,
         direct_cost_usd=response.usage.direct_cost_usd,
     )
     if response.fallback_from_model_id:
@@ -1447,6 +1711,8 @@ def mutate_thesis(
     residual_mode_context="",
     gp048_cohort_context="",
     farther_tail_veto_context="",
+    component_c_context="",
+    divergence_sweep_context="",
 ):
     task_header = "TASK: Resolve the following Systemic Inconsistency:"
     pivot_instruction = ""
@@ -1582,7 +1848,7 @@ def mutate_thesis(
             os.remove(AXIOM_PATH) # Hide from test_thesis.py            
         axiom_str = "NONE. (Previous axioms purged due to topological pivot)."
         document_context = "🚨 [SYSTEM STATE PURGED]: Your previous logic was fundamentally and repeatedly rejected by the Auditor. You are starting from a BLANK SLATE. You must derive a new architecture using ONLY the Grounding Data and First Principles. Do NOT iterative-fix; RE-ENGINEER. 🚨"
-        task_header = "🚨 EMERGENCY MANDATE: EXECUTE TOPOLOGICAL PIVOT 🚨"   
+        task_header = "🚨 EMERGENCY MANDATE: EXECUTE TOPOLOGICAL PIVOT 🚨"
     elif stagnation_count >= 3:
         profile_summary = ", ".join(pivot_profile.modules) if pivot_profile else "none"
         print(
@@ -1793,7 +2059,10 @@ def mutate_thesis(
         fit_primitive_context = """
     ### GP-035 FIT PRIMITIVE CONTRACT
 
-    This project uses a post-LLM numerical fitting step. You MUST include a
+    This project uses a post-LLM numerical fitting step (Layer 3 Mandatory).
+
+    **Your role:** You are a TOPOLOGY GENERATOR only. You propose the
+    mathematical form; the system handles everything else. You MUST include a
     ```fit_declaration block in your response — a JSON object with:
 
     Required fields:
@@ -1806,11 +2075,55 @@ def mutate_thesis(
     - "initial_guesses": dict of parameter name to initial guess (default: 1.0)
     - "bounds": dict of parameter name to [lower, upper] bounds
 
-    Your code must expose MODEL_PARAMS (dict) if you want fitted values
-    substituted into the candidate before evaluation. The fitter relies on
-    FIT_DECLARATION plus exact key matching against MODEL_PARAMS. It does NOT
-    require any specific function name, argument names, or variable naming.
-    Omitting the fit_declaration block is recorded as a fit failure.
+    **IMPORTANT — Layer 3 Mandatory:**
+    - The system builds `test_model.py` deterministically from your
+      fit_declaration + SciPy-fitted parameters. You do NOT write `def f()`
+      or `MODEL_PARAMS` — the system does that for you.
+    - If you include a Python code block, it is IGNORED for test_model.py.
+    - Your only job is to propose the right mathematical expression and
+      declare its variables and parameters in the fit_declaration block.
+    - Omitting the fit_declaration block is recorded as a fit failure.
+    """
+        _fit_score_mode_prompt = str(rubric_data.get("fit_score_mode", "continuous_l2")).strip().lower()
+        _fit_vars = rubric_data.get("fit_required_vars")
+        if _fit_vars and isinstance(_fit_vars, list):
+            _var_sig = ", ".join(_fit_vars)
+        else:
+            _var_sig = "n"
+        if _fit_score_mode_prompt == "discrete_exact":
+            if not _fit_vars or not isinstance(_fit_vars, list):
+                raise ValueError(
+                    "Rubric has fit_score_mode=discrete_exact but no fit_required_vars list. "
+                    "Add e.g. \"fit_required_vars\": [\"u\", \"v\"] to the rubric."
+                )
+            fit_primitive_context += f"""
+
+    ### DISCRETE EXACT-MATCH CONTRACT
+
+    The gate harness evaluates your model by calling `f({_var_sig})` from
+    `test_model.py`. The system builds this file deterministically from your
+    fit_declaration — you do NOT write `def f()` or `test_model.py` yourself.
+
+    The function must accept integer arguments and return an integer.
+
+    Your fit_declaration `expression` field is the body of `def f({_var_sig})`.
+    Make sure it evaluates to an integer for integer inputs.
+    """
+        else:
+            fit_primitive_context += f"""
+
+    ### CONTINUOUS MODEL CONTRACT
+
+    The gate harness evaluates your model by calling `f({_var_sig})` from
+    `test_model.py`. The system builds this file deterministically from your
+    fit_declaration + SciPy-fitted parameters — you do NOT write `def f()`
+    or `MODEL_PARAMS` yourself.
+
+    The function must accept float arguments and return a float.
+
+    Your fit_declaration `expression` field is the body of `def f({_var_sig})`.
+    Use your declared parameter names as free symbols — SciPy will fit them
+    and the system will substitute the optimized values.
     """
         if fit_expression_grammar == "eml_only":
             fit_primitive_context += """
@@ -1918,6 +2231,8 @@ def mutate_thesis(
     {structural_memory_prompt}
     {gp048_cohort_context}
     {farther_tail_veto_context}
+    {component_c_context}
+    {divergence_sweep_context}
     {style_guide}
     {output_requirements}
     {pivot_instruction}
@@ -2395,6 +2710,7 @@ if isinstance(judge_usage, dict):
         output_tokens=judge_usage.get("output_tokens", 0),
         cache_creation_input_tokens=judge_usage.get("cache_creation_input_tokens", 0),
         cache_read_input_tokens=judge_usage.get("cache_read_input_tokens", 0),
+        thinking_tokens=judge_usage.get("thinking_tokens", 0),
         direct_cost_usd=judge_usage.get("estimated_cost_usd") if judge_usage.get("cost_known") else None,
     )
 
@@ -2461,12 +2777,38 @@ if (rubric_falsification_mode or "").strip().lower() == "bounded_discriminator":
         )
 stagnation_count = 0
 last_failure_reason = None
-best_state = _capture_project_state(_project_state_paths(PROJECT_DIR))
+# H-GP103-5: track family-pair fingerprints already injected as additive
+# composites this run. Prevents re-injection of the same pair after a failed
+# seed is popped (Bug 4 guard — without this, the same pair re-fires every
+# iteration as long as stagnation_count >= gp103_stagnation_threshold).
+_gp103_tried_pairs: set[tuple[str, str]] = set()
 iteration_history: list[IterationSignal] = []
 pending_loop_action = LoopControlAction.CONTINUE
 current_committee_digest = _load_current_committee_digest(args.project) if args.dynamic else ""
 workspace_dir = Path(PROJECT_DIR) / "workspace"
 workspace_dir.mkdir(parents=True, exist_ok=True)
+# GP-087 Snapshot Vacuum fix: ensure fit_result.json exists before the snapshot
+# so that _restore_project_state never deletes it. On a fresh/wiped workspace the
+# baseline eval does not call the fit engine, leaving fit_result.json absent.
+# Every revert would then see None in the snapshot and erase whatever fit was
+# written by iteration N, starving GP-087 of the base expression.
+if rubric_data.get("enable_fit_primitive", False) and evidence_text:
+    _baseline_fit_path = workspace_dir / "fit_result.json"
+    if not _baseline_fit_path.exists():
+        print("🔧 GP-087 baseline math init: fit_result.json absent — running baseline fit...")
+        _baseline_decl = parse_fit_declaration(read_file(THESIS_PATH))
+        if _baseline_decl is not None:
+            _baseline_fit = fit_parameters(
+                _baseline_decl,
+                evidence_text,
+                score_mode=rubric_data.get("fit_score_mode", "continuous_l2"),
+            )
+            _baseline_json = fit_result_to_json(_baseline_fit, _baseline_decl)
+            _baseline_fit_path.write_text(_baseline_json)
+            print("🔧 GP-087 baseline math init: fit_result.json written — snapshot will include it")
+        else:
+            print("🔧 GP-087 baseline math init: no fit_declaration in baseline thesis — skipping")
+best_state = _capture_project_state(_project_state_paths(PROJECT_DIR))
 run_exit_reason = "budget_exhausted"
 last_completed_iteration = 0
 _run_telemetry_state = {"finalized": False}
@@ -2708,25 +3050,186 @@ for i in range(ITERATIONS):
             print(f"🔧 GP-048 farther-tail veto: error — {_veto_exc}")
             _farther_tail_veto_ctx = ""
 
+    # GP-074 Component C: load residual fingerprint for prompt injection
+    _component_c_ctx = ""
+    if rubric_data.get("enable_component_c", False):
+        _fp_path = workspace_dir / "residual_fingerprint.json"
+        if _fp_path.exists():
+            try:
+                _fp = json.loads(_fp_path.read_text())
+                if _fp.get("status") == "emitted" and _fp.get("descriptor"):
+                    _component_c_ctx = format_descriptor_for_prompt(
+                        ShapeDescriptor(**_fp["descriptor"])
+                    )
+            except (json.JSONDecodeError, KeyError, TypeError):
+                pass
+
+    # GP-076: Load sweep state for mutator prompt injection
+    _divergence_sweep_ctx = ""
+    if rubric_data.get("enable_component_c", False):
+        _sweep_path = workspace_dir / "sweep_state.json"
+        if _sweep_path.exists():
+            try:
+                _sweep_state = json.loads(_sweep_path.read_text())
+                _divergence_sweep_ctx = _format_sweep_context(_sweep_state)
+            except (json.JSONDecodeError, KeyError, TypeError):
+                pass
+
     try:
-        new_content = mutate_thesis(
-            current_thesis,
-            current_test_model,
-            current_target_weakest_point,  # GP-002: use current evaluated target, not best-state memory
-            evidence_text,
-            rubric_data["persona"],
-            stagnation_count,
-            model_id=current_mutator,
-            failure_log=last_failure_reason,
-            falsification_mode=rubric_falsification_mode,  # GP-003: pass rubric mode
-            fit_primitive_enabled=rubric_data.get("enable_fit_primitive", False),
-            fit_context=_fit_ctx,
-            structural_memory_context=_structural_memory_ctx,
-            cold_residual_mode=_cold_residual_mode,
-            residual_mode_context=_residual_mode_ctx,
-            gp048_cohort_context=_gp048_cohort_ctx,
-            farther_tail_veto_context=_farther_tail_veto_ctx,
-        )
+        # GP-078 Fix B v2: Topological Beam Search — read first
+        # candidate from the seed queue.  The queue is a list of
+        # candidates sorted saturating-first.  On failure the first
+        # item is popped; on success the queue is cleared.
+        _comp_seed_path = workspace_dir / "composition_seed.json"
+        _comp_seed_injected = False
+        if _comp_seed_path.exists():
+            try:
+                _seed_raw = json.loads(_comp_seed_path.read_text())
+                # Backward compat: accept single dict or list
+                if isinstance(_seed_raw, dict):
+                    _seed_data = _seed_raw
+                elif isinstance(_seed_raw, list) and _seed_raw:
+                    _seed_data = _seed_raw[0]
+                else:
+                    _seed_data = {}
+                _seed_expr = _seed_data.get("expression", "")
+                _seed_vars = _seed_data.get("independent_vars", ["n"])
+                _seed_params = _seed_data.get("parameter_names", [])
+                _queue_len = len(_seed_raw) if isinstance(_seed_raw, list) else 1
+                if _seed_expr and _seed_params:
+                    print(
+                        f"🧬 Component D beam injection [{1}/{_queue_len}]: "
+                        f"{_seed_expr[:70]} "
+                        f"(from iter {_seed_data.get('iteration_synthesized', '?')})"
+                    )
+                    _seed_fd_block = json.dumps({
+                        "expression": _seed_expr,
+                        "independent_vars": _seed_vars,
+                        "parameter_names": _seed_params,
+                    }, indent=2)
+                    # Strip any existing fit_declaration blocks from the
+                    # current thesis to avoid the Stale Block Bug: if the
+                    # old thesis contains a fit_declaration, parse_fit_declaration
+                    # grabs the first one it finds, ignoring our injected seed.
+                    import re as _re_mod
+                    _clean_thesis = _re_mod.sub(
+                        r"```fit_declaration.*?```",
+                        "",
+                        current_thesis,
+                        flags=_re_mod.DOTALL,
+                    )
+                    new_content = (
+                        _clean_thesis.rstrip() + "\n\n"
+                        "--- Component D Topological Synthesis ---\n\n"
+                        "This candidate was deterministically synthesized by Component D "
+                        "via depth-2 AST composition to correct systematic failures of "
+                        "prior additive models. The topology was discovered by composing "
+                        "existing primitives, not by LLM free-form generation.\n\n"
+                        f"```fit_declaration\n{_seed_fd_block}\n```\n"
+                    )
+                    _comp_seed_injected = True
+                    # GP-100 Heterogeneous Pipeline (opt-in via rubric).
+                    # Gemini generates topologies, GPT-4.1 writes the thesis.
+                    # Only fires when rubric declares epistemic_alignment: true.
+                    # Intended for "new science" track where overclaiming
+                    # from finite-window data is a false-discovery risk.
+                    # The alignment
+                    # pass rewrites ONLY the prose; the fit_declaration
+                    # block is immutable.
+                    if rubric_data.get("epistemic_alignment", False):
+                        _thesis_writer = resolve_model_id("gpt4.1")
+                        print(f"🧬 Epistemic alignment via {_thesis_writer} (heterogeneous pipeline)")
+                        _confirmed_ctx = render_confirmed_constraints_prompt_section(
+                            Path(DERIVED_CONSTRAINTS_PATH)
+                        )
+                        _alignment_prompt = (
+                            "You are an epistemic alignment filter for a scientific thesis.\n\n"
+                            "CONTEXT:\n"
+                            f"- Persona: {rubric_data['persona'][:2000]}\n\n"
+                            f"- Evidence (first 4000 chars):\n{evidence_text[:4000]}\n\n"
+                            f"- Prior weakest point: {current_target_weakest_point}\n\n"
+                        )
+                        if _confirmed_ctx:
+                            _alignment_prompt += (
+                                f"- Confirmed constraints (must not violate):\n{_confirmed_ctx}\n\n"
+                            )
+                        if _structural_memory_ctx:
+                            _alignment_prompt += (
+                                f"- Structural memory:\n{_structural_memory_ctx[:2000]}\n\n"
+                            )
+                        _alignment_prompt += (
+                            "THESIS TO ALIGN:\n"
+                            f"{new_content}\n\n"
+                            "TASK: Rewrite the prose surrounding the ```fit_declaration``` code block "
+                            "to perfectly support the mathematical topology it declares. Requirements:\n"
+                            "1. DO NOT alter a single character inside the ```fit_declaration``` block.\n"
+                            "2. Be epistemically modest. In a finite observation window, exact tail "
+                            "behavior (polynomial vs slow exponential) cannot be strictly falsified. "
+                            "Frame claims as 'consistent with' not 'proven by' the evidence.\n"
+                            "3. Decompose the curve into at least two regimes with specific u-ranges "
+                            "anchored to values read directly from the evidence.\n"
+                            "4. Name the strongest rival functional form and state why the data "
+                            "does not yet rule it out (epistemic honesty).\n"
+                            "5. Provide at least one numerical anchor proxy read from the evidence.\n"
+                            "6. Show at least three explicit intermediate reasoning steps referencing "
+                            "the variable u, deriving the functional form without unexplained leaps.\n"
+                            "7. Do NOT import any named model, formula, or phenomenon from physics, "
+                            "chemistry, biology, or engineering.\n"
+                            "8. Your output must include the original ```fit_declaration``` block "
+                            "verbatim. Reproduce it exactly.\n"
+                            "9. Do NOT include a ```python code block. The system builds "
+                            "test_model.py deterministically from the fit_declaration.\n\n"
+                            "OUTPUT: The complete rewritten thesis with the fit_declaration preserved."
+                        )
+                        # Preserve the existing python block from new_content
+                        # (carried forward from the prior thesis). The alignment
+                        # pass rewrites prose only; the python block is re-injected
+                        # after so _prepare_mutation_candidate finds it.
+                        _existing_py = re.search(
+                            r"```python\n.*?\n```", new_content, re.DOTALL
+                        )
+                        _aligned = safe_mutate(_alignment_prompt, model_id=_thesis_writer)
+                        # Safety check: verify the full fit_declaration survived
+                        if _seed_fd_block in _aligned:
+                            # Re-inject the existing python block if the alignment
+                            # pass dropped it (expected, since we told it not to
+                            # include one).
+                            if _existing_py and "```python" not in _aligned:
+                                _aligned = _aligned.rstrip() + "\n\n" + _existing_py.group(0) + "\n"
+                            new_content = _aligned
+                        else:
+                            print(
+                                "    ⚠️ Alignment pass dropped fit_declaration — "
+                                "falling back to unaligned injection"
+                            )
+                    # Seed is consumed after the iteration completes
+                    # successfully (see cleanup below).  Not deleted here
+                    # so a mid-iteration exception preserves the seed for
+                    # retry on the next iteration.
+            except Exception as _seed_exc:
+                print(f"🧬 Component D seed: error — {_seed_exc}")
+
+        if not _comp_seed_injected:
+            new_content = mutate_thesis(
+                current_thesis,
+                current_test_model,
+                current_target_weakest_point,  # GP-002: use current evaluated target, not best-state memory
+                evidence_text,
+                rubric_data["persona"],
+                stagnation_count,
+                model_id=current_mutator,
+                failure_log=last_failure_reason,
+                falsification_mode=rubric_falsification_mode,  # GP-003: pass rubric mode
+                fit_primitive_enabled=rubric_data.get("enable_fit_primitive", False),
+                fit_context=_fit_ctx,
+                structural_memory_context=_structural_memory_ctx,
+                cold_residual_mode=_cold_residual_mode,
+                residual_mode_context=_residual_mode_ctx,
+                gp048_cohort_context=_gp048_cohort_ctx,
+                farther_tail_veto_context=_farther_tail_veto_ctx,
+                component_c_context=_component_c_ctx,
+                divergence_sweep_context=_divergence_sweep_ctx,
+            )
         mutation_declaration, mutation_validation, clean_thesis, python_code, full_candidate = _prepare_mutation_candidate(
             raw_text=new_content,
             current_thesis=current_thesis,
@@ -2743,7 +3246,12 @@ for i in range(ITERATIONS):
                 print(f"🧱 Model grammar violation: {_grammar_error}")
                 python_code = build_model_grammar_failure_code(_grammar_error)
         # GP-035: post-LLM fit primitive (opt-in via rubric)
-        if rubric_data.get("enable_fit_primitive", False) and python_code and evidence_text:
+        if rubric_data.get("enable_fit_primitive", False) and evidence_text:
+            # Reset per-iteration fit state — prevents stale _fit_decl /
+            # _fit_result from a prior iteration leaking into Layer 3
+            # builder if this iteration's parse or fit throws.
+            _fit_decl = None
+            _fit_result = None
             # GP-035 Turn 10: FIT_DECLARATION drought retry — one targeted
             # retry if the mutator emitted a response without a parseable
             # fit_declaration block. Splices the retry block into
@@ -2770,17 +3278,29 @@ for i in range(ITERATIONS):
                     _fit_expression_grammar = rubric_data.get("fit_expression_grammar")
                     _diag_classification = ""
                     _fit_score_mode = rubric_data.get("fit_score_mode", "continuous_l2")
+                    # GP-095: multi-start fitting. Default 1 start;
+                    # escalate to 3 starts when stagnation_count >= 3.
+                    _n_starts = 3 if stagnation_count >= 3 else 1
+                    _gate_thr_for_fit = float(rubric_data.get("gate_residual_threshold", 0.05))
                     _fit_result = fit_parameters(
                         _fit_decl, evidence_text,
                         required_dimensionality=_fit_dimensionality,
                         expression_grammar=_fit_expression_grammar,
                         score_mode=_fit_score_mode,
+                        n_starts=_n_starts,
+                        gate_threshold=_gate_thr_for_fit,
                     )
                     if isinstance(_fit_result, FitSuccess):
-                        python_code = substitute_fitted_params(python_code, _fit_result.fitted_params)
+                        if python_code is not None:
+                            python_code = substitute_fitted_params(python_code, _fit_result.fitted_params)
+                        _conv_tag = ""
+                        if _fit_result.convergence_classification:
+                            _conv_tag = f", classification={_fit_result.convergence_classification}"
                         print(
                             f"🔧 GP-035 fit: SUCCESS "
                             f"(max |res|={_fit_result.max_abs_residual:.5f}, "
+                            f"starts={_fit_result.n_starts_converged}/{_fit_result.n_starts_attempted}"
+                            f"{_conv_tag}, "
                             f"params={_fit_result.fitted_params})"
                         )
                         _diag_indep = _fit_decl.independent_vars if _fit_decl else []
@@ -2797,6 +3317,9 @@ for i in range(ITERATIONS):
                             fit_result=_fit_result,
                             iteration_index=i + 1,
                             diagnostic_classification=_diag_classification,
+                            convergence_classification=getattr(
+                                _fit_result, "convergence_classification", ""
+                            ),
                         )
                         # GP-048 Mode 1: append telemetry line (flag-gated, non-fatal).
                         if rubric_data.get("gp048_telemetry", False):
@@ -2874,6 +3397,7 @@ for i in range(ITERATIONS):
             pending_loop_action=pending_loop_action.value,
         )
         last_completed_iteration = i + 1
+        _pop_seed_queue(workspace_dir, _comp_seed_injected)
         _restore_project_state(best_state)
         time.sleep(1)
         continue
@@ -2966,6 +3490,7 @@ for i in range(ITERATIONS):
             pending_loop_action=pending_loop_action.value,
         )
         last_completed_iteration = i + 1
+        _pop_seed_queue(workspace_dir, _comp_seed_injected)
         _restore_project_state(best_state)
         time.sleep(1)
         continue
@@ -2976,18 +3501,199 @@ for i in range(ITERATIONS):
     # Extract the python code block for the Falsification Suite
     test_model_path = f"{PROJECT_DIR}/test_model.py"
 
-    if python_code is not None:
-        # Save the code to a file so test_thesis.py can execute it
-        write_file(test_model_path, python_code)
+    def _ensure_canonical_model_aliases(code: str) -> str:
+        """Guarantee that test_model.py always exposes both ``f`` and ``model``
+        as top-level names, regardless of which path wrote the file.
 
-        # Clean the markdown so the code doesn't clutter the thesis text
-        write_file(WORKING_PATH, clean_thesis)
-        print(f"💾 Falsification Suite saved to: {test_model_path}")
+        Rules (applied in order):
+        1. If ``f`` is defined and ``model`` is not → append ``model = f``
+        2. If ``model`` is defined and ``f`` is not → append ``f = model``
+        3. If neither is defined → find the first non-test callable, alias
+           both ``f`` and ``model`` to it.
+        4. If both are already defined → no-op.
+        5. On SyntaxError → return code unchanged (don't make it worse).
+        """
+        import ast as _ast
+        try:
+            tree = _ast.parse(code)
+        except SyntaxError:
+            return code
+
+        top_level_names = {
+            node.name
+            for node in tree.body
+            if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef))
+        }
+        # Also include simple assignments like ``model = f``
+        for node in tree.body:
+            if isinstance(node, _ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, _ast.Name):
+                        top_level_names.add(t.id)
+
+        has_f = "f" in top_level_names
+        has_model = "model" in top_level_names
+
+        if has_f and has_model:
+            return code  # already canonical
+
+        suffix = "\n# Canonical aliases — gate harnesses may call either f() or model()\n"
+        if has_f and not has_model:
+            return code.rstrip() + "\n" + suffix + "model = f\n"
+        if has_model and not has_f:
+            return code.rstrip() + "\n" + suffix + "f = model\n"
+
+        # Neither defined — find first model-like callable
+        _skip = ("test", "assert", "check", "verify", "_")
+        for node in tree.body:
+            if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef)):
+                if not any(node.name.startswith(p) for p in _skip):
+                    fn = node.name
+                    return (
+                        code.rstrip()
+                        + "\n"
+                        + suffix
+                        + f"f = {fn}\nmodel = {fn}\n"
+                    )
+        return code  # nothing to alias
+
+    # Layer 3 Mandatory (Odrzywołek Inversion, GP-035 extension):
+    # The LLM is a pure topology generator.  test_model.py is ALWAYS built
+    # deterministically from fit_declaration + fitted_params when the fit
+    # primitive is active.  The LLM never writes def f().
+    # When the fit primitive is NOT active (legacy / non-fit substrates),
+    # the old LLM-python path runs unchanged.
+    # Mutable flag — list so a nested function can set it without nonlocal
+    # (this code runs at module scope where nonlocal is a SyntaxError).
+    _layer3_built = [False]
+    _fit_primitive_active = rubric_data.get("enable_fit_primitive", False)
+
+    if _fit_primitive_active:
+        def _write_layer3_stub(reason: str) -> None:
+            """Write a loud-fail stub — every path through Layer 3 mandatory
+            must either build a working f() or write this stub.  No silent
+            fallback to LLM python is permitted."""
+            _stub = (
+                f"import math\n\n"
+                f"# Layer 3 Mandatory: loud-fail stub — {reason}\n"
+                f"def f(*args):\n"
+                f"    raise RuntimeError("
+                f"'Layer 3 Mandatory: {reason} — no callable built')\n"
+            )
+            write_file(test_model_path, _ensure_canonical_model_aliases(_stub))
+            _layer3_built[0] = True
+            print(f"🔧 Layer 3 Mandatory: STUB (loud-fail) — {reason}")
+
+        try:
+            _has_fit = (
+                "_fit_decl" in dir()
+                and "_fit_result" in dir()
+                and _fit_decl is not None
+                and isinstance(_fit_result, FitSuccess)
+            )
+            if _has_fit:
+                _f_vars = list(_fit_decl.independent_vars)
+                _f_sig = ", ".join(_f_vars)
+                _f_param_lines = "\n".join(
+                    f"    {k} = {v}" for k, v in _fit_result.fitted_params.items()
+                )
+                # Grammar-aware preamble: define helper functions that the
+                # expression may reference (e.g. eml for eml_only grammar).
+                _grammar = str(rubric_data.get("fit_expression_grammar", "") or "").strip().lower()
+                _helpers = ""
+                if _grammar == "eml_only" or "eml(" in _fit_decl.expression:
+                    _helpers = "\ndef eml(x, y):\n    return math.exp(x) - math.log(y)\n\n"
+                _deterministic_code = (
+                    f"import math\n{_helpers}"
+                    f"# Layer 3 Mandatory: deterministic f() from fit_declaration + fitted params\n"
+                    f"def f({_f_sig}):\n"
+                    f"{_f_param_lines}\n"
+                    f"    return {_fit_decl.expression}\n"
+                )
+                write_file(test_model_path, _ensure_canonical_model_aliases(_deterministic_code))
+                _layer3_built[0] = True
+                print(
+                    f"🔧 Layer 3 Mandatory: deterministic f() built "
+                    f"(expression={_fit_decl.expression}, "
+                    f"params={_fit_result.fitted_params})"
+                )
+            else:
+                _fail_reason = (
+                    "no fit_declaration parsed"
+                    if not ("_fit_decl" in dir() and _fit_decl is not None)
+                    else f"fit failed ({getattr(_fit_result, 'failure_class', 'unknown')})"
+                )
+                _write_layer3_stub(_fail_reason)
+        except Exception as _l3_exc:
+            # Build error MUST still produce a loud-fail stub — never fall
+            # through to legacy LLM python when fit primitive is active.
+            _write_layer3_stub(f"build error: {_l3_exc}")
+
+    if not _layer3_built[0]:
+        # Legacy path: fit primitive not active.
+        # Use LLM-written python as before.
+        if python_code is not None:
+            write_file(test_model_path, _ensure_canonical_model_aliases(python_code))
+
+    # Clean the markdown so the code doesn't clutter the thesis text
+    write_file(WORKING_PATH, clean_thesis)
+    print(f"💾 Falsification Suite saved to: {test_model_path}")
 
     try:
         subprocess.run(test_cmd, check=True)
         with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
             new_eval = json.load(f)
+        # GP-086 — engine-level behavioral gates (evidence_fit + uniqueness_gap +
+        # parsimony_violation + named_import_check + extrapolation_gap).
+        # These fire on every iteration regardless of substrate; per-project
+        # gate_harness.py is unchanged.  Hard-fail gates zero new_eval["score"];
+        # soft penalties are subtracted from it (floor 0).
+        try:
+            _global_gate_payload = run_global_gates(
+                project_dir=Path(PROJECT_DIR),
+                rubric_data=rubric_data,
+                thesis_text=read_file(WORKING_PATH) if os.path.exists(WORKING_PATH) else None,
+                evidence_text=read_file(EVIDENCE_PATH) if os.path.exists(EVIDENCE_PATH) else None,
+                fit_declaration=new_eval.get("fit_declaration"),
+                score_contract=new_eval.get("score_contract"),
+            )
+            if new_eval.get("score_contract") is not None:
+                new_eval["score_contract"] = merge_into_score_contract(
+                    new_eval["score_contract"], _global_gate_payload
+                )
+            else:
+                new_eval["global_gate_payload"] = _global_gate_payload
+            if _global_gate_payload.get("any_hard_fail"):
+                print(
+                    f"🚨 Global gate HARD FAIL: {_global_gate_payload['failed_gate_ids']}"
+                )
+                # Hard fail zeros the score — the gate overrides test_thesis.py output
+                new_eval["score"] = 0
+                # Append blind gate failure to the judge's critique (do NOT replace it).
+                # The mutator needs: (1) the judge's scientific reasoning, (2) that the
+                # system zeroed its score for a gate violation — but NOT which specific
+                # terms triggered the gate (revealing that enables cognitive camouflage).
+                _original_weakest = new_eval.get("weakest_point", "")
+                _gate_fail_str = (
+                    f"SYSTEM OVERRIDE: Score zeroed due to Global Gate Hard Fail: "
+                    f"{', '.join(_global_gate_payload['failed_gate_ids'])}"
+                )
+                new_eval["weakest_point"] = (
+                    f"{_original_weakest}\n\n🚨 {_gate_fail_str}"
+                    if _original_weakest
+                    else f"🚨 {_gate_fail_str}"
+                )
+            elif _global_gate_payload.get("failure_count", 0) > 0:
+                _penalty = _global_gate_payload.get("total_penalty", 0)
+                print(
+                    f"⚠️  Global gate soft fail/penalty: {_global_gate_payload['failed_gate_ids']} "
+                    f"penalty={_penalty}"
+                )
+                # Apply soft penalty to the eval score (floor at 0)
+                if _penalty != 0:
+                    new_eval["score"] = max(0, int(new_eval.get("score", 0)) + _penalty)
+        except Exception as _gg_exc:
+            print(f"⚠️  Global gates error (non-fatal): {_gg_exc}")
         champion_fingerprint_before_iteration = artifact_regime_fingerprint(
             _champion_eval_payload(),
             score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
@@ -3008,6 +3714,7 @@ for i in range(ITERATIONS):
                 output_tokens=judge_usage.get("output_tokens", 0),
                 cache_creation_input_tokens=judge_usage.get("cache_creation_input_tokens", 0),
                 cache_read_input_tokens=judge_usage.get("cache_read_input_tokens", 0),
+                thinking_tokens=judge_usage.get("thinking_tokens", 0),
                 direct_cost_usd=judge_usage.get("estimated_cost_usd") if judge_usage.get("cost_known") else None,
             )
 
@@ -3038,6 +3745,25 @@ for i in range(ITERATIONS):
                 indent=2,
             ),
         )
+
+        # GP-102 — persist slim eval record for Kaizen cron audit.
+        # Append-only; never read by score path or loop control.
+        try:
+            _eval_hist_path = workspace_dir / "eval_history.jsonl"
+            _sc = new_eval.get("score_contract") or {}
+            _dcg = _sc.get("deterministic_charter_gates", {}).get("results", {})
+            _gate_verdicts = {g: r.get("passed", None) for g, r in _dcg.items()} if isinstance(_dcg, dict) else {}
+            _eval_hist_path.open("a").write(
+                json.dumps({
+                    "iteration": i + 1,
+                    "score": new_eval.get("score"),
+                    "weakest_point": (new_eval.get("weakest_point") or "")[:200],
+                    "gate_verdicts": _gate_verdicts,
+                    "timestamp": datetime.now().isoformat(),
+                }) + "\n"
+            )
+        except Exception:
+            pass  # fail-silent telemetry
 
         # GP-029 first slice — passive latent-distance observability.
         # Fires for every iter, including rejected candidates, because the
@@ -3098,6 +3824,7 @@ for i in range(ITERATIONS):
                 pending_loop_action=pending_loop_action.value,
             )
             last_completed_iteration = i + 1
+            _pop_seed_queue(workspace_dir, _comp_seed_injected)
             _restore_project_state(best_state)
             time.sleep(1)
             continue
@@ -3123,6 +3850,11 @@ for i in range(ITERATIONS):
         if new_eval["score"] > best_score:
             print(f"✅ IMPROVEMENT: {best_score} -> {new_eval['score']}")
             print(f"Targeting New Weakest Link: {new_eval['weakest_point']}")
+            if rubric_data.get("enable_component_c", False):
+                try:
+                    reset_stagnation_on_holdout_pass(workspace_dir)
+                except Exception as _cc_exc:
+                    print(f"🔧 GP-074 Component C reset: error — {_cc_exc}")
             best_score = new_eval["score"]
             best_weakest_point = new_eval["weakest_point"]  # GP-002: best-state memory
             current_target_weakest_point = new_eval["weakest_point"]  # GP-002: control signal
@@ -3150,7 +3882,12 @@ for i in range(ITERATIONS):
             approved_retirements = new_eval.get("retired_axioms_approved", [])
             if os.path.exists(AXIOM_PATH):
                 with open(AXIOM_PATH, "r") as f:
-                    current_axioms = json.load(f)
+                    _raw_axioms = json.load(f)
+                # Support both plain list and {"axioms": [...]} dict formats
+                if isinstance(_raw_axioms, dict):
+                    current_axioms = _raw_axioms.get("axioms", [])
+                else:
+                    current_axioms = _raw_axioms if isinstance(_raw_axioms, list) else []
             else:
                 current_axioms = []
             # Apply Judge's Veto: Filter out the approved retirements
@@ -3252,6 +3989,14 @@ for i in range(ITERATIONS):
                 pending_loop_action=pending_loop_action.value,
             )
             last_completed_iteration = i + 1
+            # GP-078 Fix B v2: on success, clear the entire seed queue.
+            # The winning candidate passed the holdout — no need to test
+            # the remaining candidates.
+            if _comp_seed_injected:
+                _consumed_seed = workspace_dir / "composition_seed.json"
+                if _consumed_seed.exists():
+                    _consumed_seed.unlink()
+                    print("    🧬 Seed queue cleared (candidate promoted to champion)")
 
         else:
             print(f"❌ REVERTED: {new_eval['score']} <= {best_score}")
@@ -3287,6 +4032,141 @@ for i in range(ITERATIONS):
                 pending_loop_action=pending_loop_action.value,
             )
             last_completed_iteration = i + 1
+            _pop_seed_queue(workspace_dir, _comp_seed_injected)
+            # GP-074 Component C: fire analyzer on stagnation with degenerate fit
+            if rubric_data.get("enable_component_c", False):
+                _cc_gt_module = rubric_data.get("component_c_gt_module")
+                _cc_fit_path = workspace_dir / "fit_result.json"
+                if _cc_gt_module and _cc_fit_path.exists():
+                    try:
+                        _cc_fit = json.loads(_cc_fit_path.read_text())
+                        _cc_max_res = _cc_fit.get("max_abs_residual", 1.0)
+                        _cc_mod = importlib.import_module(_cc_gt_module)
+                        if not hasattr(_cc_mod, "f_true"):
+                            raise AttributeError(f"GT module '{_cc_gt_module}' does not expose f_true()")
+                        if not hasattr(_cc_mod, "f_dominant"):
+                            raise AttributeError(f"GT module '{_cc_gt_module}' does not expose f_dominant()")
+                        _cc_f_true = _cc_mod.f_true
+                        _cc_f_dominant = _cc_mod.f_dominant
+                        _cc_test_model_path = Path(f"{PROJECT_DIR}/test_model.py")
+                        _cc_spec = importlib.util.spec_from_file_location("_cc_test_model", _cc_test_model_path)
+                        if _cc_spec is None or _cc_spec.loader is None:
+                            raise ImportError(f"cannot build spec for {_cc_test_model_path}")
+                        _cc_test_mod = importlib.util.module_from_spec(_cc_spec)
+                        _cc_spec.loader.exec_module(_cc_test_mod)
+                        if not hasattr(_cc_test_mod, "f"):
+                            raise AttributeError("test_model.py does not expose f() — Component C skipped")
+                        _cc_f_model = _cc_test_mod.f
+                        _cc_evidence = []
+                        if evidence_text:
+                            for _cc_line in evidence_text.strip().splitlines():
+                                _cc_line = _cc_line.strip()
+                                if not _cc_line or _cc_line.startswith("#"):
+                                    continue
+                                _cc_parts = _cc_line.split()
+                                if len(_cc_parts) >= 3:
+                                    try:
+                                        _cc_evidence.append((float(_cc_parts[0]), float(_cc_parts[1]), float(_cc_parts[2])))
+                                    except ValueError:
+                                        continue
+                        if _cc_evidence:
+                            _cc_stagnation_k = rubric_data.get("component_c_stagnation_k", 3)
+                            _cc_result = analyze_residual(
+                                workspace_dir=workspace_dir,
+                                iteration_index=i + 1,
+                                f_model=_cc_f_model,
+                                f_true=_cc_f_true,
+                                f_dominant=_cc_f_dominant,
+                                evidence_triples=_cc_evidence,
+                                max_abs_residual=float(_cc_max_res),
+                                substrate_id=args.project,
+                                stagnation_k=_cc_stagnation_k,
+                            )
+                            print(f"🔧 GP-074 Component C: {_cc_result.status} "
+                                  f"(stag={_cc_result.stagnation_count}, "
+                                  f"probes={_cc_result.probe_count})")
+                            if _cc_result.descriptor:
+                                print(f"    descriptor: {_cc_result.descriptor.continuity}/{_cc_result.descriptor.monotonicity} "
+                                      f"(candidates={_cc_result.candidate_count})")
+
+                            # GP-076: Predictive Divergence Sweep
+                            # Uses outer loop stagnation_count, not _cc_result.stagnation_count —
+                            # Component C resets its counter to 0 on every emission, so
+                            # _cc_result.stagnation_count is always 0 when a descriptor is present.
+                            # Threshold mirrors component_c_stagnation_k so both fire together.
+                            #
+                            # PERSISTENCE FIX: Component C only emits on its own stagnation
+                            # schedule (every K inner iterations). On non-emission iterations,
+                            # _cc_result.descriptor is None even though a prior descriptor was
+                            # persisted to residual_fingerprint.json. Fall back to the persisted
+                            # descriptor so the sweep can fire on any iteration where outer
+                            # stagnation >= threshold, not only on Component C emission iterations.
+                            _cc_active_descriptor = _cc_result.descriptor
+                            if not _cc_active_descriptor:
+                                _fp_persisted = workspace_dir / "residual_fingerprint.json"
+                                if _fp_persisted.exists():
+                                    try:
+                                        _fp_data = json.loads(_fp_persisted.read_text())
+                                        if _fp_data.get("status") == "emitted" and _fp_data.get("descriptor"):
+                                            from src.ztare.validator.information_yield import ShapeDescriptor
+                                            _cc_active_descriptor = ShapeDescriptor(**_fp_data["descriptor"])
+                                    except Exception:
+                                        pass
+                            if (_cc_active_descriptor
+                                    and stagnation_count >= _cc_stagnation_k
+                                    and float(_cc_max_res) < 1.0):
+                                try:
+                                    # Corrector isolation: f_true(u,v) - f_dominant(u,v)
+                                    # for ALL evidence triples. Average per-v across
+                                    # u-values to detect v-only vs u-dependent correctors.
+                                    _sweep_v_residuals: dict[int, list[float]] = {}
+                                    for _eu, _ev, _ in _cc_evidence:
+                                        _cr = float(_cc_f_true(_eu, _ev) - _cc_f_dominant(_eu, _ev))
+                                        _sweep_v_residuals.setdefault(_ev, []).append(_cr)
+                                    _sweep_corrector_data = [
+                                        (v, sum(rs) / len(rs))
+                                        for v, rs in sorted(_sweep_v_residuals.items())
+                                    ]
+                                    # Check if corrector varies with u (would mean
+                                    # 1D library forms cannot capture it)
+                                    _sweep_u_dependent = any(
+                                        max(rs) - min(rs) > 0.5
+                                        for rs in _sweep_v_residuals.values()
+                                        if len(rs) > 1
+                                    )
+                                    if _sweep_u_dependent:
+                                        print("🔬 GP-076 sweep: corrector varies with u — 1D library insufficient")
+
+                                    _sweep_descriptor_forms = filter_by_descriptor(
+                                        is_smooth=(_cc_active_descriptor.continuity == "smooth"),
+                                        is_monotone=(_cc_active_descriptor.monotonicity == "monotone"),
+                                    )
+                                    # Use u=1 slice for the single-point query (the
+                                    # query returns one observation at one v regardless)
+                                    _sweep_ref_u = min(u for u, _, _ in _cc_evidence)
+
+                                    def _sweep_gt_corrector(v: int) -> float:
+                                        return float(_cc_f_true(_sweep_ref_u, v) - _cc_f_dominant(_sweep_ref_u, v))
+
+                                    _sweep_result = run_divergence_sweep(
+                                        corrector_data=_sweep_corrector_data,
+                                        f_true_corrector=_sweep_gt_corrector,
+                                        descriptor_forms=_sweep_descriptor_forms,
+                                        v_max_visible=max(_sweep_v_residuals.keys()),
+                                        stagnation_count=stagnation_count,
+                                        run_length=ITERATIONS,
+                                        workspace_dir=workspace_dir,
+                                    )
+                                    print(f"🔬 GP-076 sweep: {_sweep_result.status} — {_sweep_result.message}")
+                                    if _sweep_result.survivors:
+                                        _survivor_names = [s.form.name for s in _sweep_result.survivors]
+                                        print(f"    survivors: {_survivor_names}")
+                                    if _sweep_result.library_exhausted:
+                                        print("    >> FEYNMAN WALL: library exhausted — LLM topology proposal mode")
+                                except Exception as _sweep_exc:
+                                    print(f"🔬 GP-076 sweep: error — {_sweep_exc}")
+                    except Exception as _cc_exc:
+                        print(f"🔧 GP-074 Component C: error — {_cc_exc}")
             _restore_project_state(best_state)
             if os.path.exists(f"{AXIOM_PATH}.bak"):
                 shutil.copy(f"{AXIOM_PATH}.bak", AXIOM_PATH)
@@ -3336,8 +4216,289 @@ for i in range(ITERATIONS):
             pending_loop_action=pending_loop_action.value,
         )
         last_completed_iteration = i + 1
+        _pop_seed_queue(workspace_dir, _comp_seed_injected)
         _restore_project_state(best_state)
         time.sleep(5)
+
+    # GP-087 Slim: Residual-driven primitive injection.
+    # When the farther-tail gate fails, propose tail-correction seeds
+    # from the primitive library. Takes priority over Component D —
+    # if GP-087 injects seeds, skip the regular composition loop.
+    # Information boundary: only primitive names reach the seed queue,
+    # no farther-tail residual values leak to the mutator.
+    #
+    # Short-circuit fix (2026-04-19): Component D was clobbering GP-087
+    # seeds because the old guard (`not seed_path.exists()`) prevented
+    # GP-087 from firing whenever Component D had already written its
+    # own candidates to composition_seed.json. The fix: check the *source*
+    # field of existing seeds. If they are component_d_autonomous, GP-087
+    # may overwrite them. If they are already gp087_residual_driven, block
+    # Component D but do not re-inject (seeds are already queued).
+    _gp087_injected = False
+    if rubric_data.get("enable_fit_primitive", False):
+        _seed_path_087 = workspace_dir / "composition_seed.json"
+        # Only fire GP-087 when new_eval has fresh gate data (not after crash)
+        _gp087_eval = new_eval if isinstance(new_eval, dict) and "score_contract" in new_eval else None
+
+        # Check whether existing seed file already contains GP-087 seeds.
+        _existing_gp087_queued = False
+        if _seed_path_087.exists():
+            try:
+                _existing_q = json.loads(_seed_path_087.read_text())
+                if isinstance(_existing_q, list):
+                    _existing_gp087_queued = any(
+                        s.get("source") == "gp087_residual_driven" for s in _existing_q
+                    )
+            except Exception:
+                pass
+
+        if _existing_gp087_queued:
+            # Tail-correction seeds are already in queue. Block Component D
+            # from overwriting them; they will be consumed next iteration.
+            _gp087_injected = True
+            print("    >> GP-087: tail-correction seeds already queued — Component D blocked")
+        elif _gp087_eval is not None:
+            # Seed file is absent or contains only component_d_autonomous
+            # candidates — GP-087 may overwrite.
+            _gp087_seeds = _gp087_propose_tail_correction_seeds(
+                _gp087_eval,
+                workspace_dir,
+                rubric_data,
+                iteration_index=i + 1,
+                stagnation_count=stagnation_count,
+            )
+            if _gp087_seeds:
+                _seed_path_087.write_text(json.dumps(_gp087_seeds, indent=2) + "\n")
+                _gp087_injected = True
+                print(
+                    f"    >> GP-087: farther-tail gate failed — injected {len(_gp087_seeds)} "
+                    f"tail-correction seeds (overwrote component_d queue)"
+                )
+                for _qi, _qs in enumerate(_gp087_seeds[:3]):
+                    print(
+                        f"       [{_qi+1}] +{_qs.get('correction_primitive','?')} "
+                        f"(round={_qs.get('round','')})"
+                    )
+
+    # H-GP103-5 Compositional Hypothesis Generator.
+    # Fires when GP-087 has NOT injected seeds and ≥2 structurally distinct
+    # families show regime-separated visible residuals (one family dramatically
+    # better than another at visible, signalling different gate failure layers).
+    # Proposes additive two-regime composites of the top-performing failed
+    # families.  Takes priority over Component D — if additive seeds are
+    # injected, Component D is skipped so seeds are not overwritten.
+    # Information boundary: reads only visible residuals and example expressions
+    # from structural_memory.json — no holdout / farther-tail values reach seeds.
+    _gp103_injected = False
+    _gp103_stagnation_k = int(rubric_data.get("gp103_stagnation_threshold", 1))
+    # H-GP103-5: GP-087 and H-GP103-5 are NOT mutually exclusive.
+    # GP-087 injects tail-correction seeds; H-GP103-5 injects additive composite seeds.
+    # They address orthogonal failure modes and can co-fire in the same iteration.
+    # The prior `and not _gp087_injected` mutex caused a deadlock: whenever GP-087
+    # fired (far-tail failure → stagnation), H-GP103-5 was blocked, preventing it
+    # from ever accumulating the ≥2 failed-family pairs it requires.
+    if (
+        rubric_data.get("enable_fit_primitive", False)
+        and stagnation_count >= _gp103_stagnation_k
+    ):
+        try:
+            _comp_ind_vars_103: list[str] = rubric_data.get("fit_required_vars", ["u"])
+            _gate_thr_103 = float(rubric_data.get("gate_residual_threshold", 0.08))
+            _fam_a, _fam_b = detect_additive_composite_opportunity(
+                workspace_dir,
+                gate_threshold=_gate_thr_103,
+                stagnation_count=stagnation_count,
+            )
+            if _fam_a is not None and _fam_b is not None:
+                # Only inject if no gp103_additive_composite seed is already queued.
+                _seed_path_103 = workspace_dir / "composition_seed.json"
+                _existing_gp103_queued = False
+                if _seed_path_103.exists():
+                    try:
+                        _existing_q103 = json.loads(_seed_path_103.read_text())
+                        if isinstance(_existing_q103, list):
+                            _existing_gp103_queued = any(
+                                s.get("source") == "gp103_additive_composite"
+                                for s in _existing_q103
+                            )
+                    except Exception:
+                        pass
+                _gp103_pair = (
+                    str(_fam_a.get("fingerprint", "")),
+                    str(_fam_b.get("fingerprint", "")),
+                )
+                if not _existing_gp103_queued and _gp103_pair not in _gp103_tried_pairs:
+                    _gp103_seeds = generate_additive_composite_seeds(
+                        _fam_a,
+                        _fam_b,
+                        _comp_ind_vars_103,
+                        iteration_index=i + 1,
+                    )
+                    if _gp103_seeds:
+                        _seed_path_103.write_text(json.dumps(_gp103_seeds, indent=2) + "\n")
+                        _gp103_injected = True
+                        _gp103_tried_pairs.add(_gp103_pair)
+                        print(
+                            f"    >> H-GP103-5: regime-separated families detected — "
+                            f"injected {len(_gp103_seeds)} additive composite seeds"
+                        )
+                        print(
+                            f"       family_a: res={_fam_a.get('best_visible_max_abs_residual'):.4f} "
+                            f"({_fam_a.get('family_label','')[:50]})"
+                        )
+                        print(
+                            f"       family_b: res={_fam_b.get('best_visible_max_abs_residual'):.4f} "
+                            f"({_fam_b.get('family_label','')[:50]})"
+                        )
+                elif _existing_gp103_queued:
+                    print(f"    >> H-GP103-5: skipped — composite seed already queued")
+                elif _gp103_pair in _gp103_tried_pairs:
+                    print(f"    >> H-GP103-5: skipped — pair already tried this run")
+            else:
+                # Explain why no pair was found
+                print(f"    >> H-GP103-5: checked (stag={stagnation_count}) — no regime-separated pair found (guard blocked or <2 families)")
+        except Exception as _gp103_exc:
+            print(f"    >> H-GP103-5: error — {_gp103_exc}")
+
+    # GP-078 Component D: Universal Feynman Wall check.
+    # Fires at the end of every iteration, substrate-agnostic.
+    # Reads structural_memory.json — if library exhaustion is detected,
+    # runs the composition loop to bootstrap new primitives.
+    # GP-087: skip if residual-driven seeds were already injected.
+    # H-GP103-5: also skip if additive composite seeds were injected.
+    if rubric_data.get("enable_fit_primitive", False) and not _gp087_injected and not _gp103_injected:
+        try:
+            _comp_budget = int(rubric_data.get("composition_budget", 20))
+            _comp_stagnation_k = int(rubric_data.get("composition_stagnation_threshold", 3))
+            _comp_min_families = int(rubric_data.get("composition_min_families", 6))
+            if detect_feynman_wall(
+                workspace_dir,
+                stagnation_count,
+                min_families=_comp_min_families,
+                stagnation_threshold=_comp_stagnation_k,
+            ):
+                print("    >> FEYNMAN WALL: library exhausted — Component D composition mode")
+                # Parse visible evidence preserving all columns (supports nD substrates).
+                # Each row becomes a tuple of floats: (x1, [x2, ...], z).
+                _comp_evidence: list[tuple[float, ...]] = []
+                if evidence_text:
+                    for _comp_line in evidence_text.strip().splitlines():
+                        _comp_line = _comp_line.strip()
+                        if not _comp_line or _comp_line.startswith("#"):
+                            continue
+                        _comp_parts = _comp_line.split()
+                        if len(_comp_parts) >= 2:
+                            try:
+                                _comp_evidence.append(
+                                    tuple(float(x) for x in _comp_parts)
+                                )
+                            except ValueError:
+                                continue
+                if _comp_evidence:
+                    _comp_ind_vars: list[str] = rubric_data.get("fit_required_vars", ["n"])
+                    _comp_var_name: str = _comp_ind_vars[0] if _comp_ind_vars else "n"
+                    _comp_result = run_composition_loop(
+                        workspace_dir,
+                        _comp_evidence,
+                        model_id=resolve_model_id(args.mutator_model),
+                        budget=_comp_budget,
+                        iteration_index=i + 1,
+                        var_name=_comp_var_name,
+                        ind_vars=_comp_ind_vars,
+                    )
+                    print(
+                        f"    >> Component D: {_comp_result.get('wall_exit_code')} "
+                        f"({_comp_result.get('successes', 0)} fits in "
+                        f"{_comp_result.get('rounds', 0)} rounds)"
+                    )
+                    # GP-078 Fix B v2: Topological Beam Search.
+                    # Component D is blind to the holdout — it cannot know
+                    # which candidate has the correct asymptotic behavior.
+                    # Instead of picking one winner, write a queue of top-K
+                    # candidates.  The judge falsifies them one per iteration
+                    # until the correct physics survives.
+                    #
+                    # Saturating-first sort: depth-2 corrections that saturate
+                    # (exp_decay, reciprocal, tanh) are tested before those
+                    # that diverge (linear, power, polynomial).  This is a
+                    # physical prior (macroscopic values rarely diverge to
+                    # infinity), not an overfit to any specific substrate.
+                    _SATURATING_BASES = frozenset([
+                        "exp_decay", "reciprocal", "tanh", "logistic",
+                        "rational", "sqrt_reciprocal", "log_reciprocal",
+                    ])
+                    _comp_rounds = _comp_result.get("round_results", [])
+                    if _comp_rounds:
+                        _successes = [r for r in _comp_rounds if r.get("status") == "fit_success"]
+
+                        def _asymptotic_sort_key(r: dict) -> tuple:
+                            """Sort saturating corrections and ratio probes
+                            before diverging ones, then by residual."""
+                            _round_label = str(r.get("round", ""))
+                            # Ratio probes (cosh/sinh, exp/exp_decay, …) are
+                            # pure rational/hyperbolic symmetries — saturating
+                            # by definition.
+                            _is_ratio = r.get("probe_type") == "ratio"
+                            _is_saturating = _is_ratio or any(
+                                base in _round_label for base in _SATURATING_BASES
+                            )
+                            # Priority: 0 = saturating/ratio, 1 = diverging
+                            _priority = 0 if _is_saturating else 1
+                            _res = float(r.get("visible_max_abs_residual", 999))
+                            return (_priority, _res)
+
+                        _successes.sort(key=_asymptotic_sort_key)
+
+                        # Grammar filter: remove candidates that use
+                        # functions forbidden by the rubric grammar.
+                        # Without this, grammar-illegal candidates
+                        # (e.g. sinh/cosh under math_exp_only) fill
+                        # the queue and get rejected every iteration,
+                        # creating an infinite burn loop.
+                        _grammar = str(rubric_data.get("fit_expression_grammar", "") or "").strip().lower()
+                        if _grammar == "math_exp_only":
+                            _FORBIDDEN_MATH = re.compile(
+                                r"math\.(sin|cos|tan|sinh|cosh|tanh|asin|acos|atan)"
+                            )
+                            _before = len(_successes)
+                            _successes = [
+                                s for s in _successes
+                                if not _FORBIDDEN_MATH.search(s.get("expression", ""))
+                            ]
+                            _filtered = _before - len(_successes)
+                            if _filtered:
+                                print(
+                                    f"    >> Grammar filter: removed {_filtered} "
+                                    f"math_exp_only violations from seed queue"
+                                )
+
+                        _top_k = _successes[:5]
+
+                        if _top_k:
+                            _seeds = []
+                            for _comp in _top_k:
+                                _seeds.append({
+                                    "source": "component_d_autonomous",
+                                    "expression": _comp.get("expression", ""),
+                                    "independent_vars": _comp_ind_vars,
+                                    "parameter_names": _comp.get("parameter_names", []),
+                                    "visible_max_abs_residual": _comp.get("visible_max_abs_residual"),
+                                    "iteration_synthesized": i + 1,
+                                    "round": _comp.get("round", ""),
+                                })
+                            _seed_path = workspace_dir / "composition_seed.json"
+                            _seed_path.write_text(json.dumps(_seeds, indent=2) + "\n")
+                            print(
+                                f"    >> Component D seed queue: {len(_seeds)} candidates "
+                                f"({sum(1 for s in _top_k if any(b in str(s.get('round','')) for b in _SATURATING_BASES))} saturating-first)"
+                            )
+                            for _qi, _qs in enumerate(_seeds[:3]):
+                                print(
+                                    f"       [{_qi+1}] {_qs['expression'][:70]} "
+                                    f"(max|res|={_qs.get('visible_max_abs_residual', '?')})"
+                                )
+        except Exception as _comp_exc:
+            print(f"    >> Component D: error — {_comp_exc}")
 
     time.sleep(1)
 
@@ -3350,6 +4511,7 @@ print(
     "Mutator Usage: "
     f"input={SESSION_MUTATOR_USAGE['input_tokens']:,} "
     f"output={SESSION_MUTATOR_USAGE['output_tokens']:,} "
+    f"thinking={SESSION_MUTATOR_USAGE['thinking_tokens']:,} "
     f"cache_read={SESSION_MUTATOR_USAGE['cache_read_input_tokens']:,}"
 )
 print(f"Estimated Mutator Cost: {_format_cost_label(SESSION_MUTATOR_USAGE)}")
@@ -3357,6 +4519,7 @@ print(
     "Judge Usage: "
     f"input={SESSION_JUDGE_USAGE['input_tokens']:,} "
     f"output={SESSION_JUDGE_USAGE['output_tokens']:,} "
+    f"thinking={SESSION_JUDGE_USAGE['thinking_tokens']:,} "
     f"cache_read={SESSION_JUDGE_USAGE['cache_read_input_tokens']:,}"
 )
 print(f"Estimated Judge Cost: {_format_cost_label(SESSION_JUDGE_USAGE)}")
