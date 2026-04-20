@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from src.ztare.validator.information_yield import (
+from src.ztare.validator.core.information_yield import (
     IterationSignal,
     LoopControlAction,
     evaluate_information_yield,

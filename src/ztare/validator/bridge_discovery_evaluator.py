@@ -8,7 +8,7 @@ from pathlib import Path
 
 from src.ztare.common.paths import PROJECTS_DIR
 from src.ztare.gates.bridge_scope_contract import BridgeScopeMismatchCode, evaluate_bridge_scope
-from src.ztare.validator.mutation_contract import MutationDeclaration, parse_mutation_declaration
+from src.ztare.validator.core.mutation_contract import MutationDeclaration, parse_mutation_declaration
 
 
 def _run_python_file(path: Path) -> subprocess.CompletedProcess[str]:
@@ -79,7 +79,7 @@ def evaluate_bridge_discovery(project: str) -> dict[str, object]:
             "weakest_point": f"Bridge test_model failed at runtime: {(test_proc.stderr or test_proc.stdout).strip()}",
         }
 
-    fixture_proc = _run_python_module("src.ztare.validator.stage24_bridge_fixture_regression")
+    fixture_proc = _run_python_module("src.ztare.validator.core.stage24_bridge_fixture_regression")
     if fixture_proc.returncode != 0:
         return {
             "score": 0,

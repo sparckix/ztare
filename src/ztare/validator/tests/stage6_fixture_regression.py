@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from src.ztare.validator.cross_domain_transfer import (
+from src.ztare.validator.core.cross_domain_transfer import (
     TransferDecision,
     TransferDecisionRecord,
     TransferReasonCode,

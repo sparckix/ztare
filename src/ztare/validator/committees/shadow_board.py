@@ -3,16 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from src.ztare.validator.committee_instantiation import (
+from src.ztare.validator.committees.committee_instantiation import (
     instantiate_fixed_committee,
     record_to_dict,
 )
-from src.ztare.validator.hinge_handoff import (
+from src.ztare.validator.core.hinge_handoff import (
     HingeAlignmentStatus,
     Stage2Handoff,
     build_stage2_handoff,
 )
-from src.ztare.validator.primitive_routing import ExploitFamilyTag
+from src.ztare.validator.core.primitive_routing import ExploitFamilyTag
 
 
 class ShadowBoardRole(str, Enum):

@@ -23,13 +23,13 @@ from src.ztare.primitives.primitive_library import (
     retrieve_primitives,
     retrieve_primitives_by_keys,
 )
-from src.ztare.validator.primitive_routing import route_primitives_for_v4
+from src.ztare.validator.core.primitive_routing import route_primitives_for_v4
 from src.ztare.gates.semantic_gate_stabilization import (
     derive_self_reference_gate,
     persist_semantic_gate_analysis,
 )
 from src.ztare.findings.proxy_signature import compute_anchor_proxy_coverage
-from src.ztare.validator.charter_parsing import (
+from src.ztare.validator.core.charter_parsing import (
     extract_anchor_proxies_from_charter,
     extract_asymptotic_claim_contract_from_charter,
     extract_forecast_type_from_charter,
@@ -43,7 +43,7 @@ from src.ztare.gates.deterministic_charter_gates import (
     gate_results_to_dicts,
     soft_cap_entries_for_evaluation,
 )
-from src.ztare.validator.harness_failure_mode import (
+from src.ztare.validator.utilities.harness_failure_mode import (
     FAIL_ASSERT,
     FAIL_OTHER,
     FAIL_RUNTIME,
@@ -55,7 +55,7 @@ from src.ztare.gates.derived_constraints import (
     sanitize_constraint_proposals,
 )
 from src.ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
-from src.ztare.validator.v4_family import is_v4_family_project
+from src.ztare.validator.utilities.v4_family import is_v4_family_project
 
 # 1. Setup & Args
 parser = argparse.ArgumentParser()

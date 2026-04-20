@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from src.ztare.validator.hinge_handoff import (
+from src.ztare.validator.core.hinge_handoff import (
     HingeAlignmentStatus,
     HingeObject,
     _SEAM_CONTRADICTION_KEYWORDS,
@@ -13,7 +13,7 @@ from src.ztare.validator.hinge_handoff import (
     derive_hinge_object,
     evaluate_hinge_grounding,
 )
-from src.ztare.validator.primitive_routing import ExploitFamilyTag, derive_exploit_family_tag
+from src.ztare.validator.core.primitive_routing import ExploitFamilyTag, derive_exploit_family_tag
 
 
 class DerivationMismatchClass(str, Enum):

@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.validator.champion_artifacts import (
+from src.ztare.validator.utilities.champion_artifacts import (
     build_champion_eval_from_saved_best,
     build_champion_gap_payload_from_saved_best,
     champion_artifacts_out_of_sync_with_saved_best,

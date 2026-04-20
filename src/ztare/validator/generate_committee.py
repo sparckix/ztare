@@ -9,8 +9,8 @@ from src.ztare.common.paths import PROJECTS_DIR, RUBRICS_DIR
 import time
 import concurrent.futures
 from src.ztare.primitives.primitive_library import format_attack_templates, retrieve_primitives
-from src.ztare.validator.shadow_board import build_shadow_board_committee
-from src.ztare.validator.v4_family import is_v4_family_project
+from src.ztare.validator.committees.shadow_board import build_shadow_board_committee
+from src.ztare.validator.utilities.v4_family import is_v4_family_project
 parser = argparse.ArgumentParser()
 parser.add_argument("--project", required=True)
 parser.add_argument("--use_primitives", action="store_true")

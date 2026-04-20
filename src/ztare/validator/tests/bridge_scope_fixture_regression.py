@@ -9,7 +9,7 @@ from src.ztare.gates.bridge_scope_contract import (
     BridgeScopeMismatchCode,
     evaluate_bridge_scope,
 )
-from src.ztare.validator.mutation_contract import (
+from src.ztare.validator.core.mutation_contract import (
     ClaimDeltaType,
     MutationArtifact,
     MutationDeclaration,

@@ -124,7 +124,7 @@ def _bridge_contract(project: str) -> ContractResult:
         pass_reasons.append("`test_model.py` executes successfully.")
 
     fixture_proc = _run_python_module(
-        "src.ztare.validator.stage24_bridge_fixture_regression",
+        "src.ztare.validator.core.stage24_bridge_fixture_regression",
         cwd=Path(__file__).resolve().parents[3],
     )
     if fixture_proc.returncode != 0:

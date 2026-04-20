@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import sys
 
-from src.ztare.validator.harness_failure_mode import (
+from src.ztare.validator.utilities.harness_failure_mode import (
     FAIL_ASSERT,
     FAIL_OTHER,
     FAIL_RUNTIME,

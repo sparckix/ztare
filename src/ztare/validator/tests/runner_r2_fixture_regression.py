@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.validator.committee_instantiation import instantiate_fixed_committee
+from src.ztare.validator.committees.committee_instantiation import instantiate_fixed_committee
 
 
 ROLE_DEFINITIONS = {

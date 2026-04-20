@@ -25,21 +25,21 @@ from src.ztare.common.llm_runtime import (
 from src.ztare.common.paths import PROJECTS_DIR, RUBRICS_DIR
 import re
 from src.ztare.primitives.primitive_library import format_transfer_hypotheses, retrieve_primitives
-from src.ztare.validator.mutation_contract import (
+from src.ztare.validator.core.mutation_contract import (
     MutationMismatchCode,
     approved_primitive_keys,
     evaluate_mutation_declaration,
     parse_mutation_declaration,
 )
-from src.ztare.validator.runner_selection import CandidateScopeVerdict, evaluate_candidate_selection
-from src.ztare.validator.v4_family import is_v4_family_project
-from src.ztare.validator.information_yield import (
+from src.ztare.validator.core.runner_selection import CandidateScopeVerdict, evaluate_candidate_selection
+from src.ztare.validator.utilities.v4_family import is_v4_family_project
+from src.ztare.validator.core.information_yield import (
     IterationSignal,
     LoopControlAction,
     apply_latent_motion_veto,
     evaluate_information_yield,
 )
-from src.ztare.validator.pivot_heuristics import select_pivot_profile
+from src.ztare.validator.utilities.pivot_heuristics import select_pivot_profile
 from src.ztare.catch_grammar.rule_3_profile_check import check_profile_contains
 from src.ztare.gates.structural_constraint_extractor import (
     run_structural_extractor,
@@ -57,12 +57,12 @@ from src.ztare.gates.derived_constraints import (
     write_derived_constraints_brief,
 )
 from src.ztare.fit.mutation_suite_guard import validate_python_suite_candidate
-from src.ztare.validator.charter_parsing import (
+from src.ztare.validator.core.charter_parsing import (
     extract_anchor_proxies_from_charter,
     extract_forecast_type_from_charter,
 )
 from src.ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
-from src.ztare.validator.champion_artifacts import (
+from src.ztare.validator.utilities.champion_artifacts import (
     artifact_regime_fingerprint,
     build_champion_eval_from_saved_best,
     build_champion_gap_payload_from_saved_best,
@@ -4108,7 +4108,7 @@ for i in range(ITERATIONS):
                                     try:
                                         _fp_data = json.loads(_fp_persisted.read_text())
                                         if _fp_data.get("status") == "emitted" and _fp_data.get("descriptor"):
-                                            from src.ztare.validator.information_yield import ShapeDescriptor
+                                            from src.ztare.validator.core.information_yield import ShapeDescriptor
                                             _cc_active_descriptor = ShapeDescriptor(**_fp_data["descriptor"])
                                     except Exception:
                                         pass

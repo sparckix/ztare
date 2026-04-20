@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.validator.stage2_derivation import (
+from src.ztare.validator.core.stage2_derivation import (
     DerivationMismatchClass,
     evaluate_derivation_seam,
 )
