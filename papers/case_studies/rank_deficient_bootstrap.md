@@ -2,6 +2,13 @@
 
 **A short case study in pre-commit verifier design.**
 
+*Origin: this failure was first observed when designing a ground-truth
+substrate for a law-recovery experiment. A six-parameter family was
+declared as ground truth, but two of the parameters were unidentifiable
+— a pre-commit check that should have caught this did not. The finding
+prompted a change to adversarial multi-start as the standard
+identifiability check for all subsequent experiment design.*
+
 ---
 
 ## Abstract
