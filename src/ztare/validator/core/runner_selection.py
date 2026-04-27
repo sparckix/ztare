@@ -40,7 +40,14 @@ def evaluate_candidate_selection(
     debate_log_text: str,
 ) -> CandidateSelectionRecord:
     attacker_headers_seen = _extract_attacker_headers(debate_log_text)
-    minority_attack_preserved = (not dynamic) or len(attacker_headers_seen) >= 2
+    # GP-135 fix (2026-04-23): count TOTAL attacker sections, not unique names.
+    # Under dynamic mode the committee can emit multiple attackers labeled
+    # with a generic persona string ("## Attacker: Attacker"); deduplicating
+    # by name then failed R3 even when two full attacker sections ran. The
+    # check's intent is "dynamic minority attacker preserved in the log",
+    # which is satisfied by section count, not name uniqueness.
+    attacker_section_count = _count_attacker_sections(debate_log_text)
+    minority_attack_preserved = (not dynamic) or attacker_section_count >= 2
 
     admissible = True
     reasons: list[str] = []
@@ -88,3 +95,14 @@ def _extract_attacker_headers(debate_log_text: str) -> tuple[str, ...]:
         if header not in deduped:
             deduped.append(header)
     return tuple(deduped)
+
+
+def _count_attacker_sections(debate_log_text: str) -> int:
+    """Count TOTAL '## Attacker:' sections (no deduplication).
+
+    Used by R3 to decide whether the dynamic minority attacker was
+    preserved. Section count is the right proxy for "both attackers ran";
+    name uniqueness is irrelevant when the committee emits generic
+    persona labels.
+    """
+    return len(re.findall(r"^## Attacker:\s*.+$", debate_log_text, flags=re.MULTILINE))

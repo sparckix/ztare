@@ -1,0 +1,61 @@
+{
+  "rubric_version": "1.0-newton",
+  "project": "gp138_noether_g_selection",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "GP-138 hardens GP-135 Primitive 3. Mutator must produce a G-selection algorithm or impossibility proof \u2014 both require mechanism-derived predictions. Newton-mode enforces secondary observables.",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative substrate; no (n, z) evidence.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative substrate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative substrate",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative substrate",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "You are a senior algebraist specializing in algorithmic group theory and representation theory (Babai / Luks / Weisfeiler-Leman / Wigner traditions). You have ZERO patience for naming groups without derivation protocols. You sharply penalize: (a) any thesis that requires the operator to supply G \u2014 that's the existing failure mode; (b) any thesis that infers G from the candidate's own AST automorphism \u2014 that's tautological; (c) any thesis that names a group without explicit algorithm to extract it from substrate evidence; (d) any thesis whose secondary observable doesn't actually distinguish the proposed G from a sibling group. You reward: derivation protocols with explicit algorithms, named published results (Babai 1981/2016, Luks 1982, Weisfeiler-Leman 1968 + 2-WL/k-WL refinements, character-table computation), bounded false-positive analyses, and explicit coverage maps for finite catalogs.",
+  "dimensions": [
+    {
+      "name": "G-Selection Specificity",
+      "weight": 30,
+      "description": "Does the thesis give an explicit algorithm to derive G from substrate evidence (NOT from candidate AST), OR a constructive impossibility proof? Vague proposals score 0. Full credit requires algorithm + bounded false-positive rate + coverage map of which G classes are reachable."
+    },
+    {
+      "name": "Theoretical Grounding",
+      "weight": 20,
+      "description": "Does the thesis cite concrete algorithmic group theory or representation theory results (Babai 1981/2016, Luks 1982, Weisfeiler-Leman papers, specific Mathieu-group constructions, Cai-F\u00fcrer-Immerman counterexamples)? Generic 'group theory' references without specific paper score 0."
+    },
+    {
+      "name": "Tautology Avoidance",
+      "weight": 20,
+      "description": "Does the proposed G-selection protocol AVOID the AST-automorphism tautology (G = candidate's own symmetry group)? A thesis whose G is derived from the candidate alone scores 0; one that derives G from substrate evidence (data-symmetries, problem statement, externally-specified structure) scores 20."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 15,
+      "description": "Does the thesis name a secondary observable beyond the gate's primary admission decision? Examples: 'this G-selection predicts eigenvalue degeneracy multiplicity = dim(irrep_G) on accepted candidates'; 'this impossibility predicts that any catalog of |G| \u2264 K has explicit coverage holes for laws involving symmetric groups S_n with n > K^(1/3)'. Tautological 'predicts the gate accepts/rejects' scores 0."
+    },
+    {
+      "name": "Mechanism Algorithmic Concreteness",
+      "weight": 15,
+      "description": "Does the thesis name a runnable algorithm: a specific extraction protocol, a specific algorithm by name, or a specific numeric threshold? Class-of-technique labels ('auto-symmetry detection', 'group inference') without naming the algorithm score 0. A competent engineer must be able to implement and test within one day."
+    }
+  ],
+  "criteria": {
+    "1_G_Selection_Specificity": "Does the thesis emit an algorithm to derive G from substrate evidence \u2014 or impossibility \u2014 with formula + coverage + error rate?",
+    "2_Theoretical_Grounding": "Does the thesis cite a concrete published group-theoretic result with author and year?",
+    "3_Tautology_Avoidance": "Does the protocol derive G from substrate evidence rather than from the candidate's own automorphism?",
+    "4_Generative_Yield": "Does the thesis name a calculable secondary observable beyond the primary admission decision?",
+    "5_Mechanism_Algorithmic_Concreteness": "Does the thesis name a runnable algorithm, not a class-of-technique label?"
+  },
+  "_charter_pre_reg_seam": "research_areas/private/seams/mission/GP-138_noether_g_selection_seam.md",
+  "composition_stagnation_threshold_removed_2026_04_24": "GP-135 fix: removed override of 5; Newton-mode default of 2 now applies. Pivot fires earlier per panel-recommended discipline."
+}

@@ -71,7 +71,7 @@ Failing **any one** of the three → the seam belongs in `research_areas/private
 When a private seam ships and crosses into `verify`/`closed`, do **two things at the same moment**:
 
 1. Move the seam file from `research_areas/private/seams/` to `research_areas/seams/`.
-2. Promote its row from the private board mirror (`research_areas/private/ZTARE_BOARD.md`) to the public board (`research_areas/ZTARE_BOARD.md`).
+2. Promote its row from the private board mirror (`research_areas/ZTARE_BOARD.md`) to the public board (`research_areas/ZTARE_BOARD.md`).
 
 The two boards are paired: the private mirror is the canonical full-detail view, the public board is a sanitized subset. New seams open in whichever location their visibility classification puts them, and their row goes on whichever board matches.
 
@@ -79,5 +79,5 @@ When in doubt, default private. The cost of an over-classified private seam is o
 
 ## Canonical index
 
-- `research_areas/private/ZTARE_BOARD.md` — the canonical full-detail board (gitignored). Lists every seam, public and private.
+- `research_areas/ZTARE_BOARD.md` — the canonical full-detail board (gitignored). Lists every seam, public and private.
 - `research_areas/ZTARE_BOARD.md` — the public board. Lists only public seams; carries a structural note that further items exist in the private mirror.

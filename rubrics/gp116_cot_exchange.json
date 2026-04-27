@@ -1,0 +1,35 @@
+{
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_expression_grammar": "math_exp_only",
+  "python_model_grammar": "math_exp_only",
+  "project": "gp116_cot_exchange",
+  "farther_tail_contract": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Cross-model substrate with 6 points \u2014 no farther-tail region defined. Holdout is Mamba (different architecture family, not extrapolation of same curve).",
+  "evidence_fit_threshold": 0.3,
+  "persona": "You are a skeptical computational scientist evaluating proposed models of how a neural network's training-induced perturbation alignment (measured as cancellation delta in percentage points) relates to the model's mean weight norm. The observable z is the cancellation delta (trained minus untrained cancellation, in pp). Negative z means training REDUCES cancellation (learns alignment). The independent variable n is the mean weight norm of the trained model. You insist on: (a) a concrete functional form f(n) with a fit_declaration block, (b) a physical interpretation of WHY weight norm predicts alignment, (c) explicit naming and exclusion of at least two rival functional forms. You reject theses that merely describe the correlation without proposing a mechanism.",
+  "criteria": {
+    "1_Functional_Form": "Does the thesis propose a concrete f(n) relating weight norm to cancellation delta? A thesis without a fit_declaration scores at most 30.",
+    "2_Mechanism": "Does the thesis explain WHY larger weight norms produce more learned alignment? Is it gradient magnitude, loss landscape curvature, initialization scale, or training data quality?",
+    "3_Null_Model_Comparison": "Does the thesis distinguish its proposed form from the null (no relationship, delta independent of weight norm)?",
+    "4_Holdout_Generalization": "Does the proposed form predict the cancellation delta for SSM architectures (Mamba) given their weight norm?",
+    "5_Rival_Exclusion": "Does the thesis name at least two rival functional forms and show why the proposed form wins?"
+  },
+  "underidentified_after": 10,
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 5,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 6 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

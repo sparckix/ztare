@@ -1,0 +1,67 @@
+{
+  "name": "gp163_accel_interpolation",
+  "project": "gp163_accel_interpolation",
+  "description": "Newton-mode rubric for acceleration interpolation function discovery. 1D substrate, 2 known asymptotic limits, unknown interpolation.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate: interpolation function between two asymptotic regimes is unknown. Generative yield required.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_expression_grammar": "math_exp_only",
+  "fit_score_mode": "continuous_mre",
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "x"
+  ],
+  "expression_byte_budget": 300,
+  "holdout_hard_gate": true,
+  "target_convention_homogeneity": "homogeneous",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "gate",
+  "underidentified_after": 15,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom gate_harness.py defines farther-tail set (deep low-x regime). Standard ZTARE farther-tail detection does not apply.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Custom gate_harness.py with holdout + asymptotic gates replaces heuristic.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival forms scored by rubric dimension.",
+  "persona": "You are an adversarial epistemic auditor. The data shows a monotonic relationship between two accelerations with known asymptotic behavior at both extremes. You REJECT: (a) forms that violate the asymptotic constraints (y must approach x at high x and sqrt(a_0*x) at low x); (b) forms with more than 5 parameters; (c) forms without holdout validation; (d) forms that are purely polynomial (will fail asymptotic gates). You REWARD: parsimonious interpolation functions that pass both holdout and farther-tail gates.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "GP-157 v5.0 Phase 3b observe-mode.",
+  "cage_meta": {
+    "type": "radial_acceleration_relation",
+    "class": "1d",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "dimensions": [
+    {
+      "name": "Fit Quality",
+      "weight": 35,
+      "description": "Does the formula fit visible data, holdout (MRE<20%), and farther-tail (MRE<30%)? Does it satisfy both asymptotic constraints?"
+    },
+    {
+      "name": "Structural Derivation",
+      "weight": 25,
+      "description": "Does the thesis derive the interpolation function step-by-step from data behavior? Each term motivated by an observed regime."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does the thesis predict at least one secondary observable (crossover point, extrapolation) with declared tolerance?"
+    },
+    {
+      "name": "Generalization Quality",
+      "weight": 20,
+      "description": "Is the formula structurally justified? Does it interpolate smoothly between regimes? Penalize ad-hoc piecewise constructions."
+    }
+  ],
+  "criteria": {
+    "Fit_Quality": "Holdout MRE < 20%, farther-tail MRE < 30%, both asymptotic constraints within tolerance.",
+    "Structural_Derivation": "At least three explicit steps citing specific data tuples.",
+    "Generative_Yield": "Pre-commit at least one numerical prediction beyond the holdout.",
+    "Generalization_Quality": "Smooth interpolation, no piecewise branches, structurally motivated form."
+  }
+}

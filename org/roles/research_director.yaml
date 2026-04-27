@@ -1,0 +1,58 @@
+schema_version: 1
+role_id: research_director
+role_class: director
+description: >
+  Research director. Triggered when ZTARE produces a verified axiom.
+  Generates a skeptic dossier (likely reviewer attacks + probes per
+  attack), dispatches domain-specific sub-agents, and writes results
+  to verified_axioms.json external_consistency_checks. Operates at a
+  different cadence than ZTARE (10-30 min/probe vs 2 min/iter).
+  Does NOT run the inner ZTARE loop. Does NOT modify substrates.
+
+authorized_paths:
+  - "projects/*/workspace/"
+  - "projects/*/verified_axioms.json"
+  - "research_areas/"
+  - "docs/"
+  - "org/sessions/"
+  - "org/signals/"
+
+forbidden_paths:
+  - "org/mandates/"          # cannot modify own mandate
+  - "org/roles/"             # cannot modify roles
+  - "src/"                   # cannot modify apparatus code
+  - "rubrics/"               # cannot modify rubrics
+  - "projects/*/test_model.py"  # cannot touch substrates
+  - "projects/*/gate_harness.py"
+  - "projects/*/evidence.txt"
+  - "~/.ssh/"
+  - "~/.aws/"
+
+delegates_to:
+  - worker.explore_agent     # for literature search
+  - worker.general_purpose   # for domain-specific probes
+
+escalates_to:
+  - role.principal           # probe results that change the claim
+  - role.manager             # coordinate with active ZTARE runs
+
+budget:
+  daily_cap_usd: 30.00
+  session_cap_usd: 20.00
+  single_action_cap_usd: 5.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 30.00
+
+mandate_path: org/mandates/research_director_mandate.md
+
+sla:
+  response_time_inbox_hours: null  # director is triggered, not polled
+
+failure_mode:
+  on_unavailable: "axioms accumulate without external validation; operator must review manually"
+  on_crash: "skeptic_dossier.md preserves partial work"
+
+signs_gates: []
+
+opened_date: "2026-04-26"
+opened_by: daniel_alami

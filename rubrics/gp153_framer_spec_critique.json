@@ -1,0 +1,91 @@
+{
+  "rubric_version": "1.0-spec-critique",
+  "project": "gp153_framer_spec_critique",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "gp153 is a recursive critique audit: the apparatus reviews a spec the apparatus produced (gp152 iter-1) and a panel revised (v1.1). Newton-mode is required because Kepler-class 'this looks fine' theses fail the charter \u2014 the thesis must propose a SUBSTANTIVE flaw or a v2.0 architecture with numerical predictions, not just describe the spec.",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the critique anchored on the v1.1 spec's load-bearing claims (Jacobian-corrected MDL, branch-and-bound at depth 2, 3 runtime gates + canary, Option C wrapping) rather than drifting into general representation-learning meta-critique.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative architectural critique. Output is a flaw + mechanism + numerical prediction (or v2.0 spec). Scoring is rubric-driven across critique substantiveness, mechanism depth, numerical pre-commitment, and code-level concreteness.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative critique \u2014 no numerical curve to extrapolate.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative critique \u2014 evidence is spec text + panel summary, not numerical data.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative critique \u2014 rival critique designs scored by rubric criteria; mathematical-form keyword heuristic does not apply.",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 6,
+  "underidentified_after": 20,
+  "underidentified_after_reason": "Recursive critique audits historically (gp150, gp152) hit a self-introspection ceiling between 8-15 iters. Setting underidentified_after=20 to cover the full champion-persistence profile (GP-148: ~28 iters / 10 classes) while permitting graceful exit if the apparatus has hit its ceiling on critiquing its own output.",
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "stagnation_trigger_mode": "new_class",
+  "stagnation_trigger_mode_reason": "Task 12: critique substrates cycle through many distinct critique classes (formal-rigor, scope-completeness, generative-yield-yet, integration-correctness); fine-grained class-novelty preserves the cycling that produces champions.",
+  "inject_antipattern_catalog": "off",
+  "structural_blocker_enforcement": "gate",
+  "structural_blocker_enforcement_reason": "Task 22 / GP-151 hardkill retirement: deterministic post-champion gates (G-CIRC + G-FALSIFY) replace the prompt injection. Critique audits are particularly vulnerable to circularity (the critique uses the same logic it is critiquing) and unfalsifiability (vague critique prose); deterministic detection beats prompt warnings.",
+  "persona": "You are an adversarial software architect with Charlie Munger's inversion discipline and Karl Popper's falsification discipline, paired with the rigor of a journal referee for a paper-length spec submission. You are reviewing the v1.1 Framer Architecture Spec which has already passed a four-panel review (simulated Newton, Einstein, Heisenberg, Munger). Your standard is HIGHER than the panel's \u2014 you must find a load-bearing flaw the panel missed, propose a strictly better v2.0 architecture, or rigorously reject the entire approach. You REJECT: (a) restatements of any of the five panel-detected v1.0 flaws (already fixed in v1.1); (b) vague philosophical objections without mechanism; (c) proposed alternatives that fail the same desiderata v1.1 satisfies (deterministic gating, complexity bounds, Newton-mode generative yield); (d) critiques that lack code-level concreteness; (e) Kepler-class 'this looks reasonable' verdicts. You REWARD: (i) substantive new flaws with named mechanism + falsification test; (ii) v2.0 proposals that strictly beat v1.1 on numerical predictions (test case A MDL gain \u2265 64 bits; test case B residual dispersion floor \u2264 1.25\u03c3); (iii) rigorous rejections that name the replacement primitive class and demonstrate why Framer-class is structurally inferior; (iv) critiques that engage the deeplearning.pdf 'learning mechanics' framing \u2014 does v1.1 satisfy the seven desiderata, and if not, which violation is load-bearing?",
+  "dimensions": [
+    {
+      "name": "Critique Substantiveness",
+      "weight": 16.46,
+      "description": "Does the thesis produce a SUBSTANTIVE critique (per charter \u00a73 task options 1, 2, or 3)? (a) 0/20 if the critique is descriptive ('the spec looks reasonable') or restates panel-detected flaws. (b) 8/20 if a new flaw is named but lacks mechanism. (c) 14/20 if the critique has mechanism but no falsification test. (d) 20/20 if the critique names a NEW load-bearing flaw (or rejects approach with replacement) WITH mechanism AND with a Popper falsification test that could surface the flaw on a concrete substrate."
+    },
+    {
+      "name": "Mechanism Depth",
+      "weight": 12.35,
+      "description": "Does the critique trace the flaw to a specific structural choice in v1.1, with a causal chain from that choice to the predicted failure? (a) 0/15 for surface-level objection. (b) 7/15 for one structural choice named, but causal chain partial. (c) 12/15 for full causal chain through one component. (d) 15/15 for causal chain that spans multiple v1.1 components AND identifies the joint-failure mode (lollapalooza)."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 15,
+      "description": "Does the thesis pre-commit to NUMERICAL predictions on v1.1's named test cases (A: y = exp(x\u00b2)/(1 + log x), N=200, \u03c3=0.01; B: two-dataset universality y_i = A_i x^\u03b1 + B_i)? Per charter \u00a7observable: (a) 'confirm + new flaw' theses must predict failure rate or scope-restriction with quantifiable test; (b) 'propose v2.0' must predict MDL gain (must beat 64 bits) AND iter savings (must beat 28\u21929); (c) 'reject approach' must predict \u22652 substrates where the replacement beats the Framer. (i) 0/15 if no numerical prediction. (ii) 7/15 if predictions are qualitative ('larger gain'). (iii) 12/15 if both test cases addressed but tolerances vague. (iv) 15/15 if both test cases have numerical predictions with declared tolerances and the replacement/v2.0 strictly dominates v1.1's stated predictions."
+    },
+    {
+      "name": "Engagement with Learning-Mechanics Framing",
+      "weight": 12.35,
+      "description": "Does the critique engage Evidence Set E (deeplearning.pdf 'learning mechanics' seven desiderata)? (a) 0/15 if the framing is ignored. (b) 5/15 if the framing is mentioned without analytical use. (c) 10/15 if at least one desideratum (Fundamental, Mathematical, Predictive, Comprehensive, Intuitive, Useful, Humble) is invoked to score v1.1 with a specific verdict. (d) 15/15 if the critique uses the desiderata as load-bearing analytical tools \u2014 e.g., 'v1.1 violates desideratum #1 (Fundamental) because the MDL formula is BIC-by-convention; the first-principles derivation would yield [...] which differs in [...]'. The contamination-risk note from Set E (v1.0 may reflect learning-mechanics-adjacent training data) should be addressed if proposing v2.0."
+    },
+    {
+      "name": "Code-Level Concreteness",
+      "weight": 8.24,
+      "description": "Is the critique expressible at code level? (a) 0/10 for verbal description. (b) 5/10 for some module paths but no hand-off contract. (c) 10/10 for either: (i) named module path of the additional gate / fixed component the critique recommends, OR (ii) named module-by-module replacement architecture for v2.0 with hand-off contracts. The downstream coding agent must be able to act on the critique without further architectural input."
+    },
+    {
+      "name": "Popper Falsifier Pre-Registration",
+      "weight": 8.24,
+      "description": "Does the critique pre-register a falsifier? (a) 0/10 for no falsifier. (b) 5/10 for vague falsifier. (c) 10/10 for a specific test case + observable + threshold that, if measured, would prove the critique correct or wrong. The falsifier must be deterministic (computable from artifacts the apparatus produces) and pre-registered (declared BEFORE any test runs)."
+    },
+    {
+      "name": "Recursion Safety",
+      "weight": 8.24,
+      "description": "Does the critique avoid introducing a NEW false axiom about ZTARE's apparatus or about the Framer? (a) 0/10 if the critique relies on an unsupported assertion about ZTARE's behavior or about deep-learning theory. (b) 5/10 if assertions are mostly grounded but at least one relies on training-data convention not evidence. (c) 10/10 if every critique-supporting claim is either (i) traceable to an evidence set provided here, OR (ii) flagged as a hypothesis with a Popper falsifier of its own. Recursion safety is the discipline that prevents the critique from contaminating future runs."
+    },
+    {
+      "name": "Cross-LLM Robustness Hint",
+      "weight": 4.12,
+      "description": "Does the critique anticipate that it will be evaluated under --dynamic=1 (committee rotation across LLM families)? (a) 0/5 if the critique is single-LLM-family-specific (e.g., relies on phrasing only one model would understand). (b) 5/5 if the critique is expressed in coordinate-invariant mathematical / architectural language that survives translation across mutator-judge family combinations. This dimension exists to defend against the GP-151 cross-LLM 48% fine-grained agreement risk applied to recursive audits."
+    },
+    {
+      "name": "M-Form Charter Alignment: engagement_with_all_charter_axes",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Assign zero credit unless the submission 1) specifically references all four evidence sets, 2) selects and justifies one of the three core charter options, 3) identifies a code-level mechanism or failure mode not already treated by the panel, and 4) quantitatively predicts test outcomes per the charter\u2019s Newton-mode requirement. Gap detected: The thesis as provided is clearly only a stub and does not engage with any aspect of the charter\u2019s requirements. It does not review evidence set A (v2.0 spec), evidence set B (v1.0 & annotations), evidence set C (panel review), or D (ZTARE architecture framework). It does not choose or justify any one of the three task options (confirm v2.0 and find a new flaw, propose a new architecture, or reject the approach); does not pre-commit to numerical predictions; does not name any new, load-bearing flaw or failure mode; nor apply Munger inversion or Popper falsification. There is no code-level critique or mechanism presented. Overall, the thesis fails to engage the full spirit or letter of the analytical breadth required by the project charter."
+    }
+  ],
+  "criteria": {
+    "Critique_Substantiveness": "Substantive = (a) names a flaw not on the panel-detected list, (b) gives a mechanism \u2014 not just a label, (c) provides a falsification test. A thesis that says 'the spec is over-engineered' without naming the over-engineered component scores 0. A thesis that says 'the Jacobian correction breaks at second order under composition with exp' with derivation scores 14+.",
+    "Mechanism_Depth": "The causal chain must trace from a specific v1.1 architectural choice (e.g., 'using Silverman bandwidth in \u00a73.5') through intermediate consequences to the predicted failure (e.g., 'on heavy-tailed residuals the bandwidth saturates at the wrong scale; KDE underestimates \u03c3\u0302\u00b2 by factor X; the canary's 1.05x residual ratio is then biased favorable; framer self-disables incorrectly'). Lollapalooza credit if the chain shows multiple v1.1 components compounding.",
+    "Generative_Yield_(Newton-mode)": "Charter test case A is `y = exp(x\u00b2)/(1 + log x)`, N=200, \u03c3=0.01. v1.1 predicts MDL gain \u2248 64 bits and iters 28 \u2192 9 (\u00b12). Critique predictions must be on the SAME test case OR a new pre-registered test case with specified parameters. v2.0 proposals MUST strictly beat v1.1's predictions (\u2265 64 bits gain, \u2264 9 iters median) on the same test cases or the proposal is implicitly weaker.",
+    "Engagement_with_Learning-Mechanics_Framing": "The seven desiderata: 1=Fundamental, 2=Mathematical, 3=Predictive, 4=Comprehensive, 5=Intuitive, 6=Useful, 7=Humble. For each desideratum invoked, the critique must say (a) does v1.1 satisfy it, (b) why or why not, (c) what would change if the proposed flaw / v2.0 fix were applied. Hand-waving 'mechanics is a framing' with no per-desideratum analysis scores \u2264 5.",
+    "Code-Level_Concreteness": "Either (i) a new gate module: name file path + one-paragraph spec + hand-off contract; OR (ii) v2.0 architecture: name 4-6 modules with file paths + specs + a Phase-C hand-off; OR (iii) replacement primitive: name the replacement (e.g., 'expand \u03a3_solver primitive library directly') with affected file paths + migration plan.",
+    "Popper_Falsifier_Pre-Registration": "Falsifier = (test case, observable, threshold) triple. Test case must be reproducible from a seed. Observable must be deterministically computable from artifacts. Threshold must be declared before any test runs. Generic falsifiers ('it would fail on exotic cases') score 0; specific falsifiers ('on test case y = sin(log x) + 1/(1+x\u00b2) at N=150 \u03c3=0.02, v1.1 will report MDL gain \u2264 30 bits and iters > 12') score full credit.",
+    "Recursion_Safety": "Every critique-supporting claim must be traceable to evidence sets A-E OR flagged as a hypothesis with its own falsifier. A critique that asserts 'all real physics has axis-separable invariants' scores low because it's an unsupported universal claim. A critique that says 'we hypothesize axis-separable suffices for most tabletop physics; falsifier: Lorentz-class data per Einstein's gedankenexperiment' scores high.",
+    "Cross-LLM_Robustness_Hint": "Critique should be expressible without LLM-family-specific phrasing. Pure mathematical / algorithmic / architectural language scores 5. Critique that references 'as o3 would say' or 'Claude's natural framing' scores 0.",
+    "mform_engagement_with_all_charter_axes": "Assign zero credit unless the submission 1) specifically references all four evidence sets, 2) selects and justifies one of the three core charter options, 3) identifies a code-level mechanism or failure mode not already treated by the panel, and 4) quantitatively predicts test outcomes per the charter\u2019s Newton-mode requirement."
+  }
+}

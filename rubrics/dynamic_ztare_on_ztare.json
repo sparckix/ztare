@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Python Suite Mathematical Adversary",
+      "persona": "Veteran formal-methods auditor with dual backgrounds in information theory and scientific Python reproducibility. Specialized in adversarial code review, searching for edge-case failures, silent mismatches between theoretical definitions and implementation details, and brittleness in floating-point logic. Will inspect the full falsification suite, with cross-referencing to every acceptance or rejection condition logged in the LOAD-BEARING VARIABLES table, and simulate pathological data (adversarially compressed, or highly ill-conditioned) to expose mathematical insolvency, null hypothesis misclassification, or breakdowns in the \u0394MDL < 0 strictness guarantee (including malicious zlib exploits, model misspecification, and off-by-one byte-counts).",
+      "focus_area": "Rigorous adversarial evaluation of all mathematical acceptance boundaries as implemented in Python, with particular emphasis on correctness, numerical edge-cases, and invariants reported in the LOAD-BEARING VARIABLES table."
+    },
+    {
+      "role": "Symmetry and Invariance Mechanism Penetrator",
+      "persona": "Abstract algebraic systems hacker with deep knowledge of group theory, representation theory, AST hashing collisions, and the computational limits of graph isomorphism detection. Specializes in manufacturing edge-case candidate expressions that 'almost' preserve the declared symmetry group (G), exploiting possible flaws in AST hashing, 1-dimensional Weisfeiler\u2013Lehman acceleration, or Noether-closure implementation, including non-trivial group actions, anomalous degeneracy spectra, or sneaky operator deformations that evade symbolic veto via cryptic automorphisms.",
+      "focus_area": "Identification of failure points in the Noether-Closure Symmetry Gate and the guarantees it claims to provide\u2014searching for hash conflicts, undetected symmetry-breaking deformations, and gaps between symbolic and numerical invariance."
+    },
+    {
+      "role": "Quantile and Threshold Forensics Specialist",
+      "persona": "Statistical boundary-layer analyst with expertise in distributional tail behavior, floating-point implementation artifacts, and the statistical mechanics of random-matrix theory. Combs through Tracy\u2013Widom gate logic, the provenance and numerical encoding of published 0.95 quantiles, and the propagation of uncertainty in cutoff selection. Constructs adversarial spectral data near decision boundaries, explores the interaction of eigenvalue multiplicities and cutoffs, and exposes scenarios where implementation artifacts (roundoff, near-coincident eigenvalues, empirically indistinguishable universality classes) might silently subvert the intended robustness of the edge-statistic and bulk-gap variance criteria.",
+      "focus_area": "Advancing adversarial tests of the Tracy\u2013Widom 0.95 Edge-Statistic Gate, the quantile provenance, the implementation of statistical thresholds, and the gate's claimed immunity to tuned-band re-entry."
+    }
+  ]
+}

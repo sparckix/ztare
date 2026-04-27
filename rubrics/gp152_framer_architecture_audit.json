@@ -1,0 +1,104 @@
+{
+  "rubric_version": "1.1-post-mform-rebalance",
+  "rubric_version_reason": "GP-105 General Office hardened the rubric in iter 2 by injecting two universality-collapse criteria (12.75 + 15 = 27.75 weight) and rebalancing originals via uniform 0.7222 multiplier. This crushed Generative Yield from 15 \u2192 10.84, violating Newton-mode \u00a718 minimum (\u226515). v1.1 restores Generative Yield to 15 and rebalances the other originals to maintain sum=100, preserving the M-Form additions intact. Iatrogenic risk note: GP-105's automatic rebalancing logic should be patched to preserve Newton-mode Generative Yield \u226515 invariant.",
+  "project": "gp152_framer_architecture_audit",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "gp152 is a self-prompting architectural audit asking the apparatus to design the optimal pre-solver representation-search Framer. Newton-mode is required: the thesis must propose a CLASS of generalizable transformation behaviors and pre-commit to numerical predictions on test cases, not merely describe a single API.",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the audit anchored on the bipartite-optimization framing (collapse phase + shape phase) rather than drifting into general representation-learning side quests.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative architectural audit. Output is a Framer architecture spec, not a numerical fit. Scoring is rubric-driven across parsimony, complexity bounds, MDL integration, and Newton-mode generative observables.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative architectural audit \u2014 no numerical curve to extrapolate.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative audit \u2014 evidence is architectural-map description, not a numerical curve; global_evidence_fit gate does not apply.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative audit \u2014 rival Framer designs scored by rubric criteria; mathematical-form keyword heuristic does not apply.",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 6,
+  "underidentified_after": 20,
+  "underidentified_after_reason": "GP-148 champion persistence profile: \u226585-score groups average 28 iters. Self-introspection audits historically (gp150) hit 71-78 ceiling within 8-15 iters. Setting underidentified_after=20 to cover the full champion profile while still permitting graceful exit if the apparatus has hit its self-introspection ceiling.",
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "stagnation_trigger_mode": "new_class",
+  "stagnation_trigger_mode_reason": "Task 12: reset stagnant_window when iteration's weakest-link class is new to the session. Architectural audits cycle through many distinct critique classes (algorithmic complexity, MDL formalization, integration concreteness, complexity-bound rigor); fine-grained class-novelty preserves the cycling that produces champions.",
+  "inject_antipattern_catalog": "off",
+  "structural_blocker_enforcement": "gate",
+  "structural_blocker_enforcement_reason": "Task 22 / GP-151 hardkill retirement: deterministic post-champion gates (G-CIRC DAG-cycle detection + G-FALSIFY numeric-assertion + watch_signal + rival check) replace the LLM-taxonomy hardkill prompt injection. The catalog injection is suppressed when this flag is 'gate'. Architectural audits are particularly suited to gate-mode because they're vulnerable to circularity (Framer-to-find-Framer) and unfalsifiability (vague prose); deterministic detection is cleaner than prompt-level warnings.",
+  "persona": "You are an adversarial software architect with Charlie Munger's inversion discipline and Karl Popper's falsification discipline. You are evaluating proposals for a pre-solver representation-search 'Framer' phase that systematically transforms data coordinates before the main solvers engage. You REJECT: (a) Framer designs that require operator-supplied coordinate hints; (b) Framers that propose brute-force enumeration over O(N!) representation spaces without complexity bounds; (c) Framers that conflate the bipartite optimization (collapse phase + shape phase) and try to fit the law and the transformation simultaneously; (d) Framers without explicit MDL/BIC selection pressure; (e) thesis prose that describes 'what a Framer should do' without naming module paths, hand-off contracts, or numerical predictions on the charter's two test cases. You REWARD: (i) substantive Munger inversions (not 'we wouldn't run the Framer') that derive the design from a structural failure-mode argument; (ii) hierarchical/MDL-prunable transformation spaces with named complexity bounds (e.g., 'O(M log M) per axis with greedy MDL local search'); (iii) explicit symmetry-detection and dimensional-analysis pre-filters that eliminate transformation candidates BEFORE MDL ranking; (iv) named module paths with one-paragraph implementation specs; (v) numerical predictions on the charter's test case A (single dataset, true law y=exp(x\u00b2)/(1+log(x))) and test case B (multi-dataset universality collapse).",
+  "dimensions": [
+    {
+      "name": "Inversion Proof of Current Architecture Failure",
+      "weight": 11.56,
+      "description": "Does the thesis include a substantive Munger inversion proving why ZTARE's current architecture fails to recover f(log(x), 1/y)=C at acceptable parsimony? (a) 0/20 if no inversion or trivial restatement ('the solvers don't transform coordinates'). (b) 8/20 if inversion is non-trivial but doesn't connect to a structural failure mode (e.g., grammar tier limitation, MDL blindness, or basis incompleteness). (c) 14/20 if inversion identifies one specific structural failure mode with mechanism. (d) 20/20 if inversion identifies a CLASS of physical invariants (not just one example) that the current architecture provably misses, with a parsimony-cost argument quantifying the high-parameter penalty in native coordinates."
+    },
+    {
+      "name": "Framer Architecture: Complexity Bounds + Hierarchy",
+      "weight": 10.84,
+      "description": "Does the proposed Framer have explicit, polynomial-or-better complexity bounds and a hierarchical/prunable structure? (a) 0/20 for unbounded brute-force enumeration. (b) 8/20 for bounded but flat (single-level) enumeration. (c) 14/20 for hierarchical with named pruning criterion. (d) 20/20 for hierarchical, MDL-prunable, with explicit complexity bound (e.g., 'O(M\u00b7log(M)) per axis at depth 1, O(M\u00b2\u00b7log(M)) at depth 2 conditional on depth-1 MDL improvement'). Symmetry-detection and dimensional-analysis pre-filters that eliminate \u226550% of candidates before MDL ranking earn full credit."
+    },
+    {
+      "name": "MDL Integration Rigor",
+      "weight": 7.95,
+      "description": "Does the Framer use Minimum Description Length (or BIC) as the selection pressure, with each MDL component (data dispersion, transformation description length, law description length) explicitly defined and computable? (a) 0/15 if MDL is vaguely invoked without a concrete formula. (b) 8/15 if the MDL formula is stated but components are not computable from the data alone (e.g., 'L_law' is hand-waved). (c) 15/15 if all three MDL components have explicit, computable formulas with named approximations (e.g., BIC for L_law, Kolmogorov-complexity proxy for L_model)."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 10.84,
+      "description": "Does the thesis pre-commit to numerical predictions on the charter's two test cases? (a) 0/15 if no numerical predictions. (b) 7/15 if predictions on test case A only OR predictions are qualitative ('MDL improvement is large'). (c) 12/15 if both test cases have specific predictions but tolerances are vague. (d) 15/15 if both test cases have specific numerical predictions with declared tolerances (e.g., 'test A: MDL bit-savings \u2265 30 bits at N=200, \u03c3=0.01; test B: residual dispersion floor \u2264 1.5\u03c3 on the master curve'). The Newton-mode discipline forbids a thesis that only restates the test cases without numerical commitment."
+    },
+    {
+      "name": "Code-Level Concreteness",
+      "weight": 3.61,
+      "description": "Does the thesis name specific module paths, hand-off contracts, and one-paragraph implementation specs per Framer component? (a) 0/10 for verbal descriptions only. (b) 5/10 for some module paths but no hand-off contract. (c) 10/10 for all components named with file paths AND one-paragraph specs AND a concrete hand-off contract to the existing Phase C entry point (`autoresearch_loop.py` or `compress_champion.py`)."
+    },
+    {
+      "name": "Universality-Collapse Treatment",
+      "weight": 3.61,
+      "description": "Does the thesis explicitly address the multi-dataset universality-collapse extension? (a) 0/10 if unaddressed. (b) 5/10 if mentioned but no architectural commitment ('this could be extended later'). (c) 10/10 if the thesis EITHER (i) shows that the single-dataset Framer subsumes the multi-dataset case as N=1 special case with rigorous reduction, OR (ii) explains why multi-dataset requires its own primitive and bounds the additional complexity cost (\u2264 4-week implementation, with named bipartite-optimization core)."
+    },
+    {
+      "name": "Popper Falsifier Pre-Registration",
+      "weight": 3.61,
+      "description": "Does the thesis pre-register a class of invariants the proposed Framer would still miss, OR a complexity threshold beyond which the Framer becomes intractable? (a) 0/10 for no falsifier. (b) 5/10 for a vague falsifier ('the Framer might miss exotic cases'). (c) 10/10 for a specific named class (e.g., 'invariants of the form f(x\u00b7log(y), y/sqrt(x)) require depth-3 composition; the Framer's depth-2 cap rejects them by construction'), and a complexity threshold (e.g., 'with N transformations on each axis, depth-2 enumeration scales as O(N\u00b2\u00b7M)' where M is dataset size)."
+    },
+    {
+      "name": "M-Form Charter Alignment: universality_and_pred_tests",
+      "weight": 9.39,
+      "description": "[GP-105 General Office insertion] Theses must rigorously address the multi-dataset universality-collapse extension\u2014detailing the Framer's architecture, expected integration path, and providing quantitative predictions specific to multi-dataset alignment scenarios as described in the charter. Additionally, theses must pre-commit to explicit numerical predictions in both single-dataset and multi-dataset test cases, quantifying expected MDL improvement and residual error/floor. Gap detected: The thesis omits the required universality-collapse extension: it does not design (or rule out) the case where multiple datasets must be aligned onto a single master curve, nor does it discuss or predict the Framer's behavior in multi-dataset alignment. The thesis also does not provide explicit numerical predictions for Test Case A (bit-savings under MDL) or Test Case B (predicted residual dispersion floor for multi-dataset case), as mandated by the charter's secondary observable."
+    },
+    {
+      "name": "M-Form Charter Alignment: universality_collapse_coverage",
+      "weight": 10.84,
+      "description": "[GP-105 General Office insertion] Award zero credit unless the thesis explicitly addresses both single-dataset and multi-dataset (universality collapse) scenarios, providing architectural detail, integration plan, and at least one concrete falsifiable numerical prediction for each case. Gap detected: The thesis fails to clearly address the full universality-collapse extension required in the charter: it does not specify a design or falsification mechanism for aligning multiple datasets onto a master curve before committing coordinates, nor does it furnish explicit methodology or numerical prediction for Test Case B (multi-dataset universality collapse). This leaves a major portion of the charter\u2014designing and evaluating the Framer\u2019s behavior in the multi-dataset context\u2014insufficiently engaged."
+    },
+    {
+      "name": "M-Form Charter Alignment: universality_collapse_required",
+      "weight": 12.75,
+      "description": "[GP-105 General Office insertion] Theses must (a) explicitly design the multi-dataset universality-collapse extension (not merely cite or mention it), covering algorithmic steps for aligning and scaling N datasets onto a master curve, and (b) provide a numerical prediction for the residual dispersion/floor on a representative test case as in the charter. Failure to both design and numerically forecast the universality-collapse yields a severe penalty. Gap detected: The thesis does not clearly engage the universality-collapse extension in sufficient depth: it mentions multi-dataset universality collapse in passing, but provides neither a concrete design nor discusses the explicit algorithmic steps, architectural hand-off, or failure modes in the multi-dataset alignment/curve collapse scenario. The required predictive numerical outcome (residual dispersion floor, master-curve scaling) for test case B is also missing or insufficiently specified. The rest of the requirements (inversion proof, single-dataset numerical prediction, Framer architecture) are addressed, but the multi-dataset/curve universality-collapse scenario\u2014explicitly demanded in the primary observable and secondary observable\u2014was not concretely developed."
+    },
+    {
+      "name": "M-Form Charter Alignment: multi_dataset_universality_alignment",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Thesis must describe, implement, or rule out the procedures by which the Framer aligns multiple datasets onto a single master curve prior to coordinate commitment. The solution must name or formalize the multi-dataset alignment mechanism and offer a concrete behavioral prediction for universality collapse test cases. Gap detected: The thesis provides a formal inversion showing grammar/solver limitations, describes a Framer with symmetry/MDL, and commits to numerical predictions for iteration savings. However, it does not clearly address or design a universality-collapse extension for the multi-dataset case (i.e., coordinating alignment of N datasets onto a master curve before coordinate commitment), which the charter explicitly requires. There is no detailed proposal or substantial engagement with the multi-dataset transformation/alignment logic, nor is the test case B prediction shown within the visible thesis excerpt."
+    }
+  ],
+  "criteria": {
+    "Inversion_Proof_of_Current_Architecture_Failure": "Inversion must name (a) a specific architectural component (grammar tier, basis function library, MDL-blindness in compress_champion, etc.) AND (b) the structural reason this component cannot represent f(log(x), 1/y)=C at parsimony cost \u2264 K parameters for K \u2264 5. A high-parameter polynomial fit in native coords (e.g., 12+ parameters) versus a 1-parameter fit in transformed coords is the canonical evidence; thesis must cite or derive this gap.",
+    "Framer_Architecture:_Complexity_Bounds_+_Hierarchy": "Explicit complexity bound stated as a function of (M = number of candidate transformations per axis, N = dataset size, D = composition depth, P = number of parameters in the fitted law). Brute-force O(M^D) without pruning fails. Acceptable: O(M\u00b7log(M)\u00b7N) per depth level with MDL-greedy pruning between levels.",
+    "MDL_Integration_Rigor": "The MDL formula must split into at least three terms (data, transformation, law) and each must be computable WITHOUT knowing the true law f. Standard substitutions: BIC for law description length; AST node count or character length for transformation description length; local-variance estimator for data dispersion in Phase 1 (collapse) and standard fit residual in Phase 2 (shape).",
+    "Generative_Yield_(Newton-mode)": "Test case A: y = exp(x\u00b2)/(1 + log(x)), x \u2208 [1, 10], N=200, \u03c3=0.01 noise. Predict the MDL bit-savings (transformed vs native) and declare a tolerance. Test case B: two datasets y_i = A_i \u00b7 x^\u03b1 + B_i with shared \u03b1 but different (A_i, B_i). Predict the residual dispersion floor on the master curve.",
+    "Code-Level_Concreteness": "At minimum: (1) Framer entry point (e.g., `src/ztare/fit/framer/run_framer.py`); (2) symmetry-detector module; (3) dimensional-analysis module; (4) MDL-greedy search module; (5) Phase-C handoff contract (e.g., 'returns transformed (x, y) arrays + transformation_log JSON'). Each component: one-paragraph spec.",
+    "Universality-Collapse_Treatment": "Either (i) reduce single-dataset Framer to multi-dataset N=1 case with rigorous reduction proof, OR (ii) name the bipartite-optimization core (e.g., 'minimize sum of within-cluster local variance over scaling parameters', with optimizer choice: Nelder-Mead / simulated annealing / proximal gradient) and bound implementation cost.",
+    "Popper_Falsifier_Pre-Registration": "Named class of physical invariants that the Framer's structural choices (depth cap, transformation library, MDL approximation) cannot recover. Plus: complexity threshold (in big-O notation as a function of named parameters) beyond which the Framer becomes intractable for typical hardware budgets.",
+    "mform_universality_and_pred_tests": "Theses must rigorously address the multi-dataset universality-collapse extension\u2014detailing the Framer's architecture, expected integration path, and providing quantitative predictions specific to multi-dataset alignment scenarios as described in the charter. Additionally, theses must pre-commit to explicit numerical predictions in both single-dataset and multi-dataset test cases, quantifying expected MDL improvement and residual error/floor.",
+    "mform_universality_collapse_coverage": "Award zero credit unless the thesis explicitly addresses both single-dataset and multi-dataset (universality collapse) scenarios, providing architectural detail, integration plan, and at least one concrete falsifiable numerical prediction for each case.",
+    "mform_universality_collapse_required": "Theses must (a) explicitly design the multi-dataset universality-collapse extension (not merely cite or mention it), covering algorithmic steps for aligning and scaling N datasets onto a master curve, and (b) provide a numerical prediction for the residual dispersion/floor on a representative test case as in the charter. Failure to both design and numerically forecast the universality-collapse yields a severe penalty.",
+    "mform_multi_dataset_universality_alignme": "Thesis must describe, implement, or rule out the procedures by which the Framer aligns multiple datasets onto a single master curve prior to coordinate commitment. The solution must name or formalize the multi-dataset alignment mechanism and offer a concrete behavioral prediction for universality collapse test cases."
+  }
+}

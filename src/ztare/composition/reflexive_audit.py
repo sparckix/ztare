@@ -90,10 +90,11 @@ class ProjectTelemetrySummary:
 
 
 class AuditVerdict(Enum):
-    MACHINERY_BROKEN = "machinery_broken"       # trigger audit — same gate failing, stagnating
-    SCIENCE_IS_HARD  = "science_is_hard"        # all clear — diverse gate failures, hard substrate
-    AMBIGUOUS        = "ambiguous"              # report, don't flag
-    INSUFFICIENT_DATA = "insufficient_data"    # skip — too few iterations or too early
+    MACHINERY_BROKEN = "machinery_broken"               # trigger audit — same gate failing, stagnating
+    SCIENCE_IS_HARD  = "science_is_hard"                # all clear — diverse gate failures, hard substrate
+    AMBIGUOUS        = "ambiguous"                      # report, don't flag
+    INSUFFICIENT_DATA = "insufficient_data"             # skip — too few iterations or too early
+    GOODHARTED_SPECIFICATION = "goodharted_specification"  # GP-105: high score, wrong question
 
 
 @dataclass

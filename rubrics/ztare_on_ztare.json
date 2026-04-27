@@ -1,0 +1,62 @@
+{
+  "rubric_mode": "newton",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "GP-134 DAG steering patch: parse latest_probability_dag.json each iter, compute urgency = edge_weight * node_probability, prepend highest-urgency node's watch_signal to mutator prompt. Converts DAG from passive reflection to active steering. See research_areas/private/seams/mission/GP-134_ztare_on_ztare_self_recursive_seam.md.",
+  "rubric_mode_reason": "Discovery-class target — ztare_on_ztare asks whether small architectural primitives can convert fitting into constructing. Newton-mode enforces Generative Yield dimension: each primitive must name ≥1 secondary observable its mechanism predicts beyond the fitting target. See GP-133 Round 4 § Kepler→Newton reframe.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative thesis project — no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative thesis — evidence surface is text documents, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative thesis — rival mechanisms scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "I am a contrarian architectural epistemologist specializing in tool-originated artifact discovery. I reject handwave generalization and penalize any argument that fails to nail code-to-abstraction traceability or relies merely on post-hoc fit. I have zero patience for claims that sidestep the unknowns by redefining the targets downward, or for rationales that patch substrate ambiguity with clever rhetoric. Most crucially, I will sharply deduct for any move that projects fit-based reasoning onto discovery aims. Beware: I vehemently penalize any step that treats architectural insertion points as floating signifiers rather than hard-coded operator interventions. I am ESPECIALLY ruthless toward the failure mode of symbolic-addition-dressed-as-novelty: a primitive that claims to 'expand the grammar' or 'generate new forms' while actually proposing recombination over a finite pre-registered alphabet is Kepler epicycles with new labels. Real operator abstraction requires a named mechanism — subgraph mining, algebraic collapse via symbolic solver, compression-gain gate with numeric threshold — not verbal incantation. If the primitive's 'mechanism' is stated at the class-of-technique level without a named library, cited algorithm, or quantitative threshold, I treat it as non-existent.",
+  "dimensions": [
+    {
+      "name": "Primitive-Substrate Mapping Clarity",
+      "weight": 20,
+      "description": "Full points require each proposed primitive to nail down where in the codebase it intervenes, its interface with substrate uncertainty, and why this link is not merely a relabeling of fitting components. Points are lost for vague or high-level descriptions that do not forcibly allocate responsibility for discovery-class capability at a concrete locus."
+    },
+    {
+      "name": "Rival Mechanism Enumeration",
+      "weight": 15,
+      "description": "Top marks demand explicit enumeration of plausible rival primitives or alternate minimal sets, with evidence for why the proposed set is, in principle, minimal. Any suppression of viable mechanisms or neglect of counterfactual minimality scenarios is penalized."
+    },
+    {
+      "name": "Test & Derivation Specificity",
+      "weight": 15,
+      "description": "Earn full credit by detailing falsifiable first-cycle tests that distinguish construction from fitting behavior, not just the mechanism’s operation in isolation, and providing derivation sketches tightly tied to the architectural changes, not to generic or wishful operational outcomes. Any hand-wavy or repeat-of-fitting test scenario gets downgraded."
+    },
+    {
+      "name": "External Correctness-Tax and Gate Modeling",
+      "weight": 15,
+      "description": "Maximum points require a formulation of correctness-tax as an explicit architectural gate, with attention to its function as an obstacle (not a byproduct) and its function in geometric or physical interpretation if available. Defining correctness-tax in post-hoc or external validator terms without embedding as a code-level mechanism earns major deductions."
+    },
+    {
+      "name": "Mechanism Algorithmic Concreteness",
+      "weight": 15,
+      "description": "HARD GATE on verbal-vs-algorithmic primitives. Full points require each primitive to name at least one of: (i) an existing open-source library / function / data structure the implementation would use (e.g. 'SymPy.Matrix.rank', 'networkx.algorithms.isomorphism.subgraph_is_isomorphic', 'gSpan frequent subgraph mining', 'Kolmogorov-Smirnov statistic scipy.stats.ks_2samp'); (ii) a specific algorithm from a cited paper (author + year + algorithm name); (iii) a specific numeric threshold with justification (e.g. 'MDL compression gain threshold 15% derived from minimum-description-length principle'). Deduct sharply for primitives whose 'mechanism' is stated only at the class-of-technique level ('meta-generative recombination', 'adversarial audit', 'meta-extension logic') without naming a runnable algorithm. This distinguishes symbolic-addition-dressed-as-novelty from operator abstraction. A primitive whose falsifier cannot be implemented by a competent engineer referencing specifically-named tools within one day fails this criterion."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 20,
+      "description": "KEPLER→NEWTON GATE. This dimension separates descriptive-fitting proposals from generative-structural proposals. Per GP-133 Round 4: a Newton-class primitive predicts observables beyond the fitting target; a Kepler-class primitive fits the given data and predicts nothing else. **Scoring**: (a) 0/20 if the primitive predicts only the primary fitting target — this is the automatic score for 'naked fits' with no secondary prediction; (b) 10/20 if the primitive names a secondary observable but offers no mechanism to evaluate it; (c) 20/20 if the primitive explicitly names a distinct, mathematically-orthogonal secondary observable (examples: variance of gap distribution, Spectral Form Factor ramp slope, Betti numbers of a derived simplicial complex, forward prediction on a disjoint substrate) that must logically follow from its proposed mechanism AND pre-commits to the method of evaluation (i.e., what exact measurement would falsify it). **Tautology penalty**: trivial restatements of the fitting target ('predicts the next number in the sequence') score 0, not partial credit. **Cross-substrate bonus**: +5 partial credit (cap still 20) if the secondary observable is evaluable on a substrate distinct from the one the primitive is fit against — that is the cross-substrate invariance check from GP-129 Ramanujan. This dimension is the programmatic implementation of the Kepler→Newton distinction."
+    }
+  ],
+  "criteria": {
+    "primitive_substrate_mapping": "Does the thesis identify a clear, code-level insertion point for each architectural primitive, and directly address how it interacts with substrate unknowns instead of sidestepping them through rebranding of fit-centric code? Full credit only for concrete, non-ambiguous allocations—penalize any tendency to project algorithmic wishfulness onto vague points in the pipeline.",
+    "rival_mechanism_enumeration": "Has the author enumerated at least one plausible alternative primitive or minimal set, justifying why these are ruled out for constructing-class capability rather than merely confirming fit? Approaches failing to flesh out rival paths or resting on the absence of counterexamples lose points.",
+    "test_derivation_specificity": "Do the proposed first-cycle tests actually falsify the discovery claim as distinguished from fitting, and are the derivation sketches explicitly tethered to the architectural interventions rather than behavioral outcomes that could result from chance? Penalize any criterion that repeats legacy fitting test logic under the new label.",
+    "external_correctness_tax_gate_modeling": "Is the external correctness-tax fundamentally modeled as an enforced gate—potentially with a physical or geometric interpretation—and implemented as a code-level checkpoint rather than an evaluative afterthought? Deduct for mere post-hoc assessments or for omitting gate placement in the core architecture.",
+    "mechanism_algorithmic_concreteness": "Does each primitive name at least one specific existing library function, cited-paper algorithm by name, or specific numeric threshold with derivation? Primitives described at the class-of-technique level only ('meta-generative recombination', 'adversarial audit', 'meta-extension logic') without naming a runnable algorithm fail this gate. This is the hard distinction between symbolic-addition-dressed-as-novelty (Kepler epicycle layering) and actual operator abstraction (Newton-class grammar expansion). Ask: could a competent engineer, given only this primitive's description and the named library/algorithm/threshold, implement and test it within one working day? If no, the primitive is verbal and loses these points wholesale.",
+    "generative_yield_newton_mode": "Does each primitive predict at least one secondary observable beyond the primary fitting target? A proposal that fits the given data and predicts nothing else is Kepler-class — descriptive, scores 0 on this dimension. A proposal that names a distinct, mathematically-orthogonal secondary observable its mechanism entails AND pre-commits to how that observable would be evaluated is Newton-class — generative, scores 20. Examples of valid secondary observables: the variance of the gap distribution when the primitive's mechanism is a spectral claim; the Spectral Form Factor ramp slope when the primitive claims GUE-class statistics; the Betti numbers of a derived simplicial complex when the primitive claims topological invariance; the forward prediction on a disjoint substrate when the primitive claims cross-substrate generality. Trivial restatements ('predicts the next number') score 0, not partial credit. Cross-substrate secondary observables earn bonus weight. This is the programmatic implementation of the Kepler→Newton distinction per GP-133 Round 4."
+  }
+}

@@ -31,11 +31,53 @@
       "input_per_million_usd": 2.5,
       "output_per_million_usd": 10.0
     },
+    "gpt-4.1": {
+      "cache_creation_input_per_million_usd": 1.0,
+      "cache_read_input_per_million_usd": 0.5,
+      "input_per_million_usd": 2.0,
+      "output_per_million_usd": 8.0
+    },
+    "gpt-4.1-mini": {
+      "cache_creation_input_per_million_usd": 0.2,
+      "cache_read_input_per_million_usd": 0.1,
+      "input_per_million_usd": 0.4,
+      "output_per_million_usd": 1.6
+    },
+    "gpt-5.5": {
+      "cache_creation_input_per_million_usd": 5.0,
+      "cache_read_input_per_million_usd": 0.5,
+      "input_per_million_usd": 5.0,
+      "output_per_million_usd": 30.0
+    },
     "o1": {
       "cache_creation_input_per_million_usd": 7.5,
       "cache_read_input_per_million_usd": 7.5,
       "input_per_million_usd": 15.0,
       "output_per_million_usd": 60.0
+    },
+    "o3": {
+      "cache_creation_input_per_million_usd": 5.0,
+      "cache_read_input_per_million_usd": 2.5,
+      "input_per_million_usd": 10.0,
+      "output_per_million_usd": 40.0
+    },
+    "o3-mini": {
+      "cache_creation_input_per_million_usd": 0.55,
+      "cache_read_input_per_million_usd": 0.275,
+      "input_per_million_usd": 1.1,
+      "output_per_million_usd": 4.4
+    },
+    "o3-pro": {
+      "cache_creation_input_per_million_usd": 10.0,
+      "cache_read_input_per_million_usd": 5.0,
+      "input_per_million_usd": 20.0,
+      "output_per_million_usd": 80.0
+    },
+    "o4-mini": {
+      "cache_creation_input_per_million_usd": 0.55,
+      "cache_read_input_per_million_usd": 0.275,
+      "input_per_million_usd": 1.1,
+      "output_per_million_usd": 4.4
     }
   }
 }

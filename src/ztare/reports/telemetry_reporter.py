@@ -19,9 +19,9 @@ A load-bearing episode is any iteration where at least one of the following is t
   - loop_control_action is "underidentified" or "catastrophic_failure"
 
 Usage:
-  python -m src.ztare.validator.telemetry_reporter --project gp037_substrate_swap_01
-  python -m src.ztare.validator.telemetry_reporter --telemetry path/to/iteration_telemetry.jsonl
-  python -m src.ztare.validator.telemetry_reporter --project gp037_substrate_swap_01 --output report.json
+  python -m src.ztare.reports.telemetry_reporter --project gp037_substrate_swap_01
+  python -m src.ztare.reports.telemetry_reporter --telemetry path/to/iteration_telemetry.jsonl
+  python -m src.ztare.reports.telemetry_reporter --project gp037_substrate_swap_01 --output report.json
 """
 
 from __future__ import annotations

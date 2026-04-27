@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from src.ztare.common import utils
 from src.ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
-from src.ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, RENDERERS_DIR, REPO_ROOT
+from src.ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, RENDERERS_DIR, REPO_ROOT, RUBRICS_DIR
 
 
 ROOT_DIR = REPO_ROOT
@@ -54,9 +54,9 @@ PROJECT_TYPE_DEFAULTS = {
         "tone": "concise, diligence-oriented",
     },
     "policy_scenario": {
-        "renderer_type": "research_note",
-        "audience": "policy analyst",
-        "tone": "plainspoken, scenario-oriented",
+        "renderer_type": "policy_essay",
+        "audience": "policy analyst or decision-maker",
+        "tone": "plainspoken, recommendation-oriented",
     },
     "general_analysis": {
         "renderer_type": "research_note",
@@ -535,6 +535,20 @@ def sniff_context(
 ) -> Dict[str, Any]:
     if ACTIVE_LLM is None:
         raise RuntimeError("ACTIVE_LLM is not configured.")
+    # Per-project renderer pin: read synthesis_renderer from rubric JSON if present.
+    if not renderer_override:
+        rubric_name = best_iteration_rubric(project_dir)
+        if rubric_name:
+            rubric_path = RUBRICS_DIR / f"{rubric_name}.json"
+            if rubric_path.exists():
+                try:
+                    rubric_data = json.loads(rubric_path.read_text(encoding="utf-8"))
+                    pinned = rubric_data.get("synthesis_renderer", "")
+                    if pinned:
+                        renderer_override = pinned
+                        dbg(f"Renderer pinned by rubric '{rubric_name}': '{pinned}'")
+                except Exception:
+                    pass
     project_name = project_dir.name
     preview = build_context_preview(project_dir)
     available_renderers = sorted(path.stem for path in RENDERERS_DIR.glob("*.md"))
@@ -591,11 +605,16 @@ def sniff_context(
     else:
         sniffed_renderer_type = sniffed.get("renderer_type")
         if sniffed_renderer_type and sniffed_renderer_type != default_renderer_type:
-            note = (
-                f" Renderer suggestion '{sniffed_renderer_type}' ignored; "
-                f"defaulted to '{default_renderer_type}' unless --renderer-type is provided."
-            )
-            merged["reason"] = f"{merged['reason']}{note}".strip()
+            sniffed_path = RENDERERS_DIR / f"{sniffed_renderer_type}.md"
+            if sniffed_path.exists():
+                merged["renderer_type"] = sniffed_renderer_type
+                dbg(f"Using LLM-sniffed renderer '{sniffed_renderer_type}' (exists on disk).")
+            else:
+                note = (
+                    f" Renderer suggestion '{sniffed_renderer_type}' not on disk; "
+                    f"using default '{default_renderer_type}'."
+                )
+                merged["reason"] = f"{merged['reason']}{note}".strip()
 
     merged["history_mode"] = history_mode_override or default_history_mode(merged["renderer_type"])
     merged["history_source_paths"] = [str(path) for path in all_relevant_history_paths(project_dir, project_type)]
@@ -609,11 +628,13 @@ def sniff_context(
 
     prompt_path = RENDERERS_DIR / f"{merged['renderer_type']}.md"
     if not prompt_path.exists():
+        dbg(f"Renderer '{merged['renderer_type']}' missing — auto-generating template.")
         suggest_renderer_template(project_dir, merged, ACTIVE_LLM)
-        raise RuntimeError(
-            f"Renderer template missing for '{merged['renderer_type']}'. "
-            f"A suggested template was written to {prompt_path}. Review it, then rerun."
-        )
+        if not prompt_path.exists():
+            raise RuntimeError(
+                f"Renderer template missing for '{merged['renderer_type']}' and auto-generation failed."
+            )
+        dbg(f"Auto-generated renderer written to {prompt_path}; proceeding without manual review.")
 
     # Write both:
     # - renderer-scoped context (stable for packs)
@@ -772,16 +793,29 @@ def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]
         raise RuntimeError("ACTIVE_LLM is not configured.")
     artifact_bundle = load_artifact_bundle(context["artifact_paths"])
     dbg(f"Extract ledger: artifact_paths={len(context['artifact_paths'])} bundle_chars={len(artifact_bundle)}")
-    prompt_body = load_prompt(PROMPTS_DIR / "extract_ledger.md")
-    prompt = "\n\n".join(
-        [
-            prompt_body,
-            f"Project name: {context['project_name']}",
-            f"Project type: {context['project_type']}",
-            "Artifacts:",
-            artifact_bundle,
-        ]
-    )
+    # Use project-type-specific ledger prompt if available, else generic.
+    project_type = context.get("project_type", "")
+    typed_prompt_path = PROMPTS_DIR / f"extract_ledger_{project_type}.md"
+    ledger_prompt_path = typed_prompt_path if typed_prompt_path.exists() else PROMPTS_DIR / "extract_ledger.md"
+    prompt_body = load_prompt(ledger_prompt_path)
+    dbg(f"Extract ledger: using prompt {ledger_prompt_path.name}")
+    prompt_parts = [
+        prompt_body,
+        f"Project name: {context['project_name']}",
+        f"Project type: {context['project_type']}",
+        "Artifacts:",
+        artifact_bundle,
+    ]
+    # Inject charter so ledger extraction knows required content structure.
+    charter_path = project_dir / "project_charter.md"
+    if charter_path.exists():
+        charter_text = charter_path.read_text(encoding="utf-8").strip()
+        if charter_text:
+            prompt_parts.append(
+                "Project charter (extract all required content elements — credit column, debit column, "
+                "distributional breakdown, irreversibility items, policy mechanism):\n" + charter_text
+            )
+    prompt = "\n\n".join(prompt_parts)
     ledger_output_path = synthesis_paths(project_dir)["ledger"]
     raw_response = ACTIVE_LLM.call(prompt)
     ledger = parse_json_step_response(
@@ -1171,6 +1205,15 @@ def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict
         "History summary JSON:",
         json.dumps(history_summary, indent=2, sort_keys=True),
     ]
+    # Inject project charter so the renderer knows the required output structure.
+    charter_path = project_dir / "project_charter.md"
+    if charter_path.exists():
+        charter_text = charter_path.read_text(encoding="utf-8").strip()
+        if charter_text:
+            prompt_parts.append(
+                "Project charter (required content — your report MUST address every required element, though section structure follows the renderer template):\n"
+                + charter_text
+            )
     if aggregated_corpus is not None:
         prompt_parts.append("Aggregated corpus JSON (multi-project mode):")
         prompt_parts.append(json.dumps(aggregated_corpus, indent=2, sort_keys=True))

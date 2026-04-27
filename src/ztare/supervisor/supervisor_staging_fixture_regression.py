@@ -48,7 +48,7 @@ def run_supervisor_staging_fixture_regression() -> dict[str, object]:
             "active_program": "stage2_derivation_seam_hardening",
             "active_target": "derivation_boundary",
             "debate_file": "research_areas/debates/kernel/stage2_derivation_seam_hardening.md",
-            "verification_command": "python -m src.ztare.validator.stage2_derivation_fixture_regression && python -m src.ztare.validator.stage24_bridge_fixture_regression && python -m src.ztare.validator.stage4_fixture_regression",
+            "verification_command": "python -m src.ztare.validator.core.stage2_derivation_fixture_regression && python -m src.ztare.validator.core.stage24_bridge_fixture_regression && python -m src.ztare.validator.stage4_fixture_regression",
             "artifact_paths": ArtifactPaths(
                 spec="research_areas/debates/kernel/stage2_derivation_seam_hardening.md",
                 implementation=(
@@ -89,7 +89,7 @@ def run_supervisor_staging_fixture_regression() -> dict[str, object]:
                 sha256="def456",
             ),
         ),
-        verification_command="python -m src.ztare.validator.stage2_derivation_fixture_regression",
+        verification_command="python -m src.ztare.validator.core.stage2_derivation_fixture_regression",
     )
 
     context = build_staging_context(a1_status, staging_dir)
@@ -215,14 +215,14 @@ def run_supervisor_staging_fixture_regression() -> dict[str, object]:
                 "src/ztare/validator/stage4_fixture_regression.py",
             ]
             and b_template["verification_command"]
-            == "python -m src.ztare.validator.stage2_derivation_fixture_regression && python -m src.ztare.validator.stage24_bridge_fixture_regression && python -m src.ztare.validator.stage4_fixture_regression",
+            == "python -m src.ztare.validator.core.stage2_derivation_fixture_regression && python -m src.ztare.validator.core.stage24_bridge_fixture_regression && python -m src.ztare.validator.stage4_fixture_regression",
         },
         {
             "case_id": "research_b_template_prefills_prose_verification_command",
             "passed": research_b_template["implementation_paths"]
             == ["research_areas/drafts/paper4_drafting_paper_outline.md"]
             and research_b_template["verification_command"]
-            == "python -m src.ztare.validator.prose_verifier --draft-path research_areas/drafts/paper4_drafting_paper_outline.md --spec-path research_areas/specs/paper4_drafting_paper_outline_prose_spec.json",
+            == "python -m src.ztare.findings.prose_verifier --draft-path research_areas/drafts/paper4_drafting_paper_outline.md --spec-path research_areas/specs/paper4_drafting_paper_outline_prose_spec.json",
         },
         {
             "case_id": "verifier_template_prefills_current_implementation_snapshot",

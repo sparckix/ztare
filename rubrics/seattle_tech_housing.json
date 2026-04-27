@@ -1,0 +1,64 @@
+{
+  "synthesis_renderer": "policy_essay",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative policy thesis — no numerical extrapolation holdout; global_extrapolation_gap gate does not apply",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative policy thesis — evidence surface is text/documents, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative policy thesis — rival mechanism enumeration scored via criteria; keyword-matching heuristic for mathematical rival forms does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "confirmation_threshold_runs": 1,
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+
+  "persona": "You are an urban political economist trained in the Sassen tradition who also spent five years inside a municipal fiscal office. You have one overriding methodological commitment: aggregate statistics are not distributional evidence. A headline that says 'Seattle wages rose 30% since 2010' is compatible with both a rising tide and a hourglass — you will not accept either reading without a distributional decomposition. You hold three additional methodological commitments that disqualify common rhetorical moves: (1) you will not accept a net verdict on a city-wide policy change without a counterfactual — 'compared to what?' is your first question for every claim, and peer city trajectories (Portland, Denver, Minneapolis without comparable tech booms) are the cheapest falsification; (2) you are hostile to any cost calculation that treats a variable as fixed without a sensitivity range when second-order market effects are knowable — injecting $6.4B into a geographically constrained construction market is not the same as injecting it at current unit costs, and you will penalize any thesis that treats static arithmetic as dynamic analysis; (3) 'the data does not exist' is not an answer — it is an invitation to proxy triangulation. Teacher wage-to-rent ratios, nurse retention rates, service-sector employment shares, and affordable-unit coverage gaps are all admissible proxies for middle-class squeeze. A thesis that refuses to use proxies when direct microdata is absent is not being rigorous — it is being evasive. You reward: distributional decomposition with named income strata (using proxies when microdata is absent), counterfactual discipline with peer comparisons, engagement with both positive and negative externalities with dollar-range estimates, verdicts that name irreversible losses as separate from compensable ones, and concrete policy proposals that specify a mechanism and an estimated dollar scale.",
+
+  "dimensions": [
+    {
+      "name": "Net Verdict Quality",
+      "weight": 25,
+      "description": "Does the thesis deliver a structured net verdict: aggregate direction + distributional structure + which strata were net beneficiaries and which were net harmed? Full points if the verdict names specific income deciles, demographic groups, and geographic neighborhoods. Penalize any verdict that collapses aggregate and distributional outcomes — 'Seattle benefited' or 'Seattle was harmed' without a distributional breakdown earns at most half points."
+    },
+    {
+      "name": "rival_externality_accounting",
+      "weight": 25,
+      "description": "Does the thesis engage both positive AND negative externalities with at least one quantified or bounded estimate on each side? Positive: Moretti multiplier (non-tech job creation), fiscal dividend (JumpStart, property tax, B&O), innovation spillovers, resident optionality. Negative: housing cost inflation, middle-class purchasing power erosion, fiscal concentration risk, community irreversibility. Full points if both sides are engaged and the verdict emerges from their comparison. Penalize if positive externalities are assumed away ('tech is obviously harmful') or if negative externalities are assumed away ('aggregate growth is sufficient'). This is the dimension that catches boosterism and reflexive anti-tech criticism in equal measure."
+    },
+    {
+      "name": "Counterfactual Discipline",
+      "weight": 25,
+      "description": "Does the thesis compare Seattle's trajectory to a credible counterfactual — not an idealized alternative but the plausible no-tech-boom trajectory? At minimum: reference to Seattle's 2010 starting position (Boeing deindustrialization, 40% employment peak) and comparison to one peer city (Portland, Denver, Minneapolis, or similar) that did not experience a comparable tech boom. Full points if the comparison shows which metric (middle-class wages, housing costs, civic fiscal capacity, demographic stability) moved differently in Seattle vs. the peer city and why. Penalize any verdict on tech's net impact that does not engage the counterfactual — a thesis that says 'tech harmed Seattle's middle class' without asking 'was the middle class trajectory better in comparable cities without tech growth?' is not making a causal claim."
+    },
+    {
+      "name": "Dynamic and Second-Order Modeling",
+      "weight": 20,
+      "description": "Does the thesis model at least one dynamic second-order effect rather than static first-order arithmetic? Examples: (a) construction cost inflation under a large capital injection — the $400k/unit figure is not fixed if $6.4B enters a geographically constrained market; (b) fiscal dependency trajectory — what happens to Seattle services if tech employment contracts 20%; (c) hourglass vs. rising-tide dynamics — does service employment follow tech growth at the Moretti rate, and if so, does it produce middle-income or low-income jobs? Full points if a sensitivity analysis or scenario comparison is included. Penalize any thesis that treats a cost figure, a wage figure, or a displacement count as a fixed law of physics when the evidence surface contains information that would allow dynamic modeling."
+    },
+    {
+      "name": "Proxy Triangulation and Civic Externality Ledger",
+      "weight": 15,
+      "description": "Does the thesis (a) use proxy triangulation when direct stratum microdata is unavailable — teacher wage-to-rent ratios, nurse/healthcare retention signals, service-sector employment share trends, affordable-unit coverage gap — rather than halting at 'microdata is absent'? And (b) produce a civic externality balance sheet with at least order-of-magnitude dollar ranges on both the credit side (JumpStart revenue, Moretti-multiplier jobs, property tax base) and the debit side (displacement cost, affordable unit coverage gap, middle-class purchasing power loss)? Full points if the thesis closes the ledger with a net balance verdict expressed as a dollar range with stated uncertainty. Zero points if the thesis treats missing microdata as a reason to produce no quantitative estimate at all — proxies exist and must be used. Penalize any thesis that outputs 'evidence is insufficient' as its final answer without first attempting proxy triangulation."
+    },
+    {
+      "name": "Concrete Policy Proposal",
+      "weight": 20,
+      "description": "Does the thesis conclude with a specific, named, mechanistically-complete policy proposal? Required elements — all three must be present for full points: (a) MECHANISM: the exact instrument (e.g., 'expand JumpStart payroll tax from $231M/yr to $400M/yr targeting displacement bond fund', 'mandatory civic externality contribution of $X per net new tech employee above 500 headcount', 'zoning upzone conditioned on employer-funded affordable unit contribution at $Y/unit'); (b) DOLLAR SCALE: estimated annual or total cost of the intervention, with a stated range; (c) NAMED GAP: which specific documented gap or harm it closes (e.g., 'closes the $Xbn affordable unit coverage gap', 'offsets wage-to-rent deterioration for teachers/nurses by Z%'). Zero points for: research agendas, vague 'levy' or 'reform' language without a mechanism, dollar figures without a mechanism, or mechanisms without a dollar scale. Half points if two of three elements are present. Full points only with all three. This is a hard gate — a thesis that does not name a concrete instrument with a scale earns zero on this dimension regardless of quality elsewhere."
+    }
+  ],
+
+  "criteria": {
+    "1_net_verdict_distributional": "Does the thesis state a net verdict that names specific income strata, demographic groups, and neighborhoods as net beneficiaries vs. net harmed? 'Seattle benefited' or 'Seattle was harmed' without distributional decomposition earns at most half points. The distributional structure is the question — aggregate verdicts are not answers.",
+    "2_rival_externality_accounting": "Does the thesis engage both positive externalities (Moretti multiplier, fiscal dividend, innovation spillovers, optionality) and negative externalities (housing inflation, middle-class purchasing power erosion, fiscal concentration risk, irreversible community loss) with quantified or bounded estimates on each side? A thesis that engages only the negative side is reflexive criticism, not analysis. A thesis that engages only the positive side is boosterism, not analysis.",
+    "3_counterfactual_peer_comparison": "Does the thesis name at least one peer city comparison — Portland, Denver, Minneapolis, or similar — and use it to assess whether Seattle's trajectory on at least one key metric (middle-class wage purchasing power, housing cost, demographic stability) differed from what would have happened in the absence of tech concentration? No counterfactual = no causal claim on net impact.",
+    "4_dynamic_second_order_modeling": "Does the thesis include at least one dynamic second-order analysis: construction cost inflation under capital injection, fiscal dependency trajectory, hourglass vs. rising-tide labor market dynamics, or similar? Any thesis that treats a cost figure or a wage figure as a fixed constant when market dynamics would move it under the proposed intervention is doing static first-order arithmetic, not policy analysis.",
+    "5_irreversibility_assessment": "Does the thesis distinguish between harms that are compensable in principle (displacement from neighborhoods, housing cost burden, lost income) and harms that are not (60-year community institutions, cultural infrastructure, generational homeownership trajectories that cannot be rebuilt from cash)? A policy analysis that treats all harms as fungible with money misses the category of loss that no pricing mechanism can address.",
+    "6_proxy_triangulation": "When direct stratum microdata is unavailable, does the thesis use available proxies — teacher wage-to-rent trajectory, nurse/healthcare retention, service-sector employment share, affordable-unit coverage gap — to bound the distributional estimate? A thesis that refuses to estimate because 'perfect data is absent' earns zero on this criterion. Proxy-bounded estimates with stated uncertainty are the correct response to data gaps.",
+    "7_civic_externality_ledger": "Does the thesis produce a balance sheet: credit side (JumpStart revenue, Moretti jobs, property tax base, innovation spillovers) and debit side (displacement cost, affordable unit gap, purchasing power loss, fiscal concentration risk) with at least order-of-magnitude dollar ranges on both sides? Does it close with a net balance verdict expressed as a range?",
+    "8_concrete_policy_proposal": "Does the thesis propose a specific mechanism with a dollar scale and a named gap it addresses? 'Expand JumpStart from $231M/year to close the documented $X affordable-unit gap' is a policy proposal. 'We need more data and broader zoning reform' is not."
+  }
+}

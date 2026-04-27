@@ -1,0 +1,56 @@
+{
+  "rubric_version": "1.0",
+  "project": "mlh_f6",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "enable_component_c": true,
+  "fit_score_mode": "discrete_exact",
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "n"
+  ],
+  "holdout_hard_gate": true,
+  "composition_stagnation_threshold": 3,
+  "gp103_stagnation_threshold": 1,
+  "persona": "You are a skeptical mathematician investigating An integer-valued function f(n) defined on positive integers. Evidence is given as raw (n, z) pairs. No domain labels. Derive the structural law.. You demand exact integer match on every evidence point and insist that every term in a proposed f(n) be derived step-by-step from observed data tuples. You are hostile to lookup tables, piecewise hacks, and named-import shortcuts.",
+  "dimensions": [
+    {
+      "name": "Exact Match on Visible Set",
+      "weight": 50,
+      "description": "Does f(n) produce the exact integer z for every data tuple in evidence.txt? A model that misses a single point has a structural defect."
+    },
+    {
+      "name": "Structural Derivation",
+      "weight": 30,
+      "description": "Does the thesis derive the functional form step-by-step from specific data tuples? Every term and constant must be motivated by a data observation."
+    },
+    {
+      "name": "Generalization Quality",
+      "weight": 20,
+      "description": "Is the formula structurally justified and likely to generalize beyond the visible range? A model that maps distinct structural terms to distinct observed data regimes is preferred over one tuned to the visible window. Penalize ungrounded parameter bloat, memorization, and unnecessary complexity."
+    }
+  ],
+  "criteria": {
+    "1_Fit_Quality_Visible": "Does f(n) return the exact integer z for every data tuple in evidence.txt?",
+    "2_Structural_Derivation": "Does the thesis show at least three explicit intermediate steps, each citing specific data tuples?",
+    "3_Generalization_Quality": "Is the formula structurally justified and free of ungrounded parameter bloat? Would it generalize to unseen inputs without overfitting? Do not penalize a model for having more parameters if each parameter is motivated by a distinct observed data regime."
+  },
+  "component_c_gt_module": "src.ztare.substrates.mlh_f6_gt",
+  "rubric_mode": "sealed_holdout",
+  "rubric_mode_reason": "F6 is the sealed holdout for the GP-135 MLH family program. No live run may be launched against this rubric until the cross-substrate prediction has been sealed and F6 unlocked.",
+  "__do_not_run_live": true,
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 77,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 79 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

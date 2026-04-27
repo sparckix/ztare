@@ -10,6 +10,15 @@ class PivotProfile:
     instruction: str
 
 
+@dataclass(frozen=True)
+class PivotState:
+    profile: PivotProfile | None
+    loop_control_action: str
+    event_type: str | None
+    pivot_threshold: int
+    emergency_threshold: int | None
+
+
 MODULE_TEXT = {
     "state_incompatibility": (
         "1. STATE INCOMPATIBILITY: Treat the current critique as an invariant of the environment. "
@@ -71,6 +80,37 @@ MODULE_TEXT = {
         "After transforming, check for hidden structure (periodicity, alternating sign, phase "
         "transitions) that was invisible in the original coordinates."
     ),
+    "category_switch": (
+        "14. CATEGORY SWITCH: If three consecutive proposals have all lived in the same mathematical "
+        "category (e.g., all polynomial-rational-logarithmic functions of a continuous index) and all "
+        "have failed, the target likely lives in a DIFFERENT category, not a different parameter "
+        "setting within the same category. Before proposing the next form, explicitly name the "
+        "category your current proposal inhabits and then name a DIFFERENT category the next proposal "
+        "will inhabit. Categories are not topologies — 'sqrt instead of log' is a topology change "
+        "within the same category (smooth functions). Categories differ in the underlying objects the "
+        "function is defined over: functions of a continuous index, functions on a discrete lattice, "
+        "functions defined by inclusion-exclusion over a divisibility order, functions specified by "
+        "recurrence, functions specified as fixed points of another operator. State the category "
+        "shift explicitly; a proposal that returns to the prior category after stating the switch is "
+        "non-compliant."
+    ),
+    "fixed_point_scan": (
+        "15. FIXED-POINT SCAN: Before proposing a general law f for the entire index set, identify "
+        "the subset on which f(n) equals some canonical value (0, 1, n itself, or any other "
+        "distinguished constant). That subset is a structural fingerprint: it characterises f up to "
+        "an equivalence class of laws that share the fingerprint. State the fixed-point / distinguished-"
+        "value subset observed in the evidence, explain why it narrows the law's search space, and "
+        "design the next proposal to respect it exactly."
+    ),
+    "collision_exploit": (
+        "16. COLLISION AS SIGNAL: When two distinct inputs produce identical outputs, that is not "
+        "noise — it is a structural identity the law must satisfy. For each non-trivial collision "
+        "f(a) == f(b) with a != b in the evidence, state the relationship between a and b (are they "
+        "coprime? do they share a factor? do they differ by a specific transformation?) and what "
+        "this implies about the law's invariants. A law that does not reproduce all observed "
+        "collisions is wrong; a law that reproduces a collision by coincidence must justify why the "
+        "coincidence is structural rather than accidental."
+    ),
 }
 
 
@@ -105,6 +145,25 @@ PROFILE_MODULES = {
         "success_liability",
         "interface_discipline",
     ),
+    # GP-134 (2026-04-23): Newton-mode discovery profile. Adds category_switch,
+    # fixed_point_scan, and collision_exploit on top of the bounded_discriminator
+    # base. These three modules target the space ceiling (as distinct from the
+    # grammar ceiling) — when the mutator is stuck, these ask it to re-examine
+    # the mathematical category / fingerprint subsets / structural identities
+    # rather than only reparameterize within the current category.
+    "newton_discovery": (
+        "state_incompatibility",
+        "primary_degree_of_freedom",
+        "failure_topology",
+        "entropy_stripping",
+        "reciprocal_variable",
+        "interface_discipline",
+        "inversion",
+        "coordinate_compression",
+        "category_switch",
+        "fixed_point_scan",
+        "collision_exploit",
+    ),
 }
 
 
@@ -124,17 +183,69 @@ def render_pivot_instruction(profile_name: str) -> str:
         """
 
 
+def get_pivot_thresholds(
+    *,
+    is_v4_project: bool,
+    rubric_mode: str | None = None,
+    rubric_stagnation_override: int | None = None,
+) -> tuple[int, int | None]:
+    """Return (pivot_threshold, emergency_threshold) for the current regime.
+
+    GP-134 (2026-04-23): lowered stagnation threshold from 3 to 2 for
+    Newton-mode rubrics, and route Newton-mode to the newton_discovery
+    profile which includes category_switch, fixed_point_scan, and
+    collision_exploit modules. Rationale: discovery-class substrates
+    with blind-feedback loops waste iterations at score 0 before the
+    pivot fires; Newton-mode runs benefit from earlier + category-level
+    (not just parameter-level) reconfiguration. Kepler / calibration /
+    unset modes keep the original >=3 threshold and legacy profiles.
+
+    GP-134 addendum: rubric-specific ``composition_stagnation_threshold``
+    overrides the hardcoded Newton/default thresholds when set.  This
+    lets individual rubrics opt into longer patience windows (e.g.
+    ztare_on_ztare at 5) without losing the Newton pivot profile.
+    """
+    if is_v4_project:
+        # V4 does not use the generic emergency pivot. Once stagnation crosses
+        # the threshold, it stays in bounded-mutation override mode.
+        return 3, None
+
+    # Rubric-specific override takes precedence over mode-based defaults.
+    if rubric_stagnation_override is not None and rubric_stagnation_override > 0:
+        pivot_threshold = rubric_stagnation_override
+        return pivot_threshold, pivot_threshold + 1
+
+    _mode = (rubric_mode or "").strip().lower()
+    newton_threshold = 2
+    default_threshold = 3
+    pivot_threshold = newton_threshold if _mode == "newton" else default_threshold
+    # Preserve the one-step escalation gap from the legacy behavior:
+    # default 3→4, newton 2→3.
+    return pivot_threshold, pivot_threshold + 1
+
+
 def select_pivot_profile(
     *,
     is_v4_project: bool,
     falsification_mode: str | None,
     stagnation_count: int,
+    rubric_mode: str | None = None,
+    rubric_stagnation_override: int | None = None,
 ) -> PivotProfile | None:
-    if stagnation_count < 3:
+    """Return pivot profile when stagnation warrants it; None otherwise."""
+    _mode = (rubric_mode or "").strip().lower()
+    pivot_threshold, _ = get_pivot_thresholds(
+        is_v4_project=is_v4_project,
+        rubric_mode=rubric_mode,
+        rubric_stagnation_override=rubric_stagnation_override,
+    )
+    if stagnation_count < pivot_threshold:
         return None
 
     if is_v4_project:
         name = "kernel_bounded"
+    elif _mode == "newton":
+        name = "newton_discovery"
     else:
         fmode = (falsification_mode or "numerical_proof").strip().lower()
         name = "bounded_discriminator" if fmode == "bounded_discriminator" else "legacy_generic"
@@ -143,4 +254,59 @@ def select_pivot_profile(
         name=name,
         modules=PROFILE_MODULES[name],
         instruction=render_pivot_instruction(name),
+    )
+
+
+def resolve_stagnation_pivot_state(
+    *,
+    is_v4_project: bool,
+    falsification_mode: str | None,
+    stagnation_count: int,
+    rubric_mode: str | None = None,
+    rubric_stagnation_override: int | None = None,
+) -> PivotState:
+    """Return the active stagnation-phase state for prompt/event/loop wiring."""
+    pivot_threshold, emergency_threshold = get_pivot_thresholds(
+        is_v4_project=is_v4_project,
+        rubric_mode=rubric_mode,
+        rubric_stagnation_override=rubric_stagnation_override,
+    )
+    profile = select_pivot_profile(
+        is_v4_project=is_v4_project,
+        falsification_mode=falsification_mode,
+        stagnation_count=stagnation_count,
+        rubric_mode=rubric_mode,
+        rubric_stagnation_override=rubric_stagnation_override,
+    )
+
+    if is_v4_project and stagnation_count >= pivot_threshold:
+        return PivotState(
+            profile=profile,
+            loop_control_action="stagnation_pivot",
+            event_type="v4_bounded_mutation_override",
+            pivot_threshold=pivot_threshold,
+            emergency_threshold=emergency_threshold,
+        )
+    if emergency_threshold is not None and stagnation_count >= emergency_threshold:
+        return PivotState(
+            profile=profile,
+            loop_control_action="emergency_pivot",
+            event_type="topological_pivot_emergency",
+            pivot_threshold=pivot_threshold,
+            emergency_threshold=emergency_threshold,
+        )
+    if stagnation_count >= pivot_threshold:
+        return PivotState(
+            profile=profile,
+            loop_control_action="stagnation_pivot",
+            event_type="topological_pivot_profile_injected",
+            pivot_threshold=pivot_threshold,
+            emergency_threshold=emergency_threshold,
+        )
+    return PivotState(
+        profile=None,
+        loop_control_action="normal",
+        event_type=None,
+        pivot_threshold=pivot_threshold,
+        emergency_threshold=emergency_threshold,
     )

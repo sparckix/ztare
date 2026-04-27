@@ -1,0 +1,23 @@
+schema_version: 1
+role_id: manager
+role_class: manager
+description: Frozen v1 fixture — test manager.
+authorized_paths:
+  - "src/"
+forbidden_paths: []
+delegates_to:
+  - worker.test_worker
+escalates_to:
+  - role.principal
+budget:
+  daily_cap_usd: 10.00
+  session_cap_usd: 5.00
+  single_action_cap_usd: 1.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 10.00
+mandate_path: null
+sla: {}
+failure_mode: {}
+signs_gates: []
+opened_date: "2026-04-23"
+opened_by: principal_human

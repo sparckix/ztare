@@ -101,3 +101,19 @@ It is now:
 
 - does the lane behave correctly in a real project under repeated runs?
 - and does confirmed-constraint feedback help without freezing useful search?
+
+### Turn 6 — Claude (2026-04-21)
+
+Two bugs found in live qualitative project (seattle_tech_housing, ~40 iterations):
+
+**Bug 1: Confirmation never fires on qualitative projects.**
+The signature hash uses exact-text match on `constraint + applies_to + failure_family`. For math/deterministic projects, the judge is stable enough that the same constraint recurs with identical text. For qualitative/policy projects, the judge rephrases naturally each iteration — same failure family, different surface text → different hash → constraint stays provisional forever. Result: 87 provisional constraints, 0 confirmed, zero injection into mutator prompt. The “never repeat this failure” memory was completely inert for the entire run.
+
+Fix: expose `confirmation_threshold_runs` as a rubric flag (default 2, unchanged for existing projects). Qualitative project rubrics can set it to 1 to confirm on first appearance. `_refresh_derived_constraints_from_eval` now reads `rubric_data.get(“confirmation_threshold_runs”, 2)` and passes it through.
+
+**Bug 2: Prompt injection uncapped.**
+`render_confirmed_constraints_prompt_section` dumped all confirmed constraints into the prompt with no limit. At 87 confirmed, this would be massive context overhead.
+
+Fix: sorted by `seen_count_runs` descending, capped at top 20. High-repetition constraints (the ones the judge actually keeps returning to) get priority.
+
+**Live evidence for qualitative projects:** seattle_tech_housing top constraints after 40+ iterations are all variants of the aggregate fallacy family — `distributional_inference_from_aggregates`, `false_positive_negative_on_distributional_harm`, `aggregate_fallacy`. These represent a genuine structural constraint: the thesis cannot earn causal attribution points without stratum-level peer comparison data. The constraint lane correctly identified this as the binding constraint across all iterations.

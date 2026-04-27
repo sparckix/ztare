@@ -1,0 +1,80 @@
+{
+  "rubric_version": "1.2-dag",
+  "project": "oeis_a000959_newton",
+  "rubric_mode": "newton",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "GP-134: DAG steering parses latest_probability_dag.json each iter and prepends the highest-urgency watch_signal to the mutator prompt. Steers Lucky Newton away from log(n) vs log(log(n)) aliasing basin toward weaker DAG nodes (identifiability, secondary observable specificity).",
+  "falsification_mode": "bounded_discriminator",
+  "holdout_hard_gate": true,
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "n"
+  ],
+  "fit_expression_grammar": "math_exp_only",
+  "fit_score_mode": "continuous_l2",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      20001.0,
+      50000.0
+    ]
+  },
+  "gate_residual_threshold": 0.05,
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 1,
+  "persona": "You are a skeptical quantitative reviewer studying an anonymous density ratio z(n) that appears to increase slowly with n. You know nothing about the origin of this sequence. You demand both a compressing fit AND a secondary observable: a mathematically distinct prediction your model makes beyond fitting the primary data. A model that only fits without predicting anything new is descriptive, not generative. You are a TOPOLOGY GENERATOR: provide a fit_declaration block only.",
+  "dimensions": [
+    {
+      "name": "Primary Fit Quality",
+      "weight": 30,
+      "description": "Does f(n) fit the visible evidence with residual below gate threshold? Does it generalize to holdout and farther-tail without divergence?"
+    },
+    {
+      "name": "Structural Derivation",
+      "weight": 20,
+      "description": "Does the thesis derive the functional form from specific data features? Are rivals named and excluded with evidence?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 25,
+      "description": "Does the thesis name a SECONDARY OBSERVABLE \u2014 a mathematically distinct prediction the model makes beyond fitting z(n)? The secondary observable must be: (a) computable from data or derivable from the model, (b) orthogonal to the primary fit (not a restatement of residual quality), (c) pre-committed with an expected value or range AND an evaluation method. Examples: a coefficient ratio under data perturbation, a prediction about a transformed observable, a relationship between parameters that constrains future data. A thesis that only fits z(n) without predicting anything else scores 0 on this dimension."
+    },
+    {
+      "name": "Parsimony",
+      "weight": 15,
+      "description": "Is the model minimal? Fewer parameters preferred. Polynomial bloat penalized."
+    },
+    {
+      "name": "Farther-Tail Prediction",
+      "weight": 10,
+      "description": "Does the model maintain accuracy at 4x-10x the visible range? Divergence at farther-tail is a structural failure, not a precision issue."
+    }
+  ],
+  "penalties": [
+    "NO_SECONDARY: Any thesis that does not name a secondary observable scores 0 on Generative Yield (25% of total).",
+    "TRIVIAL_RESTATEMENT: A secondary observable that restates the primary fit (e.g., 'residual should be small at holdout') scores 0.",
+    "NAMED_IMPORT: Any model referencing a named mathematical constant or sequence by name scores 0 on Structural Derivation."
+  ],
+  "criteria": {
+    "1_Primary_Fit": "Does f(n) fit visible evidence with max normalized residual < 0.05?",
+    "2_Derivation": "Does the thesis derive the form from >=3 specific (n, z) observations?",
+    "3_Generative_Yield": "Does the thesis name a secondary observable with expected value/range AND evaluation method? Is the secondary prediction mathematically orthogonal to the primary fit?",
+    "4_Parsimony": "Is the model minimal? k <= 4 parameters preferred.",
+    "5_Farther_Tail": "Does the model hold at 4x-10x visible range without systematic drift?"
+  },
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 4499,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 4501 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

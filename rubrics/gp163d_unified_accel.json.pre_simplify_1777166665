@@ -1,0 +1,62 @@
+{
+  "name": "gp163d_unified_accel",
+  "project": "gp163d_unified_accel",
+  "description": "Newton-mode N-D substrate: multi-scale acceleration interpolation with system_class feature. Tests whether c_A = c_B (universal) or c_A \u2260 c_B (scale-dependent).",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate: scale-dependence of interpolation constant is unknown. Generative yield = predict c_B/c_A ratio.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": true,
+  "fit_primitive_features_k_max": 6,
+  "holdout_hard_gate": true,
+  "target_convention_homogeneity": "homogeneous",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "gate",
+  "underidentified_after": 15,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Farther-tail is all class-B systems in features.py. Standard detection does not apply.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Custom N-D gate_harness.py with per-class MRE replaces heuristic.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival forms scored by rubric dimension.",
+  "persona": "You are an adversarial epistemic auditor. The data shows two classes of systems (A, B) following an acceleration relationship. You REJECT: forms that assume universality without testing c_A vs c_B; forms without holdout validation; forms that use lookup tables. You REWARD: forms that explicitly test whether the crossover constant differs between classes, with holdout-validated predictions.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "GP-157 v5.0 Phase 3b observe-mode.",
+  "cage_meta": {
+    "type": "accel_interpolation",
+    "class": "nd_features",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "dimensions": [
+    {
+      "name": "Fit Quality",
+      "weight": 30,
+      "description": "Does the formula pass holdout (MRE<35%) and farther-tail (MRE<50%)? Per-class MRE reported."
+    },
+    {
+      "name": "Scale-Dependence Discovery",
+      "weight": 30,
+      "description": "Does the thesis report c_A and c_B separately? Does it test universality (c_A=c_B) vs scale-dependence (c_A\u2260c_B) with evidence?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does the thesis predict c_B/c_A ratio and y at x=1e-13 for each class?"
+    },
+    {
+      "name": "Structural Derivation",
+      "weight": 20,
+      "description": "Is the interpolation function derived from data behavior? Each regime motivated by observed asymptotic pattern."
+    }
+  ],
+  "criteria": {
+    "Fit_Quality": "Holdout MRE < 35%, farther-tail MRE < 50%, both asymptotic constraints within tolerance.",
+    "Scale_Dependence_Discovery": "Report c_A and c_B. State c_B/c_A ratio. Test universality hypothesis.",
+    "Generative_Yield": "Pre-commit at least two numerical predictions beyond the holdout.",
+    "Structural_Derivation": "At least three explicit steps citing specific data tuples."
+  }
+}

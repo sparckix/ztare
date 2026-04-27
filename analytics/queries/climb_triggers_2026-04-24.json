@@ -1,0 +1,481 @@
+{
+  "generated": "2026-04-24",
+  "source_archive": "/Users/daalami/figs_activist_loop/analytics/trajectory_archive_enriched.jsonl",
+  "source_clusters": "/Users/daalami/figs_activist_loop/analytics/queries/weakest_link_clusters_2026-04-24.json",
+  "jump_threshold": 20,
+  "total_jumps": 264,
+  "cluster_summaries": [
+    {
+      "cluster_id": "other_unclustered",
+      "N": 134,
+      "project_count": 45,
+      "mean_delta": 45.3,
+      "median_delta": 40,
+      "max_delta": 95,
+      "from_zero_count": 33,
+      "from_zero_fraction": 0.25,
+      "insufficient_evidence": false,
+      "exemplars": [
+        {
+          "project": "gp096_sandbox_18",
+          "score_before": 0,
+          "score_after": 95,
+          "delta": 95,
+          "weakest_point_before": "Catastrophic epistemic error: The thesis asserts a mechanistic/topological preference despite the absence of any discriminating residual, i.e. the data admit multiple equally adequate families, so the"
+        },
+        {
+          "project": "gp072_sandbox_14",
+          "score_before": 0,
+          "score_after": 94,
+          "delta": 94,
+          "weakest_point_before": "The thesis defines f(x) = 0 based solely on a single point f(1) = 0, ignoring the remaining 29 (x, y) pairs in evidence.txt, resulting in total failure on pattern identification, data fit, and derivat"
+        },
+        {
+          "project": "gp023_crucial_01",
+          "score_before": 0,
+          "score_after": 93,
+          "delta": 93,
+          "weakest_point_before": "Assumption that the quadratic scaling x1_peak ~ x2^2 is genuinely structural, not a product of overfitting to the observed data range."
+        }
+      ]
+    },
+    {
+      "cluster_id": "circularity",
+      "N": 23,
+      "project_count": 6,
+      "mean_delta": 63.0,
+      "median_delta": 67,
+      "max_delta": 100,
+      "from_zero_count": 23,
+      "from_zero_fraction": 1.0,
+      "insufficient_evidence": false,
+      "exemplars": [
+        {
+          "project": "eu_union_failure_probability_2035",
+          "score_before": 0,
+          "score_after": 100,
+          "delta": 100,
+          "weakest_point_before": "Structured semantic-gate derivation classified the proof as hard self-reference. The thesis asserts the causal sufficiency of its derived observable thresholds (SMLLB N=3, OFMB stress multiplier > bac"
+        },
+        {
+          "project": "eu_union_load_bearing_pillars",
+          "score_before": 0,
+          "score_after": 83,
+          "delta": 83,
+          "weakest_point_before": "Structured semantic-gate derivation classified the proof as hard self-reference. The conceptual distinction between 'fragile_but_intact' and 'durable_equilibrium' relies on thesis-authored definitions"
+        },
+        {
+          "project": "gp023_planck_sandbox_06",
+          "score_before": 0,
+          "score_after": 83,
+          "delta": 83,
+          "weakest_point_before": "Structured semantic-gate derivation classified the proof as hard self-reference. The lack of physical or geometric grounding for the fractional shape parameter 'q' in the single-pass Weibull survival "
+        }
+      ]
+    },
+    {
+      "cluster_id": "harness_defect",
+      "N": 22,
+      "project_count": 13,
+      "mean_delta": 48.7,
+      "median_delta": 50,
+      "max_delta": 107,
+      "from_zero_count": 13,
+      "from_zero_fraction": 0.59,
+      "insufficient_evidence": false,
+      "exemplars": [
+        {
+          "project": "gp069_sandbox_13",
+          "score_before": -45,
+          "score_after": 62,
+          "delta": 107,
+          "weakest_point_before": "Assuming function existence without evidence: the architecture presumes that a deterministic mapping f(x) exists between x and y, despite zero evidence for functional structure in the observed data, a"
+        },
+        {
+          "project": "ai_competitive_landscape",
+          "score_before": 30,
+          "score_after": 108,
+          "delta": 78,
+          "weakest_point_before": "The thesis's weakest point is its failure to sufficiently justify why model capability gaps will remain the *primary* determinant of competitive position over the next 12-18 months, especially in the "
+        },
+        {
+          "project": "eu_union_failure_probability_2035",
+          "score_before": 0,
+          "score_after": 67,
+          "delta": 67,
+          "weakest_point_before": "Level 3 falsification suite status was `fail`. The multiplicative model assumes independence between base_failure_probability and stress_escalation_multiplier, but the thesis's own evidence-derivation"
+        }
+      ]
+    },
+    {
+      "cluster_id": "catastrophic_assumption",
+      "N": 19,
+      "project_count": 12,
+      "mean_delta": 45.2,
+      "median_delta": 38,
+      "max_delta": 93,
+      "from_zero_count": 6,
+      "from_zero_fraction": 0.32,
+      "insufficient_evidence": false,
+      "exemplars": [
+        {
+          "project": "gp023_crucial_02_extended",
+          "score_before": 0,
+          "score_after": 93,
+          "delta": 93,
+          "weakest_point_before": "Catastrophic assumption that the decay argument is exactly linear in x1 and inverse-linear in x2 (i.e., exp(-P * x1 / x2)), ruling out more general exponent forms without quantifying how tightly the d"
+        },
+        {
+          "project": "us_tariff_passthrough_2026",
+          "score_before": 45,
+          "score_after": 115,
+          "delta": 70,
+          "weakest_point_before": "The thesis's catastrophic assumption that tariff pass-through will be proportionally uniform across *all sectors* completely ignores basic microeconomic principles (e.g., elasticity of demand/supply, "
+        },
+        {
+          "project": "gp080_01",
+          "score_before": 0,
+          "score_after": 62,
+          "delta": 62,
+          "weakest_point_before": "The thesis repeats the catastrophic assumption that an exact deterministic law both fits all visible points and generalizes, without yet proposing or structurally deriving such a law."
+        }
+      ]
+    },
+    {
+      "cluster_id": "tail_generalization",
+      "N": 19,
+      "project_count": 6,
+      "mean_delta": 43.4,
+      "median_delta": 25,
+      "max_delta": 123,
+      "from_zero_count": 2,
+      "from_zero_fraction": 0.11,
+      "insufficient_evidence": false,
+      "exemplars": [
+        {
+          "project": "monotone_decay_01",
+          "score_before": -30,
+          "score_after": 93,
+          "delta": 123,
+          "weakest_point_before": "Assumes linear functional form, which fundamentally cannot capture the monotone-decreasing, concave structure with asymptotic floor; produces systematic negative residuals in tail regions."
+        },
+        {
+          "project": "gp096_sandbox_18_gagorder",
+          "score_before": 0,
+          "score_after": 95,
+          "delta": 95,
+          "weakest_point_before": "The argument that pure stretched-exponential decay suffices in the tail is only justified by absence of residual excess in the tested windows; no mathematical barrier prevents subtle rational/powerlaw"
+        },
+        {
+          "project": "gp069_sandbox_13",
+          "score_before": -46,
+          "score_after": 32,
+          "delta": 78,
+          "weakest_point_before": "The thesis collapses modeling to table lookup plus arbitrary default, asserting all deterministic extensions are equally valid, thereby destroying the epistemic basis for generalization. It fails the "
+        }
+      ]
+    },
+    {
+      "cluster_id": "unverified_bound",
+      "N": 10,
+      "project_count": 9,
+      "mean_delta": 49.2,
+      "median_delta": 35,
+      "max_delta": 96,
+      "from_zero_count": 4,
+      "from_zero_fraction": 0.4,
+      "insufficient_evidence": false,
+      "exemplars": [
+        {
+          "project": "sandbox_15_component_c_test",
+          "score_before": 0,
+          "score_after": 96,
+          "delta": 96,
+          "weakest_point_before": "The model's secondary structure conjecture (dual-floor harmonic corrector) is uniquely compelled by evidence in the observed domain, but its extrapolation to higher v (e.g., third harmonic, v=21+) is "
+        },
+        {
+          "project": "gp096_sandbox_18",
+          "score_before": 0,
+          "score_after": 95,
+          "delta": 95,
+          "weakest_point_before": "Over-parameterization: The form proposed introduces far more free parameters (10) than are statistically or numerically warranted by the evidence; within the observed regime, simpler rivals (stretched"
+        },
+        {
+          "project": "gp023_crucial_03",
+          "score_before": 0,
+          "score_after": 77,
+          "delta": 77,
+          "weakest_point_before": "The unproven assertion that the specific denominator-class function (P_amplitude * x1^P_exponent / (exp(P_rate * x1/x2) - 1)) is the most parsimonious and unique structural description for the data wi"
+        }
+      ]
+    },
+    {
+      "cluster_id": "causal_assumption",
+      "N": 9,
+      "project_count": 3,
+      "mean_delta": 34.3,
+      "median_delta": 25,
+      "max_delta": 83,
+      "from_zero_count": 0,
+      "from_zero_fraction": 0.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "seattle_tech_housing",
+          "score_before": -20,
+          "score_after": 63,
+          "delta": 83,
+          "weakest_point_before": "Asserts that city-level, peer-and-control-based causal inference is structurally impossible—vetoing even bounded, probabilistic, or partial attribution—in contradiction to the methodological premise o"
+        },
+        {
+          "project": "gp116_cot_exchange",
+          "score_before": 39,
+          "score_after": 87,
+          "delta": 48,
+          "weakest_point_before": "The thesis confuses correlation for causation and overclaims universality of mean weight norm as the sole or sufficient predictor of learned perturbation alignment, ignoring known confounds (init, dec"
+        },
+        {
+          "project": "survey_s1",
+          "score_before": 75,
+          "score_after": 98,
+          "delta": 23,
+          "weakest_point_before": "Assumption that (log(n) * sqrt(n)) cross-term is uniquely necessary and sufficient for residual compression under observable envelope/alternation tests—i.e., if a rival non-cross-term form achieves sa"
+        }
+      ]
+    },
+    {
+      "cluster_id": "no_thesis_proposed",
+      "N": 8,
+      "project_count": 7,
+      "mean_delta": 73.4,
+      "median_delta": 81,
+      "max_delta": 92,
+      "from_zero_count": 6,
+      "from_zero_fraction": 0.75,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "mlh_f1",
+          "score_before": 0,
+          "score_after": 92,
+          "delta": 92,
+          "weakest_point_before": "No substantive thesis or f(n) proposal was made; no attempt to fit, explain, or structurally predict the (n, z) data points."
+        },
+        {
+          "project": "gp138_noether_g_selection",
+          "score_before": 0,
+          "score_after": 89,
+          "delta": 89,
+          "weakest_point_before": "The submission is a vacuous null placeholder: it offers neither a constructive G-selection protocol, nor an impossibility theorem, nor a domain restriction; it is non-falsifiable and structurally non-"
+        },
+        {
+          "project": "gp069_sandbox_12",
+          "score_before": 0,
+          "score_after": 83,
+          "delta": 83,
+          "weakest_point_before": "The thesis explicitly states 'No model proposed yet' and provides an 'intentionally wrong' baseline, failing to address the core mandate of proposing and deriving a closed-form function f(x) from the "
+        }
+      ]
+    },
+    {
+      "cluster_id": "exhaustiveness_claim",
+      "N": 7,
+      "project_count": 4,
+      "mean_delta": 39.9,
+      "median_delta": 35,
+      "max_delta": 68,
+      "from_zero_count": 2,
+      "from_zero_fraction": 0.29,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "gp023_crucial_03",
+          "score_before": 0,
+          "score_after": 68,
+          "delta": 68,
+          "weakest_point_before": "Catastrophic assumption of exhaustiveness: Ruling out only the simple multiplicative-decay rival is insufficient proof of structural uniqueness; the thesis does not consider the full class of plausibl"
+        },
+        {
+          "project": "gp140_ztare_discovery",
+          "score_before": 25,
+          "score_after": 78,
+          "delta": 53,
+          "weakest_point_before": "Catastrophic under-estimation of the ℓ∞-cube enumeration size (43^45 ≈ 3×10^73, not ≤10^4); therefore Class-A completeness + <30 s runtime claim is infeasible and all downstream guarantees collapse."
+        },
+        {
+          "project": "eu_union_failure_probability_2035",
+          "score_before": 0,
+          "score_after": 50,
+          "delta": 50,
+          "weakest_point_before": "Meta-Judge found an infallible aggregator / veto trust leak. The demonstrable robustness of an explicit event ontology for material_union_failure and formal_intactness to be truly exhaustive, mutually"
+        }
+      ]
+    },
+    {
+      "cluster_id": "finite_data_extrapolation",
+      "N": 4,
+      "project_count": 4,
+      "mean_delta": 35.5,
+      "median_delta": 40,
+      "max_delta": 49,
+      "from_zero_count": 0,
+      "from_zero_fraction": 0.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "mlh_f4",
+          "score_before": 43,
+          "score_after": 92,
+          "delta": 49,
+          "weakest_point_before": "Finite evidence can't uniquely fix function on N; theorem requires global not local properties."
+        },
+        {
+          "project": "gp061_sandbox_11_01",
+          "score_before": 55,
+          "score_after": 95,
+          "delta": 40,
+          "weakest_point_before": "The assumption that early pre-activation elevation and the post-activation linear velocity are governed by a single continuous causal mechanism. By using a single hyperbolic manifold, the thesis geome"
+        },
+        {
+          "project": "gp080_01",
+          "score_before": 54,
+          "score_after": 87,
+          "delta": 33,
+          "weakest_point_before": "Catastrophic overreach of inference from finite uniform data: the thesis assumes that a strictly positive characteristic discriminant (T^2 - 4D > 0) observed on finite, noiseless data unambiguously pr"
+        }
+      ]
+    },
+    {
+      "cluster_id": "generalization_overclaim",
+      "N": 4,
+      "project_count": 2,
+      "mean_delta": 25.0,
+      "median_delta": 25,
+      "max_delta": 25,
+      "from_zero_count": 0,
+      "from_zero_fraction": 0.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "gp080_01",
+          "score_before": 48,
+          "score_after": 73,
+          "delta": 25,
+          "weakest_point_before": "Catastrophic overclaim that exact vanishing of the recurrence at three equispaced points, using boundary-derived roots, globally and uniquely proves dual-exponential structure and excludes all rival h"
+        },
+        {
+          "project": "gp096_langevin_sandbox_16",
+          "score_before": 50,
+          "score_after": 75,
+          "delta": 25,
+          "weakest_point_before": "Catastrophic overclaim: It is not logically justified that the finite-window persistence of high-u marginal increments uniquely excludes a $1/u$ hyperbolic tail in favor of a stretched exponential—the"
+        }
+      ]
+    },
+    {
+      "cluster_id": "null_weakest_point",
+      "N": 1,
+      "project_count": 1,
+      "mean_delta": 67.0,
+      "median_delta": 67,
+      "max_delta": 67,
+      "from_zero_count": 1,
+      "from_zero_fraction": 1.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "gp023_planck_sandbox_06",
+          "score_before": 0,
+          "score_after": 67,
+          "delta": 67,
+          "weakest_point_before": ""
+        }
+      ]
+    },
+    {
+      "cluster_id": "valuation_incomplete",
+      "N": 1,
+      "project_count": 1,
+      "mean_delta": 54.0,
+      "median_delta": 54,
+      "max_delta": 54,
+      "from_zero_count": 1,
+      "from_zero_fraction": 1.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "gp078_seq_recovery_01",
+          "score_before": 0,
+          "score_after": 54,
+          "delta": 54,
+          "weakest_point_before": "Assumes isolated boundary exceptions at prime powers are accidental rather than potentially essential to the generative law; does not quantify nor model the density or structural role of these excepti"
+        }
+      ]
+    },
+    {
+      "cluster_id": "fit_parameter_overclaim",
+      "N": 1,
+      "project_count": 1,
+      "mean_delta": 35.0,
+      "median_delta": 35,
+      "max_delta": 35,
+      "from_zero_count": 0,
+      "from_zero_fraction": 0.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "gp096_sandbox_18",
+          "score_before": 60,
+          "score_after": 95,
+          "delta": 35,
+          "weakest_point_before": "Non-identifiability and overinterpretation of the algebraic tail: the inclusion, magnitude, and exponent of an algebraic (1/u^k) term is not robustly justified or constrained by a single far-tail anch"
+        }
+      ]
+    },
+    {
+      "cluster_id": "numerical_instability",
+      "N": 1,
+      "project_count": 1,
+      "mean_delta": 38.0,
+      "median_delta": 38,
+      "max_delta": 38,
+      "from_zero_count": 1,
+      "from_zero_fraction": 1.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "oeis_a000959_newton",
+          "score_before": 0,
+          "score_after": 38,
+          "delta": 38,
+          "weakest_point_before": "Joint identifiability of b and d is catastrophically broken in the visible evidence window. The verification panel demonstrated rigorously that Pearson r(log n, log log n) = 0.9994 and VIF(log n) = 81"
+        }
+      ]
+    },
+    {
+      "cluster_id": "data_validity",
+      "N": 1,
+      "project_count": 1,
+      "mean_delta": 30.0,
+      "median_delta": 30,
+      "max_delta": 30,
+      "from_zero_count": 0,
+      "from_zero_fraction": 0.0,
+      "insufficient_evidence": true,
+      "exemplars": [
+        {
+          "project": "seattle_tech_housing",
+          "score_before": 58,
+          "score_after": 88,
+          "delta": 30,
+          "weakest_point_before": "The thesis's pivotal reliance on regional (MSA-level) occupational wage medians for teachers/nurses, divided by city-level rents, to infer housing burden trends for Seattle's middle-class is methodolo"
+        }
+      ]
+    }
+  ],
+  "anti_overfitting_notes": [
+    "Clusters with N < 10 are flagged as insufficient evidence.",
+    "from_zero jumps may reflect harness recovery, not epistemic improvement.",
+    "Cluster label reflects weakness before the jump, not necessarily what was fixed."
+  ]
+}

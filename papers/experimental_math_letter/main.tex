@@ -1,0 +1,215 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\title{Automated Epistemic Boundary Detection via Adversarial Compression:\\Validity Horizons, Detrending Sensitivity, and Cross-Domain Topological Falsification}
+\author{Daniel Alami}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We describe an automated epistemic boundary instrument (ZTARE) that compresses cold-start numerical data into minimal gate-passing functional forms, then stress-tests its own output via margin-of-safety assessment with closed-loop remediation. Applied to eight integer sequences, one polymer dataset, and one neural network scaling dataset (all presented as unlabeled observables), the instrument: (1)~recovered the Hardy-Ramanujan and distinct-partition asymptotics from cold-start data (leading coefficients within $0.04$--$2.6\%$ of theory); (2)~detected a topology validity horizon for Lucky numbers ($L(n)/n$ transitions from logarithmic to compositional form at $n \approx 50{,}000$--$100{,}000$); (3)~demonstrated that spectral slope measurements for sieve-generated sequences are strongly detrending-sensitive (slope ranges of~$1.7$ across methods), proving non-stationarity of the residual process; (4)~rejected the standard power-law neural scaling form on EleutherAI Pythia training data via holdout gates, with the BIC-winning template being compositional ($\sqrt{n/\ln n}$). The compression primitive (26 additive $+$ 13 compositional templates) was tested on 11~substrates with no false positives. An automated margin-of-safety gate the margin-of-safety gate prevented publication of an initially certified Lucky number coefficient ($a \approx 1.20$) by detecting 2\% drift per decade at $500$K scale. Code, data, and gate harnesses are available at \url{https://github.com/sparckix/ztare}.
+\end{abstract}
+
+\section{Introduction and Method}
+
+The engine operates in three phases. In the hypothesis phase, a large language model proposes a functional form as a typed declaration. A deterministic fitting primitive (scipy \texttt{curve\_fit}) estimates parameters on visible evidence only. Deterministic holdout gates (binary pass/fail on hidden data sealed before any iteration) enforce generalization. In the compression phase, a template-enumeration compressor tests all low-parameter forms from a fixed grammar against the same holdout gates. Stage~1 uses 22~additive templates (combinations of $\sqrt{n}$, $\ln n$, $n^b$, $e^{an}$, $1/n$). Stage~2 uses 13~depth-1 compositional templates ($\sqrt{n/\ln n}$, $\sqrt{n \cdot \ln n}$, etc.), activated only when Stage~1 returns no gate-passing forms. An exponent grid ($\{0.25, 1/3, 0.5, 2/3, 1, 1.5, 2\}$) constrains free power-law exponents; selection within topology classes is by BIC. In the formal verification phase, a Lean~4 compiler generates computational verification stubs.
+
+\textbf{Protocol disclosure.} Stage~2 (compositional templates) was added after Stage~1 failed on OEIS~A000607 (prime partitions). This constitutes a protocol expansion during the experimental program. The expanded grammar was backtested on all prior substrates with no new false positives. The rubrics, gate thresholds, and evidence splits for each experiment were authored by the same person who knows the ground truth for calibration targets (operator knowledge). The experiments are therefore cold-start (no domain labels visible to the engine) but not independently blinded.
+
+\textbf{Warm-weight disclosure.} OEIS sequences are represented in the LLM's pre-training data. The cold-start blinding (renamed variables, no sequence labels) reduces but does not eliminate warm retrieval in the hypothesis phase. the compression phase is deterministic and LLM-free; warm weights cannot influence it. The strongest results are those where the hypothesis phase failed completely and the compression phase succeeded (e.g., a calibration target: 25~iterations at score~0, compression finds the answer). Non-OEIS substrates (KWW polymer decay, real rheological data) provide a warm-weight-immune control group and are reported elsewhere~\cite{kapnistos2008}.
+
+\section{Results}
+
+\subsection{Lucky Numbers (A000959) --- Prospective Estimate}
+
+The density ratio $L(n)/n$ was presented as an unlabeled observable ($n = 500$ to~$5{,}000$ visible, holdout to~$20{,}000$, farther-tail to~$50{,}000$). The compression found $L(n)/n \approx a \cdot \ln n + b/n + c$ at iteration~1. All four holdout gates pass (holdout residual~$0.021$, farther-tail~$0.026$, thresholds~$0.05/0.08$). Eight templates passed all gates; six rival forms (loglog, $\sqrt{\log}$, free power) fail both gates at $3$--$7\times$ margin. The logarithmic topology is confirmed.
+
+\textbf{Coefficient stability.} An extended computation (523{,}507 Lucky numbers) tested the leading coefficient across scales:
+
+\begin{center}
+\begin{tabular}{rrrr}
+\toprule
+Fit range & $a$ & $b$ & $c$ \\
+\midrule
+$n = 500$--$5{,}000$ & 1.200 & $-4.7$ & 0.51 \\
+$n = 500$--$50{,}000$ & 1.190 & $-26.2$ & 0.61 \\
+$n = 500$--$500{,}000$ & 1.177 & $-85.0$ & 0.74 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The coefficient drifts from~$1.200$ at $50$K to~$1.177$ at $500$K (2\% over one decade). The $b/n$ correction absorbs an unresolved slowly-varying term. A post-hoc loglog-corrected template $a \ln n + d \ln\ln n + b/n + c$ yields $a = 1.097$, $d = 0.939$, with $3\times$ lower far-tail residual. A free log-power template $a \cdot (\ln n)^\alpha + c$ yields $\alpha = 0.939$ with comparable residuals; the two forms are numerically indistinguishable at $500$K.
+
+A full rerun on the 523{,}507-point dataset with the corrected grammar (26 additive templates including $\ln\ln n$, plus 13 compositional templates) produced a stronger result: all 26 additive templates fail the holdout gate at $500$K scale. The logarithmic topology that passed at $50$K does not generalize to $500$K. The compositional stage found $a\sqrt{n/\ln n} + b\ln n + c/n + d$ (BIC winner), which passes holdout gates but with thin margin (split-half coefficient drift $>100\%$, residual lag-1 autocorrelation $0.93$). An automated margin-of-safety gate the margin-of-safety gate exhausted all curated single-term extensions (loglog, $\sqrt{n}$, $1/n^2$); none resolved the structured residuals.
+
+A diagnosis-feedback loop then injected the margin-of-safety results into the LLM mutator as a structural constraint (``exhausted 6 additive extensions; propose non-additive correction''). The LLM proposed $f(n) = a + b \ln n + c/(n+d) + e(\ln n)^2$ with $b = 1.239$, $e = -0.00267$, passing all four holdout gates at $500$K (score~$77$). This form introduces two features absent from the template library: a shifted reciprocal $c/(n+d)$ and a negative $(\ln n)^2$ correction. The shifted reciprocal was permanently added to the template library (zero false positives on regression test).
+
+The $(\ln n)^2$ term yields an effective log coefficient $b_{\mathrm{eff}}(n) = b + 2e\ln n$ that converges toward~$1.0$ from above: $b_{\mathrm{eff}} \approx 1.17$ at $n = 5 \times 10^5$, $\approx 1.13$ at $n = 10^9$, crossing~$1.0$ at $n \sim 3 \times 10^{19}$. This is consistent with the Hawkins asymptotic $L(n) \sim n \ln n$ (coefficient exactly~$1$). The $(\ln n)^2$ correction measures the finite-$n$ approach rate to the Hawkins limit. To our knowledge, no published result gives a specific sub-leading correction topology for the Lucky number counting function. An extended sieve computation ($24.2 \times 10^6$ Lucky numbers from $5 \times 10^8$ integers via Fenwick tree, $140$~seconds) confirmed both coefficients stabilize: $b = 1.251$ and $e = -0.00319$ are locked from $5$M to $20$M ($0\%$ drift over $4\times$ scale). The effective coefficient $b_{\mathrm{eff}}(20\mathrm{M}) = 1.143$, continuing toward the Hawkins limit of~$1.0$. Extrapolated crossing: $n \sim 1.2 \times 10^{17}$. The log-quadratic correction topology is structural, not a local surrogate.
+
+Analysis of LLM failure distributions across substrates revealed that the mutator proposes the correct structural topology $50$--$87\%$ of the time (e.g., $11/15$ proposals for Hardy-Ramanujan were sqrt+log, the correct class). The bottleneck is overparameterization: the median LLM proposal has $k = 6$--$7$ parameters when the minimal gate-passing form has $k = 3$. The compression primitive (the compression phase) strips excess parameters. the hypothesis phase and the compression phase are complementary: the LLM contributes topology, the compressor contributes parsimony.
+
+\subsection{Hardy-Ramanujan Recovery (A000041) --- Calibration}
+
+The logarithm of the partition function was presented as 30 cold-start data points. The compression found $f(n) = 2.631\sqrt{n} - 1.172 \ln n - 1.445/n - 1.744$. All holdout gates pass. The leading coefficient matches $\pi\sqrt{2/3} = 2.565$ to within~$2.6\%$; the discrepancy is consistent with $O(1/\sqrt{n})$ correction terms absorbed into the fit on a finite window (the same mechanism documented for the exponent bias in \S\ref{sec:meinardus}).
+
+\subsection{Distinct Partitions (A000009) --- Second Calibration Recovery}
+
+The logarithm of $Q(n)$ (the number of partitions of $n$ into distinct parts) was presented as an unlabeled observable ($n = 10$ to~$2{,}000$ visible, holdout to~$10{,}000$, farther-tail to~$50{,}000$). The compression found $f(n) = 1.813\sqrt{n} - 0.737 \ln n - 1.735$. Holdout gate passes (residual~$0.022$, threshold~$0.05$); farther-tail gate marginally fails ($0.090$ vs.~$0.08$). The leading coefficient matches $\pi/\sqrt{3} = 1.814$ to within~$0.04\%$; the subleading coefficient matches the theoretical~$-3/4$ to within~$2\%$. Pinning $a = \pi/\sqrt{3}$ and $b = -3/4$ reduces the farther-tail residual to~$0.007$ (well within gate), confirming the marginal failure is finite-window bias, not structural misfit.
+
+Six rival forms (pure logarithmic, loglog, $\sqrt{\log n}$, free power, log-polynomial) were tested: all fail both gates by margins of $100$--$3{,}900\times$. Six of~22 templates pass the holdout gate; all six share the $\sqrt{n}$ topology. No false-positive topologies appear.
+
+\subsection{Partitions into Squares (A001156) --- Gate Failure with Correct Topology}
+\label{sec:meinardus}
+
+The compression found $a \cdot n^{0.335} + c \cdot \ln n + d$ (exponent within $0.5\%$ of the Meinardus-predicted~$1/3$). The holdout gates rejected the form: the exponent bias ($0.335$ vs.~$0.333$) accumulates across the extrapolation window. With normalized residuals (dividing by max observable magnitude), the form passes at~$0.16\%$ relative error. We report the topology identification but not a gate pass.
+
+\subsection{Partitions Excluding~1 (A002865) --- Gate Failure with Correct Topology}
+
+The compression found $a\sqrt{n} + b\ln n + c/n + d$ with $a = 2.562$ (theoretical $\pi\sqrt{2/3} = 2.565$). Same pattern as \S\ref{sec:meinardus}: correct topology, holdout rejection due to absolute threshold on a large-scale observable ($z$ to~$556$). Normalized residual:~$0.04\%$.
+
+\subsection{Prime Partitions (A000607) --- Compositional Discovery}
+
+Stage~1 failed. Stage~2 found $a\sqrt{n/\ln n} + b\ln n + c$, consistent with Vaughan's theorem. All four gates pass at tight thresholds ($0.08/0.06/0.10/0.08$). This was the first activation of the compositional compression layer (see Protocol Disclosure above).
+
+\subsection{Ulam Numbers (A002858) --- Statistical Characterization}
+
+No closed-form model passed holdout gates on the density ratio $U(n)/n$. The automated post-no gate-passing form found pipeline then applied observable rotation: the reciprocal observable $n/U(n)$ compresses trivially. The form $n/U(n) \approx -0.000216 \ln n + 5.597/n + 0.0776$ passes all holdout gates at $500$K (max residual~$0.0015$, threshold~$0.05$; $33\times$ below gate). The constant $c$ converges with scale: $1/c = 12.88$ at $5$K, $13.48$ at $500$K, $13.51$ at $770$K, confirming Steinerberger's conjectured density to within~$0.07\%$. The form that was invisible in one representation became trivial in another. Spectral characterization of $U(n)/n$ residuals at $n = 770{,}000$: Hurst $H \approx 0.05$ (anti-persistent), dominant period~$17.9$, density~$13.50$ (Steinerberger conjecture:~$13.52$). Spectral slopes are detrending-sensitive (see table below).
+
+A multi-detrending verification (moving-average at windows 11, 21, 43, 101; polynomial degrees 1--3; theoretical model residuals) revealed that the reported spectral slopes are strongly detrending-sensitive for both Lucky and Ulam sequences (slope ranges of~$1.7$ across methods). Under standardized methodology (model residuals plus moving-average $W=21$), Lucky and Ulam slopes are~$-0.56$ and~$-0.44$ respectively, a difference of~$0.11$ that does not support a distinct noise-class claim. Both sequences converge to deterministic density trends with anti-persistent residual structure ($H \approx 0.04$--$0.05$) that no smooth additive correction resolves. The detrending sensitivity itself is a methodological finding: spectral slope measurements for sieve-generated sequences require explicit detrending specification.
+
+\subsection{Neural Scaling Laws (Pythia Suite) --- Cross-Domain Preliminary}
+
+The pipeline was applied to a non-mathematical target: validation loss as a function of total training compute ($C = 6ND$) across EleutherAI's Pythia language model suite (8 model sizes, 70M--12B parameters, public W\&B training logs). All 26 additive Stage~1 templates failed holdout gates. Stage~2 found $a\sqrt{n/\ln n} + b/n + c$ as BIC winner (11 of 13 compositional templates pass). The standard power-law scaling form $a \cdot n^{-b} + c$ (Kaplan et al.\ 2020, Hoffmann et al.\ 2022) was not among the top templates by BIC.
+
+Full-training autocorrelation (lag-1$= 0.47$ at $1$K-step checkpoints) was initially attributed to within-model long-range memory. Subsequent falsification revealed this was the learning trend, not loss-landscape structure: late-stage analysis ($100$K--$143$K, $44$ uniform points) showed lag-1$= 0.114$, not significant ($z = 0.76$, $p = 0.45$). The apparatus caught its own false positive by applying the same margin-of-safety methodology it uses on number-theoretic substrates.
+
+Disaggregation into $65$ task-specific benchmark trajectories (MMLU, ARC, LAMBADA, SciQ; $12{,}285$ data points from the Pythia GitHub) revealed that $54/65$~tasks exhibit early capability jumps (first $50$K steps, jump ratios $4$--$11\times$). Of the tasks that plateau early, $12/65$ ($18\%$) genuinely froze after learning (accuracy above chance at step~$50$K, then zero improvement to step~$143$K). The remaining plateaus were tasks the model never learned (near-chance throughout). Late-stage per-task lag-1 autocorrelation was not significant for any task at $10$K-step spacing ($n = 10$, all $|z| < 1.96$). The finding: capability emergence is an early-training phenomenon on this model suite; late-stage compute reduces aggregate loss without measurable gains on already-acquired capabilities.
+
+\subsection{Cross-Substrate Validation}
+
+The compression primitive was tested on 11~substrates. No false positives were observed: two substrates where the champion requires 12+ parameters (DFDO, Ulam) were correctly not compressed; two substrates with correct topology but absolute-gate failure were correctly reported as identifications, not certifications. The sample size (10) provides limited statistical power; we do not claim a false-positive \emph{rate}, only that none were observed.
+
+\subsection{PySR Baseline Comparison}
+\label{sec:pysr}
+
+To test whether the apparatus's false-positive rejection is specific to its LLM-proposal + template-enumeration architecture or generic to any holdout-gated symbolic regression, we ran PySR \cite{cranmer2023} on five substrates under identical out-of-sample gating: Mertens $M(n)/\sqrt{n}$, prime gaps $g(n)/\log p_n$, abundant-number density (three substrates known or suspected to be incompressible), Lucky density $L(n)/n$, and Hardy-Ramanujan $\log p(n)$ (two substrates where the apparatus recovered a known asymptotic).
+
+\begin{center}
+\small
+\begin{tabular}{llll}
+\toprule
+Substrate & ZTARE verdict & PySR (default) & PySR + ZTARE gate \\
+\midrule
+Abundant density & $1/n$ passes @ $n{\leq}100$K & form claimed & null ($0.0105 > 0.01$) \\
+Mertens $M(n)/\sqrt{n}$ & null & form, NaN on extrapolation & null \\
+Prime gaps $g(n)/\log p_n$ & null & form claimed & null ($1.73 \gg 0.08$) \\
+Lucky $L(n)/n$ & $1.200\ln n + b/n + c$ & $1.204\ln n + 0.487$ & passes ($0.033 \le 0.08$) \\
+H-R $\log p(n)$ & $\pi\sqrt{2n/3} + b\ln n$ & nested exp, incorrect & null ($0.265 > 0.08$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Three observations. First, on Lucky density, PySR's genetic search independently recovered $a = 1.204$ against the apparatus's $a = 1.200$. Two structurally different search algorithms (LLM-proposal + template-enumeration vs.\ evolutionary program synthesis) converge to the same coefficient, providing a cross-algorithm triangulation of the \S2.1 measurement.
+
+Second, on Hardy-Ramanujan, PySR failed to recover $\pi\sqrt{2/3} \cdot \sqrt{n}$ within the same iteration budget; its best-BIC form was a nested exponential that failed the holdout gate at $3.3\times$ threshold. The topology $\sqrt{n} + \ln n$ is not reliably reachable by default PySR settings even when the target is expressible in its library. The template-enumeration primitive recovered it in one pass.
+
+Third, on the three incompressible substrates, PySR-default always claims a form (it has no null option); under ZTARE-style holdout gating, PySR correctly declares null on all three. This reframes the falsification claim: what distinguishes this apparatus is not a novel search algorithm but the architectural commitment to holdout gates as hard structural constraints rather than post-hoc model-selection criteria. The gate is the mechanism; the search is interchangeable.
+
+Configuration: PySR 1.5.10, 40 iterations, complexity limit~20, operator set $\{+, -, \times, /, \mathrm{pow}, \log, \sqrt{\cdot}, \exp\}$. Harness and per-substrate residuals at \texttt{scripts/pysr\_baseline.py} and \texttt{papers/experimental\_math\_letter/pysr\_baseline\_full.json}.
+
+\subsection{Two Ceilings: Grammar and Space}
+\label{sec:two-ceilings}
+
+The principle that additional compute cannot break structural ceilings imposed by the expression grammar — and that only grammar expansion (adding new primitives, new operator classes) enables structural class transitions — is a recurring finding across the experiments reported above. Applying that principle to discrete algebraic substrates exposes a second, orthogonal ceiling.
+
+On sopfr (A001414) tested blind under a \texttt{py\_exec} grammar with \texttt{isprime}, \texttt{factorint}, \texttt{primefactors}, \texttt{divisors}, \texttt{gcd}, and \texttt{prime\_vector} as sandbox primitives, the mutator fails to recover the law across 10+ iterations with pivot escalation. The data is highly disambiguating: $z(8) = z(9) = 6$ is a collision identity ($2 + 2 + 2 = 3 + 3$) that uniquely distinguishes sopfr from all standard arithmetic rivals; 22 primes in the visible range map to themselves; prime-power growth is exactly linear in the exponent, $z(p^k) = k \cdot p$. None of these signals are read under repeated iteration.
+
+The failure is not syntactic --- \texttt{sum(p*v for p,v in factorint(n).items())} is expressible in the grammar --- but \emph{categorical}. The LLM reaches for polynomial, rational, and logarithmic combinations of a continuous index (smooth function-space) because those dominate symbolic-regression corpora in pre-training. Crossing from function-space to prime-space (functions on the lattice of primes under unique factorization) requires an ontological shift the LLM does not make unprompted, even when the prime-factorization primitives are directly exposed in the sandbox.
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+Ceiling & Mechanism & Fix \\
+\midrule
+Grammar & Expression language admits the form & Grammar expansion (\texttt{py\_exec} + primitives) \\
+Space   & Mathematical category the mutator searches within & Category-switch intervention; reasoning-class model \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Grammar expansion is necessary but not sufficient. The space ceiling is an additional orthogonal bound. This reframes the scope of the discovery claim: the apparatus recovers targets whose correct form lives in the LLM's \emph{statistically dominant} category (smooth asymptotic, \S2.1--2.6) and fails on targets requiring category-switch to less frequent categories (discrete algebraic, \S2.7) regardless of whether the grammar admits the answer.
+
+\subsection{Open Methodological Questions: State-Reset Primitives}
+\label{sec:state-reset}
+
+The apparatus's pivot mechanism currently succeeds by disrupting the mutator's state accumulation via heuristic modules (inversion, coordinate compression, category-switch, fixed-point scan, collision-exploit). Three candidate state-reset primitives emerge from this work but have not been evaluated empirically here:
+
+\begin{description}
+\item[Persona rotation.] Cycle the mutator persona every $k$ iterations (contrarian empiricist $\to$ topology-first pattern-matcher $\to$ adversarial symmetrist), breaking the drift of any single anchor.
+\item[Thesis amnesia.] Clear the best-thesis memory on stagnation, forcing the mutator to propose from cold rather than iterate on a locally-optimal but globally-wrong form.
+\item[Judge rotation.] Swap the judge model on stagnation (e.g., gpt-4.1 $\to$ claude $\to$ gemini-pro) to break judge-side calibration drift, which we observed on Newton-mode rubrics as score oscillation of 0--76 on proposals of constant gate-harness quality.
+\end{description}
+
+All three are low-cost, high-leverage candidates that deserve controlled evaluation. We flag them here as open methodological directions for the symbolic-regression-with-LLM community and defer their analysis to a dedicated epistemic-verification paper.
+
+\section{Discussion}
+
+The engine estimates by compressing, then stress-tests its own output. The pipeline runs in four automated phases: (1)~LLM hypothesis generation, (2)~deterministic template compression, (2.5)~margin-of-safety assessment with closed-loop remediation, and (3)~Lean proof stub generation. When the compression phase.5 detects thin margin (coefficient drift, structured residuals), it automatically extends the grammar, re-compresses, and re-assesses. If all extensions fail, it switches from model repair to residual characterization (spectral decomposition, multiplicative model trial). The entire sequence is deterministic after the hypothesis phase.
+
+The Lucky number result (\S2.1) demonstrates this recursive methodology. At $50$K, the apparatus certified $a \approx 1.20$ with all gates passing. Automated coefficient stability testing at $500$K detected $2\%$ drift per decade, identified a missing $\ln\ln n$ template, extended the grammar (zero false positives on regression test), reran compression, exhausted all additive and grammar-derived extensions, and characterized the residuals as anti-persistent with detrending-sensitive spectral properties (slope~$-0.56$ under standardized methodology). A validity horizon scan detected a topology transition at~$n = 50{,}000$--$100{,}000$: the logarithmic form dominates below this scale, while a compositional $\sqrt{n/\ln n}$ form dominates above it. The finding is not a single coefficient but a scale-dependent density model plus a measured validity boundary, extracted by an apparatus that diagnosed its own grammar ceiling and reported what it could and could not resolve.
+
+Three capabilities emerge from the cross-substrate program that reframe the apparatus from a discovery engine to an epistemic boundary instrument:
+
+\textbf{Validity horizons.} The Lucky number density ratio transitions from a logarithmic topology (gates pass at $50$K) to a compositional topology ($\sqrt{n/\ln n}$, gates pass at $100$K+). An automated scale-sweep protocol detects this transition at $n \approx 50{,}000$--$100{,}000$. The apparatus reports ``$f(n)$ valid up to $n = X$,'' a measurement no symbolic regression system currently provides.
+
+\textbf{Detrending sensitivity as a methodological finding.} Spectral slope measurements for Lucky and Ulam density fluctuations vary by~$1.7$ across detrending methods (moving-average windows, polynomial degrees, model residuals). The swing itself is the finding: it demonstrates that these processes are non-stationary, with error variance coupled to the signal magnitude. Classical spectral analysis assumes stationary residuals; the detrending sensitivity proves this assumption is violated. The literature contains no prior spectral characterization of Lucky or Ulam density~\cite{wolf1997}. Any claim about the ``noise class'' of a sieve-generated sequence is an artifact of the detrending method chosen, and should be reported with explicit method specification.
+
+\begin{center}
+\small
+\begin{tabular}{lrr}
+\toprule
+Method & Lucky slope & Ulam slope \\
+\midrule
+MA-11 & $+0.03$ & $+0.18$ \\
+MA-21 & $-0.59$ & $-0.44$ \\
+MA-101 & $-1.35$ & $-1.20$ \\
+Poly-1 & $-1.67$ & $-1.50$ \\
+Log-detrend & $-1.63$ & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Topological falsification across domains.} On the Pythia neural scaling data, the apparatus's holdout gates reject the standard power-law form. The BIC-winning template is compositional ($\sqrt{n/\ln n}$), suggesting a compositional scaling structure. Full-training autocorrelation was falsified as a learning-trend artifact; late-stage loss is white noise at checkpoint resolution. The apparatus caught this false positive using the same margin-of-safety methodology applied to sieve sequences, demonstrating cross-domain self-correction.
+
+\textbf{Observable rotation.} When compression exhausts on an observable, an automated post-no gate-passing form found step tries standard transforms ($\log z$, $1/z$, $\Delta z$). The Ulam density ratio $U(n)/n$ resists all~$41$ templates (no gate-passing form found). The reciprocal $n/U(n)$ compresses trivially, with the fitted constant converging to the Steinerberger density at $770$K ($0.07\%$ agreement). The same rotation resolves gate failures on partition substrates: A001156 (square partitions, $332\times$ improvement) and A002865 (partitions excluding~$1$, $43\times$ improvement), and improves Lucky number compression $7\times$. The underlying principle is elementary (observables approaching a constant compress better in reciprocal space) but the apparatus discovers and applies it without domain knowledge.
+
+The partition-function calibrations (\S2.2--2.3) recover known asymptotics to within $0.04$--$2.6\%$ from cold-start data, confirming the apparatus does not hallucinate structure.
+
+\textbf{Limitations.} The template library is hand-authored, not generated. The author served as both operator (ground truth holder for calibration targets) and experimental designer. The ``cold-start'' condition means the engine sees no domain labels, but the experimental design itself reflects operator knowledge. The within-model training autocorrelation was falsified as a learning-trend artifact; the capability-freezing observation (12/65 tasks) is preliminary. The sieve spectral characterization is detrending-sensitive. Independent replication by operators who do not know the ground truth would strengthen the claims.
+
+\section*{Data Availability}
+
+All code, evidence files, gate harnesses, rubrics, and iteration telemetry are available at \url{https://github.com/sparckix/ztare}. Each experiment can be reproduced with \texttt{make discover PROJECT=<name> RUBRIC=<name> ITERS=15}.
+
+\begin{thebibliography}{9}
+\bibitem{steinerberger2015}
+S.~Steinerberger, ``A hidden signal in the Ulam sequence,'' \emph{Experimental Mathematics} \textbf{26}(4), 460--467, 2017. arXiv:1507.00267.
+
+\bibitem{kapnistos2008}
+M.~Kapnistos et al., ``Unexpected power-law stress relaxation of entangled ring polymers,'' \emph{Nature Materials} \textbf{7}, 997--1002, 2008.
+
+\bibitem{wolf1997}
+M.~Wolf, ``$1/f$ noise in the distribution of prime numbers,'' \emph{Physica A} \textbf{241}(3), 493--499, 1997.
+
+\bibitem{cranmer2023}
+M.~Cranmer, ``Interpretable Machine Learning for Science with PySR and SymbolicRegression.jl,'' arXiv:2305.01582, 2023.
+\end{thebibliography}
+
+\end{document}

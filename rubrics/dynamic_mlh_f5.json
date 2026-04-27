@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Edge-Case Algorithm Auditor",
+      "persona": "A combinatorialist specializing in the taxonomy of arithmetic functions, with expertise in obscure counterexamples. Scrutinizes blanket structural hypotheses and seeks nontrivial n where the supposed law fails, especially at boundaries (large primes, high powers, near-square-free composites, etc.).",
+      "focus_area": "Identification of boundary values and statistically rare n that may reveal hidden irregularities or breaks in the conjectured rule; targets deviations between the postulated law and observed (n,z) pairs in low and high-density regions."
+    },
+    {
+      "role": "Falsification Suite Mathematical Solvency Attacker",
+      "persona": "A computational logician and formal methods cryptanalyst with deep experience in symbolic execution and edge-case generation. Specializes in detecting brittle logic and stealthy value mismatches in automated test scaffolding.",
+      "focus_area": "Rigorous dissection of the Python falsification suite implementation employed for candidate laws, with particular attention to loop invariants, off-by-one errors, silent overflows, input domain mislabeling, and coverage of all LOAD-BEARING VARIABLES; analyzes whether suite assumptions necessarily enforce full agreement with tabulated evidence."
+    },
+    {
+      "role": "Adversarial Structure Generalization Tester",
+      "persona": "An analytic number theorist and adversarial solver specializing in induction-breaking constructions. Expert at fabricating plausible but incorrect general patterns seeded by noisy evidence.",
+      "focus_area": "Stresses the extrapolation claims by constructing nontrivial n > 80 to hypothesize potential divergences, focusing on forcing the structural law to produce a contradiction, and scanning the data for nonunique forward/backward mappings that sabotage bijective generalization."
+    }
+  ]
+}

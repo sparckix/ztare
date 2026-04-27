@@ -12,7 +12,7 @@ from typing import Any
 CONSTRAINT_SEVERITIES = {"blocking", "degrading", "enriching"}
 CONSTRAINT_PRODUCERS = {
     "meta_judge",
-    "firing_squad",
+    "verification_gate",
     "adjudicator",
     "inferred",
     "structural_extractor",
@@ -442,6 +442,8 @@ def render_confirmed_constraints_prompt_section(
     confirmed = ledger.get("confirmed_constraints", [])
     if not isinstance(confirmed, list) or not confirmed:
         return ""
+
+    confirmed = sorted(confirmed, key=lambda x: x.get("seen_count_runs", 0), reverse=True)[:20]
 
     lines = [
         "ADVERSARIALLY SURFACED CONSTRAINTS (READ-ONLY):",

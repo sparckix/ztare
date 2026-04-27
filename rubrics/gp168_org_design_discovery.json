@@ -1,0 +1,91 @@
+{
+  "rubric_mode": "kepler",
+
+  "synthesis_renderer": "policy_essay",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative organizational topology thesis — no numerical extrapolation holdout; global_extrapolation_gap gate does not apply",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative organizational topology thesis — evidence surface is text/transcripts/code, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative organizational topology thesis — rival topology enumeration scored via dimensions; keyword-matching heuristic for mathematical rival forms does not apply",
+  "disable_parsimony_gate": true,
+  "disable_parsimony_gate_reason": "multi-paragraph organizational topology thesis — parsimony measured via 'principle vs instantiation strip' dimension, not parameter count",
+  "holdout_hard_gate": false,
+  "holdout_budget": 0,
+  "enable_fit_primitive": false,
+  "enable_mform_audit": true,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "confirmation_threshold_runs": 1,
+  "gp103_stagnation_threshold": 3,
+
+  "persona": "You are an organizational topology auditor who has spent equal time inside Chandlerian M-form firms, biological collective-intelligence research, and live distributed-systems incident response. You hold seven non-negotiable methodological commitments that disqualify the most common rhetorical moves in org-design proposals. (1) Principle vs instantiation: every load-bearing claim must survive proper-noun substitution — strip 'M-form', 'principal', 'Orbit', 'mandate', 'damage signal' from any sentence stated as a principle, and if the sentence collapses, it was an instantiation masquerading as a principle and you penalize it as such. (2) Asymmetric persistence: human-AI organizations differ from human-only firms because humans persist while agents are ephemeral; any topology that quietly assumes symmetric persistence (e.g., 'the agent will remember its commitments next quarter') is structurally unsound and earns zero on the relevant dimension regardless of prose quality. (3) Silence-as-consent is the default failure mode: in any system where the absence of an objection is interpreted as approval, drift accumulates monotonically; you reward topologies that name a specific anti-silence mechanism (forced acknowledgement, decay timer, batch gate, periodic re-derivation) and penalize those that wave at 'good communication'. (4) Counterfactual discipline: 'compared to what?' is your first question for every topology claim — a thesis that says 'the M-form is optimal' or 'replace the M-form with stigmergy' without contrasting against at least one named alternative on at least one named failure surface is not making a structural claim. (5) Rubric-as-eval gaming: you are aware that this rubric is itself an optimization target; you reward theses that name *which dimension of this rubric they are most exposed to gaming on* and propose an external check that does not depend on the rubric. (6) Falsification direction and revision path: every thesis must (a) name a concrete falsifying observation — what observation, on which artifact, would force the operator to abandon the proposed topology — and (b) name the revision path the organization would take when that observation arrives, including which existing artifacts in org/ would be transformed or retired. A thesis that names neither earns at most half points across all dimensions; a thesis that names one earns at most three-quarters; full scoring requires both. (7) Quote verification: every quotation or paraphrase attributed to the GP-129 panel transcript or any of the four GP-167 panel rounds must be verifiable against the workspace evidence (specifically gp129_biological_panel.md and gp167_multi_agent_interface_panels.md). When you cannot locate the cited content in the supplied evidence surface, treat the citation as fabricated and award zero on whichever dimension depended on it — fluency is not a substitute for textual support, and a thesis that grounds its argument in invented panel quotes is structurally indistinguishable from a thesis with no evidence at all. You reject: vague 'hybrid' answers that name no coordination mechanism, biological metaphors imported without a mapping (mycelium-as-trope, not mycelium-as-mechanism), and any proposal that requires the human principal to read every signal in real time (this is the attention-bound failure the panels diagnosed).",
+
+  "dimensions": [
+    {
+      "name": "Topology Specification",
+      "weight": 16,
+      "description": "Does the thesis name a specific organizational topology with (a) a named coordination mechanism (hierarchy, market, stigmergy, mycelium, eusociality, ad-hoc swarm, or an explicit hybrid with named composition), (b) named information-flow channels (H↔A, H↔H, A↔A) with directionality and bandwidth properties, and (c) a named decision authority for at least three concrete classes of decision (mandate authoring, conflict resolution, mandate retirement)? Full points if all three are concrete enough to implement against the existing org/ directory schema. Half points if the topology is named but one of (a)-(c) is left as 'to be determined'. Zero points for proposals that name no mechanism or fall back on 'it depends on context'."
+    },
+    {
+      "name": "Death-Spiral Resistance",
+      "weight": 12,
+      "description": "Does the thesis demonstrate that the proposed topology resists the death-spiral failure mode — a positive feedback loop where one failure (mandate drift, signal flood, role conflict) produces more failures of the same kind faster than the system can respond? Required: name at least one death-spiral pattern that is explicitly attributed by quotation or paraphrase to the GP-167 / GP-129 panel transcripts in the evidence surface (e.g., silence-as-consent drift, signal-flood attention bankruptcy, mandate-hash drift cascade) and show by a worked mechanism — not by assertion — why the topology contains the spiral within bounded resources. A thesis that invents a novel-sounding spiral without anchoring it to a panel transcript citation earns zero on this dimension regardless of internal coherence. Penalize any thesis that asserts containment without naming the bounding mechanism."
+    },
+    {
+      "name": "Attention-Bounded Operation",
+      "weight": 11,
+      "description": "Does the topology operate within bounded human attention — specifically, is there an explicit bound on (a) how many signals/decisions reach the principal per unit time and (b) what happens when that bound is exceeded? Full points if the bound is named as a quantity (signals/day, decisions/week, or an equivalent rate) AND the overflow behavior is specified (queue, batch, escalation rule, automatic delegation, drop-with-audit). Half points if a bound is named but overflow behavior is hand-waved. Zero points if the topology requires the principal to 'review everything important' without a definition of important that the system can compute."
+    },
+    {
+      "name": "Context Survival Across Sessions",
+      "weight": 11,
+      "description": "Does the topology preserve organizational context across the asymmetric-persistence boundary — i.e., when an agent session ends and a new one begins, what specific mechanism makes the new agent operate as a continuation of the prior one rather than a stranger? Required: name the persistence substrate (file artifacts, structured memory, mandate hash, etc.), the read-on-startup contract, and the failure mode if the substrate is corrupted/missing. Full points if all three are specified and the failure mode is gracefully degraded (not silent). Penalize topologies that assume the agent will 'remember' anything outside externalized state."
+    },
+    {
+      "name": "Bidirectional Preference Legibility",
+      "weight": 11,
+      "description": "Does the topology make BOTH human preferences legible to agents AND agent state/uncertainty legible to humans — without requiring either side to pull continuously? Full points if the thesis names (a) the artifact through which human preferences are expressed in agent-readable form, (b) the artifact through which agent state/uncertainty is expressed in human-readable form, and (c) an update cadence on each side that does not require continuous attention. Penalize unidirectional-legibility proposals (typically: agents know what humans want, humans don't know what agents are doing)."
+    },
+    {
+      "name": "Falsification Condition and Revision Path",
+      "weight": 10,
+      "description": "Does the thesis name (a) a CONCRETE falsifying observation — a specific event, signal, or measurement on a named artifact (e.g., 'damage signals/day exceeds N for three consecutive days', 'mandate-hash drift cascade observed in two unrelated divisions within one week', 'principal acknowledgement latency exceeds K hours on >X% of P0 signals') that would force the operator to abandon the proposed topology — and (b) the REVISION PATH the organization would take when that observation arrives, including which existing artifacts in org/ would be transformed or retired? Full points only if both (a) and (b) are present AND the falsifying observation is computable from artifacts the system actually produces. Half points if only one is present. Zero points if the thesis names no falsifying condition — an unfalsifiable topology proposal is not a structural claim. This is a hard gate on charter compliance."
+    },
+    {
+      "name": "Secondary Observable — Bottleneck and Unpreventable Failure",
+      "weight": 10,
+      "description": "(Charter Secondary Observable requirement.) Does the thesis (a) PREDICT, with a stated mechanism, which organizational primitive — chosen from the set actually present in the org/ snapshot (damage signals, session claims, M-form audit, closure map, mandate hash, role wrapper, batch gate, or another named primitive cited from the evidence surface) — becomes the FIRST scaling bottleneck as the organization grows from 1 principal to 10 teams; AND (b) NAME a specific coordination failure that the current M-form architecture (as implemented in org/ and orbit/) CANNOT prevent, with a mechanism for why the M-form's structural commitments make it unpreventable rather than merely unaddressed? Both halves are required for full points: prediction without mechanism is vibes; failure-naming without mechanism is complaint. Half points if only one half is present with a mechanism. Zero points if either half is absent or stated without a mechanism. This dimension is the load-bearing test of whether the thesis is a structural claim or a topology comparison essay — without it, a fluent thesis can satisfy every other dimension and still produce zero predictive content."
+    },
+    {
+      "name": "Counterfactual Against Named Alternatives",
+      "weight": 8,
+      "description": "Does the thesis contrast its proposed topology against at least two named alternatives drawn from the evidence surface (e.g., flat M-form, stigmergy, market, mycelium, eusociality, federation, swarm) on at least two named failure surfaces (death-spiral, attention exhaustion, context loss, preference opacity, role conflict, etc.)? Full points if both alternatives and both failure surfaces are named and the contrast is mechanistic (each alternative is shown to fail or succeed differently on each surface). Half points if only one alternative or only one failure surface is contrasted. Zero points for topology claims with no counterfactual — these are preferences, not structural claims."
+    },
+    {
+      "name": "Migration Path from M-form Baseline",
+      "weight": 7,
+      "description": "Does the thesis specify a migration path from the current M-form implementation (org/ directory: assignments.yaml, mandates/, roles/, signals/, sessions/) to the proposed topology — including which existing artifacts are preserved, transformed, or retired? Full points if at least three named existing artifacts are addressed and the migration is decomposable into reversible steps. Zero points for proposals that require greenfield rebuild without a migration story (these are not engineerable from the current state)."
+    },
+    {
+      "name": "Rubric-Gaming Self-Diagnosis",
+      "weight": 4,
+      "description": "Does the thesis explicitly name which dimension of THIS rubric it is most exposed to gaming on (e.g., 'I am most likely to game Bidirectional Preference Legibility by naming artifacts that exist but are never read'), AND propose at least one external check (an observation, audit, or experiment NOT derivable from the rubric itself) that would catch the gaming? Full points only if both halves are present and the external check is concrete enough for an operator to perform. Half points if only the dimension is named without an external check. Zero points if neither is present. This dimension exists to distinguish theses that read the rubric as an attack surface from theses that read it as a checklist."
+    }
+  ],
+
+  "criteria": {
+    "Topology Specification": "Does the thesis name a specific topology with a coordination mechanism, named information-flow channels with directionality, and a named decision authority for at least three decision classes? Vague 'hybrid' answers without composition rules earn at most half points.",
+    "Death-Spiral Resistance": "Does the thesis name at least one death-spiral failure pattern that is explicitly attributed to a panel transcript in the evidence surface, AND demonstrate by mechanism — not assertion — that the topology contains the spiral within bounded resources? Invented spirals without panel-transcript anchoring fail this criterion.",
+    "Attention-Bounded Operation": "Is there an explicit quantitative bound on signals/decisions reaching the principal per unit time, AND a specified overflow behavior (queue, batch, escalation, delegation, audited drop)? 'Review everything important' without a computable definition of 'important' fails.",
+    "Context Survival Across Sessions": "Does the topology name the persistence substrate, the read-on-startup contract, and the gracefully-degraded failure mode when the substrate is corrupted or missing? Topologies that assume agent memory across sessions fail this criterion.",
+    "Bidirectional Preference Legibility": "Does the topology specify BOTH the artifact making human preferences agent-readable AND the artifact making agent state human-readable, with an update cadence on each side that does not require continuous attention?",
+    "Falsification Condition and Revision Path": "Does the thesis name a concrete falsifying observation (specific event/signal/measurement on a named artifact) AND the revision path the organization would take when that observation arrives, including which existing artifacts in org/ would be transformed or retired? Hard gate on charter compliance — a thesis with no falsifying condition is not a structural claim.",
+    "Secondary Observable — Bottleneck and Unpreventable Failure": "Does the thesis predict the first scaling bottleneck primitive (chosen from those actually present in org/) with a stated mechanism, AND name a specific coordination failure the current M-form CANNOT prevent with a mechanism for why? Both halves required for full points; either half without a mechanism scores zero on its half. This is the charter Secondary Observable test — fluency cannot substitute for predictive content.",
+    "Counterfactual Against Named Alternatives": "Does the thesis contrast its proposed topology against at least two named alternatives on at least two named failure surfaces, with a mechanistic comparison rather than a preference assertion?",
+    "Migration Path from M-form Baseline": "Does the thesis address at least three named existing artifacts in org/ (assignments.yaml, mandates/, roles/, signals/, sessions/, delegation.yaml, controls/, gates/, goals/, preferences/) and specify a reversible migration?",
+    "Rubric-Gaming Self-Diagnosis": "Does the thesis name which rubric dimension it is most exposed to gaming on AND propose an external check (not derivable from the rubric) that would catch the gaming? Both halves required."
+  }
+}

@@ -125,7 +125,7 @@ def build_supervisor_fixture_cases(*, research_spec_path: str) -> list[Superviso
                 ),
             ),
             "verification_command": (
-                "python -m src.ztare.validator.prose_verifier "
+                "python -m src.ztare.findings.prose_verifier "
                 "--draft-path research_areas/drafts/paper4_drafting_paper_outline.md "
                 "--spec-path research_areas/specs/paper4_drafting_paper_outline_prose_spec.json"
             ),

@@ -12,7 +12,7 @@ A system that stress-tests claims by having one AI propose an answer and another
 **Mutator**
 The AI that proposes answers. It writes a thesis (the argument) and a test suite (code that checks the argument against data). Named "mutator" because each iteration mutates/improves the previous answer.
 
-**Firing Squad**
+**Verification Panel**
 Three adversarial AI agents that attack the mutator's answer. They look for the weakest assumption and write counter-tests. Named for the obvious reason — they're trying to kill the thesis.
 
 **Meta-Judge**
@@ -22,7 +22,7 @@ The AI that scores the result. It only looks at what the code produced when it r
 The current best answer. When a new iteration scores higher than the champion, it gets promoted. Think of it as "the leading candidate."
 
 **Iteration**
-One cycle of: mutator proposes → firing squad attacks → judge scores → best answer kept. A typical run does 10-100 iterations.
+One cycle of: mutator proposes → verification panel evaluates → judge scores → best answer kept. A typical run does 10-100 iterations.
 
 ---
 
@@ -96,7 +96,7 @@ Stopping the loop before the full iteration budget if the answer is already good
 ## Architecture
 
 **Validator**
-The adversarial engine itself — the mutator/firing-squad/judge loop. Stateless: every run starts fresh from the evidence snapshot.
+The adversarial engine itself — the mutator/verification-panel/judge loop. Stateless: every run starts fresh from the evidence snapshot.
 
 **Supervisor**
 The work-management layer for improvement programs. Routes tasks, tracks progress, enforces budgets. Does NOT decide truth — that's the validator's job.
@@ -122,7 +122,7 @@ A document written BEFORE running an experiment that specifies: what we'll test,
 ## Artifacts
 
 **Thesis (thesis.md)**
-The current best argument/answer for a project. Written by the mutator, attacked by the firing squad, scored by the judge.
+The current best argument/answer for a project. Written by the mutator, evaluated by the verification panel, scored by the judge.
 
 **Test Model (test_model.py)**
 Code that implements the thesis's claims in a testable way. For curve-fitting projects: a Python function that takes inputs and returns predictions. The gates evaluate this against hidden data.
@@ -157,7 +157,7 @@ A Config-layer component that tracks active goals in `AGENTS.md` and advances th
 The organizational structure borrowed from Chandler/Williamson applied to AI governance. In ZTARE, Division A generates and Division B verifies, with structural separation enforced by the supervisor. See Paper 4.
 
 **Division A / Division B**
-The two structural divisions in the M-Form. Division A is the generation side (mutator, workspace, synthesis). Division B is the verification side (firing squad, judge, hard gates). The governance claim is that they must not share a gradient.
+The two structural divisions in the M-Form. Division A is the generation side (mutator, workspace, synthesis). Division B is the verification side (verification panel, judge, hard gates). The governance claim is that they must not share a gradient.
 
 **Subliminal Learning**
 A training-time phenomenon (Cloud et al. 2026, Nature 652) where models sharing base initialization transmit behavioral traits through semantically unrelated data during fine-tuning. Distinct from steganography — the signal is not human-readable. Operates during gradient descent, not during inference-time in-context reading.
@@ -171,6 +171,37 @@ A JSON file in a project's `raw/` directory that maps filenames to source types 
 
 ---
 
+## Science Track (Asymptotic Discovery)
+
+**Compression Primitive (GP-103)**
+A template enumeration engine that strips overparameterized surrogates to their minimal gate-passing form. Stage 1 tests 22 additive templates (combinations of sqrt, log, power, exp, 1/n). Stage 2 tests 13 depth-1 compositional templates (sqrt(n/log(n)), etc.). Selection by BIC. No LLM in the loop. The compression primitive is the core of `make discover` Phase 2.
+
+**Farther-Tail Holdout**
+Data points beyond both the visible and holdout windows. Tests extrapolation, not interpolation. The key instrument for catching finite-window parameter overfitting (e.g., a free exponent of 0.562 vs the true 0.500).
+
+**Gate Normalization**
+Dividing residuals by the maximum observable magnitude before testing against a threshold. Prevents large-scale observables (z values in the hundreds) from failing gates designed for unit-scale data. Implemented in `src/ztare/gates/residual_norm.py`.
+
+**Exponent Grid**
+A discrete set of candidate exponents {0.25, 1/3, 0.5, 2/3, 1.0, 1.5, 2.0} used when fitting power-law terms. Free continuous exponents overfit in finite windows. The grid constrains the fit; BIC selects among grid values.
+
+**PSLQ Bridge**
+Maps fitted floating-point parameters to exact mathematical constants using the PSLQ integer relation algorithm (via `mpmath.identify()`) and a curated constant library (pi, sqrt(2), euler_gamma, etc.). Transforms a numerical regression into a falsifiable mathematical conjecture.
+
+**Rival Exclusion Test**
+A post-discovery closure test that fits alternative functional forms (the "rivals" flagged by the judge's weakest-point feedback) against the same evidence and gates. If all rivals fail, the judge's concern is closed. Part of Phase 2.5 (GP-111).
+
+**UNDERIDENTIFIED**
+The correct output when no template in the library passes the holdout gates. Means the template library cannot express the target's asymptotic form. This is a finding, not a failure. The Ulam density result (A002858) is the canonical example.
+
+**Statistical Fingerprint (GP-110)**
+A characterization of sequences that resist closed-form compression. Measures spectral slope, Hurst exponent (via DFA), phase linearity (via Hilbert transform), and amplitude envelope. Used for UNDERIDENTIFIED sequences.
+
+**Lean Proof Stubs**
+Lean 4 files generated by `lean_compiler.py` from ZTARE gate results. Gate passes become `#eval` checks on `Float` bounds (sorry-free, decidable). Gate failures become exclusion witnesses. PSLQ identifications become named axiom conjectures.
+
+---
+
 ## Extraction Components
 
 **Structural Constraint Extractor (GP-061 Component A)**
@@ -178,3 +209,14 @@ Extracts structural constraints from failed candidate families by computing feat
 
 **Negative Space Extractor (GP-061 Component B)**
 Detects void operators — mathematical operations absent from all tried candidate families. Identifies what the search space has systematically avoided, which may indicate structural gaps in the mutator's exploration.
+
+---
+
+## Epistemic Supervision Principles (P13–P14)
+
+**Enforcement Completeness (P13)**
+The principle that an enforcement surface must cover every branch of every conditional it touches. A deterministic enforcement floor with a gap on one branch is structurally equivalent to no enforcement on that branch. Added after GP-080 postmortem (2026-04-17). See `docs/epistemic_supervision_principles.md`.
+
+**Downstream Symptom Chasing (P14)**
+The anti-pattern of fixing downstream effects of a root cause across multiple sessions without tracing upstream to the root. Diagnostic: if three fixes at three layers don't resolve the same error, the root cause is in the part of the path no fix has touched. Added after GP-080 postmortem (2026-04-17). See `docs/epistemic_supervision_principles.md`.
+

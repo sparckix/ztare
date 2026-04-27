@@ -1,0 +1,64 @@
+schema_version: 1
+role_id: principal
+role_class: authority
+description: >
+  Root authority role. Holds strategic decision rights, resource
+  allocation, patent signature, and all irreversible commitments.
+  Every other role's escalates_to chain terminates at principal.
+  This role is substrate-agnostic; it can be filled by any human
+  member with authority over the research program.
+
+# Scope
+authorized_paths:
+  - "*"
+forbidden_paths: []
+
+# Delegation: principal delegates to all non-authority roles
+delegates_to:
+  - role.manager
+  - role.engineer
+  - role.reviewer
+
+# Escalation: principal is the root — no upward escalation
+escalates_to: []
+
+# Budget: unbounded for this role (the authority figure approves
+# their own spend; spend_tracker does not enforce caps for principal)
+budget:
+  daily_cap_usd: null
+  session_cap_usd: null
+  single_action_cap_usd: null
+  warn_threshold_frac: null
+  absolute_ceiling_usd: null
+
+# Mandate: authority roles operate by declaration, not mandate.
+# The principal issues mandates to other roles; no mandate constrains them.
+mandate_path: null
+
+# SLA (how fast escalations to this role are expected to be answered)
+sla:
+  response_time_inbox_hours: 24
+  response_time_urgent_hours: 1
+
+# Failure mode
+failure_mode:
+  on_unavailable: "escalations queue indefinitely in inbox"
+  on_crash: "not applicable — principal is the root"
+
+# Which gate types this role has signing authority for
+signs_gates:
+  - CONTRACT_PROMOTION
+  - SCOPE_MISMATCH
+  - UNAUTHORIZED_ARTIFACT_WRITE
+  - PENDING_LEAK_AUDIT
+  - PENDING_SEAL
+  - PENDING_MERGE
+  - PENDING_REVIEW                # fallback signer; engineer is primary
+  - PENDING_FACTUAL_AUDIT
+  - PENDING_VOICE_REVIEW
+  - PENDING_SHIP
+  - MANAGER_ESCALATION
+  - BUDGET_WARNING
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

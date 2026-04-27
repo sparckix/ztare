@@ -1,0 +1,76 @@
+{
+  "results": [
+    {
+      "key": "s1",
+      "label": "abundant density (letter \u00a72.7 S1)",
+      "ztare_verdict": "1/n form passes gates at n<=100k; 1/log(n) asymptote only at n>>10^6",
+      "pysr_equation": "0.2511915 - 0.20370732/(sqrt(n) - 4.1861863)",
+      "pysr_complexity": 8,
+      "pysr_visible": {
+        "n": 140,
+        "max_abs": 0.005681957636186757,
+        "rmse": 0.0009962418164431441
+      },
+      "pysr_holdout": {
+        "n": 30,
+        "max_abs": 0.0007039348572453474,
+        "rmse": 0.0003750917880017975
+      },
+      "pysr_farther_tail": {
+        "n": 1830,
+        "max_abs": 0.0026129483985672386,
+        "rmse": 0.0022744999412164513
+      },
+      "pysr_gate_verdict": "null-under-gate (max_oos/max|y|=0.01049 > 0.01)",
+      "pysr_elapsed_sec": 12.3
+    },
+    {
+      "key": "s2",
+      "label": "Mertens M(n)/sqrt(n) (letter \u00a72.7 S2 / \u00a71 abstract)",
+      "ztare_verdict": "null (correct)",
+      "pysr_equation": "(0.0024388027*n - 1.3130745)/sqrt(n - 0.515829600308204*exp(0.0024388027*n)) - 0.10287689",
+      "pysr_complexity": 17,
+      "pysr_visible": {
+        "n": 140,
+        "max_abs": 0.4452076419985629,
+        "rmse": 0.18067933777275297
+      },
+      "pysr_holdout": {
+        "n": 30,
+        "max_abs": NaN,
+        "rmse": NaN
+      },
+      "pysr_farther_tail": {
+        "n": 30,
+        "max_abs": NaN,
+        "rmse": NaN
+      },
+      "pysr_gate_verdict": "form-passes-gate (max_abs_oos=nan <= 0.08)",
+      "pysr_elapsed_sec": 4.6
+    },
+    {
+      "key": "s3",
+      "label": "prime gaps g(n)/log(p_n) (letter \u00a72.7 S3 / \u00a71 abstract)",
+      "ztare_verdict": "null (correct)",
+      "pysr_equation": "exp((0.8580878**n)**(0.93525875**n))**(1/4)",
+      "pysr_complexity": 10,
+      "pysr_visible": {
+        "n": 71,
+        "max_abs": 2.3114242507122587,
+        "rmse": 0.8783551168071932
+      },
+      "pysr_holdout": {
+        "n": 15,
+        "max_abs": 1.7282209633122587,
+        "rmse": 0.8232963213352287
+      },
+      "pysr_farther_tail": {
+        "n": 16,
+        "max_abs": 1.2263499157000002,
+        "rmse": 0.637908733663266
+      },
+      "pysr_gate_verdict": "null-under-gate (max_abs_oos=1.728 > 0.08)",
+      "pysr_elapsed_sec": 5.4
+    }
+  ]
+}

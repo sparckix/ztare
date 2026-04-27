@@ -1,0 +1,43 @@
+{
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_expression_grammar": "math_exp_only",
+  "python_model_grammar": "math_exp_only",
+  "project": "stieltjes_power_sums",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      51.0,
+      60.0
+    ]
+  },
+  "gate_residual_threshold": 0.05,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Discovery substrate: Stieltjes constants oscillate with no known pattern. Smooth templates cannot fit point-by-point. The judge evaluates thesis quality. Gate disabled per GP-121 principle.",
+  "enable_lean_proof": true,
+  "lean_prover_model": "gemini-pro",
+  "persona": "You are a skeptical quantitative reviewer evaluating proposed models of z(n) against evidence.txt. The sequence oscillates with no obvious periodicity. You insist on: (a) a concrete functional form f(n) with a fit_declaration block, (b) an explanation of the oscillatory structure, (c) holdout prediction. You reject theses that import named models or constants from any external domain. NOTE: fit primitive enabled. TOPOLOGY GENERATOR only. GRAMMAR: math_exp_only.",
+  "criteria": {
+    "1_Functional_Form": "Does the thesis propose a concrete f(n)? Without fit_declaration, max 30.",
+    "2_Oscillation_Structure": "Does the thesis explain the sign-alternating pattern?",
+    "3_Holdout": "Does f(n) predict z(n) at n=42..50?",
+    "4_Farther_Tail": "Does f(n) predict z(n) at n=51..60?",
+    "5_Rival_Exclusion": "Are rival forms named and excluded?"
+  },
+  "underidentified_after": 10,
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 40,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 42 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

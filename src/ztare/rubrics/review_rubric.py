@@ -28,6 +28,7 @@ CHECK_NAMES = (
     "score_ceiling_reachability_without_evidence",
     "criterion_independence",
     "persona_blind_spot_coverage",
+    "charter_spirit_coverage",
 )
 
 WORKSPACE_SUMMARY_FILES = (
@@ -171,6 +172,11 @@ Second, if the scenario is still admissible, review the rubric on these five che
 5. persona_blind_spot_coverage
    - Is the rubric persona likely to miss the actual weak spots for this project class or be charmed by fluent, confident, but weakly supported claims?
    - In ZTARE terms: a persona with blind spots scores presentation quality rather than falsification quality. A resistant persona explicitly demands a named observable, a falsification direction, and a stated revision path, not just a well-framed argument. Flag if the persona description lacks any of these demands.
+6. charter_spirit_coverage
+   - Does the rubric capture what the charter implicitly requires, or only what was explicitly named in the brief?
+   - Read the charter's Core Question and identify implicit analytical demands: second-order effects, dynamic modeling, distributional analysis, counterfactual discipline, sensitivity to assumptions, capital structure, irreversibility, and so on. Check whether any rubric dimension or criterion would penalize a thesis that ignores these demands entirely.
+   - A rubric passes this check only if: (a) at least one criterion explicitly penalizes static first-order analysis when second-order effects are knowable from the evidence, OR (b) the persona names a specific modeling failure mode it will penalize even absent an explicit criterion. A rubric that only scores what the brief explicitly mentioned will miss all the reasoning quality the charter's spirit demands.
+   - Example of a failing case: charter asks "model positive and negative externalities dynamically"; rubric only scores "causal attribution" and "mechanism pricing" — a static voucher NPV calculation can score 94/100 without touching any second-order effect.
 
 For each check:
 - set status to "pass" or "fail"
@@ -205,7 +211,7 @@ Return strict JSON only. No markdown fences. Use this schema exactly:
 }}
 
 Requirements:
-- Include all five checks exactly once in the checks array.
+- Include all six checks exactly once in the checks array.
 - Do not invent evidence outside the provided materials.
 - If a check passes, keep issue/proposed_fix short and empty if appropriate.
 - If scenario_validity is "fail", you should still fill the checks array, but the run remains inadmissible.
@@ -493,7 +499,7 @@ def run_rubric_review(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run GP-054 pre-run rubric review.")
     parser.add_argument("--project", required=True, help="Project name under projects/ or explicit path.")
-    parser.add_argument("--rubric", required=True, help="Rubric name under rubrics/ or explicit path.")
+    parser.add_argument("--rubric", default=None, help="Rubric name under rubrics/ or explicit path (defaults to --project).")
     parser.add_argument("--model", default="gemini", choices=sorted(MODEL_MAP.keys()))
     return parser
 
@@ -501,6 +507,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.rubric is None:
+        args.rubric = args.project
     result = run_rubric_review(
         project=args.project,
         rubric=args.rubric,

@@ -1,0 +1,128 @@
+{
+  "name": "gp156_apparatus_hardening_review",
+  "project": "gp156_apparatus_hardening_review",
+  "rubric_version": "1.1-no-i-model-required",
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Audit substrate: mutator submits adversarial attack snippets (Python that demonstrates bypasses against shipped guards), NOT predictor I_model functions. The R1 import-time exec dry-run (Proposal 1) defaults to requiring I_model — that's correct for predictor substrates (gp154/gp155) but wrong for audit substrates. Opt-out 2026-04-25 after gp156 iter 2 (score 80!) was R1-rejected on missing I_model — the audit was working but the contract didn't match.",
+  "rubric_version_reason": "INVERTED charter (2026-04-25): not a parsimony / elegance / universality audit. Forbids theoretical-elegance dimensions; rewards concrete adversarial bypass demonstrations against the GP-156 Proposals 1+2+3 shipped same day. Replaces gp152 / gp153 sycophancy-loop pattern.",
+  "description": "Adversarial audit of GP-156 apparatus hardening (R1 import-time exec, visible-MRE attestation, feature-vector fit primitive). Charter is execution-hostile: judges hunt for implementation flaws, semantic integration bugs, adversarial bypass paths the Python integration smoke test cannot detect. Spec-level critiques without runnable bypass code score zero.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate where the discovery target is concrete attack vectors against shipped code. Generative yield required (≥2 specific bypass demonstrations).",
+  "falsification_mode": "bounded_discriminator",
+  "require_cross_family": false,
+  "require_cross_family_reason": "Set false 2026-04-25 for fast-iteration gpt-4.1+gpt-4.1 audit (mirrors gp154/gp155 same-family setup). Same-family blind-spot risk acknowledged — would re-cert with cross_family=true before claiming a champion adversarial finding. Audit's value is bug-discovery breadth, not adversarial-airgap purity; prefer iteration speed.",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "structural_blocker_enforcement_reason": "Flipped from 'gate' to 'both' 2026-04-25 — restore prompt-time anti-pattern catalog injection (the audit substrate is execution-hostile, mutator should know about RH-17 'lookup table' anti-pattern when proposing attacks).",
+  "stagnation_trigger_mode": "new_class",
+  "underidentified_after": 12,
+  "gp103_stagnation_threshold": 5,
+  "composition_stagnation_threshold": 4,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "no numerical holdout; the substrate is the shipped code + spec, judged by attack-vector quality not by prediction MRE.",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Audit substrate is Python source code, not a numerical curve. The new fit_primitive_features being audited operates on substrates; this rubric does not engage it.",
+  "enable_framer": false,
+  "discovery_mode": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Audit substrate: shipped Python source code + integration smoke test results. NO numerical observable to extrapolate over — extrapolation_gap is a numerical-substrate check designed for scaling-law / curve-fit projects. Code-audit theses are scored by attack-vector quality (Adversarial Bypass Concreteness dimension), not numerical generalization. Re-added 2026-04-25 after prior edit was overwritten and gp156's score-86/90/98/78 iters all hard-failed on this irrelevant gate.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence is a code spec + integration smoke test results, not a fitting curve.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rivals scored under Adversarial Bypass Concreteness; mathematical-form keyword heuristic does not apply.",
+  "evidence_anchor_requirement": true,
+  "general_office_model": "gpt4.1",
+  "enable_mform_audit": true,
+  "persona": "You are a hostile compiler with the discipline of a senior staff security engineer doing red-team review on a new Python module that has just shipped. Your job is to find concrete, demonstrable, runnable attack vectors against the GP-156 Proposals 1+2+3 (R1 import-time exec, visible-MRE attestation, feature-vector fit primitive). You REJECT theoretical-elegance critiques: a thesis that says 'the AST whitelist might be incomplete' without naming a specific bypass scores zero on Adversarial Bypass Concreteness. You REJECT spec-level abstractions: any thesis that proposes 'cleaner architecture' or 'more parsimonious design' without demonstrating a concrete attack on the existing code scores zero. You REJECT lookup-table attacks (RH-17): 'here are 10 potential vulnerabilities' without runnable Python snippets is zero. You REWARD: (i) specific Python snippets that bypass Proposal 1's import-time guard while still causing harness crashes downstream; (ii) specific prose patterns that satisfy extract_visible_mre_claim regex but evaluate to NaN-disguised-as-finite or to a number that the canonical evaluate_visible() coerces to a misleading low value; (iii) specific PARAMETRIC_FORM strings that pass _safe_compile_form's AST whitelist but cause scipy to report success while returning meaningless params; (iv) specific feature-key misspelling patterns that produce silent KeyError → 1e9 fallback that scipy treats as legitimate gradient-blocking; (v) compositional interactions where the new guards conflict with G-CIRC, G-FALSIFY, Framer, holdout-hard-gate, class-novelty mode, or hardkill retirement. The integration smoke test (scripts/gp156_integration_smoke_test.py) is the EMPIRICAL FLOOR: any attack already covered there is not a finding. The thesis MUST verify the smoke-test calibration anchors (gp154 iter-7 fabrication caught, gp155 ground-truth recovered, AST injection blocked, gp146/145b no-op) — claiming an attack against an already-protected path scores zero.",
+  "dimensions": [
+    {
+      "name": "Adversarial Bypass Concreteness",
+      "weight": 6.42,
+      "description": "Does the thesis provide a CONCRETE, RUNNABLE Python snippet that bypasses one of the three guards (R1 import-time exec, visible-MRE attestation, feature-vector fit primitive)? Score 0 if no Python snippet provided (theoretical critique only); 12 if snippet is provided but does not actually bypass when tested; 25 if the snippet provably bypasses the guard AND the bypass produces a downstream harness failure / fabrication / silent-coercion that the apparatus accepts as a valid candidate."
+    },
+    {
+      "name": "Smoke-Test Floor Verification",
+      "weight": 3.09,
+      "description": "Does the thesis verify the four calibration anchors from the integration smoke test? (i) gp154 iter-7 fabrication intercept (claimed 0.25, measured 2.01 → reject); (ii) gp155 ground-truth recovery (5 params within 0.3 of truth); (iii) AST injection blocks (4/4); (iv) negative-control no-op on gp146/gp145b/gp140. A thesis that claims an attack against an already-protected path automatically loses credit on Adversarial Bypass Concreteness — the floor verification ensures the auditor read the smoke test."
+    },
+    {
+      "name": "Compositional Interaction Discovery",
+      "weight": 4.63,
+      "description": "Does the thesis identify a specific case where the new guards interact poorly with existing apparatus? Examples: (i) attestation rejects honest mutators because evaluate_visible() races with structural_memory updates; (ii) fit_primitive_features collides with class-novelty mode by always producing 'fit_features_result.json' as a novel hinge_id; (iii) R1 import-time exec sandbox shadows a name that legit substrates rely on. Score 0 for no interaction identified; 9 for a named interaction without runnable demonstration; 18 for a runnable demonstration."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Pre-commit ≥ 2 distinct attack vectors with declared expected behavior on shipped code: (a) attack snippet for guard X produces apparatus state Y; (b) attack snippet for guard Z produces apparatus state W. Numeric where applicable (e.g., attestation diff > tolerance value). Score 0 if no secondary observables; 8 if one named without numeric commit; 15 if ≥ 2 with numeric commitments and expected outcomes."
+    },
+    {
+      "name": "Implementation-Layer Specificity",
+      "weight": 2.06,
+      "description": "Does the thesis cite specific file paths, function names, line numbers, AST node types in the shipped code? A thesis that says 'the validate function might fail' scores zero; a thesis that says 'mutation_suite_guard.py:_safe_compile_form at L107 fails to walk into ast.JoinedStr nodes, allowing f-string injection' scores full credit."
+    },
+    {
+      "name": "M-Form Charter Alignment: must_demonstrate_attack",
+      "weight": 3.09,
+      "description": "[GP-105 General Office insertion] Theses must demonstrate at least one concrete attack vector with runnable Python code that bypasses one of the three guards; spec-level critiques without runnable demonstration constitute incomplete engagement and score zero on this dimension."
+    },
+    {
+      "name": "M-Form Charter Alignment: forbid_theoretical_elegance",
+      "weight": 2.57,
+      "description": "[GP-105 General Office insertion] Theses proposing refactors or architectural cleanups WITHOUT a concrete attack vector are explicitly out of scope. The audit charter is execution-hostile, not parsimony-driven. Theses that drift into theoretical elegance, universality, or Occam's-razor framing score zero on this dimension."
+    },
+    {
+      "name": "M-Form Charter Alignment: concrete_execution_hostile_exploit",
+      "weight": 4.68,
+      "description": "[GP-105 General Office insertion] Thesis must provide at least one concrete adversarial Python test case, explicitly identify an execution-hostile failure mode from the list in the charter, and pre-commit to a falsifiable numerical observable demonstrating the bypass. Gap detected: The thesis provided only a stub with no concrete analysis, adversarial test cases, identified failure modes, or numerical observables as required by the charter. It did not engage any of the specific execution-hostile dimensions (silent state coercion, dict-key misspellings, shape mismatches, compositional guard interactions, specification gaps) or propose any concrete adversarial bypasses. The thesis left the full scope of the charter unaddressed."
+    },
+    {
+      "name": "M-Form Charter Alignment: requires_full_adversarial_example",
+      "weight": 5.68,
+      "description": "[GP-105 General Office insertion] Penalize submissions that do not provide at least one full adversarial path analysis, including specific dynamic/failure case, concrete code snippet, named failure mode, and expected numerical impact. Gap detected: The thesis is only a stub and does not address any of the execution-hostile attack vectors the charter requires. It does not identify any concrete attack, test case, or failure mode, nor does it engage with compositional or adversarial bypasses. No adversarial example or observable is provided. Thus, the thesis failed to engage the analytical breadth required by the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: attack_surface_coverage_min_test",
+      "weight": 6.9,
+      "description": "[GP-105 General Office insertion] Thesis must provide at least one concrete, runnable Python adversarial test case that targets implementation-level flaws not protected by the existing smoke test, and explicitly analyze each of the four attack surfaces enumerated in the charter (static execution analysis, dynamic state hallucination, adversarial bypass, compositional interactions). Gap detected: The thesis is only a stub and does not provide any concrete execution-hostile attack vector, adversarial code, specific failure mode, or observable as required by the charter. It has not engaged any of the analytical or empirical requirements: no static execution analysis, no dynamic state hallucination, no adversarial bypass, and no compositional interaction evaluation. The full analytical breadth the charter mandates—especially finding implementation-level flaws with runnable code beyond the smoke test—was not attempted."
+    },
+    {
+      "name": "M-Form Charter Alignment: probe_all_hostile_exec_areas",
+      "weight": 8.37,
+      "description": "[GP-105 General Office insertion] Theses must systematically probe at least one attack vector in each major hostile-execution risk area listed in the charter, including (1) NaN and silent state propagation, (2) array/broadcasting/shape mismatches, (3) adversarial bypasses of the new contracts, and (4) compositional conflicts with apparatus gates; failure to do so constitutes an incomplete analysis. Gap detected: The thesis focused exclusively on a single execution-hostile attack vector—dict-key misspellings leading to flat objective failures—while the charter explicitly required examination of all major categories of runtime execution flaws, including dynamic NaN propagation, broadcasting/matrix-shape mismatches, adversarial contract bypasses, and compositional conflicts with complex apparatus gates (G-CIRC, G-FALSIFY, Framer, holdout-hard-gate, class-novelty, etc). The thesis did not systematically probe attacks such as silent NaN propagation, exception swallowing beyond KeyError, shape mismatches in array computations, nor adversarial bypasses of visible-MRE attestation and compositional interactions, thereby failing to engage the full analytical breadth demanded by the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: breadth_of_execution_hostile_attack",
+      "weight": 10.16,
+      "description": "[GP-105 General Office insertion] Award full credit only if the thesis systematically exposes at least one concrete execution-hostile attack case for (1) state hallucination (e.g. NaN or silent overflows), (2) dict-key or shape mismatch, and (3) compositional interaction (guard/gate conflict) — penalize submissions that focus on just one class of execution flaw. Gap detected: The thesis focuses narrowly on the execution-hostile vector of feature dict-key misspellings and their effect on the optimizer, providing a strong attack case and observables. However, the charter required a broad scouring for all classes of execution-level vulnerabilities, including silent NaN propagation, matrix-shape/broadcasting mismatches, compositional conflicts with existing gates (e.g., G-CIRC, G-FALSIFY), and guard bypasses where motivated mutators could game R1 or attestation contracts. The thesis does not consider these other attack surfaces, adversarial strategies, or compositional edge cases, giving a technically sound but incomplete answer compared to the full analytical breadth the charter called for."
+    },
+    {
+      "name": "M-Form Charter Alignment: full_axis_audit_coverage",
+      "weight": 12.35,
+      "description": "[GP-105 General Office insertion] Thesis must identify and concretely demonstrate at least one execution-hostile failure mode in each major axis: silent state corruption/NaN propagation, dict-key/shape mismatches, adversarial attestation breaches, and compositional/pathological interactions with system gates; addressing only a single vector is insufficient. Gap detected: The thesis convincingly demonstrates a concrete execution-hostile failure mode involving silent KeyError swallowing and the resulting denial-of-optimization, but it addresses only one specific class of attack (dict-key misspelling). The charter implicitly required systematic probing along other execution-hostile axes: (1) dynamic state hallucination (e.g., NaN/inf propagation, silent coercion), (2) adversarial bypasses of guard contracts (e.g., intentional willful manipulation to evade attestation with fabricated or misleading data), (3) compositional interactions with other system modules or gates (e.g., G-CIRC, holdout-hard-gate). The thesis does not explore specification gaps allowing a mutator to game the attestation (Proposal 2) or to exploit compositional interactions, nor does it probe issues like exception swallowing beyond KeyErrors, or how silent NaNs or array shape mismatches might corrupt fitting undetected. Thus, while the thesis' single finding is valid, it is not the 'ALL OF THE ABOVE' full-spectrum audit the charter required."
+    },
+    {
+      "name": "M-Form Charter Alignment: multi_vector_exec_hostility_coverage",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Thesis must enumerate and address execution-hostile attack vectors beyond just feature-key mismatches—including NaN/overflow propagation, shape/broadcasting mismatches, and compositional guard failures—to be scored as fully engaged. Gap detected: The thesis focused exclusively on the misspelled feature key execution-path denial attack but did not systematically analyze other explicit execution-hostile vectors demanded by the charter, such as dynamic silent NaN propagation, silent overflow, broadcasting/matrix-shape errors, or compositional failures with G-CIRC, G-FALSIFY, holdout-hard-gate, Framer, and so on. The charter demanded adversarial examples and analysis of all these categories; the thesis did not attempt to probe or rule out these paths."
+    }
+  ],
+  "criteria": {
+    "Adversarial_Bypass_Concreteness": "Concrete, runnable Python snippet that demonstrably bypasses Proposal 1, 2, or 3 when tested. No snippet → zero. Snippet that doesn't actually bypass → mid-credit. Snippet that bypasses AND produces apparatus mis-acceptance → full credit.",
+    "Smoke_Test_Floor_Verification": "Verify the four calibration anchors from scripts/gp156_integration_smoke_test.py. Claiming an attack the smoke test already covers loses credit on Adversarial Bypass Concreteness.",
+    "Compositional_Interaction_Discovery": "Specific named interaction with G-CIRC / G-FALSIFY / Framer / holdout-hard-gate / class-novelty / hardkill, ideally with runnable demonstration.",
+    "Generative_Yield": "≥ 2 attack vectors with declared expected apparatus state. Numeric commitments where applicable.",
+    "Implementation_Layer_Specificity": "Cite file path, function name, line number, AST node type, or specific code construct. Vague references = zero.",
+    "mform_must_demonstrate_attack": "≥ 1 concrete runnable attack snippet. No exceptions.",
+    "mform_forbid_theoretical_elegance": "No parsimony / universality / Occam framing. Hardkill if drifts into spec-level abstraction without concrete demonstration.",
+    "mform_concrete_execution_hostile_exploit": "Thesis must provide at least one concrete adversarial Python test case, explicitly identify an execution-hostile failure mode from the list in the charter, and pre-commit to a falsifiable numerical observable demonstrating the bypass.",
+    "mform_requires_full_adversarial_example": "Penalize submissions that do not provide at least one full adversarial path analysis, including specific dynamic/failure case, concrete code snippet, named failure mode, and expected numerical impact.",
+    "mform_attack_surface_coverage_min_test": "Thesis must provide at least one concrete, runnable Python adversarial test case that targets implementation-level flaws not protected by the existing smoke test, and explicitly analyze each of the four attack surfaces enumerated in the charter (static execution analysis, dynamic state hallucination, adversarial bypass, compositional interactions).",
+    "mform_probe_all_hostile_exec_areas": "Theses must systematically probe at least one attack vector in each major hostile-execution risk area listed in the charter, including (1) NaN and silent state propagation, (2) array/broadcasting/shape mismatches, (3) adversarial bypasses of the new contracts, and (4) compositional conflicts with apparatus gates; failure to do so constitutes an incomplete analysis.",
+    "mform_breadth_of_execution_hostile_attac": "Award full credit only if the thesis systematically exposes at least one concrete execution-hostile attack case for (1) state hallucination (e.g. NaN or silent overflows), (2) dict-key or shape mismatch, and (3) compositional interaction (guard/gate conflict) — penalize submissions that focus on just one class of execution flaw.",
+    "mform_full_axis_audit_coverage": "Thesis must identify and concretely demonstrate at least one execution-hostile failure mode in each major axis: silent state corruption/NaN propagation, dict-key/shape mismatches, adversarial attestation breaches, and compositional/pathological interactions with system gates; addressing only a single vector is insufficient.",
+    "mform_multi_vector_exec_hostility_covera": "Thesis must enumerate and address execution-hostile attack vectors beyond just feature-key mismatches—including NaN/overflow propagation, shape/broadcasting mismatches, and compositional guard failures—to be scored as fully engaged."
+  },
+  "underidentified_after_override": 10,
+  "underidentified_after_override_reason": "Audit substrate; same rationale as gp158."
+}

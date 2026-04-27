@@ -1,0 +1,195 @@
+[
+  {
+    "name": "hardy_ramanujan",
+    "expression": "a * math.sqrt(n) + b * math.log(n) + c / n + d",
+    "params": {
+      "a": 2.565,
+      "b": -1.0,
+      "c": -1.445,
+      "d": -1.744
+    },
+    "source": "oeis_a000041",
+    "bic": -800,
+    "max_residual": 0.01
+  },
+  {
+    "name": "vaughan_prime_partition",
+    "expression": "a * math.sqrt(n / math.log(n)) + b * math.log(n) + c",
+    "params": {
+      "a": 1.0,
+      "b": 1.0,
+      "c": 0.0
+    },
+    "source": "oeis_a000607",
+    "bic": -500,
+    "max_residual": 0.08
+  },
+  {
+    "name": "lucky_density",
+    "expression": "a * math.log(n) + b / n + c",
+    "params": {
+      "a": 1.2,
+      "b": -4.697,
+      "c": 0.511
+    },
+    "source": "oeis_a000959",
+    "bic": -600,
+    "max_residual": 0.02
+  },
+  {
+    "name": "meinardus_cube_root",
+    "expression": "a * n ** (1/3) + b * math.log(n) + c",
+    "params": {
+      "a": 1.0,
+      "b": 1.0,
+      "c": 0.0
+    },
+    "source": "oeis_a001156",
+    "bic": -400,
+    "max_residual": 0.05
+  },
+  {
+    "name": "ulam_reciprocal",
+    "expression": "a * math.log(n) + b / n + c",
+    "params": {
+      "a": -0.000216,
+      "b": 5.597,
+      "c": 0.0776
+    },
+    "source": "oeis_a002858_reciprocal",
+    "bic": -300,
+    "max_residual": 0.0015
+  },
+  {
+    "name": "geometric_decay",
+    "expression": "a * b ** n + c",
+    "params": {
+      "a": 1.0,
+      "b": 0.5,
+      "c": 0.0
+    },
+    "source": "gp126_survey",
+    "bic": -200,
+    "max_residual": null
+  },
+  {
+    "name": "robin_bound",
+    "expression": "a * math.log(math.log(n)) + b",
+    "params": {
+      "a": 1.0,
+      "b": 0.0
+    },
+    "source": "riemann_lagarias",
+    "bic": -150,
+    "max_residual": null
+  },
+  {
+    "name": "exp_sqrt",
+    "expression": "a * math.exp(b * math.sqrt(n)) + c",
+    "params": {
+      "a": 1.0,
+      "b": 0.1,
+      "c": 0.0
+    },
+    "source": "partition_asymptotics",
+    "bic": -500,
+    "max_residual": null
+  },
+  {
+    "name": "inverse_log_correction",
+    "expression": "a + b / math.log(n) + c / math.log(n) ** 2",
+    "params": {
+      "a": 0.25,
+      "b": -0.3,
+      "c": 0.1
+    },
+    "source": "density_convergence",
+    "bic": -300,
+    "max_residual": null
+  },
+  {
+    "name": "sqrt_log_recip2",
+    "expression": "a * math.sqrt(n) + b * math.log(n) + c / n + d / n**2 + e",
+    "params": {
+      "a": 1.8136879057555766,
+      "b": -0.7460711774044921,
+      "c": -0.6539013598889817,
+      "d": 2.696914211806994,
+      "e": -1.6893392280014439
+    },
+    "source": "oeis_a000009",
+    "bic": -29015.46183424785,
+    "max_residual": 0.014918811971213142
+  },
+  {
+    "name": "montgomery_odlyzko_spacing",
+    "expression": "a * math.sqrt(math.log(n)) + b",
+    "params": {
+      "a": 1.0,
+      "b": 0.0
+    },
+    "source": "riemann_zero_spacing",
+    "bic": -400,
+    "max_residual": null
+  },
+  {
+    "name": "log_recip_log",
+    "expression": "a * math.log(n) / n + b * math.log(n) + c",
+    "params": {
+      "a": 1.0,
+      "b": 0.01,
+      "c": 0.0
+    },
+    "source": "arithmetic_density",
+    "bic": -250,
+    "max_residual": null
+  },
+  {
+    "name": "n_over_logn",
+    "expression": "a * n / math.log(n) + b",
+    "params": {
+      "a": 1.0,
+      "b": 0.0
+    },
+    "source": "prime_number_theorem",
+    "bic": -300,
+    "max_residual": null
+  },
+  {
+    "name": "S2_sqrt_over_log_plus_recip",
+    "expression": "a * math.sqrt(n / math.log(n)) + b / n + c",
+    "params": {
+      "a": 0.00012782940533386647,
+      "b": -3.216815232581745,
+      "c": 0.24564588962507053
+    },
+    "source": "survey_s1",
+    "bic": -1902.4762573300493,
+    "max_residual": 0.005926589685573885
+  },
+  {
+    "name": "log_shifted_reciprocal",
+    "expression": "a * math.log(n) + b / (n + c) + d",
+    "params": {
+      "a": 0.0015192893004461756,
+      "b": -2.416588320163622,
+      "c": -10.417301411274433,
+      "d": 0.23569714716161222
+    },
+    "source": "survey_s1",
+    "bic": -1906.4888577138393,
+    "max_residual": 0.006017771363736851
+  },
+  {
+    "name": "power_decay",
+    "expression": "a * n**(-b) + c",
+    "params": {
+      "a": -2.072028238465156,
+      "b": 0.879601490415659,
+      "c": 0.24909305812784188
+    },
+    "source": "survey_s1",
+    "bic": -1886.2074038887986,
+    "max_residual": 0.006980807981175924
+  }
+]

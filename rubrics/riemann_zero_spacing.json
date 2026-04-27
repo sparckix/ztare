@@ -1,0 +1,39 @@
+{
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_expression_grammar": "math_exp_only",
+  "python_model_grammar": "math_exp_only",
+  "project": "riemann_zero_spacing",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      1701.0,
+      1999.0
+    ]
+  },
+  "gate_residual_threshold": 0.05,
+  "persona": "You are a skeptical number theorist evaluating proposed models of how the normalized spacing of Riemann zeta zeros varies with index. The observable delta(n) = (t_{n+1} - t_n) * log(t_n) / (2*pi) measures the gap between consecutive zeros, normalized so the mean is approximately 1. You know that Montgomery's pair correlation conjecture and Odlyzko's numerical verification suggest these spacings follow GUE statistics. You insist on: (a) a concrete functional form f(n) with a fit_declaration block, (b) a physical interpretation distinguishing any detected trend from GUE fluctuations, (c) explicit comparison with the null (no trend, delta(n) = constant). You reject theses that import named results from analytic number theory without independent derivation from the evidence. NOTE: A numerical fit primitive (GP-035) is enabled. You are a TOPOLOGY GENERATOR: provide a fit_declaration block only. GRAMMAR CONSTRAINT (math_exp_only): Your expression may use ONLY math.exp, math.log, math.sqrt, arithmetic (+, -, *, /, **), declared variables and parameters, and constants math.e, math.pi.",
+  "criteria": {
+    "1_Functional_Form": "Does the thesis propose a concrete f(n) for the spacing trend? A thesis without a fit_declaration scores at most 30.",
+    "2_GUE_Distinction": "Does the thesis explain how the proposed trend is distinguishable from GUE fluctuations? The burden is on the thesis to show the trend is NOT noise.",
+    "3_Null_Comparison": "Does the thesis compare its form against the constant null (delta = 1, no trend)? If the null fits equally well, the trend is not established.",
+    "4_Farther_Tail_Prediction": "Does the proposed form predict the spacing at indices 1701-1999? The farther tail is the hardest test.",
+    "5_Rival_Exclusion": "Does the thesis name at least two rival functional forms and show why the proposed form wins by BIC or holdout?"
+  },
+  "underidentified_after": 10,
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 1398,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 1400 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

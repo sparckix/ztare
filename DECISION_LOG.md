@@ -14,7 +14,7 @@
 ---
 
 ## 1. Inference-Time Compute: Asymmetric Model Routing
-**Context:** Running a 3-agent Firing Squad plus a Meta-Judge for up to 50 iterations requires massive inference-time compute and introduces severe latency. 
+**Context:** Running a 3-agent Verification Panel plus a Meta-Judge for up to 50 iterations requires massive inference-time compute and introduces severe latency. 
 
 **Decision:** Implemented asymmetric model routing. `gemini-3-flash-preview` handles the dynamic Attackers; `gemini-3.1-pro-preview` is isolated exclusively as the Director (Meta-Judge).
 
@@ -65,7 +65,7 @@
   * **Zero-Trust Physics:** By offloading dimensional analysis to a deterministic Python library, we ensure that no "Category Error" ever reaches the Meta-Judge. We trade increased Level 3 crash rates for absolute epistemic immunity against pseudo-physics.
 
   ## 6. The Pydantic Gatekeeper & Tool Disarmament
-**Context:** The architecture originally equipped the Firing Squad with both `Google Search` (for real-world constant verification) and `execute_python_code` (for mathematical falsification). 
+**Context:** The architecture originally equipped the Verification Panel with both `Google Search` (for real-world constant verification) and `execute_python_code` (for mathematical falsification). 
 
 **The Anomaly (SDK Version Conflict):** Mixing server-side tools (Search) with client-side tools (Python) requires the `include_server_side_tool_invocations` flag. However, the local Pydantic schema in the `google-genai` SDK actively rejected this flag as an "Extra input," resulting in unresolvable `400/422` validation crashes. 
 
@@ -83,7 +83,7 @@
 * **The Fix:** The script was updated to force a fresh `generate_committee.py` execution on every single iteration.
 * **Trade-Off Analysis:**
   * **Severe Latency:** This introduces massive friction, adding roughly 45–60 seconds per iteration due to API calls and rate-limit throttling. 
-  * **Perfect Adversarial Alignment:** The Firing Squad is now dynamically bound to the current state of the thesis. If the Mutator invents a "Vacuum Arbitrage" defense, the next iteration instantly generates a Quantum Metrologist to destroy it. We trade iteration velocity for absolute continuous pressure.
+  * **Perfect Adversarial Alignment:** The Verification Panel is now dynamically bound to the current state of the thesis. If the Mutator invents a "Vacuum Arbitrage" defense, the next iteration instantly generates a Quantum Metrologist to destroy it. We trade iteration velocity for absolute continuous pressure.
 
 ## 8. The "Zombie Thread" API Hangs
 Context: At high concurrency, API calls to heavy reasoning models (like Gemini 3.1 Pro) occasionally hang indefinitely at the network level, ignoring standard timeouts.
@@ -94,7 +94,7 @@ We stripped the context managers and wrapped all API calls in explicit executor.
 ## 9. The Evidentiary Bottleneck (Prose Disarmament)
 Context: LLMs are trained to be persuasive, which allows them to "talk their way out" of logical inconsistencies when evaluated via text.
 Decision: Implemented a mandatory Deterministic Evidentiary Gate.
-Rationale: The Meta-Judge is instructed to treat natural language claims as "unsupported" unless they are accompanied by Python stdout. By forcing the "Firing Squad" to deliver critiques via code execution, we collapse the model's ability to use rhetorical flair to mask mathematical insolvency. We trade "chatty" feedback for verified, binary outcomes.
+Rationale: The Meta-Judge is instructed to treat natural language claims as "unsupported" unless they are accompanied by Python stdout. By forcing the "Verification Panel" to deliver critiques via code execution, we collapse the model's ability to use rhetorical flair to mask mathematical insolvency. We trade "chatty" feedback for verified, binary outcomes.
 
 ## 10. Parametric Sensitivity Auditing
 Context: Strategic theses often rely on "Load-Bearing Variables"—single numbers (like cost of capital or model lifetime) that dictate the entire conclusion.
@@ -144,7 +144,7 @@ Rationale: We mandated that Attackers must perform a "Boundary Audit" on the Mut
 ## 14. Karpathy-Style Workspace vs. ZTARE Core (External Memory Boundary)
 **Context:** The project reached the point where `evidence.txt` had become a bottleneck. Manual evidence files were brittle, easy to under-specify, and costly to rebuild from scratch. Karpathy's LLM knowledge-base pattern surfaced as the obvious upstream inspiration: persistent source accumulation, markdown knowledge maintenance, and compounding context over time.
 
-**The Architectural Tension:** A naive merge would have pulled that stateful memory directly into ZTARE. That would have been a mistake. The core validator derives its integrity from zero-trust adversarial evaluation. If the firing squad starts inheriting a wiki of previously "accepted" knowledge as privileged truth, the system drifts from execution-backed falsification toward historical consensus and coherence smoothing.
+**The Architectural Tension:** A naive merge would have pulled that stateful memory directly into ZTARE. That would have been a mistake. The core validator derives its integrity from zero-trust adversarial evaluation. If the verification panel starts inheriting a wiki of previously "accepted" knowledge as privileged truth, the system drifts from execution-backed falsification toward historical consensus and coherence smoothing.
 
 **Decision: Build a Level 2 External Workspace, Not a Stateful Validator.**
 * **The Fix:** We added a dedicated upstream memory layer:
@@ -459,3 +459,57 @@ Root `paper1/`–`paper4/` directories are treated as local scratch/build worksp
 * `docs/` = public/operational documentation
 * `research_areas/seeds/` = future program candidates
 * `research_areas/debates/` = tactical reasoning and execution history
+
+## 2026-04-25 night — Cage v5.0 Phase 3a gate triage decisions
+
+After 5-perspective panel review (Chaos / Quantum / Physics / Math /
+CS Software Engineer) of the 17 dormant gates inventoried in the
+gp158 audit (Class L finding), the following decisions are recorded:
+
+### RETIRE (1 gate)
+- **`bridge_scope_contract`** — three perspectives flagged the
+  forbidden-marker blacklist as brittle code-smell with no v5.0
+  signal (Chaos: no chaos-substrate signal; Physics: no physical
+  content; Math: brittle blacklist; CS: dead unless bridge-discovery
+  campaigns active). Module remains importable; revive when bridge-
+  discovery campaigns return. Not registered in `get_default_cage()`.
+
+### CONDITIONAL WIRE (3 gates)
+- **`ansatz_survivor_gate`** — only sub-gate 1 (top-K Lean-shortness
+  ranker) is live. Sub-gates 2/3 honestly deferred per panel.
+- **`continuum_limit_gate`** — only sub-gate 1 (RMS-chaos-trap
+  precheck, T·λ_max>5 Lyapunov sanity) is live. Sub-gates 2/3
+  (BKM/Leray) deferred pending PDE substrate roadmap.
+- **`domain_match_gate`** — scope tightened to {proof_target,
+  nd_features-with-Lean} per panel (was: universal feature_dict).
+  Mathematician + CS flagged regex-based Lean parsing as fragile
+  but contained.
+
+### UTILITY (not registered as Gate)
+- **`residual_norm.py`** — pure helper imported by downstream gates
+  (coordinate_invariance, asymptotic_claim_discipline). No Cage
+  registration; remains importable.
+
+### WIRE unconditional (10 gates)
+asymptotic_claim_discipline, coordinate_invariance,
+deterministic_charter_gates, ensemble_ambiguity, prompt_leak_audit,
+proof_surveyability, pslq_falsity_audit, semantic_gate_stabilization,
+translation_diff, wasserstein_persistence.
+
+### Cross-cutting concerns deferred (Munger anti-complexity)
+- `translation_diff` + `domain_match` merge candidate: deferred.
+  Keep separate during v5.0; merge later when Lean tooling stabilizes.
+- `proof_surveyability` + `ansatz_survivor` composability (filter +
+  ranker): deferred. Both wired during v5.0; fold post-v5.0.
+
+### Substrate-class taxonomy expanded
+Panel surfaced three additional classes the v5.0 spec missed:
+- `proof_target` (Lean / formal-proof, GP-122/GP-139)
+- `closed_form_constant` (PSLQ, GP-145)
+- `time_series_chaotic` (chaotic subset of time_series, GP-143/146)
+
+These augment the original {1d, nd_features, time_series, audit,
+literature} → 8 substrate classes the v5.0 Cage routes against.
+
+Full panel transcript appended to GP-157 seam.
+Verified by 70/70 tests + 33/33 arch-map claims green.

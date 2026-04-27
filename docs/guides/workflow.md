@@ -6,7 +6,7 @@ The day-to-day guide for running ZTARE on a real project. The basic loop:
 Gather sources -> Build workspace -> Extract evidence -> Run adversarial loop -> Generate report
 ```
 
-For a plain-English glossary of terms, see [GLOSSARY.md](GLOSSARY.md). This is the operator-facing reference — it does **not** replace `README.md`.
+For a plain-English glossary of terms, see [../concepts/glossary.md](../concepts/glossary.md). This is the operator-facing reference. It does **not** replace `README.md`.
 
 ---
 
@@ -43,12 +43,12 @@ The supervisor is for bounded programs, not for every thought.
 
 This repo now serves two distinct readers. If you can identify which one you are, you can skip most of the document.
 
-1. **General-purpose engine users** — you want to test a thesis or a claim on a domain (startup, activist target, strategy question, research area). You do not care about kernel internals, benchmarks, or the supervisor.
+1. **General-purpose engine users**: you want to test a thesis or a claim on a domain (startup, activist target, strategy question, research area). You do not care about kernel internals, benchmarks, or the supervisor.
    - Read: §1 (When to use), §2 (Mental model), §3 (Standard loop), §3a (Rerun cadence), §4 commands for `workspace-update` / `evidence-compile` / `loop` / `synth`, §5 (Human role), and whichever of §6–§8 matches your project type.
    - Skip: §0a modes 1 and 2, §15 (Program hardening), the supervisor-specific command blocks.
    - Your entire loop is: `raw -> workspace -> evidence -> validator -> synthesis`. Nothing else should be load-bearing for you.
 
-2. **Developers / researchers playing with the engine** — you are modifying the validator, the workspace compiler, the V4 kernel, primitives, or the supervisor control plane.
+2. **Developers / researchers playing with the engine**: you are modifying the validator, the workspace compiler, the V4 kernel, primitives, or the supervisor control plane.
    - Read everything, but pay special attention to §0a (mode choice), §14 (primitive workflow), §15 (program hardening workflow), and the supervisor command surface. Pair this doc with `docs/ARCHITECTURE.md` and `supervisor/USER_MANUAL.md`.
    - The V4 six-stage kernel hardening path and supervisor-routed programs are for you, not for the general-purpose user.
 
@@ -70,15 +70,15 @@ Inside the supervisor path:
 
 ## 0c. Researcher Discipline (Read If You Care Whether A Run Counts As Evidence)
 
-If you are running ZTARE as an experiment — not just pressure-testing a domain thesis — three rules govern whether the run is diagnostic. Full version in [`docs/FOR_RESEARCHERS.md`](FOR_RESEARCHERS.md).
+If you are running ZTARE as an experiment (not just pressure-testing a domain thesis), three rules govern whether the run is diagnostic. Full version in [`docs/guides/for_researchers.md`](for_researchers.md).
 
-1. **Charter contamination.** `autoresearch_loop.py:1319` injects `project_charter.md` verbatim into the mutator prompt every turn. Any target form, parameter values, or derivation you write to "motivate" or "explain" the target becomes a turn-1 cheat sheet. The target itself lives only in the sealed pre-reg under `research_areas/private/seams/`. Before sealing a charter, sha256 it, grep it for GT substrings, and ask whether a stranger could reconstruct the target from it alone. Origin: GP-023 sandbox_07, 2026-04-14 — two mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimals. Neither run was diagnostic.
+1. **Charter contamination.** `autoresearch_loop.py:1319` injects `project_charter.md` verbatim into the mutator prompt every turn. Any target form, parameter values, or derivation you write to "motivate" or "explain" the target becomes a turn-1 cheat sheet. The target itself lives only in the sealed pre-reg under `research_areas/private/seams/`. Before sealing a charter, sha256 it, grep it for GT substrings, and ask whether a stranger could reconstruct the target from it alone. Origin: GP-023 sandbox_07, 2026-04-14. Two mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimals. Neither run was diagnostic.
 
-2. **Visibility rule: closed = public, open/testing = private.** Closed seams and pre-regs move to `research_areas/seams/` at close time. In-flight experiment artifacts — pre-regs, GT derivations, blind oracle details — stay in `research_areas/private/seams/` until the experiment closes, even if other materials are public. One seam, one place. No toggle, no symlink. Full rule in `AGENTS.md` §4a.
+2. **Visibility rule: closed = public, open/testing = private.** Closed seams and pre-regs move to `research_areas/seams/` at close time. In-flight experiment artifacts (pre-regs, GT derivations, blind oracle details) stay in `research_areas/private/seams/` until the experiment closes, even if other materials are public. One seam, one place. No toggle, no symlink. Full rule in `AGENTS.md` §4a.
 
-3. **Honeypot mode is bug-bounty, not discovery-proof.** `rubrics/honeypot_minimal.json` uses a loose discovery rubric (max 115 including +15 gaming bonus). A high honeypot score is a free bug report — it names something the factory gate battery missed. Those bugs are candidates for new deterministic gates. A 115 honeypot run does *not* mean discovery; read the judge's weakest-point note and treat it as the handle to grab next. Honeypot scores are not comparable to factory scores.
+3. **Honeypot mode is bug-bounty, not discovery-proof.** `rubrics/honeypot_minimal.json` uses a loose discovery rubric (max 115 including +15 gaming bonus). A high honeypot score is a free bug report: it names something the factory gate battery missed. Those bugs are candidates for new deterministic gates. A 115 honeypot run does *not* mean discovery; read the judge's weakest-point note and treat it as the handle to grab next. Honeypot scores are not comparable to factory scores.
 
-If you are a general-purpose engine user (§0b path 1), you can skip this section. If you are running experiments whose outcomes will be cited, read `docs/FOR_RESEARCHERS.md` end-to-end before sealing your first pre-reg.
+If you are a general-purpose engine user (§0b path 1), you can skip this section. If you are running experiments whose outcomes will be cited, read `docs/guides/for_researchers.md` end-to-end before sealing your first pre-reg.
 
 ---
 
@@ -107,7 +107,7 @@ There are four layers:
 1. `raw/`
    - the source bucket
 2. `workspace/`
-   - persistent structured memory, inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — raw sources accumulate, an LLM extracts structured notes, and the system compounds knowledge over time without the validator ever trusting it as authority
+   - persistent structured memory, inspired by [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): raw sources accumulate, an LLM extracts structured notes, and the system compounds knowledge over time without the validator ever trusting it as authority
 3. `evidence.txt`
    - bounded validation snapshot
 4. ZTARE + synthesis
@@ -145,11 +145,11 @@ The most common question for general-purpose users is "which step do I have to r
 | You added or edited files under `projects/<project>/raw/`      | `workspace-update`                                  | Workspace is derived from raw. Anything downstream is stale until the workspace reflects new sources. |
 | `contradictions.md` / `facts.md` / `open_questions.md` changed from a workspace update | `evidence-compile`                          | Evidence snapshot is derived from workspace memory.                                                 |
 | `compiled_evidence.txt` changed (new bounded snapshot)          | promote to `evidence.txt`, then `loop`              | Promotion is a rebaseline event: score regime fingerprints the bytes of `evidence.txt`; prior champions become `regime_mismatch` by design. |
-| You changed the rubric, model pairing, or iteration budget      | `loop`                                              | Validator is stateless. No upstream rerun needed — workspace and evidence are independent of rubric. |
+| You changed the rubric, model pairing, or iteration budget      | `loop`                                              | Validator is stateless. No upstream rerun needed; workspace and evidence are independent of rubric. |
 | You want a fresh report for the current champion                | `synth`                                             | Synthesis is downstream of `champion_*` artifacts; earlier stages are untouched.                    |
 | Provider outage / compile failed closed (`latest_compile_failure.json` written) | `evidence-compile` (retry), then promote + `loop` | Compiler fails closed for a reason. Retry the compile rather than skipping it.                      |
 | `thesis.md` changed (new claim to test) but same evidence base  | `loop` (optionally `synth` after)                   | Thesis lives with the validator input, not with the workspace.                                      |
-| You reach `UNDERIDENTIFIED` and want to branch                  | See §5b — use `hypotheses/<candidate>/`             | Do not overwrite the active thesis ad hoc; preserve the current branch and promote a candidate.     |
+| You reach `UNDERIDENTIFIED` and want to branch                  | See §5b: use `hypotheses/<candidate>/`              | Do not overwrite the active thesis ad hoc; preserve the current branch and promote a candidate.     |
 
 Two rules to keep rerun cost bounded:
 
@@ -176,6 +176,30 @@ make loop PROJECT=<project> RUBRIC=<rubric> ITERS=10 MUTATOR_MODEL=gemini JUDGE_
 make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo
 make benchmark-stage1 BENCH_JUDGE=gemini BENCH_JOBS=3
 ```
+
+### When to use `make loop` vs `make experiment-loop`
+
+`make experiment-loop` is a wrapper around `make loop` that adds two layers of safety:
+
+1. **Always** passes `--disable_attacker_tools` (closes the attacker-exfil class — any live run, blind or not, wants this default).
+2. **Iff** the rubric declares `holdout_hard_gate: true`, it also verifies `gate_harness.py` and `evidence_holdout.txt` exist, pre-flights that the harness produces valid JSON, and auto-sets `--underidentified_after=$(ITERS)` to prevent the underidentified-kill bug on hard-gate runs.
+
+Decision tree:
+
+```
+Choose make experiment-loop by default.
+  └── If rubric declares holdout_hard_gate: true, hardening kicks in automatically
+      (harness + holdout pre-flight + underidentified fix).
+  └── Otherwise, it passes through to make loop with --disable_attacker_tools added.
+
+Choose make loop ONLY when:
+  • Actively debugging and you need attacker tools available, OR
+  • You are hand-pinning all flags yourself and understand the safety trade-off.
+```
+
+In practice: **`make experiment-loop` is the correct default for any live run, including qualitative / exploratory / no-ground-truth projects.** The "experiment" prefix is about pre-registered safety, not about requiring a hidden GT. The hard-gate-specific hardening only activates when the rubric asks for it.
+
+Pre-registered falsification runs (blind law recovery with sealed GT) additionally require `make seal` before launch — see `docs/guides/experiment_cookbook.md`. That discipline is separate from the loop vs experiment-loop choice.
 
 Supervisor commands:
 
@@ -346,7 +370,7 @@ python -m src.ztare.validator.autoresearch_loop \
   --judge_model gemini
 ```
 
-Legacy Paper 1 shortcuts:
+Legacy *Cognitive Camouflage* benchmark shortcuts:
 
 ```bash
 make paper1-tsmc-legacy
@@ -672,7 +696,49 @@ For an existing project:
 
 ---
 
-## 12. Current Limitations
+## 12. Sandbox Construction: GP-072 Division A/B Protocol
+
+When setting up a science sandbox (closed experiment with known GT), use the Division A / Division B information isolation protocol. **Do not** have a single agent that knows GT also write mutator-visible files. Contamination is an information flow problem, not a discipline problem.
+
+### Division A (Lab Tech, knows GT)
+
+Produces GT-aware artifacts only:
+- `evidence.txt`, `evidence_holdout.txt` (generated from GT formula)
+- GT module (e.g., `src/ztare/substrates/<slug>_gt.py` with `f_true`, `f_dominant`)
+- `.denylist` file (GT-specific patterns for the leak sentinel)
+- Pre-registration document (private, names GT, seals protocol)
+
+Division A artifacts live in `research_areas/private/` or the project directory (never in mutator-visible files).
+
+### Division B (Principal Investigator, GT-blind)
+
+Receives only the abstract problem brief and evidence data. Produces:
+- `project_charter.md` (neutral language, no structural hypotheses)
+- Rubric JSON (no GT framework vocabulary like "corrector", "dominant term")
+- `test_model.py` (trivial baseline: `f(u, v) -> 0`)
+- `gate_harness.py` (frozen, imports from test_model.py)
+
+### Pre-Seal Gate: Leak Sentinel
+
+```bash
+python -m src.ztare.validator.leak_sentinel \
+    projects/<project> \
+    rubrics/<rubric>.json \
+    --denylist-file projects/<project>/.denylist
+```
+
+Exits 0 if clean, 1 if any denylist pattern appears in mutator-visible files. The sentinel is necessary but not sufficient; also run integration tests (all harness flags) before sealing.
+
+### Agent Implementation
+
+When using Claude Code, spawn Division A and Division B as **separate agents** with information barriers:
+- Division A agent: briefed with GT formula, produces GT-aware artifacts
+- Division B agent: briefed with only the abstract problem description, produces mutator-visible artifacts
+- Run the leak sentinel after both agents finish
+
+See `research_areas/private/seams/GP-072_role_separation_sandbox_construction_seam.md` for the full protocol and lessons learned.
+
+## 13. Current Limitations
 
 1. PDFs/images need conversion before ingest.
 2. The validator still reads `evidence.txt`, so snapshot promotion is manual.
@@ -850,6 +916,99 @@ When the program finishes:
 - do not create routable work without genesis
 - do not reopen closed/frozen programs without a human gate
 - do not confuse proposal planning with active program execution
+
+---
+
+## 16. Scientific Experiment Workflow: Law Recovery from Synthetic Data
+
+Use this when the goal is to test whether ZTARE can recover a known mathematical law from evidence, with a sealed ground truth for verification. This workflow is distinct from general-purpose domain projects: the GT is known, the sandbox is constructed under Division A/B information isolation, and the gate is deterministic (RMSE or exact-match).
+
+### When to use
+
+- Testing a new Component D grammar command or primitive on a controlled target
+- Calibration runs before pointing ZTARE at a genuinely unknown domain
+- Infrastructure verification (continuous substrate, bivariate evidence, new mutator plumbing)
+
+### Full Command Sequence
+
+**1. Write the GT script (Division A)**
+
+```python
+# src/ztare/substrates/<slug>_gt.py
+def f_true(x1, x2) -> float: ...       # ground truth
+def f_dominant(x1, x2) -> float: ...   # dominant term (for Component C)
+def evidence_grid() -> list[tuple[float, float]]: ...   # visible training points
+def holdout_grid() -> list[tuple[float, float]]: ...    # hidden evaluation points
+```
+
+For discrete 1-variable substrates, `evidence_grid()` / `holdout_grid()` are optional; generate_substrate uses integer ranges instead.
+
+**2. Generate substrate artifacts**
+
+```bash
+make generate-substrate \
+    SLUG=<slug> \
+    GT_SCRIPT=src/ztare/substrates/<slug>_gt.py \
+    VARIABLES=x1,x2 \
+    PROBLEM_BRIEF="Find a mathematical law governing z as a continuous function of two inputs x1 and x2."
+```
+
+This writes Division B artifacts (rubric, gate_harness.py, test_model.py, evidence files, charter) and an opaque re-export stub at `src/ztare/substrates/<slug>_gt.py`. The rubric field `component_c_gt_module` points to the stub, not the Division A script.
+
+**3. Seal the sandbox**
+
+```bash
+make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
+```
+
+Runs the leak sentinel (sentinel must pass), integration tests (smoke-test + gates must produce valid JSON), and writes `projects/<slug>/sandbox_seal.json`. **Must run before the loop. Never skip.**
+
+**4. Launch the experiment loop**
+
+```bash
+make experiment-loop \
+    PROJECT=<slug> \
+    RUBRIC=rubrics/<slug>.json \
+    ITERS=10 \
+    MUTATOR_MODEL=gemini-pro \
+    JUDGE_MODEL=gpt4.1
+```
+
+**5. If you stop and restart**
+
+```bash
+# Reset thesis to virgin state (remove any best_iteration tag)
+# Clear workspace
+rm -f projects/<slug>/workspace/*.json projects/<slug>/workspace/*.jsonl projects/<slug>/workspace/*.md
+# Re-seal
+make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
+# Relaunch
+make experiment-loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 MUTATOR_MODEL=gemini-pro JUDGE_MODEL=gpt4.1
+```
+
+### RMSE Gate Calibration Rule
+
+The RMSE threshold must reject the zero model (`f(x1, x2) = 0`). Before sealing:
+
+```bash
+python projects/<slug>/gate_harness.py --run-smoke-test
+```
+
+If `harness_ok: true` on the zero model, tighten the threshold. For noiseless synthetic data, `0.05` is a reasonable default. The zero model RMSE should be >> threshold.
+
+### Division A / B Boundary
+
+| Artifact | Division | Mutator-visible? |
+|---|---|---|
+| `src/ztare/substrates/<slug>_<domain>_gt.py` | A (Division A GT script) | No |
+| `src/ztare/substrates/<slug>_gt.py` (stub) | A (opaque re-export) | No |
+| `projects/<slug>/evidence.txt` | B | Yes |
+| `projects/<slug>/evidence_holdout.txt` | B (locked) | No |
+| `projects/<slug>/gate_harness.py` | B | No |
+| `projects/<slug>/test_model.py` | B | Yes (mutator rewrites this) |
+| `rubrics/<slug>.json` | B | No |
+
+Slug must be opaque (`gp080_01`, not `gp080_tacrolimus_01`). The slug leaks into rubric `project` field and charter; a domain name in the slug is a semantic hint to the mutator.
 
 ### Boundary: This Is Not Rebuilding ZTARE
 

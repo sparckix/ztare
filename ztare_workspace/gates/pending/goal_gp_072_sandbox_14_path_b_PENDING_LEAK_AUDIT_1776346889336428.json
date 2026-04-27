@@ -1,0 +1,11 @@
+{
+  "type": "goal_gate_escalation",
+  "goal_slug": "gp_072_sandbox_14_path_b",
+  "goal_name": "GP-072 Sandbox 14 Path B",
+  "stage": "PENDING_LEAK_AUDIT",
+  "gate_description": "Leak audit gate. Operator verifies no GT leakage into mutator-visible files. Run: grep denylist + strip test + identifiability + smoke gate.\n",
+  "gate_reason": "",
+  "artifact_hashes": {},
+  "timestamp_utc": "2026-04-16T13:41:29.336428+00:00",
+  "metadata": {}
+}

@@ -1,0 +1,36 @@
+schema_version: 1
+member_id: gemini
+kind: ai
+display_name: Gemini (Google)
+description: >
+  Google Gemini — peer reviewer and inversion partner. Invoked by the
+  manager role to pressure-test claims, provide independent physics /
+  math opinion, and perform Mungerian inversions on proposed decisions.
+  Produces text critiques; does not modify the repository.
+
+substrates:
+  - name: gemini_api
+    kind: per_call
+    current_model: gemini-2.5-pro
+    invocation: "direct API call via ZTARE runtime wrapper"
+    strengths:
+      - "domain-expert opinions (physics, math, org design)"
+      - "inversion partner"
+      - "stylistic contrarian"
+    weaknesses:
+      - "read-only; cannot execute actions"
+      - "opinions vary session-to-session"
+
+contract:
+  provider: Google
+  billing: pay-per-token
+  pricing_source: supervisor/model_pricing.json
+
+capabilities:
+  - peer_review
+  - inversion_analysis
+  - domain_critique
+  - text_generation
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

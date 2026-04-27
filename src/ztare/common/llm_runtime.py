@@ -20,6 +20,15 @@ MODEL_MAP = {
     "gpt4o": "gpt-4o",
     "gpt4.1": "gpt-4.1",
     "gpt4.1-mini": "gpt-4.1-mini",
+    "gpt5.5": "gpt-5.5",
+    # GP-134 reasoning-model support (2026-04-23): added o3 family for
+    # reasoning-heavy substrates (e.g., gp090_01 sopfr cold-recovery)
+    # where chain-of-thought depth matters more than token throughput.
+    "o1": "o1",
+    "o3": "o3",
+    "o3-mini": "o3-mini",
+    "o3-pro": "o3-pro",
+    "o4-mini": "o4-mini",
 }
 
 DIRECTOR_MODEL_MAP = {
@@ -31,6 +40,12 @@ DIRECTOR_MODEL_MAP = {
     "gpt4o": "o1",
     "gpt4.1": "gpt-4.1",
     "gpt4.1-mini": "gpt-4.1-mini",
+    "gpt5.5": "gpt-5.5",
+    "o1": "o1",
+    "o3": "o3",
+    "o3-mini": "o3-mini",
+    "o3-pro": "o3-pro",
+    "o4-mini": "o4-mini",
 }
 
 # Retry budget for production mutator/judge calls. Bumped from 12 to 25
@@ -50,7 +65,15 @@ FALLBACK_MODEL_CHAINS = {
     "gpt-4o": ("claude-sonnet-4-6", "gemini-2.5-flash"),
     "gpt-4.1": ("claude-sonnet-4-6", "gemini-2.5-flash"),
     "gpt-4.1-mini": ("gpt-4.1", "claude-sonnet-4-6", "gemini-2.5-flash"),
+    # gpt-5.5 frontier model (2026-04-25). Cross-family fallback to
+    # claude-opus-4-6 (closest-tier reasoning) then gpt-4.1, never to
+    # cheaper OpenAI models within the same family request.
+    "gpt-5.5": ("claude-opus-4-6", "gpt-4.1", "gemini-3.1-pro-preview"),
     "o1": ("claude-sonnet-4-6", "gemini-2.5-flash"),
+    "o3": ("o3-mini", "claude-sonnet-4-6", "gpt-4.1"),
+    "o3-mini": ("gpt-4.1", "claude-sonnet-4-6"),
+    "o3-pro": ("o3", "claude-sonnet-4-6"),
+    "o4-mini": ("o3-mini", "gpt-4.1", "claude-sonnet-4-6"),
 }
 
 
@@ -75,7 +98,30 @@ def is_openai_model(model_id: str) -> bool:
 
 
 def is_reasoning_openai_model(model_id: str) -> bool:
-    return model_id.startswith("o1") or model_id.startswith("o3") or model_id.startswith("o4")
+    """True for OpenAI models that use the `max_completion_tokens` API
+    (reasoning family: o1/o3/o4) and the gpt-5 frontier family which
+    follows the same parameter convention. Adding gpt-5.5 here closes
+    the 2026-04-25 night API mismatch where gpt-5.5 calls failed with
+    'Unsupported parameter: max_tokens'.
+    """
+    return (
+        model_id.startswith("o1")
+        or model_id.startswith("o3")
+        or model_id.startswith("o4")
+        or model_id.startswith("gpt-5")
+    )
+
+
+def get_model_family(model_id: str) -> str:
+    """Return provider family for a canonical model ID.
+
+    Returns one of ``"openai"``, ``"anthropic"``, or ``"google"``.
+    """
+    if is_claude_model(model_id):
+        return "anthropic"
+    if is_openai_model(model_id):
+        return "openai"
+    return "google"
 
 
 def pricing_model_name(model_name: str | None) -> str | None:
@@ -101,8 +147,29 @@ def pricing_model_name(model_name: str | None) -> str | None:
         return "gpt-4.1"
     if lowered.startswith("gpt-4o"):
         return "gpt-4o"
+    # gpt-5.5 frontier family. Match before any "gpt-5" generic so dated
+    # IDs like "gpt-5.5-2026-XX-YY" route to the correct pricing entry.
+    if lowered.startswith("gpt-5.5"):
+        return "gpt-5.5"
     if lowered.startswith("o1"):
         return "o1"
+    # OpenAI reasoning models: SDK returns dated ids like "o3-2025-04-01",
+    # "o3-mini-2025-01-31", "o4-mini-2026-01-15". Normalize to the canonical
+    # family key in supervisor/model_pricing.json. Ordering matters — match
+    # the most-specific prefix first (o3-pro before o3-mini before o3 before o4-mini).
+    # Fixes "unavailable (pricing disabled or unknown model)" telemetry for
+    # every o3/o4-family run. Bug report 2026-04-24 — gp140 o3/o3 run cost
+    # ~$2.50 was shown as unavailable because "o3-<date>" never matched "o3".
+    if lowered.startswith("o3-pro"):
+        return "o3-pro"
+    if lowered.startswith("o3-mini"):
+        return "o3-mini"
+    if lowered.startswith("o3"):
+        return "o3"
+    if lowered.startswith("o4-mini"):
+        return "o4-mini"
+    if lowered.startswith("o4"):
+        return "o4"
     return normalized
 
 

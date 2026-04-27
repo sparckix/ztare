@@ -134,6 +134,16 @@ def _gate_evidence_fit(
         return _gate(name, passed=True, actual=None, threshold=None,
                      reason=f"DISABLED by rubric config — reason: {reason}")
 
+    # GP-121: discovery mode — gate becomes advisory (soft penalty, not hard fail)
+    # Use for substrates where the solution is unknown and smooth templates
+    # may not fit the data point-by-point (oscillatory, erratic, multiplicative)
+    if rubric_data.get("evidence_fit_mode") == "discovery":
+        # Run the fit check but report as soft (passed=True, no hard_fail)
+        # The actual residual is logged for diagnostics but doesn't zero the score
+        return _gate(name, passed=True, actual=None, threshold=None,
+                     reason="discovery mode: evidence_fit is advisory, not blocking. "
+                            "The judge evaluates thesis quality; the gate logs fit diagnostics.")
+
     threshold = float(rubric_data.get("evidence_fit_threshold", 0.15))
 
     if evidence_text is None:
@@ -161,18 +171,67 @@ def _gate_evidence_fit(
             pred = float("nan")
 
         if math.isnan(pred) or math.isinf(pred):
-            return _gate(name, passed=False, actual=float("inf"), threshold=threshold,
-                         reason=f"model returned non-finite at inputs={inputs}; evidence_fit FAIL",
-                         hard_fail=True)
+            bound_mode = rubric_data.get("evidence_fit_mode")
+            if bound_mode in ("upper_bound", "lower_bound"):
+                # In bound modes, treat NaN as a violation (the form doesn't
+                # cover this point) rather than a hard crash
+                pred = float("-inf") if bound_mode == "upper_bound" else float("inf")
+            else:
+                return _gate(name, passed=False, actual=float("inf"), threshold=threshold,
+                             reason=f"model returned non-finite at inputs={inputs}; evidence_fit FAIL",
+                             hard_fail=True)
 
         predictions.append(pred)
         observations.append(float(obs))
 
+    # GP-121: Check for upper_bound or lower_bound mode
+    # upper_bound: f(n) >= z(n) for all n (the function bounds the data from ABOVE)
+    # lower_bound: f(n) <= z(n) for all n (the function bounds the data from BELOW)
+    # default (absent): standard curve-fit mode (|f(n) - z(n)| < threshold)
+    bound_mode = rubric_data.get("evidence_fit_mode")  # "upper_bound" | "lower_bound" | None
+
+    if bound_mode == "upper_bound":
+        # Every prediction must be >= every observation
+        violations = [(o, p) for o, p in zip(observations, predictions) if p < o]
+        max_obs_magnitude = max(abs(o) for o in observations)
+        denom = max_obs_magnitude if max_obs_magnitude >= 1e-12 else 1.0
+        if violations:
+            worst = max(abs(o - p) / denom for o, p in violations)
+            return _gate(
+                name=name, passed=False, actual=round(worst, 6), threshold=0,
+                reason=f"upper_bound mode: {len(violations)} violations (f(n) < z(n)); worst={worst:.4f}",
+                hard_fail=True,
+            )
+        # All predictions >= observations — check margin
+        margins = [(p - o) / denom for o, p in zip(observations, predictions)]
+        min_margin = min(margins)
+        return _gate(
+            name=name, passed=True, actual=round(min_margin, 6), threshold=0,
+            reason=f"upper_bound mode: ALL f(n) >= z(n), min_margin={min_margin:.4f}",
+            hard_fail=False,
+        )
+
+    if bound_mode == "lower_bound":
+        violations = [(o, p) for o, p in zip(observations, predictions) if p > o]
+        max_obs_magnitude = max(abs(o) for o in observations)
+        denom = max_obs_magnitude if max_obs_magnitude >= 1e-12 else 1.0
+        if violations:
+            worst = max(abs(o - p) / denom for o, p in violations)
+            return _gate(
+                name=name, passed=False, actual=round(worst, 6), threshold=0,
+                reason=f"lower_bound mode: {len(violations)} violations (f(n) > z(n)); worst={worst:.4f}",
+                hard_fail=True,
+            )
+        margins = [(o - p) / denom for o, p in zip(observations, predictions)]
+        min_margin = min(margins)
+        return _gate(
+            name=name, passed=True, actual=round(min_margin, 6), threshold=0,
+            reason=f"lower_bound mode: ALL f(n) <= z(n), min_margin={min_margin:.4f}",
+            hard_fail=False,
+        )
+
+    # Default: standard curve-fit mode
     # Normalise by max(|obs|) across all rows — self-calibrating to the scale of the dataset.
-    # This is domain-agnostic: works for large OEIS integers and near-zero biological floats
-    # alike, because the denominator tracks the dataset's own magnitude rather than each
-    # individual observation.  A rubric override ("evidence_fit_threshold") still controls
-    # tightness; only the denominator changes.
     max_obs_magnitude = max(abs(o) for o in observations)
     denom = max_obs_magnitude if max_obs_magnitude >= 1e-12 else 1.0
 
@@ -473,8 +532,29 @@ def _gate_extrapolation_gap(
     Declared null with disable_reason → allowed opt-out.
     Per-dimension overlap check: declared range must extend beyond training data
     by at least one std dev of training spacing in that dimension.
+
+    Class-aware bypass (2026-04-25 night): for cage_meta.class in
+    {"audit", "literature", "proof_target", "closed_form_constant"} the
+    gate auto-skips because those substrate classes have no numeric
+    extrapolation regime by definition (audit = critique of artifact;
+    literature = textual review; proof_target = formal-proof; closed-
+    form = constant discovery). Without this bypass the gate hard-fails
+    every audit run that legitimately has no farther_tail_region — a
+    class-routing bug surfaced by gp165.
     """
     name = "global_extrapolation_gap"
+
+    cage_meta = rubric_data.get("cage_meta") or {}
+    cage_class = (cage_meta.get("class") or "").strip().lower() if isinstance(cage_meta, dict) else ""
+    NO_EXTRAPOLATION_CLASSES = {"audit", "literature", "proof_target", "closed_form_constant"}
+    if cage_class in NO_EXTRAPOLATION_CLASSES:
+        return _gate(
+            name, passed=True, actual=None, threshold=None,
+            reason=(
+                f"cage_meta.class='{cage_class}' has no numeric extrapolation regime "
+                f"by definition — gate auto-skipped."
+            ),
+        )
 
     farther_tail = rubric_data.get("farther_tail_region", "__ABSENT__")
 
@@ -552,6 +632,114 @@ def _gate_extrapolation_gap(
 
 
 # ---------------------------------------------------------------------------
+# Phase 1: audit_mock_bypass gate (GP-166)
+# ---------------------------------------------------------------------------
+
+def _gate_audit_mock_bypass(
+    rubric_data: dict,
+    project_dir: Path,
+) -> dict[str, Any]:
+    """Cap audit-class scores at 50 when the bypass exploit uses Mocks
+    instead of real imports of the components under audit.
+
+    Audit substrates (cage_meta.class="audit") have all numerical
+    validation gates disabled — the score is determined entirely by
+    LLM-judge prose grading against the rubric. A common LLM failure
+    mode is to satisfy the rubric's "runnable bypass exploit"
+    requirement by building Mock classes in-script and asserting
+    behavior against the Mocks. The exploit is technically runnable
+    but demonstrates nothing about the real codebase. This gate
+    detects that pattern and caps the score so the rubric's "concrete
+    bypass demonstrated" dimension cannot be over-rewarded.
+
+    Detection patterns (any one fires):
+      - `unittest.mock` import or `from unittest.mock` import
+      - `MagicMock` reference
+      - Class definition matching `^class\\s+Mock[A-Z]\\w*` (e.g.,
+        `class MockFramerND`, `class MockAnalogy`)
+
+    The check runs against the latest submitted Python in
+    `workspace/submissions/iter_*.py`. Operator override:
+    `disable_audit_mock_bypass_gate=True`.
+
+    Skips entirely when cage_meta.class is not "audit" — non-audit
+    substrates have other validation gates that already discipline
+    the bypass-quality requirement.
+    """
+    name = "global_audit_mock_bypass"
+
+    if rubric_data.get("disable_audit_mock_bypass_gate"):
+        return _gate(
+            name, passed=True, actual=None, threshold=None,
+            reason="DISABLED by rubric config — operator override accepted",
+        )
+
+    cage_meta = rubric_data.get("cage_meta") or {}
+    cage_class = (cage_meta.get("class") or "").strip().lower() if isinstance(cage_meta, dict) else ""
+    if cage_class != "audit":
+        return _gate(
+            name, passed=True, actual=None, threshold=None,
+            reason=f"cage_meta.class={cage_class!r} (not audit) — gate not applicable",
+        )
+
+    sub_dir = project_dir / "workspace" / "submissions"
+    if not sub_dir.exists():
+        return _gate(
+            name, passed=True, actual=None, threshold=None,
+            reason="no submissions yet — gate skipped this iter",
+        )
+
+    py_subs = sorted(sub_dir.glob("iter_*.py"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not py_subs:
+        return _gate(
+            name, passed=True, actual=None, threshold=None,
+            reason="no Python submissions yet — gate skipped",
+        )
+
+    try:
+        text = py_subs[0].read_text(encoding="utf-8")
+    except Exception:
+        return _gate(
+            name, passed=True, actual=None, threshold=None,
+            reason=f"could not read latest submission ({py_subs[0].name})",
+        )
+
+    import re as _re
+    hits: list[str] = []
+    if _re.search(r"\bfrom\s+unittest\.mock\b|\bimport\s+unittest\.mock\b", text):
+        hits.append("unittest.mock import")
+    if _re.search(r"\bMagicMock\b", text):
+        hits.append("MagicMock reference")
+    mock_class_matches = _re.findall(r"^class\s+(Mock[A-Z]\w*)", text, _re.MULTILINE)
+    if mock_class_matches:
+        hits.append(f"Mock class definitions: {mock_class_matches[:3]}")
+
+    if hits:
+        return _gate(
+            name=name,
+            passed=False,
+            actual=str(hits),
+            threshold="no Mock-based bypass",
+            reason=(
+                f"AUDIT-CLASS MOCK BYPASS DETECTED. The bypass exploit imports or defines "
+                f"Mocks for components under audit ({hits}) instead of importing the real "
+                f"src.ztare.* modules and calling their real signatures. Per the rubric's "
+                f"Concrete Bypass Exploit dimension, a bypass against Mocks demonstrates "
+                f"behavioral simulation, not a real apparatus vulnerability. Score capped "
+                f"at 50. To unlock full credit, rewrite the exploit to import the actual "
+                f"components (e.g., `from src.ztare.fit.analogy import build_residual_fingerprint`) "
+                f"and run the bypass against their real signatures."
+            ),
+            penalty=-50,
+        )
+
+    return _gate(
+        name, passed=True, actual="real-imports", threshold="no Mock-based bypass",
+        reason="bypass exploit uses real imports of audited components: PASS",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
 
@@ -606,6 +794,23 @@ def run_global_gates(
     gates.append(eg)
     if not eg["passed"] and eg.get("hard_fail"):
         any_hard_fail = True
+
+    # Phase 1: audit_mock_bypass (GP-166 Fix E, 2026-04-25 night).
+    # Audit substrates have all numerical-validation gates disabled by
+    # design (no holdout, no fit, no uniqueness gap), leaving only the
+    # rubric prose for the LLM judge to grade against. A common LLM
+    # failure mode: the mutator writes a "runnable bypass exploit" that
+    # imports unittest.mock and builds Mock* classes for the components
+    # under audit, then asserts behavior against the Mocks. This is
+    # technically runnable but proves nothing about the real codebase.
+    # The gate caps audit-class scores at 50 when this pattern is
+    # detected in the submitted Python; the judge can still grade the
+    # rest of the thesis but cannot award the full bypass-exploit points.
+    am = _gate_audit_mock_bypass(rubric_data, project_dir)
+    gates.append(am)
+    if not am["passed"]:
+        # Encode cap-at-50 as a -50 penalty on a base of 100
+        total_penalty += am.get("penalty", -50)
 
     failed_gates = [g["name"] for g in gates if not g["passed"]]
     return {

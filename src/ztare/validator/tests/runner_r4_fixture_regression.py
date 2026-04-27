@@ -36,6 +36,9 @@ class LatentVetoFixtureCase:
 def build_r4_fixture_cases() -> list[R4FixtureCase]:
     DIGEST_A = "aaa111"
     DIGEST_B = "bbb222"
+    DIGEST_C = "ccc333"
+    DIGEST_D = "ddd444"
+    DIGEST_E = "eee555"
 
     return [
         # --- R1 mismatch cases ---
@@ -116,6 +119,73 @@ def build_r4_fixture_cases() -> list[R4FixtureCase]:
                 ),
             ),
             expected_action=LoopControlAction.REFRESH_SPECIALISTS,
+        ),
+        # --- Committee-rotation throttle (stagnation bug fix) ---
+        R4FixtureCase(
+            case_id="reframing_grace_then_refresh",
+            description=(
+                "Dynamic-mode committee rotation: grace period granted once, then stagnation "
+                "accumulates. iter1=score improvement, iter2=grace(REFRAMING+new committee), "
+                "iter3+iter4=stagnation → REFRESH_SPECIALISTS."
+            ),
+            history=(
+                IterationSignal(
+                    iteration_index=1, score=82, weakest_point="same flaw",
+                    score_improved=True,
+                    committee_digest=DIGEST_A, prior_committee_digest=DIGEST_A,
+                ),
+                IterationSignal(
+                    iteration_index=2, score=80, weakest_point="same flaw",
+                    claim_delta_type="REFRAMING",
+                    committee_digest=DIGEST_B, prior_committee_digest=DIGEST_A,
+                ),
+                IterationSignal(
+                    iteration_index=3, score=79, weakest_point="same flaw",
+                    claim_delta_type="REFRAMING",
+                    committee_digest=DIGEST_C, prior_committee_digest=DIGEST_B,
+                ),
+                IterationSignal(
+                    iteration_index=4, score=78, weakest_point="same flaw",
+                    claim_delta_type="REFRAMING",
+                    committee_digest=DIGEST_D, prior_committee_digest=DIGEST_C,
+                ),
+            ),
+            expected_action=LoopControlAction.REFRESH_SPECIALISTS,
+        ),
+        R4FixtureCase(
+            case_id="reframing_grace_then_pivot",
+            description=(
+                "Dynamic-mode: after grace period, 3 stagnant committee-rotation iters "
+                "with identical weakest_point → PIVOT_REQUIRED."
+            ),
+            history=(
+                IterationSignal(
+                    iteration_index=1, score=85, weakest_point="same flaw",
+                    score_improved=True,
+                    committee_digest=DIGEST_A, prior_committee_digest=DIGEST_A,
+                ),
+                IterationSignal(
+                    iteration_index=2, score=83, weakest_point="same flaw",
+                    claim_delta_type="REFRAMING",
+                    committee_digest=DIGEST_B, prior_committee_digest=DIGEST_A,
+                ),
+                IterationSignal(
+                    iteration_index=3, score=81, weakest_point="same flaw",
+                    claim_delta_type="REFRAMING",
+                    committee_digest=DIGEST_C, prior_committee_digest=DIGEST_B,
+                ),
+                IterationSignal(
+                    iteration_index=4, score=79, weakest_point="same flaw",
+                    claim_delta_type="REFRAMING",
+                    committee_digest=DIGEST_D, prior_committee_digest=DIGEST_C,
+                ),
+                IterationSignal(
+                    iteration_index=5, score=77, weakest_point="same flaw",
+                    claim_delta_type="REFRAMING",
+                    committee_digest=DIGEST_E, prior_committee_digest=DIGEST_D,
+                ),
+            ),
+            expected_action=LoopControlAction.PIVOT_REQUIRED,
         ),
         # --- Backward compatibility: existing Stage 5 signals unchanged ---
         R4FixtureCase(

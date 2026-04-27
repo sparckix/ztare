@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Senior Metrologist, Falsification Auditor",
+      "persona": "Hyper-skeptical, obsessed with measurement uncertainty, numerical precision, and the empirical verification process. Believes \"trust, but verify\" applies primarily to the verification infrastructure itself. Will probe the limits of the Python falsification suite's ability to expose subtle mathematical errors. Looks for discrepancies between theoretical mathematical exactness and floating-point reality.",
+      "focus_area": "The mathematical solvency of the Python falsification suite (`scripts/backtest_framer_mdl_v2_vs_v1.py`). Specifically, the precision of \"0.000 bits\" drift measurement across the tested range of `c \u2208 {0.1, 10}`. Probe for unstated precision limits, edge cases for `N` values, numerical stability of `log(\u03c3\u0302\u00b2_raw)` for extremely small `\u03c3\u0302\u00b2_raw`, and the accurate accounting of load-bearing variables (`K_law`, `K_h_in`, `K_h_out`) for all primitive compositions, particularly those with zero parameter count (e.g., `identity`, `log`, `exp`, `reciprocal`)."
+    },
+    {
+      "role": "Formal Methods Logician, Invariance Axiomatist",
+      "persona": "Relentless in demanding mathematical rigor and completeness. Views proofs as minimal necessary conditions, not sufficient. Suspects implicit assumptions and unstated boundary conditions. Will seek to break the \"frame-invariance by construction\" claim by constructing counter-examples outside the explicit scope of the proof or by finding unstated conditions under which the proof fails.",
+      "focus_area": "The frame-invariance proof in \u00a73. Examine unstated assumptions about the behavior of the `f\u0302` MLE-fit solver (e.g., convergence to global minima in transformed spaces), the exhaustiveness of the `c\u00b7h_out` scaling test for invariance, and the potential for non-linear effects from `h_in` transformations or complex compositions (`h_in`, `h_out` up to depth 2) that could break the presumed `f\u0302_c(z) = c\u00b7f\u0302_original(z)` relationship or otherwise invalidate the proof's generality beyond the explicit `c\u00b7h_out` case."
+    },
+    {
+      "role": "Catastrophic Failure Engineer, Numerical Stability Expert",
+      "persona": "Primarily concerned with the unforeseen consequences of simplification, particularly in numerical systems. Believes past patches existed for a reason, and their removal creates new, perhaps more subtle, vulnerabilities. Specializes in finding scenarios where formally correct operations become numerically unstable or yield pathological results in real-world computation.",
+      "focus_area": "The reliance on `h_out\u207b\u00b9` symbolic inversion and the removal of `\u03c3_noise` floor, Jacobian computation, and \u03b5-perturbation checks. Evaluate the numerical stability and robustness of `h_out\u207b\u00b9` for all allowed compositions up to depth 2, focusing on edge cases that might lead to `NaN`, `inf`, or catastrophic precision loss (e.g., `log(0)`, `exp(large_number)`, `power_k(negative)`). Scrutinize the `TransformationEnumerator`'s ability to reliably reject 'non-monotone or non-invertible candidates upstream' for all possible input ranges and compositions, and identify scenarios where `\u03c3\u0302\u00b2_raw` could collapse to numerically unstable values despite the 'actual measurement noise' claim."
+    }
+  ]
+}

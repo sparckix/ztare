@@ -1,0 +1,66 @@
+schema_version: 1
+description: >
+  Who currently fills which role. A member can fill multiple roles.
+  A role can be filled by multiple members (primary + backup).
+  Validity windows allow time-bounded assignments (e.g., rotations,
+  coverage, temporary delegation).
+
+# Current assignments
+assignments:
+  - member: member.daniel_alami
+    role: role.principal
+    substrate: human_conversational
+    is_primary: true
+    valid_from: "2026-04-23"
+    valid_until: null
+    notes: "Founding principal"
+
+  - member: member.daniel_alami
+    role: role.reviewer
+    substrate: human_conversational
+    is_primary: false              # backup when gemini is unavailable
+    valid_from: "2026-04-23"
+    valid_until: null
+    notes: "Human reviewer fallback for inversion requests"
+
+  - member: member.claude
+    role: role.manager
+    substrate: claude_conversational
+    is_primary: true
+    valid_from: "2026-04-23"
+    valid_until: null
+    notes: "First live claude_manager assignment (GP-128 Level 1.5)"
+
+  - member: member.claude
+    role: role.research_director
+    substrate: claude_headless_daemon
+    is_primary: true
+    valid_from: "2026-04-26"
+    valid_until: null
+    notes: "Research director — external validity layer (GP-167). Separate daemon instance from manager."
+
+  - member: member.codex
+    role: role.engineer
+    substrate: codex_cli
+    is_primary: true
+    valid_from: "2026-04-23"
+    valid_until: null
+    notes: "Primary engineering substrate; invoked via wrapper by manager"
+
+  - member: member.gemini
+    role: role.reviewer
+    substrate: gemini_api
+    is_primary: true
+    valid_from: "2026-04-23"
+    valid_until: null
+    notes: "Primary reviewer; invoked via API by manager for inversion checks"
+
+# ----------------------------------------------------------------------
+# Assignment policy (informational; enforced by role loader on validation)
+# ----------------------------------------------------------------------
+policy:
+  - "Every role with role_class=authority MUST have at least one primary assignment"
+  - "An assignment's substrate MUST appear in the member's substrates list"
+  - "An assignment's member MUST have a capability required by the role"
+  - "Multiple non-primary assignments allowed for backup / redundancy"
+  - "Terminating an assignment requires updating valid_until, never deleting rows (audit trail)"

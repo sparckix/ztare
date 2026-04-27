@@ -7,7 +7,7 @@ The principles are organized in two layers:
 - **Operator layer** — how I work on this project. Personal discipline, not a claim about what others should do.
 - **Project layer** — what ZTARE is, what it isn't, and what it refuses to claim.
 
-The transferable *findings* from the project — the principles about epistemic generation and agent supervision that would be true even if this codebase disappeared tomorrow — are in a sibling document: [`docs/epistemic_supervision_principles.md`](docs/epistemic_supervision_principles.md).
+The transferable *findings* from the project — the principles about epistemic generation and agent supervision that would be true even if this codebase disappeared tomorrow — are in a sibling document: [`docs/concepts/epistemic_principles.md`](docs/concepts/epistemic_principles.md).
 
 ---
 
@@ -24,6 +24,20 @@ These are the rules I hold myself to. They are not general recommendations. They
 **4. Refusal of self-mythology in public communication.** The project does not ship with narrative framing that outruns the evidence. No "breakthrough" language unless the paper's strongest claim can be stated in one sentence and defended in cold review. No historical-figure analogies as load-bearing framing. No impact-at-scale projections that the present evidence base does not support. Aspirations go in the private philosophy document where they can be dated, confidence-marked, and later corrected. Public artifacts are calibrated to what exists today.
 
 **5. No external LLM conversation updates any confidence level.** A warm third-party model reading this repo and telling me it is great is a mirror, not a measurement. Confidence on every substantive claim is updated by the artifact and by cold review, not by flattery cascades, and not by hype from any community that has an interest in the project mattering. This rule is strict because it is cheap.
+
+---
+
+## Foundation layer — the three insights that seem obvious once found
+
+Three principles underlie everything ZTARE does. Each looks simple in hindsight. Each was discovered through failure — the project tried the opposite first and paid for it.
+
+**1. Less is better than more.** *Compress, always compress.* The correct model is the one that survives outside the window it was fit in, with the fewest assumptions. Prefer the explanation that generalizes over the one that interpolates. The binding constraint on discovery is the vocabulary of structural forms available, not the compute budget spent searching. Doubling the compute on a vocabulary that cannot express the answer produces zero structural progress. Adding one structural primitive to the vocabulary can recover the exact law in a handful of iterations. Parsimony is not aesthetics; it is the mechanism that separates structure from noise.
+
+**2. Avoid failures so you never go there.** *Invert, always invert.* Design by asking "how would this fail?" before asking "how would this work?" Every gate, every holdout split, every anti-pattern exists because someone asked the inversion question first. The specification gaming strategies documented in this project were found by inversion: instead of asking "how do we make the AI produce good answers?" we asked "how would the AI cheat?" and built the architecture to make cheating structurally impossible. Charlie Munger's dictum applied to AI systems: "All I want to know is where I'm going to die, so I'll never go there."
+
+**3. Nurture is better than nature.** *Set the AI up for success.* The scaling conversation focuses on making models bigger, smarter, more capable. That is nature. This project focuses on the environment: what constraints, what feedback, what separation of concerns enables the same model to do better work? An AI inside an epistemic discipline architecture produces better science than the same AI unconstrained, for the same reason a weightlifter inside a squat rack lifts more than one without. The rack does not make the lifter stronger; it removes the failure modes that prevent ambitious lifts. Scaling the model is expensive and subject to diminishing returns. Scaling the environment is cheap and compounding. Every result in this repository was produced by frontier models available to everyone. The difference was the apparatus, not the model.
+
+These three principles are not ZTARE-specific. They apply to any system where an AI operates under optimization pressure and the operator needs to trust the output. Compress what the AI produces. Invert to find where it fails. Build the environment that makes it succeed.
 
 ---
 
@@ -46,7 +60,7 @@ These are the rules I hold myself to. They are not general recommendations. They
 ## What to read if you want more
 
 - **The technical arc.** Papers 1–4 on SSRN. Paper 1 documents the nine specification gaming strategies across five evaluation domains. Papers 2 and 3 harden the evaluator kernel. Paper 4 describes the M-Form governance architecture and reports the fractal convergence finding. Each paper's empirical claims have a replication package in `papers/paperN/`.
-- **The transferable findings.** [`docs/epistemic_supervision_principles.md`](docs/epistemic_supervision_principles.md) — the domain-specific principles about epistemic generation and agent supervision that the project has generated, stated in a form that does not depend on running ZTARE.
+- **The transferable findings.** [`docs/concepts/epistemic_principles.md`](docs/concepts/epistemic_principles.md) — the domain-specific principles about epistemic generation and agent supervision that the project has generated, stated in a form that does not depend on running ZTARE.
 - **The failure taxonomy.** `research_areas/private/distribution/field_manual_auto.md` (automatically generated from iteration logs) — the boardroom-language translation of the nine-family failure vocabulary with project provenance tags.
 - **The decision log.** `DECISION_LOG.md` — architectural decisions dated and recorded as they happened, not reconstructed after the fact.
 

@@ -1,0 +1,198 @@
+{
+  "name": "gp154_scaling_law_exponents",
+  "project": "gp154_scaling_law_exponents",
+  "rubric_version": "1.4-fit-primitive-features-categorical",
+  "rubric_version_reason": "v1.4 (2026-04-25) enables GP-156 Proposal 3 feature-vector fit primitive with extended AST whitelist (IfExp, Compare, BoolOp, In, Tuple) so categorical-conditional parametric forms work on gp154's modality/regime_hint/study features. Mutator opts in by declaring PARAMETRIC_FORM + PARAMETER_NAMES + MODEL_PARAMS={} at module level; apparatus runs scipy.optimize over visible (features_dict, y_observed) and substitutes fitted constants. v1.3 fixed the gate_harness returncode protocol (AssertionError vs RuntimeError); v1.2 added runner_allowed_imports=['features']; original v1.1 below.",
+  "runner_allowed_imports": [
+    "features"
+  ],
+  "enable_fit_primitive_features": true,
+  "fit_primitive_features_k_max": 10,
+  "description": "Newton-mode rubric for scaling law exponent recovery. Target: discover what determines the power-law exponent as a function of task/data properties. Cross-study meta-analysis substrate. Cold-framed: cold variable names (y, d, a) only; author names stripped from visible evidence; holdout truth in _holdout_locked/.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate: the functional form connecting scaling exponents to task properties is unknown. Generative yield required.",
+  "falsification_mode": "bounded_discriminator",
+  "require_cross_family": false,
+  "require_cross_family_reason": "Set false 2026-04-25 for fast-iteration o3+o3 rerun after Proposals 1+2 R1 hardening shipped. Same-family blind-spot risk acknowledged; would re-cert with cross_family=true before claiming a champion. Original true preserved in commit history.",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "structural_blocker_enforcement_reason": "v1.5 (2026-04-25): flipped from 'gate' to 'both' after gp154 mining showed o3/gpt-4.1 mutators kept emitting RH-17 lookup tables \u2014 the 'gate' mode's post-champion deterministic check fires too late (RH-17 iters never qualify as champion, so the gate never engages on the actual failure mode). 'both' restores the GP-149 anti-pattern catalog injection AT PROMPT TIME (cheap learning signal that catches RH-17 / RH-13 before the mutator emits them) AND keeps G-CIRC + G-FALSIFY POST-CHAMPION (deterministic safety net). Belt-and-suspenders.",
+  "stagnation_trigger_mode": "new_class",
+  "underidentified_after": 20,
+  "gp103_stagnation_threshold": 6,
+  "composition_stagnation_threshold": 5,
+  "holdout_hard_gate": true,
+  "holdout_budget": 0,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "test_model.py contains the custom gate harness with VISIBLE/HOLDOUT/FARTHER_TAIL split; gate_harness.py reports the deterministic verdicts. The fit search is done by the mutator at thesis-write time, not by ZTARE's curve_fit primitive.",
+  "discovery_mode": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "test_model.py defines the farther-tail set explicitly via FARTHER_TAIL_SET; standard ZTARE farther-tail detection does not apply to this multi-study substrate.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence is a cross-study cold table, not a single curve; the global_evidence_fit gate's keyword-and-residual heuristic does not apply.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival functional forms scored by Rival Closed-Form Skepticism dimension; mathematical-form keyword heuristic does not apply.",
+  "evidence_anchor_requirement": true,
+  "general_office_model": "gpt4.1",
+  "enable_mform_audit": true,
+  "persona": "You are an adversarial epistemic auditor with the discipline of Charlie Munger (inversion: how would this be wrong?), Karl Popper (falsification: name the test that would reject the thesis), and a journal referee for Nature Machine Intelligence. You are evaluating proposals for a closed-form predictor `I_model(features) -> y` that maps the per-row feature dict (modality, architecture_class, scaling_var, fit_convention, regime_hint, intrinsic_dim_d, etc. \u2014 see features.py) to neural-network scaling-law exponents (the y values: small numbers in [-0.21, 4.0] across 110 measurements; the bulk in [0.04, 0.95]). You REJECT: (a) theses that fit a relationship to ALL the data without holdout \u2014 score zero on Holdout Validation; (b) theses that propose a relationship without specifying its functional form symbolically; (c) theses that hash categorical strings (modality, architecture_class, study) to integers and apply continuous math to them \u2014 this is the RH-13 'Categorical-as-Continuous Smuggle' anti-pattern, hardkill on detection; (d) theses without explicit rival-form falsification; (e) theses that propose a NULL RESULT over a \u03a3 vocabulary that excludes power_k for k in {1, 2, -1, -1/2, 1/2}, log, exp, or regime selectors \u2014 RH-14 'Vacuous Null via Excluded Vocabulary', hardkill; (f) theses that commit the RH-15 'MRE Aggregation Fallacy' (claiming a single per-row error of x% forces MRE > threshold across n rows); (g) theses that fail to recover the Sharma \u03b1=2/d anchor on rows 92, 93 (visible) \u2014 these are calibration anchors with intrinsic_dim_d explicitly numeric, and any cross-domain claim is invalidated without first recovering the known law. IMPORTANT: thesis.md must contain the prose explanation of your reasoning; test_model.py must contain I_model + your declared PARAMETRIC_FORM (str) + PARAMETER_NAMES (list) + MODEL_PARAMS={} (apparatus fits constants via scipy; hand-coded constants reliably miss the holdout gate). Scoring rewards the GP-156 fit-primitive opt-in via the dedicated 'Fit Primitive Opt-in' dimension; do not skip the prose thesis to focus on code. You REWARD: (i) functional forms with K_law \u2264 10 parameters AND BIC-justified parameter count (per GP-152 framer spec v2.0: BIC = N\u00b7log(\u03c3\u0302\u00b2) + K\u00b7log(N); each extra parameter must reduce residual enough to lower BIC) that pass the 25%-MRE holdout gate AND the 35%-MRE farther-tail gate; (ii) Newton-mode generative yield: at least two secondary observables beyond the holdout; (iii) rigorous null results that prove no functional form at K \u2264 10 with BIC-justified compression over a \u03a3 vocabulary INCLUDING the standard scaling-law primitives passes holdout \u2014 a properly-bounded null is publishable; (iv) explicit accounting of the 7.5x cross-domain exponent range as the central observable to explain; (v) theses that correctly use features['regime_hint']=='variance_limited' to predict \u03b1=1 on Bahri rows 84, 85.",
+  "dimensions": [
+    {
+      "name": "Functional Form Discovery",
+      "weight": 0.88,
+      "description": "Does the thesis propose a specific, falsifiable functional relationship y = f(d, a) where d and a are domain and architecture cold codes from test_model.py? The relationship must be expressed as a concrete formula, not a qualitative trend. Score 0/30 for prose-only; 14/30 for formula stated but not in test_model.py I_model() callable form; 30/30 for a callable formula AND parameter count K_law \u2264 10 with BIC justification (workspace/fit_features_result.json reports BIC; lower-K alternatives that achieve similar residual are preferred)."
+    },
+    {
+      "name": "Holdout Validation Rigor",
+      "weight": 0.72,
+      "description": "Does the thesis validate the proposed relationship against the held-out truth values in _holdout_locked/truth.json (revealed only by gate_harness.py)? Holdout mean relative error must be < 0.25 to score full credit. Claims without holdout validation score zero on this dimension. Mid-credit (12/25) for holdout 0.25-0.40."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does the thesis predict at least one secondary observable beyond the holdout fit? Examples: (i) predicted exponent for an unseen (domain_code, architecture_code) pair; (ii) predicted change in y under a specific d\u2192d' or a\u2192a' modification; (iii) predicted critical d above which the relationship inverts. Predictions must be numerically specific and falsifiable. Score 0/20 if no secondary observable; 10/20 if one named without commitment to value; 20/20 if at least two named with numeric commitments and tolerance."
+    },
+    {
+      "name": "Rival Closed-Form Skepticism",
+      "weight": 0.44,
+      "description": "Does the thesis consider and explicitly falsify at least two rival functional forms on the same holdout? For example, if proposing y = a / d, must test y = log(d)/d and y = d^(-1/2) as rivals and show they fail the 25%-MRE holdout gate. Score 0/15 if no rivals tested; 8/15 if one rival; 15/15 if \u2265 2 rivals with documented holdout MRE for each."
+    },
+    {
+      "name": "Measurement Uncertainty Accounting",
+      "weight": 0.29,
+      "description": "Does the thesis correctly propagate measurement uncertainty? Exponents from different studies use different fit conventions (separable single-variable fits vs. joint multi-variable fits), different scale regimes, and different hyperparameter optimization strategies. The thesis must acknowledge that comparing fits across these conventions introduces systematic bias up to ~3x in the same nominal quantity, and account for it (e.g., by stratifying holdout by study type, or by proposing a transformation that aligns conventions)."
+    },
+    {
+      "name": "M-Form Charter Alignment: explicit_formula_and_pred_commit",
+      "weight": 0.54,
+      "description": "[GP-105 General Office insertion] Thesis must propose at least one explicit candidate property and an associated closed-form predictive relationship for scaling exponents, or clearly and specifically describe null discovery with bounding of search space; and must pre-commit to \u22652 concrete secondary observable predictions. Gap detected: The thesis stub does not present or even outline a candidate measurable property that could determine the model-size scaling exponent, nor does it propose any explicit closed-form functional relationship between domain/architecture property and the exponent. While this may merely be a first iteration stub, it does not fulfill the core analytical task of discovery or null bounding. Furthermore, it does not pre-commit to any secondary observable predictions as required for the generative/holdout test. Thus, a thoughtful expert would feel that the thesis has not engaged the full inferential or generative breadth required by the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: must_provide_closed_form_and_pred",
+      "weight": 0.67,
+      "description": "[GP-105 General Office insertion] Theses must provide a concrete, explicit closed-form relationship between domain properties and scaling law exponents, validate on holdout, and make at least one novel, generatively testable prediction outside training and holdout; failure to do so constitutes incomplete engagement. Gap detected: The thesis is only a stub and does not engage any of the primary analytical requirements of the charter. It fails to identify a measurable property that determines the scaling exponent, propose a closed-form functional relationship, validate the relationship on holdout data, or name any falsifying conditions. It also does not address the requirement for predictive (generative) yield outside the training/holdout set or pre-commit to secondary observable predictions. Overall, the thesis does not reflect engagement with the discovery, validation, or generalization tasks specified by the project charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: coverage_of_scope_and_predictions",
+      "weight": 0.82,
+      "description": "[GP-105 General Office insertion] Disqualify or heavily penalize any submission that does not substantively propose and justify a closed-form predictor function, recover all required calibration anchors, state at least two new numerical predictions for secondary observable rows, and specify a falsifying condition\u2014regardless of technical correctness or formatting. Gap detected: The thesis.md provided is only a stub and does not contain any substantive analysis, model proposal, or engagement with the core discovery task described in the project charter. The charter requires an explicit closed-form predictor, recovery of key calibration anchors (Sharma rows, Bahri variance-limited rows), identification of a falsifying condition, and committed predictions for secondary observables. The thesis stub only restates process steps without substantive content, feature engagement, or analytic breadth."
+    },
+    {
+      "name": "M-Form Charter Alignment: no_stub_or_placeholder",
+      "weight": 1.01,
+      "description": "[GP-105 General Office insertion] Theses must explicitly define a closed-form predictor, engage substantively with all calibration and variance-limited anchors, and demonstrate how the observable requirements are approached. Stubs or templates without substantive analytical proposals are grounds for rejection. Gap detected: The thesis submission is only a stub placeholder, containing project context and boilerplate, but no actual thesis content: no defined I_model(features), no mathematical law proposed or derived, no analytical engagement with the calibration anchors, holdout prediction mechanism, variance-limited regime, or the required falsification and secondary predictions. It does not address any specific analytical challenge set forth in the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: missing_substantive_content",
+      "weight": 1.24,
+      "description": "[GP-105 General Office insertion] Disqualify any thesis that does not provide a substantive, concrete response to each element of the charter's task, including model definition, calibration anchor discussion, falsifying condition, and secondary predictions. Gap detected: The thesis is a stub and does not engage any substantive analysis, model proposal, or prediction as required by the charter. It neither defines a candidate closed-form I_model, nor discusses calibration anchors, fails to make any secondary predictions, and does not name falsifiable conditions as required. The submission is an unpopulated template, lacking all analytical content demanded by the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: missing_closed_form_and_anchors",
+      "weight": 1.53,
+      "description": "[GP-105 General Office insertion] Reject submissions that do not explicitly define or substantiate a closed-form predictive mapping from features to exponents, including recovery of all required calibration anchors and specific regime or falsification logic. Gap detected: The thesis stub does not engage with the main analytical task: it fails to propose or even sketch a closed-form predictor mapping the row features to measured exponents. It does not discuss or attempt recovery of the required calibration anchors, does not specify regime selectors or falsifying conditions, nor does it make any secondary predictions. The entire breadth of analytical requirements in the charter\u2014model discovery, anchor recovery, explicit falsifiability, and generative prediction\u2014is missing."
+    },
+    {
+      "name": "M-Form Charter Alignment: empty_stub_no_substance",
+      "weight": 1.88,
+      "description": "[GP-105 General Office insertion] Reject any thesis that submits only a procedural template or stub rather than substantive analytical content addressing the charter's core question and requirements. Gap detected: The thesis stub provided (thesis.md) is only a template with procedural notes and implementation guardrails; it contains no substantive content or analysis. It does not engage with the core question, does not propose any predictive formula or feature analysis, and takes no analytical stance on how to map features to exponents as required by the charter. As such, it entirely fails to address the breadth and core spirit of the charter, which expected a concrete, reasoned proposal and engagement with literature, feature schema, calibration anchors, and falsifying conditions."
+    },
+    {
+      "name": "M-Form Charter Alignment: substantive_engagement_and_model",
+      "weight": 2.31,
+      "description": "[GP-105 General Office insertion] Theses must explicitly attempt to define a predictive law over the evidence substrate and address all discovery and calibration anchors, with substantive engagement with regime differentiation, literature priors, and named falsification conditions; purely stub or template submissions are ineligible. Gap detected: The thesis stub provided here does not attempt to answer any part of the charter: it is a template with instructive commentary and placeholder text only. It does not define the required I_model(features) function, does not discuss literature priors or regime theory, does not engage with the full range of modalities or regime selectors, does not identify calibration anchors or make observable predictions, and does not name falsifying conditions. No substantive modeling, reasoning, or analytical response to the core charter question is present."
+    },
+    {
+      "name": "M-Form Charter Alignment: substantive_prediction_attempt",
+      "weight": 2.84,
+      "description": "[GP-105 General Office insertion] Theses must present a substantive, explicit attempt to derive and communicate a closed-form model or predictor addressing the stated core question, including explicit response to all anchor constraints and observable commitments. Gap detected: The thesis.md 'stub' provided contains only boilerplate instructions, context information, and runtime sanity check notes. It does not articulate or propose any closed-form predictor (no f(features)), does not claim or attempt to recover the required anchor points (Sharma, Bahri), presents no model, does not predict on the holdout or cross-class rows, proposes no method for regime selection, and does not pre-commit to secondary observable predictions or falsification conditions. It does not address any substantive part of the analytical task given in the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: no_placeholder_stub_allowed",
+      "weight": 3.5,
+      "description": "[GP-105 General Office insertion] Theses must include a substantive attempt at all charter observables and explicitly engage with the analytical infrastructure required (closed-form model, anchors, secondary predictions, and falsification), not mere placeholders or stubs. Gap detected: The thesis.md stub does not contain any substantive engagement with the charter's analytical requirements (such as defining a predictive closed-form model, specifying regime selectors, proposing falsifying feature combinations, or making secondary predictions). The stub omits all model, reasoning, or design content, thus failing to engage the full discovery scope, literature synthesis, and empirical commitments mandated by the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: missing_full_prediction_scope",
+      "weight": 4.31,
+      "description": "[GP-105 General Office insertion] Penalize any thesis that fails to propose a specific closed-form predictor, does not discuss the feature schema/regime split, omits both analytical reasoning about calibration anchors and at least two generative predictions, or fails to state a falsifiable feature condition. Gap detected: The thesis stub does not articulate or propose any actual predictor for the exponents, nor does it engage with the core analytical elements required by the charter: it makes no attempt to inspect or model the feature schema, discuss regime classification or selection, justify calibration/anchor row compliance, or offer specific generative (secondary observable) predictions. It provides no falsifying condition. Thus, it entirely fails to engage the breadth of reasoning and hypothesis generation/discovery across modalities, regime types, and feature usages that the charter demands."
+    },
+    {
+      "name": "M-Form Charter Alignment: must_engage_full_analytical_scope",
+      "weight": 5.31,
+      "description": "[GP-105 General Office insertion] Thesis must articulate, at minimum in outline, its closed-form mapping strategy over the feature space, specify regime boundaries or predictors, and explicitly address how it recovers required calibration anchors and supports generative predictions, rather than placeholder or stub text. Gap detected: The thesis stub does not engage the core analytical breadth demanded by the charter. It lacks any proposed functional form for I_model, makes no attempt to describe or justify a regime-classification or feature selection strategy, and does not outline calibration anchor recovery (Sharma/Bahri), cross-modality application, or generative yield beyond trivial placeholders. In other words, it does not attempt to fulfill the core discovery or predictive burden set by the charter, nor does it demonstrate engagement with the literature-context or the inter-study variable structure. An expert would find this non-responsive to the charter\u2019s true scope."
+    },
+    {
+      "name": "M-Form Charter Alignment: substantive_engagement_required",
+      "weight": 6.54,
+      "description": "[GP-105 General Office insertion] Thesis must present a substantive closed-form model, explicit anchoring to mandatory calibration points, secondary predictions, and a falsifying scenario; stubs or incomplete drafts are scored as non-responsive. Gap detected: The thesis does not include any substantive content\u2014no actual proposal, analysis, or model is presented\u2014merely a stub acknowledging the task and infrastructure details. Consequently, it fails to engage with every major analytical requirement of the charter: no definition of I_model, no recovery of anchor laws, no predictions, no discussion of a falsifying condition, and no generative yield. A thoughtful expert would find the response wholly non-responsive to the charter\u2019s requirements."
+    },
+    {
+      "name": "M-Form Charter Alignment: requires_concrete_predictor_and_anchors",
+      "weight": 8.05,
+      "description": "[GP-105 General Office insertion] Subtract significant credit if the thesis does not contain an explicit, substantive proposal for a closed-form predictor and supporting analysis that attempts to cover all required anchor cases and secondary predictions. Gap detected: The thesis stub provided does not contain any substantive content\u2014no proposed closed-form predictor, no recovery or demonstration of calibration anchors, no secondary observable predictions, and no explicit falsifying condition. It fails to engage with the central analytical task of proposing and justifying a predictor over the provided feature schema. Thus, it does not address the core requirement of the charter to create, rationalize, and test a feature-based mapping for scaling exponents."
+    },
+    {
+      "name": "M-Form Charter Alignment: must_define_analytical_model",
+      "weight": 9.91,
+      "description": "[GP-105 General Office insertion] Disqualify submissions that fail to propose an explicit, substantive predictor function or analytical model addressing all required anchors and observable targets, even if the implementation is technically valid or imports all visible files. Gap detected: The thesis stub does not meaningfully engage with any core analytical requirement of the charter: it does not define or describe an I_model(features) function, does not address the calibration or variance-limited anchors, does not outline a predictor for the exponents, does not name a falsifying condition, and does not pre-commit to any secondary predictions. The submission is a placeholder (empty stub), providing no substantive analysis, reasoning, or model proposal."
+    },
+    {
+      "name": "M-Form Charter Alignment: missing_core_model_implementation",
+      "weight": 12.21,
+      "description": "[GP-105 General Office insertion] Theses that do not substantially define or implement a closed-form predictive model over the feature set or fail to explicitly address required calibration anchors, falsifiability, and observables will be penalized regardless of placeholder status. Gap detected: The thesis stub provided is a placeholder and does not contain any substantive analysis, model proposals, or engagement with the required anchors and predictions described in the charter. It fails to define a predictor function, analyze features, recover specified anchors, propose falsifiable predictions, or discuss observable/falsifiability requirements. This systematically avoids the core analytical demands of the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: explicit_substantive_engagement",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Award 0 points if the submission fails to propose an explicit modeling law, lacks feature engagement, or omits all discussion of calibration and generalization anchors as instructed in the charter. Gap detected: The thesis stub does not engage with the core analytical requirements of proposing an explicit closed-form predictor, describing the use of features, or offering any analysis or engagement with the literature context. It does not address regime classification, the calibration anchors, generalization to multiple modalities, or falsifiability as required by the charter. The document is a placeholder with process notes, not a substantive thesis."
+    }
+  ],
+  "criteria": {
+    "Functional_Form_Discovery": "The proposed formula must be evaluable in test_model.py as I_model(features: dict). A formula in prose without code is incomplete. Cap K_law at 10 parameters with BIC justification (per GP-152 framer spec v2.0); each parameter must reduce residual enough to lower BIC. Categorical features (modality, architecture_class, study, fit_convention, regime_hint) are Python strings; treat as one-hot indicators or regime selectors. Continuous features available: intrinsic_dim_d (Sharma anchors only), intrinsic_dim_estimate (Bahri natural-dataset rows). MUST recover the Sharma \u03b1=2/d law on rows 92, 93 and the Bahri variance-limited \u03b1=1 law on rows 84, 85 BEFORE any cross-domain claim.",
+    "Holdout_Validation_Rigor": "Mean relative error on the HOLDOUT_SET (n=12 well-attributed rows) < 0.25. The gate_harness.py reports this number. The thesis MUST cite the gate_harness.py JSON output verbatim, not re-implement on visible data. The HONEST_NULL_SET (n=12 legacy_unattributed) is reported but NOT gated; the mutator may comment on these but their MRE does not affect the score.",
+    "Generative_Yield": "Pre-commit a numerical prediction with declared tolerance for at least one row whose features are in features.py but is NOT in the visible table nor the holdout \u2014 a true forecast. The judge will check whether the prediction falls within the published-exponent range for that feature combination. Two distinct secondary observables required for full credit (rubric_specification.md \u00a718).",
+    "Rival_Closed-Form_Skepticism": "Document MRE for each rival on the same HOLDOUT. A rival the thesis 'considers' but doesn't run on holdout scores 0 here. At least one rival must use a strictly different functional form (not just a parameter perturbation).",
+    "Measurement_Uncertainty_Accounting": "Either (i) stratify the holdout by features['fit_convention'] and report MRE per stratum, OR (ii) propose a transformation that maps Kaplan-style separable exponents to Chinchilla-style joint exponents using features['fit_convention'] as the discriminator.",
+    "mform_explicit_formula_and_pred_commit": "Thesis must propose at least one explicit candidate property and an associated closed-form predictive relationship for scaling exponents, or clearly and specifically describe null discovery with bounding of search space; and must pre-commit to \u22652 concrete secondary observable predictions.",
+    "mform_must_provide_closed_form_and_pred": "Theses must provide a concrete, explicit closed-form relationship between domain properties and scaling law exponents, validate on holdout, and make at least one novel, generatively testable prediction outside training and holdout; failure to do so constitutes incomplete engagement.",
+    "mform_coverage_of_scope_and_predictions": "Disqualify or heavily penalize any submission that does not substantively propose and justify a closed-form predictor function, recover all required calibration anchors, state at least two new numerical predictions for secondary observable rows, and specify a falsifying condition\u2014regardless of technical correctness or formatting.",
+    "mform_no_stub_or_placeholder": "Theses must explicitly define a closed-form predictor, engage substantively with all calibration and variance-limited anchors, and demonstrate how the observable requirements are approached. Stubs or templates without substantive analytical proposals are grounds for rejection.",
+    "mform_missing_substantive_content": "Disqualify any thesis that does not provide a substantive, concrete response to each element of the charter's task, including model definition, calibration anchor discussion, falsifying condition, and secondary predictions.",
+    "mform_missing_closed_form_and_anchors": "Reject submissions that do not explicitly define or substantiate a closed-form predictive mapping from features to exponents, including recovery of all required calibration anchors and specific regime or falsification logic.",
+    "mform_empty_stub_no_substance": "Reject any thesis that submits only a procedural template or stub rather than substantive analytical content addressing the charter's core question and requirements.",
+    "mform_substantive_engagement_and_model": "Theses must explicitly attempt to define a predictive law over the evidence substrate and address all discovery and calibration anchors, with substantive engagement with regime differentiation, literature priors, and named falsification conditions; purely stub or template submissions are ineligible.",
+    "mform_substantive_prediction_attempt": "Theses must present a substantive, explicit attempt to derive and communicate a closed-form model or predictor addressing the stated core question, including explicit response to all anchor constraints and observable commitments.",
+    "mform_no_placeholder_stub_allowed": "Theses must include a substantive attempt at all charter observables and explicitly engage with the analytical infrastructure required (closed-form model, anchors, secondary predictions, and falsification), not mere placeholders or stubs.",
+    "mform_missing_full_prediction_scope": "Penalize any thesis that fails to propose a specific closed-form predictor, does not discuss the feature schema/regime split, omits both analytical reasoning about calibration anchors and at least two generative predictions, or fails to state a falsifiable feature condition.",
+    "mform_must_engage_full_analytical_scope": "Thesis must articulate, at minimum in outline, its closed-form mapping strategy over the feature space, specify regime boundaries or predictors, and explicitly address how it recovers required calibration anchors and supports generative predictions, rather than placeholder or stub text.",
+    "mform_substantive_engagement_required": "Thesis must present a substantive closed-form model, explicit anchoring to mandatory calibration points, secondary predictions, and a falsifying scenario; stubs or incomplete drafts are scored as non-responsive.",
+    "mform_requires_concrete_predictor_and_an": "Subtract significant credit if the thesis does not contain an explicit, substantive proposal for a closed-form predictor and supporting analysis that attempts to cover all required anchor cases and secondary predictions.",
+    "mform_must_define_analytical_model": "Disqualify submissions that fail to propose an explicit, substantive predictor function or analytical model addressing all required anchors and observable targets, even if the implementation is technically valid or imports all visible files.",
+    "mform_missing_core_model_implementation": "Theses that do not substantially define or implement a closed-form predictive model over the feature set or fail to explicitly address required calibration anchors, falsifiability, and observables will be penalized regardless of placeholder status.",
+    "mform_explicit_substantive_engagement": "Award 0 points if the submission fails to propose an explicit modeling law, lacks feature engagement, or omits all discussion of calibration and generalization anchors as instructed in the charter."
+  },
+  "fit_primitive_features_k_max_reason": "Bumped 8\u219210 (2026-04-25 evening): gpt-4.1 mutator landed on a 9-param structurally-reasonable form (3 modality + 2 architecture + 3 scaling-var + 1 baseline) that exceeded budget by 1. Real cross-domain scaling laws (Chinchilla, Bahri, Sharma) easily reach 8-10 params when category effects are encoded structurally. BIC remains the real budget per GP-152 framer spec v2.0; the hard cap just defends against pure 13-modality one-hot memorization.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "GP-157 v5.0 Phase 3b canary (2026-04-25 night): gp154 is the real-science canary because its substrate is empirically heterogeneous (Class K target heterogeneity, gp154-grounded). Observe-mode runs Cage.dispatch alongside existing dispatch logic; expected: Cage R9 check correctly flags gp154 heterogeneous because rows span Kaplan/Chinchilla/Bahri fit_conventions. Cage SHOULD refuse engagement on fit primitives unless PARAMETRIC_FORM references features['fit_convention']. This is the structural answer to why gp154 stays at score 0; observe-mode validates that Cage surfaces it.",
+  "evidence_contract": {
+    "format": "NONE",
+    "columns": [],
+    "independent_vars": [],
+    "min_rows": 0,
+    "require_finite": false,
+    "format_provenance": "operator_set_nd_features_skip",
+    "docstring": "gp154 is cage_meta.class=nd_features (ABI 2 \u2014 FEATURE_DICT) with categorical features (modality, architecture_class, scaling_var, fit_convention, regime_hint, intrinsic_dim_d). The L2 single-curve typed parser does NOT apply: each row is a feature dict, not a (x, y) point. Bulk-migration heuristic auto-detected MARKDOWN_TABLE with columns=['x','y'] which was wrong; manually overridden to NONE so seal-time L2 parse short-circuits. The fit instrument is the FeatureVectorFitEngine (L70 dispatch) with fit_primitive_features_k_max=10 + BIC, not curve_fit on a single-curve evidence file."
+  },
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "nd_features",
+    "target_convention_homogeneity": "heterogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": false,
+    "enforce_min_rows": false
+  },
+  "cage_meta_reason": "Class K finding (gp158 audit): gp154 aggregates non-commensurable y values across {Kaplan-separable, Chinchilla-isoFLOP, Chinchilla-parametric, compute-optimal, Bahri-loss-curve, Bansal-NMT-compute, OLMo-task, ...}. Honestly declared as heterogeneous so Cage R9 can refuse engagement with a sharp diagnostic instead of letting the mutator burn iters trying to fit a unified law that physics says cannot exist at K_law<=10."
+}

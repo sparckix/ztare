@@ -1,0 +1,11 @@
+{
+  "type": "goal_gate_escalation",
+  "goal_slug": "synthetic_test_run",
+  "goal_name": "synthetic_test_run",
+  "stage": "REVIEW",
+  "gate_description": "Review the work artifact before closing.",
+  "gate_reason": "",
+  "artifact_hashes": {},
+  "timestamp_utc": "2026-04-16T13:44:07.132729+00:00",
+  "metadata": {}
+}

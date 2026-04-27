@@ -1,0 +1,61 @@
+{
+  "rubric_version": "1.0-newton",
+  "project": "gp136_pmdl_hardening",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "GP-136 is a hardening substrate: the engine must produce a threshold function or impossibility proof, both of which require mechanism-derived predictions beyond curve-fitting. Newton-mode enforces secondary observables (e.g., 'this \u03b8 predicts behavior on stream class S' or 'this impossibility predicts no codec swap can fix it').",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node \u2014 important here because the substrate is qualitative and the search space is broad.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative substrate. No (n, z) evidence to fit; the thesis is a specification of \u03b8(C, N, D), not a numerical model.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative substrate \u2014 no numerical holdout",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative substrate \u2014 no numerical evidence curve",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative substrate \u2014 no numerical mathematical-form keyword discriminator",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "You are a contrarian information theorist trained in the Rissanen / Shtarkov / Cover-Thomas / Gr\u00fcnwald tradition. You have ZERO patience for verbal hand-waves around 'universal compressors' that paper over the practical-vs-theoretical Kolmogorov gap. You sharply penalize: (a) any thesis that asserts a universal threshold without naming the codec class, stream length regime, and distribution class; (b) any thesis that re-proposes the original `zlib`-based \u0394MDL < 0 gate without addressing the codec-swap and short-stream counter-tests; (c) any thesis whose 'mechanism' is at the class-of-technique level ('use a more universal compressor') without naming a specific replacement (CTW, NML, BIC, sequential-Rissanen, prequential codes); (d) any thesis whose secondary observable is a tautological restatement of the primary gate. You are particularly hostile to invocation of 'Kolmogorov complexity' as if it were a usable computational object \u2014 K(\u00b7) is incomputable up to an additive constant that depends on the reference machine, and any usable bound must work with the practical compressor's redundancy, not its asymptotic ideal.",
+  "dimensions": [
+    {
+      "name": "Threshold Specificity",
+      "weight": 30,
+      "description": "Does the thesis give an explicit \u03b8(C, N, D) \u2014 or an explicit impossibility proof \u2014 that names the codec class C, the stream length regime N, and the distribution class D? Vague 'use a better compressor' or 'in the asymptotic limit' theses score 0. Full credit requires a formula, table, or named function plus a stated error envelope."
+    },
+    {
+      "name": "Theoretical Grounding",
+      "weight": 20,
+      "description": "Does the thesis cite a concrete information-theoretic redundancy bound (Shtarkov 1987 normalized maximum likelihood, Rissanen 1996 stochastic complexity, Barron-Rissanen-Yu 1998, Gr\u00fcnwald 2007 universal coding chapters) that supports the proposed \u03b8 or impossibility? Generic citations to 'MDL theory' or 'coding theorem' without a specific result score 0."
+    },
+    {
+      "name": "Adversarial Reproducibility",
+      "weight": 20,
+      "description": "Does the thesis reproduce the recorded counter-test data (codec-swap \u0394 from 0.12 to 0.55 on short streams, padded \u0394 = 1326 at length 1024) within its stated error envelope? A thesis whose \u03b8 predicts the original gate's failures consistently scores 20; one that contradicts the recorded data scores 0."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 15,
+      "description": "Does the thesis name a secondary observable \u2014 a prediction beyond the gate's primary acceptance/rejection \u2014 that its mechanism entails? Examples: 'this \u03b8 predicts the asymptotic \u0394-ratio on i.i.d. Bernoulli sources tends to a specific constant'; 'this impossibility predicts no codec from the LZ family can yield a uniform bound on a non-trivial distribution class.' Tautological 'predicts the gate accepts/rejects' scores 0."
+    },
+    {
+      "name": "Mechanism Algorithmic Concreteness",
+      "weight": 15,
+      "description": "Does the thesis name a specific implementable mechanism: a named compressor (CTW, sequential-Rissanen, prequential, NML, BIC), a cited algorithm with paper reference, or an explicit numeric threshold with derivation? Class-of-technique labels ('a more universal compressor', 'tighter bound') without naming a runnable replacement score 0. A thesis whose proposal a competent engineer can implement and test within one day passes; one that requires research to make concrete fails."
+    }
+  ],
+  "criteria": {
+    "1_Threshold_Specificity": "Does the thesis emit a usable \u03b8(C, N, D) \u2014 or an impossibility proof \u2014 naming all three parameters? Vague proposals score 0.",
+    "2_Theoretical_Grounding": "Does the thesis cite a concrete published information-theoretic result (specific theorem, year, author) that supports the proposed \u03b8 or impossibility?",
+    "3_Adversarial_Reproducibility": "Does the thesis's \u03b8 reproduce the documented counter-test data (codec-swap and short-stream failures of the original gate) within its stated envelope?",
+    "4_Generative_Yield": "Does the thesis name a calculable, mathematically-orthogonal secondary observable beyond the primary gate behavior?",
+    "5_Mechanism_Algorithmic_Concreteness": "Does the thesis name an implementable replacement compressor or a specific numeric bound, not a class-of-technique label?"
+  },
+  "_charter_pre_reg_seam": "research_areas/private/seams/mission/GP-136_pmdl_threshold_hardening_seam.md",
+  "composition_stagnation_threshold_removed_2026_04_24": "GP-135 fix: removed override of 5; Newton-mode default of 2 now applies. Pivot fires earlier per panel-recommended discipline."
+}

@@ -151,6 +151,7 @@ def update_structural_memory(
             "best_visible_max_abs_residual": current_best,
             "latest_visible_max_abs_residual": current_best,
             "best_rmse": float(fit_result.rmse),
+            "best_visible_fitted_params": dict(fit_result.fitted_params),
             "latest_diagnostic_classification": diagnostic_classification,
             # GP-095 convergence metadata (added 2026-04-18).
             "latest_convergence_classification": convergence_classification,
@@ -181,6 +182,7 @@ def update_structural_memory(
             existing["best_visible_max_abs_residual"] = current_best
             existing["best_rmse"] = float(fit_result.rmse)
             existing["example_expression"] = declaration.expression
+            existing["best_visible_fitted_params"] = dict(fit_result.fitted_params)
         existing_best_bic = existing.get("best_bic")
         if existing_best_bic is None or current_bic < float(existing_best_bic):
             existing["best_bic"] = current_bic
@@ -819,20 +821,35 @@ def generate_additive_composite_seeds(
         return seen
 
     seeds = []
+    fitted_a = family_a.get("best_visible_fitted_params", {}) or {}
+    fitted_b = family_b.get("best_visible_fitted_params", {}) or {}
     for ch_a, ch_b, label in [("ch0_", "ch1_", "A+B"), ("ch1_", "ch0_", "B+A")]:
-        expr_a = expr_a_raw
-        expr_b = expr_b_raw
-        params_a = _infer_params(expr_a)
-        params_b = _infer_params(expr_b)
-        expr_a, new_params_a = _prefix_params(expr_a, params_a, ch_a)
-        expr_b, new_params_b = _prefix_params(expr_b, params_b, ch_b)
-        composite = f"({expr_a}) + ({expr_b})"
-        all_params = new_params_a + [p for p in new_params_b if p not in new_params_a]
+        # For A+B: ch_a="ch0_" applies to family_a, ch_b="ch1_" applies to family_b
+        # For B+A: ch_a="ch1_" applies to family_a (note: label swaps role in seed)
+        fam_first = family_a if label == "A+B" else family_b
+        fam_second = family_b if label == "A+B" else family_a
+        fitted_first = fitted_a if label == "A+B" else fitted_b
+        fitted_second = fitted_b if label == "A+B" else fitted_a
+        expr_first_raw = str(fam_first.get("example_expression", ""))
+        expr_second_raw = str(fam_second.get("example_expression", ""))
+        params_first = _infer_params(expr_first_raw)
+        params_second = _infer_params(expr_second_raw)
+        expr_first, new_params_first = _prefix_params(expr_first_raw, params_first, ch_a)
+        expr_second, new_params_second = _prefix_params(expr_second_raw, params_second, ch_b)
+        composite = f"({expr_first}) + ({expr_second})"
+        all_params = new_params_first + [p for p in new_params_second if p not in new_params_first]
+        # Build initial_guesses by mapping historical fitted params to prefixed names
+        initial_guesses: dict[str, float] = {}
+        for orig_k, v in fitted_first.items():
+            initial_guesses[f"{ch_a}{orig_k}"] = float(v)
+        for orig_k, v in fitted_second.items():
+            initial_guesses[f"{ch_b}{orig_k}"] = float(v)
         seeds.append({
             "source": ADDITIVE_COMPOSITE_SOURCE,
             "expression": composite,
             "independent_vars": list(independent_vars),
             "parameter_names": all_params,
+            "initial_guesses": initial_guesses,
             "iteration_synthesized": iteration_index,
             "round": f"gp103_{label}",
             "family_a_fingerprint": family_a.get("fingerprint", ""),

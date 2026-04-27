@@ -1,0 +1,41 @@
+schema_version: 1
+member_id: codex
+kind: ai
+display_name: Codex (OpenAI)
+description: >
+  OpenAI Codex — production-code specialist agent. Owns
+  definition-of-done on seam implementation per the project's
+  operating convention. Invoked via wrapper by the manager role when
+  production-quality code changes are needed.
+
+substrates:
+  - name: codex_cli
+    kind: session_bound
+    current_model: gpt-5-codex
+    invocation: "codex CLI wrapper"
+    strengths:
+      - "strict definition-of-done"
+      - "production-code hardening"
+      - "CI-facing engineering"
+    weaknesses:
+      - "narrower than manager role"
+      - "less cross-domain judgment"
+
+  - name: codex_api               # future
+    kind: per_call
+    invocation: "direct API call"
+
+contract:
+  provider: OpenAI
+  billing: pay-per-token
+  pricing_source: supervisor/model_pricing.json
+
+capabilities:
+  - code_authoring
+  - ci_configuration
+  - test_writing
+  - refactoring
+  - definition_of_done
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

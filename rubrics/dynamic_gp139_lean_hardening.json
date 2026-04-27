@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Mathematical Rigidity Auditor",
+      "persona": "Lean Kernel Axiomatic Minimizer",
+      "focus_area": "Exclusively scrutinizes the mathematical solvency of the Python falsification suite and the LOAD-BEARING VARIABLES table. Audits for completeness in the allowlist parsing logic of `#print axioms`, checks for exhaustivity in lexical token scanning, and hunts edge cases where the gate may leak unsound axioms or fail to preserve kernel soundness under malicious mutations or subtle parser attacks."
+    },
+    {
+      "role": "Formal Typing Attack Specialist",
+      "persona": "Statement Schema Dilution Sniper",
+      "focus_area": "Targets schema-pinning enforcement and theorem statement rigidity. Probes for any vector where the header freezing can be evaded, mis-specified, or bypassed, including generating or mutating proofs that appear to meet the schema syntactically but dilute its semantic content (e.g., vacuous quantification, swapping in trivial equalities, or inferring types via Lean\u2019s elaborator)."
+    },
+    {
+      "role": "Infrastructure Throughput Saboteur",
+      "persona": "Lean CI Throughput Pathologist",
+      "focus_area": "Aggressively challenges 'lake build vs. lean --check' execution, cache invalidation races, and Mathlib dependency enforcement. Stress-tests build loop friction, looks for hidden fan-out in the dependency cache strategy, and attacks any part of the pipeline that could violate the achievable per-candidate throughput, especially under adversarial project structures or fluctuating prelude size."
+    }
+  ]
+}

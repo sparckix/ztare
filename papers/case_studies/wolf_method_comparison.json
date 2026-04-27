@@ -1,0 +1,56 @@
+[
+  {
+    "sequence": "Primes",
+    "interval": 256,
+    "slope": 0.162,
+    "r2": 0.69
+  },
+  {
+    "sequence": "Primes",
+    "interval": 1024,
+    "slope": 0.196,
+    "r2": 0.561
+  },
+  {
+    "sequence": "Primes",
+    "interval": 4096,
+    "slope": 0.132,
+    "r2": 0.083
+  },
+  {
+    "sequence": "Lucky",
+    "interval": 256,
+    "slope": 0.292,
+    "r2": 0.834
+  },
+  {
+    "sequence": "Lucky",
+    "interval": 1024,
+    "slope": 0.361,
+    "r2": 0.694
+  },
+  {
+    "sequence": "Lucky",
+    "interval": 4096,
+    "slope": 0.353,
+    "r2": 0.296
+  },
+  {
+    "sequence": "Ulam",
+    "interval": 256,
+    "slope": 0.142,
+    "r2": 0.523
+  },
+  {
+    "sequence": "Ulam",
+    "interval": 1024,
+    "slope": 0.147,
+    "r2": 0.451
+  },
+  {
+    "sequence": "Ulam",
+    "interval": 4096,
+    "slope": 0.024,
+    "r2": 0.006
+  }
+]

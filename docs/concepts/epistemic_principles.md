@@ -1,5 +1,9 @@
 # Epistemic Supervision Principles
 
+> **Provenance (2026-04-18):** Derivative of papers 1–4 (`research_areas/private/papers/paper1.md` through `paper4.md`) and the agent failure registry (`research_areas/private/postmortems/agent_failure_registry.md`). The papers are authoritative; this document is a reader-facing extraction. When a paper changes or a new principle is elevated from the postmortem registry, update this file in the same session and update the sync date in `MIRROR.md`.
+>
+> **Current version:** v0.2 (last synced 2026-04-17). Principles P1–P14 are live.
+
 This document extracts, from the four-paper arc and the operating history of the ZTARE project, a set of transferable principles about epistemic generation and the supervision of probabilistic agents. The principles are written to be usable by someone who is building a different system for a different purpose and wants to avoid the failure modes this project has already found.
 
 Each principle is stated as a rule, followed by *why* the rule exists (the empirical or structural reason the project holds it), *where the evidence lives* (the paper and section that documents the finding), and *how to apply* it (the decision the rule should trigger when you hit a fork in a similar system). Principles are grouped into three families: failure dynamics (what goes wrong), enforcement primitives (what bounds the failure), and operator discipline (what the human in the loop has to do regardless of how good the system gets).
@@ -146,6 +150,50 @@ The principles in this section describe what the human operator of an epistemic 
 
 **How to apply.** Before accepting a change to a supervision system, ask: what failure class does this close, and what is the regression that proves the class stays closed? If the answer is "it just seems better now," the change is probably drift.
 
+### P13. Enforcement completeness across execution branches.
+
+**Rule.** An enforcement surface that covers some branches of a conditional but not others is structurally equivalent to no enforcement on the uncovered branches. When a new mode, flag, or execution path is added, every enforcement mechanism that touches the old path must be audited for coverage of the new path. Silence on a branch is a gap, not a default.
+
+**Why.** The GP-080 postmortem (2026-04-17) exposed a three-iteration failure caused by a single missing prompt contract for a new `fit_score_mode`. The contract existed for the discrete branch but not for the continuous branch. Three consecutive fix sessions addressed downstream symptoms (evidence parsing, function aliasing, variable threading) without tracing upstream to discover that the prompt never told the mutator what to produce. The pattern generalizes: any conditional that switches behavior must have enforcement coverage on every arm. The most dangerous gap is the `else` branch that inherits nothing, because it fails silently — the system runs, produces output, and the output is wrong in a way that looks like a content failure rather than an infrastructure failure.
+
+**Evidence.** Agent failure registry, Failure 15 (GP-080 continuous_rmse). Also structurally the same class as Failure 10 (GP-037 human-readable charter vs. machine contract) — the machine path had a gap the human-readable path did not, and the gap was silent.
+
+**How to apply.** When adding a new value to any flag that switches a code path, enumerate every enforcement mechanism that touches the existing path (prompt contracts, deterministic gates, validation checks, harness expectations). For each mechanism, verify it covers the new value. The test is literal: assemble the actual artifact (prompt, config, harness input) the new path will produce, and check that every downstream consumer can accept it. If the mechanism is mode-specific, add a parallel block for the new mode; if it is mode-general, verify it is truly general and not accidentally mode-specific.
+
+### P14. Downstream symptom chasing is a failure of root-cause discipline.
+
+**Rule.** When the same runtime error persists across multiple fix attempts at different layers, the root cause is upstream of all attempted fixes. Stop fixing downstream mechanisms and trace the signal path from the beginning: what does the input say → what does the agent produce → what does the consumer expect. Three fixes at three layers that don't resolve the error is diagnostic: the problem is in the part of the path no fix has touched.
+
+**Why.** The GP-080 postmortem documented three sessions of fixes (evidence parsing, function aliasing, variable threading) that were each individually correct for the failure they addressed, but none resolved the persistent `does not expose f()` error because the root cause was upstream of all three — a missing prompt contract. The pattern is a compound of P5 (the enforcement floor has a gap) and P12 (changes that don't close a named failure class are not improvements). The psychological mechanism is that each fix gives the operator a signal of progress ("we fixed something"), which delays the root-cause trace.
+
+**Evidence.** Agent failure registry, Failure 15 and Pattern 13. Also structurally the same class as Failure 12 (frustration-anchored diagnosis), where accumulated context biased the fix prescription toward "give the LLM more signal" instead of "fix the downstream mechanical failure."
+
+**How to apply.** After two fix attempts for the same error, stop and draw the full signal path from input to output. Mark every point where a conditional branches. Check which branches are covered by enforcement and which are silent. The root cause is almost always in the silent branch.
+
+---
+
+## Procedure: Applying Postmortem Lessons to Future Iterations
+
+The agent failure registry (`research_areas/private/postmortems/agent_failure_registry.md`) accumulates patterns from implementation failures. These patterns are operational rules — more specific than the principles above but load-bearing for the agents building the system. The procedure below ensures they are applied rather than forgotten.
+
+### Pre-run checklist (agent-facing)
+
+Before any substrate run launch, the implementing agent must:
+
+1. **Branch audit.** For every rubric flag that switches a code path (`fit_score_mode`, `run-mode`, grammar variant, `enable_*`), verify that prompt contracts, gate harnesses, and deterministic checks cover the flag's actual value in this rubric. Not the default — the actual value. (Closes Pattern 12.)
+2. **Render-path trace.** Assemble the actual prompt the mutator will receive on iteration 1 (no prior state) and verify it contains every instruction the harness expects the output to satisfy. Check that it also survives pivot mode. (Closes Pattern 8.)
+3. **One-real-input test.** Load one real sample of each artifact the code will consume (evidence file, rubric, eval result) and pass it through the module. Not a synthetic sample — the real file from the project directory. (Closes Pattern 11.)
+4. **Postmortem scan.** Read the last 3 entries in the agent failure registry and check whether the current task touches any of the same code paths or artifact types. If yes, apply the corresponding rule before proceeding. (General learning mechanism.)
+
+### Post-failure update
+
+After any iteration-burning failure:
+
+1. Write a postmortem in the postmortem directory.
+2. Extract the meta-pattern and add it to the agent failure registry.
+3. If the pattern generalizes to system-level (transferable to someone building a different system), elevate it to this document as a new principle.
+4. If the pattern is agent-level (specific to Claude/Codex implementation), keep it in the registry and add the corresponding rule to the pre-run checklist above.
+
 ---
 
 ## Open questions
@@ -164,3 +212,4 @@ The following questions are explicitly open. Any of them being answered cleanly 
 
 - **v0.1 (2026-04-11)**: initial extraction from papers 1–4 and the private philosophy document. Marked as a working draft pending cold review. No principle in this document has been independently replicated on a second system; treat accordingly.
 - **v0.1.1 (2026-04-11)**: cold adversarial review applied. Principles unchanged: P1, P2, P4–P12. Principle changed: P3 Evidence paragraph narrowed to reflect §5.7's own N=1 scope (the fourth instance is context-isolated, not substrate-independent). Review artifact on file.
+- **v0.2 (2026-04-17)**: added P13 (enforcement completeness across execution branches) and P14 (downstream symptom chasing as root-cause discipline failure), both elevated from GP-080 postmortem. Added "Procedure: Applying Postmortem Lessons to Future Iterations" section with pre-run checklist and post-failure update protocol. Evidence: agent failure registry Failure 15, Patterns 12–13.

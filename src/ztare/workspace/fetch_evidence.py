@@ -80,12 +80,28 @@ def filter_gaps(gaps: list[dict], severity: str) -> list[dict]:
 
 
 def already_fetched_queries(evidence_txt: Path) -> set[str]:
-    """Return set of fetch_query strings already present in evidence.txt."""
-    if not evidence_txt.exists():
-        return set()
-    text = evidence_txt.read_text(encoding="utf-8")
-    # Extract queries from provenance headers: "Gap query: <query>"
-    return set(re.findall(r"^Gap query: (.+)$", text, re.MULTILINE))
+    """Return set of fetch_query strings already fetched, from manifests and evidence.txt."""
+    seen: set[str] = set()
+
+    # Primary: scan workspace/ manifests — survives evidence-compile rewrites
+    raw_dir = evidence_txt.parent / "workspace"
+    if raw_dir.exists():
+        for manifest_path in raw_dir.glob(f"{MANIFEST_PREFIX}_*.json"):
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                for entry in manifest.get("fetches", []):
+                    q = (entry.get("gap_query") or entry.get("query") or "").strip()
+                    if q:
+                        seen.add(q)
+            except Exception:
+                pass
+
+    # Fallback: scan evidence.txt provenance headers (pre-compile runs)
+    if evidence_txt.exists():
+        text = evidence_txt.read_text(encoding="utf-8")
+        seen.update(re.findall(r"^Gap query: (.+)$", text, re.MULTILINE))
+
+    return seen
 
 
 def build_provenance_header(
@@ -115,12 +131,67 @@ def build_provenance_header(
 # Web fetch via Anthropic web_search tool
 # ---------------------------------------------------------------------------
 
-def fetch_via_web_search(query: str) -> tuple[str, str]:
+def fetch_via_web_search(query: str, model: str = "") -> tuple[str, str]:
     """
-    Use Anthropic's web_search tool to fetch and summarize content for a query.
-    Returns (content, source_note) where source_note is a short description.
-    Raises RuntimeError on failure.
+    Fetch and summarize content for a query using web search.
+    Routes to OpenAI (web_search_preview) when the model param starts with "gpt",
+    otherwise uses Anthropic's web_search tool.
+    Returns (content, source_note). Raises RuntimeError on failure.
     """
+    model_lower = (model or "").strip().lower()
+    if model_lower.startswith("gpt") or model_lower.startswith("openai"):
+        return _fetch_via_openai_web_search(query, model)
+    return _fetch_via_anthropic_web_search(query)
+
+
+def _fetch_via_openai_web_search(query: str, model: str) -> tuple[str, str]:
+    """Fetch via OpenAI's web_search_preview tool."""
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise RuntimeError("openai package not installed — cannot use GPT web search")
+
+    client = OpenAI()
+    prompt = (
+        f"Search for and summarize the most relevant factual information for this query:\n\n"
+        f"{query}\n\n"
+        f"Return a concise factual summary (300-600 words) citing specific numbers, dates, "
+        f"and sources where available. Focus on information that would be useful as evidence "
+        f"for an analytical model or thesis."
+    )
+    # Resolve model ID
+    model_id = model if "." in model or "-" in model else "gpt-4.1"
+    try:
+        from src.ztare.common.llm_runtime import resolve_model_id
+        model_id = resolve_model_id(model)
+    except Exception:
+        pass
+
+    try:
+        response = client.responses.create(
+            model=model_id,
+            tools=[{"type": "web_search_preview"}],
+            input=prompt,
+        )
+        text_parts = []
+        for item in response.output:
+            if hasattr(item, "text"):
+                text_parts.append(item.text)
+            elif hasattr(item, "content"):
+                for block in item.content:
+                    if hasattr(block, "text"):
+                        text_parts.append(block.text)
+        content = "\n\n".join(text_parts).strip()
+        if not content:
+            raise RuntimeError("Empty response from OpenAI web search")
+        source_note = f"web_search via {model_id}"
+        return content, source_note
+    except Exception as e:
+        raise RuntimeError(f"OpenAI API error during web search: {e}") from e
+
+
+def _fetch_via_anthropic_web_search(query: str) -> tuple[str, str]:
+    """Fetch via Anthropic's web_search tool (original implementation)."""
     client = anthropic.Anthropic()
     prompt = (
         f"Search for and summarize the most relevant factual information for this query:\n\n"
@@ -136,15 +207,10 @@ def fetch_via_web_search(query: str) -> tuple[str, str]:
             tools=[{"type": "web_search_20250305", "name": "web_search"}],
             messages=[{"role": "user", "content": prompt}],
         )
-        # Collect text blocks from the response
         text_parts = []
-        source_urls = []
         for block in response.content:
             if hasattr(block, "text"):
                 text_parts.append(block.text)
-            # Capture any tool result citations
-            if hasattr(block, "type") and block.type == "tool_result":
-                pass  # handled via text in subsequent assistant turn
         content = "\n\n".join(text_parts).strip()
         if not content:
             raise RuntimeError("Empty response from web search")
@@ -242,7 +308,7 @@ def run_fetch(
             status = "dry_run"
         else:
             try:
-                content, source_note = fetch_via_web_search(query)
+                content, source_note = fetch_via_web_search(query, model=model)
                 status = "accepted"
                 total_accepted += 1
                 already_seen.add(query)

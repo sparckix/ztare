@@ -1,0 +1,12 @@
+{
+  "seam_path": "research_areas/private/seams/GP-076_predictive_divergence_sweep_seam.md",
+  "escalation_reason": "cost_budget",
+  "equivalent_gate_reason": "SPEC_REFINEMENT_BUDGET_REACHED",
+  "cycle_count": 4,
+  "total_cost_usd": 0.58245,
+  "notes": [
+    "cost budget reached before cycle 5: 0.582450 >= 0.500000"
+  ],
+  "timestamp_utc": "2026-04-17T04:10:47.571986+00:00",
+  "advisory": true
+}

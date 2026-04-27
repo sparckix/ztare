@@ -50,6 +50,6 @@ def default_research_draft_path(*, program_id: str, target: str) -> str:
 
 def default_research_verification_command(*, draft_path: str, spec_path: str) -> str:
     return (
-        "python -m src.ztare.validator.prose_verifier "
+        "python -m src.ztare.findings.prose_verifier "
         f"--draft-path {draft_path} --spec-path {spec_path}"
     )

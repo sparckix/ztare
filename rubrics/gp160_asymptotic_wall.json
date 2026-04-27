@@ -1,0 +1,78 @@
+{
+  "name": "gp160_asymptotic_wall",
+  "project": "gp160_asymptotic_wall",
+  "description": "Discovery Engine test #2: Asymptotic Wall. Extrapolation gate at d={100,150,200}.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate testing extrapolation discipline. Generative yield = asymptotic prediction.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_expression_grammar": "math_exp_only",
+  "holdout_hard_gate": true,
+  "target_convention_homogeneity": "homogeneous",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "gate",
+  "persona": "You are an adversarial epistemic auditor specializing in extrapolation discipline. Any formula that goes negative or diverges at large x is structurally wrong regardless of visible-set fit quality. Demand asymptotic behavior analysis.",
+  "underidentified_after": 15,
+  "dimensions": [
+    {
+      "name": "Fit Quality",
+      "weight": 35,
+      "description": "Does the formula fit visible data (15% MRE), holdout (12% MRE), and farther-tail (20% MRE)?"
+    },
+    {
+      "name": "Asymptotic Discipline",
+      "weight": 25,
+      "description": "Does the formula predict y in [0,1] at d={100,150,200}? Polynomial forms that go negative score zero."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does the thesis predict y at an unseen x beyond the training range with declared tolerance?"
+    },
+    {
+      "name": "Structural Derivation",
+      "weight": 20,
+      "description": "Does the thesis derive the form from data behavior? Each term motivated by observed regime."
+    }
+  ],
+  "evidence_contract": {
+    "format": "MARKDOWN_TABLE",
+    "columns": ["x", "y"],
+    "independent_vars": ["x"],
+    "min_rows": 10,
+    "require_finite": true,
+    "require_monotone_in": "x",
+    "docstring": "GP-160 Asymptotic Wall — 12 visible (x, y) rows in markdown-table format. y monotone-decreasing in x by substrate construction; far-tail extrapolation gate fires at x in {50, 65, 80} from harness-internal _ALL_DATA."
+  },
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "GP-157 v5.0 Phase 3b observe-mode (2026-04-25 night). gp160_asymptotic_wall is a synthetic feature-vector substrate; Cage runs alongside existing dispatch, logs engagement matrix to workspace/cage_engagement.jsonl. No behavioral change without rubric flag.",
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "1d",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "cage_meta_reason": "gp160_asymptotic_wall is synthetic; constructor ensured single fit_convention + frame-invariant y. Compare to gp154 which is heterogeneous and frame-NOT-invariant (Class K finding).",
+  "criteria": {
+    "Fit_Quality": "Does the formula fit visible data (15% MRE), holdout (12% MRE), and farther-tail (20% MRE)?",
+    "Asymptotic_Discipline": "Does the formula predict y in [0,1] at d={100,150,200}? Polynomial forms that go negative score zero.",
+    "Generative_Yield": "Does the thesis predict y at an unseen x beyond the training range with declared tolerance?",
+    "Structural_Derivation": "Does the thesis derive the form from data behavior? Each term motivated by observed regime."
+  },
+  "enable_fit_primitive_reason": "Custom substrate with embedded holdout logic in test_model.py. 1D fit primitive must NOT engage \u2014 it overwrites test_model.py with a stub on parse failure.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Custom substrate with embedded holdout gates in gate_harness.py. Global keyword heuristic does not apply.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Custom substrate. Rival forms scored by rubric dimension, not global gate heuristic.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom gate_harness.py defines farther-tail set explicitly; standard ZTARE farther-tail detection does not apply.",
+  "fit_score_mode": "continuous_mre",
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "d"
+  ],
+  "expression_byte_budget": 300
+}

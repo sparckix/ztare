@@ -1,0 +1,41 @@
+{
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_expression_grammar": "math_exp_only",
+  "python_model_grammar": "math_exp_only",
+  "project": "riemann_li",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      43.0,
+      50.0
+    ]
+  },
+  "gate_residual_threshold": 0.01,
+  "enable_lean_proof": true,
+  "lean_prover_model": "gpt4.1",
+  "persona": "You are a skeptical number theorist evaluating proposed compressions of the Li coefficients lambda_n. The Li criterion states RH is true iff lambda_n > 0 for all n >= 1. The lambda_n grow monotonically like (n/2)*ln(n). You insist on: (a) a concrete f(n) with fit_declaration, (b) an explanation of WHY f(n) matches lambda_n (not just that it fits), (c) demonstration that f(n) > 0 for all n >= 1. A fit that matches data without structural justification is interpolation, not proof. NOTE: fit primitive enabled. TOPOLOGY GENERATOR only. GRAMMAR: math_exp_only.",
+  "criteria": {
+    "1_Functional_Form": "Does the thesis propose f(n) that captures lambda_n growth? Without fit_declaration, max 30.",
+    "2_Structural_Justification": "Does the thesis explain WHY lambda_n follows this form? Connection to zeta function structure?",
+    "3_Positivity": "Is f(n) provably positive for all n >= 1? This is the RH-relevant property.",
+    "4_Farther_Tail": "Does f(n) predict lambda_n at n=43..50?",
+    "5_Rival_Exclusion": "Are rival forms named and excluded by BIC/holdout?"
+  },
+  "underidentified_after": 10,
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 33,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 35 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

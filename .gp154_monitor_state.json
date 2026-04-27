@@ -1,0 +1,17 @@
+{
+  "max_score": 0,
+  "n_iters_seen": 13,
+  "last_iter_timestamp": 1777077392,
+  "critique_classes_seen": [
+    "data_quality",
+    "other",
+    "rival_falsification"
+  ],
+  "champion_announced": false,
+  "anomalies_announced": [
+    "harness defect",
+    "Traceback (most recent call last)",
+    "score_0_stagnation"
+  ],
+  "run_completed": true
+}

@@ -1,0 +1,46 @@
+schema_version: 1
+worker_id: plan_agent
+description: >
+  Architectural-planning worker. Invoked by the manager role to produce
+  an implementation plan (step-by-step, critical files, trade-offs) for
+  a non-trivial task. Returns a plan document; never edits files.
+
+invocation:
+  substrate: claude_code_sub_agent
+  tool_name: Agent
+  subagent_type: Plan
+  fan_out_ok: false
+
+input_contract:
+  accepts:
+    - "description: 3-5-word title"
+    - "prompt: the task to plan (include context the planner needs — it starts cold)"
+  reads_from:
+    - "<repo root, within role authorized read-paths>"
+  must_receive:
+    - description
+    - prompt
+
+output_contract:
+  produces:
+    - "plan: markdown — ordered steps, critical files, architectural trade-offs"
+  deposits_to:
+    - "return value only (not filesystem)"
+  contract_guarantees:
+    - "does not edit or write files"
+    - "does not invoke Edit, Write, NotebookEdit"
+
+permissions:
+  read: ["*"]
+  write: []
+  forbidden:
+    - "org/mandates/"
+    - "org/sessions/"
+    - ".ip_protected/"
+
+limits:
+  single_action_cost_cap_usd: 3.00
+  wall_clock_cap_seconds: 900
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

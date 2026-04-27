@@ -1,0 +1,48 @@
+schema_version: 1
+worker_id: explore_agent
+description: >
+  Fast codebase-exploration worker. Invoked by the manager role (or any
+  role with delegation authority) to answer questions like "where is X
+  defined?", "how does Y flow through the system?", "which files change
+  when Z is touched?" Returns a written summary; never edits files.
+
+invocation:
+  substrate: claude_code_sub_agent
+  tool_name: Agent
+  subagent_type: Explore
+  fan_out_ok: true
+
+input_contract:
+  accepts:
+    - "description: 3-5-word title"
+    - "prompt: self-contained task framing (the sub-agent has no prior context)"
+  reads_from:
+    - "<repo root, within role authorized read-paths>"
+  must_receive:
+    - description
+    - prompt
+
+output_contract:
+  produces:
+    - "summary: markdown — findings + file:line citations"
+  deposits_to:
+    - "return value only (not filesystem)"
+  contract_guarantees:
+    - "does not edit or write files"
+    - "does not invoke ExitPlanMode, Edit, Write, NotebookEdit"
+    - "does not spawn further sub-agents"
+
+permissions:
+  read: ["*"]
+  write: []
+  forbidden:
+    - "org/mandates/"
+    - "org/sessions/"
+    - ".ip_protected/"
+
+limits:
+  single_action_cost_cap_usd: 2.00
+  wall_clock_cap_seconds: 900
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

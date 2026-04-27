@@ -1,0 +1,93 @@
+{
+  "rubric_version": "1.0-gate-stack-dress-rehearsal",
+  "project": "gp146_arnold_cat_map_validation",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "GP-146 is the gate-stack final dress rehearsal. Ground truth is KNOWN: lambda_1 = 2*log((1+sqrt(5))/2). The Newton-mode rubric forces the thesis to (a) recover the exact closed form, (b) propose testable generative predictions beyond the one observable, and (c) carry a rigorous Lean-formalizable derivation so G3/G4 can engage.",
+
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the thesis anchored on the linear-automorphism structure of the Cat Map rather than drifting into symbolic-dynamics or topological-entropy side quests (explicitly out of scope per evidence.txt Set E).",
+
+  "falsification_mode": "numerical_proof",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "The ground truth is a closed-form algebraic constant, not a fit target. Thesis must declare the constant symbolically; G2 PSLQ bit-budget audit validates at >= 100-bit precision against the reference value 0.962423650119206894995... supplied in evidence.txt Set G.",
+
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative/symbolic target — no numerical tail",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "target is algebraic closed form, not a curve",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative substrate — Inverter rejection specificity dimension (weight 15) handles rival-mechanism elimination; mathematical-form keyword heuristic does not apply.",
+
+  "gp103_stagnation_threshold": 6,
+  "composition_stagnation_threshold": 5,
+  "underidentified_after": 15,
+  "underidentified_after_reason": "GP-148 champion persistence profile: high-score groups average 28 iters. GP-146 is designed for ~15-iter convergence on a known-GT target. If the apparatus can't converge to 2*log(phi) in 15 iters with full evidence injection, the apparatus itself (not the underidentified_after value) is the problem.",
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+
+  "stagnation_trigger_mode": "new_class",
+  "inject_antipattern_catalog": "hardkill",
+  "inject_antipattern_catalog_reason": "Hardkill preserves prompt-level structural-blocker defense. GP-146 specifically exercises G-CIRC and G-FALSIFY at the module level; the prompt injection is belt-and-suspenders until the deterministic gates are wired into the post-champion hook (blocked on GP-146 pass per GP-144 discipline — this is that pass).",
+
+  "persona": "You are a number theorist + dynamical systems specialist. The Cat Map is a LINEAR automorphism of the 2-torus with a CLOSED-FORM ALGEBRAIC Lyapunov exponent. Your thesis must (1) state the closed form symbolically as `2 * log((1 + sqrt(5)) / 2)` or its equivalent `log((3 + sqrt(5)) / 2)`, (2) justify it via the eigenvalue computation of the Jacobian A = [[2,1],[1,1]], (3) be Lean-formalizable with proof length <= 10 tactics, (4) explicitly REJECT the seven planted Inverter alternatives (P1..P7 in project_charter.md) with gate-specific rationales. You REJECT theses that propose empirical decimal approximations, extensions to generalized maps, or alternative Lyapunov definitions (all out of scope per evidence.txt Set E). You REWARD theses that credit the eigenvalue derivation, name the correct equivalent forms, and anticipate which gate will reject each planted alternative.",
+
+  "dimensions": [
+    {
+      "name": "Closed-Form Recovery",
+      "weight": 25,
+      "description": "Does the thesis state the Lyapunov exponent as the exact algebraic closed form `2*log((1+sqrt(5))/2)` (or equivalent `log((3+sqrt(5))/2)`)? (a) 0/25 for any decimal-only answer or non-algebraic form. (b) 8/25 for a closed form that's symbolically correct but lacks the eigenvalue derivation. (c) 17/25 for correct form + Jacobian-eigenvalue derivation. (d) 25/25 for correct form + derivation + explicit equivalence of the two canonical forms (2*log(phi) and log((3+sqrt(5))/2))."
+    },
+    {
+      "name": "G2 PSLQ Bit-Budget Compliance",
+      "weight": 15,
+      "description": "Does the thesis's numerical reference value match the evidence.txt Set G 30-digit value 0.962423650119206894995517826849 to >=28 digits? (a) 0/15 for <20-digit match. (b) 8/15 for 20-27 digit match. (c) 15/15 for >=28 digit match at declared precision >= 100 bits. Failure here is a G2 bit-budget rejection in the live gate."
+    },
+    {
+      "name": "G3 Ansatz Survivor / Proof Shortness",
+      "weight": 15,
+      "description": "Does the thesis formulate the closed-form derivation in a Lean-formalizable shape with proof length <= 10 tactics (unfold, ring, Real.log_pow, Real.log_div, Real.sqrt_five_ne_zero, etc.)? (a) 0/15 for informal derivation only. (b) 7/15 for Lean-shaped derivation >10 tactics. (c) 15/15 for Lean-shaped derivation <=10 tactics with explicit tactic list."
+    },
+    {
+      "name": "G4 Axiom Allowlist / Constant Provenance",
+      "weight": 10,
+      "description": "Are all constants used in the thesis derivable from {sqrt(5), phi, log, +, *, /} and Mathlib standard axioms? (a) 0/10 for any empirical decimal constant (e.g., 0.9624236, 1.6180339) introduced without the full symbolic chain. (b) 5/10 for constants derivable but not explicitly traced to the allowlist. (c) 10/10 for every constant traced to the allowlist with citation."
+    },
+    {
+      "name": "Inverter Rejection Specificity",
+      "weight": 15,
+      "description": "For each of the seven planted Inverter candidates (P1..P7 in project_charter.md), does the thesis identify the SPECIFIC gate that rejects it and the SPECIFIC rationale? (a) 0/15 if Inverter plants are not addressed. (b) 5/15 if addressed generically without per-plant gate assignment. (c) 10/15 if 5-6 of 7 plants have correct gate-level rejection. (d) 15/15 if all 7 plants have correct gate-level rejection with documented mechanism."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 15,
+      "description": "Beyond recovering the single constant 2*log(phi), does the thesis predict a CLASS of observables consistent with the eigenvalue framework? E.g., Lyapunov spectrum at +/-log(phi^2), Kolmogorov-Sinai entropy equal to the positive Lyapunov exponent, decorrelation rate 1/lambda_1, etc. (a) 0/15 for single-observable-only. (b) 7/15 for >=1 additional named observable without mechanism. (c) 12/15 for >=2 additional observables with mechanism. (d) 15/15 for >=3 named additional observables with eigenvalue-based derivation AND pre-registered numerical predictions to >=10 digits each. Tautological 'gates pass' scores 0."
+    },
+    {
+      "name": "Coordinate Invariance (G8 prep)",
+      "weight": 5,
+      "description": "Does the thesis note that the Lyapunov exponent is invariant under the SL(2,Z) conjugacy group (i.e., any integer-matrix conjugate A' = S A S^{-1} with det S = +-1 gives the same spectrum)? This is the G8 coordinate_invariance test for the scale_and_shift transform. (a) 0/5 if unmentioned. (b) 5/5 if explicitly stated with the SL(2,Z) invariance justification."
+    }
+  ],
+
+  "criteria": {
+    "Closed-Form_Recovery": "The closed form 2*log((1+sqrt(5))/2) must appear verbatim in the thesis's 'Claim' or 'Main Theorem' section. The Jacobian derivation (eigenvalues of [[2,1],[1,1]]) must appear in the thesis's 'Derivation' section. Partial credit only for symbolic-complete-but-not-derived forms.",
+    "G2_PSLQ_Bit-Budget_Compliance": "Thesis must declare the numerical reference value to >=28 digits of precision, matching evidence.txt Set G. Any decimal form less than 28 digits is a bit-budget violation under PSLQ at 100-bit working precision.",
+    "G3_Ansatz_Survivor_/_Proof_Shortness": "Thesis must enumerate the Lean tactic sequence expected to compile the derivation. Tactic count <=10 is required for full credit; each tactic must be drawn from Mathlib or standard Lean4 surface.",
+    "G4_Axiom_Allowlist_/_Constant_Provenance": "Every numerical constant in the thesis must be traced to {sqrt(5), phi=(1+sqrt(5))/2, log, +, *, /, Mathlib-standard}. Empirical decimal constants (including 0.9624..., 0.618..., 1.618... as standalone values) fail unless the symbolic preimage is simultaneously stated.",
+    "Inverter_Rejection_Specificity": "For each P1..P7 in project_charter.md, thesis must name: (a) which gate rejects, (b) the exact rejection mechanism. Example correct: 'P1 (log(5/2)) fails G2 PSLQ because PSLQ at 100-bit precision does not recognize it as a relation over the reference 30-digit value.' Missing any of the 7 plants drops score; incorrect gate assignment drops score further.",
+    "Generative_Yield_(Newton-mode)": "Additional observables must be numerically predicted (e.g., 'second Lyapunov exponent predicted at -0.962... to 28 digits'). Pure conceptual mention without numerical prediction scores <=5.",
+    "Coordinate_Invariance_(G8_prep)": "Statement of the form: 'For any S in SL(2,Z) with det S = +-1, the conjugate map T' = S T S^{-1} mod 1 has Lyapunov exponent 2*log(phi) by eigenvalue invariance under similarity transform.'"
+  },
+
+  "gp146_gate_stack_protocol": {
+    "engaged_gates": ["G1_precheck_only", "G2", "G3", "G4", "G5", "G8", "G-CIRC", "G-FALSIFY"],
+    "skipped_gates": ["G1_full_PDE_sub_gates (Cat Map is discrete-time)", "G6 (no domain-scope ambiguity)", "G7 (no ensemble expected)"],
+    "inverter_plant_list_reference": "projects/gp146_arnold_cat_map_validation/project_charter.md section 'Inverter Plants'",
+    "pass_criterion": "P0 (true) scores >= 85 AND passes all engaged gates; P1..P7 (plants) each score < 85 AND fail at least one gate with documented rationale.",
+    "fail_criterion": "Any Inverter plant scoring >= 85, OR P0 scoring < 85, OR P0 failing any engaged gate without rationale."
+  }
+}

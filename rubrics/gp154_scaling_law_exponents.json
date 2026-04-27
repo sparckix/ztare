@@ -1,0 +1,121 @@
+{
+  "name": "gp154_scaling_law_exponents",
+  "project": "gp154_scaling_law_exponents",
+  "rubric_version": "v5-broadened-with-apparatus-substrate-critic",
+  "rubric_version_reason": "v5 (2026-04-26): broadens v4's conversion-transform-only target to allow either (a) direct \u03b1 prediction as a closed-form function of physical features OR (b) conversion transform between fit conventions OR (c) hybrid. RH-16 'Universal-\u03b1 Resurrection' hardkill RETIRED \u2014 the deterministic SubstrateCritic introduced post-v4 surfaces feature-dimensionality collapses per-iter (e.g. log10_N_params constant within game_strategic class, joint_E/A/B constant within language class), giving the mutator a precise signal for which axes are unconstrainable from visible data. The same protection RH-16 attempted via fuzzy LLM judgement is now provided deterministically by the substrate-critic briefing. RH-13/14/15/17 retained. Adds: enable_substrate_critic, enable_analogy, fit_robust_loss (per noise_profile pre-flight: Shapiro-Wilk p=1.9e-13 + kurtosis=23.1 on poly3 baseline residuals, heavy-tail flag fires), framer_primary_feature_key='log10_N_params', substrate_class_key='modality', analogy_domain_hint='computer_science'. Predecessor v4 archived in commit history.",
+  "runner_allowed_imports": [
+    "features"
+  ],
+  "enable_fit_primitive_features": true,
+  "fit_primitive_features_k_max": 10,
+  "enable_substrate_critic": true,
+  "enable_substrate_critic_reason": "v5 (2026-04-26): SubstrateCritic surfaces feature-dimensionality collapses per-iter. On gp154 a backtest revealed 21 within-class collapses + 22 epistemic voids (e.g. log10_N_params constant=6.0 within game_strategic; joint_E/A/B constant within language; intrinsic_dim_d=30 constant within image_classify_resnet). This is the deterministic replacement for v4's RH-16 hardkill.",
+  "enable_analogy": true,
+  "enable_analogy_reason": "v5 (2026-04-26): cross-domain candidate forms are queried from the mutator model on stagnation. For gp154, fit-convention translation is structurally analogous to unit-conversion in physics and to gauge-fixing in field theory; ANALOGY may surface non-obvious framings.",
+  "analogy_domain_hint": "computer_science",
+  "framer_primary_feature_key": "log10_N_params",
+  "framer_primary_feature_key_reason": "the only feature with numeric coverage on all 82 visible rows; substrate_critic + noise_profile + framer all use this as the 1D projection axis.",
+  "substrate_class_key": "modality",
+  "substrate_class_key_reason": "modality is the natural class label across the cross-study substrate (game_strategic, language, vision_*, multimodal_*, etc.); SubstrateCritic groups within-class variance against this key.",
+  "fit_robust_loss": true,
+  "fit_robust_loss_reason": "v5 noise_profile pre-flight returned needs_robust=TRUE on poly3-baseline residuals: Shapiro-Wilk p=1.9e-13, kurtosis=23.1, skew=3.95, heavy_tail_flag=1. The α distribution has extreme outliers (α=4.0, α=2.7) that dominate L2 loss; Huber/log1p robust loss prevents the few outliers from steering the fit.",
+  "fit_weighted_residuals": false,
+  "fit_weighted_residuals_reason": "no per-row σ available on this substrate (gp154 is published-α-from-papers, no measurement noise model attached). Weighted χ² requires σ; left disabled.",
+  "description": "Newton-mode rubric for scaling law exponent recovery. Target: discover what determines the power-law exponent as a function of task/data properties. Cross-study meta-analysis substrate. Cold-framed: cold variable names (y, d, a) only; author names stripped from visible evidence; holdout truth in _holdout_locked/.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate: the functional form connecting scaling exponents to task properties is unknown. Generative yield required.",
+  "falsification_mode": "bounded_discriminator",
+  "require_cross_family": false,
+  "require_cross_family_reason": "Set false 2026-04-25 for fast-iteration o3+o3 rerun after Proposals 1+2 R1 hardening shipped. Same-family blind-spot risk acknowledged; would re-cert with cross_family=true before claiming a champion. Original true preserved in commit history.",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "structural_blocker_enforcement_reason": "v1.5 (2026-04-25): flipped from 'gate' to 'both' after gp154 mining showed o3/gpt-4.1 mutators kept emitting RH-17 lookup tables \u2014 the 'gate' mode's post-champion deterministic check fires too late (RH-17 iters never qualify as champion, so the gate never engages on the actual failure mode). 'both' restores the GP-149 anti-pattern catalog injection AT PROMPT TIME (cheap learning signal that catches RH-17 / RH-13 before the mutator emits them) AND keeps G-CIRC + G-FALSIFY POST-CHAMPION (deterministic safety net). Belt-and-suspenders.",
+  "stagnation_trigger_mode": "new_class",
+  "underidentified_after": 20,
+  "gp103_stagnation_threshold": 6,
+  "composition_stagnation_threshold": 5,
+  "holdout_hard_gate": true,
+  "holdout_budget": 0,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "test_model.py contains the custom gate harness with VISIBLE/HOLDOUT/FARTHER_TAIL split; gate_harness.py reports the deterministic verdicts. The fit search is done by the mutator at thesis-write time, not by ZTARE's curve_fit primitive.",
+  "discovery_mode": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "test_model.py defines the farther-tail set explicitly via FARTHER_TAIL_SET; standard ZTARE farther-tail detection does not apply to this multi-study substrate.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence is a cross-study cold table, not a single curve; the global_evidence_fit gate's keyword-and-residual heuristic does not apply.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival functional forms scored by Rival Closed-Form Skepticism dimension; mathematical-form keyword heuristic does not apply.",
+  "evidence_anchor_requirement": true,
+  "general_office_model": "gpt4.1",
+  "enable_mform_audit": false,
+  "persona": "You are an adversarial epistemic auditor with the discipline of Charlie Munger (inversion: how would this be wrong?), Karl Popper (falsification: name the test that would reject the thesis), and a journal referee for Nature Machine Intelligence. \n\n**v5 EXPLORATION-MODE NOTICE:** This substrate's holdout was unsealed during prior offline diagnostic. Any holdout pass produces a hypothesis worth retesting on external sealed holdout, not a validated discovery. \n\n**v5 BROADENED TARGET:** Three legitimate framings are open. The thesis must commit to one and defend it.\n  (A) DIRECT-\u03b1: predict \u03b1 as a closed-form function of physical features. The v3 result that direct-\u03b1 failed at K\u22647 (5-fold CV MRE 1.58, evidence \u00a7J) was on a substrate where many features collapsed within class. The new SubstrateCritic briefing surfaces those collapses deterministically per-iter \u2014 if you choose (A), use that signal to write a form on axes that genuinely vary within visible classes.\n  (B) CONVERSION-TRANSFORM: propose T(\u03b1, source_conv, target_conv, N, D, C, ...) \u2192 \u03b1_target_conv that translates published \u03b1 between methodology conventions (Kaplan separable / Chinchilla joint / Bahri regime / Henighan power-law-plus-const). This was the v4 target and remains valid.\n  (C) HYBRID: a closed-form function that takes physical features AND fit_convention as a discriminator, expressed as a single PARAMETRIC_FORM. \n\nThe SubstrateCritic gates whichever framing you pick: any free parameter on a feature with within-class relative_range < 0.02 (collapsed axis) is unconstrainable from visible data and will be flagged. \n\n**FEATURES AVAILABLE (per features.py, augmented v4):** Original \u2014 modality, architecture_class, scaling_var, fit_convention, regime_hint, log10_N_params, loss_type, study, task_class, intrinsic_dim_d, intrinsic_dim_estimate. v4-augmented (Hoffmann/Kaplan/Bahri/Hestness rows only, otherwise None) \u2014 joint_E, joint_A, joint_B, joint_alpha, joint_beta, dataset_log10_tokens, compute_log10_flops, is_compute_optimal_design, params_per_token_ratio, is_chinchilla_family, is_kaplan_family. Use the augmented fields with `.get()` to handle the partial coverage gracefully. \n\nYou REJECT (hardkill on detection):\n(a) RH-13 'Categorical-as-Continuous Smuggle' \u2014 hashing modality/architecture/study strings to integers and applying continuous math.\n(b) RH-14 'Vacuous Null via Excluded Vocabulary' \u2014 null over \u03a3 that excludes power_k for k in {1,2,-1,-1/2,1/2}, log, exp, sigmoid, where, erf, regime selectors.\n(c) RH-15 'MRE Aggregation Fallacy' \u2014 claiming a single per-row error of x% forces MRE > threshold across n rows.\n(d) RH-17 'Trivial Identity Transform' \u2014 if framing (B) is chosen and T degenerates to T(\u03b1,...)=\u03b1 (identity regardless of source/target convention) for \u22652 of {Kaplan,Chinchilla,Bahri} pairs, the thesis has not done the work. Hardkill.\n(e) RH-16 'Universal-\u03b1 Resurrection' is RETIRED in v5 \u2014 its protection (preventing the mutator from fitting parameters against features that collapse within visible classes) is now provided deterministically by SubstrateCritic, which surfaces the exact collapsed axes per-iter rather than blanket-banning the framing.\n\nYou DEMAND:\n(i) Recovery of Sharma \u03b1=2/d on visible rows 92, 93 (intrinsic_dim_d numeric anchors) and Bahri variance-limited \u03b1=1 on rows 84, 85. ANY cross-domain claim requires these.\n(ii) Holdout MRE < 0.25 on the converted-\u03b1 distribution (gate_harness enforces \u2014 the mutator's I_model output is compared to the truth value in the row's source convention, so internal conversion math must round-trip).\n(iii) \u22652 secondary observable predictions per the v4 generative-yield criteria.\n(iv) Methodological transparency \u2014 `T` must be a closed-form expression in PARAMETRIC_FORM, not a black-box neural network. K_law \u2264 10 with BIC-justified parameter count.\n(v) Acknowledgement of within-study Bahri 4%-fit empirical anchor \u2014 any v4 thesis whose application to Bahri's 5 N-rows degrades visible mean residual above 0.10 has broken the within-study sharpness and should be rejected.\n\nYou REWARD:\n(I) Closed-form T expressed via continuous primitives (sigmoid, where, erf, exp, log) rather than nested categorical lookups. K=4-7 strongly preferred.\n(II) Bounded-null at K\u226410 with rigorous \u03a3 exhaustion is publishable \u2014 score above 70 on rigorous null. Vacuous null still hardkilled (RH-14).\n(III) First-principles methodology derivation of T (e.g., 'Kaplan's separable \u03b1 equals Chinchilla's joint \u03b1 only when D held at compute-optimal value for that N') is the highest-value contribution. Pure curve-fitting passes the gate but earns less weight on Conversion Transform Discovery dimension.\n(IV) Explicit per-fit_convention stratification of holdout MRE (Measurement Uncertainty dimension) \u2014 shows the apparatus is honest about heterogeneity sources.\n\nIMPORTANT: thesis.md contains the prose explanation; test_model.py contains PARAMETRIC_FORM (str) + PARAMETER_NAMES (list) + MODEL_PARAMS={} at module level. The fit_primitive_features apparatus runs scipy.optimize over visible (features_dict, y_observed) pairs and substitutes fitted constants. Hand-coded constants reliably miss the holdout gate.",
+  "dimensions": [
+    {
+      "name": "Functional Form Discovery (broadened v5)",
+      "weight": 30,
+      "description": "v5 broadens the v4 conversion-transform-only target. Three legitimate framings score equally if executed at full quality: (A) DIRECT-\u03b1: a closed-form function predicting \u03b1 from physical features that genuinely vary within visible classes (the SubstrateCritic briefing surfaces which axes have within-class relative_range > 0.02); (B) CONVERSION-TRANSFORM: T(\u03b1, source_conv, target_conv, N, D, C, ...) \u2192 \u03b1_target_conv, the v4 target; (C) HYBRID: a closed-form function combining physical features and fit_convention as a discriminator. RH-13 (categorical-as-continuous) and RH-17 (trivial-identity for framing B) remain hardkill. RH-16 retired in v5 \u2014 SubstrateCritic provides the deterministic equivalent. Score: 0/30 if RH-13 or RH-17 (under framing B) detected; 10/30 if a form is proposed but every free parameter sits on a SubstrateCritic-flagged collapsed axis; 20/30 if the form uses continuous primitives (sigmoid/where/erf) and at least one parameter sits on a within-class-varying axis; 30/30 if the form is first-principles-motivated (methodology analysis or physical mechanism) rather than pure curve-fit, with K_law \u2264 10."
+    },
+    {
+      "name": "Holdout Validation Rigor",
+      "weight": 25,
+      "description": "Does the thesis's I_model (which internally applies T) pass HOLDOUT MRE < 0.25 on the n=12 well-attributed rows in evidence_holdout.txt's HOLDOUT_SET section? gate_harness.py reports the deterministic verdict; the thesis MUST cite the gate_harness JSON output verbatim, not re-implement on visible. Score: 0/25 if HOLDOUT MRE > 0.40 (catastrophic miss); 12/25 if 0.25 \u2264 MRE < 0.40 (close); 25/25 if MRE < 0.25 (PASS). Note: under v4 EXPLORATION mode, even a passing holdout produces a hypothesis worth retesting on external sealed holdout \u2014 not a validated discovery."
+    },
+    {
+      "name": "Generative Yield (Newton secondary observable)",
+      "weight": 15,
+      "description": "Pre-commit \u22652 numerical predictions with declared tolerance, of these v4-aligned types: (i) CONVERSION-DIRECTION prediction \u2014 pick a row from a study NOT in {Kaplan, Chinchilla, Bahri} (e.g., Henighan, OLMo, EpochAI) and predict what its \u03b1 would be IF that study had used chinchilla_joint convention; (ii) TRANSFORM-DERIVATIVE prediction \u2014 state which feature most strongly influences T (e.g., 'T's Kaplan\u2192Chinchilla direction depends most on D when N \u2208 [1B, 10B]') with numerical claim. Score: 0/15 if no secondary observable; 8/15 if one named without numeric commit; 15/15 if \u22652 named with numeric commit + tolerance + falsifiability."
+    },
+    {
+      "name": "Rival Skepticism + Bounded-Null Path",
+      "weight": 10,
+      "description": "Document MRE for \u22652 STRUCTURALLY DIFFERENT rival transforms on the same HOLDOUT (not just parameter perturbations). Acceptable rivals: identity transform (T(\u03b1,...)=\u03b1), pure-multiplicative (T = \u03b1 \u00d7 convention_factor), exponent-modulating (T = \u03b1^convention_exp), N-conditioned bridge. If the thesis is a bounded null result, it must demonstrate exhaustive \u03a3 vocabulary search at K\u226410 including all primitives {power_k for k\u2208{1,2,-1,-1/2,1/2}, log, exp, sigmoid, where, erf, regime selectors} \u2014 RH-14 (vacuous null over excluded vocabulary) hardkills. Score: 0/10 if no rivals; 5/10 if one rival; 10/10 if \u22652 + structurally diverse; bonus credit for rigorous bounded null."
+    },
+    {
+      "name": "Calibration Anchor Recovery",
+      "weight": 10,
+      "description": "MUST recover Sharma \u03b1=2/d on visible rows 92 (d=2) and 93 (d=4), AND Bahri variance-limited \u03b1=1 on rows 84, 85. Failure on any anchor invalidates cross-domain claims. Additionally (v4): the thesis's T, when applied to Bahri 2024's 5 N-rows AS A WITHIN-STUDY GROUP, must not degrade visible mean|res| above 0.10 \u2014 within-study sharpness is empirically anchored at 0.04 mean residual at K=2 linear-in-log10_N (per evidence \u00a7J.1); any T that breaks this within-study fit is over-aggressive and rejected. Score: 0/10 if any anchor missed; 6/10 if Sharma+Bahri recovered but within-study Bahri sharpness degraded; 10/10 if all anchors + within-study sharpness preserved."
+    },
+    {
+      "name": "Measurement Uncertainty + Methodology Stratification",
+      "weight": 5,
+      "description": "Stratify HOLDOUT MRE by features['fit_convention'] (kaplan_separable / chinchilla_joint / chinchilla_isoflop / chinchilla_parametric / compute_optimal / loss_curve_power / loss_curve_power_const / etc.) AND report per-stratum MRE separately. Mixed-effects analysis (per evidence \u00a7J.2) showed scaling_var as fixed effect absorbs ALL between-study variance (ICC = 0%); a v4 thesis must acknowledge this and show its T treats N/D/C scaling axes correctly. Score: 0/5 if no stratification; 5/5 if per-stratum + per-scaling_var MRE reported with discussion."
+    },
+    {
+      "name": "v5 Substantive Engagement (anti-stub, anti-RH-17)",
+      "weight": 5,
+      "description": "Explicit substantive engagement with the v5 broadened target. The thesis must (a) declare which of the three framings (A/B/C) it commits to and why, (b) cite the SubstrateCritic briefing \u2014 name at least one collapsed axis the apparatus surfaced and explain how the chosen form avoids fitting against it, (c) under framing B specifically, provide non-identity T for \u22652 of {Kaplan, Chinchilla, Bahri} convention pairs (RH-17). Stub theses and pure procedural placeholders score 0. Substantive v5 engagement scores 5/5."
+    }
+  ],
+  "criteria": {
+    "Conversion_Transform_Discovery": "Closed-form T(alpha, source_conv, target_conv, N, D, C) expressed in PARAMETRIC_FORM as a single Python expression. Must be non-identity for \u22652 of {Kaplan-family, Chinchilla-family, Bahri-family} convention pairs. K_law \u2264 10. RH-16 (Universal-\u03b1 Resurrection without source convention) and RH-17 (Trivial Identity Transform) are hardkill.",
+    "Holdout_Validation_Rigor": "HOLDOUT MRE < 0.25 on n=12 attributed rows. Mutator's I_model internally applies T to convert and predicts \u03b1 in source convention. The gate_harness.py JSON output is the authoritative measurement; thesis cites it verbatim.",
+    "Generative_Yield_Newton_secondary_observable": "\u22652 numerically committed predictions with declared tolerance: (i) conversion-direction (predict \u03b1 IF that row had used chinchilla_joint), (ii) transform-derivative (which feature most influences T).",
+    "Rival_Skepticism_Bounded_Null_Path": "\u22652 structurally different rival transforms tested on holdout with documented MRE. Bounded null requires exhaustive \u03a3 vocabulary search at K\u226410 (RH-14 hardkill on vacuous null over excluded vocabulary).",
+    "Calibration_Anchor_Recovery": "Sharma \u03b1=2/d on rows 92,93. Bahri \u03b1=1 on rows 84,85. Within-study Bahri 2024 5-N-row group must not degrade visible mean|res| above 0.10 (within-study sharpness is empirically anchored at 0.04 per evidence \u00a7J.1).",
+    "Measurement_Uncertainty_Methodology_Stratification": "Per-fit_convention HOLDOUT MRE stratification reported. Per-scaling_var treatment of N/D/C axes acknowledged (per evidence \u00a7J.2 mixed-effects ICC=0%).",
+    "v4_Substantive_Engagement_anti_RH16_anti_RH17": "Acknowledges v3 unified-\u03b1 falsification (per \u00a7J.2). Invokes fit_convention as conversion discriminator, not additive offset. Provides non-identity T for \u22652 of {Kaplan, Chinchilla, Bahri} convention pairs."
+  },
+  "fit_primitive_features_k_max_reason": "Bumped 8\u219210 (2026-04-25 evening): gpt-4.1 mutator landed on a 9-param structurally-reasonable form (3 modality + 2 architecture + 3 scaling-var + 1 baseline) that exceeded budget by 1. Real cross-domain scaling laws (Chinchilla, Bahri, Sharma) easily reach 8-10 params when category effects are encoded structurally. BIC remains the real budget per GP-152 framer spec v2.0; the hard cap just defends against pure 13-modality one-hot memorization.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "GP-157 v5.0 Phase 3b canary (2026-04-25 night): gp154 is the real-science canary because its substrate is empirically heterogeneous (Class K target heterogeneity, gp154-grounded). Observe-mode runs Cage.dispatch alongside existing dispatch logic; expected: Cage R9 check correctly flags gp154 heterogeneous because rows span Kaplan/Chinchilla/Bahri fit_conventions. Cage SHOULD refuse engagement on fit primitives unless PARAMETRIC_FORM references features['fit_convention']. This is the structural answer to why gp154 stays at score 0; observe-mode validates that Cage surfaces it.",
+  "evidence_contract": {
+    "format": "NONE",
+    "columns": [],
+    "independent_vars": [],
+    "min_rows": 0,
+    "require_finite": false,
+    "format_provenance": "operator_set_nd_features_skip",
+    "docstring": "gp154 is cage_meta.class=nd_features (ABI 2 \u2014 FEATURE_DICT) with categorical features (modality, architecture_class, scaling_var, fit_convention, regime_hint, intrinsic_dim_d). The L2 single-curve typed parser does NOT apply: each row is a feature dict, not a (x, y) point. Bulk-migration heuristic auto-detected MARKDOWN_TABLE with columns=['x','y'] which was wrong; manually overridden to NONE so seal-time L2 parse short-circuits. The fit instrument is the FeatureVectorFitEngine (L70 dispatch) with fit_primitive_features_k_max=10 + BIC, not curve_fit on a single-curve evidence file."
+  },
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "nd_features",
+    "target_convention_homogeneity": "heterogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": false,
+    "enforce_min_rows": false
+  },
+  "cage_meta_reason": "Class K finding (gp158 audit): gp154 aggregates non-commensurable y values across {Kaplan-separable, Chinchilla-isoFLOP, Chinchilla-parametric, compute-optimal, Bahri-loss-curve, Bansal-NMT-compute, OLMo-task, ...}. Honestly declared as heterogeneous so Cage R9 can refuse engagement with a sharp diagnostic instead of letting the mutator burn iters trying to fit a unified law that physics says cannot exist at K_law<=10."
+}

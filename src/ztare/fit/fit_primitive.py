@@ -88,6 +88,58 @@ FitResult = FitSuccess | FitFailure
 
 
 # ---------------------------------------------------------------------------
+# Exponent-grid search (GP-088 overfitting fix)
+# ---------------------------------------------------------------------------
+
+# Discrete exponent values that cover physically meaningful power laws.
+# A free continuous exponent overfits in finite windows — the correction terms
+# bias the optimizer away from the true value (Hardy panel verdict, 2026-04-20).
+EXPONENT_GRID = (0.25, 1 / 3, 0.5, 2 / 3, 1.0, 1.5, 2.0)
+
+
+def detect_power_exponent_params(
+    expression: str,
+    independent_vars: list[str],
+    parameter_names: list[str],
+) -> list[str]:
+    """Detect parameters used as power-law exponents: ``var ** param``.
+
+    Walks the AST looking for ``BinOp(op=Pow)`` nodes where the base
+    involves an independent variable and the exponent is a parameter name.
+    Returns the list of parameter names that appear as exponents.
+    """
+    try:
+        tree = ast.parse(expression, mode="eval")
+    except SyntaxError:
+        return []
+
+    iv_set = frozenset(independent_vars)
+    param_set = frozenset(parameter_names)
+    exponent_params: list[str] = []
+
+    def _mentions_var(node: ast.AST) -> bool:
+        """True if the subtree contains any independent variable."""
+        for child in ast.walk(node):
+            if isinstance(child, ast.Name) and child.id in iv_set:
+                return True
+        return False
+
+    def _is_param(node: ast.AST) -> str | None:
+        """Return param name if node is a bare parameter Name."""
+        if isinstance(node, ast.Name) and node.id in param_set:
+            return node.id
+        return None
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Pow):
+            if _mentions_var(node.left):
+                pname = _is_param(node.right)
+                if pname and pname not in exponent_params:
+                    exponent_params.append(pname)
+    return exponent_params
+
+
+# ---------------------------------------------------------------------------
 # Expression validation (AST whitelist)
 # ---------------------------------------------------------------------------
 
@@ -138,6 +190,11 @@ _EML_ONLY_CONSTANT_ATTRS = frozenset({"e", "pi"})
 # calls and all other ``math.*`` nonlinearities. Closes the charter contract
 # that RC grammar is disjoint from sandbox_07/08's ``eml_only``.
 _MATH_EXP_ONLY_ATTRS = frozenset({"e", "pi", "exp", "log", "sqrt"})
+
+# ``math_exp_trig`` grammar: extends math_exp_only with sin/cos for substrates
+# where periodicity is not excluded by pre-registration. General capability
+# decision, not substrate-specific — see GP-081 grammar debate 2026-04-21.
+_MATH_EXP_TRIG_ATTRS = frozenset({"e", "pi", "exp", "log", "sqrt", "sin", "cos"})
 
 _ALLOWED_NODE_TYPES = (
     ast.Expression,
@@ -209,6 +266,116 @@ def _validate_expression(
     return tree
 
 
+def _safe_isprime(n: int) -> bool:
+    """Trial-division primality test, no external deps."""
+    n = int(n)
+    if n < 2:
+        return False
+    if n < 4:
+        return True
+    if n % 2 == 0:
+        return False
+    r = int(n ** 0.5)
+    i = 3
+    while i <= r:
+        if n % i == 0:
+            return False
+        i += 2
+    return True
+
+
+def _safe_factorint(n: int) -> dict:
+    """Trial-division integer factorization. Returns {prime: multiplicity}."""
+    n = int(n)
+    if n < 2:
+        return {}
+    factors: dict = {}
+    while n % 2 == 0:
+        factors[2] = factors.get(2, 0) + 1
+        n //= 2
+    i = 3
+    while i * i <= n:
+        while n % i == 0:
+            factors[i] = factors.get(i, 0) + 1
+            n //= i
+        i += 2
+    if n > 1:
+        factors[n] = factors.get(n, 0) + 1
+    return factors
+
+
+def _safe_primefactors(n: int) -> list:
+    """Distinct prime factors (sorted)."""
+    return sorted(_safe_factorint(n).keys())
+
+
+def _safe_divisors(n: int) -> list:
+    """All positive divisors of n (sorted)."""
+    n = int(n)
+    if n < 1:
+        return []
+    ds: list = []
+    i = 1
+    while i * i <= n:
+        if n % i == 0:
+            ds.append(i)
+            if i != n // i:
+                ds.append(n // i)
+        i += 1
+    return sorted(ds)
+
+
+def _safe_gcd(a: int, b: int) -> int:
+    """Greatest common divisor (Euclidean)."""
+    a, b = abs(int(a)), abs(int(b))
+    while b:
+        a, b = b, a % b
+    return a
+
+
+def _safe_prime_vector(n: int) -> list:
+    """Prime signature as sorted list of (prime, exponent) pairs.
+
+    This is the canonical prime-space representation: every positive integer
+    n > 1 maps to a unique finite vector over the lattice of primes via the
+    fundamental theorem of arithmetic. Returns the same data as factorint(n)
+    but in ordered list form for direct iteration.
+    """
+    return sorted(_safe_factorint(n).items())
+
+
+def _safe_is_coprime(a: int, b: int) -> bool:
+    """True iff gcd(a, b) == 1. Useful for multiplicative-structure testing."""
+    return _safe_gcd(a, b) == 1
+
+
+_PY_EXEC_BUILTINS: dict = {
+    "range": range, "sum": sum, "len": len, "int": int, "round": round,
+    "all": all, "any": any, "abs": abs, "min": min, "max": max,
+    "list": list, "sorted": sorted, "enumerate": enumerate, "zip": zip,
+    "bool": bool, "float": float, "str": str, "tuple": tuple, "set": set,
+    "divmod": divmod, "pow": pow, "True": True, "False": False, "None": None,
+    # GP-134 primitive-availability fix (2026-04-23): number-theoretic primitives
+    # for discrete substrates. Without these, py_exec on substrates like sopfr
+    # or Euler-phi forces the mutator to hand-roll primality inside a 300-byte
+    # expression, making structural recovery effectively impossible. Hand-rolled
+    # trial-division versions avoid a sympy runtime dependency.
+    "isprime": _safe_isprime,
+    "is_prime": _safe_isprime,
+    "factorint": _safe_factorint,
+    "primefactors": _safe_primefactors,
+    "divisors": _safe_divisors,
+    "gcd": _safe_gcd,
+    # GP-134 prime-space standard library (2026-04-23): the mutator needs
+    # these to be native cognitive primitives, not something it has to
+    # re-derive every expression. prime_vector exposes the canonical
+    # prime-space representation; is_coprime supports multiplicative
+    # structure testing.
+    "prime_vector": _safe_prime_vector,
+    "is_coprime": _safe_is_coprime,
+}
+
+
 def _build_model_callable(
     declaration: FitDeclaration,
     *,
@@ -216,6 +383,53 @@ def _build_model_callable(
 ):
     """Compile a validated expression into a callable for curve_fit."""
     grammar = (expression_grammar or "").strip().lower()
+
+    # py_exec grammar: allow full Python expressions (list comprehensions,
+    # generators, boolean operators) for discrete number-theoretic sequences.
+    # Bypasses AST whitelist validation; still sandbox-restricted via builtins.
+    if grammar == "py_exec":
+        # GP-133 R4 sandbox hardening (2026-04-23): pre-compile AST walk that
+        # rejects any attribute access to names starting with '_' (dunders
+        # and private names). This closes the classic Python-sandbox escape
+        # ().__class__.__base__.__subclasses__() which would otherwise reach
+        # BuiltinImporter → arbitrary imports → arbitrary code execution.
+        # See research_areas/private/seams/mission/GP-133_R4_py_exec_sandbox_review.md
+        try:
+            _ast_tree = ast.parse(declaration.expression, mode="eval")
+        except SyntaxError as exc:
+            raise ValueError(f"Expression syntax error: {exc}") from exc
+        for _node in ast.walk(_ast_tree):
+            if isinstance(_node, ast.Attribute) and _node.attr.startswith("_"):
+                raise ValueError(
+                    f"py_exec sandbox: dunder/private attribute access not allowed "
+                    f"({_node.attr!r}). This closes the classic "
+                    f"().__class__.__base__.__subclasses__() sandbox escape. "
+                    f"Use only public attributes of whitelisted builtins."
+                )
+        try:
+            code = compile(_ast_tree, "<py_exec>", "eval")
+        except SyntaxError as exc:
+            raise ValueError(f"Expression syntax error: {exc}") from exc
+
+        def model_fn_exec(xdata, *params):
+            param_dict = dict(zip(declaration.parameter_names, params))
+            if xdata.ndim == 1:
+                xdata = xdata.reshape(1, -1)
+            n_pts = xdata.shape[1]
+            out = np.empty(n_pts)
+            for i in range(n_pts):
+                ns: dict = {"math": math, **_PY_EXEC_BUILTINS}
+                for j, vname in enumerate(declaration.independent_vars):
+                    ns[vname] = int(xdata[j, i])
+                ns.update(param_dict)
+                try:
+                    out[i] = float(eval(code, {"__builtins__": {}}, ns))  # noqa: S307
+                except Exception:
+                    out[i] = float("nan")
+            return out
+
+        return model_fn_exec
+
     allowed = (
         frozenset(declaration.independent_vars)
         | frozenset(declaration.parameter_names)
@@ -229,6 +443,9 @@ def _build_model_callable(
         allowed = allowed | frozenset(_ALLOWED_DIRECT_CALLS)
     elif grammar == "math_exp_only":
         allowed_math_attrs = _MATH_EXP_ONLY_ATTRS
+        allowed_direct_calls = frozenset()
+    elif grammar == "math_exp_trig":
+        allowed_math_attrs = _MATH_EXP_TRIG_ATTRS
         allowed_direct_calls = frozenset()
     tree = _validate_expression(
         declaration.expression,
@@ -357,6 +574,22 @@ def parse_evidence_for_fitting(
     ydata: list[float] = []
     current_sweep_val: float | None = None
 
+    # Markdown-table preprocessor (2026-04-25 night, gp159 fix):
+    # accept rows like `| 1.3 | 1.6935 |` by stripping pipes, treating
+    # `|` as a delimiter. Helps every substrate whose evidence.txt uses
+    # markdown table format. No-op for plain whitespace-separated rows.
+    def _split_data_row(raw_line: str) -> list[str]:
+        line = raw_line.strip()
+        if "|" in line:
+            # Strip leading/trailing pipes and split on `|`
+            inner = line.strip("|").strip()
+            parts_md = [p.strip() for p in inner.split("|")]
+            # Reject pure separator rows like `|----|----|`
+            if all(set(p) <= set("-:= \t") for p in parts_md):
+                return []
+            return [p for p in parts_md if p]
+        return line.split()
+
     # Detect tabular 2D format: scan for first data row with 3+ numeric columns
     tabular_2d = False
     if var2 is not None:
@@ -364,7 +597,7 @@ def parse_evidence_for_fitting(
             line = raw_line.strip()
             if not line or line.startswith("#") or line.startswith("==="):
                 continue
-            parts = line.split()
+            parts = _split_data_row(raw_line)
             if len(parts) >= 3:
                 try:
                     float(parts[0]); float(parts[1]); float(parts[2])
@@ -388,7 +621,7 @@ def parse_evidence_for_fitting(
                 current_sweep_val = None
             continue
 
-        parts = line.split()
+        parts = _split_data_row(raw_line)
 
         if tabular_2d:
             # Tabular 2D: expect (var1, var2, target) columns; skip header rows
@@ -617,8 +850,15 @@ def fit_parameters(
     # Clamp initial guess into declared bounds — prevents immediate solver
     # rejection when the mutator omits an initial_guess for a parameter whose
     # bounds exclude the default of 1.0. np.clip is a no-op for ±inf bounds.
+    # GP-212: Use 0.1 as default for composite params (ch0_/ch1_ prefixed)
+    # to avoid exp overflow. Standard params keep 1.0 default.
+    def _default_p0(name: str) -> float:
+        if name.startswith("ch0_") or name.startswith("ch1_") or name.startswith("tail_"):
+            return 0.1
+        return 1.0
+
     p0 = [
-        float(np.clip(declaration.initial_guesses.get(name, 1.0), lo[i], hi[i]))
+        float(np.clip(declaration.initial_guesses.get(name, _default_p0(name)), lo[i], hi[i]))
         for i, name in enumerate(declaration.parameter_names)
     ]
 
@@ -656,21 +896,49 @@ def fit_parameters(
         return out
 
     _start_points = [p0] + [_random_p0() for _ in range(max(0, n_starts - 1))]
-    _results: list[tuple[np.ndarray, float]] = []  # (popt, max_residual)
+    _results: list[tuple[np.ndarray, float]] = []  # (popt, ranking_residual)
     _last_exc: Exception | None = None
+
+    # GP-096: When fit_score_mode is "continuous_rmse", align the SciPy
+    # optimizer with the gate metric by using sigma=ydata (relative weighting).
+    # This makes curve_fit minimise sum((pred-obs)^2 / obs^2), which is
+    # identical to the normalised RMSE the gate harness measures. Without this,
+    # curve_fit uses absolute squared residuals, which under-weights small
+    # observed values (e.g. tail points) and produces low absolute residual but
+    # high normalised residual — causing the gate to fail even when SciPy
+    # reports a successful fit.
+    # Guard: sigma weighting requires all ydata > 0. Fallback to unweighted L2
+    # if any non-positive value is present (avoids ZeroDivisionError).
+    _use_sigma_weights = (
+        score_mode == "continuous_rmse"
+        and bool(np.all(ydata > 0))
+    )
+
+    def _ranking_residual(y_obs: np.ndarray, y_pred: np.ndarray) -> float:
+        """Scalar used to rank / compare candidate fits.
+
+        For continuous_rmse mode: max normalised (relative) residual.
+        For all other modes: max absolute residual (original behaviour).
+        """
+        if _use_sigma_weights:
+            # normalised residuals: |(pred-obs)/obs|
+            safe_obs = np.where(y_obs != 0, y_obs, 1.0)
+            return float(np.max(np.abs((y_pred - y_obs) / safe_obs)))
+        return float(np.max(np.abs(y_obs - y_pred)))
 
     for _sp in _start_points:
         try:
-            _popt, _ = curve_fit(
-                model_fn,
-                xdata,
-                ydata,
+            _curve_fit_kwargs: dict = dict(
                 p0=_sp,
                 bounds=(lo, hi),
                 maxfev=_MAX_FEVAL,
             )
+            if _use_sigma_weights:
+                _curve_fit_kwargs["sigma"] = ydata
+                _curve_fit_kwargs["absolute_sigma"] = False
+            _popt, _ = curve_fit(model_fn, xdata, ydata, **_curve_fit_kwargs)
             _y_pred = model_fn(xdata, *_popt)
-            _res = float(np.max(np.abs(ydata - _y_pred)))
+            _res = _ranking_residual(ydata, _y_pred)
             _results.append((_popt, _res))
         except (RuntimeError, Exception) as exc:
             _last_exc = exc
@@ -684,7 +952,7 @@ def fit_parameters(
             solver_diagnostics=str(_exc),
         )
 
-    # Pick the best result (lowest max residual)
+    # Pick the best result (lowest ranking residual)
     _results.sort(key=lambda r: r[1])
     popt = _results[0][0]
     _best_residual = _results[0][1]
@@ -750,7 +1018,7 @@ def fit_parameters(
         bic = 0.0
         aic = 0.0
 
-    return FitSuccess(
+    base_result = FitSuccess(
         fitted_params=fitted_params,
         max_abs_residual=float(np.max(residuals)),
         mean_abs_residual=float(np.mean(residuals)),
@@ -766,6 +1034,170 @@ def fit_parameters(
         residual_spread=_residual_spread,
         convergence_classification=_classification,
     )
+
+    # GP-088 exponent-grid refinement: if the expression contains free power-law
+    # exponents (var**param), try fixing each to a discrete grid and compare by BIC.
+    # A free continuous exponent overfits finite windows — the correction terms in
+    # asymptotic expansions bias curve_fit away from the true rational exponent.
+    _exp_params = detect_power_exponent_params(
+        declaration.expression,
+        declaration.independent_vars,
+        declaration.parameter_names,
+    )
+    if _exp_params:
+        base_result = _refine_exponent_grid(
+            base_result=base_result,
+            declaration=declaration,
+            model_fn=model_fn,
+            xdata=xdata,
+            ydata=ydata,
+            exponent_params=_exp_params,
+            lo=lo,
+            hi=hi,
+            score_mode=score_mode,
+        )
+
+    return base_result
+
+
+# ---------------------------------------------------------------------------
+# Exponent-grid refinement (post-fit)
+# ---------------------------------------------------------------------------
+
+
+def _refine_exponent_grid(
+    base_result: FitSuccess,
+    declaration: FitDeclaration,
+    model_fn,
+    xdata: "np.ndarray",
+    ydata: "np.ndarray",
+    exponent_params: list[str],
+    lo: list[float],
+    hi: list[float],
+    score_mode: str,
+) -> FitSuccess:
+    """Try fixing each power-law exponent to discrete grid values and refit.
+
+    Compares all candidates (original free-exponent + each grid fix) by BIC.
+    Returns the best. If the original is best, returns it unchanged.
+
+    The grid search reduces the effective parameter count by 1 for each fixed
+    exponent, which the BIC penalty rewards. This counteracts the overfitting
+    tendency of curve_fit in finite windows (GP-088 Hardy-Ramanujan finding).
+    """
+    best = base_result
+    best_bic = base_result.bic
+
+    _use_sigma = (
+        score_mode == "continuous_rmse"
+        and bool(np.all(ydata > 0))
+    )
+
+    for exp_param in exponent_params:
+        exp_idx = declaration.parameter_names.index(exp_param)
+
+        for grid_val in EXPONENT_GRID:
+            # Build a reduced declaration: remove the exponent param, substitute
+            # its value as a constant in the expression.
+            reduced_params = [
+                p for p in declaration.parameter_names if p != exp_param
+            ]
+            if not reduced_params:
+                continue  # nothing left to fit
+
+            # Substitute the exponent param with the grid value in the expression
+            # by creating a modified model_fn that fixes the exponent.
+            fixed_vals = {exp_param: grid_val}
+
+            def _make_constrained_fn(fixed: dict):
+                def constrained_fn(xdata_inner, *free_params):
+                    # Reassemble full param vector with fixed values inserted
+                    full_params = []
+                    free_idx = 0
+                    for pname in declaration.parameter_names:
+                        if pname in fixed:
+                            full_params.append(fixed[pname])
+                        else:
+                            full_params.append(free_params[free_idx])
+                            free_idx += 1
+                    return model_fn(xdata_inner, *full_params)
+                return constrained_fn
+
+            constrained_fn = _make_constrained_fn(fixed_vals)
+
+            # Reduced bounds and p0
+            r_lo = [lo[i] for i, p in enumerate(declaration.parameter_names) if p != exp_param]
+            r_hi = [hi[i] for i, p in enumerate(declaration.parameter_names) if p != exp_param]
+            r_p0 = [
+                float(np.clip(declaration.initial_guesses.get(p, 1.0), r_lo[j], r_hi[j]))
+                for j, p in enumerate(reduced_params)
+            ]
+
+            try:
+                kw: dict = dict(p0=r_p0, bounds=(r_lo, r_hi), maxfev=_MAX_FEVAL)
+                if _use_sigma:
+                    kw["sigma"] = ydata
+                    kw["absolute_sigma"] = False
+                popt, _ = curve_fit(constrained_fn, xdata, ydata, **kw)
+                y_pred = constrained_fn(xdata, *popt)
+                residuals = np.abs(ydata - y_pred)
+                max_res = float(np.max(residuals))
+                sse = float(np.sum((ydata - y_pred) ** 2))
+                n = len(ydata)
+                k = len(reduced_params)  # fewer params → BIC reward
+                sse_safe = sse if sse > 0 else 1e-300
+                bic = n * math.log(sse_safe / n) + k * math.log(n)
+
+                if bic < best_bic:
+                    # Reassemble full param dict
+                    fitted = {}
+                    free_idx = 0
+                    for pname in declaration.parameter_names:
+                        if pname in fixed_vals:
+                            fitted[pname] = fixed_vals[pname]
+                        else:
+                            fitted[pname] = float(popt[free_idx])
+                            free_idx += 1
+
+                    residual_map: list[dict[str, float]] = []
+                    xd = xdata if xdata.ndim == 2 else xdata.reshape(1, -1)
+                    for i in range(n):
+                        pt: dict[str, float] = {}
+                        for j, vname in enumerate(declaration.independent_vars):
+                            pt[vname] = float(xd[j, i])
+                        pt["observed"] = float(ydata[i])
+                        pt["predicted"] = float(y_pred[i])
+                        pt["residual"] = float(residuals[i])
+                        residual_map.append(pt)
+
+                    aic = n * math.log(sse_safe / n) + 2.0 * k
+
+                    best_bic = bic
+                    best = FitSuccess(
+                        fitted_params=fitted,
+                        max_abs_residual=max_res,
+                        mean_abs_residual=float(np.mean(residuals)),
+                        rmse=float(np.sqrt(np.mean(residuals ** 2))),
+                        residual_map=residual_map,
+                        n_samples=n,
+                        k_params=k,
+                        sse=sse,
+                        bic=bic,
+                        aic=aic,
+                        n_starts_attempted=base_result.n_starts_attempted,
+                        n_starts_converged=base_result.n_starts_converged,
+                        residual_spread=base_result.residual_spread,
+                        convergence_classification=base_result.convergence_classification,
+                    )
+                    print(
+                        f"    📐 Exponent grid: {exp_param}={grid_val} "
+                        f"BIC={bic:.1f} < free BIC={base_result.bic:.1f} "
+                        f"(max_res={max_res:.5f})"
+                    )
+            except Exception:
+                continue  # grid value doesn't fit; skip
+
+    return best
 
 
 # ---------------------------------------------------------------------------

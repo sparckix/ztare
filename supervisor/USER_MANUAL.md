@@ -442,7 +442,7 @@ The findings runner currently shares only two utilities with the supervisor stac
 
 It does **not** use the supervisor's state machine (`SupervisorState` A1/A2/B/C/D), actor routing (`actor_for_pipeline_state`), wrapper transport (`_call_anthropic_research_b_api`), prose verifier, write-scope guard, human gates, refinement caps, or manifest/packet sequencing. Instead it has its own LLM call functions, its own state enum (`DebateStatus`), and its own stop-condition logic.
 
-This duplication was a deliberate first-slice decision (GP-031 Turn 2: keep findings-debate outside the seed registry so the object boundary is preserved). The convergence detector is genuinely different from `prose_verifier` (semantic sentinel vs. structural conformance) and is not duplication. The LLM transport and state tracking are duplication that should converge — the natural path is to decouple the wrapper transport from `HandoffStatus` so the runner can reuse it without pretending the seam is a seed.
+This duplication was a deliberate first-slice decision (GP-031 Turn 2: keep findings-debate outside the seed registry so the object boundary is preserved). The convergence detector is genuinely different from `prose_verifier` (semantic sentinel vs. structural conformance) and is not duplication. The LLM transport and state tracking are duplication that should converge. The natural path is to decouple the wrapper transport from `HandoffStatus` so the runner can reuse it without pretending the seam is a seed.
 
 ### Commands
 
@@ -458,15 +458,15 @@ python -m src.ztare.validator.supervisor_findings_runner \
 
 Flags:
 
-- `--seam-path` — path to a seam file with a `## Debate Log` header (required)
-- `--max-cycles` — per-run cap on appended turns (default 6; hard cap is 12 total in the debate primitive)
-- `--max-cost-usd` — per-run dollar budget (default $0.50; checked pre-call so the limit is never breached)
-- `--claude-model` — default `claude-sonnet-4-6`
-- `--gemini-model` — default `gemini-2.5-flash`
-- `--execute` — required for real API calls; without it, dry-run only
-- `--today` — override today's date in ISO form (for the turn header)
+- `--seam-path`: path to a seam file with a `## Debate Log` header (required)
+- `--max-cycles`: per-run cap on appended turns (default 6; hard cap is 12 total in the debate primitive)
+- `--max-cost-usd`: per-run dollar budget (default $0.50; checked pre-call so the limit is never breached)
+- `--claude-model`: default `claude-sonnet-4-6`
+- `--gemini-model`: default `gemini-2.5-flash`
+- `--execute`: required for real API calls; without it, dry-run only
+- `--today`: override today's date in ISO form (for the turn header)
 
-Without `--execute`, the runner parses the seam, checks convergence state, and reports what it would do — useful for verifying the seam is parseable before spending tokens.
+Without `--execute`, the runner parses the seam, checks convergence state, and reports what it would do. Useful for verifying the seam is parseable before spending tokens.
 
 **Promote a converged finding to a seed:**
 
@@ -490,12 +490,12 @@ After promotion, the seed is in `seed_registry.json` and the standard supervisor
 
 The runner alternates **Claude** (Anthropic Messages API) and **Gemini** (Google GenAI SDK). Each agent reads the full seam text and contributes one debate turn, ending with:
 
-- `SENTINEL_DECISION: raise` — no new load-bearing claim; ready to converge from this agent's side
-- `SENTINEL_DECISION: hold` — still introducing or rebutting a load-bearing claim
+- `SENTINEL_DECISION: raise`: no new load-bearing claim; ready to converge from this agent's side
+- `SENTINEL_DECISION: hold`: still introducing or rebutting a load-bearing claim
 
 Convergence requires both agents to raise in consecutive turns with a minimum of 2 turns per agent. At the hard cap (12 total turns), the runner exits with `ESCALATED_CAP` and the operator decides.
 
-Codex (OpenAI CLI) is intentionally not a runner participant — findings debates exceed Codex's input-token wall. Codex's role is operator-level review at convergence/promotion time.
+Codex (OpenAI CLI) is intentionally not a runner participant. Findings debates exceed Codex's input-token wall. Codex's role is operator-level review at convergence/promotion time.
 
 ### Validation
 
@@ -504,29 +504,13 @@ make benchmark-supervisor-findings-debate
 make benchmark-supervisor-findings-runner
 ```
 
-## Current Critical Path
+## Current State
 
-The `stage2_derivation_seam_hardening` program closed at Turn 55 of the supervisor loop debate (2026-04-11).
+Active work is tracked on the ZTARE Board:
+- Public: `research_areas/ZTARE_BOARD.md`
+- Full detail: `research_areas/private/ZTARE_BOARD.md`
 
-Current active work is tracked on the ZTARE Board (`research_areas/ZTARE_BOARD.md` public, `research_areas/private/ZTARE_BOARD.md` full detail). Key items:
-
-- **GP-023** — Ontology Trap / Planck Mechanism. Phase 2 closed as `non-diagnostic / pre-reg deviation`. GP-035 apparatus fix is the next move.
-- **GP-035** — Mutator Missing Fit Primitive. Spec written (`research_areas/private/specs/active/GP-035_mutator_fit_primitive_spec.md`). Next: implement fit primitive → 3b substrate-swap verifier.
-- **GP-031** — Findings-Birth Bridge. First two primitives shipped (debate + promotion). Runner is live.
-
-Active seeds:
-
-- `research_areas/seeds/active/paper4_manuscript.md`
-- `research_areas/seeds/active/paper4_managerial_capitalism.md`
-
-Deferred future seeds:
-
-- `research_areas/seeds/deferred/systems_to_algorithms.md`
-- `research_areas/seeds/deferred/ztare_open_source.md`
-- `research_areas/seeds/deferred/supervisor_artifact_lifecycle.md`
-- `research_areas/seeds/deferred/vnext_semantic_gate_stabilization.md`
-
-Those stay in the seed layer until a genesis file is written and a human accepts opening them.
+Seeds in the seed layer stay there until a genesis file is written and a human accepts opening them.
 
 ## Start A Program
 
@@ -582,5 +566,5 @@ make benchmark-supervisor-findings-runner
 - if bounded spec refinement is used, cap `A2 -> A1` at `2` rounds before forcing `B` or `D`
 - budget-aware refinement is optional and remains off until pricing + telemetry are configured
 - exact pricing mode means unknown-model runs stay financially silent rather than inventing cost
-- findings-debate runner is for pre-seed work only — do not route it through the seed registry
-- promotion from finding to seed is always human-gated — no auto-promotion
+- findings-debate runner is for pre-seed work only; do not route it through the seed registry
+- promotion from finding to seed is always human-gated; no auto-promotion

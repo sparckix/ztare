@@ -19,6 +19,63 @@
 | **New substrate** | New GT, new domain | Start at §1 (Division A/B) |
 | **Grammar extension or rubric variant on existing substrate** | Same GT, different grammar/rubric | Skip to §2 (Scaffold Division B) |
 | **Re-run / replication** | Same GT, same rubric, different model pair | Skip to §4 (Seal) |
+| **Qualitative thesis (policy, philosophy, social science)** | Text evidence, no GT | See §0A below, then skip to §4 |
+
+---
+
+## 0A. Qualitative Projects — `make generate-gp` (GP-104)
+
+For qualitative projects (text evidence, no numerical GT), use `generate-gp` instead of the Division A/B substrate pipeline. The generator scaffolds the project with correct gate configuration and an LLM-drafted adversarial rubric.
+
+```bash
+make generate-gp \
+    PROJECT=<slug> \
+    BRIEF="One-paragraph thesis question — be specific about domain and claim direction" \
+    JUDGE_MODEL=gpt4.1
+```
+
+**What it creates:**
+
+| Artifact | Purpose |
+|---|---|
+| `projects/<slug>/evidence.txt` | Blank evidence file — edit directly (Path A) |
+| `projects/<slug>/raw/` | Drop source documents here for `make evidence-compile` (Path B) |
+| `projects/<slug>/raw/source_type_map.json` | Type map for evidence compiler |
+| `projects/<slug>/thesis.md` | Neutral seed thesis template |
+| `projects/<slug>/project_charter.md` | Auto-drafted from your brief |
+| `projects/<slug>/workspace/` | Runtime outputs directory |
+| `rubrics/<slug>.json` | LLM-drafted persona + criteria, all Type B gate opt-outs pre-filled |
+
+**Type B gate opt-outs (pre-filled automatically):**
+
+Qualitative projects require three non-obvious configuration keys that must be present to prevent global gate misfires. `generate-gp` injects them automatically:
+
+```json
+{
+  "farther_tail_region": null,
+  "disable_evidence_fit_gate": true,
+  "disable_uniqueness_gap_gate": true
+}
+```
+
+**Do not omit these.** Their absence causes hard fails that look like scoring failures (score 0 every iteration). Three projects hit this in one session before the generator was built (GP-104).
+
+**Evidence: two paths:**
+
+- **Path A** (small projects, curated evidence): edit `evidence.txt` directly, one observation per line.
+- **Path B** (large projects, many source documents): drop PDFs/markdown into `raw/`, optionally type them via `raw/source_type_map.json`, then `make evidence-compile PROJECT=<slug> MODEL=gpt4.1`.
+
+**After generating:**
+
+1. Review and edit `rubrics/<slug>.json` — the LLM draft is a starting point. Verify the persona is genuinely adversarial for your domain.
+2. Add evidence (Path A or B above).
+3. Proceed to §4 (Seal) — no smoke gate needed for qualitative projects (no numerical gate harness).
+
+```bash
+make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
+make loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 \
+    MUTATOR_MODEL=gemini-pro JUDGE_MODEL=gpt4.1
+```
 
 ---
 
@@ -49,6 +106,17 @@ python -m src.ztare.substrates.render_evidence --project <slug> --gt-class <clas
 ```
 
 Do not generate evidence by writing inline Python in a chat session. The generator scripts enforce the GP-072 Division A boundary and are the auditable path. If no generator script exists for your substrate type, create one under `src/ztare/substrates/` before generating evidence — do not bypass with one-off scripts.
+
+**Custom substrate triumvirate (gp159/160/161 lessons, 2026-04-25):**
+
+When building a custom substrate (not using `generate_substrate.py`), enforce the triumvirate alignment — evidence.txt, test_model.py, and gate_harness.py must agree on the I_model contract:
+
+1. **gate_harness.py** is the authority — contains GT, holdout splits, gate logic. It dynamically imports test_model.py and calls `I_model(d)`.
+2. **test_model.py** is the mutator's submission — starts as a NaN-returning stub. The mutator overwrites it. **Must NOT be a copy of gate_harness.py** (causes infinite import recursion).
+3. **evidence.txt** must have data inline (not "run this command"), a Python code template with a WRONG example form (not GT-leaking), and the same `I_model` signature as gate_harness expects.
+4. **cage_meta.class** in rubric must match the actual substrate type (`1d` for scalar substrates, `nd_features` for feature-dict substrates). Mismatch injects the wrong prompt contract.
+5. Run `python scripts/validate_evidence.py <slug>` to check evidence quality before sealing.
+6. Global gates (`farther_tail_region`, `disable_evidence_fit_gate`, `disable_uniqueness_gap_gate`) must be explicitly opted out for custom substrates with their own gate harness.
 
 **Identifiability protocol (required before sealing):**
 
@@ -170,7 +238,7 @@ For every rubric flag that switches a code path (`fit_score_mode`, `run-mode`, g
 Mandatory in the same session:
 
 1. **Freeze workspace.** Confirm all per-iteration artifacts are written. No post-hoc edits.
-2. **Write E-row** in `research_areas/private/EXPERIMENT_TRACK_RECORD.md`.
+2. **Write E-row** in `research_areas/EXPERIMENT_TRACK_RECORD.md`.
 3. **Evaluate for F-row and INS-row.** F-row if the result changes what to believe or build next. INS-row if paper-grade.
 4. **Run telemetry reporter:**
    ```bash

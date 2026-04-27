@@ -1,0 +1,15 @@
+{
+  "date": "2026-04-23",
+  "entries": [
+    {
+      "timestamp_utc": "2026-04-23T11:51:15.231992+00:00",
+      "cost_usd": 0.01,
+      "category": "test",
+      "action": "spend_tracker smoke",
+      "model_name": null,
+      "session_id": "smoke",
+      "notes": []
+    }
+  ],
+  "total_usd": 0.01
+}

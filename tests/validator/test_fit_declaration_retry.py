@@ -6,10 +6,10 @@ can simulate every drought path.
 
 from __future__ import annotations
 
-from src.ztare.validator.fit_declaration_retry import (
+from src.ztare.fit.fit_declaration_retry import (
     validate_and_retry_fit_declaration,
 )
-from src.ztare.validator.fit_primitive import parse_fit_declaration
+from src.ztare.fit.fit_primitive import parse_fit_declaration
 
 
 VALID_BLOCK = """```fit_declaration

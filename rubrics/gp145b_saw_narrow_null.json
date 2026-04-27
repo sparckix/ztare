@@ -1,0 +1,66 @@
+{
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative thesis project \u2014 no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative thesis \u2014 evidence surface is text documents, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative thesis \u2014 rival mechanisms scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 5,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "I am a mathematician specializing in transcendence theory and computational number theory, fiercely intolerant of handwaving about 'closed form' impossibility absent airtight modularization of rigor. I will not accept appeals to heuristics, empirical residuals, or plausibility assertions based on numerical artifacts\u2014my threshold for deductive closure is absolute. In particular, I reject any argument that 'experimental failure with PSLQ at high precision' implies a null result unless the search space and its effective span under all admitted relations is formally exhausted. Modeling failure mode: I will penalize any proof structure that presumes independence or irrationality of Delta_0_small elements without rigorously excluding hidden algebraic mechanisms, and I refuse to credit claims that rely even partially on precision as a proxy for proof.",
+  "dimensions": [
+    {
+      "name": "Search Space Exhaustiveness",
+      "weight": 27.2,
+      "description": "Full points for definitive, constructive demonstration that all non-trivial Z^2 relations up to height H in the Delta_0_small span are accounted for\u2014no hidden symmetries or subspaces missed, and height defined in operational, non-heuristic terms. Penalize partial decompositions, reliance on PSLQ's sensitivity, or definitions of 'triviality' that are contextually ambiguous or rest on prior PSLQ failures."
+    },
+    {
+      "name": "Residual Lower Bound Rigor",
+      "weight": 23.8,
+      "description": "Award full scores to deductions establishing explicit, closed-form lower bounds on the residual for all non-trivial relations\u2014proofs that leave no room for numerical fudge factors or appeal to floating-point artifacts. Penalize use of empirical trial bounds, lack of precise linkage between the Gram matrix condition number and residual magnitude, or any residual bound that embeds any element of floating-point dependence."
+    },
+    {
+      "name": "rival_mechanism_elimination",
+      "weight": 17.0,
+      "description": "Full credit requires explicit ruling out of non-obvious algebraic substitutions or identities that could undermine the null result\u2014must enumerate rival mechanisms and demonstrate their absence/irrelevance, not merely assume Delta_0_small algebraic independence. Penalize gaps where rival closed forms\u2014such as unconsidered linear combinations\u2014could sneak through, or where contextual domain knowledge is invoked without formal substantiation."
+    },
+    {
+      "name": "Thesis-Precise Theorem Formalization",
+      "weight": 17.0,
+      "description": "Award full points when the null-result theorem is stated with all quantifiers, notational dependencies, and constructivity requirements made explicit\u2014boundaries of the claim should map directly to the parameters in the problem prompt. Penalize sloppiness in quantification or variable reference, or theorem statements that externalize key assumptions (e.g., on dimension, dictionary, height) instead of integrating them in the formalism."
+    },
+    {
+      "name": "M-Form Charter Alignment: gram_condition_bound_explicit",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Thesis must explicitly prove or falsify the existence of a closed-form, constructive upper bound on the 2-norm condition number of the relevant Gram matrix over Delta_0_small for every candidate (k1, k2), addressing whether this bound is load-bearing for the conclusion. Gap detected: The charter explicitly emphasizes that the conclusion must rely on a provable upper bound for the 2-norm condition number of the Gram matrix over the relevant dictionary, rather than simply assuming theorem applicability without considering numerical conditioning. The thesis asserts that Gram-matrix conditioning is irrelevant because the cited theorem does not require it, but does not engage with the specific closed-form upper-bound lemma called for in the charter. The thesis avoids the full exploration and falsification of rival explanations based on conditioning \u2014 especially whether high Gram condition in this domain could undermine result validity, which was part of the previous project's scoring issue and a key analytic requirement for this null result to be persuasive."
+    }
+  ],
+  "criteria": {
+    "Search_Space_Exhaustiveness": "Score high only if the argument actually verifies, by explicit induction or constructive enumeration, that for all (c1, c2) in Z^2 with |c_i| \u2264 H and all dimension \u22642, every linear combination in Delta_0_small is either trivial or provably residual-bounded, with no handwaving about exhaustive search. Deduct heavily for gaps in covering the integer coefficient space, failure to handle degeneracies, or leaning on PSLQ 'no hits' to imply completion.",
+    "Residual_Lower_Bound_Rigor": "Award points when the proof links the Gram matrix\u2019s condition number directly (by closed-form lemma, not empirical estimate) to the provable lower bound B(H, |Delta_0_small|) on all non-trivial residuals. Subtract for outsourcing any step to computational experiments, handwaving about 'high precision' coverage, or failing to cleanly separate the analytic grain from the floating-point chaff.",
+    "rival_mechanism_elimination": "Grant credit only to work that systematically rules out all rival possible formulae\u2014whether obscure identities, reduction chains, or otherwise\u2014by directly proving that no pair (c1, c2) can yield a novel closed form for mu_sq in the span, up to the declared height, given the algebraic structure of Delta_0_small. Penalize any casual assertion of independence or oversight of possible hidden symmetries/constructed invariants.",
+    "Thesis-Precise_Theorem_Formalization": "The main theorem must bind all parameters\u2014height H, dictionary size, precise admissibility of coefficients\u2014in its statement, and the null claim must be both existentially and universally quantified as the case admits. Lose marks for vague theorem boundaries, imprecise dependencies, or for leaving any aspect of the PSLQ null-result outside the formal statement.",
+    "mform_gram_condition_bound_explicit": "Thesis must explicitly prove or falsify the existence of a closed-form, constructive upper bound on the 2-norm condition number of the relevant Gram matrix over Delta_0_small for every candidate (k1, k2), addressing whether this bound is load-bearing for the conclusion."
+  },
+  "inject_antipattern_catalog": "hardkill",
+  "stagnation_trigger_mode": "new_class",
+  "underidentified_after": 20,
+  "gp103_stagnation_threshold": 6,
+  "rubric_version": "1.2-hidden-constant-positive-form",
+  "rubric_version_reason": "2026-04-24 post-run-2 (peak 66, killed on hidden-constant c + precision-precondition critique). Evidence Set H injected: (a) exhibits c(x,n) for \u0394\u2080_small and derives 450-bit precision floor, (b) reframes main theorem from negative 'no relation' to positive 'min coefficient > M' form (theorem-native), (c) \u03bc_sq as Clisby interval at 450 bits, not point. Rubric flags: 'hardkill' anti-pattern catalog (cross-LLM-validated), stagnation_trigger_mode=new_class (Task 12), underidentified_after=20 (prevent kill trap), gp103_stagnation_threshold=6.",
+  "_v12_changes": [
+    "2026-04-24: Evidence Set H added \u2014 hidden constant c + positive upper-bound reframing",
+    "2026-04-24: inject_antipattern_catalog true \u2192 'hardkill' (cross-LLM classifier only-safe mode)",
+    "2026-04-24: stagnation_trigger_mode=new_class (Task 12 \u2014 class-novelty stagnation decoupling)",
+    "2026-04-24: underidentified_after 3 default \u2192 20 (GP-148 champion persistence profile)",
+    "2026-04-24: gp103_stagnation_threshold 5 \u2192 6 (belt-and-suspenders with new_class mode)"
+  ]
+}

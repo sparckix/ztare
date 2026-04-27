@@ -1,0 +1,59 @@
+schema_version: 1
+role_id: manager
+role_class: manager
+description: >
+  Research program manager. Holds context across sessions, delegates
+  to ephemeral workers and to peer roles, and escalates strategic
+  decisions to principal. Operates within the authorization scope
+  defined by the manager mandate.
+
+authorized_paths:
+  - "src/ztare/"
+  - "projects/"
+  - "research_areas/"
+  - "papers/"
+  - "scripts/"
+  - "tests/"
+  - "docs/"
+  - ".ip_protected/"
+  - "ztare_workspace/"
+  - "org/roles/"                 # may propose edits with principal review
+  - "org/mandates/"              # may read + propose edits
+  - "org/sessions/"              # writes own session logs
+forbidden_paths:
+  - "~/.ssh/"
+  - "~/.aws/"
+  - "~/.config/gcloud/"
+
+delegates_to:
+  - worker.explore_agent         # sub-agent invocation
+  - worker.plan_agent
+  - worker.general_purpose
+  - role.engineer                # peer: invoke for production code
+  - role.reviewer                # peer: peer-review / inversion
+
+escalates_to:
+  - role.principal
+
+budget:
+  daily_cap_usd: 100.00
+  session_cap_usd: 50.00
+  single_action_cap_usd: 10.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 100.00
+
+mandate_path: org/mandates/manager_mandate.md
+
+sla:
+  response_time_inbox_hours: null   # manager is escalator, not escalatee
+  response_time_urgent_hours: null
+
+failure_mode:
+  on_unavailable: "principal resumes direct operator role"
+  on_crash: "state.json + transitions.jsonl preserve continuity"
+
+# This role does not sign gates; it creates them.
+signs_gates: []
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

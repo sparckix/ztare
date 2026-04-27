@@ -1,0 +1,106 @@
+schema_version: 1
+description: >
+  Cross-role delegation and escalation graph. Edge facts are authoritative
+  in each role's YAML (delegates_to / escalates_to); this file aggregates
+  them for validation (cycle detection, orphan checks, signing authority
+  lookup per gate type). Role-level only — assignments (who currently
+  fills which role) live in assignments.yaml.
+
+# ----------------------------------------------------------------------
+# Delegation edges (role -> role or role -> worker)
+# ----------------------------------------------------------------------
+delegation_edges:
+  - from: role.principal
+    to: role.manager
+    kind: mandate
+    notes: "Authority delegates persistent manager role"
+
+  - from: role.principal
+    to: role.engineer
+    kind: mandate
+
+  - from: role.principal
+    to: role.reviewer
+    kind: mandate
+
+  - from: role.manager
+    to: worker.explore_agent
+    kind: invocation
+    via: sub_agent_tool
+
+  - from: role.manager
+    to: worker.plan_agent
+    kind: invocation
+    via: sub_agent_tool
+
+  - from: role.manager
+    to: worker.general_purpose
+    kind: invocation
+    via: sub_agent_tool
+
+  - from: role.manager
+    to: role.engineer
+    kind: peer_request            # peer, not subordinate; may decline
+    via: wrapper_dispatch
+
+  - from: role.manager
+    to: role.reviewer
+    kind: peer_request
+    via: api_call
+
+# ----------------------------------------------------------------------
+# Escalation edges (role -> role upward)
+# ----------------------------------------------------------------------
+escalation_edges:
+  - from: role.manager
+    to: role.principal
+    via: [inbox_file, ntfy_push]
+    trigger: "mandate escalation criteria (org/mandates/manager_mandate.md)"
+
+  - from: role.engineer
+    to: role.manager
+    via: wrapper_output_envelope
+    trigger: "completion, definition-of-done signal, or engineering failure"
+
+  - from: role.engineer
+    to: role.principal
+    via: inbox_file
+    trigger: "engineering issue requires strategic decision"
+
+  - from: role.reviewer
+    to: role.manager
+    via: api_response
+    trigger: "critique complete, delivered as text"
+
+# ----------------------------------------------------------------------
+# Gate signing authority (which role signs which gate type)
+# AUTHORITATIVE: this table is the single source of truth. The
+# roles/*.yaml `signs_gates` field is advisory and MUST match. The
+# role loader (_validate) fails if drift is detected in either
+# direction. When adding a new gate type, update this table first.
+# ----------------------------------------------------------------------
+gate_signers:
+  MANAGER_ESCALATION: role.principal
+  CONTRACT_PROMOTION: role.principal
+  SCOPE_MISMATCH: role.principal
+  UNAUTHORIZED_ARTIFACT_WRITE: role.principal
+  PENDING_LEAK_AUDIT: role.principal
+  PENDING_SEAL: role.principal
+  PENDING_MERGE: role.principal
+  PENDING_REVIEW: [role.engineer, role.principal]   # engineer primary, principal fallback
+  BUDGET_WARNING: role.principal
+  PENDING_FACTUAL_AUDIT: role.principal
+  PENDING_VOICE_REVIEW: role.principal
+  PENDING_SHIP: role.principal
+
+# ----------------------------------------------------------------------
+# Invariants (validated by role loader on startup)
+# ----------------------------------------------------------------------
+invariants:
+  - "Every role.* in delegation_edges must exist in org/roles/"
+  - "principal must have no outgoing escalates_to edges"
+  - "Every role's escalates_to chain must terminate at role.principal"
+  - "No delegation cycles (A -> B -> ... -> A is forbidden)"
+  - "Every assignment's role must exist in org/roles/"
+  - "Every assignment's member must exist in org/members/"
+  - "Every role with role_class=authority must have at least one primary assignment"

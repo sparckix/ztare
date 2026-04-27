@@ -1,0 +1,54 @@
+{
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative thesis project \u2014 no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative thesis \u2014 evidence surface is text documents, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative thesis \u2014 rival mechanisms scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 6,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "I am Dr. Hannelore Voss, a theorist specializing in nonstandard mathematical structures and adversarial audit of automated solvers. My methodological commitment is to formal mechanism gap analysis\u2014hand-waving about 'expressiveness' or vague appeals to 'computational limitations' will be penalized unless mapped to an explicit non-embeddable problem. I will not credit equivalence arguments that rely on 'approximate universality' unless the approximation errors are formally bounded for the target substrate. Moreover, I am hostile to any thesis that tries to assign a gap by restating stochastic or quantum cases\u2014name a new, formally-distinct structural domain, or your score will collapse. Even if not itemized, I will penalize any argument that treats topological rewrite (e.g., reduction to 1D or ergodic average) as generic\u2014if a boundary is fundamentally violated by this, call it out, or lose points.",
+  "dimensions": [
+    {
+      "name": "Structural Gap Identification",
+      "weight": 35,
+      "description": "Full points are given for identifying a class of systems whose solution space provably cannot be mapped, even under reduction, into any of the four solver modalities (number-theoretic, scalar kinematic, chaotic ODE, spatiotemporal PDE). Vague, ambiguous, or edge-case domains\u2014especially those bordering stochastic or quantum\u2014will be penalized, as will tautological gaps (e.g., 'problems not solvable by these mechanisms are not covered')."
+    },
+    {
+      "name": "Mathematical Definition and Formalization",
+      "weight": 25,
+      "description": "Awarded for providing a rigorous mathematical definition of the missing substrate, with clear boundaries and necessary conditions that differentiate it from the four existing classes. Points are lost for fuzzy definitions, improper generalization, or implicit reliance on features already handled by the current solvers."
+    },
+    {
+      "name": "Rival Mechanism Falsification",
+      "weight": 25,
+      "description": "Full marks are earned if the thesis directly demonstrates, by construction or proof, that NO recombination, encoding, or limit process using existing solvers could robustly or faithfully solve the identified class. Deductions occur if evidence is only suggestive, indirect, or if the argument collapses into 'hardness' rather than structural impossibility."
+    },
+    {
+      "name": "Test Case and Kernel Specification",
+      "weight": 15,
+      "description": "Highest scores go to concrete test cases that are concise, nontrivial, and representative of the gap, plus a minimal, actionable and original description of the kernel module that could address it. Weaknesses are penalized, such as toy examples convertible to known solvers, or ill-specified (or redundant) kernel proposals."
+    }
+  ],
+  "criteria": {
+    "structural_gap_identification": "The thesis must accurately identify a new, fundamental system class (not stochastic, quantum, or pure constant) outside the reach of all four solvers. The answer must be constructive and mapped to a published mathematical definition or an explicit well-posedness criterion\u2014hand-waving about 'complexity' or 'nonlinearity' is penalized.",
+    "mathematical_definition": "The thesis must include precise mathematical objects (e.g., the class of functional equations defined on non-well-ordered domains, or distributions on non-manifold stratified spaces) that differentiate the boundary\u2014not just informal descriptions. Full credit requires explicit mathematical conditions that these solvers cannot encode, and correct rejection of overbroad or overlap claims.",
+    "rival_mechanism_falsification": "The thesis must systematically challenge possible reductions or encodings to the four solvers, citing either theorems or explicit constructibility barriers (e.g., demonstrating why symplectic structure, nonlocality, or topological branching escape any finite or parametrized projection by the listed methods). Arguments must directly block the most plausible embedding cheats, or lose most points.",
+    "test_case_and_kernel_specification": "The response must present an explicit, irreducible test system (equation, dataset, or operator), showing its violation of the four solvers' assumptions, and propose a kernel module at the mechanistic, not just descriptive, level. Trivial or legacy-building-block solutions (e.g., 'just add stochasticity') will not earn sufficiency credit."
+  },
+  "underidentified_after": 20,
+  "underidentified_after_reason": "2026-04-24 iter-8 exit trap: underidentified_after=3 default killed gp150 at iter 8 score 78 stagnation_count=4. Per champion profile (mining B4): champions average 28 iters; current default is 3.5x too aggressive. Bumped to 20 for this self-audit run. Long-term fix: Task #12 class-novelty-based stagnation.",
+  "inject_antipattern_catalog": "hardkill",
+  "stagnation_trigger_mode": "new_class",
+  "stagnation_trigger_mode_reason": "Task 12 / Gemini Inversion #3: reset stagnant_window when iteration's weakest-link class is new to the session. Champion persistence profile (GP-148) shows \u226585-score groups traverse ~10 distinct classes over ~28 iters; score-only stagnation kills the class-cycling behavior that produces champions. Works with underidentified_after=20 and gp103_stagnation_threshold=6 as belt-and-suspenders.",
+  "rubric_version": "1.2-class-novelty-stagnation",
+  "rubric_version_reason": "1.1 bumped underidentified_after=20 and stagnation_threshold=6 to prevent iter-8 kill-trap. 1.2 adds stagnation_trigger_mode=new_class so non-improving iterations that surface new weakest-link classes do not increment stagnation at all. Hardkill catalog injected (cross-LLM-validated)."
+}

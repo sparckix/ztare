@@ -1,0 +1,26 @@
+schema_version: 1
+role_id: principal
+role_class: authority
+description: Frozen v1 fixture — test principal.
+authorized_paths:
+  - "*"
+forbidden_paths: []
+delegates_to:
+  - role.manager
+escalates_to: []
+budget:
+  daily_cap_usd: null
+  session_cap_usd: null
+  single_action_cap_usd: null
+  warn_threshold_frac: null
+  absolute_ceiling_usd: null
+mandate_path: null
+sla:
+  response_time_inbox_hours: 24
+  response_time_urgent_hours: 1
+failure_mode:
+  on_unavailable: "test fixture — n/a"
+signs_gates:
+  - TEST_GATE
+opened_date: "2026-04-23"
+opened_by: principal_human

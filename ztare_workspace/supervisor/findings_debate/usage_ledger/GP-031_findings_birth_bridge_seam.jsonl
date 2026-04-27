@@ -1,0 +1,2 @@
+{"cycle_index": 1, "agent": "Codex", "model_name": "o4-mini-2025-04-16", "input_tokens": 7144, "output_tokens": 506, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "estimated_cost_usd": 0.0, "telemetry_captured": true}
+{"cycle_index": 2, "agent": "Claude", "model_name": "claude-sonnet-4-6", "input_tokens": 8410, "output_tokens": 615, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "estimated_cost_usd": 0.034455, "telemetry_captured": true}

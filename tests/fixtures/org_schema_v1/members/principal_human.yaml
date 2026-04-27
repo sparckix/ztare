@@ -1,0 +1,17 @@
+schema_version: 1
+member_id: principal_human
+kind: human
+display_name: Test Principal
+description: >
+  Frozen v1 fixture member. Do not edit.
+substrates:
+  - human_conversational
+contact:
+  email_file: mandates/.contact_email
+availability:
+  timezone: local
+  typical_active_hours: "workday"
+  escalation_response_urgent_hours: 1
+  escalation_response_inbox_hours: 24
+opened_date: "2026-04-23"
+opened_by: self

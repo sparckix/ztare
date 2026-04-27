@@ -25,7 +25,7 @@ import re
 import symtable
 from pathlib import Path
 
-from src.ztare.validator.charter_parsing import normalize_anchor_proxy_name
+from src.ztare.validator.core.charter_parsing import normalize_anchor_proxy_name
 
 
 def _collect_name_targets(target: ast.AST) -> set[str]:

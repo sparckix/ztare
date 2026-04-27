@@ -1,0 +1,48 @@
+schema_version: 1
+role_id: engineer
+role_class: specialist
+description: >
+  Production-code engineering role. Owns definition-of-done on seam
+  implementation. Invoked via wrapper when production-quality code
+  changes are needed. Does not delegate further — workers it uses are
+  internal to its substrate.
+
+authorized_paths:
+  - "src/"
+  - "tests/"
+  - "scripts/"
+  - "supervisor/"
+forbidden_paths:
+  - "~/.ssh/"
+  - ".ip_protected/"             # engineer does not see IP drafts
+  - "org/mandates/"              # personal context sequestered
+  - "org/sessions/"              # cannot read other roles' sessions
+
+delegates_to: []                 # engineer does not delegate out
+
+escalates_to:
+  - role.manager                 # report back to requesting manager
+  - role.principal               # for anything outside engineering scope
+
+budget:
+  daily_cap_usd: 20.00
+  session_cap_usd: 10.00
+  single_action_cap_usd: 5.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 20.00
+
+mandate_path: null               # scope inherited from wrapper config; no dedicated mandate
+
+sla:
+  response_time_inbox_hours: null
+  response_time_urgent_hours: null
+
+failure_mode:
+  on_unavailable: "manager falls back to own execution"
+  on_crash: "wrapper output envelope flags the failure; handoff to principal"
+
+signs_gates:
+  - PENDING_REVIEW               # engineer co-signs code review gates
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

@@ -16,7 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import re
 
-from src.ztare.validator.charter_parsing import AsymptoticClaimContract
+from src.ztare.validator.core.charter_parsing import AsymptoticClaimContract
 from src.ztare.fit.fit_primitive import parse_fit_declaration
 
 

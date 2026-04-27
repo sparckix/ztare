@@ -1,0 +1,477 @@
+{
+  "generated": "2026-04-24",
+  "source": "/Users/daalami/figs_activist_loop/analytics/trajectory_archive_enriched.jsonl",
+  "total_groups": 139,
+  "total_with_scores": 130,
+  "top_20_ceilings": [
+    {
+      "project": "ai_competitive_landscape",
+      "rubric_hash": "494de9b58703f157",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "ai_competitive_landscape__session_001",
+      "max_score": 115,
+      "max_score_iter_timestamp": 1776141382,
+      "max_score_iteration_index": 4,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "The practical measurability of 'critical error-to-remediation cycle time' and the 'Fidelity Debt Decay Constant' (k) across different enterprise providers for external observers, which, while theoretically sound for falsification, presents a significant data acquisition challenge in practice.",
+      "group_iter_count": 6,
+      "group_scored_count": 6
+    },
+    {
+      "project": "hormuz_oil_shock_2026",
+      "rubric_hash": "59e5d538effa6f38",
+      "mutator_model_id": "claude-sonnet-4-6",
+      "judge_model_id": "claude-sonnet-4-6",
+      "run_session_id": "hormuz_oil_shock_2026__session_004",
+      "max_score": 115,
+      "max_score_iter_timestamp": 1776212499,
+      "max_score_iteration_index": null,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "The 'Minimum Market Coherence Threshold' (P_PHYS_MIN_MARKET_IMPACT = $1.00/bbl) remains an exogenously determined axiom, despite its justification. Its ongoing validity requires continuous empirical validation against future disruption events and could be falsified by detailed econometric analysis proving a similarly scaled physical impact below this threshold, potentially compromising the derived kappa span ratio.",
+      "group_iter_count": 10,
+      "group_scored_count": 10
+    },
+    {
+      "project": "us_tariff_passthrough_2026",
+      "rubric_hash": "07092a470e77166d",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "us_tariff_passthrough_2026__session_001",
+      "max_score": 115,
+      "max_score_iter_timestamp": 1776142301,
+      "max_score_iteration_index": 2,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "The single most catastrophic assumption identified in this thesis is: that firms solely optimize for short-term profit by passing on tariff costs. This assumption forms the bedrock of the 'catastrophically naive and uniform tariff pass-through rate across all sectors' which the thesis aims to correct.",
+      "group_iter_count": 11,
+      "group_scored_count": 10
+    },
+    {
+      "project": "eu_union_failure_probability_2035",
+      "rubric_hash": "107ed7467d7f8fd2",
+      "mutator_model_id": null,
+      "judge_model_id": null,
+      "run_session_id": "eu_union_failure_probability_2035__session_004",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1775937506,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The qualitative grounding of the precise integer N=3 as the minimal robust threshold for 'multi-state breakdown' from textual evidence, despite the logical consistency of its discriminatory behavior.",
+      "group_iter_count": 18,
+      "group_scored_count": 15
+    },
+    {
+      "project": "gp023_sandbox_09",
+      "rubric_hash": "750f6dbb8cc56fdd",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "gp023_sandbox_09__session_001",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1776259248,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The primary friction point is the precise functional form of the R-dependence within the exponent, specifically whether the proposed `R^(C1 + C2*log(R))` structure is the exact and sufficient solution for the farther-tail behavior, or if another structure would provide a better or more parsimonious fit.",
+      "group_iter_count": 9,
+      "group_scored_count": 7
+    },
+    {
+      "project": "gp045_cold_residual_01",
+      "rubric_hash": "523740c0ef5e4eb7",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "gp045_cold_residual_01__session_001",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1776037332,
+      "max_score_iteration_index": 8,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The precise physical origin of the power-law exponents is not derived, nor is the uniqueness of the additive superposition rule.",
+      "group_iter_count": 11,
+      "group_scored_count": 11
+    },
+    {
+      "project": "gp080_01",
+      "rubric_hash": "896177faeffb38c8",
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp080_01__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1776475986,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_rmse",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_on_visible_set",
+        "rubric_dim.generalization_quality",
+        "rubric_dim.structural_derivation"
+      ],
+      "weakest_point_at_ceiling": "The inability to guarantee global uniqueness of the continuous generating law based only on perfect finite fit; countless higher-order hybrid expressions can interpolate the discrete evidence with zero residual, so all claims of generalization beyond local algebraic sufficiency rest on pragmatic (not deductive) parsimony.",
+      "group_iter_count": 25,
+      "group_scored_count": 25
+    },
+    {
+      "project": "gp096_kww_sandbox_17",
+      "rubric_hash": "e40bc2538cfec867",
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp096_kww_sandbox_17__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1776565723,
+      "max_score_iteration_index": 2,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_l2",
+        "holdout_hard_gate"
+      ],
+      "weakest_point_at_ceiling": "The catastrophic assumption is exclusion of multi-exponential (Prony series) rivals: that the observed curve cannot be explained as a sum of standard exponential decays plus offset, and thus a fractional exponent in the decay law is strictly required.",
+      "group_iter_count": 4,
+      "group_scored_count": 4
+    },
+    {
+      "project": "survey_s1",
+      "rubric_hash": "e35bb6df8342d0d3",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "survey_s1__session_002",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1776948134,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The distinction between 1/log(n) and 1/n convergence is empirically weak within the data range; data may not decisively rule out a faster (1/n-based) convergence if tail discrimination is not sharp enough.",
+      "group_iter_count": 50,
+      "group_scored_count": 49
+    },
+    {
+      "project": "gp023_crucial_01",
+      "rubric_hash": "bd8bd38c0d098556",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp023_crucial_01__session_001",
+      "max_score": 97,
+      "max_score_iter_timestamp": 1776518339,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_rmse",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_on_visible_set",
+        "rubric_dim.generalization_quality",
+        "rubric_dim.structural_derivation"
+      ],
+      "weakest_point_at_ceiling": "Extrapolation of parameterized scaling laws (especially z_peak ~ x2^3 and x1_peak ~ x2) may not remain valid far outside the tested domain; only three distinct x2 values are present in the evidence, so apparent linearity of x1_peak / x2 or cubic scaling of z_peak may break at larger or smaller x2, or under unseen systematic shifts.",
+      "group_iter_count": 16,
+      "group_scored_count": 16
+    },
+    {
+      "project": "gp069_sandbox_13",
+      "rubric_hash": "10bdd5e07a13fd48",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp069_sandbox_13__session_002",
+      "max_score": 97,
+      "max_score_iter_timestamp": 1776363198,
+      "max_score_iteration_index": 8,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.discrete_exact"
+      ],
+      "weakest_point_at_ceiling": "The architecture provides no logical warrant for any particular generalization to unobserved x; all extensions beyond observed data are structurally arbitrary, and this epistemic humility is called out and embraced (default-to-zero), but it means the solution has zero inductive leverage and potentially fails on out-of-sample (holdout) if the true rule is not data-random.",
+      "group_iter_count": 13,
+      "group_scored_count": 12
+    },
+    {
+      "project": "gp069_sandbox_13",
+      "rubric_hash": "10bdd5e07a13fd48",
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp069_sandbox_13__session_002",
+      "max_score": 97,
+      "max_score_iter_timestamp": 1776363750,
+      "max_score_iteration_index": 2,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.discrete_exact"
+      ],
+      "weakest_point_at_ceiling": "The architecture permits completely arbitrary, unprincipled generalization for unseen x: the choice of f(x)=0 (or any other deterministic integer function) for out-of-data points is epistemically vacuous, since the charter imposes no inductive bias, Occam preference, or statistical prior.",
+      "group_iter_count": 10,
+      "group_scored_count": 10
+    },
+    {
+      "project": "gp138_noether_g_selection",
+      "rubric_hash": "9e1da650ef9d55b6",
+      "mutator_model_id": "o3",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp138_noether_g_selection__session_001",
+      "max_score": 97,
+      "max_score_iter_timestamp": 1776988315,
+      "max_score_iteration_index": 4,
+      "active_constraints": [
+        "dag_steering",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.none",
+        "mform_alignment_audit",
+        "rubric_dim.g-selection_specificity",
+        "rubric_dim.generative_yield_(newton-mode)",
+        "rubric_dim.mechanism_algorithmic_concreteness",
+        "rubric_dim.tautology_avoidance",
+        "rubric_dim.theoretical_grounding",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "No explicit adversarial code for catalog-based selectors outside the prototype tests for the minimal counterexamples; does not exhaustively enumerate all possible heuristic selection mechanisms, leaving a thin gap if a pathological, yet zero-error, structure-based selector can exist.",
+      "group_iter_count": 8,
+      "group_scored_count": 8
+    },
+    {
+      "project": "gp077_a002865_01",
+      "rubric_hash": null,
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp077_a002865_01__session_001",
+      "max_score": 96,
+      "max_score_iter_timestamp": 1776452161,
+      "max_score_iteration_index": null,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "Unresolved: Full closed-form elementary algebraic mapping for the sequence without recourse to combinatorial recursions",
+      "group_iter_count": 17,
+      "group_scored_count": 17
+    },
+    {
+      "project": "sandbox_15_component_c_test",
+      "rubric_hash": null,
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "sandbox_15_component_c_test__session_002",
+      "max_score": 96,
+      "max_score_iter_timestamp": 1776441910,
+      "max_score_iteration_index": null,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "The pivotal assumption that the secondary step function math.floor((v+5)/12) continues to scale unboundedly with v, with fixed interval k=12 and phase P0=5, without eventual saturation, drift, or domain-limited breakdown.",
+      "group_iter_count": 23,
+      "group_scored_count": 23
+    },
+    {
+      "project": "gp023_planck_sandbox_01",
+      "rubric_hash": "59cd57d19b09c105",
+      "mutator_model_id": null,
+      "judge_model_id": null,
+      "run_session_id": "gp023_planck_sandbox_01__session_002",
+      "max_score": 95,
+      "max_score_iter_timestamp": 1775913949,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The challenge in achieving the charter's global max |I_obs - I_model| < 0.05 residual criterion for the psi=1.8 sweep at high phi values. While the thesis provides a compelling rationale attributing this to the data range not extending to the true asymptotic floor, it remains a point where the model's numerical output deviates significantly from observed data in that specific regime.",
+      "group_iter_count": 31,
+      "group_scored_count": 30
+    },
+    {
+      "project": "gp061_sandbox_11_01",
+      "rubric_hash": "b922a67866863474",
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gemini-3.1-pro-preview",
+      "run_session_id": "gp061_sandbox_11_01__session_001",
+      "max_score": 95,
+      "max_score_iter_timestamp": 1776305437,
+      "max_score_iteration_index": 4,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The thesis commits an epistemological overreach by conflating the observational absence of measurable leakage (which is buried in the noise floor) with a metaphysical proof of a strictly non-differentiable C0 structural break.",
+      "group_iter_count": 6,
+      "group_scored_count": 6
+    },
+    {
+      "project": "gp096_sandbox_18",
+      "rubric_hash": "596b4de7441fe501",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp096_sandbox_18__session_001",
+      "max_score": 95,
+      "max_score_iter_timestamp": 1776638003,
+      "max_score_iteration_index": 1,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_l2",
+        "holdout_hard_gate"
+      ],
+      "weakest_point_at_ceiling": "Form is not uniquely mandated; rival forms (e.g., stretched exponentials, sum-plus-inverse, rational corrections) can also fit the observed slope ratios and tail, leaving genuine functional ambiguity unresolved for u beyond observation.",
+      "group_iter_count": 21,
+      "group_scored_count": 21
+    },
+    {
+      "project": "gp096_sandbox_18",
+      "rubric_hash": "596b4de7441fe501",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp096_sandbox_18__session_002",
+      "max_score": 95,
+      "max_score_iter_timestamp": 1776642741,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_l2",
+        "holdout_hard_gate"
+      ],
+      "weakest_point_at_ceiling": "The necessity and correctness of explicit inverse-u tail terms in the rational model: if the persistent slow tail at high-u is not truly 1/u but can be captured by long-timescale exponentials, this component forces structural error in the far range, undermining generalization.",
+      "group_iter_count": 13,
+      "group_scored_count": 13
+    },
+    {
+      "project": "gp096_sandbox_18_gagorder",
+      "rubric_hash": "3127e3021776df6d",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp096_sandbox_18_gagorder__session_001",
+      "max_score": 95,
+      "max_score_iter_timestamp": 1776646938,
+      "max_score_iteration_index": 3,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_l2",
+        "holdout_hard_gate"
+      ],
+      "weakest_point_at_ceiling": "The assumption that the only way to eliminate monotonic, sign-coherent high-u residuals is to add a second stretched exponential (double stretched-exponential) rather than testing a broader family of subdominant power-law, rational, or non-analytic tails. Other possible flexible forms with fewer parameters are not fully explored or ruled out.",
+      "group_iter_count": 11,
+      "group_scored_count": 11
+    }
+  ],
+  "wall_analysis": {
+    "wall_range": "70 <= max_score <= 85",
+    "high_range": "max_score >= 86",
+    "wall_range_group_count": 27,
+    "high_range_group_count": 46,
+    "potential_wall_constraints": [
+      {
+        "constraint": "rubric_dim.class-selection_independence",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.037,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 37.04
+      },
+      {
+        "constraint": "rubric_dim.detector_specificity",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.037,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 37.04
+      },
+      {
+        "constraint": "rubric_dim.farther-tail_prediction",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.037,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 37.04
+      },
+      {
+        "constraint": "rubric_dim.generative_mechanism",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.037,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 37.04
+      },
+      {
+        "constraint": "rubric_dim.generative_yield",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.037,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 37.04
+      },
+      {
+        "constraint": "rubric_dim.internal_consistency",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.037,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 37.04
+      },
+      {
+        "constraint": "charter_refs.GP-133",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.074,
+        "high_range_count": 1,
+        "high_range_freq": 0.022,
+        "freq_ratio": 3.41
+      },
+      {
+        "constraint": "rubric_dim.empirical_fit_on_visible_set",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.074,
+        "high_range_count": 1,
+        "high_range_freq": 0.022,
+        "freq_ratio": 3.41
+      },
+      {
+        "constraint": "rubric_dim.external_correctness-tax_and_gate_modeli",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.074,
+        "high_range_count": 1,
+        "high_range_freq": 0.022,
+        "freq_ratio": 3.41
+      },
+      {
+        "constraint": "rubric_dim.holdout_generalization",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.074,
+        "high_range_count": 1,
+        "high_range_freq": 0.022,
+        "freq_ratio": 3.41
+      },
+      {
+        "constraint": "rubric_dim.primitive-substrate_mapping_clarity",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.074,
+        "high_range_count": 1,
+        "high_range_freq": 0.022,
+        "freq_ratio": 3.41
+      },
+      {
+        "constraint": "rubric_dim.rival_mechanism_enumeration",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.074,
+        "high_range_count": 1,
+        "high_range_freq": 0.022,
+        "freq_ratio": 3.41
+      },
+      {
+        "constraint": "rubric_dim.test_&_derivation_specificity",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.074,
+        "high_range_count": 1,
+        "high_range_freq": 0.022,
+        "freq_ratio": 3.41
+      }
+    ]
+  },
+  "anti_overfitting_notes": [
+    "active_constraints reflects current rubric state, not historical.",
+    "Wall-constraint analysis uses frequency comparison, not statistical testing.",
+    "Wall range has 27 groups; results are exploratory.",
+    "Groups with null rubric_hash or model IDs may merge distinct configurations."
+  ]
+}

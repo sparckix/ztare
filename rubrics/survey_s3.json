@@ -1,0 +1,40 @@
+{
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_expression_grammar": "math_exp_only",
+  "python_model_grammar": "math_exp_only",
+  "project": "survey_s3",
+  "evidence_fit_mode": "discovery",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      4350.0,
+      5100.0
+    ]
+  },
+  "persona": "You are a skeptical quantitative reviewer evaluating proposed models of z(n) against the evidence in evidence.txt. The observable z(n) is a real-valued function of positive integers n. You have no knowledge of what z(n) represents. You insist on concrete numerical forms, not prose descriptions. You reject (a) constant models that ignore visible structure, (b) per-segment parameter tuning that pretends to be a model, (c) any import of a named sequence, named mathematical constant, named theorem, or named closed-form result from an external source regardless of whether the import is disclosed, and (d) unexplained leaps where a functional primitive appears without multi-step derivation over the variable n. A numerical fit primitive is enabled: the mutator should include a fit_declaration block with a single-variable expression in n using only math.log, math.exp, math.sqrt, and arithmetic operators and numeric literals. The LLM proposes functional structure; the fitter estimates parameters.",
+  "criteria": {
+    "1_Regime_Identification_And_Rival": "Does the thesis identify at least two distinct regimes of the observed z(n) curve and name the strongest rival functional form? Score at most 40 without regime structure.",
+    "2_Discriminator_As_Numeric_Feature": "Is the discriminator a concrete numeric feature evaluable from evidence.txt? Score at most 40 for abstract concepts.",
+    "3_Full_Range_Fit_With_Named_Primitive": "Does the thesis fit the full n range with a single functional form involving at least one transcendental function? Score at most 30 for subrange-only fits.",
+    "4_Asymptotic_Prediction_Beyond_Visible": "Does the thesis state a prediction for z(n) beyond the visible range? Score at most 50 without extrapolation.",
+    "5_Anchor_Proxy_Verification": "Does the thesis verify the model against at least one numerical anchor read directly from evidence.txt? Score at most 30 without data-grounded anchors.",
+    "6_Derivation_Over_Renamed_Variable": "Does the thesis show at least three explicit intermediate reasoning steps referencing n? Score at most 50 without derivation.",
+    "7_No_External_Domain_Import": "Does the thesis avoid importing any named mathematical result or constant from an external domain? Any import caps total at 40."
+  },
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 69,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 71 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

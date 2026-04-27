@@ -1,0 +1,45 @@
+{
+  "rubric_version": "1.0",
+  "project": "oeis_a000959",
+  "falsification_mode": "bounded_discriminator",
+  "holdout_hard_gate": true,
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "n"
+  ],
+  "fit_expression_grammar": "math_exp_only",
+  "fit_score_mode": "continuous_l2",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      20001.0,
+      50000.0
+    ]
+  },
+  "gate_residual_threshold": 0.05,
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 1,
+  "persona": "You are a skeptical quantitative reviewer. The observable is a density ratio that appears to increase slowly. GRAMMAR: math_exp_only. You are a TOPOLOGY GENERATOR: provide a fit_declaration block only.",
+  "criteria": {
+    "1_Growth_Regime": "Identify the growth regime and name a rival.",
+    "2_Full_Range_Fit": "Fit the full visible range with a single expression.",
+    "3_Farther_Tail": "Predict continued growth beyond the visible range.",
+    "4_No_Import": "No named external model or constant.",
+    "5_Grammar": "math_exp_only compliance."
+  },
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 4499,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 4501 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

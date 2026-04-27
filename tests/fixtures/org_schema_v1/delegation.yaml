@@ -1,0 +1,20 @@
+schema_version: 1
+description: Frozen v1 fixture delegation graph.
+delegation_edges:
+  - from: role.principal
+    to: role.manager
+    kind: mandate
+  - from: role.manager
+    to: worker.test_worker
+    kind: invocation
+    via: sub_agent_tool
+escalation_edges:
+  - from: role.manager
+    to: role.principal
+    via: [inbox_file]
+    trigger: "test fixture escalation"
+gate_signers:
+  TEST_GATE: role.principal
+invariants:
+  - "Every role.* in delegation_edges must exist in roles/"
+  - "principal must have no outgoing escalates_to edges"

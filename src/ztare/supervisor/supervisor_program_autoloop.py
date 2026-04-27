@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from src.ztare.common.paths import REPO_ROOT
-from src.ztare.validator.document_assembler import (
+from src.ztare.validator.utilities.document_assembler import (
     assemble_document_from_manifest,
     load_document_manifest,
 )

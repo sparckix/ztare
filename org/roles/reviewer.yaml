@@ -1,0 +1,40 @@
+schema_version: 1
+role_id: reviewer
+role_class: reviewer
+description: >
+  Peer reviewer and inversion partner. Pressure-tests claims, provides
+  independent domain opinion, performs Mungerian inversions. Read-only
+  by default — produces critiques but does not modify the repository.
+  Can be filled by humans (as backup) or by AI members.
+
+authorized_paths: []             # read-only
+forbidden_paths:
+  - "*"                          # reviewer writes nothing
+
+delegates_to: []
+
+escalates_to:
+  - role.manager                 # return critique to invoking manager
+  - role.principal               # for governance-level concerns
+
+budget:
+  daily_cap_usd: 15.00
+  session_cap_usd: 8.00
+  single_action_cap_usd: 3.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 15.00
+
+mandate_path: null
+
+sla:
+  response_time_inbox_hours: null
+  response_time_urgent_hours: null
+
+failure_mode:
+  on_unavailable: "manager proceeds without peer review; notes the absence in logs"
+  on_crash: "API error logged; retry once, then proceed"
+
+signs_gates: []                  # reviewer gives opinions, does not sign
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

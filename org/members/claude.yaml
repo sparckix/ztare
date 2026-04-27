@@ -1,0 +1,59 @@
+schema_version: 1
+member_id: claude
+kind: ai
+display_name: Claude (Anthropic)
+description: >
+  Anthropic Claude — a conversational AI agent. Capable of code
+  authoring, research coordination, peer review, multi-step planning.
+  Can inhabit a persistent (daemon) or session-bound (Claude Code CLI)
+  substrate. Fills the manager role in this organization.
+
+# Substrates this member can inhabit. Each substrate has different
+# persistence, cost, and capability characteristics.
+substrates:
+  - name: claude_conversational
+    kind: session_bound          # dies when session ends
+    current_model: claude-sonnet-4-6
+    invocation: "Claude Code CLI"
+    persistence: "in-memory + auto-memory / filesystem artifacts"
+    strengths:
+      - "long context (1M tokens)"
+      - "conversational judgment + clarification"
+      - "tool orchestration (Bash, Agent, Edit, Write, etc.)"
+    weaknesses:
+      - "requires principal session to be open"
+      - "cost varies with cache hits"
+
+  - name: claude_headless_daemon  # GP-128 future work, Level 2
+    kind: persistent
+    current_model: claude-sonnet-4-6
+    invocation: "systemd service on a VPS"
+    persistence: "continuous background process"
+    strengths:
+      - "no principal session required"
+      - "fires on cron or on gate resolution events"
+    weaknesses:
+      - "per-turn cost; no conversational loop"
+      - "requires Pydantic-structured decision interface (GP-128 future)"
+
+# Cost reference — already captured in supervisor/model_pricing.json
+# Spend tracker reads that file; no duplication here.
+
+# Contract terms
+contract:
+  provider: Anthropic
+  billing: pay-per-token
+  pricing_source: supervisor/model_pricing.json
+
+# Capabilities bitmap (informational; used by role-assignment validation)
+capabilities:
+  - code_authoring
+  - research_coordination
+  - peer_review
+  - planning
+  - documentation
+  - conversational_negotiation
+  - sub_agent_orchestration
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

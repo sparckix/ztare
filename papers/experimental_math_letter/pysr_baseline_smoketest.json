@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "key": "s2",
+      "label": "Mertens M(n)/sqrt(n) (letter \u00a72.7 S2 / \u00a71 abstract)",
+      "ztare_verdict": "null (correct)",
+      "pysr_equation": "-1.8507432/sqrt(n)",
+      "pysr_complexity": 4,
+      "pysr_visible": {
+        "n": 140,
+        "max_abs": 0.4348181182045109,
+        "rmse": 0.1872769202930778
+      },
+      "pysr_holdout": {
+        "n": 30,
+        "max_abs": 0.2834437710166243,
+        "rmse": 0.14533049166352544
+      },
+      "pysr_farther_tail": {
+        "n": 30,
+        "max_abs": 0.29863054677094675,
+        "rmse": 0.14126339198861002
+      },
+      "pysr_gate_verdict": "form-passes-gate (max-oos=0.2986 <= 0.5861)",
+      "pysr_elapsed_sec": 8.6
+    }
+  ]
+}

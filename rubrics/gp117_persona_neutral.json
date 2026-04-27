@@ -1,0 +1,40 @@
+{
+  "rubric_version": "1.0",
+  "project": "gp118_persona_neutral",
+  "falsification_mode": "bounded_discriminator",
+  "holdout_hard_gate": true,
+  "enable_component_c": false,
+  "enable_fit_primitive": true,
+  "cold_residual_successor_mode": true,
+  "gp048_telemetry": true,
+  "gp048_stagnation_injection_mode": "primitive_cone",
+  "gp048_farther_tail_veto_mode": "sanitized",
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "n"
+  ],
+  "fit_expression_grammar": "math_exp_only",
+  "fit_score_mode": "continuous_l2",
+  "asymptotic_claim": false,
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      55.0,
+      74.0
+    ]
+  },
+  "gate_residual_threshold": 0.05,
+  "composition_stagnation_threshold": 3,
+  "gp103_stagnation_threshold": 1,
+  "persona": "Evaluate the following hypothesis against the scoring dimensions. Score each dimension from 0 to 100. Provide specific feedback on weaknesses and strengths. Be balanced and fair. NOTE: A numerical fit primitive (GP-035) is enabled. You are a TOPOLOGY GENERATOR: provide a fit_declaration block only. The system builds test_model.py deterministically from that declaration. You do NOT write def f() or MODEL_PARAMS. GRAMMAR CONSTRAINT (math_exp_only): Your expression may use ONLY math.exp, math.log, math.sqrt, arithmetic (+, -, *, /, **), declared variables and parameters, and constants math.e, math.pi. No math.sin, math.cos, math.tan, math.sinh, math.cosh, math.tanh, no eml(). Any forbidden call scores 0 on grammar compliance.",
+  "criteria": {
+    "1_Growth_Regime_And_Rival": "Does the thesis identify the decelerating sub-linear growth regime and name the strongest rival form (e.g., pure linear a*n + b)? A thesis proposing a linear or faster-than-linear form without addressing the observed deceleration scores at most 40.",
+    "2_Discriminator_As_Numeric_Feature": "Is the named discriminator a concrete numeric feature (e.g., the increment ratio or value-ratio vs n-ratio) evaluable against evidence.txt NOW? Abstract discriminators score at most 40.",
+    "3_Full_Range_Fit": "Does the thesis fit the full visible range n=5..34 with a single math_exp_only expression capturing both early growth and late deceleration? Fits of only a sub-range score at most 30.",
+    "4_Farther_Tail_Growth_Prediction": "Does the thesis correctly predict that v(n) continues to grow monotonically for n beyond 34 at a rate consistent with the visible deceleration trend? A form predicting saturation or divergence will fail the farther-tail gates. Derivation of the growth continuation from observable features scores in the top band.",
+    "5_Anchor_Proxy_Verification": "Does the thesis state at least one numerical anchor proxy read directly from evidence.txt and verify the model against it? No data-grounded anchor scores at most 30.",
+    "6_Trace_Emergence_Over_Variable": "At least three explicit intermediate reasoning steps referencing n, with the final form derivable without an unexplained jump. Forms appearing without a three-step derivation score at most 50.",
+    "7_No_External_Domain_Import": "No named external model, formula, named constant, or phenomenon from any domain. Any import caps total score at 40.",
+    "8_Grammar_Compliance": "Expression uses only math.exp, math.log, math.sqrt, arithmetic, declared variables/parameters. Any forbidden call scores 0."
+  }
+}

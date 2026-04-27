@@ -1,0 +1,148 @@
+{
+  "name": "gp158_v5_cage_orchestrator_audit",
+  "project": "gp158_v5_cage_orchestrator_audit",
+  "rubric_version": "1.0",
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Audit substrate: mutator submits adversarial design-defect identifications + concrete attack vectors against the proposed v5.0 Cage Orchestrator architecture. NOT a predictor I_model.",
+  "rubric_version_reason": "Inverted execution-hostile audit of the GP-157 v5.0 Cage Orchestrator design BEFORE any code ships. Mirrors gp156 charter format. Requires concrete failure-case identification, not parsimony theater.",
+  "description": "Adversarial audit of the proposed v5.0 Cage Orchestrator design (GP-157 seam): substrate-agnostic dispatch, FitEngine Protocol consolidation, substrate_evaluation utility, canonical gate-harness schema. Auditor hunts for reachability defects, hidden coupling, overfitting carry-over from the 24-bug 2026-04-25 session, adversarial bypasses of can_handle, and compositional conflicts with existing gates.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate where the discovery target is concrete v5.0 design-defect identifications. Generative yield required (≥2 specific defects with named failure mode + named affected component).",
+  "falsification_mode": "bounded_discriminator",
+  "require_cross_family": false,
+  "require_cross_family_reason": "Set false for fast-iteration audit (mirrors gp156). Same-family blind-spot acknowledged; would re-cert with cross_family=true before claiming a champion architectural finding. Audit's value is defect-discovery breadth, not adversarial-airgap purity.",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "stagnation_trigger_mode": "new_class",
+  "underidentified_after": 12,
+  "gp103_stagnation_threshold": 5,
+  "composition_stagnation_threshold": 4,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "no numerical holdout; substrate is a design document, judged by defect-identification quality not by prediction MRE.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Audit substrate is a design seam, not a numerical curve.",
+  "enable_framer": false,
+  "discovery_mode": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numerical observable to extrapolate over.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence is a design seam + 24-bug taxonomy, not a fitting curve.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rivals scored under Defect Concreteness; mathematical-form heuristic does not apply.",
+  "evidence_anchor_requirement": true,
+  "general_office_model": "gpt4.1",
+  "enable_mform_audit": true,
+  "persona": "You are a hostile architect with the discipline of a senior staff engineer doing pre-implementation review on a proposed architecture. Your job is to find concrete, demonstrable v5.0 Cage Orchestrator design defects BEFORE any code ships. You REJECT theoretical-elegance critiques: a thesis that says 'the FitEngine Protocol could be cleaner' without naming a specific substrate property that breaks it scores zero on Defect Concreteness. You REJECT spec-level abstractions: any thesis that proposes 'a deeper abstraction would solve this' without identifying a concrete v5.0 failure scores zero. You REJECT lookup-table critiques (RH-17): 'here are 10 potential vulnerabilities' without specific named failure modes is zero. You REJECT proposing MORE layers / gates / schemas — the v5.0 design was prompted by an OVER-ENGINEERING reviewer finding; suggesting more layers is the wrong direction. You REWARD: (i) specific reachability defects discovered via the reflexive primitive (rules R1-R4 in evidence.txt — arch-map line citations, Protocol vs current call sites, schema migration bidirectionality, can_handle routing test on {gp154,gp155,gp156,gp146,gp077}) in v5.0's dispatcher (a (gate × substrate-class) pair where can_handle silently fails); (ii) specific hidden-coupling defects in the FitEngine Protocol (a substrate property neither 1D nor N-D primitives have today that breaks the Protocol); (iii) specific magic numbers the substrate_evaluation API forces back into per-project gate_harness; (iv) named overfitting carry-over from the 24-bug taxonomy in evidence.txt — at least 3 bugs whose v5.0 fix relocates rather than closes the failure class; (v) adversarial bypasses of can_handle that produce 100% downstream crashes (Bug #16 class survival); (vi) compositional conflicts with G-CIRC / G-FALSIFY / Framer / holdout-hard-gate / class-novelty / hardkill retirement. The 24-bug taxonomy in evidence.txt is the EMPIRICAL FLOOR: any defect already addressed by an existing GP-156/157 fix is not a finding. The thesis MUST cite at least 2 of the 24 bugs by class+number when claiming a v5.0 failure carries them forward. You CRITICALLY REJECT theses that assert 'Cage hooks at line X' without verifying line X still has the claimed shape — that's the same Bug #11 sloppiness that produced 30+ unreachable iters in the GP-156 session. Cite arch map line ranges or grep outputs; do not hallucinate.",
+  "dimensions": [
+    {
+      "name": "Defect Concreteness",
+      "weight": 6.5,
+      "description": "Does the thesis identify a CONCRETE v5.0 design defect with named failure class + named affected component (FitEngine, substrate_evaluation, Cage dispatcher, can_handle predicate, canonical schema)? Score 0 if no concrete defect (theoretical critique only); 12 if defect named but no specific failure trigger; 25 if defect AND specific (gate × substrate / API call / config) trigger that demonstrably breaks v5.0."
+    },
+    {
+      "name": "Bug-Class Carryover",
+      "weight": 5.0,
+      "description": "Does the thesis identify ≥3 of the 24 bugs from 2026-04-25 (in evidence.txt) where the v5.0 design RELOCATES rather than CLOSES the failure class? Each carryover must cite the bug by number + name the v5.0 layer where it resurfaces. 0 for fewer than 3; 10 for 3 with citations; 18 for 5+ with concrete v5.0-side reproduction sketch."
+    },
+    {
+      "name": "Reachability Defect Discovery",
+      "weight": 4.5,
+      "description": "Specific (gate × substrate-class) pairing where v5.0's `can_handle` predicate would silently fail to engage the gate. Bug #11-class survival under the new architecture. 0 for none; 9 for named pair without trigger; 18 for named pair AND specific config that produces silent unreachability."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15.0,
+      "description": "Pre-commit ≥ 2 distinct v5.0 design failures with declared expected behavior: (a) defect class X in component Y produces apparatus state Z; (b) defect class W in component V produces apparatus state U. 0 if no secondary observables; 8 if one named without numeric commit; 15 if ≥ 2 with concrete reproduction sketches."
+    },
+    {
+      "name": "Implementation-Layer Specificity",
+      "weight": 2.5,
+      "description": "Cite specific file paths, function names, line numbers, AST node types, or Protocol method signatures. Vague references ('the dispatcher might fail') = zero; specific references ('Cage.can_handle at the proposed src/ztare/gates/cage.py rejects substrate X because the Protocol assumes feature_keys() returns a sorted list, but substrate Y exposes a frozenset') = full credit."
+    },
+    {
+      "name": "Anti-Overfitting Audit",
+      "weight": 4.0,
+      "description": "Identify magic numbers in v5.0 design (1.5× near-miss factor, 0.5 crash threshold, K=8 hard ceiling, etc.) that v5.0 inherits from the 2026-04-25 session WITHOUT audit-validation. The K_law=5 sycophancy-loop precedent (gp152/153 postmortem) is the calibration: any magic number in v5.0 must have an audit trail or be flagged. 0 for no magic-number audit; 8 for ≥1 named with sycophancy-loop risk; 15 for ≥3 with concrete revalidation paths."
+    },
+    {
+      "name": "M-Form Charter Alignment: must_demonstrate_defect",
+      "weight": 3.0,
+      "description": "[GP-105 General Office insertion] Theses must demonstrate at least one concrete v5.0 defect with named failure class + affected component + bug-class citation; spec-level critiques without concrete demonstration constitute incomplete engagement and score zero on this dimension."
+    },
+    {
+      "name": "M-Form Charter Alignment: forbid_theoretical_elegance",
+      "weight": 3.0,
+      "description": "[GP-105 General Office insertion] Theses proposing refactors or 'deeper abstractions' WITHOUT a concrete v5.0 failure case are explicitly out of scope. The audit charter is execution-hostile, not parsimony-driven."
+    },
+    {
+      "name": "M-Form Charter Alignment: forbid_more_layers",
+      "weight": 4.0,
+      "description": "[GP-105 General Office insertion] Theses proposing additional architectural layers / gates / schemas to 'fix' v5.0 are out of scope — v5.0 was prompted by an over-engineering finding, and suggesting more layers compounds the problem. Theses must identify what v5.0 should DO LESS OF or DO MORE STRUCTURALLY (not by adding parts)."
+    },
+    {
+      "name": "M-Form Charter Alignment: cite_bug_taxonomy",
+      "weight": 5.5,
+      "description": "[GP-105 General Office insertion] Theses must cite at least 2 specific bugs from the 24-bug taxonomy in evidence.txt (by Class + bug number) when claiming a v5.0 failure carries them forward. A thesis that does not engage the empirical floor scores zero on this dimension."
+    },
+    {
+      "name": "M-Form Charter Alignment: full_axis_coverage",
+      "weight": 7.0,
+      "description": "[GP-105 General Office insertion] Theses must address at least one defect in each of: (1) reachability (Class A bugs), (2) silent-failure (Class B), (3) contract-gaming (Class C), (4) substitution/state (Class D), (5) magic-numbers (Class E). Addressing only one class is insufficient — the v5.0 design must close ALL classes structurally, and a high-quality audit checks all axes."
+    },
+    {
+      "name": "M-Form Charter Alignment: cage_specific_failure",
+      "weight": 11.0,
+      "description": "[GP-105 General Office insertion] At least one defect must be SPECIFIC to v5.0 Cage Orchestrator (the dispatcher / can_handle predicate / reachability matrix), not just inherited from GP-156. The Cage abstraction itself must be pressure-tested: what's the failure mode of the central dispatcher concept? Score 0 for no Cage-specific defect; 12 for one named without trigger; full credit for one with concrete dispatcher-state reproduction."
+    },
+    {
+      "name": "M-Form Charter Alignment: pre_implementation_invariant",
+      "weight": 13.0,
+      "description": "[GP-105 General Office insertion] The audit must produce v5.0 INVARIANTS the implementation should preserve (e.g., 'Cage's reachability matrix must include a fixture per (gate × substrate-class) that asserts engagement, not just unit tests'). At least one invariant must be stated as a falsifiable test the v5.0 implementation can be checked against."
+    },
+    {
+      "name": "Reflexive Consistency Check",
+      "weight": 6.5,
+      "description": "Does the thesis APPLY the four reflexive-check rules (R1-R4 in evidence.txt) to its own integration claims? R1: cited line ranges still match the arch map. R2: proposed Protocol signature accommodates all current call sites. R3: schema unification has bidirectional migration path. R4: can_handle would correctly route at least 2 of {gp154, gp155, gp156, gp146, gp077}. A thesis that proposes integration points without running these checks is a Bug-#11-class regression risk. Score 0 for no reflexive checks; 8 for asserting consistency without grounding (just asserting 'this works'); 17 for ≥2 R-rules applied with citations to arch map line ranges or current-code grep output."
+    },
+    {
+      "name": "Apparatus Self-Model Citation",
+      "weight": 5.0,
+      "description": "Does the thesis cite specific line ranges, region names, or invariants from `docs/internal/autoresearch_loop_architectural_map.md` and `docs/concepts/architecture.md` Section 6a when asserting integration claims? A thesis that proposes 'Cage hooks at L4581' without verifying L4581 still has the claimed shape (per the arch map's GP-156 v2 amendments section) scores zero. Cite OR grep — just don't hallucinate."
+    },
+    {
+      "name": "M-Form Charter Alignment: reflexive_primitive",
+      "weight": 4.5,
+      "description": "[GP-105 General Office insertion] The audit must apply at least 2 of the 4 reflexive-check rules (R1: line range still valid; R2: Protocol covers current call sites; R3: schema migration bidirectional; R4: can_handle routes existing substrates correctly) explicitly in the thesis. A thesis that proposes a v5.0 design without running ANY reflexive checks against current code is a Bug-#11 regression and scores zero on this dimension."
+    }
+  ],
+  "criteria": {
+    "Defect_Concreteness": "Concrete v5.0 design defect with named failure class + affected component. No defect → zero. Defect that doesn't actually break v5.0 → mid-credit. Defect that demonstrably breaks v5.0 with specific config → full credit.",
+    "Bug_Class_Carryover": "≥3 of the 24 bugs cited where v5.0 RELOCATES the failure class. Each carryover must cite by number + name the v5.0 layer where it resurfaces.",
+    "Reachability_Defect_Discovery": "Specific (gate × substrate-class) pair where v5.0 can_handle silently fails. Bug #11-class survival under the new architecture.",
+    "Generative_Yield": "≥ 2 v5.0 defects with declared expected apparatus state.",
+    "Implementation_Layer_Specificity": "Cite file path, function name, Protocol method, AST node, config flag. Vague references = zero.",
+    "Anti_Overfitting_Audit": "Identify magic numbers v5.0 inherits without audit-validation. K_law=5 sycophancy-loop precedent is the calibration.",
+    "mform_must_demonstrate_defect": "≥ 1 concrete v5.0 defect with named failure class + bug-class citation. No exceptions.",
+    "mform_forbid_theoretical_elegance": "No parsimony / 'deeper abstraction' framing without concrete v5.0 failure.",
+    "mform_forbid_more_layers": "Proposing more layers/gates/schemas is out of scope; v5.0 was prompted by over-engineering.",
+    "mform_cite_bug_taxonomy": "≥ 2 bugs cited from the 24-bug taxonomy by Class + number.",
+    "mform_full_axis_coverage": "Address ≥1 defect in each of (Reachability, Silent-Failure, Contract-Gaming, Substitution/State, Magic-Numbers).",
+    "mform_cage_specific_failure": "≥ 1 defect specific to the Cage dispatcher itself, not inherited from GP-156.",
+    "mform_pre_implementation_invariant": "Produce ≥ 1 v5.0 invariant the implementation can be checked against.",
+    "Reflexive_Consistency_Check": "Apply ≥2 of R1-R4 rules from evidence.txt. R1: arch-map line ranges. R2: Protocol covers all call sites. R3: schema migration bidirectional. R4: can_handle routes ≥2 of {gp154, gp155, gp156, gp146, gp077}.",
+    "Apparatus_Self_Model_Citation": "Cite line ranges from autoresearch_loop_architectural_map.md or architecture.md §6a. Hallucinated line numbers = zero.",
+    "mform_reflexive_primitive": "≥ 2 of 4 reflexive-check rules applied explicitly with grounding to current code state. Bug-#11 risk class without this.",
+    "m_form_charter_alignment_must_demonstrate_defect": "≥ 1 concrete v5.0 defect with named failure class + bug-class citation. No exceptions.",
+    "m_form_charter_alignment_forbid_theoretical_elegance": "No parsimony / 'deeper abstraction' framing without concrete v5.0 failure.",
+    "m_form_charter_alignment_forbid_more_layers": "Proposing more layers/gates/schemas is out of scope; v5.0 was prompted by over-engineering.",
+    "m_form_charter_alignment_cite_bug_taxonomy": "≥ 2 bugs cited from the 24-bug taxonomy by Class + number.",
+    "m_form_charter_alignment_full_axis_coverage": "Address ≥1 defect in each of (Reachability, Silent-Failure, Contract-Gaming, Substitution/State, Magic-Numbers).",
+    "m_form_charter_alignment_cage_specific_failure": "≥ 1 defect specific to the Cage dispatcher itself, not inherited from GP-156.",
+    "m_form_charter_alignment_pre_implementation_invariant": "Produce ≥ 1 v5.0 invariant the implementation can be checked against.",
+    "m_form_charter_alignment_reflexive_primitive": "≥ 2 of 4 reflexive-check rules applied explicitly with grounding to current code state."
+  },
+  "underidentified_after_override": 10,
+  "underidentified_after_override_reason": "Audit substrates score-swing 0↔70+ as auditor explores defect-finding strategies; default pivot_after=3 fires too early on 12-iter audit. Bumped to 10."
+}

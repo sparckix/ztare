@@ -1,0 +1,60 @@
+{
+  "rubric_version": "1.0",
+  "project": "monotone_decay_01",
+  "falsification_mode": "bounded_discriminator",
+  "holdout_hard_gate": true,
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "n"
+  ],
+  "fit_expression_grammar": "math_exp_only",
+  "fit_score_mode": "continuous_l2",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      21.984,
+      22.094
+    ]
+  },
+  "gate_thresholds": {
+    "holdout": {
+      "pass": 0.02,
+      "soft_pass": 0.035,
+      "fail": 0.035
+    },
+    "farther_tail": {
+      "pass": 0.015,
+      "soft_pass": 0.025,
+      "fail": 0.025
+    }
+  },
+  "gate_residual_threshold": 0.035,
+  "composition_stagnation_threshold": 5,
+  "underidentified_after": 15,
+  "persona": "You are a skeptical quantitative reviewer evaluating proposed models of z(n) against the evidence in evidence.txt. The observable z is a continuous, positive, monotone-decreasing quantity measured over a continuous domain n. As n increases, z decreases steeply at first and then progressively flattens toward an asymptotic floor. The visible data contains a nuisance subpopulation (an upper band at intermediate n values) that belongs to a different configuration of the same system \u2014 the dominant lower band is the signal. GRAMMAR: math_exp_only. You are a TOPOLOGY GENERATOR: provide a fit_declaration block only. You insist that the proposed functional form must capture the monotone-decreasing, concave shape across the full visible range and generalize beyond it. You are hostile to: (a) LINEAR EXTRAPOLATION \u2014 any model that fits the steep early regime but predicts z dropping too fast in the holdout/farther-tail zone, producing systematic negative residuals at large n; (b) OVERFIT TO SUBPOPULATION NOISE \u2014 any model that adds unnecessary complexity to accommodate the upper band, sacrificing farther-tail generalization for visible-range cosmetics; (c) FLOOR MISESTIMATION \u2014 any model whose asymptotic limit as n approaches infinity is too high (above 1.9) or too low (below 1.5), producing systematic bias at the tail. You are aware that a hidden holdout slice exists at n in [21.83, 21.98] and a farther-tail slice exists at n in [21.98, 22.10]; any thesis that overfits the visible range but diverges beyond n = 21.83 is caught by the deterministic gate regardless of prose quality. A numerical fit primitive is enabled: the mutator should include a fit_declaration block with a single-variable expression in n using only math.log, math.exp, math.sqrt, arithmetic operators, and numeric literals. The mutator proposes functional structure; the fitter estimates coefficients.",
+  "criteria": {
+    "1_Regime_Identification_And_Rival": "Does the thesis identify at least two distinct regimes of the observed z(n) curve (a steep-decrease regime at small n and a flattening regime at large n) and name the strongest rival functional form? A thesis that proposes a single global form without acknowledging the regime transition scores at most 40. A thesis that names regimes but cannot point to a specific n range in evidence.txt where each regime dominates scores at most 50.",
+    "2_Discriminator_As_Numeric_Feature": "Is the named discriminator a concrete numeric feature of the data (slope of z(n) at a specific n, ratio z(n1)/z(n2), rate-of-change estimate, or similar) that would take different values under the thesis and under its rival? The discriminator must be evaluable against evidence.txt NOW. A thesis whose discriminator is an abstract concept rather than a number scores at most 40.",
+    "3_Full_Range_Fit_With_Named_Primitive": "Does the thesis fit the full n range of evidence.txt with a single functional form that involves at least one transcendental function of n (logarithm, exponential, or square root) composed with arithmetic operations? The primitive must be NAMED and its role must be explicit. A thesis that fits only a subrange scores at most 30. A thesis that presents its primitive as an unexplained leap with no derivation over n scores at most 50.",
+    "4_Asymptotic_Prediction_Beyond_Visible": "Does the thesis state a prediction for z(n) in the holdout range (n > 21.83) based on the same coefficient set fitted to visible data? A thesis that explicitly states f(22.0) and f(22.1) from its fitted form and compares to the trend in evidence.txt scores in the top band. A thesis that does not extrapolate beyond the visible range scores at most 50.",
+    "5_Anchor_Proxy_Verification": "Does the thesis state at least one numerical anchor proxy read DIRECTLY from evidence.txt (not derived from the model) and verify the model against it? Proxies generated from the model itself score zero. At least one anchor must come from the data; reward theses that verify two or more. A thesis with no data-grounded anchor proxy scores at most 30.",
+    "6_Derivation_Over_Renamed_Variable": "Does the thesis show at least three explicit intermediate reasoning steps that each reference the variable n, with the final functional primitive derivable from those steps without an unexplained jump? Mere enumeration of algebraic manipulations without reasoning about what n represents does not count. A thesis whose functional form appears without a three-step derivation over n scores at most 50 regardless of fit quality.",
+    "7_No_External_Domain_Import": "Does the thesis avoid importing ANY named result, named constant, named theorem, or named property from an external domain? The charter asks for a functional form derived from the observable curve. ANY named external-domain import caps the total score at 40, whether disclosed or undisclosed.",
+    "8_Subpopulation_Robustness": "Does the thesis explicitly acknowledge the subpopulation structure in the visible data and demonstrate that the proposed form is fitted to the dominant lower band, not distorted by the upper band? A thesis that ignores the subpopulation and fits all points equally risks overfit. A thesis that explicitly addresses this nuisance scores higher."
+  },
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 104,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 106 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

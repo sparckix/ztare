@@ -1,0 +1,83 @@
+{
+  "name": "gp159_retrieval_trap",
+  "project": "gp159_retrieval_trap",
+  "description": "Discovery Engine test #1: Retrieval-Trap. Non-standard constants, anti-retrieval gate.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate with hidden constants. Generative yield = predict at unseen d values.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_expression_grammar": "math_exp_only",
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "d"
+  ],
+  "expression_byte_budget": 300,
+  "fit_score_mode": "continuous_mre",
+  "holdout_hard_gate": true,
+  "target_convention_homogeneity": "homogeneous",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "gate",
+  "persona": "You are an adversarial epistemic auditor. The substrate uses NON-STANDARD constants deliberately. If the mutator reproduces any known formula (2/d, 4/d, 1/d), flag it as retrieval, not discovery. Demand holdout validation of the fitted constants.",
+  "underidentified_after": 15,
+  "dimensions": [
+    {
+      "name": "Fit Quality",
+      "weight": 40,
+      "description": "Does the proposed formula fit the visible data within 10% MRE? Does it pass holdout (10% MRE) and farther-tail (15% MRE) gates?"
+    },
+    {
+      "name": "Structural Derivation",
+      "weight": 25,
+      "description": "Does the thesis derive the functional form step-by-step from the data? Each term must be motivated by observed behavior."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does the thesis predict y at an unseen x value with declared tolerance? At least one prediction beyond the visible range."
+    },
+    {
+      "name": "Generalization Quality",
+      "weight": 15,
+      "description": "Is the formula structurally justified? Penalize memorization, ungrounded parameter bloat, and unnecessary complexity."
+    }
+  ],
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "GP-157 v5.0 Phase 3b observe-mode (2026-04-25 night). gp159_retrieval_trap is a synthetic feature-vector substrate; Cage runs alongside existing dispatch, logs engagement matrix to workspace/cage_engagement.jsonl. No behavioral change without rubric flag.",
+  "evidence_contract": {
+    "format": "MARKDOWN_TABLE",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 9,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 11 rows in MARKDOWN_TABLE format. Operator may refine min_rows / require_monotone_in / column names."
+  },
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "1d",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "cage_meta_reason": "gp159_retrieval_trap is synthetic; constructor ensured single fit_convention + frame-invariant y. Compare to gp154 which is heterogeneous and frame-NOT-invariant (Class K finding).",
+  "criteria": {
+    "Fit_Quality": "Does the proposed formula fit the visible data within 10% MRE? Does it pass holdout (10% MRE) and farther-tail (15% MRE) gates?",
+    "Structural_Derivation": "Does the thesis derive the functional form step-by-step from the data? Each term must be motivated by observed behavior.",
+    "Generative_Yield": "Does the thesis predict y at an unseen x value with declared tolerance? At least one prediction beyond the visible range.",
+    "Generalization_Quality": "Is the formula structurally justified? Penalize memorization, ungrounded parameter bloat, and unnecessary complexity."
+  },
+  "enable_fit_primitive_reason": "FLIPPED 2026-04-25 night: enable_fit_primitive: true (was false). Mutator hand-fitting was the binding constraint after the harness defect was patched (gp159c). The framer-aligned path is: mutator proposes parametric form via FIT_DECLARATION block; apparatus runs scipy.optimize multistart to fit constants. Earlier concern (loud-fail stub clobbering test_model.py on FIT_DECLARATION-missing iters) is mitigated by sidecar-always behavior in src/ztare/fit/legacy_engagement_guard.py: stub now writes to _fit_stub.py regardless of features.py presence. Gate harness imports I_model from test_model.py dynamically, never from _fit_stub.py.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Custom substrate with embedded holdout gates in gate_harness.py. Global keyword heuristic does not apply.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Custom substrate. Rival forms scored by rubric dimension, not global gate heuristic.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom gate_harness.py defines farther-tail set explicitly; standard ZTARE farther-tail detection does not apply."
+}

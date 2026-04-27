@@ -1,0 +1,47 @@
+schema_version: 1
+worker_id: general_purpose
+description: >
+  General-purpose research/execution worker with full tool access
+  (including Edit/Write). Used when a task spans multiple searches,
+  reads, and writes, and the calling role wants to protect its own
+  context window by offloading the whole bundle.
+
+invocation:
+  substrate: claude_code_sub_agent
+  tool_name: Agent
+  subagent_type: general-purpose
+  fan_out_ok: true
+
+input_contract:
+  accepts:
+    - "description: 3-5-word title"
+    - "prompt: self-contained task — include goal, context, what's been tried, success criteria"
+  reads_from:
+    - "<repo root, within role authorized read-paths>"
+  must_receive:
+    - description
+    - prompt
+
+output_contract:
+  produces:
+    - "result: markdown — summary of what was done, files touched, follow-ups"
+  deposits_to:
+    - "return value AND filesystem changes if task required edits/writes"
+  contract_guarantees:
+    - "write scope inherits from the invoking role (workers don't escalate privilege)"
+    - "must not call tools for destructive operations without caller authorization"
+
+permissions:
+  read: ["*"]
+  write: "inherit_from_caller"     # enforced by src.ztare.roles.authorization
+  forbidden:
+    - "org/mandates/"
+    - "org/sessions/"
+    - ".ip_protected/"
+
+limits:
+  single_action_cost_cap_usd: 5.00
+  wall_clock_cap_seconds: 1800
+
+opened_date: "2026-04-23"
+opened_by: daniel_alami

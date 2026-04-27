@@ -1,0 +1,170 @@
+{
+  "name": "gp154_scaling_law_raw",
+  "project": "gp154_scaling_law_raw",
+  "rubric_version": "v1-raw-loss-substrate",
+  "rubric_version_reason": "v1 (2026-04-26): NEW substrate. Sibling gp154_scaling_law_exponents was a category error (predicting derived alpha statistics across incommensurable fit conventions). This substrate operates on RAW per-experiment (N, D, L) tuples — the inputs each source paper fed to its own fit procedure. Discovery target: closed-form L(N, D, C, modality, regime, fit_convention) at K_law<=7 that recovers Chinchilla joint form on Chinchilla rows, Kaplan separable on Kaplan rows, Bahri regime structure on Bahri rows. Then verify Kaplan<->Chinchilla conversion-transform on the same (N, D) pairs.",
+  "runner_allowed_imports": [
+    "features"
+  ],
+  "enable_fit_primitive_features": true,
+  "fit_primitive_features_k_max": 10,
+  "fit_primitive_features_k_max_reason": "Chinchilla joint form already uses K=5 (E, A, B, alpha, beta). With per-convention conditional terms a 7-10 K thesis is structurally reasonable. BIC remains the real budget per GP-152.",
+  "enable_substrate_critic": true,
+  "enable_substrate_critic_reason": "v1: SubstrateCritic surfaces feature-dimensionality collapses per-iter. Expected collapses: regime_hint constant within Bahri-variance-limited subset; intrinsic_dim_d constant within each Bahri-dataset class; loss_type constant within most studies. Briefing tells the mutator which axes vary within visible classes and which do not.",
+  "enable_analogy": true,
+  "enable_analogy_reason": "v1: cross-convention translation (Kaplan separable -> Chinchilla joint) is structurally analogous to unit-conversion in physics and gauge-fixing in field theory.",
+  "analogy_domain_hint": "computer_science",
+  "framer_primary_feature_key": "N_log10",
+  "framer_primary_feature_key_reason": "N_log10 is populated on every row (rows with no model-size scaling have a representative fixed N). It is the principal scaling axis across all five source studies and the natural 1D projection axis for substrate-critic, noise_profile, and framer.",
+  "substrate_class_key": "study",
+  "substrate_class_key_reason": "study is the natural class label since each study used a different fit convention. SubstrateCritic groups within-class variance against this key. modality is secondary.",
+  "fit_robust_loss": true,
+  "fit_robust_loss_reason": "v1: L values span 0.5 (Bahri saturation regime) to 8+ (small-N high-loss Henighan). The visible distribution is heavy-tailed across studies. Robust loss prevents the few large-L Henighan/Kaplan-small-N rows from dominating L2 fit.",
+  "fit_weighted_residuals": false,
+  "fit_weighted_residuals_reason": "synthesized rows include log-normal noise of known sigma_rel ~ 0.02-0.05; per-row sigma is not exposed in features.py to keep the substrate honest about real-paper noise opacity.",
+  "description": "Newton-mode rubric for raw-loss scaling-law recovery. Target: discover the closed-form L(N, D, C, modality, regime, fit_convention) law that produces the per-paper alpha values when refitted under each paper's own fit convention. Cross-study substrate spanning Chinchilla / Kaplan / Bahri (visible + holdout) and Hestness / Henighan (farther-tail). Cold variable surface: features include study, modality, architecture_class, scaling_var, fit_convention, regime_hint, loss_type, N_log10, D_log10, C_log10, intrinsic_dim_d.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate: the unified L(N, D, C, ...) law connecting all source-paper scaling forms is the open question. Generative yield required.",
+  "falsification_mode": "bounded_discriminator",
+  "require_cross_family": false,
+  "require_cross_family_reason": "v1 default; flip to true after a champion clears holdout + farther-tail.",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "structural_blocker_enforcement_reason": "Catalog at prompt-time + G-CIRC + G-FALSIFY post-champion (belt-and-suspenders; mirrors gp154_scaling_law_exponents v1.5 protocol).",
+  "stagnation_trigger_mode": "new_class",
+  "underidentified_after": 20,
+  "gp103_stagnation_threshold": 6,
+  "composition_stagnation_threshold": 5,
+  "holdout_hard_gate": true,
+  "holdout_budget": 0,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "test_model.py contains the custom gate harness with VISIBLE/HOLDOUT/FARTHER_TAIL split; gate_harness.py reports the deterministic verdicts. The fit search is done by the mutator at thesis-write time, not by ZTARE's curve_fit primitive.",
+  "discovery_mode": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "FARTHER_TAIL_SET in evidence_holdout.txt is held-out studies (Hestness + Henighan). Standard farther-tail-by-region detection does not apply.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence is a cross-study cold table, not a single curve.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival functional forms scored explicitly by Rival Skepticism dimension.",
+  "evidence_anchor_requirement": true,
+  "general_office_model": "gpt4.1",
+  "enable_mform_audit": false,
+  "persona": "You are an adversarial epistemic auditor with the discipline of Charlie Munger (inversion: how would this be wrong?), Karl Popper (falsification: name the test that would reject the thesis), and a journal referee for Nature Machine Intelligence.\n\n**v2 RAW-LOSS SUBSTRATE (2026-04-26 honest-null partition).** This substrate operates on RAW (N, D, L) tuples — the inputs each source paper fed to its own fit procedure. The discovery target is the closed-form L(N, D, C, modality, regime, fit_convention) law that unifies the Kaplan separable and Chinchilla joint parameterizations into a single closed form, plus a derived Kaplan↔Chinchilla conversion transform. Chinchilla published L = E + A·N^(-alpha) + B·D^(-beta); Kaplan published L = (N_c/N)^alpha_N at fixed D and L = (D_c/D)^alpha_D at fixed N; Henighan published per-modality L = L_inf + (N_c/N)^alpha_N; Hestness published per-domain epsilon(m) = alpha_pre · m^(-beta_g). Rows here are observations CONSISTENT WITH each paper's own published prediction surface.\n\n**HONEST-NULL ABSTENTION (Bahri 2024).** Bahri rows are NOT in fit / NOT in holdout / NOT in farther-tail / NOT in judge MRE aggregation. Apparatus iter-6 finding: Bahri's regime-conditional law (5 figure-fitted alpha exponents) cannot be unified into the Kaplan/Chinchilla closed-form class at K≤10 — 5 anchor exponents structurally cannot constrain a continuous parametric surface. The substrate has formally abstained on Bahri; this IS the publishable null result on Bahri scope. Do NOT add Bahri-specific terms or branches to the form; the apparatus partitions them out via features.honest_null_rows().\n\n**FEATURES AVAILABLE (per features.py):** study (provenance), modality, architecture_class, scaling_var, fit_convention (the methodology label), regime_hint (variance_limited / resolution_limited / unknown), loss_type, N_log10, D_log10, C_log10 (where C = 6·N·D), intrinsic_dim_d (Bahri/synthetic only), is_chinchilla_family / is_kaplan_family / is_bahri_family booleans.\n\nYou REJECT (hardkill on detection):\n(a) RH-13 'Categorical-as-Continuous Smuggle' — hashing modality / architecture_class / study strings to integers and applying continuous math.\n(b) RH-14 'Vacuous Null via Excluded Vocabulary' — null over Sigma that excludes power_k for k in {1, 2, -1, -1/2, 1/2, -2/d}, log, exp, sigmoid, where, regime selectors. Scaling laws ARE power laws.\n(c) RH-15 'MRE Aggregation Fallacy'.\n(d) RH-16 'Convention Smuggle' — predicting L without invoking fit_convention (or its proxies N_log10/D_log10/regime_hint) as a discriminator on rows where the source paper used different parameterizations. A single L(N, D) form without convention-conditioning ignores the heterogeneity finding (Cage R9 will flag the substrate as heterogeneous).\n\nYou DEMAND:\n(i) Recovery of the Chinchilla family's published irreducible-loss anchor on chinchilla-convention rows. The numeric value is held by the apparatus's Calibration-Anchor gate (cage_meta.calibration_anchors) and is NOT exposed in this prompt; the gate computes the asymptotic L(N→∞, D→∞) of your fitted I_model on chinchilla rows and validates against the held value with the gate's tolerance. Hardcoding the published anchor as a literal in PARAMETRIC_FORM triggers R20-DECLARED-ANCHOR.\n(ii) Recovery of the Kaplan separable parameterization's exponents (alpha_N at fixed D, alpha_D at fixed N) on Kaplan-convention rows. Numeric values held by the Calibration-Anchor gate. Hardcoding any literal triggers R20-DECLARED-ANCHOR. (Bahri's exponents are honest-null and not part of this substrate's claim.)\n(iii) Holdout MRE < 0.10 on raw L on the n holdout rows. Farther-tail MRE < 0.20 on the held-out studies (Hestness + Henighan).\n(iv) >= 2 secondary observable predictions per generative-yield criteria.\n(v) Methodological transparency — the law must be a closed-form expression in PARAMETRIC_FORM, not a black-box. K_law <= 10 with BIC-justified parameter count.\n(vi) Conversion-transform claim: refit predicted L under each convention and report the alpha-space shift magnitude (Kaplan separable alpha_N <-> Chinchilla joint alpha) on the same (N, D) pairs, with explicit numerical commitment.\n\nYou REWARD:\n(I) Closed-form L expressed via continuous primitives (power_k, sigmoid, where, exp, log) rather than nested categorical lookups. K=5-10 strongly preferred — Chinchilla joint alone is K=5.\n(II) Bounded-null at K<=10 with rigorous Sigma exhaustion is publishable — score above 70 on rigorous null. Vacuous null still hardkilled (RH-14).\n(III) First-principles derivation of the conversion transform between Kaplan separable and Chinchilla joint conventions — e.g. 'the separable alpha_N at fixed D held >> D_c equals the joint alpha when D is the compute-optimal D*(N)' — earns the highest weight on Functional Form Discovery dimension.\n(IV) Per-fit_convention HOLDOUT MRE stratification (Measurement Uncertainty dimension).\n(V) Recovery of per-modality Henighan alpha values on the FARTHER_TAIL by FITTING the discovered L form on visible (Chinchilla/Kaplan/Bahri) and PREDICTING on Henighan (which the apparatus has never seen during fitting) — passing the farther-tail gate via genuine transfer.\n\nIMPORTANT: thesis.md contains the prose explanation; test_model.py contains PARAMETRIC_FORM (str) + PARAMETER_NAMES (list) + MODEL_PARAMS={} at module level. The fit_primitive_features apparatus runs scipy.optimize over visible (features_dict, L_observed) pairs and substitutes fitted constants. Hand-coded constants reliably miss the holdout gate.",
+  "dimensions": [
+    {
+      "name": "Functional Form Discovery (raw-loss law)",
+      "weight": 25,
+      "description": "Closed-form L(N, D, C, modality, regime, fit_convention) law expressed in PARAMETRIC_FORM as a single Python expression. Score: 0/30 if RH-13/RH-14/RH-16 detected; 10/30 if a form is proposed but every free parameter sits on a SubstrateCritic-flagged collapsed axis; 20/30 if the form uses continuous primitives (power_k, sigmoid, where, exp, log) and conditions on fit_convention or regime_hint as a discriminator; 30/30 if the form is first-principles-motivated (recovers Chinchilla joint on Chinchilla rows, Kaplan separable on Kaplan rows, Bahri regime forms on Bahri rows) with K_law <= 10 and a derived conversion transform between conventions."
+    },
+    {
+      "name": "Holdout Validation Rigor",
+      "weight": 25,
+      "description": "Does the thesis's I_model pass HOLDOUT MRE < 0.10 on the n holdout rows in evidence_holdout.txt's HOLDOUT_SET section? gate_harness.py reports the deterministic verdict; the thesis MUST cite the gate_harness JSON output verbatim. Score: 0/25 if HOLDOUT MRE > 0.20; 12/25 if 0.10 <= MRE < 0.20; 25/25 if MRE < 0.10."
+    },
+    {
+      "name": "Farther-Tail Cross-Study Transfer",
+      "weight": 15,
+      "description": "Does the thesis's I_model pass FARTHER_TAIL MRE < 0.20 on the held-out Hestness + Henighan rows? These are entire studies the apparatus has never seen during fitting. Passing requires the law that explains Chinchilla/Kaplan/Bahri to also predict per-modality Henighan curves and per-domain Hestness learning curves. Score: 0/15 if MRE > 0.40; 8/15 if 0.20 <= MRE < 0.40; 15/15 if MRE < 0.20."
+    },
+    {
+      "name": "Generative Yield + Convention Exchange Ratio",
+      "weight": 15,
+      "description": "Pre-commit >= 2 numerical predictions with declared tolerance, AT LEAST ONE of which is a SECONDARY observable mathematically orthogonal to L itself: (i) a secondary observable derived from the law (e.g. predicted optimal compute-allocation ratio N*/D* under fixed C; predicted plateau loss L_inf; predicted curvature transition C* between regimes; predicted exchange-rate shift between Kaplan-separable and Chinchilla-joint conventions for fixed (N, D)); (ii) predicted L for one specific (study, N, D) point not in visible/holdout/farther. Score: 0/15 no commitment or only the primary L prediction (Kepler-class); 8/15 one named secondary without numeric commit OR both with primary L only; 15/15 >= 1 secondary observable + tolerance + falsifiability declared."
+    },
+    {
+      "name": "Rival Skepticism + Bounded-Null Path",
+      "weight": 10,
+      "description": "Document MRE for >=2 STRUCTURALLY DIFFERENT rival forms on the same HOLDOUT (e.g., separable-only Kaplan, joint-only Chinchilla, regime-only Bahri, and the unified candidate). Bounded-null requires exhaustive Sigma vocabulary search at K<=10 including {power_k for k in {1, 2, -1, -1/2, 1/2, -2/d}, log, exp, sigmoid, where, regime selectors} — RH-14 (vacuous null over excluded vocabulary) hardkills. Score: 0/10 if no rivals; 5/10 one rival; 10/10 >=2 + structurally diverse; bonus credit for rigorous bounded null."
+    },
+    {
+      "name": "Calibration Anchor Recovery",
+      "weight": 5,
+      "description": "Calibration anchors are validated by the apparatus's R-Calibration-Anchor gate post-fit: it computes the asymptotic behavior of your fitted I_model on the rubric-declared row subsets (chinchilla-irreducible-loss, bahri-variance-limited, bahri-resolution-limited) and matches against expected values held in cage_meta.calibration_anchors. Numeric values are NOT in this rubric prompt — the apparatus reads them, the mutator never sees them. Score: 0/5 if all anchors missed (gate fails on every subset); 5/5 if all anchors recovered (gate passes on every subset within tolerance). Hardcoding any expected value as a literal in PARAMETRIC_FORM triggers R20-DECLARED-ANCHOR (anchor laundering)."
+    },
+    {
+      "name": "Measurement Uncertainty + Methodology Stratification",
+      "weight": 5,
+      "description": "Stratify HOLDOUT MRE by features['fit_convention'] AND by features['study']. Report per-stratum MRE separately. A unified law that passes overall but fails on one stratum is suspect. Score: 0/5 if no stratification; 5/5 per-stratum + per-study reported with discussion."
+    }
+  ],
+  "criteria": {
+    "Functional_Form_Discovery_raw_loss_law": "Closed-form L(N, D, C, modality, regime, fit_convention) law expressed in PARAMETRIC_FORM as a single Python expression. Must condition on fit_convention or regime_hint as a discriminator. K_law <= 10. RH-13/RH-14/RH-16 hardkill.",
+    "Holdout_Validation_Rigor": "HOLDOUT MRE < 0.10 on the holdout rows. Mutator's I_model predicts L; gate_harness.py reports the verdict.",
+    "Farther_Tail_Cross_Study_Transfer": "FARTHER_TAIL MRE < 0.20 on Hestness + Henighan held-out studies. Cross-study transfer test.",
+    "Generative_Yield_and_Convention_Exchange_Ratio": ">=2 numerically committed predictions with tolerance: predicted L for an unseen (study, N, D); Kaplan<->Chinchilla shift magnitude on same (N, D).",
+    "Rival_Skepticism_Bounded_Null_Path": ">=2 structurally different rival forms tested on holdout. Bounded null requires exhaustive Sigma at K<=10 (RH-14 hardkill).",
+    "Calibration_Anchor_Recovery": "Apparatus's R-Calibration-Anchor gate validates anchor recovery on row subsets (chinchilla-irreducible-loss, bahri-variance-limited, bahri-resolution-limited). Numeric expected values held in cage_meta.calibration_anchors, NOT exposed in this rubric prompt. Hardcoding a value as a literal in PARAMETRIC_FORM triggers R20-DECLARED-ANCHOR.",
+    "Measurement_Uncertainty_and_Methodology_Stratification": "Per-fit_convention and per-study HOLDOUT MRE stratification reported."
+  },
+  "cage_observe_mode": false,
+  "cage_authoritative_mode": true,
+  "cage_authoritative_mode_reason": "v2 (2026-04-26): promoted out of observe-mode. Sister project gp154_scaling_law_exponents stayed at score=0 across two full runs (claude-opus-4-6 mutator + gpt-5.5 mutator). The cross-convention substrate needs the full gate stack (R10/R11 cross-class extrapolation, R12 symbolic logic cage, R20-R23 anti-pattern monitors) actively rejecting non-conditional forms — observe-mode wasn't enough.",
+  "enforce_per_class_farther_tail": true,
+  "enforce_per_class_farther_tail_reason": "5 studies × heterogeneous fit_conventions: per-study farther-tail is the structural test for whether a form generalizes across convention boundaries. All 5 studies have >=64 rows; no class needs r11 exclusion.",
+  "r11_excluded_classes": ["bahri2024"],
+  "r11_excluded_classes_reason": "Bahri 2024 has only 5 empirical points across resolution-limited and variance-limited regimes; per the iter-6 judge analysis, 5 points cannot support generalization claims about a continuous parametric surface. R10 cross-class diagnostic still computes Bahri residual structure for telemetry; R11 hard-fail enforcement excludes Bahri so the apparatus does not punish the (correct) finding that Bahri-regime cannot be unified into the Kaplan/Chinchilla closed-form law at K<=10. The Bahri abstention IS the honest-null result on this substrate.",
+  "enable_cold_llm_erdos_seed": true,
+  "enable_cold_llm_erdos_seed_reason": "Sister project sat at score=0 for 19 iters across two mutators — the canonical ML scaling-law forms (Kaplan/Chinchilla/Hoffmann) are local minima the mutator gets pulled into. Cold-LLM seed forces structurally-disjoint cross-domain alternatives at iter-1.",
+  "cold_llm_seed_forbidden_domain": "machine learning, deep learning, neural-network scaling, AI",
+  "cold_llm_seed_model_id_omitted_reason": "intentionally omitted — defaults to runtime mutator model (same family, fresh context, no shared prior). Set explicitly only for cross-family hygiene.",
+  "cold_llm_seed_k_law_budget": 7,
+  "cold_llm_seed_timeout_seconds": 30,
+  "enable_forced_reframe": true,
+  "enable_forced_reframe_reason": "GP-168: when stagnation hits 3 zeros or AST-bucket lock for 5 iters, force-ban the current architectural family and require commitment to one of the GP-164 alien-math framings (RG-flow / multifractal Legendre / modular q-expansion). For gp154, the analogue mapping is log_g_bar -> log_N, log_M -> log_D (per GP-164 §Generalization).",
+  "enable_erdos_requery_on_stagnation": true,
+  "enable_erdos_requery_on_stagnation_reason": "GP-169 Phase 2 (Q2): re-query the cold LLM with the *current* residual fingerprint when stagnation triggers. Initial seed reflects the iter-0 baseline; after 2-3 stuck iters the residual structure has shifted and a refreshed seed is evidence-driven.",
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_ast_bucket_threshold": 3,
+  "erdos_requery_max_per_run": 3,
+  "cage_constant_laundering_score_cap": 50,
+  "cage_constant_laundering_score_cap_reason": "Defense-in-depth (Gemini-Pro panel 2026-04-26): when R20/R21/R24 detect kernel-camouflage / anchor-coincidence / effective-K mismatch, the apparatus caps the score at 50 deterministically. For gp154 specifically, this catches forms that hardcode Kaplan/Chinchilla numerical exponents (e.g. α=0.34, α=0.20) as 'magic constants' rather than declaring them as fitted parameters.",
+  "effective_parameter_count_slack": 0,
+  "effective_parameter_count_slack_reason": "R21 default: declared K must match effective K. Mutator can submit forms with derivable constants — those are on the trivial whitelist. Magic numbers from Kaplan/Chinchilla papers count as DoF.",
+  "evidence_contract": {
+    "format": "NONE",
+    "columns": [],
+    "independent_vars": [],
+    "min_rows": 0,
+    "require_finite": false,
+    "format_provenance": "operator_set_nd_features",
+    "docstring": "gp154_scaling_law_raw is cage_meta.class=nd_features (ABI 2 — FEATURE_DICT). Each row is a feature dict with (N_log10, D_log10, C_log10, study, modality, fit_convention, regime_hint, intrinsic_dim_d) keys, target is L. The L2 single-curve typed parser does NOT apply."
+  },
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "nd_features",
+    "target_convention_homogeneity": "heterogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": false,
+    "enforce_min_rows": false,
+    "calibration_anchors": [
+      {
+        "name": "chinchilla_irreducible_loss",
+        "expected_value": 1.69,
+        "tolerance_rel": 0.05,
+        "applies_to_filter": {"feature": "fit_convention", "value": "chinchilla_joint"},
+        "asymptotic_limit": "L(N->inf, D->inf)",
+        "source": "Hoffmann et al 2022, Chinchilla Eq.10 fitted constant E"
+      },
+      {
+        "name": "kaplan_alpha_N",
+        "expected_value": 0.34,
+        "tolerance_rel": 0.10,
+        "applies_to_filter": {"feature": "fit_convention", "value": "kaplan_separable"},
+        "asymptotic_limit": "alpha_N at fixed D >> D_c",
+        "source": "Kaplan et al 2020, separable parameterization N exponent"
+      },
+      {
+        "name": "kaplan_alpha_D",
+        "expected_value": 0.28,
+        "tolerance_rel": 0.10,
+        "applies_to_filter": {"feature": "fit_convention", "value": "kaplan_separable"},
+        "asymptotic_limit": "alpha_D at fixed N >> N_c",
+        "source": "Kaplan et al 2020, separable parameterization D exponent"
+      }
+    ],
+    "calibration_anchors_reason": "2026-04-26 (option C): anchor numeric values moved from persona prose into structured cage_meta. The mutator prompt no longer names 1.69 / 0.34 / 0.28 / 1.0 / 2/d. R20 reads this list to flag any literal in PARAMETRIC_FORM that coincides with an expected value (anchor-laundering / RH-EFFK-LAUNDER detection). The R-Calibration-Anchor gate (when shipped) reads this list to validate recovery property post-fit without exposing the values to mutator/judge."
+  },
+  "cage_meta_reason": "v1: Substrate aggregates rows whose source papers used different fitting conventions on the SAME underlying physics (Kaplan-separable vs Chinchilla-joint vs Bahri-regime vs Henighan per-modality vs Hestness per-domain). target_convention_homogeneity='heterogeneous' so Cage R9 demands the thesis condition on fit_convention or regime_hint. The L values themselves are dimensionally homogeneous within loss_type — the heterogeneity is at the parameterization layer, not the observable layer. This is structurally cleaner than the sibling alpha-space substrate where heterogeneity was at the observable layer."
+}

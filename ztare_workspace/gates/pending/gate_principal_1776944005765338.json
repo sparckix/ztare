@@ -1,0 +1,14 @@
+{
+  "seam_path": "",
+  "escalation_reason": "Smoke test fired at level=inbox. If ntfy topic is subscribed, you should see a push notification now.",
+  "equivalent_gate_reason": "Test escalation",
+  "cycle_count": 0,
+  "total_cost_usd": 0.0,
+  "notes": [
+    "This is a test. No action required."
+  ],
+  "timestamp_utc": "2026-04-23T11:33:25.765338+00:00",
+  "advisory": true,
+  "source": "escalation_manager",
+  "title": "Test escalation"
+}

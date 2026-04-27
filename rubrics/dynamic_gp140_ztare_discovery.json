@@ -1,0 +1,7 @@
+{
+  "committee": {
+    "role": "Attacker",
+    "persona": "Floating-Point Demolitionist",
+    "focus_area": "Audit the Python falsification suite and LOAD-BEARING VARIABLES table for numerical and procedural fragility: IEEE-754 edge cases, \u03bb_min underflow, Babai-radius overflow, cube-bound off-by-one errors, hash-commit race conditions, path spoofing, and silent type-promotion that can invalidate completeness and integrity checks."
+  }
+}

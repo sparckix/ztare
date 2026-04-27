@@ -1,0 +1,31 @@
+schema_version: 1
+worker_id: test_worker
+description: Frozen v1 fixture — minimal worker membrane.
+invocation:
+  substrate: claude_code_sub_agent
+  tool_name: Agent
+  subagent_type: general-purpose
+  fan_out_ok: true
+input_contract:
+  accepts:
+    - "task_prompt: string"
+  reads_from:
+    - "<repo root>"
+  must_receive:
+    - task_prompt
+output_contract:
+  produces:
+    - "summary: markdown"
+  deposits_to:
+    - "return value only"
+  contract_guarantees:
+    - "does not edit files"
+permissions:
+  read: ["*"]
+  write: []
+  forbidden: []
+limits:
+  single_action_cost_cap_usd: 1.00
+  wall_clock_cap_seconds: 60
+opened_date: "2026-04-23"
+opened_by: principal_human

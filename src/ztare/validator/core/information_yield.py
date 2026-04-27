@@ -29,6 +29,11 @@ class IterationSignal:
     claim_delta_type: str = ""                  # "NARROWING" | "WIDENING" | "REFRAMING" | ""
     committee_digest: str = ""                  # digest of this iteration's committee instantiation
     prior_committee_digest: str = ""            # digest of the previous iteration's committee
+    # Task 12 / Gemini Inversion #3: weakest-link class label (runtime regex).
+    # Used by evaluate_information_yield when class_novelty_mode=True to treat
+    # a class-not-seen-before-in-session as novelty (champion persistence profile:
+    # 28 iters / 10 distinct classes is the high-score signature).
+    weakest_class: str = ""
 
     def has_novelty(self) -> bool:
         # GP-004: catastrophic failures should not reset stagnation just because
@@ -44,7 +49,14 @@ class IterationSignal:
         )
 
     def _is_reframing_with_new_committee(self) -> bool:
-        """A genuine reframing that also changed the committee topology is structural novelty."""
+        """A genuine reframing that also changed the committee topology is structural novelty.
+
+        Note: this is a necessary but not sufficient condition for resetting stagnation.
+        evaluate_information_yield throttles the credit so it fires at most once between
+        score improvements — preventing dynamic-mode committee rotation from suppressing
+        stagnation indefinitely. Science/math runs (--dynamic not set) always return False
+        because committee_digest is "" in non-dynamic mode.
+        """
         return (
             self.claim_delta_type == "REFRAMING"
             and bool(self.committee_digest)
@@ -102,6 +114,7 @@ def evaluate_information_yield(
     refresh_after: int = 2,
     pivot_after: int = 3,
     underidentified_after: int | None = None,
+    class_novelty_mode: bool = False,
 ) -> InformationYieldDecision:
     """Evaluate information yield and return the next loop control action.
 
@@ -111,6 +124,14 @@ def evaluate_information_yield(
     for pre-registered experiments that require sustained starvation before
     the UNDERIDENTIFIED conclusion is valid — otherwise the exit fires before
     the pivot has had any chance to produce structural moves.
+
+    class_novelty_mode (Task 12 / Gemini Inversion #3): when True, treat an
+    iteration whose weakest_class has never been seen before in the session
+    as novelty (resets stagnation). Mining data (GP-148 champion persistence
+    profile) shows high-score groups traverse ~10 distinct weakest-link
+    classes over ~28 iters; score-only stagnation prematurely kills the
+    class-cycling behavior that produces champions. Default False preserves
+    legacy behavior.
     """
     if underidentified_after is None:
         underidentified_after = pivot_after
@@ -147,19 +168,64 @@ def evaluate_information_yield(
             stagnant_window=0,
             rationale="Latest iteration improved score, so search should continue.",
         )
+    if class_novelty_mode and latest.weakest_class:
+        prior_classes = {
+            item.weakest_class
+            for item in history[:-1]
+            if item.weakest_class and not item.runtime_failure and not item.is_r1_failure()
+        }
+        if latest.weakest_class not in prior_classes:
+            return InformationYieldDecision(
+                action=LoopControlAction.CONTINUE,
+                stagnant_window=0,
+                rationale=(
+                    f"Class-novelty mode: weakest_class='{latest.weakest_class}' is new "
+                    f"this session ({len(prior_classes)} classes seen prior). "
+                    "Champion-profile persistence preserved."
+                ),
+            )
     if latest.has_novelty():
-        novelty_reason = (
-            "structural reframing with new committee topology"
-            if latest._is_reframing_with_new_committee()
-            else "new attack, hinge, primitive, or axiom evidence"
+        # Throttle committee-rotation credit: grant at most once between score
+        # improvements. If the only novelty is a REFRAMING+new-committee AND the
+        # prior non-improving iteration was also committee-only, this is dynamic-mode
+        # rotation noise — fall through to flat-tail stagnation accumulation instead.
+        _only_committee_novelty = (
+            latest._is_reframing_with_new_committee()
+            and not latest.novel_attack_ids
+            and not latest.novel_hinge_ids
+            and not latest.novel_primitive_ids
+            and latest.verified_axioms_added == 0
         )
-        return InformationYieldDecision(
-            action=LoopControlAction.CONTINUE,
-            stagnant_window=0,
-            rationale=f"Latest iteration produced {novelty_reason}.",
-        )
+        if _only_committee_novelty and len(history) >= 2:
+            _prior = history[-2]
+            _prior_is_committee_noise = (
+                _prior._is_reframing_with_new_committee()
+                and not _prior.score_improved
+                and not _prior.novel_attack_ids
+                and not _prior.novel_hinge_ids
+                and not _prior.novel_primitive_ids
+                and _prior.verified_axioms_added == 0
+            )
+            if not _prior_is_committee_noise:
+                return InformationYieldDecision(
+                    action=LoopControlAction.CONTINUE,
+                    stagnant_window=0,
+                    rationale="Latest iteration produced structural reframing with new committee topology.",
+                )
+            # else: prior was also committee-only without improvement — fall through
+        else:
+            novelty_reason = (
+                "structural reframing with new committee topology"
+                if latest._is_reframing_with_new_committee()
+                else "new attack, hinge, primitive, or axiom evidence"
+            )
+            return InformationYieldDecision(
+                action=LoopControlAction.CONTINUE,
+                stagnant_window=0,
+                rationale=f"Latest iteration produced {novelty_reason}.",
+            )
 
-    flat_tail = _collect_flat_tail(history)
+    flat_tail = _collect_flat_tail(history, class_novelty_mode=class_novelty_mode)
     stagnant_window = len(flat_tail)
 
     latest_falsification_mode = (latest.falsification_mode or "numerical_proof").strip().lower()
@@ -218,11 +284,72 @@ def evaluate_information_yield(
     )
 
 
-def _collect_flat_tail(history: list[IterationSignal]) -> list[IterationSignal]:
+def _collect_flat_tail(
+    history: list[IterationSignal],
+    *,
+    class_novelty_mode: bool = False,
+) -> list[IterationSignal]:
+    """Collect consecutive non-improving, non-substantively-novel iterations.
+
+    A REFRAMING+new-committee iteration acts as a grace boundary (stops collection)
+    only when it was the FIRST such occurrence after a score improvement — i.e., when
+    its preceding item was a score improvement or was not itself committee-only noise.
+    All subsequent committee-rotation iterations (same pattern, no improvement)
+    accumulate as stagnation. This prevents dynamic-mode committee rotation from
+    suppressing stagnation indefinitely in qualitative projects.
+    """
     tail: list[IterationSignal] = []
-    for item in reversed(history):
-        if item.score_improved or item.has_novelty():
+    for idx, item in enumerate(reversed(history)):
+        hist_idx = len(history) - 1 - idx  # forward index in history
+
+        if item.score_improved:
             break
+
+        # Hard novelty: genuine new information always stops accumulation.
+        # Catastrophic failures are excluded from novelty (per has_novelty logic).
+        if not item.catastrophic_failure and (
+            item.novel_attack_ids
+            or item.novel_hinge_ids
+            or item.novel_primitive_ids
+            or item.verified_axioms_added > 0
+        ):
+            break
+
+        # Class-novelty grace boundary: if class_novelty_mode is on and this item
+        # introduces a weakest_class not seen in earlier history, treat as novelty
+        # and stop flat-tail accumulation at this boundary. Use forward index so
+        # "earlier" means strictly before this iteration's position in history.
+        if (
+            class_novelty_mode
+            and not item.catastrophic_failure
+            and item.weakest_class
+        ):
+            earlier_classes = {
+                h.weakest_class
+                for h in history[:hist_idx]
+                if h.weakest_class and not h.runtime_failure and not h.is_r1_failure()
+            }
+            if item.weakest_class not in earlier_classes:
+                break
+
+        # Committee-only reframing: grace boundary only when the prior item was an
+        # improvement or was not itself committee-only noise. If the prior was ALSO
+        # committee-only non-improving, this iteration is stagnation — include it.
+        if item._is_reframing_with_new_committee() and not item.catastrophic_failure:
+            _prior = history[hist_idx - 1] if hist_idx > 0 else None
+            _prior_is_committee_noise = (
+                _prior is not None
+                and _prior._is_reframing_with_new_committee()
+                and not _prior.score_improved
+                and not _prior.novel_attack_ids
+                and not _prior.novel_hinge_ids
+                and not _prior.novel_primitive_ids
+                and _prior.verified_axioms_added == 0
+            )
+            if not _prior_is_committee_noise:
+                break  # grace boundary — don't include this item in the tail
+
         tail.append(item)
+
     tail.reverse()
     return tail

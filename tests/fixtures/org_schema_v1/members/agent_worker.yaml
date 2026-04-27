@@ -1,0 +1,21 @@
+schema_version: 1
+member_id: agent_worker
+kind: ai
+display_name: Test Agent
+description: >
+  Frozen v1 fixture member (AI). Do not edit.
+substrates:
+  - name: agent_conversational
+    kind: session_bound
+    invocation: test_cli
+    current_model: test-model-0
+    strengths: ["fixture stability"]
+    weaknesses: ["not a real agent"]
+    persistence: "ephemeral"
+contact: {}
+availability:
+  timezone: utc
+capabilities:
+  - code_review
+opened_date: "2026-04-23"
+opened_by: principal_human

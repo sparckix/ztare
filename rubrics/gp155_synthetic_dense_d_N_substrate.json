@@ -1,0 +1,121 @@
+{
+  "name": "gp155_synthetic_dense_d_N_substrate",
+  "project": "gp155_synthetic_dense_d_N_substrate",
+  "rubric_version": "1.1-fit-primitive-features",
+  "rubric_version_reason": "v1.1 (2026-04-25) enables GP-156 Proposal 3 feature-vector fit primitive. The mutator opts in by declaring PARAMETRIC_FORM (str) and PARAMETER_NAMES (list[str]) at module level in test_model.py; apparatus runs scipy.optimize multi-start over visible (features, y) pairs and substitutes fitted MODEL_PARAMS automatically. Bypasses LLM's known weakness at numerical constant optimization. Combined with v1.0's first live test of v2.0 Framer + holdout-hard-gate at MRE < 0.10.",
+  "enable_fit_primitive_features": true,
+  "fit_primitive_features_k_max": 5,
+  "description": "Newton-mode discovery substrate. Synthetic (intrinsic_dim_d, log10_N_params, \u03b1) triples generated from a smooth sigmoidal regime crossover law (features.py). Mutator must rediscover the law from visible data and predict held-out interior + extrapolated d \u2208 {18,20} cells. Ground truth is known by construction so success/failure is unambiguous.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate: the regime-crossover formula is the discovery target. Generative yield required (cross-d extrapolation predictions).",
+  "falsification_mode": "bounded_discriminator",
+  "require_cross_family": false,
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "structural_blocker_enforcement_reason": "Flipped from 'gate' to 'both' 2026-04-25 \u2014 restore prompt-time anti-pattern catalog injection (catches RH-17 lookup tables before emission) AND keep post-champion G-CIRC + G-FALSIFY (deterministic safety net).",
+  "stagnation_trigger_mode": "new_class",
+  "underidentified_after": 15,
+  "gp103_stagnation_threshold": 5,
+  "composition_stagnation_threshold": 4,
+  "holdout_hard_gate": true,
+  "holdout_budget": 0,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "test_model.py + gate_harness.py form the deterministic gate harness; the mutator's I_model is scored by holdout MRE, not by parametric fit. The Framer (when engaged) operates on the (d, \u03b1) or (log10_N, \u03b1) data slices independently.",
+  "enable_framer": true,
+  "framer_meta": {
+    "purpose": "First live test of v2.0 Framer in autoresearch loop. Substrate exposes 96 paired numeric points so the \u226580-point threshold is met. Expected behavior: Framer engages on whichever 1D slice the mutator's fit declaration declares (d alone, or log10_N alone). The MDL gain is a telemetry signal \u2014 no live-mode reframe of evidence in v1.",
+    "expected_engagement": "1D \u2014 mutator typically declares fit over single independent variable",
+    "live_mode": false
+  },
+  "discovery_mode": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "gate_harness.py defines the FARTHER_TAIL set explicitly (d \u2208 {18, 20}); standard ZTARE farther-tail detection does not apply.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence is a synthetic (d, log10_N, \u03b1) grid, not a single curve; the global_evidence_fit gate's keyword-and-residual heuristic does not apply.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival functional forms scored by Rival Closed-Form Skepticism dimension; mathematical-form keyword heuristic does not apply.",
+  "evidence_anchor_requirement": true,
+  "general_office_model": "gpt4.1",
+  "enable_mform_audit": true,
+  "runner_allowed_imports": [
+    "features"
+  ],
+  "persona": "You are an adversarial epistemic auditor with the discipline of Charlie Munger (inversion: how would this be wrong?), Karl Popper (falsification: name the test that would reject the thesis), and a journal referee for Nature Machine Intelligence. You evaluate proposals for a closed-form predictor `I_model(features) -> \u03b1` over two continuous features (intrinsic_dim_d \u2208 [2, 20], log10_N_params \u2208 [3, 10]) on a synthetic dense substrate where ground truth is KNOWN by construction. **The mutator MUST declare PARAMETRIC_FORM (str) + PARAMETER_NAMES (list[str]) + MODEL_PARAMS = {} at module level in test_model.py.** The apparatus runs scipy.optimize multi-start over visible (features_dict, y_observed) pairs and substitutes fitted constants automatically \u2014 bypassing the LLM's weakness at numerical optimization. Hand-coding constants is structurally insufficient on this substrate: the holdout gate is tight (MRE < 0.10) and the 2x miss observed in the prior run (iter-2 MRE=0.209) is exactly what scipy fitting eliminates. NO PARAMETRIC_FORM declaration = REJECT. The mutator MUST discover the functional form from the visible data and the regime physics in evidence.txt; the persona does NOT specify the form. Calling convention only: declare PARAMETRIC_FORM as a Python expression string with named parameters and `features['key']` subscripts; declare PARAMETER_NAMES as a list of those parameter names; define I_model(features, params=MODEL_PARAMS) to evaluate the form. AST whitelist v2 allows arithmetic, sigmoid/exp/log/log10/sin/cos/tan/tanh/sqrt/abs/max/min, subscript on `features`, ternary `a if cond else b`, comparisons (==, !=, <, >, in, not in, is, is not), boolean and/or, tuple/list literals. K_law budget 5. You REJECT: (a) theses that fit the visible data without holdout gating; (b) theses that lack a symbolic functional form; (c) theses that hardcode per-row constants in piecewise branches (RH-17 Lookup-Table Fallacy \u2014 each piecewise branch must be a generative formula in d and log10_N, not a memorized constant); (d) theses without explicit rival-form falsification; (e) theses that propose a NULL RESULT over a \u03a3 vocabulary excluding power_k, log, exp, or sigmoid (RH-14 Vacuous Null \u2014 the substrate's actual law is sigmoidal); (f) theses committing the RH-15 MRE Aggregation Fallacy; (g) theses that fail to recover the Sharma \u03b1=2/d anchor on visible d \u2208 {2, 4, 6} rows at small log10_N. IMPORTANT: thesis.md must contain the prose explanation of your reasoning; test_model.py must contain I_model + your declared PARAMETRIC_FORM (str) + PARAMETER_NAMES (list) + MODEL_PARAMS={} (apparatus fits constants via scipy; hand-coding constants reliably misses the tight 0.10 holdout gate). Scoring rewards the GP-156 fit-primitive opt-in via the dedicated 'Fit Primitive Opt-in' dimension; do not skip the prose thesis to focus on code. You REWARD: (i) functional forms with K_law \u2264 5 parameters that pass the 10%-MRE holdout gate AND the 20%-MRE farther-tail gate (d \u2208 {18, 20} extrapolation); (ii) Newton-mode generative yield: at least two secondary observable predictions with numeric commitments and tolerances; (iii) explicit recovery of BOTH regime anchors (\u03b1=2/d small-N, \u03b1=1 large-N) before the crossover formula; (iv) rigorous documentation of the regime-crossover discovery process; (v) theses that correctly recognize this is a SYNTHETIC substrate with smooth regime crossover and propose accordingly (sigmoid blend, smooth_max, soft regime selector \u2014 not sharp threshold).",
+  "dimensions": [
+    {
+      "name": "Functional Form Discovery",
+      "weight": 7.02,
+      "description": "Does the thesis propose a specific, falsifiable functional relationship \u03b1 = f(intrinsic_dim_d, log10_N_params)? Score 0/30 for prose-only; 14/30 for formula stated but not in test_model.py I_model() callable form; 30/30 for a callable formula AND parameter count K_law \u2264 5 AND explicit recovery of BOTH regime anchors (\u03b1=2/d resolution-limited at small N for d \u2208 {2,4,6}; \u03b1=1 variance-limited at large N)."
+    },
+    {
+      "name": "Holdout Validation Rigor",
+      "weight": 5.85,
+      "description": "Does the thesis validate the proposed relationship against the held-out values via gate_harness.py? Holdout mean relative error must be < 0.10 to score full credit (substrate is synthetic with low noise floor). Mid-credit (12/25) for holdout 0.10-0.18. Claims without holdout citation score zero. The thesis MUST cite the gate_harness.py JSON output verbatim."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does the thesis pre-commit \u2265 2 numerical predictions beyond the holdout fit? Examples: (i) predicted \u03b1 at d \u2208 {18, 20} for stated log10_N (farther-tail extrapolation); (ii) predicted critical log10_N at which \u03b1 crosses 0.5 for some d (regime boundary); (iii) predicted \u0394Y under a specific (d, N) \u2192 (d', N') modification. Predictions must be numerically specific with declared tolerance. Score 0/20 if no secondary observable; 10/20 if one named with commitment; 20/20 if \u2265 2 named with numeric commitments and tolerance."
+    },
+    {
+      "name": "Rival Closed-Form Skepticism",
+      "weight": 3.5,
+      "description": "Does the thesis test \u2265 2 rival functional forms on the same holdout? Examples of rivals to falsify: pure \u03b1=2/d (ignoring N); pure \u03b1=1 (ignoring d); sharp regime threshold (step function instead of smooth); linear interpolation in log-space. Score 0/15 if no rivals tested; 8/15 if one rival; 15/15 if \u2265 2 with documented holdout MRE for each."
+    },
+    {
+      "name": "Regime Anchor Recovery",
+      "weight": 2.34,
+      "description": "Does the thesis explicitly recover both calibration anchors? (i) \u03b1 \u2248 2/d on visible d \u2208 {2, 4, 6} at small log10_N (resolution-limited Sharma anchor); (ii) \u03b1 \u2248 1.0 on visible rows at large log10_N (variance-limited Bahri anchor). Score 0 if either anchor is missed; full credit if both are recovered with explicit reasoning that ties them to the underlying physics (manifold coarse-graining vs CLT-driven sampling noise)."
+    },
+    {
+      "name": "M-Form Charter Alignment: explicit_formula_and_pred_commit",
+      "weight": 4.31,
+      "description": "[GP-105 General Office insertion] Thesis must propose at least one explicit candidate property and an associated closed-form predictive relationship for \u03b1, or clearly and specifically describe null discovery with bounding of search space; and must pre-commit to \u2265 2 concrete secondary observable predictions."
+    },
+    {
+      "name": "M-Form Charter Alignment: must_provide_closed_form_and_pred",
+      "weight": 5.31,
+      "description": "[GP-105 General Office insertion] Theses must provide a concrete, explicit closed-form relationship between (d, log10_N) and \u03b1, validate on holdout, and make at least one novel, generatively testable prediction outside training and holdout; failure to do so constitutes incomplete engagement."
+    },
+    {
+      "name": "M-Form Charter Alignment: requires_full_analytical_engagement",
+      "weight": 6.53,
+      "description": "[GP-105 General Office insertion] The thesis must explicitly propose and justify a closed-form parametric function mapping the two features to the target variable, directly analyze the two physical regime anchors (\u03b1=2/d and \u03b1=1), articulate the crossover mechanism, and generate at least two documented quantitative predictions for both held-out and extrapolation regions. Gap detected: The thesis stub provided does not engage any analytical work: it contains only boilerplate instructions for how to opt in to the fit primitive, with no actual proposal of a parametric form, analysis of regime anchors, crossover law, or secondary predictions. There is no evidence the core task steps were even attempted, such as defining I_model, stating specific predictions for holdout or extrapolated rows, or naming a falsifying condition. This bypasses all substantive requirements of the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: explicit_full_scope_engagement",
+      "weight": 8.04,
+      "description": "[GP-105 General Office insertion] Require that the thesis explicitly state its model form, articulate the expected limiting behaviors on calibration anchors, describe its approach to discovering the crossover regime, directly address prediction of holdout and farther-tail points, and pre-commit to falsification and secondary observables. Gap detected: The thesis stub does not engage with the core analytical tasks of the charter: it does not propose or describe any model for I_model(features), does not discuss recovery of either calibration anchor (\u03b1 \u2248 2/d or \u03b1 \u2248 1), does not attempt to discover the crossover formula, makes no predictions for holdout or extrapolated d values, and does not name any falsifying condition or secondary predictions. The thesis contains only a placeholder about enabling the fit primitive and logistics, without substantive analytical or methodological engagement."
+    },
+    {
+      "name": "M-Form Charter Alignment: explicit_formula_and_prediction",
+      "weight": 9.9,
+      "description": "[GP-105 General Office insertion] Thesis must articulate a concrete, testable functional form for I_model connecting both calibration anchors and regime crossover, explicitly state predicted values or boundaries for secondary observables (including regime boundary for alpha crossing 0.5 and predictions for extrapolated d), and declare a condition that could falsify its claim, rather than merely indicating intent to use fitting or fill out the stub later. Gap detected: The thesis stub provided does not substantively engage with the core analytical requirements of the charter. It does not propose or define an explicit I_model functional form, does not analyze or discuss the resolution-limited and variance-limited calibration anchors, does not offer any cross-regime parameterization, fails to generate or pre-commit to secondary observable predictions, and does not specify any falsifying condition. Rather, it serves as a placeholder indicating the use of fit primitives and module-level form declarations, without actually articulating or engaging the substantive modeling, validation, or predictive tasks specified in the charter. As such, the full spirit of discovering, recovering, and justifying the regime crossover law from partial observation is not addressed; instead, a shell for future implementation is provided."
+    },
+    {
+      "name": "M-Form Charter Alignment: explicit_analytical_engagement",
+      "weight": 12.2,
+      "description": "[GP-105 General Office insertion] Penalize submissions that fail to explicitly propose a closed-form model, recover or explain both regime anchors, articulate/exhibit predictive performance on holdout and extrapolation, and pre-commit to falsifiability and secondary predictions. Gap detected: The thesis submission is only a stub without substantive content. It does not present a model proposal, does not define a candidate crossover law, discuss calibration anchors, show numerical predictions for holdout/farther-tail rows, name a falsifying condition, or pre-commit to secondary yield. Therefore, it does not engage any of the full analytical or generative breadth established by the charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: explicit_model_and_predictions",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Thesis must provide an explicit functional form for the predictive law, offer an analytical bridge between the resolution- and variance-limited regimes, and generate at least two quantitative held-out/extrapolation predictions in support of generalization claims. Gap detected: The thesis.md provided is a stub with no substantive analytical content, model proposal, explicit functional form, guarantees of regime anchor recovery, or any predictive surface specified for the required primary and secondary observables. It does not demonstrate engagement with the apparatus, the resolution-to-variance regime transition, or provide predictions for extrapolated domains as called for by the charter. Thus, it fails to engage the full analytical and generative scope required."
+    }
+  ],
+  "criteria": {
+    "Functional_Form_Discovery": "I_model(features: dict) must be a callable Python function. Categorical-as-continuous smuggling not applicable (features are real). Cap K_law \u2264 5 parameters. The two regime anchors (Sharma \u03b1=2/d at small N for d \u2208 {2,4,6}; Bahri \u03b1=1 at large N) are calibration anchors and MUST be recovered.",
+    "Holdout_Validation_Rigor": "Mean relative error on the HOLDOUT_SET (n=16, well-attributed synthetic rows) < 0.10. The gate_harness.py reports this number. The thesis MUST cite the gate_harness.py JSON output verbatim, not re-implement on visible data.",
+    "Generative_Yield": "Pre-commit a numerical prediction with declared tolerance for at least one (d, log10_N) pair NOT in the visible table NOR the holdout \u2014 ideally a farther-tail row (d \u2208 {18, 20}). Two distinct secondary observables required for full credit.",
+    "Rival_Closed-Form_Skepticism": "Document MRE for each rival on the same HOLDOUT. A rival the thesis 'considers' but doesn't run on holdout scores 0 here. At least one rival must be a strictly different functional form (not a parameter perturbation).",
+    "Regime_Anchor_Recovery": "Explicitly verify on visible rows: (i) \u03b1 \u2248 2/d for d \u2208 {2,4,6} at small log10_N; (ii) \u03b1 \u2248 1 at large log10_N for any d. Both must be in the thesis or full credit is forfeited.",
+    "mform_explicit_formula_and_pred_commit": "Thesis must propose at least one explicit candidate property and an associated closed-form predictive relationship for \u03b1, or clearly and specifically describe null discovery with bounding of search space; and must pre-commit to \u2265 2 concrete secondary observable predictions.",
+    "mform_must_provide_closed_form_and_pred": "Theses must provide a concrete, explicit closed-form relationship between (d, log10_N) and \u03b1, validate on holdout, and make at least one novel, generatively testable prediction outside training and holdout; failure to do so constitutes incomplete engagement.",
+    "mform_requires_full_analytical_engagemen": "The thesis must explicitly propose and justify a closed-form parametric function mapping the two features to the target variable, directly analyze the two physical regime anchors (\u03b1=2/d and \u03b1=1), articulate the crossover mechanism, and generate at least two documented quantitative predictions for both held-out and extrapolation regions.",
+    "mform_explicit_full_scope_engagement": "Require that the thesis explicitly state its model form, articulate the expected limiting behaviors on calibration anchors, describe its approach to discovering the crossover regime, directly address prediction of holdout and farther-tail points, and pre-commit to falsification and secondary observables.",
+    "mform_explicit_formula_and_prediction": "Thesis must articulate a concrete, testable functional form for I_model connecting both calibration anchors and regime crossover, explicitly state predicted values or boundaries for secondary observables (including regime boundary for alpha crossing 0.5 and predictions for extrapolated d), and declare a condition that could falsify its claim, rather than merely indicating intent to use fitting or fill out the stub later.",
+    "mform_explicit_analytical_engagement": "Penalize submissions that fail to explicitly propose a closed-form model, recover or explain both regime anchors, articulate/exhibit predictive performance on holdout and extrapolation, and pre-commit to falsifiability and secondary predictions.",
+    "mform_explicit_model_and_predictions": "Thesis must provide an explicit functional form for the predictive law, offer an analytical bridge between the resolution- and variance-limited regimes, and generate at least two quantitative held-out/extrapolation predictions in support of generalization claims."
+  }
+}

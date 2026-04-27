@@ -1,0 +1,96 @@
+{
+  "rubric_version": "2.1-empirical-stress-unblock",
+  "rubric_version_reason": "2026-04-24: gp140 ceiling-broken from 78 via added dimension 'Empirical Stress Test Discipline'. Prior version 2.0 scored only proof-grade completeness bounds, saturating on unprovable-within-prompt universal guarantees across iters 6-15 of aggressive-judge run. v2.1 adds explicit reward for N-substrate empirical validation (something the mutator CAN execute) and softens 'Generative Yield' wording to accept empirical-prediction paths alongside closed-form proof paths. Minimal one-dimension intervention; weight rebalanced from Sealed-Prediction (5→3), Millennium (10→5), Primitive-Substrate (5→2). Net weight remains 100.",
+  "project": "gp140_ztare_discovery",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "gp140 v2 (2026-04-24) requires a paired-primitive proposal: class-A behavioral-fit solver + class-B Occam's-razor law-finder, composed with B-as-objective and A-as-optimizer. Either half alone is scored down; the composition is the load-bearing unit. See projects/gp140_ztare_discovery/project_charter.md and evidence.txt Evidence Set G.",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node in the A-B composition axis.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative substrate; scoring is off-loop via actual primitive runs against held-out substrates named by the thesis.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative substrate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative substrate — evidence is the ZTARE apparatus state + findings corpus, not a numerical curve",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative substrate — rival primitive pairs scored by rubric criteria",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "You are a contrarian architectural epistemologist who watched ztare_on_ztare produce 50 iterations of admission gates and gp140 v1 produce a score-96 thesis that nevertheless had a hidden design ambiguity: it proposed a law-finder (Method B: GroupCanon-Bayes-CA with MDL prior + symmetry canonicalization) but no behavioral-fit solver (Method A) and no composition logic. The CA-bridge test (2026-04-24) established that a Newton-class generative primitive requires BOTH halves: a class-A solver that inverts observations into the behavioral-equivalence class, AND a class-B law-finder that filters by compressibility. You SHARPLY REWARD proposals that name both mechanisms explicitly, specify how they communicate (A emits full candidate set; B filters by stated prior; edge cases reported with compressibility excess), and pre-register scoring rules for BOTH behavioral fit AND law-certification. You REJECT: (a) class-A-only proposals (SAT-class solvers without Occam's razor — indistinguishable from cryptographic inversion); (b) class-B-only proposals (naive MDL enumeration without an optimizer — does not scale); (c) verbal composition ('then filter by MDL') without specifying the contract; (d) held-out substrates drawn from textbook / OEIS-indexed families (cold LLMs solve those blind per INS-045); (e) hand-wavy claims of Millennium transfer without substrate-specific primitive instantiation. You REWARD: named A-mechanisms (constraint propagation, SAT, symbolic regression, grid optimizer), named B-mechanisms (DNF minterm bound, PSLQ integer-relation, BIC, persistent-homology Betti, Lyapunov dimension), explicit composition contracts, held-out substrates from the four Evidence-Set-H classes (discrete irreducible, continuous chaotic, non-local recurrence, scale-dependent numerical). You are Munger-strict: inversion + compression is the charter-design primitive that produced gp140 v1; the paired-primitive pattern is the evidence-derived extension that produced v2. A thesis that notices this meta-move and applies it to its own proposal scores above one that does not.",
+  "dimensions": [
+    {
+      "name": "Paired-Primitive Specification (A+B composition)",
+      "weight": 30,
+      "description": "Does the thesis propose BOTH a class-A behavioral-fit solver AND a class-B compressibility law-finder, with explicit composition logic? (a) 0/30 for any thesis that proposes only one class or leaves the composition verbal. (b) 10/30 for proposals naming both classes but no composition contract (how does A's output feed B's filter? How are edge cases — A-fits that slightly exceed B's bound — reported?). (c) 20/30 for proposals with a composition contract but missing edge-case reporting or missing tunability specification on B's bound. (d) 30/30 for proposals with: named A-mechanism + named B-mechanism + explicit A→B data flow + edge-case report schema + pre-registered behavioral AND law-certification scoring rules."
+    },
+    {
+      "name": "Held-Out Substrate Class (non-prior-sufficient)",
+      "weight": 20,
+      "description": "Does the thesis commit to a held-out substrate class that is NOT prior-sufficient for cold LLMs? Per INS-045, bespoke arithmetic functions are prior-sufficient (LLMs induce them blind). Acceptable classes: (i) deterministic discrete irreducible (cellular automata, Boolean networks, discrete-event systems); (ii) continuous chaotic (Lorenz, Duffing, Van der Pol with noise); (iii) non-local integer recurrences (Stern-Brocot, Recamán, logistic-map iterates); (iv) scale-dependent real-world numerical (OEIS-500K, neural scaling, polymer relaxation). Scoring: 0/20 for OEIS-indexed or textbook arithmetic; 10/20 for substrates within accepted classes but without explicit non-prior-sufficiency justification; 20/20 for explicit non-prior-sufficiency argument + named substrate + example instance."
+    },
+    {
+      "name": "Mechanism Algorithmic Concreteness",
+      "weight": 15,
+      "description": "Does each named primitive (A and B) name at least one of: (i) an existing library/function the implementation would use; (ii) a cited algorithm (author + year + name); (iii) a specific numeric threshold with derivation? Class-of-technique labels without concrete names score 0. For A: named solver (e.g. constraint propagation via python-constraint, SAT via z3, PySR, grid search). For B: named compressibility prior (DNF minterm bound, PSLQ, BIC, persistent-homology via gudhi, Lyapunov spectrum via nolds). 15/15 requires concrete mechanism for BOTH A and B."
+    },
+    {
+      "name": "Sealed-Prediction Protocol",
+      "weight": 3,
+      "description": "Does the thesis pre-register the sealed-prediction protocol with hash-commitment discipline? Must specify: (i) packet-hash the primitive consumes; (ii) prediction-JSON schema emitted (must include BOTH behavioral_candidate_set AND law_certified_subset); (iii) SHA-256 commitment step BEFORE holdout unseal; (iv) unseal procedure; (v) both scoring criteria pre-committed (behavioral-fit threshold + law-certification requirement or bounded refusal)."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 15,
+      "description": "Does the primitive pair predict observables BEYOND the primary held-out behavior? Examples: 'B-filter predicts that any apparatus run on a truly law-like substrate will emit a non-empty law_certified_subset'; 'A-solver on chaotic substrate predicts characteristic Lyapunov spectrum'. Tautological 'predicts the primitive accepts/rejects' scores 0. Cross-substrate bonus: +5 (cap 10) for primitives whose generative predictions are evaluable on a second substrate in the Evidence Set H class list. IMPORTANT (v2.1): a prediction backed by a FALSIFIER + empirical validation plan is scored equivalently to one backed by a closed-form proof. Unproven-but-falsifiable predictions that specify their rejection condition numerically (e.g., 'lambda_max < -0.01 OR we reject') are credited at full weight; only tautological predictions score 0. Do NOT penalize a thesis for lacking a universal completeness proof if it offers a concrete empirical stress-test plan covering the Method-A guarantee."
+    },
+    {
+      "name": "Millennium-Class Transfer Nudge",
+      "weight": 5,
+      "description": "NEW (gp140 v2). Does the thesis explicitly name HOW the proposed primitive pair would re-instantiate for a Millennium-adjacent substrate (Riemann operator search, Navier-Stokes turbulence invariants, P-vs-NP boundary problems, Hodge conjecture-adjacent topological invariants, Yang-Mills mass gap, BSD-adjacent L-function coefficients)? The instantiation need NOT solve the Millennium problem; it must name: (a) the target substrate; (b) what class-A solver becomes in that domain; (c) what class-B compressibility prior becomes in that domain; (d) a concrete first-cycle falsifiable prediction. Hand-wavy 'can be extended to continuous dynamics' scores 0. A specific instantiation (e.g. 'for Riemann: A=PSLQ-anchored multi-start spectral fit; B=BIC+minimal-algebraic-closed-form bound') scores 10."
+    },
+    {
+      "name": "Primitive-Substrate Mapping",
+      "weight": 2,
+      "description": "Does the primitive name the file path it inserts at, input contract (which packet hash it records), and output contract (which prediction-JSON file it writes)? Apparatus-references without files score 0."
+    },
+    {
+      "name": "Empirical Stress Test Discipline",
+      "weight": 10,
+      "description": "NEW (v2.1, 2026-04-24). Does the thesis commit to N>=5 operator-generated perturbed substrates within its declared substrate class AND pre-register a pass-rate threshold (e.g., >= 0.8 gate-pass over 10 perturbations) as part of the scoring criterion? This dimension exists because iters 6-15 of the aggressive-judge run showed a recurring pattern: the mutator engineers a concrete algorithm, the judge finds a different unproven universal bound each iteration, aggregate score pins at 78. Universal completeness/coercivity/Lipschitz proofs are not reliably producible within a single prompt; empirical validation on N perturbed substrates is. This dimension REWARDS what the mutator CAN do and reduces the pressure to prove what it reliably cannot. Scoring: (a) 0/10 for theses with no empirical validation plan or a vague 'we will test it'. (b) 4/10 for plans naming N>=3 perturbed substrates but no pre-registered pass-rate gate or no explicit rejection criterion. (c) 7/10 for N>=5 perturbed substrates + pre-registered pass-rate gate + explicit rejection criterion, but no scaling-behavior analysis across perturbation magnitude. (d) 10/10 for N>=5 + pass-rate gate + rejection criterion + scaling analysis showing how pass-rate degrades with perturbation magnitude (e.g., sigma in {0.01, 0.03, 0.05, 0.10}). Cross-invariant bonus: +2 (cap 12) if stress tests are evaluated under TWO independent Method-B invariants (topological + dynamical, e.g., Wasserstein-persistence + Lyapunov-sum) rather than just the primary one, addressing the iter-15 'topological gate many-to-one' critique."
+    }
+  ],
+  "criteria": {
+    "1_Paired_Primitive_Composition": "Does the thesis propose both A and B with explicit composition contract?",
+    "2_Held_Out_Substrate_Class": "Is the held-out substrate in a non-prior-sufficient class per Evidence Set H?",
+    "3_Mechanism_Algorithmic_Concreteness": "Are both A and B named with runnable concrete mechanisms?",
+    "4_Sealed_Prediction_Protocol": "Is the hash-commitment protocol pre-registered with both-scoring schema?",
+    "5_Generative_Yield_Newton_Mode": "Does the pair predict observables beyond primary behavior?",
+    "6_Millennium_Class_Transfer_Nudge": "Is a concrete Millennium-adjacent re-instantiation specified?",
+    "7_Primitive_Substrate_Mapping": "Are the code-level insertion point, input contract, and output contract named?",
+    "8_Empirical_Stress_Test_Discipline": "Does the thesis pre-register a pass-rate gate on N>=5 perturbed substrates with explicit rejection criterion and sigma-scaling analysis?"
+  },
+  "_charter_pre_reg_seam": "research_areas/private/seams/mission/GP-140_ztare_discovery_seam.md",
+  "_inversion_of": "ztare_on_ztare",
+  "_evidence_set_g_reference": "CA-bridge apparatus-leverage experiment 2026-04-24; INS-045 (prior sufficiency of OEIS on cold LLMs); INS-046 pending (paired-primitive complementarity).",
+  "_v1_archived_at": "projects/gp140_ztare_discovery/workspace/archive_mlh_contaminated/rubric_v1.json",
+  "_v2_changes": [
+    "Replaced 'Generative Output Specificity' dimension with paired-primitive requirement",
+    "Added 'Millennium-Class Transfer Nudge' dimension (10 weight)",
+    "Raised rejection threshold: class-A-only or class-B-only proposals score down",
+    "Held-out substrate classes restricted to four Evidence Set H categories",
+    "Rubric total weight remains 100"
+  ],
+  "_v21_changes": [
+    "2026-04-24: unblock 78-ceiling observed across 15+ iters under aggressive-judge o3. Recurring weakest-link pattern: mutator engineers concrete algorithm, judge finds different unproven universal bound each iter, aggregate pins at 78.",
+    "Added 'Empirical Stress Test Discipline' dimension (weight 10): N>=5 perturbed substrates + pre-registered pass-rate gate + rejection criterion + sigma-scaling analysis. Rewards what the mutator CAN execute in-prompt.",
+    "Softened 'Generative Yield' language: predictions backed by falsifier + empirical validation score equivalently to proof-backed predictions. Only tautological predictions still score 0.",
+    "Rebalanced weights: Sealed-Prediction 5->3, Millennium 10->5, Primitive-Substrate 5->2. Reclaimed 10 weight for new dimension. Total remains 100.",
+    "Cross-invariant bonus on Empirical Stress Test: +2 cap 12 when stress-testing under two independent Method-B invariants, addressing iter-15 'Wasserstein many-to-one impostor' critique."
+  ]
+}

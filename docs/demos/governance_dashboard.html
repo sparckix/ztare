@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZTARE Governance Dashboard</title>
+<style>
+:root {
+  --bg-deep: #08090d;
+  --bg-card: #0f1117;
+  --bg-elevated: #161822;
+  --border: #1e2030;
+  --text: #c8cdd8;
+  --text-dim: #6b7394;
+  --text-bright: #e8eaf0;
+  --accent: #4f8ff7;
+  --green: #34d399;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --purple: #a78bfa;
+  --radius: 10px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-deep); color: var(--text); min-height: 100vh; }
+
+/* Top bar */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: var(--bg-card); border-bottom: 1px solid var(--border); }
+.topbar h1 { font-size: 16px; font-weight: 600; color: var(--text-bright); display: flex; align-items: center; gap: 8px; }
+.topbar h1 span { font-size: 20px; }
+.topbar .status { display: flex; align-items: center; gap: 16px; font-size: 12px; }
+.topbar .status .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.topbar .status .live { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+/* Three-pane layout (Brand pace layers) */
+.layout { display: grid; grid-template-columns: 260px 1fr 320px; height: calc(100vh - 48px); }
+
+/* Left pane: Governance (slow layer) */
+.pane-left { background: var(--bg-card); border-right: 1px solid var(--border); overflow-y: auto; padding: 16px; }
+.pane-left h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 12px; }
+.role-card { background: var(--bg-elevated); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; cursor: pointer; border: 1px solid var(--border); transition: border-color 0.2s; }
+.role-card:hover { border-color: var(--accent); }
+.role-card .name { font-size: 13px; font-weight: 600; color: var(--text-bright); }
+.role-card .member { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.role-card .badge { display: inline-block; font-size: 9px; padding: 2px 6px; border-radius: 10px; margin-top: 6px; }
+.badge-ai { background: rgba(79,143,247,0.15); color: var(--accent); }
+.badge-human { background: rgba(52,211,153,0.15); color: var(--green); }
+.mandate-section { margin-top: 16px; }
+.mandate-section h3 { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.mandate-item { font-size: 11px; color: var(--text); padding: 6px 8px; background: var(--bg-elevated); border-radius: 6px; margin-bottom: 4px; border-left: 3px solid var(--border); }
+.mandate-item.can { border-left-color: var(--green); }
+.mandate-item.must { border-left-color: var(--amber); }
+.mandate-item.forbidden { border-left-color: var(--red); }
+
+/* Center pane: Working (medium layer) */
+.pane-center { padding: 16px; overflow-y: auto; }
+.pane-center h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 12px; }
+.agent-canvas { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.agent-card { background: var(--bg-card); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; transition: transform 0.15s, box-shadow 0.15s; }
+.agent-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.agent-card .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.agent-card .header .name { font-size: 14px; font-weight: 600; color: var(--text-bright); }
+.agent-card .header .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+.status-active { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.status-idle { background: var(--text-dim); }
+.status-blocked { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.status-error { background: var(--red); box-shadow: 0 0 6px var(--red); }
+.agent-card .role-tag { font-size: 10px; color: var(--accent); background: rgba(79,143,247,0.1); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 8px; }
+.agent-card .task { font-size: 11px; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+.agent-card .metrics-row { display: flex; gap: 12px; font-size: 10px; color: var(--text-dim); }
+.agent-card .metrics-row .metric { display: flex; flex-direction: column; align-items: center; }
+.agent-card .metrics-row .metric .val { font-size: 16px; font-weight: 700; color: var(--text-bright); }
+.agent-card .sparkline-container { margin-top: 8px; height: 24px; }
+.agent-card .claim-tag { font-size: 9px; color: var(--purple); background: rgba(167,139,250,0.1); padding: 2px 6px; border-radius: 8px; margin-top: 6px; display: inline-block; }
+
+/* Session timeline */
+.session-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-elevated); border-radius: 8px; margin-bottom: 12px; font-size: 11px; }
+.session-bar .session-id { color: var(--accent); font-family: monospace; }
+.session-bar .duration { color: var(--text-dim); }
+
+/* Review queue (Kim Scott forced-rank) */
+.review-section { margin-top: 20px; }
+.review-section h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.review-section .count { background: var(--accent); color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 8px; }
+.review-item { background: var(--bg-card); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
+.review-item .question { font-size: 12px; color: var(--text-bright); margin-bottom: 8px; }
+.review-item .options { display: flex; gap: 6px; flex-wrap: wrap; }
+.review-item .option { font-size: 11px; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; background: var(--bg-elevated); }
+.review-item .option:hover { border-color: var(--accent); background: rgba(79,143,247,0.1); }
+.review-item .option.selected { border-color: var(--accent); background: rgba(79,143,247,0.2); color: var(--accent); }
+
+/* Right pane: Fast layer (damage signals + events) */
+.pane-right { background: var(--bg-card); border-left: 1px solid var(--border); overflow-y: auto; padding: 16px; }
+.pane-right h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 12px; }
+.signal { padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 11px; line-height: 1.4; border-left: 3px solid var(--border); background: var(--bg-elevated); }
+.signal .time { font-size: 9px; color: var(--text-dim); font-family: monospace; }
+.signal .kind { font-weight: 600; margin: 2px 0; }
+.signal .detail { color: var(--text-dim); }
+.signal.critical { border-left-color: var(--red); }
+.signal.warn { border-left-color: var(--amber); }
+.signal.info { border-left-color: var(--accent); }
+.signal.resolved { border-left-color: var(--green); opacity: 0.6; }
+
+/* Attention budget (Raskin) */
+.attention-budget { background: var(--bg-elevated); border-radius: 8px; padding: 10px 12px; margin-bottom: 16px; }
+.attention-budget .label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+.attention-budget .bar-container { height: 6px; background: #1a1d2e; border-radius: 3px; margin-top: 6px; overflow: hidden; }
+.attention-budget .bar { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.attention-budget .stats { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+
+/* Closure map */
+.closure-section { margin-top: 16px; }
+.closure-step { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 11px; border-bottom: 1px solid #1a1d2e; }
+.closure-step .step-name { flex: 1; }
+.closure-step .agents { display: flex; gap: 2px; }
+.closure-step .agent-dot { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700; color: #fff; }
+.closure-step.fragile .step-name { color: var(--amber); }
+.closure-step.broken .step-name { color: var(--red); }
+
+/* Detail panel (slides in) */
+.detail-overlay { display: none; position: fixed; top: 0; right: 0; width: 420px; height: 100vh; background: var(--bg-card); border-left: 1px solid var(--border); box-shadow: -8px 0 32px rgba(0,0,0,0.5); z-index: 100; padding: 20px; overflow-y: auto; }
+.detail-overlay.open { display: block; }
+.detail-overlay .close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer; }
+.detail-overlay h3 { font-size: 18px; color: var(--text-bright); margin-bottom: 4px; }
+.detail-overlay .meta { font-size: 11px; color: var(--text-dim); margin-bottom: 16px; }
+.detail-overlay .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin: 16px 0 8px; }
+.detail-overlay pre { font-size: 11px; background: var(--bg-deep); padding: 12px; border-radius: 8px; overflow-x: auto; color: var(--text); white-space: pre-wrap; }
+
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+  .pane-left, .pane-right { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1><span>🛡</span> ZTARE Governance Dashboard</h1>
+  <div class="status">
+    <span>System of record: <code style="color:var(--accent)">org/</code></span>
+    <span><span class="dot live"></span> 4 agents active</span>
+    <span style="color:var(--text-dim)">Last sync: just now</span>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- LEFT PANE: Governance (slow layer) -->
+  <div class="pane-left">
+    <h2>🏛 Governance Layer</h2>
+
+    <div class="role-card" onclick="showDetail('principal')">
+      <div class="name">Principal</div>
+      <div class="member">Daniel Alami</div>
+      <span class="badge badge-human">human</span>
+    </div>
+
+    <div class="role-card" onclick="showDetail('manager')">
+      <div class="name">Manager</div>
+      <div class="member">Claude (Anthropic)</div>
+      <span class="badge badge-ai">ai · sonnet-4-6</span>
+    </div>
+
+    <div class="role-card" onclick="showDetail('engineer')">
+      <div class="name">Engineer</div>
+      <div class="member">Codex (OpenAI)</div>
+      <span class="badge badge-ai">ai · codex-cli</span>
+    </div>
+
+    <div class="role-card" onclick="showDetail('reviewer')">
+      <div class="name">Reviewer</div>
+      <div class="member">Gemini (Google)</div>
+      <span class="badge badge-ai">ai · gemini-3.1-pro</span>
+    </div>
+
+    <div class="mandate-section">
+      <h3>Manager Mandate</h3>
+      <div class="mandate-item can">✓ Run experiments within budget ($50/session)</div>
+      <div class="mandate-item can">✓ Propose seams, specs, and findings</div>
+      <div class="mandate-item must">⚡ Escalate: budget > $10/action</div>
+      <div class="mandate-item must">⚡ Escalate: gate approval required</div>
+      <div class="mandate-item forbidden">✕ Modify mandates without principal</div>
+      <div class="mandate-item forbidden">✕ Push to main without review</div>
+      <div class="mandate-item forbidden">✕ Access credentials / SSH keys</div>
+    </div>
+
+    <div class="closure-section">
+      <h3 style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Closure Map</h3>
+      <div class="closure-step">
+        <span class="step-name">Evidence compilation</span>
+        <div class="agents">
+          <span class="agent-dot" style="background:var(--accent)" title="Claude">C</span>
+          <span class="agent-dot" style="background:var(--purple)" title="Codex">X</span>
+        </div>
+      </div>
+      <div class="closure-step">
+        <span class="step-name">Experiment execution</span>
+        <div class="agents">
+          <span class="agent-dot" style="background:var(--accent)" title="Claude">C</span>
+          <span class="agent-dot" style="background:var(--purple)" title="Codex">X</span>
+        </div>
+      </div>
+      <div class="closure-step fragile">
+        <span class="step-name">⚠ Gate approval</span>
+        <div class="agents">
+          <span class="agent-dot" style="background:var(--green)" title="Daniel">D</span>
+        </div>
+      </div>
+      <div class="closure-step">
+        <span class="step-name">Paper editing</span>
+        <div class="agents">
+          <span class="agent-dot" style="background:var(--accent)" title="Claude">C</span>
+          <span class="agent-dot" style="background:var(--green)" title="Daniel">D</span>
+        </div>
+      </div>
+      <div class="closure-step fragile">
+        <span class="step-name">⚠ Publication decision</span>
+        <div class="agents">
+          <span class="agent-dot" style="background:var(--green)" title="Daniel">D</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER PANE: Working (medium layer) -->
+  <div class="pane-center">
+    <div class="session-bar">
+      <span>Active session:</span>
+      <span class="session-id">2026-04-26T22-17-47Z</span>
+      <span class="duration">· running 2h 14m</span>
+      <span style="margin-left:auto;color:var(--green)">● live</span>
+    </div>
+
+    <h2>🔬 Agent Canvas</h2>
+    <div class="agent-canvas">
+
+      <div class="agent-card" onclick="showDetail('claude-task')">
+        <div class="header">
+          <span class="name">Claude</span>
+          <span class="status-dot status-active"></span>
+        </div>
+        <span class="role-tag">manager</span>
+        <div class="task">Running gp163d unified acceleration substrate — iter 7, investigating scale-dependent crossover constant</div>
+        <div class="metrics-row">
+          <div class="metric"><span class="val">7</span><span>iters</span></div>
+          <div class="metric"><span class="val">100</span><span>champion</span></div>
+          <div class="metric"><span class="val">$4.20</span><span>spent</span></div>
+        </div>
+        <div class="claim-tag">🔒 claimed: gp163d_unified_accel</div>
+      </div>
+
+      <div class="agent-card" onclick="showDetail('codex-task')">
+        <div class="header">
+          <span class="name">Codex</span>
+          <span class="status-dot status-active"></span>
+        </div>
+        <span class="role-tag">engineer</span>
+        <div class="task">Implementing Cage v5 Phase 4d — substrate-aware mutator prompt primitives + substrate critic wiring</div>
+        <div class="metrics-row">
+          <div class="metric"><span class="val">24</span><span>bugs fixed</span></div>
+          <div class="metric"><span class="val">453</span><span>tests pass</span></div>
+          <div class="metric"><span class="val">$6.80</span><span>spent</span></div>
+        </div>
+        <div class="claim-tag">🔒 claimed: cage_v5_wiring</div>
+      </div>
+
+      <div class="agent-card" onclick="showDetail('gemini-task')">
+        <div class="header">
+          <span class="name">Gemini</span>
+          <span class="status-dot status-idle"></span>
+        </div>
+        <span class="role-tag">reviewer</span>
+        <div class="task">Awaiting review assignment. Last: GP-165 ANALOGY architecture audit (score 93, 7 iter)</div>
+        <div class="metrics-row">
+          <div class="metric"><span class="val">93</span><span>last score</span></div>
+          <div class="metric"><span class="val">3</span><span>reviews today</span></div>
+          <div class="metric"><span class="val">$1.90</span><span>spent</span></div>
+        </div>
+      </div>
+
+      <div class="agent-card" onclick="showDetail('daemon-task')">
+        <div class="header">
+          <span class="name">Daemon</span>
+          <span class="status-dot status-blocked"></span>
+        </div>
+        <span class="role-tag">cron worker</span>
+        <div class="task">Agent daemon — tick paused. 10 work candidates discovered. Awaiting principal APPROVE via telegram.</div>
+        <div class="metrics-row">
+          <div class="metric"><span class="val">10</span><span>candidates</span></div>
+          <div class="metric"><span class="val">0</span><span>executed</span></div>
+          <div class="metric"><span class="val">$0</span><span>spent</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Forced-rank review (Kim Scott) -->
+    <div class="review-section">
+      <h2>⚖ Gate Review Queue <span class="count">2</span></h2>
+
+      <div class="review-item">
+        <div class="question">GP-163d iter 5 champion (score 100) — M-form alignment audit triggered. Does the champion thesis align with the charter's intent?</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">Charter: discover whether crossover constant is universal or scale-dependent. Champion: localized Gaussian kernel on mass_log10 with hardcoded center at 14.5.</div>
+        <div class="options">
+          <div class="option" onclick="this.classList.toggle('selected')">✓ Aligned — genuine scale-dependence proposal</div>
+          <div class="option" onclick="this.classList.toggle('selected')">⚠ Suspicious — hardcoded constants suggest metadata leakage</div>
+          <div class="option" onclick="this.classList.toggle('selected')">✕ Misaligned — Clever Hans exploit, not discovery</div>
+        </div>
+      </div>
+
+      <div class="review-item">
+        <div class="question">Cage v5 Phase 4d ready for merge. 453 tests pass, 0 regressions. Approve?</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">Changes: substrate_probe classifier, convention_homogeneity gate, substrate_contract_hint prompt injection, 6 briefing providers.</div>
+        <div class="options">
+          <div class="option" onclick="this.classList.toggle('selected')">✓ Approve merge</div>
+          <div class="option" onclick="this.classList.toggle('selected')">⚠ Approve with conditions</div>
+          <div class="option" onclick="this.classList.toggle('selected')">✕ Request changes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANE: Fast layer (damage signals + events) -->
+  <div class="pane-right">
+    <div class="attention-budget">
+      <div class="label">Today's Attention Budget</div>
+      <div class="bar-container">
+        <div class="bar" style="width:35%;background:var(--green);"></div>
+      </div>
+      <div class="stats">
+        <span>3 of 8 interrupts used</span>
+        <span>~14 min spent</span>
+      </div>
+    </div>
+
+    <h2>⚡ Damage Signals</h2>
+
+    <div class="signal critical">
+      <div class="time">2026-04-26 19:22:07 UTC</div>
+      <div class="kind">🔴 Clever Hans Exploit Detected</div>
+      <div class="detail">GP-163d iter 5: champion hardcoded mass_log10=14.5 (holdout class B metadata). Localized Gaussian kernel is a targeted sniper, not a discovered law. Score 100 is fake.</div>
+    </div>
+
+    <div class="signal warn">
+      <div class="time">2026-04-26 18:47:53 UTC</div>
+      <div class="kind">🟡 Mandate Drift</div>
+      <div class="detail">Manager mandate.md modified during active session. Agent operating under stale mandate (hash mismatch).</div>
+    </div>
+
+    <div class="signal info">
+      <div class="time">2026-04-26 18:17:47 UTC</div>
+      <div class="kind">🔵 Session Opened</div>
+      <div class="detail">Claude manager session 2026-04-26T22-17-47Z opened. Substrate: daemon. Mandate hash: 41b409be.</div>
+    </div>
+
+    <div class="signal resolved">
+      <div class="time">2026-04-25 19:48:26 UTC</div>
+      <div class="kind">✓ Handoff Conflict Resolved</div>
+      <div class="detail">Task goal:gy claimed by sess1, attempted by sess2. Resolved: sess1 retained claim.</div>
+    </div>
+
+    <div class="signal resolved">
+      <div class="time">2026-04-25 15:31:35 UTC</div>
+      <div class="kind">✓ Session ID Forgery Check</div>
+      <div class="detail">Escalation session ID verified against live sessions on disk. No forgery detected.</div>
+    </div>
+
+    <h2 style="margin-top:20px;">📊 Trust Ledger</h2>
+    <div style="font-size:11px;">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>Claude</span>
+        <span style="color:var(--green)">94% accurate · 2 false alarms</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>Codex</span>
+        <span style="color:var(--green)">97% accurate · 0 false alarms</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span>Gemini</span>
+        <span style="color:var(--amber)">88% accurate · 4 false alarms</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;">
+        <span>Daemon</span>
+        <span style="color:var(--text-dim)">no history yet</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail overlay -->
+<div class="detail-overlay" id="detail-panel">
+  <button class="close" onclick="closeDetail()">×</button>
+  <div id="detail-content"></div>
+</div>
+
+<script>
+const details = {
+  'principal': {
+    title: 'Daniel Alami — Principal',
+    meta: 'Human · HBS MBA 2026 · Founding principal',
+    content: `
+<div class="section-title">Capabilities</div>
+<p style="font-size:12px;color:var(--text);line-height:1.6;">Strategic direction, gate approval, mandate authoring, publication decisions. The uncontrolled variable — the only entity whose judgment is not deterministically checked by the apparatus.</p>
+
+<div class="section-title">Authorized Paths</div>
+<pre>Everything (principal has no path restrictions)</pre>
+
+<div class="section-title">Budget Authority</div>
+<pre>Unlimited (principal signs all budget gates)</pre>
+
+<div class="section-title">Active Delegations</div>
+<pre>→ role.manager (Claude)  — mandate-governed
+→ role.engineer (Codex)   — mandate-governed
+→ role.reviewer (Gemini)  — mandate-governed</pre>
+    `
+  },
+  'manager': {
+    title: 'Claude — Manager',
+    meta: 'AI · Anthropic claude-sonnet-4-6 · Persistent session',
+    content: `
+<div class="section-title">Mandate (v1.1)</div>
+<pre>AUTHORIZED:
+  ✓ Run experiments within budget
+  ✓ Propose seams, specs, findings
+  ✓ Delegate to engineer + reviewer
+  ✓ Write to projects/, research_areas/, docs/
+
+MUST ESCALATE:
+  ⚡ Single action > $10
+  ⚡ Gate approval decisions
+  ⚡ New experiment pre-registration
+  ⚡ Paper submission decisions
+
+FORBIDDEN:
+  ✕ Modify mandates without principal
+  ✕ Push to main without review
+  ✕ Access ~/.ssh, ~/.aws, credentials
+  ✕ Delete org/ files
+  ✕ Approve own gate proposals</pre>
+
+<div class="section-title">Current Session</div>
+<pre>ID: 2026-04-26T22-17-47Z
+Mandate hash: 41b409be
+Duration: 2h 14m
+Actions: 47 logged
+Cost: $4.20</pre>
+
+<div class="section-title">Active Claims</div>
+<pre>🔒 gp163d_unified_accel (expires in 4h)
+🔒 paper5_chapter_2half (expires in 2h)</pre>
+    `
+  },
+  'engineer': {
+    title: 'Codex — Engineer',
+    meta: 'AI · OpenAI Codex CLI · Session-bound',
+    content: `
+<div class="section-title">Current Task</div>
+<pre>Cage v5 Phase 4d implementation
+  - substrate_probe classifier
+  - convention_homogeneity gate
+  - substrate_contract_hint prompt
+  - 6 briefing providers
+
+Status: 453 tests passing, 0 regressions
+Bug count: 24 fixed this session</pre>
+
+<div class="section-title">Authorized Paths</div>
+<pre>src/ztare/  projects/  tests/  scripts/  docs/</pre>
+
+<div class="section-title">Forbidden Paths</div>
+<pre>org/mandates/  org/sessions/  .ip_protected/</pre>
+    `
+  },
+  'reviewer': {
+    title: 'Gemini — Reviewer',
+    meta: 'AI · Google gemini-3.1-pro · API-invoked',
+    content: `
+<div class="section-title">Review History (last 5)</div>
+<pre>GP-165 ANALOGY audit       → score 93, 7 iters
+GP-158 Cage v5 audit       → score 82, 16 iters
+GP-153 Framer critique     → score 78, 6 iters
+GP-152 Framer architecture → score 91, 1 iter
+GP-150 Epistemic boundary  → score 71, 8 iters</pre>
+
+<div class="section-title">Trust Metrics</div>
+<pre>Accuracy: 88%
+False alarms: 4
+Missed catches: 2
+Average review depth: 8.4 iters</pre>
+    `
+  }
+};
+
+function showDetail(key) {
+  const d = details[key];
+  if (!d) return;
+  const panel = document.getElementById('detail-panel');
+  document.getElementById('detail-content').innerHTML = `
+    <h3>${d.title}</h3>
+    <div class="meta">${d.meta}</div>
+    ${d.content}
+  `;
+  panel.classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetail();
+});
+</script>
+</body>
+</html>

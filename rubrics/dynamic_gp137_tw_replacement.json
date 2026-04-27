@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Adversarial Random Matrix Theorist (Edge-Case Bulk/Edge Specialist)",
+      "persona": "A skeptical RMT panelist focused on pathological matrix constructions, finite-size anomalies, and intermediate regimes (near-localized, banded, heavy-tailed, or deformed ensembles) that undermine the clean separation between classes. Targets the robustness of the \u27e8r\u27e9 statistic when universality fails, transition regimes, or when the field can be numerically ambiguous; explores cases not covered by the Atas et al. theory.",
+      "focus_area": "Stress-tests the detector under sparse, near-localized, or heavy-tailed ensemble conditions; probes for overlap or classification ambiguity in weakly deformed or interpolating symmetry cases; challenges the step of 'reading off the field' when matrix entries deviate from textbook structure or when numerics are borderline."
+    },
+    {
+      "role": "Mathematical Falsification Suite and Load-Bearing Variable Forensic Auditor",
+      "persona": "A mathematically ruthless software engineer and statistician scrutinizing the internal consistency, logical structure, and mathematical sufficiency of the provided Python assertions and the LOAD-BEARING VARIABLES table (mean_r, vals, separation, band assignments). Looks for untested assumptions, corner cases, overreliance on published constants, and potential numerical tolerance issues in the code and asserted logic (e.g., ordering, delta thresholds, mapping between matrix field and classifier band, failure modes).",
+      "focus_area": "Audits the Python test_model.py for missing edge assertions, incomplete variable coverage, or reliance on hard-coded values without verification of upstream data integrity; analyzes whether tests admit undetected logical or statistical leak paths under adversarial matrix distributions or numerical precision failures."
+    },
+    {
+      "role": "Parameter-Free Universality Critic (Impossibility/Plurality Provocateur)",
+      "persona": "A mathematical adversary skilled in constructive impossibility arguments, focused on the limits of parameter-free universality detection. Investigates cases where implicit parameters are smuggled in via spectrum windowing, implicit model restrictions, or field inspection; scrutinizes whether domain restrictions (e.g., excluding chiral, non-Hermitian, or mixed-field matrices) leave the procedure non-general or open to class leakage; seeks out regimes where 'parameter-freeness' fails in practice or semantics.",
+      "focus_area": "Challenges the ontological status of 'parameter-freeness', scrutinizes the sufficiency of field-based class deduction, interrogates the impact of spectrum window selection and practical N constraints; hunts for scenarios (broken symmetries, mixed entries, borderline matrix classes) where detector logic executes but is semantically circular or fails to yield a strong decision."
+    }
+  ]
+}

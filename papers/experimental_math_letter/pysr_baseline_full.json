@@ -1,0 +1,139 @@
+{
+  "results": [
+    {
+      "key": "s1",
+      "label": "abundant density (letter \u00a72.7 S1)",
+      "ztare_verdict": "1/n form passes gates at n<=100k; 1/log(n) asymptote only at n>>10^6",
+      "gate_mode": "normalized",
+      "gate_threshold": 0.01,
+      "pysr_equation": "0.2511915 - 0.20370732/(sqrt(n) - 4.1861863)",
+      "pysr_complexity": 8,
+      "pysr_visible": {
+        "n": 140,
+        "max_abs": 0.005681957636186757,
+        "rmse": 0.0009962418164431441
+      },
+      "pysr_holdout": {
+        "n": 30,
+        "max_abs": 0.0007039348572453474,
+        "rmse": 0.0003750917880017975
+      },
+      "pysr_farther_tail": {
+        "n": 1830,
+        "max_abs": 0.0026129483985672386,
+        "rmse": 0.0022744999412164513
+      },
+      "pysr_default_verdict": "form-claimed (no gate)",
+      "pysr_gated_verdict": "null-under-gate (max_oos/max|y|=0.01049 > 0.01)",
+      "pysr_elapsed_sec": 13.2
+    },
+    {
+      "key": "s2",
+      "label": "Mertens M(n)/sqrt(n) (letter \u00a72.7 S2 / \u00a71 abstract)",
+      "ztare_verdict": "null (correct)",
+      "gate_mode": "absolute",
+      "gate_threshold": 0.08,
+      "pysr_equation": "(0.0024388027*n - 1.3130745)/sqrt(n - 0.515829600308204*exp(0.0024388027*n)) - 0.10287689",
+      "pysr_complexity": 17,
+      "pysr_visible": {
+        "n": 140,
+        "max_abs": 0.4452076419985629,
+        "rmse": 0.18067933777275297
+      },
+      "pysr_holdout": {
+        "n": 30,
+        "max_abs": NaN,
+        "rmse": NaN
+      },
+      "pysr_farther_tail": {
+        "n": 30,
+        "max_abs": NaN,
+        "rmse": NaN
+      },
+      "pysr_default_verdict": "form-claimed-but-NaN-on-extrapolation",
+      "pysr_gated_verdict": "null-under-gate (NaN on extrapolation)",
+      "pysr_elapsed_sec": 4.4
+    },
+    {
+      "key": "s3",
+      "label": "prime gaps g(n)/log(p_n) (letter \u00a72.7 S3 / \u00a71 abstract)",
+      "ztare_verdict": "null (correct)",
+      "gate_mode": "absolute",
+      "gate_threshold": 0.08,
+      "pysr_equation": "exp((0.8580878**n)**(0.93525875**n))**(1/4)",
+      "pysr_complexity": 10,
+      "pysr_visible": {
+        "n": 71,
+        "max_abs": 2.3114242507122587,
+        "rmse": 0.8783551168071932
+      },
+      "pysr_holdout": {
+        "n": 15,
+        "max_abs": 1.7282209633122587,
+        "rmse": 0.8232963213352287
+      },
+      "pysr_farther_tail": {
+        "n": 16,
+        "max_abs": 1.2263499157000002,
+        "rmse": 0.637908733663266
+      },
+      "pysr_default_verdict": "form-claimed (no gate)",
+      "pysr_gated_verdict": "null-under-gate (max_abs_oos=1.728 > 0.08)",
+      "pysr_elapsed_sec": 4.1
+    },
+    {
+      "key": "lucky",
+      "label": "Lucky density L(n)/n (letter \u00a72.1 \u2014 sanity baseline)",
+      "ztare_verdict": "recovered a*log(n) + b/n + c, a=1.200",
+      "gate_mode": "absolute",
+      "gate_threshold": 0.08,
+      "pysr_equation": "1.2031957*log(n) + 0.48700628",
+      "pysr_complexity": 6,
+      "pysr_visible": {
+        "n": 4501,
+        "max_abs": 0.05684990819861557,
+        "rmse": 0.011395064980478377
+      },
+      "pysr_holdout": {
+        "n": 15000,
+        "max_abs": 0.021837309108246217,
+        "rmse": 0.009384246850733477
+      },
+      "pysr_farther_tail": {
+        "n": 30000,
+        "max_abs": 0.032533053299042436,
+        "rmse": 0.02224799371800453
+      },
+      "pysr_default_verdict": "form-claimed (no gate)",
+      "pysr_gated_verdict": "form-passes-gate (max_abs_oos=0.03253 <= 0.08)",
+      "pysr_elapsed_sec": 108.1
+    },
+    {
+      "key": "hr",
+      "label": "Hardy-Ramanujan log p(n) (letter \u00a72.2 \u2014 sanity baseline)",
+      "ztare_verdict": "recovered pi*sqrt(2n/3) + b*log(n) + c",
+      "gate_mode": "absolute",
+      "gate_threshold": 0.08,
+      "pysr_equation": "(2.39466838524343*n*exp(-0.918982502573151*n + exp(-0.87324476**n)) + n - 2.4397113)**0.6498067",
+      "pysr_complexity": 20,
+      "pysr_visible": {
+        "n": 30,
+        "max_abs": 0.07008348815230692,
+        "rmse": 0.015125300411276474
+      },
+      "pysr_holdout": {
+        "n": 20,
+        "max_abs": 0.09806448372547827,
+        "rmse": 0.05400543796312134
+      },
+      "pysr_farther_tail": {
+        "n": 20,
+        "max_abs": 0.264913739588609,
+        "rmse": 0.18726652529162854
+      },
+      "pysr_default_verdict": "form-claimed (no gate)",
+      "pysr_gated_verdict": "null-under-gate (max_abs_oos=0.2649 > 0.08)",
+      "pysr_elapsed_sec": 3.6
+    }
+  ]
+}

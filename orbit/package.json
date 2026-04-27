@@ -1,0 +1,33 @@
+{
+  "name": "ztare-governance-orbit",
+  "version": "0.1.0",
+  "description": "Spatial governance orbit for ZTARE — TLDraw + Yjs + git-sync",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "sync": "tsx src/server/git-sync.ts"
+  },
+  "dependencies": {
+    "@tldraw/tldraw": "^3.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "yjs": "^13.6.24",
+    "y-websocket": "^2.1.0",
+    "ws": "^8.18.0",
+    "chokidar": "^4.0.3",
+    "yaml": "^2.7.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@types/ws": "^8.5.14",
+    "@types/node": "^22.15.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.3.2",
+    "tsx": "^4.19.3"
+  }
+}

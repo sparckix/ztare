@@ -1,0 +1,77 @@
+{
+  "name": "gp161_mdl_anti_goodhart",
+  "project": "gp161_mdl_anti_goodhart",
+  "description": "Discovery Engine test #3: MDL Anti-Goodharting. K=10 ground truth with oscillatory structure.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate where the truth is messy (K=10). Tests whether apparatus accepts complexity when justified.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_expression_grammar": "math_exp_trig",
+  "holdout_hard_gate": true,
+  "target_convention_homogeneity": "homogeneous",
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "gate",
+  "persona": "You are an adversarial epistemic auditor who values correctness over parsimony. The data has visible oscillatory structure. A formula that smooths it over is WRONG even if the average MRE looks acceptable. Demand that each visible bump be captured. Accept K>5 if each parameter is data-motivated.",
+  "underidentified_after": 20,
+  "dimensions": [
+    {
+      "name": "Fit Quality",
+      "weight": 35,
+      "description": "Does the formula fit visible data (8% MRE), holdout (10% MRE), and farther-tail (15% MRE)? The data has oscillatory structure \u2014 a monotonic form will miss it."
+    },
+    {
+      "name": "Structural Completeness",
+      "weight": 25,
+      "description": "Does the formula capture the oscillatory bump visible around d=6-8? A formula that smooths over the oscillation scores low even if average MRE is acceptable."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does the thesis predict at least one feature of the data beyond the primary fit? E.g., location of the next oscillation peak, or the asymptotic decay rate."
+    },
+    {
+      "name": "Generalization Quality",
+      "weight": 20,
+      "description": "Does the formula extrapolate sensibly? K_law > 5 is acceptable IF each parameter is motivated by the data. Penalize over-simplification that misses real structure."
+    }
+  ],
+  "evidence_contract": {
+    "format": "MARKDOWN_TABLE",
+    "columns": ["x", "y"],
+    "independent_vars": ["x"],
+    "min_rows": 14,
+    "require_finite": true,
+    "docstring": "GP-161 MDL Anti-Goodhart — 16 visible (x, y) rows in markdown-table format. y is NON-monotone (oscillatory structure deliberately injected to test MDL gate against retrieval/overfit); require_monotone_in intentionally unset."
+  },
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "GP-157 v5.0 Phase 3b observe-mode (2026-04-25 night). gp161_mdl_anti_goodhart is a synthetic feature-vector substrate; Cage runs alongside existing dispatch, logs engagement matrix to workspace/cage_engagement.jsonl. No behavioral change without rubric flag.",
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "1d",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "cage_meta_reason": "gp161_mdl_anti_goodhart is synthetic; constructor ensured single fit_convention + frame-invariant y. Compare to gp154 which is heterogeneous and frame-NOT-invariant (Class K finding).",
+  "criteria": {
+    "Fit_Quality": "Does the formula fit visible data (8% MRE), holdout (10% MRE), and farther-tail (15% MRE)? The data has oscillatory structure \u2014 a monotonic form will miss it.",
+    "Structural_Completeness": "Does the formula capture the oscillatory bump visible around d=6-8? A formula that smooths over the oscillation scores low even if average MRE is acceptable.",
+    "Generative_Yield": "Does the thesis predict at least one feature of the data beyond the primary fit? E.g., location of the next oscillation peak, or the asymptotic decay rate.",
+    "Generalization_Quality": "Does the formula extrapolate sensibly? K_law > 5 is acceptable IF each parameter is motivated by the data. Penalize over-simplification that misses real structure."
+  },
+  "enable_fit_primitive_reason": "Custom substrate with embedded holdout logic in test_model.py. 1D fit primitive must NOT engage \u2014 it overwrites test_model.py with a stub on parse failure.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Custom substrate with embedded holdout gates in gate_harness.py. Global keyword heuristic does not apply.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Custom substrate. Rival forms scored by rubric dimension, not global gate heuristic.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom gate_harness.py defines farther-tail set explicitly; standard ZTARE farther-tail detection does not apply.",
+  "fit_score_mode": "continuous_mre",
+  "fit_required_dimensionality": 1,
+  "fit_required_vars": [
+    "d"
+  ],
+  "expression_byte_budget": 300
+}

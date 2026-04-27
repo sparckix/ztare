@@ -1,0 +1,3 @@
+# This directory holds damage signals emitted by any role/session.
+# See src/ztare/signals/damage.py and research_areas/private/seams/mission/GP-129_biological_org_design_panel_seam.md.
+# Signals themselves are gitignored (see .gitignore rule for org/signals/damage/*.json).

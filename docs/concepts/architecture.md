@@ -2,27 +2,27 @@
 
 ZTARE keeps four things separate that most AI workflows collapse together:
 
-1. **Collecting sources** — gathering raw material (documents, data, reports)
-2. **Compiling evidence** — extracting the testable facts from those sources
-3. **Adversarial validation** — having AIs argue over whether a claim holds up against the evidence
-4. **Reporting** — turning the battle-tested conclusions into audience-appropriate artifacts
+1. **Collecting sources**: gathering raw material (documents, data, reports)
+2. **Compiling evidence**: extracting the testable facts from those sources
+3. **Adversarial validation**: having AIs argue over whether a claim holds up against the evidence
+4. **Reporting**: turning the tested conclusions into audience-appropriate artifacts
 
 The whole point of the architecture is that the AI proposing an answer never gets to grade itself, and the judge never gets to override hard numeric checks. If these separations break, the system degrades to "AI writing convincing essays about itself."
 
-For a plain-English glossary of all terms, see [GLOSSARY.md](GLOSSARY.md).
+For a plain-English glossary of all terms, see [../concepts/glossary.md](../concepts/glossary.md).
 
 ## 0. Who This Document Is For
 
 This repo now has two distinct audiences, and this document is heavier on the second one:
 
-1. **General-purpose engine users** — you want to pressure-test a thesis on a domain (startup diligence, activist target, strategy question, research claim). You probably do not need most of this document. You need:
+1. **General-purpose engine users**: you want to pressure-test a thesis on a domain (startup diligence, activist target, strategy question, research claim). You probably do not need most of this document. You need:
    - the system thesis in §1 (why state is not the enemy, but unearned trust is)
    - the four-layer boundary in §2
    - the workspace / compiler / validator / synthesis sections at a conceptual level
-   - and then `docs/WORKFLOW.md` §0b, §1–§5 for the actual loop
+   - and then `docs/guides/workflow.md` §0b, §1-§5 for the actual loop
    You can ignore the V4 kernel hardening, primitive library internals, supervisor control plane, and program-birth chain sections. They are implementation concerns, not usage concerns.
 
-2. **Developers / researchers playing with the engine** — you are modifying the validator, the workspace compiler, the V4 kernel, the primitive library, or the supervisor control plane. This document is written for you. Read it in order, and pair it with `supervisor/USER_MANUAL.md` for the control plane, `research_areas/HARDENING_BOARD.md` for the active seam list, and `docs/WORKFLOW.md` §15 for the program hardening workflow.
+2. **Developers / researchers playing with the engine**: you are modifying the validator, the workspace compiler, the V4 kernel, the primitive library, or the supervisor control plane. This document is written for you. Read it in order, and pair it with `supervisor/USER_MANUAL.md` for the control plane, `research_areas/HARDENING_BOARD.md` for the active seam list, and `docs/guides/workflow.md` §15 for the program hardening workflow.
 
 If you are not sure which audience you are, start as a general-purpose user. The hardening machinery is orthogonal to using the engine on a domain project.
 
@@ -30,7 +30,7 @@ If you are not sure which audience you are, start as a general-purpose user. The
 
 ## 1. System Thesis
 
-ZTARE is a **stateless adversarial validator** — it stress-tests claims without remembering previous runs.
+ZTARE is a **stateless adversarial validator**. It runs claims through an adversarial loop without remembering previous runs.
 
 It sits between two layers that DO remember things:
 
@@ -49,7 +49,7 @@ The workspace can grow and remember. But the validator never trusts previous con
 
 Four diagrams: the full pipeline, the validator internals, cross-cutting services, and the separation invariants that hold the whole thing together.
 
-### Figure 1 — Full System Pipeline
+### Figure 1: Full System Pipeline
 
 ```text
                     ╔═══════════════════════════════════════════╗
@@ -121,24 +121,47 @@ Four diagrams: the full pipeline, the validator internals, cross-cutting service
     (autoresearch_loop.py)             │              │            │
                                        │              │            │
     ┌────────┐  ┌───────────┐  ┌───────┴──┐  ┌───────┴────────────┴──┐
-    │MUTATOR │─>│  FIRING   │─>│  META    │─>│      HARD GATES       │
-    │        │  │  SQUAD    │  │  JUDGE   │  │                       │
-    │proposes│  │3 AIs      │  │scores    │  │ GP-030 charter gates  │
-    │thesis +│  │attack the │  │exec out- │  │ + project gate harness│
-    │code    │  │weakest    │  │put only, │  │                       │
-    │        │  │assumptions│  │never     │  │ deterministic,        │
-    │[fit    │  │           │  │prose     │  │ fail-closed,          │
-    │ primi- │  │           │  │          │  │ cannot be overridden  │
-    │ tive]  │  │           │  │          │  │                       │
-    └──▲─────┘  └───────────┘  └──────────┘  └──────────┬────────────┘
-       │                                                 │
-       │  ┌──────────────────────────────────┐           │
-       │  │ STAGNATION ENGINE                 │           │
-       │  │  stag >= 3: pivot profile inject  │           │
-       │  │  stag >= 4: axiom purge           │           │
-       │  │  V4 projects: bounded override    │           │
-       │  └──────────────────────────────────┘           │
-       │                                                 v
+    │MUTATOR │─>│  SOLVER   │─>│  FRAMER  │─>│   CAGE ORCHESTRATOR    │
+    │        │  │ fit_prim. │  │ canonical│  │   (GP-157 v5.0)        │
+    │proposes│  │ 1D / N-D  │  │ (h_in,   │  │                        │
+    │thesis +│  │ scipy     │  │  h_out)  │  │  16 gates, dispatched  │
+    │code    │  │ multi-    │  │  match,  │  │  by substrate.meta     │
+    │ + fit  │  │ start     │  │  raw-MDL │  │  ['class']; observe or │
+    │ decl   │  │ [Kepler]  │  │ [GP-152] │  │  authoritative mode    │
+    └──▲─────┘  └─────┬─────┘  └─────┬────┘  └──────────┬─────────────┘
+       │              │              │                  │
+       │              v              │                  v
+       │       ┌──────────────┐      │        ┌────────────────────┐
+       │       │ FIRING SQUAD │      │        │  META JUDGE        │
+       │       │ 3 AIs attack │      │        │  scores exec       │
+       │       │ weakest      │      │        │  output (Newton-   │
+       │       │ assumptions  │      │        │  mode for          │
+       │       └──────────────┘      │        │  generative yield) │
+       │                             │        └─────────┬──────────┘
+       │                             │                  │
+       │                             v                  v
+       │              ┌─────────────────────────────────────────┐
+       │              │  HARD GATES (deterministic, fail-closed) │
+       │              │  GP-030 charter gates + project harness  │
+       │              │  + Cage POST_FIT gates                   │
+       │              └──────────────────┬──────────────────────┘
+       │                                  │
+       │                                  v
+       │              ┌─────────────────────────────────────────┐
+       │              │  POST-CHAMPION STACK (on promotion)     │
+       │              │  GP-119 Inverter (≥50)                  │
+       │              │  G-CIRC + G-FALSIFY (mode=gate|both)    │
+       │              │  GP-122 Lean REPL (≥70 + enable flag)   │
+       │              │  GP-143 dynamical-lattice validation     │
+       │              └──────────────────┬──────────────────────┘
+       │                                  │
+       │  ┌──────────────────────────────────┐
+       │  │ STAGNATION ENGINE                 │
+       │  │  stag >= 3: pivot profile inject  │
+       │  │  stag >= 4: axiom purge           │
+       │  │  V4 projects: bounded override    │
+       │  └──────────────────────────────────┘
+       │                                  v
        │  ┌──────────────────────────────────────────────────┐
        │  │ score improved?  ─ yes ─> promote to champion    │
        └──│ continue?        ─ yes ─> next iteration         │
@@ -151,8 +174,10 @@ Four diagrams: the full pipeline, the validator internals, cross-cutting service
     history/*.md                       latest_constraint_proposals.json
     latest_eval_results.json           derived_constraints.json
     champion_eval_results.json         iteration_telemetry.jsonl
-    fit_result*.json
-    latest_* vs champion_*
+    fit_result*.json                   framing_report.json (GP-152)
+    latest_* vs champion_*             cage_engagement.jsonl (GP-157)
+                                       structural_blocker_gates_latest.json
+                                         (G-CIRC + G-FALSIFY)
              │
     ─ ─ ─ ─ ─│─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
     L4: SYNTHESIS PIPELINE
@@ -173,7 +198,7 @@ Four diagrams: the full pipeline, the validator internals, cross-cutting service
       research_note | quantitative_appendix | field_manual
 ```
 
-### Figure 2 — Feedback Loops
+### Figure 2: Feedback Loops
 
 ```text
     The system has three feedback loops. All are human-gated.
@@ -210,7 +235,7 @@ Four diagrams: the full pipeline, the validator internals, cross-cutting service
     └───────────────┘                      └───────────────┘
 ```
 
-### Figure 3 — Cross-Cutting Services
+### Figure 3: Cross-Cutting Services
 
 ```text
     ┌───────────────────────────────────────────────────────────────────┐
@@ -242,7 +267,7 @@ Four diagrams: the full pipeline, the validator internals, cross-cutting service
     └───────────────────────────────────────────────────────────────────┘
 ```
 
-### Figure 4 — Control Plane (Orthogonal to Data Pipeline)
+### Figure 4: Control Plane (Orthogonal to Data Pipeline)
 
 ```text
     ┌───────────────────────────────────────────────────────────────────┐
@@ -276,7 +301,7 @@ Four diagrams: the full pipeline, the validator internals, cross-cutting service
     └───────────────────────────────────────────────────────────────────┘
 ```
 
-### Figure 5 — Separation Invariants
+### Figure 5: Separation Invariants
 
 ```text
     The system's integrity depends on these separations never collapsing.
@@ -521,7 +546,7 @@ The workspace is the persistent memory layer for source accumulation, but constr
 
 ### Design Inspiration
 
-The workspace layer is an adaptation of [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): raw sources accumulate, an LLM extracts structured per-source notes, and the system maintains cross-referenced knowledge that compounds over time. The key adaptation is that ZTARE intentionally stops short of a full autonomous wiki — the workspace accumulates and compiles, but the validator never trusts accumulated knowledge as authority. The boundary is: workspace remembers, validator attacks a snapshot. See [DECISION_LOG.md §14](../DECISION_LOG.md) for the full architectural reasoning.
+The workspace layer is an adaptation of [Karpathy's LLM wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): raw sources accumulate, an LLM extracts structured per-source notes, and the system maintains cross-referenced knowledge that compounds over time. The key adaptation is that ZTARE intentionally stops short of a full autonomous wiki. The workspace accumulates and compiles, but the validator never trusts accumulated knowledge as authority. The boundary is: workspace remembers, validator attacks a snapshot. See [DECISION_LOG.md §14](../DECISION_LOG.md) for the full architectural reasoning.
 
 Its job is to:
 
@@ -671,6 +696,8 @@ This is a current implementation detail, not a conceptual limitation.
 
 ## 6. Layer 3: ZTARE Core Validator
 
+**Companion doc:** [docs/concepts/cognitive_gym.md](cognitive_gym.md) — the constraint architecture that enforces epistemic discipline on the LLM. This section describes the components; the cognitive gym doc explains WHY the cage works and how it maps to Paper 5's decomposition of epistemic verification.
+
 ### Purpose
 
 This is the adversarial engine itself.
@@ -683,7 +710,12 @@ This is the adversarial engine itself.
 
 - `evidence.txt`
 - `thesis.md`
-- rubric JSON
+- rubric JSON (including optional flags: `enable_fit_primitive`,
+  `enable_fit_primitive_features`, `fit_primitive_features_k_max`,
+  `enable_framer`, `framer_live_mode`, `cage_observe_mode`,
+  `cage_authoritative_mode`, `cage_meta`, `rubric_mode` (e.g.
+  `'newton'` for Newton-step Generative Yield scoring),
+  `enable_lean_proof`, `structural_blocker_enforcement`)
 - `verified_axioms.json`
 
 ### Core Outputs
@@ -699,7 +731,7 @@ This is the adversarial engine itself.
 ```text
 evidence.txt + thesis.md + rubric
   -> mutator proposes revised thesis + falsification suite
-  -> firing squad attacks weakest assumptions
+  -> verification panel evaluates weakest assumptions
   -> meta-judge scores thesis using executable evidence
   -> best surviving iteration is retained
   -> stagnation triggers pivots / escalations
@@ -726,6 +758,291 @@ The pivot policy is deliberately asymmetric:
 - not a general-purpose RAG engine
 
 It is a validator.
+
+---
+
+## 6a. Fit Primitives — Sibling-Block Architecture
+
+### Purpose
+
+ZTARE ships TWO scipy-based fit primitives sized for different substrate
+shapes. They are SIBLING blocks within Layer 3, NOT nested:
+
+| Primitive | Path | Substrate shape | Engages when |
+|---|---|---|---|
+| `fit_primitive` (1D) | `src/ztare/fit/fit_primitive.py` | paired `(x, y)` evidence rows | rubric `enable_fit_primitive=true` AND thesis declares `FIT_DECLARATION` block |
+| `fit_primitive_features` (N-D) | `src/ztare/fit/fit_primitive_features.py` | feature dict `(features_dict, y_observed)` rows | rubric `enable_fit_primitive_features=true` AND test_model.py declares `PARAMETRIC_FORM` + `PARAMETER_NAMES` + `MODEL_PARAMS = {}` |
+
+Both engines run scipy.optimize.minimize multi-start (3 default; 5 at
+stagnation_count≥3) and return per-fit telemetry. The N-D engine
+additionally exposes `BIC = N·log(σ̂²) + K·log(N)` per GP-152 framer
+spec v2.0.
+
+### Why sibling, not nested
+
+Bug #11 (2026-04-25) discovered the N-D wire-in had been silently
+nested inside the 1D engine's `if rubric.enable_fit_primitive` branch
+in autoresearch_loop.py. Substrates that opted only for the N-D
+primitive (gp154, gp155 with `enable_fit_primitive=false`) skipped the
+entire 1D branch, taking the N-D wire-in with it. 30+ iters ran with
+zero N-D engagement despite the apparatus being shipped.
+
+**Invariant:** future fit primitives must be SIBLING blocks at the
+iter-body scope, gated only by their own rubric flag. NOT nested
+under another primitive's flag.
+
+### Engagement contract — feature-vector primitive
+
+When `enable_fit_primitive_features=true`:
+
+1. Mutator submits `test_model.py` with three module-level names:
+   - `PARAMETRIC_FORM = "<expression as Python string with `features['key']` and `params['name']` subscripts>"`
+   - `PARAMETER_NAMES = ['a', 'b', ...]` (the free parameters)
+   - `MODEL_PARAMS = {}` (apparatus fills with fitted values)
+
+2. Apparatus reads the declaration via `extract_form_declaration`,
+   loads visible rows via `load_visible_from_substrate(project_dir)`
+   (sorted by id for determinism, R8 spec mitigation), and runs
+   `fit_features` with scipy.optimize multi-start.
+
+3. On success, `substitute_fitted_model_params` rewrites the
+   `MODEL_PARAMS = {}` line in test_model.py source with the fitted
+   dict literal. The harness then imports the now-substituted
+   test_model.py and calls `I_model(features, params=MODEL_PARAMS)`
+   with the apparatus-fitted constants.
+
+### AST whitelist (eval-injection defense)
+
+PARAMETRIC_FORM is parsed via `ast.parse(form, mode='eval')` with a
+whitelist of allowed AST nodes:
+
+- Arithmetic: `+ - * / ** % //`
+- Functions (bare or `math.X` / `np.X` attribute): `sigmoid, exp, log,
+  log10, sin, cos, tan, tanh, sqrt, abs, max, min, float, int, bool`
+- Subscript: ONLY on `features` or `params` (e.g. `features['key']`,
+  `params['a']`)
+- Conditionals: ternary `a if cond else b`, comparisons, boolean ops,
+  tuple/list literals (for `in (...)` patterns)
+
+Statement blocks (e.g. `if/elif`, `=` assignments) are rejected
+with an actionable diagnostic pointing to the ternary alternative.
+
+### K_law budget — BIC-justified, not flat-capped
+
+Hard ceiling at K=8 (rubric-overridable via `fit_primitive_features_k_max`).
+Within the ceiling, BIC is the real budget: `BIC = N·log(σ̂²) + K·log(N)`.
+The mutator and judge see BIC alongside fitted_params; lower BIC = better-
+justified parameter count. See `research_areas/private/specs/active/GP-156_apparatus_hardening_proposal.md`
+for the K=5→K=8 transition rationale.
+
+### Force-opt-in
+
+When the rubric sets `enable_fit_primitive_features=true`, R1 rejects
+any submission that does NOT declare `PARAMETRIC_FORM` + `PARAMETER_NAMES`.
+Substrates running with this flag were designed for apparatus-fit
+constants; opting out by writing hardcoded constants is gaming, not a
+valid escape from the K_law budget.
+
+### Kepler vs Newton (terminology, not separate components)
+
+Two observables are judged at the gate-and-judge layer over the same
+fit output:
+
+- **Kepler step** — does the proposed form fit the data? Owned by the
+  solver layer (the fit primitives above) plus the holdout / farther-tail
+  gate. A pass means the form is empirically adequate.
+- **Newton step** — does the form predict secondary observables NOT
+  used in the fit? Owned by the Newton-mode rubric flag
+  (`rubric_mode='newton'`), the Generative Yield rubric dimension, and
+  optionally the Framer's canonical-form match (§6b). A pass means the
+  form has predictive content beyond curve-fitting.
+
+These are not separate code modules. They are vocabulary for talking
+about which observable a given gate or rubric dimension is checking.
+
+---
+
+## 6b. Framer Architecture (GP-152 v2.0)
+
+### Purpose
+
+The Framer is a post-fit canonical-form mapper sitting between the
+solver and the post-fit gate stack. Given a fitted `(form, params)`,
+it asks: does this law belong to a known canonical family expressible
+under an axis-separable monotone-invertible transform pair
+`(h_in, h_out)`?
+
+A successful frame yields an MDL gain (in raw coordinates, no Jacobian
+correction) over the identity-identity baseline. A failed frame
+auto-disables and reports `disabled_reason`.
+
+### Code path
+
+- `src/ztare/framer/active_framer.py` — entry point `frame(x, y, meta, rubric_data)`
+- `src/ztare/framer/{symmetry,enumerate,search,collapse,report,primitives,units}.py`
+  — components A–F per spec §4
+- `src/ztare/framer/solver_wrapper.py` — `fit_with_framer()`
+- `src/ztare/framer_gates/` — three runtime gates plus canary:
+  - `library_coverage_gate.py` (G-LIB-COVER, MDL-gain ≥ 100 bits)
+  - `filter_independence_gate.py` (G-FILTER-INDEP, |corr| < 0.3)
+  - `symmetry_false_negative_gate.py` (G-SYM-FN, detection ≥ 0.95)
+  - `framer_helped_canary.py` (auto-disable on pathological transforms)
+- Spec: `research_areas/private/specs/active/GP-152_framer_architecture_spec_v2.md`
+
+### MDL formula (raw coords)
+
+```
+σ̂²_raw   :=  (1/N) · Σ_i ( y_i − h_out⁻¹( f̂( h_in(x_i) ) ) )²
+K_total  :=  K_law + K_h_in + K_h_out
+MDL_v2   =  N · log( σ̂²_raw ) + K_total · log(N)
+```
+
+Frame-invariance is constructive in v2.0 (raw-coord evaluation), not
+patched (the v1.x Jacobian-correction cycle is obsolete; backtest at
+`scripts/backtest_framer_mdl_v2_vs_v1.py`).
+
+### Wire-in mode
+
+Activated per-rubric via `enable_framer: true`. Currently runs in
+**OBSERVE mode** in `autoresearch_loop.py:4817`: `frame()` is called
+on the parsed `(xdata, ydata)` BEFORE the fit and `framing_report.json`
+is written to `workspace/`, but the fit itself still consumes raw
+coords. Live mode (replacing fit input with framed data) is gated by
+`framer_live_mode` and unset until validation §7 steps 6–10 complete.
+
+### Scope and auto-disable
+
+In scope: numerical fits with `fit_score_mode in {continuous_l2,
+continuous_rmse}`, `N ≥ 80`, axis-separable monotone-invertible
+transforms at composition depth ≤ 2 from `Σ = {identity, shift, scale,
+power_k, log, exp, reciprocal}`. Auto-disable on heteroscedasticity in
+the chosen frame, effective precision < 8 bits, non-invertible
+composites, discrete/dynamical/FOM substrates, or bivariate/mixing
+transforms (Lorentz-class).
+
+### Newton-mode interaction
+
+When the Framer engages and identifies a canonical family, the result
+feeds the Newton-step verdict (§6a Kepler vs Newton): rediscovery of a
+canonical family ≠ a new law. The judge sees the framing report and
+the Generative Yield dimension is scored against secondary observables
+the canonical family predicts.
+
+---
+
+## 6c. Cage Orchestrator (GP-157 v5.0)
+
+### Purpose
+
+The Cage is a substrate-agnostic dispatcher that replaces the
+rubric-flag-plus-if-block dispatch pattern that has accumulated inside
+`autoresearch_loop.py`. Each gate declares a `can_handle(substrate,
+candidate)` predicate keyed off `substrate.meta['class']`. The Cage
+inspects the submission shape, queries every registered gate's
+predicate, builds a dependency-ordered DAG of qualified gates, and
+runs them, emitting a per-iter engagement matrix.
+
+### Code path
+
+- `src/ztare/gates/cage.py` — `Cage` class, `Gate` dataclass,
+  substrate-meta validation, topological dispatch
+- `src/ztare/gates/registry.py` — `get_default_cage()` builds the
+  default registry of 16 `Gate(...)` entries (universal +
+  per-substrate-class)
+- `src/ztare/orchestrator/state.py` — `CageRuntime` state object,
+  `resolve_cage_mode()` (off / observe / authoritative)
+- `src/ztare/orchestrator/{telemetry,prompt,dispatch,iter_context}.py`
+  — engagement-record formatting, observe-summary printer, per-iter
+  context builders
+- Wire-in: `autoresearch_loop.py:3447` (init) and `:4106` (per-iter
+  dispatch)
+- Seam: `research_areas/private/seams/GP-157_cage_orchestrator_substrate_agnostic_dispatch.md`
+- Spec: `research_areas/private/specs/active/GP-157_cage_v5_implementation_spec.md`
+
+### Substrate-class taxonomy
+
+The orchestrator infers (or reads from `cage_meta`) one of:
+
+- `1d` — paired (x, y) data
+- `nd_features` — features.py + `I_model(features)`
+- `time_series` / `time_series_chaotic` — Lyapunov / Wasserstein-class
+- `proof_target` — Lean-formalizable claim
+- `closed_form_constant` — PSLQ integer-relation discovery
+- `audit` — meta-audit / red-team substrates
+- `literature` — text-based research review
+
+Each registered gate declares which classes it targets; the Cage
+filters by intersection. Universal gates run on every substrate.
+
+### Modes
+
+- `off` — Cage import unused, dispatch is legacy (default).
+- `observe` — Cage runs alongside the existing dispatch and writes
+  `workspace/cage_engagement.jsonl`. Does NOT influence scoring.
+- `authoritative` — Cage owns dispatch; the legacy if-blocks defer.
+  Migration is per-substrate-class per spec §4 Phase 3.
+
+Resolution: `cage_authoritative_mode: true` wins over
+`cage_observe_mode: true`; both default false.
+
+### Universal Gate Contract
+
+Every gate registered in the Cage exposes:
+
+```python
+class Gate:
+    name: str
+    phase: str            # "POST_FIT" | "POST_JUDGE" | "PRE_JUDGE"
+    can_handle: Callable  # (substrate, candidate) -> (bool, reason)
+    run: Callable         # (substrate, candidate) -> GateResult
+    dependencies: tuple[str, ...]
+```
+
+The 16 currently-registered gates (per `gates/registry.py`):
+
+- **Universal:** `semantic_gate_stabilization`, `circularity` (G-CIRC),
+  `falsifiability` (G-FALSIFY), `derived_constraints`
+- **1d / nd_features:** `coordinate_invariance`,
+  `asymptotic_claim_discipline`, `deterministic_charter_gates`
+- **nd_features-only:** `domain_match`, `ensemble_ambiguity`
+- **time_series / time_series_chaotic:** `continuum_limit`,
+  `wasserstein_persistence`
+- **proof_target:** `ansatz_survivor`, `proof_surveyability` (depends
+  on ansatz_survivor), `translation_diff`
+- **closed_form_constant:** `pslq_falsity_audit`
+- **audit:** `prompt_leak_audit`
+
+Note: `bridge_scope_contract` and `residual_norm` are present in
+`src/ztare/gates/` but currently RETIRED / classified as utility per
+panel synthesis 2026-04-25. See `DECISION_LOG.md` for retire rationale.
+
+---
+
+## 6d. Post-Champion Gate Stack
+
+After a candidate is promoted to champion (`res["score"]` improves),
+four post-hoc gates run in series and can demote the champion back
+into the loop. These execute in `autoresearch_loop.py` around line
+3738 (full-promotion path) and line 5911 (in-loop promotion path).
+
+| Gate | Code path | Fires when | What it enforces |
+|---|---|---|---|
+| **GP-119 Inverter** | `src/ztare/validator/inverter_agent.py` | `score >= 50` | Popper-style falsification: the agent proposes specific TESTS (not narrative doubts) against the champion thesis; results land in `derived_constraints.json` |
+| **G-CIRC** (circularity) | `src/ztare/gates/circularity_gate.py` | `structural_blocker_enforcement in {gate, both}` | DAG cycle detection in `champion_probability_dag.json`; cycle ⇒ structural-blocker fail (SB-1) |
+| **G-FALSIFY** (falsifiability) | `src/ztare/gates/falsifiability_gate.py` | `structural_blocker_enforcement in {gate, both}` | ≥ 1 numeric-threshold assertion in `test_model.py` (mandatory); plus optional watch-signal in DAG and rival/discriminator in thesis |
+| **GP-122 Lean REPL** | `src/ztare/formal/lean_repl.py` | `score >= 70 AND enable_lean_proof` | Constrained Lean 4 REPL: LLM agent fills proof tactics; Lean verifies each step — the ultimate hard gate (typechecks or doesn't) |
+
+Verdicts persist to `workspace/structural_blocker_gates_latest.json`
+(G-CIRC + G-FALSIFY) and `workspace/inverter_review.json` (GP-119;
+also appends to `derived_constraints.json`). The
+GP-143 continuous-chaotic pipeline (`fit_score_mode:
+"dynamical_lattice"`, score ≥ 70) also fires post-champion as
+independent validation against the holdout trajectory — its
+`certified_subset` JSONL feeds GP-122 if Lean is enabled.
+
+The post-champion stack is NOT registered through the Cage — it runs
+unconditionally on champion promotion. Migration to Cage's POST_JUDGE
+phase is a Phase 4 candidate per the GP-157 spec.
 
 ---
 
@@ -1040,3 +1357,38 @@ This prevents:
 - stale seed specs from silently re-entering the active portfolio
 - old closed programs from being reopened by drift
 - chat-only concepts from becoming routable work without explicit provenance
+
+
+## 15. The v2.1 Meta-Architecture: Measuring the Data's Epistemology
+
+Earlier sections of this document describe an apparatus that fits forms to data. The v2.1 work, completed during the gp163d 2026-04-25 session, addressed a more basic question: what should the apparatus assume about the data itself?
+
+The answer, working backward from a sequence of failure modes that surfaced under live multi-class astrophysics data, was that the apparatus had been assuming far too much. The original solver path assumed that residuals were independent, identically distributed, Gaussian, and confined to the dependent variable. The weighted-χ² fit primitive (GP-164) closed the "identically distributed" gap by accepting per-row σ from the substrate's feature dictionary. Three further assumptions remained — errors confined to y (an orthogonal-distance-regression gap), Gaussian residuals (a robust-loss gap), and independent residuals (a covariance / Mahalanobis gap) — and the apparatus had no way of knowing when any of them broke.
+
+v2.1 closes this by measuring rather than assuming.
+
+### The noise-profile diagnostic
+
+`src/ztare/diagnostics/noise_profile.py` runs four statistical tests on a baseline-fit residual series before the first iteration begins. A Breusch-Pagan-style correlation between squared residuals and the primary predictor flags heteroscedasticity. Shapiro-Wilk (for n < 5000) or Jarque-Bera (otherwise), supplemented by skew and kurtosis thresholds, flags non-Gaussian residuals and heavy tails. Durbin-Watson on residuals ordered by predictor flags lag-1 autocorrelation. Explicit `sigma_x_*` keys in the feature dictionary flag errors in the independent variable; a spacing-coefficient-of-variation heuristic surfaces a soft hint for substrates with measured rather than controlled X but does not auto-route on that hint alone.
+
+The verdict, a `NoiseProfile` dataclass with four boolean flags and the underlying test statistics, drives auto-routing of solver-related rubric flags the operator did not explicitly set. Heteroscedasticity routes to weighted χ². Non-Gaussian residuals route to robust loss (currently telemetry-only until the Huber path lands in the fit primitive). Autocorrelation routes to a covariance-aware solver (also telemetry-only). Explicit σ_x routes to ODR (also telemetry-only). The operator can override any auto-routed flag by setting it explicitly in the rubric — operator intent always wins.
+
+The same four detectors run again per iteration on the fitted model's residuals via `classify_residuals`. This second pass distinguishes a good fit with clean noise (the solver was the right call) from a good fit with structured residuals (model misspecification, a missing feature, or genuine class-dependent physics that a single form cannot capture). The verdict feeds the mutator's briefing through `NoiseProfileBriefingProvider`, so each iter sees both the pre-flight verdict on the data and the per-iter verdict on the current form.
+
+### Apparatus hardening
+
+The same arc surfaced five places where the apparatus had silent failure modes that masked real findings as tooling failures. All five shipped under GP-166.
+
+The fit primitive's pathology detector had been telemetry-only: it flagged catastrophic fitted parameters (those exceeding ten times the maximum |y| in visible data) but did not stop them from being substituted into MODEL_PARAMS. On gp163d, an underdetermined parameter `k_m` absorbed visible-class noise and reached -1.2 million, far outside its declared init-range of (-2, 2). That value then propagated to the gate harness, where `10^(-1.2M × Δ-mass)` underflowed to zero on cluster predictions and the form collapsed to y = x with farther-tail MRE near 0.85. Pathology *enforcement* now replaces flagged parameters with the midpoint of their declared init-range before substitution, so the gate harness receives bounded numbers and the mutator's briefing surfaces the substitution explicitly: "your form has unconstrainable parameters given visible-class data; restructure so each free parameter is bounded by the visible classes alone."
+
+The harness-failure classifier had a related blind spot. When the mutator's own discriminator assertion failed on a fitted form — a real, scientifically meaningful self-falsification — the truncated or wrapped stderr sometimes did not contain a parseable Python exception name. The classifier returned `fail_other`, the apparatus labeled it "harness defect," and the score capped at 50 as a tooling failure. The fallback now matches `AssertionError` substrings and bare `assert` traceback frames, returning `fail_assert` (a real falsification, score-eligible per the rubric) in those cases.
+
+The contamination-defense gate (`global_named_import_check`, which scans thesis prose against a project's `.denylist`) had been firing silently. The mutator's iter would hard-fail without any indication of which word triggered the gate. A new `ContaminationDefenseBriefingProvider` reads the most recent submission, scans it against the denylist with case-insensitive whole-word matching, and surfaces hits with line numbers and explicit guidance: do not name the canonical theory; restate the same structural argument from the anonymized features the substrate exposes. The contamination feedback loop is closed.
+
+The R1 stdlib-only contract had an unintended interaction with N-D feature-dict substrates. The mutator's natural pattern was `from features import VISIBLE; for row in VISIBLE: ...`, which the stdlib-only rule blocked. Inlining the data instead triggered a separate R1 rule against module-level I_model calls, because inline-data evaluation was indistinguishable from import-time side effects. The mutator burned all retry budget bouncing between the two rules and produced no thesis prose. The fix now allows `from features import …` whenever the project directory contains a `features.py` — the rule was designed against apparatus-import bypass, not against project-local substrate adapters.
+
+Finally, the framer's scope check had been gated on `enable_fit_primitive` (the 1D flag) without consulting `enable_fit_primitive_features` (the N-D flag). Every N-D substrate that set `enable_framer=true` saw the framer silently self-disable with reason `fit_primitive_disabled`. The check now accepts either flag.
+
+### What this is, philosophically
+
+The unifying move is the one Gemini named at the start of the session: the apparatus stops assuming the data's epistemology and starts measuring it. This is the mechanization of the physicist's reflex of looking at the error bars before choosing the math. v2.1 is the ZTARE 3.0 trajectory in miniature — from curve-fitter (which assumes the data is a clean array of floats) toward instrument-aware solver (which measures the error profile and routes accordingly). The five hardening patches are the same move applied at the apparatus's other silent boundaries: catch the catastrophic fit before it propagates, label the falsification as a finding, tell the mutator which word tripped the gate, give it the right contract for the substrate it is on, run the framer where it belongs.

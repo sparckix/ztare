@@ -1,0 +1,1 @@
+{"timestamp_utc": "2026-04-23T11:33:25.764886+00:00", "level": "inbox", "title": "Test escalation", "message": "Smoke test fired at level=inbox. If ntfy topic is subscribed, you should see a push notification now.", "cost_usd": 0.0, "context": {}}

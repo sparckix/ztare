@@ -1,0 +1,67 @@
+{
+  "rubric_version": "1.0-newton",
+  "project": "gp139_lean_hardening",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "GP-139 hardens GP-135 Primitive 4. Mutator must produce a full Lean gate specification or reduction/impossibility proof \u2014 both require mechanism-derived predictions. Newton-mode enforces secondary observables.",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative substrate; no (n, z) evidence.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative substrate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative substrate",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative substrate",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "You are a senior formal methods researcher specializing in Lean 4 and dependent type theory. You have ZERO patience for naming Lean APIs without specifying their semantics, and ZERO patience for proposals that ignore the lake-build-vs-lean-check throughput trap. You sharply penalize: (a) any thesis that proposes 'Lean CI' without specifying ALL of the four panel-required hardenings (axiom allowlist, schema-pinned headers, warningAsError, lean --check cache); (b) any thesis using `lake build` per iteration without addressing the 10-100\u00d7 throughput cost; (c) any thesis that ignores the statement-fidelity gap (allowing candidate to ship a vacuous theorem labeled as the functional-equation proof); (d) any thesis whose secondary observable doesn't actually catch a known smuggling pattern. You reward: code-level specifications naming Lean 4 APIs (Lean.Environment.printAxioms, Lean.Elab.Command), explicit allowlists ({propext, Classical.choice, Quot.sound}), worked examples showing rejected smuggles vs accepted closes, and explicit performance budgets.",
+  "dimensions": [
+    {
+      "name": "Hardening Completeness",
+      "weight": 25,
+      "description": "Does the thesis cover all four panel-required hardenings (axiom allowlist, schema-pinned headers, warningAsError, lean --check cache) \u2014 or rigorously reduce to fewer? Vague proposals score 0. Full credit requires explicit code-level treatment of each hardening with named Lean APIs."
+    },
+    {
+      "name": "Theoretical Grounding",
+      "weight": 20,
+      "description": "Does the thesis cite Lean 4 specifics (Lean.Environment, Lean.Elab.Command, set_option warningAsError semantics, #print axioms parsing), Lean 4 standard axiom set ({propext, Classical.choice, Quot.sound}), or specific Mathlib-free prelude design? Generic 'Lean CI' references score 0."
+    },
+    {
+      "name": "Throughput Realism",
+      "weight": 15,
+      "description": "Does the thesis address the lake-build-vs-lean-check throughput trap? Proposals using `lake build` per iter without addressing the 10-100\u00d7 cost score 0; proposals using `lean --check` against a pre-built cache with stated per-candidate budget (target \u2264 3s) score 15."
+    },
+    {
+      "name": "Smuggling Coverage",
+      "weight": 15,
+      "description": "Does the thesis enumerate concrete smuggling patterns it catches? Examples: `theorem trivial : 1 = 1 := rfl` labeled as functional equation; `axiom foo : P` then `apply foo`; `sorry` with warnings suppressed; quantifying over empty type. A thesis that catches only one of these scores partial; one that catches all major patterns scores 15."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 15,
+      "description": "Does the thesis name a secondary observable beyond the gate's primary admission decision? Examples: 'this gate's rejection rate on a fixed corpus of historical Mathlib commits with sorry-shipping is X%'; 'this impossibility predicts that no implementation works on cold-start substrates without externally-supplied theorem statements'. Tautological 'predicts the gate accepts/rejects' scores 0."
+    },
+    {
+      "name": "Mechanism Algorithmic Concreteness",
+      "weight": 10,
+      "description": "Does the thesis name runnable code and Lean APIs? Class-of-technique labels ('use Lean to verify') without naming the API score 0. A competent engineer must be able to ship the gate within ~1 day."
+    }
+  ],
+  "criteria": {
+    "1_Hardening_Completeness": "Does the thesis cover all four panel-required hardenings \u2014 or rigorously reduce?",
+    "2_Theoretical_Grounding": "Does the thesis cite Lean 4 specifics with named APIs and the standard axiom set?",
+    "3_Throughput_Realism": "Does the thesis address lake-vs-lean-check throughput?",
+    "4_Smuggling_Coverage": "Does the thesis enumerate concrete smuggling patterns it catches?",
+    "5_Generative_Yield": "Does the thesis name a calculable secondary observable beyond admission?",
+    "6_Mechanism_Algorithmic_Concreteness": "Does the thesis name runnable Lean APIs and code?"
+  },
+  "_charter_pre_reg_seam": "research_areas/private/seams/mission/GP-139_lean_hardening_seam.md",
+  "composition_stagnation_threshold_removed_2026_04_24": "GP-135 fix: removed override of 5; Newton-mode default of 2 now applies. Pivot fires earlier per panel-recommended discipline."
+}

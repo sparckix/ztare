@@ -1,0 +1,69 @@
+{
+  "name": "gp165_analogy_architecture_review",
+  "project": "gp165_analogy_architecture_review",
+  "description": "ZTARE-on-ZTARE adversarial review of the v2.1 META-ARCHITECTURE: REFRAME + L1 ANALOGY + weighted-χ² fit primitive + statistical noise-profile diagnostic (GP-166) + pathology enforcement + contamination-defense briefing + per-class MRE breakdown + self-falsification reclassifier + R1 contract-collision fix + framer N-D scope fix. Hybrid prose+Python audit covering the entire v2.1 stack as one bundle.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "The audit is generative: it must propose new failure modes (taxonomy) and pre-commit a substrate that exposes the highest-severity finding. Newton-mode enforces the secondary-observable discipline.",
+  "falsification_mode": "qualitative_thesis",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Charter substrate has no numerical evidence; holdout is enforced via Newton-mode pre-commit (the predicted substrate-and-score that the highest-severity finding would produce on a separate run).",
+  "target_convention_homogeneity": "homogeneous",
+  "inject_antipattern_catalog": false,
+  "structural_blocker_enforcement": "gate",
+  "underidentified_after": 8,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "No empirical fit to evaluate; this is an architectural audit.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No empirical uniqueness gap to evaluate.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Audit substrate; gates run in observe-mode for telemetry only.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Audit substrate (cage_meta.class=audit) — there is no numeric extrapolation regime; the audit's observable is a prose failure-mode taxonomy, not predictions outside a training range.",
+  "cage_meta": {
+    "class": "audit",
+    "review_type": "architecture_audit"
+  },
+  "persona": "You are a hostile staff-level architecture reviewer doing red-team review on the ZTARE v2.0 META-ARCHITECTURE (REFRAME + L1 ANALOGY + weighted-\u03c7\u00b2 fit primitive) before it ships to live testing. Your job is to find concrete, demonstrably-distinct failure modes BEYOND the operator-seeded F1\u2013F8 list. F1\u2013F6 are ANALOGY seeds; F7 is the weighted-MDL gap inside REFRAME's branch-and-bound search; F8 is per-iter engagement-cost asymmetry across components. The review is hybrid (prose-shape + execution-hostile) AND multi-component (must cover at least 2 of {REFRAME, ANALOGY, wMDL} for full credit). REJECT theoretical-elegance arguments without concrete triggers. REJECT findings that merely re-state F1\u2013F8 without the explicit \"this is F-N, my new finding is X distinct from it\" framing. REQUIRE one concrete bypass exploit demonstrated against the actual codebase \u2014 a runnable Python snippet or fingerprint-input or (substrate, \u03c3-pattern) tuple that produces a contamination/leak/grammar-bloat/frame-mis-pick outcome when run against the current source. REQUIRE Newton-mode pre-commit: a substrate that would expose the highest-severity new failure mode plus a predicted score. DO NOT REJECT \u2014 the apparatus-required idioms `p.get(name, default)` for parameter reads (apparatus contract) and inline dict/list literals replacing `from features import \u2026` inside `__main__` falsification suites (R1 stdlib-only pattern). Both are apparatus contract idioms, not violations.",
+  "dimensions": [
+    {
+      "name": "New Failure Modes Beyond F1\u2013F8",
+      "weight": 25,
+      "description": "Number and quality of named failure modes DISTINCT from the seed list (F1\u2013F6 ANALOGY + F7 weighted-MDL gap + F8 engagement-cost asymmetry). Each must include name, layer (prose/Python/hybrid), component (REFRAME/ANALOGY/wMDL/cross), concrete trigger, severity, and explicit \"distinct from F-N\" framing. Score 100 for \u22653 distinct new modes covering \u22652 components; 70 for 2 distinct modes or 3 single-component; 0 for findings that re-state seeds."
+    },
+    {
+      "name": "Concrete Bypass Exploit Demonstrated",
+      "weight": 20,
+      "description": "One runnable Python snippet or input pattern that, executed against the current codebase, produces a contamination / leak / grammar-bloat outcome. Hypothetical \"an attacker could\" framings score zero; only runnable demonstrations count."
+    },
+    {
+      "name": "Hybrid Coverage (Prose + Python)",
+      "weight": 15,
+      "description": "Single-axis reviews score at most 60 on this dimension regardless of finding count. Both prose-shape holes (spec claim coverage) and Python-implementation holes (code-level enforcement) must be present."
+    },
+    {
+      "name": "Compositional Interaction Discovery",
+      "weight": 15,
+      "description": "Identification of interactions among the v2.0 components themselves (REFRAME × ANALOGY, REFRAME × wMDL, ANALOGY × wMDL) AND between v2.0 components and the rest of the apparatus (MutatorBriefing / cross-family discipline / topology_synthesizer / G-CIRC / G-FALSIFY). Each named interaction with concrete failure trigger scores points. Hypothetical or vacuous interactions (\"could conflict somehow\") score zero. Special weight on REFRAME × wMDL (F7's gap inside branch_and_bound_search) and ANALOGY × wMDL (does fingerprint expose σ?)."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Newton-mode requirement: pre-commit a substrate that would expose the highest-severity new failure mode, with a predicted score range. The pre-commit must be specific (substrate slug + charter sketch + expected failure trigger + predicted score band). Vague pre-commits score zero."
+    },
+    {
+      "name": "Mitigation Structural-Property Naming",
+      "weight": 10,
+      "description": "For each new failure mode, the proposed mitigation must name a NEW structural property (not just \"tighten existing gate\"). Mitigations that propose architectural extensions \u2014 new typed contract, new validation layer, new compositional invariant \u2014 score 100. Mitigations that just adjust thresholds score 30."
+    }
+  ],
+  "criteria": {
+    "New_Failure_Modes_Beyond_F1_F8": "Read the audit's failure-mode taxonomy. Count modes that are EXPLICITLY framed as distinct from F1\u2013F8 (e.g., 'F9 is distinct from F1 because F1 leaks magnitude while F9 leaks correlation structure'; 'F10 is distinct from F7 because F7 is the unweighted polyfit inside branch_and_bound; F10 is the \u03c3-stratification leak in evaluate_pair'). Count only those with a named layer, named component (REFRAME/ANALOGY/wMDL/cross), concrete trigger, and severity. \u22653 valid new modes covering \u22652 components \u2192 100. 2 valid \u2192 70. 1 valid \u2192 35. 0 valid \u2192 0. Modes that merely rename F1\u2013F8 or omit the distinction framing score zero on this dimension.",
+    "Concrete_Bypass_Exploit_Demonstrated": "The audit must include at least one Python snippet, fingerprint input, or (substrate, σ-pattern) tuple that, run against the current codebase (analogy.py + active_framer.py + framer_search.py + fit_primitive_features.py + dispatch hook in their current state), produces a measurable contamination / leak / grammar-bloat / frame-mis-pick outcome. Inspect the snippet for runnability: imports correct, calls real functions in their real signatures, expected-vs-actual outcome stated. Exploits demonstrating REFRAME × wMDL or ANALOGY × wMDL interactions earn full credit. Score 100 if the snippet is fully runnable and the outcome is demonstrated. Score 50 if the snippet is runnable but the outcome is hypothesized rather than demonstrated. Score 0 for hypotheticals without runnable code.",
+    "Hybrid_Coverage_Prose_Python": "Inspect the failure-mode taxonomy for layer tags. Count distinct findings tagged 'prose', 'Python', and 'hybrid'. Both prose AND Python (or hybrid) layers must be represented for full credit. If only one layer appears in the findings, score is capped at 60. Single-axis reviews (all-prose or all-Python) cannot exceed 60 on this dimension regardless of finding count.",
+    "Compositional_Interaction_Discovery": "Inspect for interaction findings within v2.0 (REFRAME \u00d7 ANALOGY, REFRAME \u00d7 wMDL [F7's territory and beyond], ANALOGY \u00d7 wMDL [does the fingerprint leak \u03c3?]) and across v2.0 \u00d7 rest of apparatus (\u00d7 MutatorBriefing, \u00d7 cross-family discipline, \u00d7 topology_synthesizer L2-lite path, \u00d7 G-CIRC / G-FALSIFY post-champion gates). Each named interaction with a concrete failure trigger scores points. Vacuous \"could conflict\" framings without concrete trigger score zero. \u22653 distinct compositional interactions (with at least one strictly within v2.0) \u2192 100. 2 \u2192 70. 1 \u2192 40. 0 \u2192 0.",
+    "Generative_Yield": "Inspect for Newton-mode pre-commit. The audit must specify: (a) substrate slug for the predicted exposure run, (b) charter sketch (\u22655 lines), (c) which new failure mode the substrate would expose, (d) a predicted score band (e.g., \"30\u201350 if F7 fires; 70+ if it doesn't\"). All four required for full credit. Missing any one drops 25 points. Vague pre-commits (\"some substrate where X happens\") score zero.",
+    "Mitigation_Structural_Property_Naming": "For each new failure mode, examine the proposed mitigation. Mitigations that name a NEW structural property (e.g., 'add a typed contract layer between fingerprint and LLM query', 'introduce a per-iter primitive-validation gate before briefing injection') score 100. Mitigations that just adjust thresholds (\"tighten the engagement gate\", \"raise the stagnation threshold\") score 30. Mitigations missing entirely score 0. Average across modes."
+  }
+}

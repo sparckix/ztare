@@ -81,6 +81,7 @@ projects/eu_union_failure_probability_2035/raw/*
 /paper2/
 /paper3/
 /paper4/
+/paper5/
 paper/*.pdf
 *.aux
 *.bbl
@@ -89,6 +90,7 @@ paper/*.pdf
 *.fls
 *.log
 *.out
+*.toc
 *.synctex.gz
 *.bak
 
@@ -107,6 +109,19 @@ supervisor/active_runs/*
 research_areas/private/
 research_areas/catch_grammar
 research_areas/HARDENING_BOARD.md
+
+# --- org/ structural primitives (GP-128 AI-native M-form) ---
+# Public: role definitions, delegation graph, README
+# Private (gitignored): mandates contain IP portfolio state / personal context;
+# sessions contain per-role audit logs.
+org/mandates/
+org/sessions/
+# (covers org/sessions/_claims/ too)
+
+# Damage signals (GP-129 Matzinger pull-forward): emits are runtime audit,
+# not shipped artifacts. Keep the directory + .gitkeep, ignore the JSON.
+org/signals/damage/*.json
+org/signals/damage/_cleared/
 
 # Agent instructions
 AGENTS.md
@@ -127,3 +142,16 @@ rubrics/treatise_rule0_self_pass.json
 
 # Local deferred scratch
 research_areas/seeds/deferred/systems_to_algorithms.md
+
+# Paper 5 private notes (not the paper itself)
+research_areas/private/papers/paper5.md
+
+# IP protected — patent drafts, provisional applications, trade secrets
+.ip_protected/
+# GP-132: goal artifacts are personal; README stays public as schema doc.
+org/goals/pending/*
+org/goals/active/*
+org/goals/done/*
+!org/goals/pending/.gitkeep
+!org/goals/active/.gitkeep
+!org/goals/done/.gitkeep

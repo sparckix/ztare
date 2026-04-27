@@ -1,0 +1,17 @@
+schema_version: 1
+description: Frozen v1 fixture assignments.
+assignments:
+  - member: member.principal_human
+    role: role.principal
+    substrate: human_conversational
+    is_primary: true
+    valid_from: "2026-04-23"
+    valid_until: null
+    notes: "Fixture principal"
+  - member: member.agent_worker
+    role: role.manager
+    substrate: agent_conversational
+    is_primary: true
+    valid_from: "2026-04-23"
+    valid_until: null
+    notes: "Fixture manager"

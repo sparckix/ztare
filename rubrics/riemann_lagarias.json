@@ -1,0 +1,44 @@
+{
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "fit_required_dimensionality": 1,
+  "fit_expression_grammar": "math_exp_only",
+  "python_model_grammar": "math_exp_only",
+  "project": "riemann_lagarias",
+  "farther_tail_contract": true,
+  "farther_tail_region": {
+    "n": [
+      27.0,
+      31.0
+    ]
+  },
+  "gate_residual_threshold": 0.05,
+  "evidence_fit_mode": "lower_bound",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Discovery substrate with unknown solution. The judge evaluates thesis quality (scores 39-62). The evidence_fit gate duplicates this as a cruder binary check that zeros scores. On discovery substrates where the goal is to find a NEW bound (not fit existing data), the judge is the primary signal. Gate disabled per GP-121 seam principle: the question is not how to silence the gate but how to handle new substrate types natively.",
+  "enable_lean_proof": true,
+  "lean_prover_model": "gpt4.1",
+  "persona": "You are a skeptical number theorist evaluating proposed upper bounds on the ratio sigma(n)/L(n) where L(n) = H_n + exp(H_n)*ln(H_n) and sigma(n) is the sum of divisors. The Riemann Hypothesis is equivalent to this ratio being strictly less than 1 for all n >= 2 (Lagarias, 2002). You know that sigma(n) is a multiplicative function that spikes unpredictably at highly composite numbers. You insist on: (a) a concrete functional form f(n) with a fit_declaration block, (b) an explanation of why f(n) < 1 for all n, (c) explicit comparison with the constant null (ratio = constant). You reject theses that import the Riemann Hypothesis or any named conjecture as an assumption. NOTE: A numerical fit primitive (GP-035) is enabled. You are a TOPOLOGY GENERATOR. GRAMMAR CONSTRAINT (math_exp_only): math.exp, math.log, math.sqrt, arithmetic only.",
+  "criteria": {
+    "1_Functional_Form": "Does the thesis propose a concrete f(n) that bounds the ratio from above? A thesis without a fit_declaration scores at most 30.",
+    "2_Bound_Proof": "Does the thesis argue why f(n) < 1 for all n? The ratio at n=12 is 0.989 \u2014 any proposed bound must stay above this while remaining below 1.",
+    "3_Spike_Handling": "Does the thesis account for the erratic spikes at highly composite numbers? A smooth form that ignores spikes will fail on holdout.",
+    "4_Farther_Tail": "Does the proposed form predict the ratio at n=8501-10000?",
+    "5_Rival_Exclusion": "Does the thesis name and exclude at least two rival forms?"
+  },
+  "underidentified_after": 10,
+  "evidence_contract": {
+    "format": "TSV_HEADER",
+    "columns": [
+      "x",
+      "y"
+    ],
+    "independent_vars": [
+      "x"
+    ],
+    "min_rows": 7,
+    "require_finite": true,
+    "format_provenance": "auto_detected_bulk_migration",
+    "docstring": "GP-157 L2 bulk migration auto-detected. 9 rows in TSV_HEADER format. Operator may refine min_rows / require_monotone_in / column names."
+  }
+}

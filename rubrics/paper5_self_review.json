@@ -1,0 +1,39 @@
+{
+  "rubric_version": "1.0",
+  "project": "paper5_self_review",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative thesis project — no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative philosophy-of-science thesis — evidence surface is the treatise text, not a numerical curve; global_evidence_fit gate does not apply",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "persona": "You are a rigorous philosopher of science who has read Paper 5 carefully. Your job is to evaluate whether the submitted thesis correctly identifies the strongest self-application failure in the treatise — the point where the treatise, applied to itself, fails its own standards. You are NOT looking for a rubber-stamp pass. You are looking for an honest, precise identification of the load-bearing internal inconsistency. A thesis that finds nothing wrong earns a low score. A thesis that correctly identifies Principle I (separation) as the unavoidable self-application failure AND explains why the treatise's own §1.4 acknowledgment does or does not satisfy it earns a high score. Use only the treatise's own vocabulary. Do not import external frameworks.",
+  "dimensions": [
+    {
+      "name": "Internal Consistency Audit",
+      "weight": 35,
+      "description": "Does the thesis correctly apply each of the ten operations and seven principles to the treatise itself? Does it identify which operations the treatise cannot satisfy (e.g., Principle I separation — the author is the evaluator) and which it does satisfy (e.g., Principle VII asymptotic scoring via §1.4 provenance)? A correct audit names specific operations by number and explains the pass/fail verdict for each."
+    },
+    {
+      "name": "Strongest Objection",
+      "weight": 35,
+      "description": "Does the thesis identify the single most damaging objection to Paper 5's core claim, stated in the treatise's own vocabulary? The strongest objection is: the treatise is proposed from one corpus (one operator, one system, four months) and the holdout condition (Principle VI) — evidence authored outside the candidate's claim region — is structurally unmet at the treatise level, because the ten operations were derived from the same corpus that tests them. Does the thesis identify this? Does it evaluate whether the §1.4 provenance disclosure adequately handles it or merely names it?"
+    },
+    {
+      "name": "Rule 0 Verdict",
+      "weight": 30,
+      "description": "What score does the treatise earn under its own rubric? The thesis must deliver a specific numerical verdict (0-100) with a justification using the treatise's own scoring standards. The verdict should be: high (80+) if the treatise correctly bounded its own claims and its self-application failures are named and contained; medium (50-80) if the self-application failures are serious but the treatise's core decomposition claim survives; low (<50) if the self-application failure undermines the central claim. A verdict of 100 is not credible — Principle VII forbids it."
+    }
+  ],
+  "criteria": {
+    "1_Internal_Consistency": "Does the thesis audit all ten operations against the treatise? Does it correctly identify that Principle I (separation) is violated at the meta-level (author = evaluator) and that the treatise's own §1.4 provenance disclosure is the self-protective move? Does it identify Principle VII compliance (asymptotic, not absolute claim)?",
+    "2_Strongest_rival_objection": "Does the thesis identify the strongest objection: that the holdout condition (Principle VI) is unmet at the treatise level because the ten operations were derived from the same corpus used to validate them? Does it evaluate whether the §1.4 disclosure and the falsifiability conditions stated there adequately address this, or merely name it?",
+    "3_Rule_0_Score": "Does the thesis deliver a specific Rule 0 score with a justification? Is the score calibrated — not 100, not 0, but somewhere that reflects the treatise's genuine achievement (a real decomposition, honestly bounded) and genuine limitation (N=1, author-evaluator, holdout unmet)?"
+  }
+}

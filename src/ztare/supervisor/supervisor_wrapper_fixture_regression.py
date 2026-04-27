@@ -117,7 +117,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
                         "src/ztare/validator/stage2_derivation_fixture_regression.py",
                     ),
                 ),
-                "verification_command": "python -m src.ztare.validator.stage2_derivation_fixture_regression",
+                "verification_command": "python -m src.ztare.validator.core.stage2_derivation_fixture_regression",
             }
         )
         write_staging_files(b_status, staging_dir)
@@ -194,7 +194,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
                 and research_b_dry_run.command[:2] == ("anthropic", "messages.create")
                 and "Writing Agent" in research_b_prompt
                 and "write the research draft markdown to the declared implementation path" in research_b_prompt
-                and "`verification_command`: `python -m src.ztare.validator.prose_verifier --draft-path research_areas/drafts/paper4_drafting_paper_outline.md --spec-path research_areas/specs/paper4_drafting_paper_outline_prose_spec.json`" in research_b_prompt
+                and "`verification_command`: `python -m src.ztare.findings.prose_verifier --draft-path research_areas/drafts/paper4_drafting_paper_outline.md --spec-path research_areas/specs/paper4_drafting_paper_outline_prose_spec.json`" in research_b_prompt
             )
         finally:
             supervisor_wrappers_module.load_optional_program_manifest = original_manifest_loader
@@ -242,7 +242,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
                 "implementation_paths": [
                     "research_areas/drafts/paper4_drafting_paper_outline.md"
                 ],
-                "verification_command": "python -m src.ztare.validator.prose_verifier --draft-path research_areas/drafts/paper4_drafting_paper_outline.md --spec-path research_areas/specs/paper4_drafting_paper_outline_prose_spec.json",
+                "verification_command": "python -m src.ztare.findings.prose_verifier --draft-path research_areas/drafts/paper4_drafting_paper_outline.md --spec-path research_areas/specs/paper4_drafting_paper_outline_prose_spec.json",
             },
             artifacts=(
                 (

@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  ztare:
+    build: .
+    volumes:
+      - ./projects:/app/projects
+      - ./rubrics:/app/rubrics
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}

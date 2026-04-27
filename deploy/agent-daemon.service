@@ -1,0 +1,28 @@
+[Unit]
+Description=ZTARE Persistent Agent Daemon (GP-128 Level 2)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ztare
+WorkingDirectory=/home/ztare/figs_activist_loop
+ExecStart=/home/ztare/figs_activist_loop/venv/bin/python scripts/agent_daemon.py --interval 600
+Restart=on-failure
+RestartSec=60
+Environment=ANTHROPIC_API_KEY=
+Environment=OPENAI_API_KEY=
+Environment=GOOGLE_API_KEY=
+
+# Safety limits
+TimeoutStopSec=120
+MemoryMax=2G
+CPUQuota=50%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ztare-daemon
+
+[Install]
+WantedBy=multi-user.target

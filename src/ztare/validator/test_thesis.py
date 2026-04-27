@@ -49,6 +49,7 @@ from src.ztare.validator.utilities.harness_failure_mode import (
     FAIL_RUNTIME,
     classify_harness_failure,
     harness_defect_banner,
+    sanitize_stderr_for_mutator,
 )
 from src.ztare.gates.derived_constraints import (
     render_confirmed_constraints_prompt_section,
@@ -60,19 +61,19 @@ from src.ztare.validator.utilities.v4_family import is_v4_family_project
 # 1. Setup & Args
 parser = argparse.ArgumentParser()
 parser.add_argument("--project", required=True)
-parser.add_argument("--rubric", required=True)
+parser.add_argument("--rubric", default=None, help="Rubric name (defaults to --project value)")
 parser.add_argument("--dynamic", action="store_true")
 parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"],
 )
 parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini"],
+    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"],
 )
 parser.add_argument("--use_primitives", action="store_true")
 parser.add_argument(
@@ -104,6 +105,8 @@ parser.add_argument(
     help="Path to write the final evaluation JSON. Defaults to eval_results.json in the current working directory.",
 )
 args = parser.parse_known_args()[0]
+if args.rubric is None:
+    args.rubric = args.project
 if getattr(args, "use_transfer_hypotheses", False):
     args.use_mutator_primitives = True
 if args.use_mutator_primitives:
@@ -169,7 +172,7 @@ EVIDENCE_GAP_TYPES = {
     "other",
 }
 EVIDENCE_GAP_SEVERITIES = {"blocking", "degrading", "enriching"}
-EVIDENCE_GAP_PRODUCERS = {"meta_judge", "firing_squad", "adjudicator", "inferred"}
+EVIDENCE_GAP_PRODUCERS = {"meta_judge", "verification_gate", "adjudicator", "inferred"}
 
 # --- HELPER FUNCTIONS ---
 def read_file(filepath):
@@ -674,9 +677,20 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
     Write a COUNTER-TEST that exposes the insolvency of their equation.
     
     CRITICAL INSTRUCTION (PARAMETRIC GROUNDING):
-    You MUST use your deep parametric knowledge of physics, mathematics, and finance to audit the Mutator's "LOAD-BEARING VARIABLES" table and Python constants. 
+    You MUST use your deep parametric knowledge of physics, mathematics, and finance to audit the Mutator's "LOAD-BEARING VARIABLES" table and Python constants.
     If they claim a specific physical constant, temperature, limit, or financial metric, verify it against established scientific or market consensus.
     If their baseline variables are fictional, misapplied, or off by orders of magnitude, destroy the thesis and cite the actual real-world metric.
+
+    GP-157 v5.0 Gap #6 — AUDIT MUST-FAIL CONSTRAINT (panel Failure Mode 4):
+    Recursive audit hallucinates volume of critiques over validity. Reject any
+    architectural / structural critique that is NOT accompanied by EITHER
+    (a) a specific compilable attack vector (a Python snippet that fails
+    against the Mutator's actual emitted code), OR (b) a direct file:line
+    citation of the codebase where the bug exists. Theoretical-elegance
+    critiques ('a cleaner abstraction would solve this'), parsimony theater,
+    and proposals to add MORE layers / MORE gates / MORE schemas without a
+    concrete reachability failure are FORBIDDEN — penalize them heavily.
+    The Auditor's job is to find concrete defects, not to redesign the cage.
     
     OUTPUT FORMAT (CRITICAL):
     1. First, provide your analytical critique.
@@ -685,6 +699,24 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
 
     PINT LIBRARY GUARDRAIL:
     If you use the `pint` library, comparing custom dimensionless units (like 'bit * joule') to standard units (like 'joule') will crash the system. When writing `assert` or `if` statements, you MUST extract the float values using `.magnitude` (e.g., `if E_cost.magnitude > E_univ.magnitude:`) or explicitly convert units to be identical before comparison.
+
+    SELF-CONTAINMENT GUARDRAIL (MANDATORY — do not violate):
+    Your counter-test runs in an isolated sandbox directory with a stripped environment. The following files do NOT exist in the sandbox and CANNOT be opened:
+    - `prediction.json`, `commit.txt`, `manifest.json`, `workspace/*`, `output/*`
+    - any file referenced by the thesis as an artifact the primitive would produce AFTER being run (these files exist only in the operator's real run, not in your sandbox).
+    - any path outside your current working directory.
+    If your counter-test tries to open such a file, it will raise `FileNotFoundError` and the counter-test will be INVALIDATED (not credited as thesis survivorship; not credited as falsification). You will have written a non-test.
+    THEREFORE: your counter-test MUST be entirely self-contained. All numeric constants, test inputs, and expected values must be HARDCODED into the Python block. Re-implement any required primitive inline if you need to probe it. Do NOT `open()`, `read_text()`, or `pathlib.Path().exists()` any external file. Do NOT `subprocess.run` or shell out.
+    If the thesis's correctness hinges on an artifact you cannot produce, your counter-test should SYMBOLICALLY simulate the artifact (with hardcoded representative values) and probe the thesis's logic against those values, not assert the artifact's presence.
+
+    CONSISTENCY CHECK (MANDATORY):
+    Before writing the Python block, walk through your own counter-test mentally and verify:
+    (a) Every variable it uses is defined IN the block;
+    (b) Every file it might open is either created by the block itself FIRST or is not referenced at all;
+    (c) Every import is of a stdlib or numpy/scipy module (no pandas, no requests, no third-party that may be absent);
+    (d) The block terminates in under 10 seconds;
+    (e) All asserts have informative error messages.
+    If any of (a)-(e) fails on inspection, rewrite the block before submitting.
     
     TONE GUARDRAIL (MANDATORY):
     Your output MUST be entirely sterile, clinical, and strictly academic/financial. 
@@ -719,41 +751,68 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
     print(f"\n🚀 ATTACKER LAUNCHED: {attacker_profile['role']}")
     print(f"🎯 FOCUS: {attacker_profile['focus_area']}")
 
-    response = safe_generate(prompt, config=config, model_id=JUDGE_MODEL_ID)
-    # --- 🔍 SAFETY METADATA DEBUGGER ---
-    if response and hasattr(response, 'candidates') and response.candidates:
-        candidate = response.candidates[0]
-        reason = str(candidate.finish_reason)
-        if "STOP" not in reason:
-            print(f"\n🛑 [DEBUG] API HALT DETECTED. Finish Reason: {reason}")
-            if hasattr(candidate, 'safety_ratings') and candidate.safety_ratings:
-                print("🚨 Safety Ratings Breakdown:")
-                for rating in candidate.safety_ratings:
-                    if "MEDIUM" in str(rating.probability) or "HIGH" in str(rating.probability):
-                        print(f"   -> {rating.category}: {rating.probability}")
-    elif response and hasattr(response, 'prompt_feedback'):
-        print(f"\n🛑 [DEBUG] PROMPT BLOCKED AT INTAKE: {response.prompt_feedback}")
-    else:
-        print("\n🛑 [DEBUG] RESPONSE OBJECT IS EMPTY OR MALFORMED.")
+    # GP-134 wrap-and-retry (2026-04-23): RUNTIME.call_text returns an
+    # envelope with model-agnostic .text/.raw; on empty-text replies
+    # (transient judge-side), retry up to MAX_EMPTY_RETRIES with small
+    # backoff before giving up. The earlier code aborted on first empty
+    # response, producing empty debate logs (e.g., 1776971609.md 0 bytes).
+    MAX_EMPTY_RETRIES = 3
+    response = None
+    raw_text: str | None = None
+    for _empty_attempt in range(MAX_EMPTY_RETRIES):
+        response = safe_generate(prompt, config=config, model_id=JUDGE_MODEL_ID)
 
-    # --- 🛡️ BULLETPROOF TEXT EXTRACTION ---
-    try:
-        raw_text = response.text if response else None
-    except ValueError: 
-        raw_text = None
-    except Exception as e:
-        print(f"⚠️ Unexpected extraction error: {e}")
-        raw_text = None        
-        
+        # --- 🔍 SAFETY METADATA DEBUGGER (Gemini-shape only) ---
+        # Guard against non-Gemini response shapes: only print safety-ratings
+        # debug when the response actually has Gemini .candidates or
+        # .prompt_feedback attributes. Non-Gemini judges (claude, gpt, o1, o3)
+        # return different response envelopes and this debug was producing
+        # spurious "RESPONSE OBJECT IS EMPTY OR MALFORMED" on every non-Gemini
+        # iter even when the content was fine.
+        is_gemini_shape = hasattr(response, 'candidates') or hasattr(response, 'prompt_feedback')
+        if is_gemini_shape and hasattr(response, 'candidates') and response.candidates:
+            candidate = response.candidates[0]
+            reason = str(candidate.finish_reason)
+            if "STOP" not in reason:
+                print(f"\n🛑 [DEBUG] API HALT DETECTED. Finish Reason: {reason}")
+                if hasattr(candidate, 'safety_ratings') and candidate.safety_ratings:
+                    print("🚨 Safety Ratings Breakdown:")
+                    for rating in candidate.safety_ratings:
+                        if "MEDIUM" in str(rating.probability) or "HIGH" in str(rating.probability):
+                            print(f"   -> {rating.category}: {rating.probability}")
+        elif is_gemini_shape and hasattr(response, 'prompt_feedback'):
+            print(f"\n🛑 [DEBUG] PROMPT BLOCKED AT INTAKE: {response.prompt_feedback}")
+
+        # --- 🛡️ BULLETPROOF TEXT EXTRACTION ---
+        try:
+            raw_text = response.text if response else None
+        except ValueError:
+            raw_text = None
+        except Exception as e:
+            print(f"⚠️ Unexpected extraction error: {e}")
+            raw_text = None
+
+        if raw_text:
+            break
+        if _empty_attempt < MAX_EMPTY_RETRIES - 1:
+            print(
+                f"⚠️  Empty response from judge (attempt {_empty_attempt + 1}/"
+                f"{MAX_EMPTY_RETRIES}); retrying in {2 * (_empty_attempt + 1)}s..."
+            )
+            time.sleep(2 * (_empty_attempt + 1))
+
     if not raw_text:
         reason = "UNKNOWN"
         if response and hasattr(response, 'candidates') and response.candidates:
             reason = str(response.candidates[0].finish_reason)
-            
+
         if "SAFETY" in reason:
             return "⚠️ ATTACK BLOCKED BY SAFETY FILTERS: The model's critique triggered corporate safety guardrails."
         else:
-            return f"⚠️ ATTACK ABORTED. Finish Reason: {reason}. Treat this as a structural failure."
+            return (
+                f"⚠️ ATTACK ABORTED after {MAX_EMPTY_RETRIES} empty-response retries. "
+                f"Finish Reason: {reason}. Treat this as a structural failure."
+            )
 
     # --- THE NUCLEAR EXTRACTION (REGEX) ---
     tool_output_text = ""
@@ -764,8 +823,47 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
         extracted_code = code_match.group(1)
         # Execute the code manually using your existing tool function
         execution_result = execute_python_code(extracted_code)
-        # Append the output directly to the critique so the Meta-Judge can read it
-        tool_output_text = f"\n\n### PYTHON EXECUTION OUTPUT:\n{execution_result}"
+        # GP-135 (2026-04-23): when the attacker's own code fails with
+        # NameError / SyntaxError / ModuleNotFoundError / AttributeError /
+        # ImportError, it is the ATTACKER'S code that is broken, not the
+        # thesis. Without annotation the judge cannot distinguish "thesis
+        # survived a real attack" from "attacker wrote broken code, no
+        # test was performed." Measured 19% attacker-code-failure rate on
+        # ztare_on_ztare — significant noise source. Prepend an explicit
+        # marker so the judge reads attack-invalidation, not thesis-signal.
+        # GP-135 extended (2026-04-23 session 2): also catch filesystem /
+        # scaffolding errors. FileNotFoundError: attacker tried to open a
+        # file that does not exist in the sandbox (common pattern: loading
+        # a JSONL fit context that only exists in the main repo).
+        # PermissionError / OSError: same class of scaffolding breakage.
+        # TimeoutError / TabError: rare but same category.
+        # Deliberately NOT including TypeError, ValueError, KeyError,
+        # IndexError, ZeroDivisionError — those can be LEGITIMATE
+        # falsification signals when the attacker probes the thesis with
+        # edge-case inputs and the thesis genuinely breaks.
+        _attacker_broken_patterns = (
+            "NameError:", "SyntaxError:", "ModuleNotFoundError:",
+            "AttributeError:", "ImportError:", "IndentationError:",
+            "FileNotFoundError:", "PermissionError:", "OSError:",
+            "IOError:", "NotADirectoryError:", "IsADirectoryError:",
+            "TimeoutError:", "TabError:",
+        )
+        if any(pat in execution_result for pat in _attacker_broken_patterns):
+            attacker_invalidation = (
+                "⚠️ ATTACKER CODE INVALID — the counter-test itself raised a "
+                "Python error (NameError, SyntaxError, ImportError, etc.). "
+                "This is NOT evidence that the thesis survived; no test was "
+                "actually performed. Meta-Judge MUST discount this attack "
+                "entirely and MUST NOT cite it as thesis survivorship."
+            )
+            tool_output_text = (
+                f"\n\n### PYTHON EXECUTION OUTPUT:\n{attacker_invalidation}\n\n"
+                f"Raw execution output:\n{execution_result}"
+            )
+            print(f"🧪 Attacker code invalid ({_attacker_broken_patterns[0] if 'NameError' in execution_result else 'other exception'}); critique annotated for Meta-Judge.")
+        else:
+            # Append the output directly to the critique so the Meta-Judge can read it
+            tool_output_text = f"\n\n### PYTHON EXECUTION OUTPUT:\n{execution_result}"
     else:
         tool_output_text = "\n\n### PYTHON EXECUTION OUTPUT:\n⚠️ No Python block found. Attacker failed to provide a quantitative counter-test."
 
@@ -837,7 +935,7 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
         crux_instruction = """
     RULES FOR CRUX-FIRST ORDERING:
     - The crux analysis above was produced before any failure precedents were shown.
-    - Treat that load-bearing claim as the anchor for this evaluation unless the firing-squad evidence directly refutes it.
+    - Treat that load-bearing claim as the anchor for this evaluation unless the verification-panel evidence directly refutes it.
     - Decide first whether the falsification suite actually tests that crux.
     - Use failure precedents only to pressure-test the crux; do not let them redefine the crux or soften a claim-test mismatch.
     - If `test_targets_claim` is false or `mismatch_risk` is high, scrutinize selective rigor, halo validation, suite omission, and tautological verification before granting credit for passing tests.
@@ -891,7 +989,7 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
     CRITICAL PROBABILITY SEMANTICS (read carefully before assigning numbers):
     - Each node probability represents: P(this node is TRUE | the thesis direction is correct).
       Think of it as: "If this thesis is roughly right, how confident are we this specific mechanism holds?"
-      A node that survived the firing squad intact should be 0.60-0.85. One with major holes: 0.20-0.45.
+      A node that survived the verification panel intact should be 0.60-0.85. One with major holes: 0.20-0.45.
       Do NOT assign node probabilities as marginal base rates of global catastrophes (e.g. 0.05%).
     - The outcome_probability is a WEIGHTED SUM (not a product) of upstream node probabilities:
       outcome = sum(node_i.probability * edge_i.weight) / sum(edge_i.weight)
@@ -905,7 +1003,79 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
     
     --- CORE RUBRIC ---
     {rubric_str}
-    --- FIRING SQUAD CRITIQUES ---
+
+    --- APPARATUS CONTRACT (MANDATORY — READ BEFORE PENALIZING STRUCTURE) ---
+    The mutator's `test_model.py` must satisfy MULTIPLE machine-checked contracts that
+    your prose review may not have visibility into. Do NOT penalize the thesis for
+    complying with these contracts; the apparatus rejects non-compliance at R1 BEFORE
+    you see the submission.
+
+      1. NO MODULE-LEVEL `I_model(...)` CALLS (R1 contract; GP-156 Bug #11/#14).
+         At module load time `MODEL_PARAMS = {{}}` (empty), so any module-level
+         `I_model(features, params)` call raises KeyError and crashes import.
+         The mutator must REMOVE such calls entirely. The apparatus does NOT
+         invoke any private helper like `_post_fit_sanity()` — putting calls
+         there leaves them unrun AND I_model unverified.
+         → Do NOT accept "deferring validation/sanity checks into a private
+           helper" as compliance — it's an evasion that produces NaN-returning
+           I_model. Mark such submissions as a defect of the same severity as
+           module-level calls.
+         → DO accept "removed module-level I_model(...) calls; placed any
+           debug-only checks inside `if __name__ == \"__main__\":`" as proper
+           compliance, since that block is not executed by the apparatus.
+
+      2. PARAMETRIC FORM CONTRACT (GP-156 Proposal 3).
+         If the mutator declares `PARAMETRIC_FORM` (str) + `PARAMETER_NAMES` (list) +
+         `MODEL_PARAMS = {{}}` at module level, the apparatus runs scipy.optimize multi-
+         start to fit the constants. The thesis SHOULD declare the form symbolically;
+         numerical constants in the form are FILLED BY THE APPARATUS, not by the LLM.
+         → Do NOT mark "constants not numerically specified" as a defect when
+           PARAMETRIC_FORM is declared — the constants are intentionally apparatus-fitted.
+
+      3. NUMERIC ASSERTIONS THAT DO NOT CALL `I_model` ARE STILL FALSIFIERS (G-FALSIFY).
+         The mutator can satisfy G-FALSIFY's "≥1 numeric-threshold assertion" requirement
+         with assertions on functional invariants that DO NOT depend on params, e.g.
+         `assert PARAMETER_NAMES == sorted(set(PARAMETER_NAMES))`,
+         `assert all(k in feature_keys() for k in [...])`, or math-identity asserts.
+         → Reward such asserts as legitimate falsifiers; do not demand assertions
+           that would necessarily call `I_model` at module level.
+
+      4. GRADUATED NEAR-MISS BAND (GP-156 Bug #18).
+         If the harness output contains the tag `[near_miss — REFINE this form, do not
+         redesign]` in a gate-failure message, the proposed form is structurally close
+         (within 1.5× threshold) to passing. In that case:
+         → Score floor is 30 (do NOT zero the thesis).
+         → Direct the mutator to REFINE the existing parametric form (tighten constants,
+           adjust regime breakpoints) rather than redesign from scratch.
+         → A redesign in response to near-miss is a Munger man-with-a-hammer failure
+           that throws away signal calibration. Penalize redesign-on-near-miss in
+           your `weakest_point` field with explicit guidance to refine.
+
+      5. SILENT-CRASH CLASS (GP-156 Bug #16).
+         If the harness output reports `crash_rate > 0.5` or `exception classes` for
+         per-row I_model failures, the model NEVER PRODUCED PREDICTIONS — there is no
+         falsification to grade. The MRE you see is artifact, not signal. Treat this
+         as a HARNESS DEFECT class failure (apparatus-side) and direct the mutator to
+         fix the contract (declare PARAMETRIC_FORM, populate MODEL_PARAMS, or remove
+         params dependence). Do not score the thesis on prediction quality when the
+         predictions never ran.
+
+      6. PATHOLOGICAL-FIT CLASS (GP-156 Bug #26 — sparse-category overfitting).
+         If `workspace/fit_features_result.json` reports `pathological: true`, the
+         fit converged on EXTREME parameter values that are demonstrably out of the
+         physical range of the y observable. Example: gp154 iter 1 fit
+         delta_audio=128 on a substrate where y ∈ [-0.21, 4.0]. scipy moved slack
+         into a sparse-category param to absorb visible noise; holdout will fail
+         catastrophically (MRE often >> 1.0).
+         → Do NOT mark the thesis structurally wrong if pathology is the only fault.
+         → Direct the mutator to: (a) drop the offending sparse-category parameter
+           and use a SHARED parameter across modalities, OR (b) check
+           `feature_value_counts` in the JSON and remove params tied to categories
+           with <3 visible rows. Underdetermined params will overfit every time.
+         → A pathological-fit thesis with otherwise-sound structure should score
+           in the 20-40 range with explicit refine guidance, not 0.
+
+    --- VERIFICATION PANEL CRITIQUES ---
     {aggregated_critiques}
     --- EVIDENCE ---
     {evidence}
@@ -1026,7 +1196,7 @@ You must also output a structured evidence-gap assessment:
   - `target`: short string naming the missing evidence object
   - `description`: short string describing what evidence is missing
   - `severity`: one of `blocking|degrading|enriching`
-  - `producer`: one of `meta_judge|firing_squad|adjudicator`
+  - `producer`: one of `meta_judge|verification_gate|adjudicator`
   - `producer_rationale`: short string for why this is an evidence gap rather than a pure logic flaw
   - `fetch_query`: adversarial search string aimed at finding evidence that could test or break the relevant claim
   - `adversarial_direction`: boolean
@@ -1045,7 +1215,7 @@ You must also output a structured derived-constraint proposal lane:
   - `applies_to`: short string naming the claim family, mechanism, or variable this constrains
   - `failure_family`: short snake_case family tag for the failure pattern that produced the constraint
   - `severity`: one of `blocking|degrading|enriching`
-  - `producer`: one of `meta_judge|firing_squad|adjudicator`
+  - `producer`: one of `meta_judge|verification_gate|adjudicator`
   - `rationale`: brief explanation grounded in evaluator-side critique
   - `non_applicability_condition`: short clause naming when this constraint would genuinely not apply
 
@@ -1402,7 +1572,7 @@ Required fields:
                 "verified_axioms": {
                     "type": "ARRAY",
                     "items": {"type": "STRING"},
-                    "description": "Atomic truths that survived the firing squad.",
+                    "description": "Atomic truths that survived the verification panel.",
                 },
                 "retired_axioms_approved": {
                     "type": "ARRAY",
@@ -1507,6 +1677,23 @@ Required fields:
             "requires_manual_review": routing_decision.requires_manual_review,
             "rationale": routing_decision.rationale,
         }
+    # GP-167 fix (2026-04-25 night): clamp judge-emitted score to
+    # [0, 100]. The judge LLM has been observed to return 170 on
+    # gp163d (gpt-5.5 judge), which propagates to all downstream
+    # comparison logic (champion promotion, deltas, near-miss floors)
+    # as if it were a legitimate score. Treat any out-of-bounds value
+    # as a judge hallucination and clamp.
+    try:
+        raw_score = evaluation.get("score")
+        if raw_score is not None:
+            clamped = max(0, min(100, int(raw_score)))
+            if clamped != raw_score:
+                evaluation["score"] = clamped
+                evaluation["score_clamp_applied"] = (
+                    f"judge returned {raw_score!r}; clamped to [0, 100]"
+                )
+    except Exception:
+        pass
     return evaluation
 
 
@@ -1532,12 +1719,12 @@ def identify_crux_analysis(text, evidence, main_rubric_data, aggregated_critique
     - `test_targets_claim = true` only if the provided falsification suite directly tests that crux.
     - If the tests mainly validate nearby arithmetic, scaffolding, peripheral derivations, or self-authored thresholds, set `test_targets_claim = false`.
     - `mismatch_risk = high` when the thesis appears to prove something adjacent to the crux rather than the crux itself.
-    - Do not use external precedents or prior primitive labels. Work only from the thesis, evidence, and firing-squad critiques.
+    - Do not use external precedents or prior primitive labels. Work only from the thesis, evidence, and verification-panel critiques.
 
     --- THESIS ---
     {text}
 
-    --- FIRING SQUAD CRITIQUES ---
+    --- VERIFICATION PANEL CRITIQUES ---
     {aggregated_critiques}
 
     --- EVIDENCE ---
@@ -1696,13 +1883,55 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
         evaluation.get("self_reference_rule_fired") == "safe_harbor_downgrade"
         and evaluation.get("semantic_gate_status") == "unresolved"
     )
+    # P1 fix (deep audit, 2026-04-26): the holdout-hard-gate dispatch
+    # runs BEFORE finalize now (callsite reordered). When holdout_hard_gate_fired
+    # is True, the gate already zeroed the score; preserve that as a
+    # hard-fail reason so finalize's logic doesn't undo it.
+    if evaluation.get("holdout_hard_gate_fired"):
+        hard_fail_reasons.append(
+            "Holdout hard-gate fired — gate_harness.py reported MRE above "
+            "threshold. Score zeroed by the gate; finalize honors this."
+        )
     if test_suite_status != "pass":
+        # Bug B fix (gp163d postmortem, 2026-04-25 night): when the gate
+        # harness ran and produced a meaningful HOLDOUT signal — pass or
+        # fail — the gate IS the falsification. The L3 in-test asserts
+        # inside test_model.py's __main__ block are a SECONDARY check; a
+        # fail_runtime / fail_other from those should not double-zero
+        # the score by stacking on the gate's signal. The judge was
+        # writing "harness defect, no Level 3 results" as weakest_point
+        # even when latest_eval_results.json had real HOLDOUT MRE
+        # numbers, basin-locking the mutator on suite-fixing instead of
+        # form-fixing.
+        #
+        # Detection: `evaluation["holdout_hard_gate_fired"]` is set
+        # (True or False) by the holdout dispatch when the gate harness
+        # actually ran. Its presence — regardless of value — means the
+        # gate produced a numeric verdict.
+        gate_harness_ran = "holdout_hard_gate_fired" in evaluation
         if test_suite_status in ("fail_runtime", "fail_other"):
-            hard_fail_reasons.append(
-                f"Level 3 harness defect ({test_suite_status}) — the suite did not run to completion. "
-                "Per the Phase 1 post-mortem, a harness that raised a runtime exception is a "
-                "categorization failure, not a falsification attempt."
-            )
+            if gate_harness_ran:
+                # Gate harness produced numbers; demote L3 in-test issue
+                # to a soft cap so the judge grades against the gate
+                # values, not the suite defect.
+                soft_score_caps.append(
+                    {
+                        "reason": (
+                            f"Level 3 in-test asserts hit `{test_suite_status}` "
+                            f"but gate_harness.py ran successfully and produced "
+                            f"numeric HOLDOUT/FARTHER_TAIL signals; gate verdict "
+                            f"takes precedence. Mutator should fix the form per "
+                            f"the gate values, not the suite."
+                        ),
+                        "cap": 60,
+                    }
+                )
+            else:
+                hard_fail_reasons.append(
+                    f"Level 3 harness defect ({test_suite_status}) — the suite did not run to completion. "
+                    "Per the Phase 1 post-mortem, a harness that raised a runtime exception is a "
+                    "categorization failure, not a falsification attempt."
+                )
         elif test_suite_status == "fail_assert":
             hard_fail_reasons.append(
                 "Level 3 falsification suite disproved the thesis by assertion (`fail_assert`)."
@@ -2011,11 +2240,13 @@ if __name__ == "__main__":
         )
 
         if args.dynamic and os.path.exists(DYNAMIC_RUBRIC_PATH):
-            attackers = json.load(open(DYNAMIC_RUBRIC_PATH))["committee"]
-            
+            _raw_committee = json.load(open(DYNAMIC_RUBRIC_PATH))["committee"]
+            # Normalize: committee may be a single dict or a list of dicts
+            attackers = _raw_committee if isinstance(_raw_committee, list) else [_raw_committee]
+
             # Launch all attackers simultaneously
             print(f"🚀 Launching {len(attackers)} attackers in parallel...")
-            executor = concurrent.futures.ThreadPoolExecutor(max_workers=len(attackers)-1)
+            executor = concurrent.futures.ThreadPoolExecutor(max_workers=max(1, len(attackers)))
             try:
                 future_to_attacker = {
                     executor.submit(run_specialized_attacker, thesis, evidence, att): att 
@@ -2076,6 +2307,25 @@ if __name__ == "__main__":
                     run_cmd = ["python", frozen_harness_path, "--run-visible-assertions"]
                 else:
                     run_cmd = ["python", test_path]
+                # GP-PATH-NORM (2026-04-24): mutator occasionally writes
+                # test_model.py with relative paths like 'projects/<other>/...'
+                # that assume CWD=repo_root. Since we run with cwd=PROJECT_DIR,
+                # those resolve to PROJECT_DIR/projects/<other>/... which does
+                # not exist. Fix: materialize a symlink PROJECT_DIR/projects ->
+                # REPO_ROOT/projects so 'projects/<other>' resolves transparently.
+                # Does not affect workspace/... paths (those are already
+                # project-relative and remain correct).
+                try:
+                    _repo_root = Path(__file__).resolve().parents[3]
+                    _projects_shim = Path(PROJECT_DIR) / "projects"
+                    _repo_projects = _repo_root / "projects"
+                    if _repo_projects.is_dir() and not _projects_shim.exists():
+                        _projects_shim.symlink_to(_repo_projects)
+                except Exception:
+                    # Non-fatal; if symlink creation fails, the mutator's
+                    # relative-path bug still surfaces as harness defect and
+                    # the judge correctly flags it. Better than a crash.
+                    pass
                 res = subprocess.run(
                     run_cmd, capture_output=True, text=True, timeout=15,
                     cwd=PROJECT_DIR,
@@ -2093,11 +2343,20 @@ if __name__ == "__main__":
                     # "mostly passed" because stderr was dumped as
                     # opaque text with no categorization. Structuring
                     # the label removes that rationalization surface.
-                    failure_mode, exception_name = classify_harness_failure(res.stderr)
+                    failure_mode, exception_name = classify_harness_failure(
+                        res.stderr, getattr(res, "stdout", "") or ""
+                    )
+                    # GP-157 v5.0 Gap #1: sanitize stderr before it flows back
+                    # to the mutator's prompt. Full stderr stays in operator
+                    # logs (printed below); only the mutator-facing summary
+                    # uses the sanitized leaf error. Closes Popper-leakage:
+                    # mutator can't reverse-engineer file paths, line numbers,
+                    # or apparatus stack frames into a test-passing regex.
+                    _sanitized_err = sanitize_stderr_for_mutator(res.stderr, exception_name)
                     if failure_mode == FAIL_ASSERT:
                         test_result_summary = (
                             f"❌ FAIL (assertion): The thesis was DISPROVEN by its own unit tests.\n"
-                            f"Error: {res.stderr}"
+                            f"Error: {_sanitized_err}"
                         )
                         test_suite_status = "fail_assert"
                         print(f"❌ Unit tests failed (assertion): {res.stderr[:80]}...")
@@ -2105,7 +2364,7 @@ if __name__ == "__main__":
                         banner = harness_defect_banner(exception_name)
                         test_result_summary = (
                             f"❌ FAIL (harness defect): {banner}\n"
-                            f"Raw stderr: {res.stderr}"
+                            f"Error: {_sanitized_err}"
                         )
                         test_suite_status = "fail_runtime" if failure_mode == FAIL_RUNTIME else "fail_other"
                         print(f"🚨 Harness defect ({test_suite_status}): {res.stderr[:80]}...")
@@ -2133,8 +2392,15 @@ if __name__ == "__main__":
         )
         if args.deterministic_score_gates:
             evaluation = apply_semantic_gate_stabilization(evaluation)
-            evaluation = finalize_deterministic_score(evaluation, main_rubric, test_suite_status)
+            # P1 fix (deep audit, 2026-04-26): finalize_deterministic_score
+            # was running here, BEFORE the holdout-hard-gate dispatch at
+            # line 2393+ which sets evaluation["holdout_hard_gate_fired"].
+            # That made the Bug B fix (gate_harness_ran demote) dead code
+            # because the key is always absent at this point. Defer the
+            # finalize call to after the gate dispatch.
+            _defer_deterministic_finalize = True
         else:
+            _defer_deterministic_finalize = False
             # H-JUDGE-01: in the raw-LLM-score path (no --deterministic_score_gates),
             # the HARNESS DEFECT banner is shown to the judge but not enforced.
             # Observed: judge scored 108 despite a ModuleNotFoundError, ignoring its
@@ -2164,50 +2430,199 @@ if __name__ == "__main__":
             holdout_harness_path = os.path.join(PROJECT_DIR, "gate_harness.py")
             if os.path.exists(holdout_evidence_path) and os.path.exists(holdout_harness_path):
                 try:
+                    # GP-135 fix (2026-04-23): pass --emit-deterministic-gates
+                    # flag. Without it, the harness default branch emits
+                    # {"exact_match": ..., "matches": ..., "errors": ...} with
+                    # NO "harness_ok" or "gates" key → KeyError → "FIRED
+                    # (exception)" every iter, zeroing valid proposals.
                     holdout_res = subprocess.run(
                         ["python", holdout_harness_path, "--emit-deterministic-gates"],
-                        capture_output=True, text=True, timeout=15,
+                        capture_output=True, text=True, timeout=30,
                         cwd=PROJECT_DIR,
                     )
-                    if holdout_res.returncode == 0:
+                    # GP-156 Bug #21 (2026-04-25): GP-156-style harnesses
+                    # raise AssertionError after printing JSON, so returncode
+                    # may be nonzero even when stdout has parseable JSON. Try
+                    # to parse stdout regardless of returncode; only fall to
+                    # the "harness error" branch if parsing genuinely fails.
+                    _stdout_json = None
+                    try:
+                        if holdout_res.stdout:
+                            _stdout_json = json.loads(holdout_res.stdout)
+                    except json.JSONDecodeError:
+                        _stdout_json = None
+                    # GP-156-shape harness: emits {holdout: {passed, near_miss},
+                    # farther_tail: {...}, all_gates_pass, any_near_miss}.
+                    # Translate into the legacy {harness_ok, gates: [...]} shape
+                    # the hard-gate expects, AND apply near-miss floor.
+                    if _stdout_json is not None and "all_gates_pass" in _stdout_json \
+                            and "harness_ok" not in _stdout_json:
+                        _gates_list = []
+                        for _gname in ("holdout", "farther_tail"):
+                            _g = _stdout_json.get(_gname)
+                            if isinstance(_g, dict):
+                                _gates_list.append({
+                                    "name": _gname.upper(),
+                                    "passed": bool(_g.get("passed", False)),
+                                    "near_miss": bool(_g.get("near_miss", False)),
+                                    "value": _g.get("mean_relative_error"),
+                                    "threshold": _g.get("threshold"),
+                                    "operator": "<",
+                                })
+                        _stdout_json["harness_ok"] = True
+                        _stdout_json["gates"] = _gates_list
+                    if _stdout_json is not None and "harness_ok" in _stdout_json:
+                        holdout_payload = _stdout_json
+                    elif holdout_res.returncode == 0:
                         holdout_payload = json.loads(holdout_res.stdout)
                         if "harness_ok" not in holdout_payload:
                             raise KeyError(
                                 "gate_harness.py output missing required key 'harness_ok'. "
                                 f"Got keys: {list(holdout_payload.keys())}"
                             )
+                    else:
+                        holdout_payload = None
+                    if holdout_payload is not None:
                         # Check harness_ok AND that every declared gate actually passed.
                         # exit code 0 alone is not sufficient — older harnesses return 0
                         # whenever harness_ok=True regardless of gate outcomes.
-                        gate_results = holdout_payload.get("gates", {})
+                        # GP-135 fix (2026-04-23): support BOTH dict and list gate formats,
+                        # and read "passed" key (the actual harness emits "passed", not "pass").
+                        gate_results = holdout_payload.get("gates", [])
                         if isinstance(gate_results, dict):
-                            gate_values = list(gate_results.values())
+                            gate_iter = list(gate_results.values())
+                        elif isinstance(gate_results, list):
+                            gate_iter = gate_results
                         else:
-                            gate_values = []
+                            gate_iter = []
+                        # Check both "passed" (current harness) and "pass" (legacy) keys.
+                        def _gate_passed(g):
+                            return bool(g.get("passed", g.get("pass", False)))
                         all_gates_passed = holdout_payload["harness_ok"] and all(
-                            g.get("passed", False) for g in gate_values
+                            _gate_passed(g) for g in gate_iter
                         )
                         failed_gates = [
-                            f"{name}: {g.get('value', '?')} >= {g.get('threshold', '?')}"
-                            for name, g in (gate_results.items() if isinstance(gate_results, dict) else [])
-                            if not g.get("passed", False)
+                            f"{g.get('name', '?')}: {g.get('value', '?')} {g.get('operator', '?')} {g.get('threshold', '?')}"
+                            for g in gate_iter
+                            if not _gate_passed(g)
                         ]
-                        if not all_gates_passed:
+                        # GP-156 Bug #21 (2026-04-25): the hard-gate is NAMED
+                        # holdout_hard_gate but the legacy logic zeroed on ANY
+                        # gate failing — including FARTHER_TAIL near-misses on
+                        # an otherwise-passing HOLDOUT. The judge already saw
+                        # the gate output (incl. [near_miss] tag from Bug #18)
+                        # and calibrated. Refined semantics:
+                        #   - HOLDOUT hard-miss     → score 0 (unchanged)
+                        #   - HOLDOUT near-miss     → floor at 30 (model is
+                        #                              structurally close)
+                        #   - HOLDOUT pass + others → keep judge score (judge
+                        #                              already calibrated for
+                        #                              FARTHER_TAIL near-miss)
+                        _holdout_gate = next(
+                            (g for g in gate_iter if g.get("name") == "HOLDOUT"),
+                            None,
+                        )
+                        _holdout_passed = bool(_holdout_gate and _gate_passed(_holdout_gate))
+                        _holdout_near_miss = bool(_holdout_gate and _holdout_gate.get("near_miss"))
+                        if not all_gates_passed and not _holdout_passed and not _holdout_near_miss:
                             pre_cap_score = evaluation.get("score", 0)
                             evaluation["score"] = 0
                             evaluation["holdout_hard_gate_fired"] = True
                             evaluation["holdout_hard_gate_detail"] = (
-                                f"harness_ok={holdout_payload['harness_ok']}. "
-                                f"Failed gates: {failed_gates}. "
+                                f"HOLDOUT hard-miss. failed_gates={failed_gates}. "
                                 f"Score {pre_cap_score} → 0."
                             )
                             print(
-                                f"🚫 Holdout hard-gate FIRED: failed_gates={failed_gates}, "
-                                f"score {pre_cap_score} → 0"
+                                f"🚫 Holdout hard-gate FIRED (hard-miss): "
+                                f"failed_gates={failed_gates}, score {pre_cap_score} → 0"
                             )
+                        elif not all_gates_passed and not _holdout_passed and _holdout_near_miss:
+                            pre_cap_score = evaluation.get("score", 0)
+                            _floor = 30
+                            # GP-167 fix (2026-04-25 night, panel-revealed): the
+                            # previous expression `min(pre_cap_score, _floor) if
+                            # pre_cap_score >= _floor else _floor` always
+                            # evaluated to _floor=30 regardless of input, which
+                            # destroyed the judge's gradient signal — a
+                            # well-rated near-miss (judge=70) and a poorly-rated
+                            # near-miss (judge=15) collapsed to the same 30.
+                            # Now: max-floor preserves the judge's score when
+                            # it exceeds the floor, raises to floor only when
+                            # it doesn't (graduated near-miss credit).
+                            evaluation["score"] = max(pre_cap_score, _floor)
+                            evaluation["holdout_hard_gate_fired"] = True
+                            evaluation["holdout_hard_gate_detail"] = (
+                                f"HOLDOUT near-miss. failed_gates={failed_gates}. "
+                                f"Score floored to {evaluation['score']} (was {pre_cap_score}). "
+                                f"REFINE the form, do not redesign."
+                            )
+                            print(
+                                f"⚠️  Holdout hard-gate near-miss: floor={_floor}, "
+                                f"score {pre_cap_score} → {evaluation['score']} (REFINE)"
+                            )
+                        elif not all_gates_passed and _holdout_passed:
+                            # HOLDOUT passed; another gate (e.g. FARTHER_TAIL)
+                            # failed. 2026-04-26 fix: when the rubric
+                            # explicitly enforces per-class farther-tail,
+                            # FARTHER_TAIL failure must NOT be silently
+                            # non-blocking — the apparatus caps the score at
+                            # `cage_constant_laundering_score_cap` (default 50)
+                            # so the judge's qualitative reward for visible
+                            # compliance can't paper over a cross-class
+                            # generalization failure. R11 catches the per-class
+                            # case explicitly; this catches the OVERALL
+                            # FARTHER_TAIL failure on substrates where R11
+                            # didn't engage (sparse class, harness path mismatch).
+                            _enforce_ftail = bool(
+                                main_rubric.get("enforce_per_class_farther_tail", False)
+                            ) if isinstance(main_rubric, dict) else False
+                            _ftail_failed = any(
+                                "FARTHER_TAIL" in str(g) for g in (failed_gates or [])
+                            )
+                            if _enforce_ftail and _ftail_failed:
+                                cap = int(main_rubric.get(
+                                    "cage_constant_laundering_score_cap", 50
+                                ))
+                                pre_cap = int(evaluation.get("score", 0) or 0)
+                                if pre_cap > cap:
+                                    evaluation["score"] = cap
+                                    evaluation["holdout_hard_gate_fired"] = True
+                                    evaluation["holdout_hard_gate_detail"] = (
+                                        f"HOLDOUT passed but FARTHER_TAIL failed "
+                                        f"({failed_gates}); rubric.enforce_per_class_farther_tail=true "
+                                        f"so apparatus caps score at {cap} "
+                                        f"(was {pre_cap}). The thesis fits visible data "
+                                        f"but does not generalize across classes — that's "
+                                        f"either a pre-committed null finding or a refinement "
+                                        f"target, but it cannot earn a Newton-step score."
+                                    )
+                                    print(
+                                        f"🚫 Holdout hard-gate: HOLDOUT passed but FARTHER_TAIL "
+                                        f"failed AND rubric.enforce_per_class_farther_tail=true. "
+                                        f"Score {pre_cap} → {cap} (apparatus cap)."
+                                    )
+                                else:
+                                    evaluation["holdout_hard_gate_fired"] = False
+                                    print(
+                                        f"⚠️  Holdout hard-gate: FARTHER_TAIL failed but judge "
+                                        f"score {pre_cap} already at/below cap {cap}; no override."
+                                    )
+                            else:
+                                # Legacy soft path (rubric did not opt into hard ftail enforcement)
+                                evaluation["holdout_hard_gate_fired"] = False
+                                evaluation["holdout_hard_gate_detail"] = (
+                                    f"HOLDOUT passed; non-blocking gate(s) failed: "
+                                    f"{failed_gates}. Judge score kept "
+                                    f"(rubric did not set enforce_per_class_farther_tail=true)."
+                                )
+                                print(
+                                    f"⚠️  Holdout hard-gate: HOLDOUT passed but "
+                                    f"{failed_gates} failed (non-blocking, no rubric enforcement). "
+                                    f"Score {evaluation.get('score')} kept."
+                                )
                         else:
                             evaluation["holdout_hard_gate_fired"] = False
-                            print(f"✅ Holdout hard-gate passed: all {len(gate_values)} gate(s) OK")
+                            print(f"✅ Holdout hard-gate passed: all {len(gate_iter)} gate(s) OK")
                     else:
                         evaluation["holdout_hard_gate_fired"] = True
                         pre_cap_score = evaluation.get("score", 0)
@@ -2225,19 +2640,44 @@ if __name__ == "__main__":
                     evaluation["holdout_hard_gate_fired"] = True
                     pre_cap_score = evaluation.get("score", 0)
                     evaluation["score"] = 0
+                    # GP-135 diagnostic (2026-04-23): print full exception
+                    # details so the operator can see WHAT exception fired.
+                    # The silent "score → 0" message was masking all downstream
+                    # investigation; we now always name the exception class and
+                    # dump enough context to diagnose in-flight.
+                    import traceback as _tb
+                    _exc_type = type(exc).__name__
+                    _exc_msg = str(exc)[:400]
+                    _tb_str = _tb.format_exc()[:800]
                     evaluation["holdout_hard_gate_detail"] = (
-                        f"Holdout gate exception: {type(exc).__name__}: {exc}. "
-                        f"Fail-closed: score {pre_cap_score} → 0"
+                        f"Holdout gate exception: {_exc_type}: {_exc_msg}. "
+                        f"Fail-closed: score {pre_cap_score} → 0. "
+                        f"Traceback (last 800 chars):\n{_tb_str}"
                     )
-                    print(f"🚫 Holdout hard-gate FIRED (exception): score → 0")
+                    print(f"🚫 Holdout hard-gate FIRED (exception: {_exc_type}: {_exc_msg[:120]}): score → 0")
+                    print(f"   holdout_res.returncode: {getattr(holdout_res, 'returncode', 'N/A') if 'holdout_res' in dir() else 'subprocess_never_ran'}")
+                    if 'holdout_res' in dir():
+                        print(f"   holdout_res.stdout[:400]: {holdout_res.stdout[:400]!r}")
+                        print(f"   holdout_res.stderr[:400]: {holdout_res.stderr[:400]!r}")
+
+        # P1 fix (deep audit, 2026-04-26): deferred finalize. Now that the
+        # holdout-hard-gate dispatch above has set evaluation["holdout_hard_gate_fired"]
+        # (when applicable), finalize_deterministic_score can read it and
+        # apply the Bug B fix (demote test_suite_status fail_other to soft
+        # cap when gate_harness_ran). Holdout gate's score=0 is preserved
+        # because finalize re-zeroes when holdout_hard_gate_fired is True.
+        if _defer_deterministic_finalize:
+            evaluation = finalize_deterministic_score(
+                evaluation, main_rubric, test_suite_status
+            )
 
         evaluation = attach_evidence_gap_metadata(evaluation)
         evaluation = attach_constraint_proposal_metadata(evaluation)
         evaluation = attach_score_regime_metadata(evaluation, main_rubric, test_suite_status)
         persist_evidence_gap_artifact(evaluation)
         persist_constraint_proposal_artifact(evaluation)
-        log.write(f"# Final Score: {evaluation['score']}\n")
-        log.write(f"**Weakest Point:** {evaluation['weakest_point']}\n")
+        log.write(f"# Final Score: {evaluation.get('score', 0)}\n")
+        log.write(f"**Weakest Point:** {evaluation.get('weakest_point', 'Score missing from judge response')}\n")
         log.write(f"**Rationale:** {evaluation.get('debate_summary', 'N/A')}\n")
         if evaluation.get("crux_analysis"):
             log.write("**Crux Analysis:**\n")
@@ -2246,8 +2686,13 @@ if __name__ == "__main__":
             log.write("\n```\n")
 
         print("\n" + "█" * 60)
-        print(f"⭐ FINAL VERDICT SCORE: {evaluation['score']}")
-        print(f"🛑 WEAKEST POINT: {evaluation['weakest_point']}")
+        print(f"⭐ FINAL VERDICT SCORE: {evaluation.get('score', 0)}")
+        # GP-156 fix (2026-04-25): hardened against malformed judge JSON
+        # missing 'weakest_point' field — was crashing the auditor
+        # subprocess and triggering a KeyError that the loop recorded as
+        # stagnation_count++ instead of as a recoverable judge-format
+        # error.
+        print(f"🛑 WEAKEST POINT: {evaluation.get('weakest_point', '(judge response missing weakest_point field)')}")
         print(f"🧠 RATIONALE: {evaluation.get('debate_summary', 'N/A')}")
         print(f"📝 FULL LOG SAVED TO: {log_path}")
         print("█" * 60 + "\n")

@@ -1,0 +1,39 @@
+{
+  "rubric_version": "1.0",
+  "project": "sandbox_15_component_c_test",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": true,
+  "enable_component_c": true,
+  "component_c_gt_module": "src.ztare.substrates.sandbox_15_gt",
+  "fit_score_mode": "discrete_exact",
+  "fit_required_dimensionality": 2,
+  "fit_required_vars": ["u", "v"],
+  "holdout_hard_gate": true,
+  "persona": "You are a skeptical mathematical physicist investigating integer-valued functions of two variables. You demand exact integer match on every evidence point and insist that every term in a proposed f(u, v) be derived step-by-step from observed (u, v, z) triples. You are hostile to lookup tables, piecewise hacks, and named-import shortcuts. You pay special attention to subtle secondary patterns that are easy to miss when the primary structure is already identified. A model that captures the leading-order behavior but ignores a systematic residual pattern is incomplete, not approximately correct.",
+  "dimensions": [
+    {
+      "name": "Exact Match on Visible Set",
+      "weight": 35,
+      "description": "Does f(u, v) produce the exact integer z for every (u, v, z) triple in evidence.txt? A model that misses even one point has a structural defect. Partial credit is not available."
+    },
+    {
+      "name": "Structural Derivation",
+      "weight": 35,
+      "description": "Does the thesis derive the functional form step-by-step from specific (u, v, z) triples? Every term and constant must be motivated by a data observation. Post-hoc verification of a guessed formula does not satisfy this criterion."
+    },
+    {
+      "name": "Secondary Structure Recovery",
+      "weight": 30,
+      "description": "Does the thesis identify and correctly characterize any secondary pattern beyond the primary structure? A model that captures only the leading-order behavior scores at most 50 on this criterion. Any secondary structure must be derived from analysis of fit residuals, not guessed."
+    }
+  ],
+  "penalties": [
+    "INTERPOLATION_OVERFITTING: A polynomial whose total degree >= (N - 2), where N is the number of visible evidence points (N = 75, threshold degree >= 73), is treated as interpolation memorization and scores 0 on generalization.",
+    "LOOKUP_TABLE: Any expression that encodes individual (u, v) pairs directly scores 0 on generalization."
+  ],
+  "criteria": {
+    "1_Exact_Match_Visible": "Does f(u, v) return the exact integer z for every (u, v, z) triple in evidence.txt? A model that misses even one point has a structural defect.",
+    "2_Structural_Derivation": "Does the thesis show at least three explicit intermediate steps, each citing specific (u, v, z) triples, with the final expression derivable from those steps? Every constant must be motivated by a numeric feature of the data.",
+    "3_Secondary_Structure_Recovery": "Does the thesis identify any secondary pattern that causes residuals when only the primary structure is fit? Must be derived from residual analysis, not guessed or imported."
+  }
+}

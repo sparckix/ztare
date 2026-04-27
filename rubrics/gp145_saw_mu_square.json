@@ -1,0 +1,59 @@
+{
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative thesis project \u2014 no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative thesis \u2014 evidence surface is text documents, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative thesis \u2014 rival mechanisms scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "I am a mathematical physicist with an adversarial stance toward speculative numerics and 'magic constants.' I demand explicit, reproducible methods and have no patience for numerological fits masked as analytical discovery. I categorically reject all arguments that conflate empirical accuracy with structural explanation and insist that all forms of dictionary ablation and parameter tuning be stress-tested, not asserted. Any modeling that presupposes limiting behavior based on finite-dataset extrapolations \u2014 without explicit subexponential correction analysis \u2014 will be ruthlessly marked down.",
+  "dimensions": [
+    {
+      "name": "Asymptotic Extraction Rigor",
+      "weight": 25.29,
+      "description": "Full credit is given for deploying a primitive pair that extracts \u03bc_sq with full transparency of subleading terms and finite-size corrections (e.g., explicit analysis of c_n \u2248 A \u03bc^n n^\u03b3 at relevant n). Penalize reliance on extrapolatory heuristics or polynomial fittings that mask singularity structure, especially when sequence variability at large n is not quantitatively bounded. Approaches that gloss over corrections to scaling or treat n\u2192\u221e as immediate, without correction quantification, are severely penalized."
+    },
+    {
+      "name": "rival_closed_form_skepticism",
+      "weight": 21.68,
+      "description": "Full points demand the explicit demonstration that any closed-form proposal, whether PSLQ-suggested or not, resists trivial rival explanations (spurious fits, alternate combinations of constants, or reparametrizations equally supported by the data). Penalize anything less than an ablation protocol that exposes the uniqueness or arbitrariness of the closed-form's dictionary, especially if alternatives go untested."
+    },
+    {
+      "name": "Bit-budget & Stability Challenge",
+      "weight": 14.45,
+      "description": "Full marks require demonstration that both the extraction and the closed form remain robust under reduction of data precision, term count, and constant dictionary. Penalize use of all digits in c_n or \u03bc_sq to drive PSLQ or similar algorithms if no test is made of solution stability under input perturbation, input truncation, or changes in the constant pool."
+    },
+    {
+      "name": "Lean-4 Formal Verification Path",
+      "weight": 10.84,
+      "description": "Full marks require a concrete, realistically scoped plan for how every primitive and transformation used in the extraction and closed-form proposal would be formalized and verified in Lean-4. Penalize vague handwaving about 'feasibility' or citing prior formalizations without mapping them specifically to this sequence and these numerical primitives."
+    },
+    {
+      "name": "M-Form Charter Alignment: closed_form_candidate_or_formal_null",
+      "weight": 12.75,
+      "description": "[GP-105 General Office insertion] Theses must, at minimum, either (a) produce and empirically stress test a closed-form candidate for \u03bc_sq in the prescribed dictionary or extended ansatz space, or (b) explicitly Lean-state and validate the null hypothesis (no relation) with evidence for all required output forms\u2014including a Lean theorem (proved or refuted as appropriate) and empirical agreement check against the published numerical value. Gap detected: The charter required the apparatus to not only search for a closed form in a plausible constant dictionary using PSLQ but to actually propose (if found) a conjectured closed-form expression, empirically stress test its agreement with the known numerical value, and state the result in Lean 4 form as a formally checkable assertion (or proof). The thesis restricts its engagement solely to refuting closed-form representability in one specific dictionary (\u0394\u2081, dim \u2264 5), without proposing or stress-testing any positive candidate, Lean-formalizing the conjecture, or empirically validating an explicit expression against Clisby's high-precision value. The empirical stress test and formal statement/demonstration steps (charter 'What the apparatus must produce' points 1, 3, and 4) were not even attempted, meaning the thesis took a negative technical route that excluded the positive, synthetic, and empirical aspects required by charter."
+    },
+    {
+      "name": "M-Form Charter Alignment: empirical_closed_form_attempt",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Requires thesis to attempt a constructive search for plausible closed forms in all structurally/methodologically justified ansatz spaces (not just a single dictionary), and for any viable candidate, empirically verify agreement to 30+ digit precision and formally encode the result in Lean with no placeholders. Pure negative results limited to small search spaces are insufficient. Gap detected: The charter requires the apparatus to not only rule out known closed forms via PSLQ but also to proactively attempt a conjectured closed-form expression for \u03bc_sq in terms of mathematical constants, give the bit-budgeted PSLQ justification for any candidate, and (if one is found) to validate it empirically against high-precision numerical data and state it as a Lean theorem without placeholders. The thesis only documents a negative PSLQ search within one finite dictionary and dimension, essentially arguing 'no simple closed form exists in this space,' but does not attempt to either expand the search (to richer dictionaries as structurally motivated), propose a positive conjecture, or empirically stress test any plausible candidates. It positions itself as a local null result rather than engaging the full conjecture-refinement-reduction cycle the charter envisions. Thus, the analytical breadth\u2014the positive constructive challenge and empirical confrontation with numerical data at scale\u2014is not met."
+    }
+  ],
+  "criteria": {
+    "asymptotic_extraction_rigor": "Top marks require you to specify your extraction primitive in a way that either upper-bounds or quantitatively estimates all finite-size corrections (including terms in log n, n^\u03b3, etc.). Scoring falls rapidly for handwaving about convergence rates or neglecting residuals: you must show, numerically and ideally graphically, the breakdown of error terms as n increases and explain the limits this places on the precision of \u03bc_sq. Any reliance on 'curve fitting' that does not justify the analytic form chosen will be harshly penalized.",
+    "rival_closed_form_skepticism": "You must provide rival mechanism enumeration: show concretely that your PSLQ-derived closed form is not a fluke by (a) varying the dictionary and showing the instability of alternatives, (b) testing near-miss constant combinations, and (c) justifying the mathematical relevance of each constant in the proposal. Any proposal that merely matches \u03bc_sq to 30+ digits without proof that this fit is unique (or at least strongly preferred) among thousands of similar-length expressions gets zero credit.",
+    "bit_budget_stability_challenge": "Your procedure must document the effect of reducing \u03bc_sq input digits, c_n term count, and/or the size of the constant dictionary on the PSLQ outcome. Any solution that only works at the maximal bit budget, or with a cherry-picked dictionary, must be explicitly justified or will be harshly penalized. Show all numerical instabilities and characterize them rigorously, not anecdotally.",
+    "lean-4_formal_verification_path": "Lay out a stepwise blueprint for the Lean-4 formalization\u2014list each function or argument (primitive extraction, PSLQ, ablation) and match it to existing or planned Lean-4 libraries or tactics. Partial or ambiguous mappings, assertions that 'the math is routine,' or failure to grapple with synthetic number-theoretic steps will be downgraded.",
+    "mform_closed_form_candidate_or_formal_nu": "Theses must, at minimum, either (a) produce and empirically stress test a closed-form candidate for \u03bc_sq in the prescribed dictionary or extended ansatz space, or (b) explicitly Lean-state and validate the null hypothesis (no relation) with evidence for all required output forms\u2014including a Lean theorem (proved or refuted as appropriate) and empirical agreement check against the published numerical value.",
+    "mform_empirical_closed_form_attempt": "Requires thesis to attempt a constructive search for plausible closed forms in all structurally/methodologically justified ansatz spaces (not just a single dictionary), and for any viable candidate, empirically verify agreement to 30+ digit precision and formally encode the result in Lean with no placeholders. Pure negative results limited to small search spaces are insufficient."
+  }
+}

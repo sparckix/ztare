@@ -26,7 +26,7 @@ def load_prompt(name: str) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Draft candidate primitive cards from extracted incident records.")
-    parser.add_argument("--model", default="gemini", choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini"])
+    parser.add_argument("--model", default="gemini", choices=["gemini", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"])
     parser.add_argument("--incidents", help="Path to primitive_incidents.jsonl. Defaults to global_primitives/incidents/primitive_incidents.jsonl.")
     parser.add_argument("--min-incidents", type=int, default=2, help="Minimum incidents required to draft a candidate.")
     parser.add_argument("--primitive-key", action="append", help="Restrict drafting to one or more primitive keys.")
@@ -58,7 +58,7 @@ def candidate_shape_ok(candidate: Dict[str, Any]) -> None:
         "non_transfer_cases",
         "required_transfer_test",
         "mutator_guidance",
-        "firing_squad_attack",
+        "verification_panel_attack",
         "judge_penalty_condition",
         "source_projects",
         "source_incident_ids",
@@ -131,8 +131,8 @@ def render_candidate_markdown(candidate: Dict[str, Any]) -> str:
             "## Mutator Guidance",
             candidate.get("mutator_guidance", "").strip(),
             "",
-            "## Firing Squad Attack",
-            candidate.get("firing_squad_attack", "").strip(),
+            "## Verification Panel Attack",
+            candidate.get("verification_panel_attack", "").strip(),
             "",
             "## Judge Penalty Condition",
             candidate.get("judge_penalty_condition", "").strip(),

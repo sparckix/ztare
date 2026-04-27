@@ -141,7 +141,7 @@ def format_attack_templates(primitives: List[Dict[str, Any]]) -> str:
         lines.append(f"{idx}. {primitive.get('title', primitive.get('primitive_key', 'Untitled'))}")
         lines.append(f"   - Key: {primitive.get('primitive_key', '')}")
         lines.append(f"   - Mechanism: {primitive.get('mechanism', '').strip()}")
-        lines.append(f"   - Attack: {primitive.get('firing_squad_attack', '').strip()}")
+        lines.append(f"   - Attack: {primitive.get('verification_panel_attack', '').strip()}")
         transfer_test = primitive.get("required_transfer_test", "").strip()
         if transfer_test:
             lines.append(f"   - Transfer test: {transfer_test}")
