@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ztare/schemas/role.v1.schema.json",
+  "title": "Role Definition (Org Kernel — schema_version 1)",
+  "description": "Domain-neutral schema for org/roles/<role_id>.yaml. The org kernel is substrate-agnostic per GP-191; this schema defines structural invariants only. Domain-specific extensions (e.g., ZTARE research_taste_axes) layer on top via per-adapter extension schemas, NOT by modifying this file.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "role_id",
+    "role_class",
+    "description",
+    "authorized_paths",
+    "forbidden_paths",
+    "delegates_to",
+    "escalates_to",
+    "budget"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Schema version. Increment when breaking changes are made; ship a v2 schema file alongside."
+    },
+    "role_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Stable kebab/snake_case identifier. Must match the file name (org/roles/<role_id>.yaml)."
+    },
+    "role_class": {
+      "type": "string",
+      "enum": [
+        "authority",
+        "principal",
+        "manager",
+        "director",
+        "specialist",
+        "reviewer"
+      ],
+      "description": "Role family. Kernel-defined enum; new families require a kernel revision (and a v2 schema). 'authority' is the ultimate-decision role (typically held by the principal); 'principal' is reserved for compatibility but the canonical class for the human owner is 'authority'. The distinction lets a future deployment have a non-human authority (e.g., a board, a regulator) without renaming the principal role file."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Prose description of what this role exists to do. Used by the role-card export and the bootstrap prompt's role context."
+    },
+    "authorized_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Repo-relative glob patterns the role may write to. Empty list means read-only (paired with forbidden_paths: ['*'])."
+    },
+    "forbidden_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Repo-relative glob patterns the role must never write to. Hard veto. ['*'] makes the role read-only globally."
+    },
+    "delegates_to": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Identifiers of sub-agents or peer roles this role may invoke. Use 'worker.<name>' for ephemeral workers and 'role.<name>' for peer roles."
+    },
+    "escalates_to": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Identifiers of roles that receive escalations. 'role.principal' is the universal escalation target."
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "daily_cap_usd",
+        "session_cap_usd",
+        "single_action_cap_usd",
+        "warn_threshold_frac",
+        "absolute_ceiling_usd"
+      ],
+      "description": "Spend caps in USD. null on any field means 'no cap enforced for this role' — reserved for role_class=authority (e.g., principal), since the authority approves its own spend. All other role classes SHOULD set numeric caps; the schema does not enforce this conditionally because the kernel must remain domain-neutral.",
+      "properties": {
+        "daily_cap_usd": {
+          "oneOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }],
+          "description": "Max USD spend per UTC day across all sessions for this role. null = unbounded (authority-only)."
+        },
+        "session_cap_usd": {
+          "oneOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }],
+          "description": "Max USD spend within a single session. null = unbounded (authority-only)."
+        },
+        "single_action_cap_usd": {
+          "oneOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }],
+          "description": "Max USD spend on a single agent CLI invocation. null = unbounded (authority-only)."
+        },
+        "warn_threshold_frac": {
+          "oneOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "null" }],
+          "description": "Fraction of any cap (e.g., 0.80) that triggers a warning push. null = no early-warning (authority-only)."
+        },
+        "absolute_ceiling_usd": {
+          "oneOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }],
+          "description": "Hard ceiling that overrides daily_cap. null = no hard ceiling (authority-only)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "agent_rotation": {
+      "type": "object",
+      "description": "Optional agent-CLI rotation policy (gp168 v3 run-2 finding F3, 2026-05-02). Rotates the role's primary member across multiple agent CLIs (Claude / Codex / Gemini) on a fixed cadence, forcing role behavior to be CLI-invariant. Single-CLI-specific gaming patterns surface as cross-CLI inconsistency in role outputs. Absent block → no rotation (legacy single-member binding).",
+      "properties": {
+        "enabled": { "type": "boolean", "description": "Master switch. Default false (no rotation)." },
+        "rotation_period_days": { "type": "integer", "minimum": 1, "description": "How often to swap primary member. Typical: 7 (weekly) for production, 1 (daily) for stress-test." },
+        "members": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^member\\." },
+          "minItems": 2,
+          "description": "Ordered list of member identifiers in the rotation. Minimum 2 members; must include 'member.' prefix."
+        },
+        "strategy": {
+          "type": "string",
+          "enum": ["round_robin", "random", "stratified"],
+          "description": "round_robin: cycle through members in order. random: uniform random per period (seeded by date). stratified: weighted by past CLI-specific gaming-incident count."
+        },
+        "fallback_member": {
+          "type": "string",
+          "pattern": "^member\\.",
+          "description": "Member to use when rotation cannot proceed (e.g., a CLI is unavailable). Required if any member in the rotation list could be unavailable."
+        }
+      },
+      "required": ["enabled"],
+      "additionalProperties": false
+    },
+    "agent_utilization": {
+      "type": "object",
+      "description": "Optional agent-CLI utilization caps (capacity dimension, separate from USD spend). Tracks Claude-Code / Codex / Gemini-CLI session-window usage per role per UTC day. Consumed by src/ztare/supervisor/agent_utilization_tracker.py. Warn-threshold trip emits a Telegram push (GP-128b) AND a damage signal at org/signals/damage/. Absent block → module defaults apply (3h/day, 500k tokens, 200 turns). Warn threshold is jittered by ±10% per (role, agent_cli, UTC-date) for detection-independent gaming defense (gp168 v3 run-2 finding F2, 2026-05-02).",
+      "properties": {
+        "daily_cap_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Max wall-clock seconds of agent-CLI session time per UTC day."
+        },
+        "daily_cap_output_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Max output tokens emitted by the agent CLI per UTC day."
+        },
+        "daily_cap_turn_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Max agent steps (turns) per UTC day."
+        },
+        "session_cap_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Max wall-clock seconds for any single agent-CLI session."
+        },
+        "absolute_ceiling_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Never-exceed daily duration (runaway-loop circuit-breaker)."
+        },
+        "warn_threshold_frac": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Push a warning when any cap reaches this fraction (e.g. 0.80)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "mandate_path": {
+      "oneOf": [
+        { "type": "string", "pattern": "^org/mandates/[a-z][a-z0-9_]*_mandate\\.md$" },
+        { "type": "null" }
+      ],
+      "description": "Repo-relative path to the role's mandate. null means 'no dedicated mandate; the role is wrapper-invoked or read-only and the role yaml is the only authorization contract' — see the comment in the yaml file for the rationale."
+    },
+    "sla": {
+      "type": "object",
+      "properties": {
+        "response_time_inbox_hours": {
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "null" }
+          ],
+          "description": "Target response time for non-urgent inbox items, in hours. null means no SLA (typical for escalator-only roles like principal/manager when at the top of the chain)."
+        },
+        "response_time_urgent_hours": {
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "null" }
+          ],
+          "description": "Target response time for urgent items. null means no SLA."
+        }
+      },
+      "additionalProperties": false
+    },
+    "failure_mode": {
+      "type": "object",
+      "properties": {
+        "on_unavailable": { "type": "string" },
+        "on_crash": { "type": "string" }
+      },
+      "additionalProperties": true,
+      "description": "Free-form documentation of behavior when the role is unavailable or crashes. Used by ops runbooks; not enforced by code."
+    },
+    "signs_gates": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Names of gate types this role is authorized to co-sign. Empty list means the role gives opinions, not signatures."
+    },
+    "opened_date": {
+      "type": "string",
+      "format": "date",
+      "description": "YYYY-MM-DD when the role yaml was first authored."
+    },
+    "opened_by": {
+      "type": "string",
+      "description": "Identifier of the principal or agent that authored this role yaml."
+    }
+  }
+}

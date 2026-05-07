@@ -1,0 +1,89 @@
+# Agent bootstrap manifest — schema_version 1
+#
+# This file lists the files an agent MUST read on cold start, in order, plus
+# files to consult on demand. It is loaded by `scripts/agent_daemon.py` and
+# interpolated into the daemon prompt, so adding a 7th required-read file is
+# now a YAML edit rather than a Python source edit.
+#
+# Verified by `scripts/org_role_preflight.py` — all `required_reads` paths
+# must exist or preflight fails loud.
+#
+# Audience: internal engineering. Reference:
+# `docs/internal/agent_bootstrap_chain_2026-04-30.md`.
+
+schema_version: 1
+last_updated: "2026-04-30"
+
+# ── Required reads ───────────────────────────────────────────────────
+#
+# Every role daemon prompt instructs the agent to read these in order on
+# the first action of every tick. Path is repo-relative; substitution
+# variables: {role_id}.
+
+required_reads:
+  - path: "AGENTS.md"
+    purpose: "Repository-level constitution. Read §0–§5b first (MUST-READ subset, ~150 lines); later sections on demand."
+    must_read_subset_sections: ["0", "0a", "0b", "1", "4a", "4b", "5b"]
+
+  - path: "org/roles/{role_id}.yaml"
+    purpose: "Durable role contract: authorized_paths, forbidden_paths, delegates_to, escalates_to, budget, sla."
+    schema: "schemas/role.v1.schema.json"
+
+  - path: "org/mandates/{role_id}_mandate.md"
+    purpose: "Role scope + authorization. Authoritative for what the role does autonomously vs requires escalation."
+    optional_for_roles: ["engineer", "reviewer"]   # 2026-04-30: minimal mandates shipped; if absent, escalate ambiguous decisions to manager
+    fallback_when_absent: "If absent, agent escalates any ambiguous decision to role.manager and treats role yaml as the only authorization contract."
+
+  - path: "org/preferences/principal.yaml"
+    purpose: "Principal's research-taste routing preferences. Versioned; read each tick because principal may have edited."
+
+# ── Conditional reads ────────────────────────────────────────────────
+#
+# Read when the agent's task references the topic. Not required on every
+# tick — referenced from the bootstrap prompt's IMPORTANT block.
+
+conditional_reads:
+  - path: "docs/guides/org_runtime_quickstart.md"
+    purpose: "Role-daemon boot model. Read if the agent needs the multi-rail context (executive inbox / A2A / Telegram)."
+
+  - path: "docs/internal/agent_task_discipline_map.md"
+    purpose: "Procedural requirements: closure rows, validate_agent_task_discipline.py, escalation rules."
+
+  - path: "docs/guides/experiment_cookbook.md"
+    purpose: "Experiment discipline. Read before launching any experimental loop."
+
+  - path: "research_areas/EXPERIMENT_TRACK_RECORD.md"
+    purpose: "Closure-row destination. Append E-row + optional F-row when an experiment closes."
+
+  - path: "docs/internal/agent_conflict_resolution_table.md"
+    purpose: "Canonical resolution table for AGENTS.md vs mandate, yaml vs prose, preferences vs mandate, etc."
+
+  - path: "docs/internal/human_agent_flow_map_2026-04-30.md"
+    purpose: "End-to-end NL → typed gate → audit flow reference. Read when designing any new approval/escalation path."
+
+# ── Conflict resolution priority ─────────────────────────────────────
+#
+# When two sources disagree, the higher-priority source wins. Matches
+# `docs/internal/agent_conflict_resolution_table.md`. Listed top-down,
+# stricter-wins-on-ties.
+
+conflict_resolution_priority:
+  - "role yaml `forbidden_paths` (typed hard veto)"
+  - "AGENTS.md §0–§5b (controlling constitutional rules)"
+  - "role mandate (prose scope contract)"
+  - "AGENTS.md §6+ (reference sections)"
+  - "principal preferences (routing/taste)"
+  - "task description (subject matter, NOT scope override)"
+
+# ── Cost budget hint ─────────────────────────────────────────────────
+#
+# Agents under cost pressure may read only the MUST-READ subset of AGENTS.md
+# plus the role yaml + mandate + preferences. Conditional reads happen only
+# when the task explicitly references them. At 600s daemon interval this
+# keeps per-tick chain-reload tax to ~$0.50/day per daemon (vs ~$1.50/day if
+# the full 545-line AGENTS.md is re-read every tick).
+
+cost_hint:
+  must_read_chars: 15000     # AGENTS.md §0-§5b + role yaml + mandate + preferences
+  on_demand_chars: 35000     # AGENTS.md §6+ + conditional reads
+  default_daemon_interval_seconds: 600

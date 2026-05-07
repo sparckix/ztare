@@ -1,0 +1,85 @@
+schema_version: 1
+member_id: principal
+last_updated: "YYYY-MM-DD"
+updated_by: local_operator
+
+priorities:
+  - rank: 1
+    area: scientific_discovery
+    description: "Advance validated discoveries and instrument quality."
+    weight: 0.50
+  - rank: 2
+    area: org_design_evolution
+    description: "Improve the agentic organization runtime and governance kernel."
+    weight: 0.30
+  - rank: 3
+    area: paper_publication
+    description: "Publish calibrated artifacts after evidence closes."
+    weight: 0.20
+
+decision_thresholds:
+  auto_approve_cost_usd: 0.00
+  auto_approve_if_preregistered: false
+  always_escalate:
+    - "paper submission"
+    - "mandate modification"
+    - "new role creation"
+    - "budget increase"
+    - "public claim about discovery"
+
+attention:
+  available_hours_per_day: 1
+  preferred_review_times:
+    - "morning"
+  max_interrupts_per_day: 3
+  silence_timeout_minutes: 30
+  silence_policy: "defer_to_next_tick"
+
+communication:
+  primary_device: "laptop"
+  secondary_device: "none"
+  notification_channel: "filesystem"
+  governance_channel: "filesystem"
+  style: "concise"
+  pet_peeves: []
+
+return_to_work:
+  first_question: "what needs a decision?"
+  second_question: "what changed?"
+  third_question: "what is blocked?"
+  format: "3 bullets max"
+
+risk:
+  experiment_budget_comfort: 0.00
+  experiment_budget_pause: 0.00
+  false_positive_tolerance: "low"
+  false_negative_tolerance: "medium"
+  public_claim_bar: "confirmed_cross_family"
+
+research_taste:
+  schema_version: 1
+  scoring_scale: "0_to_5"
+  axes:
+    outstanding_problem_resolution:
+      weight: 0.35
+      description: "Attacks a load-bearing unresolved problem."
+    prize_or_money_potential:
+      weight: 0.20
+      description: "Could plausibly create publication, funding, product, or IP leverage if true."
+    architecture_fit:
+      weight: 0.30
+      description: "Solvable with the current repo architecture plus bounded extensions."
+    self_recursive_governance:
+      weight: 0.15
+      description: "Improves the system's ability to govern and improve itself."
+  penalties:
+    public_claim_risk:
+      weight: 0.20
+      description: "Penalize moves likely to overclaim before discriminator closure."
+    infrastructure_fragility:
+      weight: 0.10
+      description: "Penalize moves whose result is likely to be uninterpretable due to tooling fragility."
+  routing_thresholds:
+    pursue_now: 3.75
+    queue: 2.25
+    reject_below: 2.25
