@@ -37,7 +37,7 @@ The session unfolded in three layers:
 2. The same session produced a small catch grammar from recent drafting
    failures.
 3. A cold review of the pre-registration, using that grammar, found a
-   load-bearing flaw the warm pair had missed.
+   decisive flaw the warm pair had missed.
 
 The flaw was not cosmetic. It affected the first success criterion and would
 have made the experiment look stronger than it really was.
@@ -86,7 +86,7 @@ Three durable changes came out of the session:
    deterministic sidecar rather than leaving a looser prose formulation in
    place.
 
-This is the load-bearing point for the paper: the catch became a rule, not just
+This is the central point for the paper: the catch became a rule, not just
 an anecdote.
 
 ## Honest scope

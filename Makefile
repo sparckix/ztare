@@ -40,6 +40,18 @@ SUP_REQUEST ?=
 SEVERITY ?= degrading
 MAX_FETCHES ?= 3
 
+COMMAND_LINE_JUDGE_VARS := $(foreach v,$(filter JUDGE_%,$(.VARIABLES)),$(if $(filter command line,$(origin $(v))),$(v)))
+UNKNOWN_JUDGE_VARS := $(filter-out JUDGE_MODEL,$(COMMAND_LINE_JUDGE_VARS))
+ifneq ($(strip $(UNKNOWN_JUDGE_VARS)),)
+$(error Unknown judge Make variable(s): $(UNKNOWN_JUDGE_VARS). Use JUDGE_MODEL=<model>)
+endif
+
+COMMAND_LINE_MUTATOR_VARS := $(foreach v,$(filter MUTATOR_%,$(.VARIABLES)),$(if $(filter command line,$(origin $(v))),$(v)))
+UNKNOWN_MUTATOR_VARS := $(filter-out MUTATOR_MODEL,$(COMMAND_LINE_MUTATOR_VARS))
+ifneq ($(strip $(UNKNOWN_MUTATOR_VARS)),)
+$(error Unknown mutator Make variable(s): $(UNKNOWN_MUTATOR_VARS). Use MUTATOR_MODEL=<model>)
+endif
+
 .PHONY: help workspace-update evidence-compile evidence-prepare evidence-fetch rubric-review setup-project honeypot-loop loop audit-prompt _preflight_leak_audit synth committee benchmark benchmark-stage1 benchmark-stage1-ood benchmark-stage2 benchmark-stage3 benchmark-stage4 benchmark-stage5 benchmark-stage6 benchmark-stage24-bridge benchmark-bridge-scope benchmark-bridge-discovery benchmark-runner-r1 benchmark-runner-r2 benchmark-runner-r3 benchmark-runner-r4 benchmark-supervisor benchmark-supervisor-registry benchmark-supervisor-seed-registry benchmark-supervisor-genesis benchmark-supervisor-manifest benchmark-supervisor-backlog benchmark-supervisor-proposal benchmark-supervisor-staging benchmark-supervisor-wrappers benchmark-supervisor-refinement benchmark-supervisor-usage benchmark-supervisor-autoloop benchmark-supervisor-program-autoloop benchmark-supervisor-report benchmark-supervisor-gate-resolution benchmark-supervisor-findings-debate benchmark-supervisor-findings-runner benchmark-prose-verifier benchmark-document-assembler benchmark-supervisor-factory assemble-document supervisor-init supervisor-show supervisor-what-next supervisor-backlog supervisor-proposal supervisor-emit supervisor-commit supervisor-launch supervisor-autoloop supervisor-program-autoloop supervisor-report supervisor-resolve-gate bridge-meta-show bridge-meta-run-current bridge-meta-reset baseline camouflage gp-index arch-validate arch-validate-ex-ante audit-gate-coverage audit-gate-coverage-strict audit-gate-coverage-self-test \
 	primitives-extract primitives-draft primitive-approve paper1-legacy paper1-tsmc-legacy paper1-epistemic-legacy \
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
@@ -182,8 +194,68 @@ evidence-prepare:
 evidence-fetch:
 	$(PYTHON) -m src.ztare.workspace.fetch_evidence --project $(PROJECT) --severity $(SEVERITY) --max-fetches $(MAX_FETCHES) --model $(MODEL)
 
+# GP-226 charter-critic V1 advisory commit. Apply pending patches from
+# a previous run's workspace/charter_patch_candidate_<RUN>.md to the
+# project's evidence/charter/rubric. DRY=1 previews without writing.
+# Usage: make charter-commit PROJECT=<slug> RUN=<run_id>
+#        make charter-commit PROJECT=<slug> RUN=<run_id> PATCHES=1,3
+#        make charter-commit PROJECT=<slug> RUN=<run_id> DRY=1
+charter-commit:
+	@if [ -z "$(PROJECT)" ] || [ -z "$(RUN)" ]; then \
+		echo "ERROR: PROJECT and RUN are required."; \
+		echo "Usage: make charter-commit PROJECT=<slug> RUN=<run_id> [PATCHES=1,3] [DRY=1]"; \
+		exit 1; \
+	fi
+	$(PYTHON) scripts/charter_commit.py $(PROJECT) --run $(RUN) \
+		$(if $(PATCHES),--patches $(PATCHES),) \
+		$(if $(filter 1,$(DRY)),--dry-run,)
+
 rubric-review:
 	$(PYTHON) -m src.ztare.rubrics.review_rubric --project $(PROJECT) --rubric $(RUBRIC) --model $(MODEL)
+
+# GP-228 — Substrate portfolio: list / scaffold / run members from
+# org/runtime/substrate_portfolio.yaml. Sequential dispatch (cross-
+# substrate exclusion ledger §25 in rubric_specification.md depends on
+# ordering). See src/ztare/research_director/substrate_portfolio.py.
+portfolio-list:
+	$(PYTHON) -m src.ztare.research_director.substrate_portfolio list
+
+portfolio-scaffold:
+	$(PYTHON) -m src.ztare.research_director.substrate_portfolio scaffold
+
+# Usage: make portfolio-run [ITERS=5] [ONLY=<slug-substring>] [MUTATOR=gpt4.1] [JUDGE=gpt4.1]
+portfolio-run:
+	$(PYTHON) -m src.ztare.research_director.substrate_portfolio run \
+		--iters $(if $(ITERS),$(ITERS),5) \
+		--mutator $(if $(MUTATOR),$(MUTATOR),gpt4.1) \
+		--judge $(if $(JUDGE),$(JUDGE),gpt4.1) \
+		$(if $(ONLY),--only $(ONLY),)
+
+# GP-228 — Frontier-eigenquestion generator: draft an advisory
+# eigenquestion orthogonal to a substrate's explored primitive
+# classes. Output is markdown the operator manually merges into
+# project_charter.md.
+# Usage: make eigenquestion-propose PROJECT=<slug> [MODEL=claude-sonnet-4-6]
+eigenquestion-propose:
+	@if [ -z "$(PROJECT)" ] || [ "$(PROJECT)" = "your_project" ]; then \
+		echo "ERROR: PROJECT is required. Usage: make eigenquestion-propose PROJECT=<slug> [MODEL=<model>]"; \
+		exit 1; \
+	fi
+	$(PYTHON) -m src.ztare.research_director.eigenquestion_generator \
+		--project $(PROJECT) \
+		$(if $(MODEL),--model $(MODEL),)
+
+# Seamless VPS bootstrap. Run from your laptop, pointing at a fresh Ubuntu VPS.
+# Idempotent — safe to re-run. Mechanizes everything except interactive auth steps
+# (which it prints as a checklist at the end).
+# Usage: make setup-vps VPS=root@<vps-ip>
+#        make setup-vps VPS=root@<vps-ip> TENANT_REPO=<your-org>/ztare-research-co
+setup-vps:
+	@if [ -z "$(VPS)" ]; then \
+		echo "ERROR: VPS is required. Usage: make setup-vps VPS=root@<vps-ip> [TENANT_REPO=...]"; \
+		exit 1; \
+	fi
+	$(if $(TENANT_REPO),TENANT_REPO=$(TENANT_REPO),) ./scripts/setup_vps.sh $(VPS)
 
 # GP-134 prompt-layer leak audit: cold cross-family auditor scans the
 # fully-built mutator prompt + evidence for target leakage before any
@@ -279,7 +351,7 @@ endif
 			echo "⚠️  Prompt leak audit reported potential leak (non-strict mode — continuing)"; \
 		fi
 
-loop: validate-rubric _preflight_leak_audit
+loop: validate-rubric _preflight_leak_audit _preflight_charter_patches
 ifeq ($(PROJECT),your_project)
 	$(error PROJECT is required. Example: make loop PROJECT=gp161_mdl_anti_goodhart MUTATOR_MODEL=gpt4.1 JUDGE_MODEL=gpt4.1. \
 	  Note: make variables must be on the SAME line as the target, or escape newlines with backslash.)
@@ -312,7 +384,8 @@ endif
 	@if [ "$(VALIDATE_RUBRIC)" = "0" ]; then \
 		echo "⚠️  VALIDATE_RUBRIC=0 — skipping rubric pre-flight validator (NOT RECOMMENDED)"; \
 	else \
-		$(PYTHON) scripts/validate_rubric.py $(PROJECT) || \
+		RUBRIC_PATH=$$(echo "$(RUBRIC)" | grep -q '/' && echo "$(RUBRIC)" || echo "rubrics/$(RUBRIC).json"); \
+		$(PYTHON) scripts/validate_rubric.py $(PROJECT) --rubric $$RUBRIC_PATH || \
 		(echo ""; echo "❌ Rubric pre-flight FAILED. Fix before launching."; \
 		echo "   Spec: docs/concepts/rubric_specification.md"; \
 		echo "   Map:  docs/internal/rubric_authoring_map.md"; exit 1); \
@@ -325,10 +398,20 @@ endif
 _preflight_leak_audit:
 	@if [ -f "projects/$(PROJECT)/last_prompt_debug.txt" ]; then \
 		$(MAKE) audit-prompt PROJECT=$(PROJECT) MUTATOR_MODEL=$(MUTATOR_MODEL) \
-			STRICT_LEAK_AUDIT=$(STRICT_LEAK_AUDIT) || true; \
+			STRICT_LEAK_AUDIT=$(STRICT_LEAK_AUDIT) PYTHON=$(PYTHON) || true; \
 	else \
 		echo "🔒 No prior prompt artifact at projects/$(PROJECT)/last_prompt_debug.txt — skipping pre-flight leak audit (first run)"; \
 	fi
+
+# GP-226 charter-patch pre-iter-1 confirmation. Runs only when
+# `enable_charter_critic: true` AND `charter_patches_preflight_mode` is set
+# to "interactive" or "auto_confirm" in the rubric. Default mode "skip" is
+# a no-op so this never blocks runs that haven't opted in.
+_preflight_charter_patches:
+	@RUBRIC_PATH=$$(echo "$(RUBRIC)" | grep -q '/' && echo "$(RUBRIC)" || echo "rubrics/$(RUBRIC).json"); \
+	$(PYTHON) scripts/preflight_charter_patches.py $(PROJECT) \
+		--rubric $$RUBRIC_PATH \
+		--mutator-model $(MUTATOR_MODEL) || true
 
 compress:
 ifndef PROJECT
@@ -425,6 +508,7 @@ experiment-loop:
 	PROJECT_BARE=$$(echo "$(PROJECT)" | sed 's|^projects/||'); \
 	PROJ_DIR="projects/$$PROJECT_BARE"; \
 	if [ ! -f "$$RUBRIC_PATH" ]; then echo "ERROR: rubric not found at $$RUBRIC_PATH"; exit 1; fi; \
+	$(MAKE) validate-rubric PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_PATH PYTHON=$(PYTHON) || exit 1; \
 	HARD_GATE=$$($(PYTHON) -c "import json; r=json.load(open('$$RUBRIC_PATH')); print('1' if r.get('holdout_hard_gate') else '0')"); \
 	COMPUTED_EXTRA="--disable_attacker_tools"; \
 	if [ "$$HARD_GATE" = "1" ]; then \
@@ -926,3 +1010,61 @@ v4-debate-show:
 
 v4-debate-merge:
 	$(PYTHON) -m src.ztare.orchestration.debate_orchestrator --project epistemic_engine_v4 merge $(TASK_ID)
+
+
+# GP-216 — Theory-Building Operations vocabulary v3 (descriptive registry)
+theory-building-ops:
+	$(PYTHON) -m src.ztare.research_director.theory_building_ops
+
+theory-building-ops-json:
+	$(PYTHON) -c "from src.ztare.research_director.theory_building_ops import VOCABULARY_V3; import json; print(json.dumps({k: {'name': v.name, 'tier': v.tier, 'mech': v.structural_mechanism, 'arcs': list(v.arc_examples), 'overlaps': list(v.overlaps_with), 'deployable': v.deployable, 'novel_residue': v.novel_residue} for k,v in VOCABULARY_V3.items()}, indent=2))"
+
+# GP-216f Item 6 — knowledge-graph CI integration (Pattern 10 + cross-scale linter)
+
+# Regenerate the unified knowledge graph (seams + arch maps + ops + gates).
+# Output: analytics/queries/ztare_knowledge_graph.json
+seam-graph:
+	$(PYTHON) /tmp/gp216_unified_graph_extractor.py
+
+# Validate graph drift: every seam node has a file; every depends_on resolves;
+# every op_id is canonical; every gate reference exists.
+validate-knowledge-graph:
+	$(PYTHON) -m scripts.validate_knowledge_graph
+
+# Validate cross-scale aliases: every documented alias (e.g., coordinate_compression
+# at iteration scale ↔ core_01 at research scale) still resolves on both sides.
+validate-cross-references:
+	$(PYTHON) -m scripts.check_cross_scale_aliases
+
+# Director query helper. Examples:
+#   make query-graph ARGS="--hubs 8"
+#   make query-graph ARGS="--depends-on GP-216"
+#   make query-graph ARGS="--instantiates core_07"
+query-graph:
+	$(PYTHON) -m scripts.query_graph $(ARGS)
+
+# NS Track B content-layer proof graph.  Examples:
+#   make ns-trackb-graph ARGS="--summary"
+#   make ns-trackb-graph ARGS="--depends-on PhaseLatencyLipschitzReserveBridge"
+#   make ns-trackb-graph ARGS="--cycles"
+NS_GRAPH_PYTHON ?= ./venv/bin/python3
+
+ns-trackb-graph:
+	$(NS_GRAPH_PYTHON) -m scripts.ns_trackb_graph $(ARGS)
+
+# Regenerate the NS Track B proof graph from Lean declarations.
+# Output: analytics/queries/ns_trackb_artifact_graph.json
+ns-trackb-graph-extract:
+	$(NS_GRAPH_PYTHON) -m scripts.ns_trackb_graph --extract $(ARGS)
+
+# Run all knowledge-graph checks (graph drift + cross-scale aliases).
+check-graph: validate-knowledge-graph validate-cross-references
+
+
+# Reproduce paper 4's §5.6 deterministic verifier results.
+# Runs the three fixture suites the build-pipeline run depended on and
+# compares the output against the frozen verification_report.txt in
+# papers/paper4/evidence/stage2_derivation_009/. Reports PASS/FAIL with
+# explicit count. Used by reviewers to confirm the §5.6 claim.
+verify-paper4:
+	@bash papers/paper4/SUBMISSION/verify_paper4.sh
