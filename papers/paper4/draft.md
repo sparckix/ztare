@@ -231,6 +231,9 @@ The prose pipeline telemetry in Section 5.3 is a negative-ROI case: the M-Form's
 
 **Additional observations.** Four further observations of the same Goodhart pattern documented in Section 5.4 are reported in Appendix A: a live catch in a catch-grammar self-audit, a context-contamination incident in a blind-protocol experiment, a self-reference observation from a meta-recursive substrate test, and a methodological adjacency note on the panel-of-roles substitute for substrate-mode evaluation. Those observations are presented as additional cases consistent with the framework rather than as load-bearing tests of it; the load-bearing observation is Section 5.4's narrowed recurrence claim. Readers focused on the theoretical contribution may proceed directly to Section 6.
 
+
+## 6 Counterarguments and Boundaries
+
 ### 6.1 The Chandler Convergence Is Structural, Not Anthropomorphic
 
 The Chandlerian analogy operates as a convergence claim about structure rather than a stylistic metaphor. Human firms and recursive AI systems both encounter governance failure when generation and evaluation are co-located under optimization pressure. The common solution is separation of roles, not because firms and models are secretly the same thing, but because the underlying control problem has the same shape. The analogy is used where it is controlling (co-location, scope separation, rate-of-change separation) and stopped where it is not (divisional autonomy, market allocation, human organizational culture).
