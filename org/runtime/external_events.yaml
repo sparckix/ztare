@@ -1,0 +1,59 @@
+# External events / confounds — anything that's NOT apparatus-driven
+# but might create activity-volume on the apparatus dirs that looks
+# like apparatus sophistication. Used by mine_trajectory_curves.py to
+# overlay confound markers on the dashboard.
+#
+# Operator: edit this freely. Best-effort population from agent
+# memory + git log inspection — not authoritative.
+#
+# Format: each entry has a date (YYYY-MM-DD) + kind + label.
+# kind ∈ {paper_deadline, paper_release, gpu_run, conference,
+#         model_upgrade, project_launch, external_news, other}
+
+events:
+  # Project genesis (gaming taxonomy paper era — operator memory)
+  - date: "2026-03-25"
+    kind: project_launch
+    label: "ZTARE project began (~40-50 days before 2026-05-06 per operator)"
+    note: "approximate; revise to actual date"
+
+  # Paper milestones — partial reconstruction; populate from papers/*/draft.md mtimes
+  - date: "2026-04-15"
+    kind: paper_deadline
+    label: "Pace anxiety surfaced — Erdős + Odrzywołek paper context (per memory)"
+
+  - date: "2026-04-23"
+    kind: paper_release
+    label: "Mungerian thinking codified into core philosophy"
+
+  # Model upgrade events — known from conversation history
+  - date: "2026-04-16"
+    kind: model_upgrade
+    label: "GPT-4.1 added as default fallback (Gemini Pro instability)"
+
+  - date: "2026-05-06"
+    kind: model_upgrade
+    label: "Sonnet 4.6 → Opus 4.7 (1M context) for this session"
+
+  # GPU runs — known from today's conversation
+  - date: "2026-05-05"
+    kind: gpu_run
+    label: "GPU link-prediction prep (Adamic-Adar baseline shipped CPU)"
+
+  - date: "2026-05-06"
+    kind: gpu_run
+    label: "Lemma-relevance ranker v1/v2/v4/v5/v6 burned — v1 still best"
+
+  # Major architectural moves the operator surfaced as candidate inflections
+  - date: "2026-05-05"
+    kind: project_launch
+    label: "NS-related scripts / graph stuff (operator-flagged as inflection)"
+
+  - date: "2026-05-06"
+    kind: project_launch
+    label: "Self-recursive primitives session (operator-flagged as inflection)"
+
+  # External news / field events — operator add as relevant
+  # - date: ""
+  #   kind: external_news
+  #   label: "Erdős combinatorics paper release"

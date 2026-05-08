@@ -1,0 +1,209 @@
+# Process catalog seed — bootstrap for structural-analogy mining.
+#
+# Authored 2026-05-06 PM after operator surfaced "charter should be a
+# recursive refinement loop" and the reflexive miner couldn't have
+# proposed it. See:
+#   - feedback memory: feedback_miner_blind_spot_structural_analogy.md
+#
+# This file lists known apparatus generators with their loop-kind +
+# input/output shape. It is a SEED — the structural-analogy miner
+# (scripts/mining/mine_process_loops.py) will auto-detect more
+# entries from git history. Hand-curate this when an entry is
+# obviously wrong; trust the auto-classifier for everything else.
+#
+# kind values:
+#   loop          — has trigger, generation, re-evaluation, can re-fire
+#   one_shot      — runs once at startup or on manual invocation; no re-fire
+#   periodic      — scheduled cadence (KR recurrence, cron); a degenerate loop
+#   static        — written once, never updated (specs, finalized docs)
+#
+# consumes / produces are FREE-FORM CLASSES, not file paths. The miner
+# uses these as a similarity axis when pairing one_shots with loops.
+
+processes:
+
+  # ── Active loops ────────────────────────────────────────────────
+  - name: evidence_fetch_loop
+    kind: loop
+    trigger: gap_detected_in_F_row_or_seam
+    consumes: [F-row gap, raw_source_doc]
+    produces: ["research_areas/private/evidence/{topic}.md"]
+    re_trigger_period: per_iter_or_per_seam_open
+    code_pointers:
+      - scripts/compile_evidence.py
+      - research_areas/private/MERGE_WORKSPACE.md
+
+  - name: ztare_iter_loop
+    kind: loop
+    trigger: per_iter
+    consumes: [previous_iter_eval, rubric, charter]
+    produces: [next_candidate_form, evaluation_payload]
+    re_trigger_period: per_iter
+    code_pointers:
+      - src/ztare/validator/autoresearch_loop.py
+
+  - name: constraint_injection_from_telemetry
+    kind: loop
+    trigger: derived_constraint_proposed
+    consumes: [iter_eval, structural_memory, latent_distance]
+    produces: [derived_constraints_ledger, derived_constraints_brief]
+    re_trigger_period: per_iter
+    code_pointers:
+      - src/ztare/orchestrator/derived_constraints_refresh.py
+      - src/ztare/gates/derived_constraints.py
+
+  - name: closure_pattern_mining
+    kind: periodic
+    trigger: manual_or_scheduled
+    consumes: [F-rows, verified_axioms_corpus]
+    produces: ["analytics/queries/closure_patterns.json", "analytics/queries/closure_patterns.md"]
+    re_trigger_period: ad_hoc
+    code_pointers:
+      - scripts/mining/mine_closure_patterns.py
+
+  - name: gp220_reflexive_primitive_roi
+    kind: periodic
+    trigger: KR_recurrence_or_manual
+    consumes: [cage_engagement.jsonl across projects]
+    produces: ["analytics/queries/reflexive_primitive_roi.json", "analytics/queries/reflexive_primitive_roi.md"]
+    re_trigger_period: P14D_per_KR
+    code_pointers:
+      - scripts/reflexive_primitive_roi_audit.py
+
+  - name: cross_audit_synthesis_dashboard
+    kind: periodic
+    trigger: manual
+    consumes: [9 scorecard JSONs]
+    produces: ["analytics/queries/cross_audit_dashboard.json", "analytics/queries/cross_audit_dashboard.md"]
+    re_trigger_period: ad_hoc
+    code_pointers:
+      - scripts/synthesize_audit_dashboard.py
+
+  # ── One-shots (loop candidates per the structural-analogy thesis) ──
+  - name: generate_charter
+    kind: one_shot
+    trigger: project_startup
+    consumes: [operator_values, project_topic]
+    produces: [project_charter.md]
+    re_trigger_period: never
+    notes: |
+      Operator-flagged 2026-05-06 PM as a recursion candidate. Mirror
+      of evidence_fetch_loop but on the charter object: charter
+      should refine against operator-valued parameters (novelty,
+      rigor, etc.) as work progresses, not stay static. Another
+      Claude is building this externally; coordinate write-surface.
+    code_pointers:
+      - (TODO grep) scripts/generate_charter.py if exists
+
+  - name: rubric_authoring
+    kind: one_shot
+    trigger: project_startup
+    consumes: [substrate_class, operator_values, prior_rubric_template]
+    produces: ["{project_dir}/rubric.json"]
+    re_trigger_period: never
+    notes: |
+      Recursion candidate — rubric criteria become outdated as
+      apparatus evolves; could refine against "rubric ZTARE-survival
+      rate" (does this rubric produce projects that close?).
+
+  - name: anti_pattern_catalog_seeding
+    kind: one_shot
+    trigger: manual_authorship
+    consumes: [F-row failure modes, operator_judgment]
+    produces: [docs/concepts/anti_pattern_catalog.md]
+    re_trigger_period: never
+    notes: |
+      Recursion candidate — catalog grows monotonically as failure
+      modes recur. Could refine against "patterns that surface in
+      F-rows but aren't yet catalogued."
+
+  - name: primitive_proposal
+    kind: one_shot
+    trigger: layer3_mining_output_or_operator
+    consumes: [closure_pattern_miner_output, operator_judgment]
+    produces: [Gate(name=...) wrappers + register_*_gates(cage)]
+    re_trigger_period: ad_hoc
+    notes: |
+      Borderline — Layer 3 mining IS the recursion engine, but
+      promotion-to-cage is one-shot. Today's session shipped 0
+      primitives, so the loop hasn't tested yet. Watch.
+
+  - name: substrate_construction_via_generate_substrate
+    kind: one_shot
+    trigger: project_startup
+    consumes: [substrate_class_decl, operator_intent]
+    produces: ["{project_dir}/substrate.py", "{project_dir}/substrate.meta"]
+    re_trigger_period: never
+    notes: |
+      Recursion candidate — substrate could refine against
+      "substrate-meta validator failure rate" (R8/R9 just shipped to
+      surface this signal).
+
+  - name: paper_drafting
+    kind: one_shot
+    trigger: manual_authorship
+    consumes: [F-rows, evidence/, seams/]
+    produces: ["papers/paper{N}/draft.md"]
+    re_trigger_period: never
+    notes: |
+      Operator-driven; weak recursion candidate. Papers ARE re-edited
+      but each edit is operator-judgment, not telemetry-driven.
+
+  # ── Static artifacts (anti-candidates — not loop candidates) ──
+  - name: agents_md_standing_rules
+    kind: static
+    trigger: operator_codification
+    consumes: [past_incidents]
+    produces: [AGENTS.md]
+    re_trigger_period: rare_amendments
+    notes: |
+      Standing rules; updating happens after incidents but the
+      artifact itself is anchor-stable. Not a recursion candidate
+      (recursive standing-rule refinement would be unstable).
+
+  - name: r_prefix_naming_convention
+    kind: static
+    trigger: one_decision
+    consumes: [readability_concern]
+    produces: [research_areas/private/seams/reflexive/r_prefix_naming_convention.md]
+    re_trigger_period: never
+    notes: |
+      Decision artifact. Not a recursion candidate.
+
+  # ── Orchestration meta-pattern catalog (added 2026-05-08, RD-AL) ──
+  - name: pattern_catalog_indexer
+    kind: one_shot
+    trigger: pattern_md_file_added_or_modified
+    consumes: ["org/patterns/*.md"]
+    produces: ["org/runtime/pattern_catalog.yaml"]
+    re_trigger_period: on_change
+    notes: |
+      Generates aggregated YAML index from SKILL.md frontmatter in
+      org/patterns/*.md. Run via:
+        python -m src.ztare.orchestration.pattern_catalog_indexer
+      Generated; never hand-edit pattern_catalog.yaml.
+
+  - name: friction_debate_orchestrator
+    kind: loop
+    trigger: research_director_invokes_PATTERN-001
+    consumes: [problem_statement, prior_iteration_state]
+    produces: ["projects/{substrate}/orchestration_state/{task_id}/round_*.json", "verdict.md"]
+    re_trigger_period: on_demand
+    notes: |
+      File-based JSON DAG state for friction-mode debate per PATTERN-001
+      (org/patterns/pattern_1_friction_debate.md). Agent-agnostic: any
+      LLM (Claude, GPT, Codex) fills round_*.json; merger composes
+      verdict via:
+        python -m src.ztare.orchestration.friction_debate {init,merge,show}
+
+  - name: org_independence_lint
+    kind: periodic
+    trigger: ci_run_or_manual_check
+    consumes: ["org/**"]
+    produces: [exit_code_0_or_violation_report]
+    re_trigger_period: on_pr
+    notes: |
+      Per org/INTERFACE.md: org/ source files MUST NOT import ZTARE
+      modules. Enforced by:
+        python scripts/check_org_independence.py
+      Exit 0 = clean. Exit 1 = split-readiness violation.

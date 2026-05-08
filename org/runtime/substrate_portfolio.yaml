@@ -1,0 +1,87 @@
+# Substrate portfolio registry — read by
+# `src/ztare/research_director/substrate_portfolio.py` (BRIDGE-3).
+#
+# Adding a substrate to the portfolio is a YAML edit, not a code edit.
+# Each entry declares a substrate slug + the eigenquestion class it
+# explores + whether the project + rubric files are already authored.
+#
+# Order matters when running the full portfolio sequentially: each
+# substrate's run feeds the cross-substrate exclusion ledger (rubric
+# spec §25) the next substrate reads. Put the most-mature / highest-
+# signal substrates first so downstream members see a populated ledger.
+#
+# Schema:
+#   members:
+#     - slug: <project slug under projects/>
+#       eigenquestion_summary: <one-line>
+#       primary_mechanism_family: <bias the substrate steers toward>
+#       scaffolded: <true if charter + rubric are already authored>
+#       opened_date: <ISO date>
+#       opened_by: <principal | rd | claude | codex | ...>
+#       notes: <optional free-form>
+
+schema_version: 1
+last_updated: "2026-05-07"
+
+members:
+  - slug: ztare_on_ztare_v2_expanded_scope
+    eigenquestion_summary: "What apparatus refinement to ship next?"
+    primary_mechanism_family: apparatus-additive
+    scaffolded: true
+    opened_date: "2026-05-06"
+    opened_by: principal
+    notes: >
+      v0.5 baseline. Newton-mode + class-rotation + lane-ceiling-asymmetry
+      + adversarial-judge + cross-substrate-exclusion + GP-226 charter-
+      critic with META_APPARATUS_AUDIT_TAXONOMY.
+
+  - slug: ztare_on_ztare_v3_meta_recursive
+    eigenquestion_summary: "What substrate-architecture refinement would change rate of insight production?"
+    primary_mechanism_family: meta-architectural
+    scaffolded: true
+    opened_date: "2026-05-07"
+    opened_by: principal
+    notes: >
+      Strange-loop test. Recursion budget = 1 layer. Min-1-object-per-3-meta
+      enforced by judge persona. v3 substrates cannot themselves propose
+      v3-style children.
+
+  - slug: ztare_on_ztare_subtractive
+    eigenquestion_summary: "Which existing apparatus primitive should be RETIRED, and why does the apparatus work better without it?"
+    primary_mechanism_family: apparatus-subtractive
+    scaffolded: true
+    opened_date: "2026-05-07"
+    opened_by: claude
+    notes: >
+      Inversion of the additive bias of v2. Retirement proposals must name
+      the FIRST observable that changes when the primitive is removed.
+
+  - slug: ztare_on_ztare_red_team
+    eigenquestion_summary: "What apparatus assumption is most fragile under adversarial conditions, and what minimal change would harden it?"
+    primary_mechanism_family: apparatus-fragility
+    scaffolded: true
+    opened_date: "2026-05-07"
+    opened_by: claude
+    notes: >
+      Red-team posture. Every fragility proposal needs a runnable PoC OR
+      a citation to an existing artifact (postmortem / false-positive)
+      that proves the fragility.
+
+  - slug: ztare_on_ztare_evaluation_surface
+    eigenquestion_summary: "What Newton-mode evaluation surface is the apparatus blind to, and what minimal primitive would open it?"
+    primary_mechanism_family: evaluation-surface-opening
+    scaffolded: true
+    opened_date: "2026-05-07"
+    opened_by: claude
+    notes: >
+      Newton-mode native. Every proposal must name (a) new observable,
+      (b) measurement method (cited primitive/library), (c) expected
+      value/range under current behavior, (d) predicted shift direction.
+
+# Promotion criteria for adding a new portfolio member:
+#   1. Eigenquestion is structurally orthogonal to existing members
+#      (operator argues from mechanism, not just naming)
+#   2. Project dir + rubric authored to spec
+#      (rubric_specification.md §§22-27 stack composed)
+#   3. Operator-or-RD signoff in opened_by
+promotion_criteria_doc: docs/concepts/rubric_specification.md#27-multi-charter-portfolio--v3-meta-recursive-substrate-2026-05-07
