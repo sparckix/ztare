@@ -12,6 +12,7 @@ authorized_paths:
   - "tests/"
   - "scripts/"
   - "supervisor/"
+  - "ztare_proofs/"   # GP-217 broadening 2026-05-05: 4 historical agent-driven F-rows on Lean proof scaffolding (engineer-side mechanization for GP-186 NS proof program)
 forbidden_paths:
   - "~/.ssh/"
   - ".ip_protected/"             # engineer does not see IP drafts
@@ -31,7 +32,7 @@ budget:
   warn_threshold_frac: 0.80
   absolute_ceiling_usd: 20.00
 
-mandate_path: null               # scope inherited from wrapper config; no dedicated mandate
+mandate_path: null               # INTENTIONAL: engineer is wrapper-invoked, not an autonomous daemon. Scope is inherited from the invoking manager's task contract + this yaml's authorized/forbidden paths. The bootstrap manifest at `org/bootstrap_manifest.yaml` recognizes engineer in `optional_for_roles` and falls through to the role yaml as the only authorization contract. If you find yourself wanting a standalone engineer mandate file, the right fix is usually to elevate the ambiguous decision to `role.manager` instead — that's what the escalates_to chain is for.
 
 sla:
   response_time_inbox_hours: null
@@ -45,4 +46,4 @@ signs_gates:
   - PENDING_REVIEW               # engineer co-signs code review gates
 
 opened_date: "2026-04-23"
-opened_by: daniel_alami
+opened_by: principal

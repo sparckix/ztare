@@ -24,7 +24,7 @@ budget:
   warn_threshold_frac: 0.80
   absolute_ceiling_usd: 15.00
 
-mandate_path: null
+mandate_path: null               # INTENTIONAL: reviewer is read-only and wrapper-invoked. The forbidden_paths: ["*"] line + this yaml's escalates_to chain are the authorization contract. The bootstrap manifest at `org/bootstrap_manifest.yaml` recognizes reviewer in `optional_for_roles` and falls through to the role yaml.
 
 sla:
   response_time_inbox_hours: null
@@ -37,4 +37,4 @@ failure_mode:
 signs_gates: []                  # reviewer gives opinions, does not sign
 
 opened_date: "2026-04-23"
-opened_by: daniel_alami
+opened_by: principal

@@ -23,7 +23,7 @@ input_contract:
   reads_from:
     - <filesystem path prefix, or "none">
   must_receive:
-    - <load-bearing fields the caller must set, e.g. "description", "prompt">
+    - <required fields the caller must set, e.g. "description", "prompt">
 
 output_contract:
   produces:

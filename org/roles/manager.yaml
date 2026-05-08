@@ -36,11 +36,23 @@ escalates_to:
   - role.principal
 
 budget:
-  daily_cap_usd: 100.00
-  session_cap_usd: 50.00
-  single_action_cap_usd: 10.00
+  daily_cap_usd: 30.00          # principal-set fleet uniform cap (2026-05-07)
+  session_cap_usd: 15.00
+  single_action_cap_usd: 5.00
   warn_threshold_frac: 0.80
-  absolute_ceiling_usd: 100.00
+  absolute_ceiling_usd: 35.00
+
+# Agent-CLI utilization caps (capacity dimension, separate from USD spend).
+# Manager is the always-on operational role; gets a higher daily cap than the
+# triggered Research Director. Warn-threshold emits Telegram push + damage
+# signal via src/ztare/supervisor/agent_utilization_tracker.py.
+agent_utilization:
+  daily_cap_seconds: 14400         # 4 hours/day of agent-CLI wall clock
+  daily_cap_output_tokens: 600000  # 600k output tokens/day
+  daily_cap_turn_count: 250        # 250 agent steps/day
+  session_cap_seconds: 5400        # 90-min single-session cap
+  absolute_ceiling_seconds: 21600  # 6-hour hard ceiling/day
+  warn_threshold_frac: 0.80
 
 mandate_path: org/mandates/manager_mandate.md
 
@@ -52,8 +64,11 @@ failure_mode:
   on_unavailable: "principal resumes direct operator role"
   on_crash: "state.json + transitions.jsonl preserve continuity"
 
-# This role does not sign gates; it creates them.
-signs_gates: []
+# This role primarily creates gates; the one exception is DUTY_PERFORMED,
+# which is the role's attestation channel for its own periodic duties
+# (e.g. manager_weekly_okr_walk).
+signs_gates:
+  - DUTY_PERFORMED
 
 opened_date: "2026-04-23"
-opened_by: daniel_alami
+opened_by: principal

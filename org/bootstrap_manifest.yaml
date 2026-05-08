@@ -61,6 +61,12 @@ conditional_reads:
   - path: "docs/internal/human_agent_flow_map_2026-04-30.md"
     purpose: "End-to-end NL → typed gate → audit flow reference. Read when designing any new approval/escalation path."
 
+  - path: "analytics/queries/ztare_knowledge_graph.json"
+    purpose: "GP-216d artifact-network knowledge graph (354 nodes / 623 edges across seams + arch maps + ops + gates). Do NOT load the JSON on cold start — query it via `python scripts/query_graph.py --depends-on <seam>` / `--instantiates <op_id>` / `--hubs` / `--orphans` / `--connects A B`. Drift-validated by `make validate-knowledge-graph`. Use this to discover what depends on / instantiates / connects-to a seam, op, or gate BEFORE proposing a new artifact."
+
+  - path: "analytics/queries/decision_history_calibration.md"
+    purpose: "GP-217 empirical evidence base for role mandate scope. Read when proposing edits to `org/roles/*.yaml` `authorized_paths` or `org/mandates/*_mandate.md`; cite F-row counts as defense for any broadening. Re-runnable via `python scripts/mine_decision_history.py`."
+
 # ── Conflict resolution priority ─────────────────────────────────────
 #
 # When two sources disagree, the higher-priority source wins. Matches

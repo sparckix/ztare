@@ -23,6 +23,11 @@ delegation_edges:
     to: role.reviewer
     kind: mandate
 
+  - from: role.principal
+    to: role.product_manager
+    kind: mandate
+    notes: "PM owns apparatus catalog hygiene (GP-220, GP-221, miner ROI)"
+
   - from: role.manager
     to: worker.explore_agent
     kind: invocation
@@ -92,6 +97,15 @@ gate_signers:
   PENDING_FACTUAL_AUDIT: role.principal
   PENDING_VOICE_REVIEW: role.principal
   PENDING_SHIP: role.principal
+  # Periodic-duty attestation (2026-05-06). Any role that owns a KR
+  # in org/key_results/ with a `recurrence` field signs a
+  # DUTY_PERFORMED gate to attest a cycle and update last_attested.
+  # Multiple roles may sign DUTY_PERFORMED; the role yaml's signs_gates
+  # field declares which roles currently own at least one duty KR.
+  DUTY_PERFORMED:
+    - role.research_director
+    - role.manager
+    - role.product_manager
 
 # ----------------------------------------------------------------------
 # Invariants (validated by role loader on startup)
