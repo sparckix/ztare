@@ -12,6 +12,7 @@ __pycache__/
 .DS_Store
 
 # 4. Hide Debugging Logs
+nohup.out
 last_prompt_debug.txt
 eval_results.json
 FOR_MARIA.md
@@ -77,11 +78,13 @@ projects/eu_union_failure_probability_2035/raw/*
 
 # 7. Local paper workspaces and compiled artifacts
 # Public paper bundles live under `papers/`.
+/workingpapers/
 /paper1/
 /paper2/
 /paper3/
 /paper4/
 /paper5/
+/*.pdf
 paper/*.pdf
 *.aux
 *.bbl
@@ -93,10 +96,22 @@ paper/*.pdf
 *.toc
 *.synctex.gz
 *.bak
+*.pre_audit_*
+*.bak_pre_*
+
+# Generated proof/build state and model artifacts
+ztare_proofs/.lake/
+*.pt
+*.ckpt
+*.safetensors
 
 # 8. Claude Code session and memory files
 .claude/
 .claudeignore
+
+# 8b. JS / frontend generated dependencies and build output
+node_modules/
+orbit/dist/
 
 # 9. Benchmark run outputs (generated, large, not source-of-truth)
 benchmarks/constraint_memory/runs/
@@ -111,21 +126,57 @@ research_areas/catch_grammar
 research_areas/HARDENING_BOARD.md
 
 # --- org/ structural primitives (GP-128 AI-native M-form) ---
-# Public: role definitions, delegation graph, README
+# Public: role definitions, delegation graph, schema/readme docs, templates
 # Private (gitignored): mandates contain IP portfolio state / personal context;
-# sessions contain per-role audit logs.
-org/mandates/
+# sessions/channels/directives/preferences contain per-role audit logs,
+# principal taste context, in-flight decisions, and runtime mail.
+org/mandates/*
+!org/mandates/README.md
+!org/mandates/templates/
+!org/mandates/templates/**
 org/sessions/
+org/channels/
+org/directives/
+org/preferences/*
+!org/preferences/README.md
+!org/preferences/templates/
+!org/preferences/templates/**
+org/members/principal.yaml
+org/members/daniel_alami.yaml
 # (covers org/sessions/_claims/ too)
+
+# Runtime task/objective/key-result state; README/schema files stay public.
+org/tasks/pending/*
+org/tasks/active/*
+org/tasks/done/*
+!org/tasks/pending/.gitkeep
+!org/tasks/active/.gitkeep
+!org/tasks/done/.gitkeep
+
+org/objectives/*
+!org/objectives/README.md
+org/key_results/*
+!org/key_results/README.md
 
 # Damage signals (GP-129 Matzinger pull-forward): emits are runtime audit,
 # not shipped artifacts. Keep the directory + .gitkeep, ignore the JSON.
 org/signals/damage/*.json
 org/signals/damage/_cleared/
 
+# Pending/resolved gate JSONs are runtime governance state, not kernel
+# primitives. Same convention as channels/sessions/directives.
+org/gates/pending/*.json
+org/gates/resolved/*.json
+
 # Agent instructions
 AGENTS.md
 CLAUDE.md
+
+# NS Track B public synthesis (per-project allow-list under projects/* deny)
+!projects/ns_millennium_hunt/
+projects/ns_millennium_hunt/*
+!projects/ns_millennium_hunt/public/
+!projects/ns_millennium_hunt/public/**
 
 # Confidential domain projects — never commit
 projects/figs
@@ -146,6 +197,9 @@ research_areas/seeds/deferred/systems_to_algorithms.md
 # Paper 5 private notes (not the paper itself)
 research_areas/private/papers/paper5.md
 
+# Paper 8 is intentionally not public yet; it may be merged into paper 7.
+papers/paper8*/
+
 # IP protected — patent drafts, provisional applications, trade secrets
 .ip_protected/
 # GP-132: goal artifacts are personal; README stays public as schema doc.
@@ -155,3 +209,37 @@ org/goals/done/*
 !org/goals/pending/.gitkeep
 !org/goals/active/.gitkeep
 !org/goals/done/.gitkeep
+
+# Local runtime queues / transition logs.
+ztare_workspace/a2a/
+ztare_workspace/transitions.jsonl
+ztare_workspace/gates/pending/*.json
+ztare_workspace/gates/pending/*.handled
+ztare_workspace/gates/resolved/*.json
+
+# One-off local review artifacts
+workspace/*_panel_*.json
+workspace/*_panel_*.raw.txt
+workspace/run_*_panel.py
+
+# ── Tenant overlay (GP-191 Stage 2 — see seam in research_areas/private) ────
+# org/ is a substrate-agnostic kernel primitive (publishable as standalone).
+# ZTARE Research Co's instantiation lives in the sibling private repo
+# `ztare-research-co/tenants/ztare/` and is symlinked into the conventional
+# org/ paths by `ztare-research-co/scripts/setup_tenant.sh`.
+# These rules prevent the symlinks (and any future tenant content) from
+# entering public history. Fresh public clone has no tenant overlay
+# → kernel runs in kernel-only mode (GP-191 Stage 3 verification).
+
+# ZTARE-specific role contracts (instantiation, not kernel)
+org/roles/research_director.yaml
+org/roles/product_manager.yaml
+org/roles/debate_runner.yaml
+
+# ZTARE-specific preference values (the schema stays at org/preferences/templates/)
+org/preferences/principal.yaml
+
+# Reserved for future tenant overlays (one tenant per subdir)
+tenants/*/
+!tenants/.gitkeep
+!tenants/README.md
