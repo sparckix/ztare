@@ -7,7 +7,7 @@ description: >
 
 # Current assignments
 assignments:
-  - member: member.daniel_alami
+  - member: member.principal
     role: role.principal
     substrate: human_conversational
     is_primary: true
@@ -15,7 +15,7 @@ assignments:
     valid_until: null
     notes: "Founding principal"
 
-  - member: member.daniel_alami
+  - member: member.principal
     role: role.reviewer
     substrate: human_conversational
     is_primary: false              # backup when gemini is unavailable
