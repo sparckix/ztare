@@ -160,7 +160,7 @@ are, by construction, on different points of the flat direction, and
 the optimizer's box bounds are the only thing stopping them from
 sliding all the way.
 
-The fixed start is load-bearing in the first check's failure. If
+The fixed start is controlling in the first check's failure. If
 the bootstrap were *also* given varied starts, the two checks would
 converge. But the bootstrap protocol that was actually written used a
 fixed default start, because the check's author was thinking about

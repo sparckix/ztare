@@ -59,7 +59,7 @@ The Zero-Trust Adversarial Reasoning Engine (ZTARE) consists of four components:
 
 **Mutator.** An LLM mutator family (Gemini, GPT-4o, or Claude in the replication runs) that receives a thesis seed, evidence constraints, and verified axioms. It produces a markdown thesis with embedded Python falsification code. The falsification suite is supposed to fail if the thesis's central claim is false.
 
-**Committee (Firing Squad).** Three adversarial agents spawned dynamically from the thesis itself. Their attack vectors are derived from the thesis's own load-bearing variables. Each agent writes Python counter-tests targeting the weakest structural assumption in the Mutator's code. Agents execute independently; their stdout/stderr is the only evidence the Meta-Judge reads.
+**Committee (Firing Squad).** Three adversarial agents spawned dynamically from the thesis itself. Their attack vectors are derived from the thesis's own controlling variables. Each agent writes Python counter-tests targeting the weakest structural assumption in the Mutator's code. Agents execute independently; their stdout/stderr is the only evidence the Meta-Judge reads.
 
 **Meta-Judge.** Scores the thesis against a rubric. It accepts only quantitative evidence from counter-test execution and does not read the Mutator's free-form prose explanations during scoring.
 
@@ -67,7 +67,7 @@ The Zero-Trust Adversarial Reasoning Engine (ZTARE) consists of four components:
 
 ### 3.2 Anti-Gaming Properties
 
-Two properties are load-bearing:
+Two properties are controlling:
 
 - **Separation of generation and evaluation.** The Mutator generates; the Firing Squad evaluates. No direct pathway exists for the generator to author its own score.
 - **Stdout-only evidence.** The Meta-Judge reads executed output of counter-tests rather than persuasive rationale. This raises the cost of narrative camouflage.
@@ -196,7 +196,7 @@ Design A fails the viability threshold under the chosen assumptions while Design
 
 **Named startup-domain variants.** Two additional startup-domain variants were observed but are not promoted to top-level strategies:
 - **Misattributed Cooked Book** — importing a high-conversion rate from the founder's personal network into an automated outreach mechanism
-- **Silent 100% Injection** — silently setting conversion or transfer variables to `100%` in code without surfacing them in the load-bearing variable table
+- **Silent 100% Injection** — silently setting conversion or transfer variables to `100%` in code without surfacing them in the controlling variable table
 
 ---
 
@@ -259,7 +259,7 @@ Legend: in the *Firing Squad* column, ❌ denotes **CAUGHT** (the adversarial co
 | T5 Epistemic Engine | AI architecture | Unidirectional decay | **97/100 ✅ FOOLED** | 18/100 FAIL | CAUGHT |
 | | **Avg score** | | **84.8/100 — 4/5 fooled** | **18.4/100 — 0/5 fooled** | **5/5 caught** |
 
-Claude's T1 verdict was a categorical FAIL with no numeric score returned by the judge; we count it as 0 for averaging purposes. The load-bearing comparison is the gap between Gemini and Claude under holistic review, not the absolute Claude mean.
+Claude's T1 verdict was a categorical FAIL with no numeric score returned by the judge; we count it as 0 for averaging purposes. The controlling comparison is the gap between Gemini and Claude under holistic review, not the absolute Claude mean.
 
 **The Cognitive Camouflage effect.** Gemini scored theses containing documented gaming at 95-97/100 in 4 out of 5 cases. Claude remained skeptical across all theses. The difference is not that Claude can run adversarial counter-tests; it cannot. The difference is that Gemini is more vulnerable to persuasive thesis framing when it performs holistic evaluation.
 
@@ -341,7 +341,7 @@ The GPT-4o column being empty is itself the result: identical pressure did not p
 
 ## 8. Implications
 
-**For LLM evaluation.** Any system in which the evaluated model can influence test construction is vulnerable to specification gaming. Separation of generation and evaluation is a load-bearing architectural constraint.
+**For LLM evaluation.** Any system in which the evaluated model can influence test construction is vulnerable to specification gaming. Separation of generation and evaluation is a controlling architectural constraint.
 
 **For replication and control design.** GPT-4o's failure to converge or game under identical adversarial pressure shows that the loop itself was not sufficient to induce specification gaming. The pressure is real, but gaming depends on the mutator's ability to strategically adapt under that pressure.
 

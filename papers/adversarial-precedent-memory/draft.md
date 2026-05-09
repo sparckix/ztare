@@ -63,7 +63,7 @@ Benchmark conditions:
 - `C2_gates_plus_primitives_crux_first` (used only in later ablation runs)
 
 ### 3.2 Claim-test-mismatch mini-suite
-A second suite isolates a narrower exploit family: tests that look rigorous but prove scaffolding, tautologies, or peripheral math instead of the load-bearing claim.
+A second suite isolates a narrower exploit family: tests that look rigorous but prove scaffolding, tautologies, or peripheral math instead of the controlling claim.
 
 Historical specimens:
 - `selective_rigor_recursive_bayesian`
@@ -170,7 +170,7 @@ The key point is that the score contract was not broken. The detection flags cha
 
 ### Step 2: Architectural diagnosis
 The diagnosis was that front-loaded primitives could bias the evaluator's first reading of the crux. That produced a new constraint:
-- identify the load-bearing claim first
+- identify the controlling claim first
 - determine whether the test suite targets that claim
 - only then inject precedent memory
 

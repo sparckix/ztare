@@ -58,7 +58,7 @@ Champion found: **Wien form**
 `p0=1.208, p1=0.862, p2=2.160, p3=0.739`. Score 97/100 on rubric. RMSE = 0.021.
 
 Gate verdict: **is_exponential_class = False** (Wien fails at (6.0, 0.5), 238%
-relative error — the Planck denominator's `−1` correction becomes load-bearing in
+relative error — the Planck denominator's `−1` correction becomes controlling in
 this regime and Wien cannot express it in its functional class).
 
 **Experiment 2 (33 visible points — enriched)**
@@ -99,7 +99,7 @@ Threshold: 200% relative error on any pair → is_exponential_class = False.
 Wien fails on four of the six pairs. The form's pure-exponential tail
 (`exp(−p3 · x1/x2)`) overestimates Planck at high `x1/x2` because it cannot
 express the `−1` correction in the Planck denominator. This correction becomes
-negligible for small `x1/x2` (the visible training regime) but load-bearing in
+negligible for small `x1/x2` (the visible training regime) but controlling in
 the tail.
 
 Weibull passes all six pairs. The stretched-exponential decay

@@ -141,7 +141,7 @@ Both Wien and Planck satisfy the axiomatic scaling constraint:
 will hold out well regardless of whether it is structurally correct.
 
 The farther-tail probes the `x1/x2` regime where the `-1` in the Planck
-denominator is load-bearing. That regime is not present in the visible or
+denominator is controlling. That regime is not present in the visible or
 holdout grids. The holdout's choice of unseen `x2` values does not
 automatically cover the regime needed to discriminate structural classes.
 

@@ -256,7 +256,7 @@ thesis\textquotesingle s central claim is false.
 
 \textbf{Committee (Firing Squad).} Three adversarial agents spawned
 dynamically from the thesis itself. Their attack vectors are derived
-from the thesis\textquotesingle s own load-bearing variables. Each agent
+from the thesis\textquotesingle s own controlling variables. Each agent
 writes Python counter-tests targeting the weakest structural assumption
 in the Mutator\textquotesingle s code. Agents execute independently;
 their stdout/stderr is the only evidence the Meta-Judge reads.
@@ -276,7 +276,7 @@ where $\epsilon_{\mathrm{rel}}$ is the relative prediction error.
 \subsubsection{3.2 Anti-Gaming
 Properties}\label{32-anti-gaming-properties}
 
-Two properties are load-bearing:
+Two properties are controlling:
 
 \begin{itemize}
 \tightlist
@@ -481,7 +481,7 @@ variants were observed but are not promoted to top-level strategies:
 \item
   \textbf{Silent 100\% Injection}: silently setting conversion or
   transfer variables to \texttt{100\%} in code without surfacing them in
-  the load-bearing variable table
+  the controlling variable table
 \end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -618,7 +618,7 @@ T5 Epistemic Engine & AI architecture & Unidirectional decay &
 
 Claude's T1 verdict was a categorical FAIL with no numeric score
 returned by the judge; we count it as 0 for averaging purposes. The
-load-bearing comparison is the gap between Gemini and Claude under
+controlling comparison is the gap between Gemini and Claude under
 holistic review, not the absolute Claude mean.
 
 \textbf{The Cognitive Camouflage effect.} Gemini scored theses
@@ -775,7 +775,7 @@ did not produce strategic gaming there.
 
 \textbf{For LLM evaluation.} Any system in which the evaluated model can
 influence test construction is vulnerable to specification gaming.
-Separation of generation and evaluation is a load-bearing architectural
+Separation of generation and evaluation is a controlling architectural
 constraint.
 
 \textbf{For replication and control design.} GPT-4o\textquotesingle s

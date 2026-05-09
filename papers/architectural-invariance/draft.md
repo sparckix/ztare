@@ -175,7 +175,7 @@ Training REDUCES cancellation in Mamba but not in Pythia. The SSM's selective st
 
 ### 5.1 Layer-by-Layer Importance
 
-To test whether the orthogonal perturbations are functionally load-bearing despite the 72% cancellation, we ablate each layer individually (skip the layer's computation, passing the input directly to the next layer) and measure next-token cross-entropy loss:
+To test whether the orthogonal perturbations are functionally controlling despite the 72% cancellation, we ablate each layer individually (skip the layer's computation, passing the input directly to the next layer) and measure next-token cross-entropy loss:
 
 | Phase | Layers | Loss increase | Interpretation |
 |-------|--------|--------------|----------------|
@@ -309,7 +309,7 @@ H-COMPUTE-01 was confirmed in the rejection direction. After 32 iterations, the 
 
 H-GRAMMAR-01 was confirmed in the positive direction. With `UNIVERSAL_DENOMINATOR` available, the apparatus recovered the true form $z = x_1^3 / (\exp(x_1/x_2) - 1)$ to four decimal places at iter 6 of the same compute budget. All six farther-tail discriminator points passed at < 0.13% relative error.
 
-The differential is the load-bearing observation: doubling compute under bounded grammar yielded zero structural progress; adding one grammar primitive at baseline compute yielded the true law in 6 iterations.
+The differential is the controlling observation: doubling compute under bounded grammar yielded zero structural progress; adding one grammar primitive at baseline compute yielded the true law in 6 iterations.
 
 ### 9.3 The cold-LLM null
 

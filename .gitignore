@@ -76,14 +76,59 @@ projects/eu_union_failure_probability_2035/raw/*
 !projects/eu_union_failure_probability_2035/test_model.py
 !projects/eu_union_failure_probability_2035/verified_axioms.json
 
+# 6d. Public science showcases (added 2026-05-08)
+# Gravity (gp163d family) — no promotable law; instrument-audit results documented in workspaces.
+!projects/gp163d_unified_accel/
+!projects/gp163d_DM/
+!projects/gp163d_MG/
+!projects/gp163d_susceptibility_regime_law/
+!projects/gp163d_science_promotion_bridge/
+!projects/gp163d_alien_invariant_bridge/
+!projects/gp163d_admsr_attack_and_cleanroom_bridge/
+!projects/gp163_accel_interpolation/
+
+# Neural scaling (gp154 family + neural_hunt) — bounded empirical regularity + source-admissibility rules.
+!projects/gp154_d_int_measurement/
+!projects/gp154_inversion_alpha_from_dimension/
+!projects/gp154_phase_flow_law/
+!projects/gp154_scaling_law_exponents/
+!projects/gp154_scaling_law_normalized/
+!projects/gp154_scaling_law_raw/
+!projects/neural_hunt/
+
+# Consciousness ascription — AID-MCVP causal-identification + Lean-verified Conservative Invariance.
+!projects/gp169_consciousness_ascription_audit/
+!projects/gp210_consciousness_theory/
+!projects/gp212_consciousness_omega_audit/
+
+# Public showcases: GLP-1 adoption economics demonstration.
+!projects/glp1_adoption_economics/
+
+# Note: central_station and all _bench_* runs remain private under the projects/* rule above.
+# Note: research_areas/private/seams/interfaces/D3*, D4* (user forms) stay private.
+
 # 7. Local paper workspaces and compiled artifacts
-# Public paper bundles live under `papers/`.
+# Public paper bundles live under `papers/<name>/`. Working dirs at the
+# repo root mirror the public name and hold build artifacts + submission
+# packages that must not enter public history.
 /workingpapers/
+/cognitive-camouflage/
+/adversarial-precedent-memory/
+/contract-governed-hardening/
+/cognitive-firm/
+/epistemic-verification/
+/epistemic-verification-companion/
+/architectural-invariance/
+/adversarial-substrate-prober/
+/paper8/
+# legacy paths retained for back-compat with stale checkouts
 /paper1/
 /paper2/
 /paper3/
 /paper4/
 /paper5/
+/paper6/
+/paper7/
 /*.pdf
 paper/*.pdf
 *.aux
