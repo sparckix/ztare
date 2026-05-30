@@ -1,0 +1,41 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "7113fc47a22aa5cb53eaf367df981226e5bdafa53e39cd03f4b58d1254f2c00b",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "meta_darwin_proxy"
+  ],
+  "compile_status": "lean_passed_no_sorry",
+  "contract_id": "ns_n8_beta_coherent_event_selection_surface_20260514_tick423",
+  "counterfactual_value_bucket": "high_info_bounded_adapter",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_n8_beta",
+    "coherent_event_selection",
+    "anti_tautology",
+    "gp233_positive"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "selection_theorem_still_open",
+    "pressure_visibility_separate",
+    "inherited_flat_branch_separate"
+  ],
+  "new_next_action": "Attack residual branch event selection: prove residual fresh excess creates an audit event in the same hEvents/L stream, while inherited/flat and pressure-only cases route to their separate N8 branches.",
+  "old_next_action": "Prove coherent event-stream selection directly or continue informal N8 beta audit.",
+  "preconditioner_effect": "Prevented claiming event selection from coherence; forced explicit residual routing and no-closure guard.",
+  "preconditioner_source": "scientific amnesia precheck + structural_language_catalog_20260514 + Meta-Darwin tick422 residual",
+  "realized_failure_mode_ids": [
+    "event_selection_still_unsourced",
+    "pressure_visibility_smuggling_guarded",
+    "inherited_flat_branch_still_separate"
+  ],
+  "resolution_note": "Added CoherentFreshPacketAuditResidualRoutingSource, projection to BetaNonflatFreshPacketCoherentSourceSplit, and no-closure guard. Lean passed; no sorry/admit; git diff check clean. The tick narrows coherent event selection to residual-fresh-excess routing plus inherited/flat skeleton and pressure same-carrier obligations, but leaves the actual event-selection theorem open.",
+  "resolved_at": "2026-05-14T22:26:42Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

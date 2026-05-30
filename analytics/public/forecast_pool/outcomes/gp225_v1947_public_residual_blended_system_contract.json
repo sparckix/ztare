@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 12.0,
+  "artifact_hash": "7ea995ff45873a7991e6628d96fab66993bb6a5ad54bcd37c36445c1da3c7531",
+  "artifact_path": "analytics/public/leanmill/results/v1947_public_residual_blended_system_contract.json",
+  "compile_status": "static_contract_passed",
+  "contract_id": "gp225_v1947_public_residual_blended_system_contract",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "v19.47 passed: public_residual_blended_contract_passed=true, define_our_system_as_blend=true, credit_public_components=true, train_gnn_now=false, claim_better_overall_now=false, run_v1948_same_sample_blended_benchmark_next=true.",
+  "resolved_at": "2026-05-14T00:41:22Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

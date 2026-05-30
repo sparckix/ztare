@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_ckn_tent_share_scout_micro_20260514_tick339.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_ckn_tent_share_scout_micro_20260514_tick339.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_ckn_tent_share_scout_micro_20260514_tick339",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_ckn_tent_share_scout_micro_20260514_tick339.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_ckn_tent_share_scout_micro_20260514_tick339.json"
+  },
+  "budget_agent_minutes": 80.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_ckn_tent_share_scout_micro_20260514_tick339",
+  "cost_penalty": 2.0,
+  "created_at": "2026-05-14T03:28:20Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 78,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1034,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-14T06:00:00Z",
+  "information_value": 8.0,
+  "layer": "micro",
+  "objective_resolver": "success iff a new or existing offline scout runs locally, writes JSON+MD under projects/ns_millennium_hunt/workspace/queries, classifies at least three regimes matching the Lean compatibility shares, and identifies at least one concrete next PDE/Lean action; no harness/pre-GNN files are mutated",
+  "question": "Will a deterministic fixed-window CKN/tent share scout produce an artifact that separates resolved mean-free, Galilean mean, and leakage payment regimes for pre-summed pressure/Riesz cone stress, with an objective resolution predicate and no pre-GNN mutation?",
+  "risk_penalty": 2.0,
+  "success_threshold": "scout_artifact_written_and_regime_classification_present",
+  "task_type": "ns_route1_pde_scout",
+  "value_if_success": 7.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

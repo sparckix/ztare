@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Prefer a guard if the adapter cannot identify route omega/freshRegion with event weighted prices and Duhamel reserve depletion.",
+  "agent_id": "codex_rd_reuse_skeptic",
+  "contract_id": "ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394",
+  "contract_question": "Can the next NS tick encode the exact adapter/guard between event-section Duhamel recurrence machinery and LineageFreshMonotoneReservoirSource without claiming PDE content?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_price_not_omega_reserve": 0.36,
+    "lean_type_mismatch": 0.12,
+    "no_new_action_delta": 0.1,
+    "recurrent_reuse_countermodel_survives": 0.18,
+    "wrapper_too_prop_valued": 0.24
+  },
+  "forecast_externality_tags": [
+    "no_go_hygiene",
+    "carrier_conversion_guard"
+  ],
+  "forecasted_at": "2026-05-14T15:33:40Z",
+  "p_dependency_issue": 0.32,
+  "p_needs_new_lemma": 0.9,
+  "p_regression": 0.09,
+  "p_success": 0.51,
+  "rationale_short": "Event recurrence machinery proves finite price/reciprocal certificates, not necessarily depletion of the route-1 active source measure. The useful outcome may be a guard, not a source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "event_price_not_omega_reserve",
+    "recurrent_reuse_countermodel_survives",
+    "wrapper_too_prop_valued"
+  ]
+}

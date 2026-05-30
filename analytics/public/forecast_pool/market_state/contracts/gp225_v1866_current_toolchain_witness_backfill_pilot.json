@@ -1,0 +1,224 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T16:56:10Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.0,
+    "expected_value": -3.046845098563696,
+    "forecast_count": 3,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.18666666666666668,
+    "p_needs_new_lemma": 0.09999999999999999,
+    "p_regression": 0.11,
+    "p_success": 0.5133587075721221,
+    "participants": [
+      {
+        "agent_id": "codex_local_rd",
+        "domain": "gp225_witness_backfill",
+        "p_success": 0.44,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "faraday_readonly",
+        "domain": "gp225_witness_backfill",
+        "p_success": 0.54,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "hume_readonly",
+        "domain": "gp225_witness_backfill",
+        "p_success": 0.56,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "current_toolchain_driver_lacks_poststate_capture",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "witness_driver_compile_below_4_of_6",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "witness_driver_compile_count_below_4",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "closure_or_target_witness_emission_below_3_rows",
+        "p": 0.08
+      },
+      {
+        "mode": "valid_closure_or_target_witness_count_below_3",
+        "p": 0.08
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1866_current_toolchain_witness_backfill_pilot.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1866_current_toolchain_witness_backfill_pilot.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1866_current_toolchain_witness_backfill_pilot.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1866_current_toolchain_witness_backfill_pilot.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1866_current_toolchain_witness_backfill_pilot.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 12.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T16:55:40Z",
+    "created_by": "codex_RD_2026_05_13",
+    "horizon": "2026-05-13T20:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "analytics/public/leanmill/results/v1866_current_toolchain_witness_backfill_pilot.json metrics: attempted_rows=6, gold_witness_driver_compiled_rows>=4, closure_or_target_witness_rows>=3, audited_true_false_accepts=0, training_now=false, gnn_blocked=true",
+    "question": "Will v18.66 backfill closure/target witnesses for at least 3 of 6 selected current-toolchain hard-residual packet rows with zero audited false accepts?",
+    "success_threshold": "gold_witness_driver_compiled_rows>=4 AND closure_or_target_witness_rows>=3 AND audited_true_false_accepts=0",
+    "task_type": "gp225_current_toolchain_witness_backfill_pilot"
+  },
+  "contract_id": "gp225_v1866_current_toolchain_witness_backfill_pilot",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_local_rd",
+        "raw_agent_ids": [
+          "codex_local_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:faraday_readonly",
+        "raw_agent_ids": [
+          "faraday_readonly"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:hume_readonly",
+        "raw_agent_ids": [
+          "hume_readonly"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_local_rd",
+      "faraday_readonly",
+      "hume_readonly"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_local_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1866_current_toolchain_witness_backfill_pilot/codex_local_rd.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_witness_backfill",
+        "expected_cost_agent_minutes": 8.0,
+        "forecasted_at": "2026-05-13T16:55:48Z",
+        "p_success": 0.44,
+        "rationale_short": "The selected rows are real hard residuals, but v18.64 has no current-toolchain witness fields, so the main risk is driver-schema backfill rather than label quality.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "faraday_readonly",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1866_current_toolchain_witness_backfill_pilot/faraday_readonly.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_witness_backfill",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-13T16:56:05Z",
+        "p_success": 0.54,
+        "rationale_short": "Current-toolchain alignment helps, but a 3-witness emission threshold is harder than mere compile replay.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hume_readonly",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1866_current_toolchain_witness_backfill_pilot/hume_readonly.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_witness_backfill",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-13T16:56:05Z",
+        "p_success": 0.56,
+        "rationale_short": "Focused six-row pilot is plausible, but witness-emission threshold dominates because v18.64 had zero closure/target witnesses.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.12,
+      "p_success": 0.5133587075721221,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "current_toolchain_driver_lacks_poststate_capture",
+        "p": 0.09999999999999999
+      },
+      "voi_proxy": 1.2198
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 36.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.5133587075721221,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "current_toolchain_driver_lacks_poststate_capture",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "witness_driver_compile_below_4_of_6",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "witness_driver_compile_count_below_4",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "closure_or_target_witness_emission_below_3_rows",
+        "p": 0.08
+      },
+      {
+        "mode": "valid_closure_or_target_witness_count_below_3",
+        "p": 0.08
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

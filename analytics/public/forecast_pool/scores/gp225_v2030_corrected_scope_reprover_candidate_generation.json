@@ -1,0 +1,125 @@
+{
+  "contract_id": "gp225_v2030_corrected_scope_reprover_candidate_generation",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "do not generate corrected public candidates; continue internal source-safe holdout only",
+      "counterfactual_action": "generate corrected all-scope public candidates locally, then price replay separately if clean",
+      "externality_hypotheses": {
+        "negative": [
+          "Failure routes away from ReProver cached local generation toward other public adapters or internal holdout"
+        ],
+        "positive": [
+          "Corrected queue may restore public/union bridge after label cleanup"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "gp230_lovelace_gp225_v2030",
+        "gp230_parfit_gp225_v2030"
+      ],
+      "counterfactual_value_bucket": "medium_positive",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "general_purpose_lean_harness",
+        "public_repo_adapter",
+        "candidate_supply_positive",
+        "pre_gnn"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Open a separate GP-230 replay/static-verify gate for v20.30 candidates; do not count as labels or train yet.",
+      "old_next_action": "Do not run literal remaining-scope generation; keep GNN blocked.",
+      "preconditioner_effect": "Blocked literal remaining-scope route and excluded current_scale_0256/current_scale_0298 before generation.",
+      "preconditioner_source": "v2029 corrected queue audit plus v2027 global strict compile sweep"
+    }
+  },
+  "mean_brier": 0.02600000000000001,
+  "mean_log_score": -0.174636914229211,
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "artifact_hash": "044ec2e44038eae6f72c60cf27e2d92ea930aa1459242ed7b4feb1645d4e05a1",
+    "artifact_path": "analytics/public/leanmill/results/v2030_corrected_scope_reprover_candidates.json",
+    "changed_by_forecast_ids": [
+      "gp230_lovelace_gp225_v2030",
+      "gp230_parfit_gp225_v2030"
+    ],
+    "compile_status": "pass",
+    "contract_id": "gp225_v2030_corrected_scope_reprover_candidate_generation",
+    "counterfactual_value_bucket": "medium_positive",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "general_purpose_lean_harness",
+      "public_repo_adapter",
+      "candidate_supply_positive",
+      "pre_gnn"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "Open a separate GP-230 replay/static-verify gate for v20.30 candidates; do not count as labels or train yet.",
+    "old_next_action": "Do not run literal remaining-scope generation; keep GNN blocked.",
+    "preconditioner_effect": "Blocked literal remaining-scope route and excluded current_scale_0256/current_scale_0298 before generation.",
+    "preconditioner_source": "v2029 corrected queue audit plus v2027 global strict compile sweep",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.30 emitted clean corrected-scope candidate supply: 11 input rows, 11 candidate rows, 88 total candidates, local_files_only=true, no replay/training, forbidden fields false, contaminated rows excluded.",
+    "resolved_at": "2026-05-14T14:48:46Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T14:48:52Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "gp230_lovelace_gp225_v2030",
+      "brier": 0.019600000000000003,
+      "cost_error_agent_minutes": -2.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.15082288973458366,
+      "p_success": 0.86,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T14:43:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T14:46:39Z",
+        "resolved_at": "2026-05-14T14:48:46Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "gp230_parfit_gp225_v2030",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": -6.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 14.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T14:43:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T14:46:49Z",
+        "resolved_at": "2026-05-14T14:48:46Z"
+      }
+    }
+  ]
+}

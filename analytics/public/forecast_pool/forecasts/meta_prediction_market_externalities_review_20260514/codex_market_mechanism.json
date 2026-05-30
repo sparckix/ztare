@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_market_mechanism",
+  "contract_id": "meta_prediction_market_externalities_review_20260514",
+  "contract_question": "Can a two-agent expert review plus local artifact audit identify concrete improvements to ex-post positive/negative externality analysis for the forecast-pool/prediction-market seam?",
+  "domain": "meta_prediction_market",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "agent_limit_friction": 0.1,
+    "good_schema_fields": 0.3,
+    "no_clear_artifact_mapping": 0.18,
+    "recommendations_too_generic": 0.24,
+    "script_interface_clear": 0.18
+  },
+  "forecasted_at": "2026-05-14T13:42:41Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.35,
+  "p_regression": 0.04,
+  "p_success": 0.76,
+  "rationale_short": "Existing forecast artifacts already expose calibration and effort learning; externality analysis likely needs schema additions, not new infrastructure.",
+  "read_only_attestation": true
+}

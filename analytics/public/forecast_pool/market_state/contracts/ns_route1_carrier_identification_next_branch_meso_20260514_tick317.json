@@ -1,0 +1,192 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:27:02Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 37.0,
+    "expected_value": -3.343328712396729,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.26,
+    "p_needs_new_lemma": 0.5,
+    "p_regression": 0.07500000000000001,
+    "p_success": 0.5943695405930449,
+    "participants": [
+      {
+        "agent_id": "Herschel",
+        "domain": "NS_route1",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Rawls",
+        "domain": "NS_route1",
+        "p_success": 0.43,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "branch_A_tail_window_couples_to_receipts",
+        "p": 0.275
+      },
+      {
+        "mode": "branch_B_collapses_to_provenance_field",
+        "p": 0.25
+      },
+      {
+        "mode": "compile_surface_churn",
+        "p": 0.2
+      },
+      {
+        "mode": "analytic_identity_too_large",
+        "p": 0.15
+      },
+      {
+        "mode": "hidden_helmholtz_leray_theorem_needed",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 40.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:23:51Z",
+    "created_by": "codex_rd",
+    "horizon": "same RD tick",
+    "layer": "meso",
+    "objective_resolver": "Resolution by RD-selected branch plus compile-passed Lean proof-surface progress and GP-233 E/F row; success if selected branch yields a non-tautological lower station or theorem with no new sorry/admit.",
+    "question": "Which next route-1 pressure-visibility branch should this tick prioritize after Route1PressureAngularCarrierIdentification: A) split/prove pressure-Hessian tail-window projection, B) split/prove projected Riesz kernel to angular moment, or C) split/prove radial-grade carrier normalization?",
+    "success_threshold": "success=true iff selected branch produces build-passed Lean progress below Route1PressureAngularCarrierIdentification and changes the next PDE lever",
+    "task_type": "ns_route1_pde_branch_choice"
+  },
+  "contract_id": "ns_route1_carrier_identification_next_branch_meso_20260514_tick317",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Herschel",
+        "raw_agent_ids": [
+          "Herschel"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Rawls",
+        "raw_agent_ids": [
+          "Rawls"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Herschel",
+      "Rawls"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Herschel",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_carrier_identification_next_branch_meso_20260514_tick317/herschel.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T00:26:57Z",
+        "p_success": 0.74,
+        "rationale_short": "branch=A; closest to pressure visibility and likely compiled progress; risk is projection coupling to route receipts unless source separates carrier projection from unresolved tail accounting.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Rawls",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_carrier_identification_next_branch_meso_20260514_tick317/rawls.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T00:26:57Z",
+        "p_success": 0.43,
+        "rationale_short": "branch=B; highest-information route because it attacks projected Riesz to angular moment; lower success odds but strongest Clay-adjacent bottleneck exposure.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T00:30:47Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.31,
+      "p_success": 0.5943695405930449,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 1.2511
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 37.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5943695405930449,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "branch_A_tail_window_couples_to_receipts",
+        "p": 0.275
+      },
+      {
+        "mode": "branch_B_collapses_to_provenance_field",
+        "p": 0.25
+      },
+      {
+        "mode": "compile_surface_churn",
+        "p": 0.2
+      },
+      {
+        "mode": "analytic_identity_too_large",
+        "p": 0.15
+      },
+      {
+        "mode": "hidden_helmholtz_leray_theorem_needed",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.19625000000000004,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T00:31:02Z"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+  "contract_question": "Munger-inversion dichotomy (Gemini-prompted, ANTI-PATTERN-014-screened): a Turing-pump blowup needs strong 3D vortex stretching (NON-tangential); the Birkhoff/slaving reduction operates only on the asymptotically-TANGENTIAL (near-2D, Ladyzhenskaya-regular) branch. So is 'asymptotically tangential' a PROVEN property of the inherited CKN-bad cascade (\u21d2 near-2D \u21d2 atom A_n bounded \u21d2 regularity, undecidability claim refuted) OR an unjustified ASSUMPTION carried through the arc (\u21d2 the real open regime is non-tangential 3D-stretching = where blowup/Turing-pump would live)? Resolve which, with the CKN/Type-I structure of the inherited bad cascade.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "missing_negative_case_for_nontangential_branch": 0.14,
+    "tangentiality_carried_as_unproven_selection_premise": 0.42,
+    "theorem_hypothesis_or_geometry_mismatch": 0.2,
+    "tick559_to_tick562_chain_does_not_force_cascade_geometry": 0.24
+  },
+  "forecast_externality_tags": [
+    "circularity-risk",
+    "theorem-application",
+    "provenance-audit"
+  ],
+  "forecasted_at": "2026-05-16T13:24:55Z",
+  "p_dependency_issue": 0.29,
+  "p_needs_new_lemma": 0.63,
+  "p_regression": 0.04,
+  "p_success": 0.18,
+  "rationale_short": "The adjacent arc already uses tangentiality as a selection premise, but the supplied artifacts do not independently witness a CKN/Type-I implication from badness to asymptotic tangentiality. I price the main miss as provenance/circularity, with a smaller residual on theorem-hypothesis mismatch and missing negative-case coverage.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "tangentiality_carried_as_unproven_selection_premise",
+    "tick559_to_tick562_chain_does_not_force_cascade_geometry",
+    "theorem_hypothesis_or_geometry_mismatch",
+    "missing_negative_case_for_nontangential_branch"
+  ]
+}

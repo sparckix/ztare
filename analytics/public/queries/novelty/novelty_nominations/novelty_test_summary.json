@@ -1,0 +1,30 @@
+{
+  "providers": [
+    "gemini",
+    "claude"
+  ],
+  "standard_noms": {
+    "gemini": [
+      "three_profile_assembly_bound",
+      "shell_viscosity_bound",
+      "leray_self_tax_limit_bound"
+    ],
+    "claude": [
+      "threeProfileAssembledTax_le_leraySelfTaxLimitPrice",
+      "coreFloor_le_epsilon_mul_shell",
+      "gap_le_pricingSumSquares_of_sumSquares"
+    ]
+  },
+  "novelty_noms": {
+    "gemini": [
+      "threeProfile_direct_limit_bound",
+      "anon",
+      "anon"
+    ],
+    "claude": [
+      "sharpTarget_lipschitz_viscosity",
+      "angleConstant_kNorm_bridge",
+      "selfTax_dominates_assembled_three_profile"
+    ]
+  }
+}

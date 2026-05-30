@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 20.0,
+  "artifact_hash": "19d88ccd0007056abc7e626800bb15ab6074ef6b28ecddc5039342c5a227ae8a",
+  "artifact_path": "analytics/public/leanmill/results/v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+  "changed_by_forecast_ids": [
+    "Hilbert2",
+    "Nash"
+  ],
+  "compile_status": "static_synthesis_gate_passed",
+  "contract_id": "gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "anti_leakage",
+    "normalization_obligation_split",
+    "replay_budget_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no_compile_evidence",
+    "no_replay_ready_candidate"
+  ],
+  "new_next_action": "audit normalization source safety before any replay",
+  "old_next_action": "attempt direct charFunDual replay candidate",
+  "preconditioner_effect": "Forced candidate synthesis to classify nonself source hinge templates separately from replay-ready proof packets.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2051_source_safe_nonself_charfun_dual_discovery_or_drop_row.json",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "v20.52 passed: it generated a source-safe synthesis gate, emitted zero replay-ready templates, separated two normalization-obligation-only templates, blocked the copied target rw-list, ran no replay/training, and kept GNN blocked.",
+  "resolved_at": "2026-05-14T17:57:56Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

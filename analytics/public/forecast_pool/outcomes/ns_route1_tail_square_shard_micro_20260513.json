@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 20.0,
+  "artifact_hash": null,
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_tail_square_shard_micro_20260513",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Resolved true: added FreshFrequencyTailSquareFixedCarrierIdentity and tail_eq_square_function_of_fixed_carrier_identity below Adapter; module typechecked and built.",
+  "resolved_at": "2026-05-13T21:00:45Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

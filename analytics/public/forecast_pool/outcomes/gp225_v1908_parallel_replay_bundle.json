@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 30.0,
+  "artifact_hash": null,
+  "artifact_path": "analytics/public/leanmill/results/v1908_parallel_replay_bundle.json",
+  "compile_status": "replay_bundle_failed_density_breadth_gate",
+  "contract_id": "gp225_v1908_parallel_replay_bundle",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "v19.08 completed both lanes under capped parallel mode. Base contract passed for both lanes: non-PDE clean=112/120, PDE+functional clean=107/120, selected false accepts total=0, post-quarantine false accepts total=0. Full success failed because high_density_breadth_lanes=0: non-PDE density=0.3482; PDE+functional density=0.4206 and top_areas=7 < 8. Training=false and GNN blocked=true.",
+  "resolved_at": "2026-05-13T21:47:47Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

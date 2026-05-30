@@ -1,0 +1,209 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T20:06:02Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 31.5,
+    "expected_value": -1.245610108138579,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.32,
+    "p_needs_new_lemma": 0.26,
+    "p_regression": 0.1,
+    "p_success": 0.6533092663367165,
+    "participants": [
+      {
+        "agent_id": "codex-meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns-proof-falsification",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_n8_branch_guard_formalization_20260514_tick410/codex_meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T20:06:02Z",
+        "p_success": 0.58,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex-rd-main",
+        "belief_update": false,
+        "domain": "ns-route1-proof-frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_n8_branch_guard_formalization_20260514_tick410/codex_rd_main.json",
+        "forecasted_at": "2026-05-14T20:06:02Z",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.175
+      },
+      {
+        "mode": "n8_surfaces_too_abstract",
+        "p": 0.175
+      },
+      {
+        "mode": "overclaim_guard_too_weak",
+        "p": 0.15
+      },
+      {
+        "mode": "wrapper_only",
+        "p": 0.15
+      },
+      {
+        "mode": "route1_boundary_already_encoded",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_n8_branch_guard_formalization_20260514_tick410.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_n8_branch_guard_formalization_20260514_tick410.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_n8_branch_guard_formalization_20260514_tick410.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_n8_branch_guard_formalization_20260514_tick410.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_n8_branch_guard_formalization_20260514_tick410.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 25.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T20:05:45Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-14",
+    "layer": "meso",
+    "objective_resolver": "Resolve true iff ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean compiles, no sorry/admit is introduced in that file, and the added surfaces distinguish route1 closure from N8 branch closure.",
+    "question": "Will the N8 branch guard formalization tick add compiling Lean surfaces for upstream branch exhaustion and non-route branch guards without overclaiming route-1 closure as critical-increment closure?",
+    "success_threshold": "Lean compile plus no-sorry scan plus explicit N8 guard surfaces",
+    "task_type": "ns-proof-frontier-formalization"
+  },
+  "contract_id": "ns_route1_n8_branch_guard_formalization_20260514_tick410",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd-main"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex-meta-darwin-proxy",
+        "raw_agent_ids": [
+          "codex-meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-meta-darwin-proxy",
+      "codex-rd-main"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "proceed_but_score_as_guard_not_closure",
+        "agent_id": "codex-meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_n8_branch_guard_formalization_20260514_tick410/codex_meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns-proof-falsification",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-14T20:06:02Z",
+        "p_success": 0.58,
+        "rationale_short": "The edit can help prevent overclaiming, but it will not close N8. Risk is mistaking named branch predicates for actual branch exhaustion.",
+        "specific_failure_mode_ids": [
+          "route1_boundary_already_encoded",
+          "n8_surfaces_too_abstract",
+          "upstream_branch_predicates_not_actual",
+          "lean_compile_issue"
+        ]
+      },
+      {
+        "action_change_recommendation": "proceed",
+        "agent_id": "codex-rd-main",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_n8_branch_guard_formalization_20260514_tick410/codex_rd_main.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns-route1-proof-frontier",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T20:06:02Z",
+        "p_success": 0.72,
+        "rationale_short": "This is mostly surface hardening, not a PDE proof. Compile risk is modest; main risk is adding duplicate wrappers instead of sharper branch guards.",
+        "specific_failure_mode_ids": [
+          "wrapper_only",
+          "duplicate_surface",
+          "lean_compile_issue",
+          "overclaim_guard_too_weak"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T20:07:35Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 31.5,
+      "expected_value": -1.245610108138579,
+      "p_success": 0.6533092663367165,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.7465
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 31.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6533092663367165,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.175
+      },
+      {
+        "mode": "n8_surfaces_too_abstract",
+        "p": 0.175
+      },
+      {
+        "mode": "overclaim_guard_too_weak",
+        "p": 0.15
+      },
+      {
+        "mode": "wrapper_only",
+        "p": 0.15
+      },
+      {
+        "mode": "route1_boundary_already_encoded",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1274,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T20:07:42Z"
+  }
+}

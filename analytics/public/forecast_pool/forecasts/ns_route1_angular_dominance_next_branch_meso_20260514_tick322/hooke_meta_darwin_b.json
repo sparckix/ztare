@@ -1,0 +1,23 @@
+{
+  "agent_id": "hooke_meta_darwin_B",
+  "contract_id": "ns_route1_angular_dominance_next_branch_meso_20260514_tick322",
+  "contract_question": "Will the next useful NS route-1 branch after the sheath No-Go be fixed-window angular-dominance source construction rather than more recovered-Riesz magnitude or formula-source wrapping?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "angular_countermodel_only_negative": 0.18,
+    "branch_selection_ambiguous": 0.1,
+    "build_regression": 0.05,
+    "dominance_source_requires_real_sheath_estimate": 0.17,
+    "fixed_window_branch_still_wrapper_progress": 0.28,
+    "recovered_riesz_magnitude_more_actionable": 0.22
+  },
+  "forecasted_at": "2026-05-14T01:01:39Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.03,
+  "p_success": 0.71,
+  "rationale_short": "Fixed-window angular dominance/countermodel directly tests whether formula source supports visibility or is killed by cancellation.",
+  "read_only_attestation": true
+}

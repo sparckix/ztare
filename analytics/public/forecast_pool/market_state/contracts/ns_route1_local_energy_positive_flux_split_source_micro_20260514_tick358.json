@@ -1,0 +1,242 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:27:21Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 48.0,
+    "expected_value": -0.030522132961765647,
+    "forecast_count": 4,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.22,
+    "p_needs_new_lemma": 0.5975,
+    "p_regression": 0.07250000000000001,
+    "p_success": 0.5219778670382343,
+    "participants": [
+      {
+        "agent_id": "codex_rd_tick358",
+        "domain": "ns_route1_pde",
+        "p_success": 0.68,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic_tick358",
+        "domain": "ns_route1_pde",
+        "p_success": 0.49,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "hooke_pde_tick358",
+        "domain": "ns_route1_pde",
+        "p_success": 0.48,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_skeptic_tick358",
+        "domain": "ns_route1_pde",
+        "p_success": 0.43,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "positive_flux_split_assumed_not_proved",
+        "p": 0.075
+      },
+      {
+        "mode": "split_residuals_sourced_after_target",
+        "p": 0.075
+      },
+      {
+        "mode": "source_interface_too_wrapper_like",
+        "p": 0.07
+      },
+      {
+        "mode": "positiveBoundaryFluxCharge_not_independent",
+        "p": 0.065
+      },
+      {
+        "mode": "alternate_charge_fields_are_target_relabeling",
+        "p": 0.0625
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:24:34Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T17:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean has a compiled source/constructor from independently named positive cutoff flux visible part and alternate pressure/local/commutator/no-invisible charges into FixedWindowTransportVisibleOrInvisibleRouteClosure; lake env lean and downstream lake build pass; touched file has no sorry/admit",
+    "question": "Can we add a Lean-checked local-energy positive cutoff-flux visible/invisible split source feeding the route-level transport closure, without defining invisible leakage from the target bound or substituting DR/pressure carriers?",
+    "success_threshold": "all resolver clauses true",
+    "task_type": "ns_route1_pde_gowers_first_then_lean"
+  },
+  "contract_id": "ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 4,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_tick358",
+        "raw_agent_ids": [
+          "codex_rd_tick358"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic_tick358",
+        "raw_agent_ids": [
+          "codex_skeptic_tick358"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:hooke_pde_tick358",
+        "raw_agent_ids": [
+          "hooke_pde_tick358"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_skeptic_tick358",
+        "raw_agent_ids": [
+          "rawls_skeptic_tick358"
+        ]
+      }
+    ],
+    "latest_forecast_count": 4,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_tick358",
+      "codex_skeptic_tick358",
+      "hooke_pde_tick358",
+      "rawls_skeptic_tick358"
+    ]
+  },
+  "forecasts": {
+    "history_count": 4,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_tick358",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358/codex_rd_tick358.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T12:25:52Z",
+        "p_success": 0.68,
+        "rationale_short": "Scalar constructor should compile; value depends on explicit fields keeping residuals independent of the final target bound.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic_tick358",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358/codex_skeptic_tick358.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 60.0,
+        "forecasted_at": "2026-05-14T12:25:52Z",
+        "p_success": 0.49,
+        "rationale_short": "Useful only as source interface; high risk that the hard PDE split remains entirely assumed.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_pde_tick358",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358/hooke_pde_tick358.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-14T12:27:09Z",
+        "p_success": 0.48,
+        "rationale_short": "Meaningful only if positive flux and residual charges are separately named numeric receipts; wrapper-only if residuals are chosen to make final inequality true.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_skeptic_tick358",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358/rawls_skeptic_tick358.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-14T12:27:09Z",
+        "p_success": 0.43,
+        "rationale_short": "Compile surface likely; non-tautological value depends on a lower local-energy identity source for the split.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 4
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:27:21Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.25,
+      "p_success": 0.5219778670382343,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 0.4995
+    },
+    "effective_n": 4,
+    "expected_cost_agent_minutes": 48.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5219778670382343,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "positive_flux_split_assumed_not_proved",
+        "p": 0.075
+      },
+      {
+        "mode": "split_residuals_sourced_after_target",
+        "p": 0.075
+      },
+      {
+        "mode": "source_interface_too_wrapper_like",
+        "p": 0.07
+      },
+      {
+        "mode": "positiveBoundaryFluxCharge_not_independent",
+        "p": 0.065
+      },
+      {
+        "mode": "alternate_charge_fields_are_target_relabeling",
+        "p": 0.0625
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.23945000000000002,
+    "score_rows": 4,
+    "scored_at": "2026-05-14T12:27:21Z"
+  }
+}

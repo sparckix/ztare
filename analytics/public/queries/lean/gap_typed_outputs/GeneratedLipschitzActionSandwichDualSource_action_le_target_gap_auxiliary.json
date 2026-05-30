@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-07T03:06:00.591736+00:00",
+  "target": "GeneratedLipschitzActionSandwichDualSource",
+  "field": "action_le_target",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "low",
+    "rationale": "Local lexical classifier found packaging/object-construction language after no stronger analytic field/type cue matched. Target was not present in the workmap.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

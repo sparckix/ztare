@@ -1,0 +1,36 @@
+{
+  "tick": "tick668",
+  "target": "L3AFilteredRangeEventPreimageFromRankBoundarySource.toFilteredRangeEventPreimageFromLateExclusionSource",
+  "pattern_chain": [
+    "Gowers-First-Formalize-Second",
+    "PATTERN-028 recursive tool-depth loop",
+    "PATTERN-011 hard mathematical residual swarm lane"
+  ],
+  "positive_forecast_phrasing": "A successful step should expose rank-boundary data as the lower live source of the filtered finite-prefix support.",
+  "residual_to_check_edges": [
+    {
+      "residual": "filtered final-prefix support still stopped at late-event exclusion",
+      "check": "derive Level547 source from selected-node event-rank support boundary",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    },
+    {
+      "residual": "rank-boundary source could be circular if filtered-range support is consumed upstream",
+      "check": "run provenance acyclicity gate with filtered-range families forbidden as sources",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level548_provenance_acyclic_edge_receipt.json"
+    }
+  ],
+  "anti_pattern_guards": [
+    "no endpoint-capacity-only final prefix",
+    "no direct late-event exclusion assumption",
+    "no filtered-range backedge into rank-boundary data",
+    "no post-payoff rank selection"
+  ],
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level548_rank_boundary_to_filtered_range_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level548_finite_support_extraction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level548_finite_image_support_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level548_provenance_edge_direction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level548_provenance_acyclic_edge_receipt.json"
+  ]
+}
+

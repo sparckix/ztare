@@ -1,0 +1,26 @@
+{
+  "agent_id": "Franklin",
+  "belief_training_should_unlock": false,
+  "contract_id": "gp225_v2079_union_training_readiness_gate_after_slope_heldout_strict",
+  "domain": "lean_gnn_harness",
+  "expected_cost_agent_minutes": 18.0,
+  "failure_mode_distribution": {
+    "anti_leakage_checks_omitted_or_softened": 0.09,
+    "artifact_plumbing_or_schema_error": 0.06,
+    "manifest_or_latest_pointer_misread": 0.1,
+    "missing_baseline_or_model_delta_check": 0.22,
+    "null_training_spec_confused_with_training_execution": 0.08,
+    "other": 0.03,
+    "over_unlock_from_single_heldout_strict_row": 0.26,
+    "row_count_goodharting_16_as_threshold": 0.16
+  },
+  "forecasted_at": "2026-05-14T19:59:10Z",
+  "p_dependency_issue": 0.04,
+  "p_needs_new_lemma": 0.0,
+  "p_regression": 0.08,
+  "p_success": 0.86,
+  "question": "Build and run a read-only v20.79 union training-readiness gate after v20.77/v20.78, preserving anti-leakage and anti-Goodhart constraints while deciding whether training should start.",
+  "rationale": "A coherent gate should pass and block real training: v20.78 has 16 strict rows and one heldout strict row, but v20.72 still requires baseline/model-delta evidence.",
+  "routing_hint": "run_static_gate_only",
+  "weight": 1.0
+}

@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1947_public_residual_blended_system_contract.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1947_public_residual_blended_system_contract.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1947_public_residual_blended_system_contract",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1947_public_residual_blended_system_contract.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1947_public_residual_blended_system_contract.json"
+  },
+  "budget_agent_minutes": 32.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1947_public_residual_blended_system_contract",
+  "cost_penalty": 0.02,
+  "created_at": "2026-05-14T00:41:00Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.129,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_blended_system_contract",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.129,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 3,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0811,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0857,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0882,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0789,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "this_v1947_tick",
+  "information_value": 2.0,
+  "layer": "meso",
+  "objective_resolver": "Resolve true if analytics/public/leanmill/results/v1947_public_residual_blended_system_contract.json exists with public_residual_blended_contract_passed=true, define_our_system_as_blend=true, credit_public_components=true, train_gnn_now=false, claim_better_overall_now=false, and run_v1948_same_sample_blended_benchmark_next=true.",
+  "question": "v19.47 defines an offline public+GP-225 blended system contract with public credit, provenance-weighted training tiers, and next same-sample benchmark gate without overclaiming",
+  "risk_penalty": 1.0,
+  "success_threshold": "public_residual_blended_contract_passed true with no training/no superiority claim",
+  "task_type": "gp225_blended_system_contract",
+  "value_if_success": 4.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

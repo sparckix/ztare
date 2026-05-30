@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "17e964b7c5cc56181985b2b77d0fc50f1b83e435175363b661eaff2019b7771b",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "pass",
+  "contract_id": "ns_n8_beta_eventized_constructive_source_split_20260514_tick419",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "positive_adapter_reuse",
+    "anti_tautology_guard",
+    "beta_branch_sharpened"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 6,
+  "negative_externality_tags": [
+    "same_tree_source_still_open",
+    "cofinality_unproved"
+  ],
+  "new_next_action": "Attack the cofinal same-tree event-budgeted incidence primitive, or route to pressure/radius if that primitive fails.",
+  "old_next_action": "Source EventizedParabolicBetaCarlesonQuantStratConstructiveData generically.",
+  "preconditioner_effect": "Prevented overclaim: the patch exposes the same-tree dependency instead of claiming beta closure.",
+  "preconditioner_source": "scientific_amnesia_precheck + PATTERN-025 gowers_first_formalize_second + Darwin guard",
+  "realized_failure_mode_ids": [
+    "same_tree_dependency_not_removed",
+    "cofinality_source_unproved",
+    "pressure_lock_depends_on_incidence"
+  ],
+  "resolution_note": "Added BetaEventizedConstructiveDataSourceSplit and projections for scale truncations, singleton incidence geometry, monotone beta carrier, pressure/Duhamel lock, flat skeleton control, and conditional assembly of EventizedParabolicBetaCarlesonQuantStratConstructiveData. Lean passes; no sorry/admit; guard records that same-tree/cofinal event-budgeted incidence remains required.",
+  "resolved_at": "2026-05-14T21:44:43Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

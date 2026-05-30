@@ -1,0 +1,24 @@
+{
+  "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+  "contract_id": "ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295",
+  "contract_question": "Can the local tick add a compiling non-tautological Lean object lowering FreshFrequencyResolvedMeanFreeTentSquareEstimate.resolvedMeanFreeTentSquare_bound into fresh-energy/Poincare plus CKN-excess comparison sub-estimates without strictness oracle or pre-GNN mutation?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 70.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "ckn_excess_comparison_constant_or_nonnegativity_friction": 0.13,
+    "existing_l3_primitives_are_propositional_not_numeric": 0.25,
+    "fresh_energy_to_resolved_square_subestimate_needs_new_numeric_lemma": 0.17,
+    "lean_dependent_parameter_or_rewrite_friction": 0.1,
+    "minor_build_regression": 0.07,
+    "object_is_rejected_as_repackaging_not_lowering": 0.23,
+    "strictness_oracle_or_tail_budget_smuggling_risk": 0.05
+  },
+  "forecasted_at": "2026-05-13T22:02:00Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.48,
+  "p_regression": 0.11,
+  "p_success": 0.64,
+  "rationale_short": "Compiling object likely by lowering into sub-estimate fields and recombining; confidence capped because L3 primitives are mostly Prop-level provenance.",
+  "read_only_attestation": true
+}

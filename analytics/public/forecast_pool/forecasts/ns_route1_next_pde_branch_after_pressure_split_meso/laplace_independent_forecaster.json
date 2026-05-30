@@ -1,0 +1,23 @@
+{
+  "agent_id": "laplace_independent_forecaster",
+  "contract_id": "ns_route1_next_pde_branch_after_pressure_split_meso",
+  "contract_question": "Which next NS route1 PDE branch is most likely to produce a compiled non-tautological Lean bridge within the next bounded proof tick: pressure-visible Hessian L2 certificate, pressure-small Q local quadratic one-third channel, pressure-small T transport, or pressure-small C commutator?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "analytic_PDE_content_requires_more_than_one_tick": 0.2,
+    "certificate_restates_lower_bound_as_field": 0.18,
+    "existing_pressure_visible_surface_already_counts_so_goal_delta_small": 0.1,
+    "other": 0.3,
+    "pressure_Hessian_identification_too_Prop_opaque_for_non_tautology": 0.14,
+    "route1_bundle_wiring_import_or_namespace_drift": 0.08
+  },
+  "forecasted_at": "2026-05-13T19:54:37Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.08,
+  "p_success": 0.68,
+  "rationale_short": "chosen_branch=A_pressure_visible_Hessian_L2_certificate; bounded tick because pressure split, Hessian L2 certificate, tail mass visibility conversion, and branch payment wiring already exist; Q/T/C alone need another assumption bridge.",
+  "read_only_attestation": true
+}

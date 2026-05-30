@@ -1,0 +1,250 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T22:23:39Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 23.5,
+    "expected_value": 0.943584772591728,
+    "forecast_count": 4,
+    "forecast_history_count": 6,
+    "p_dependency_issue": 0.0675,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.0375,
+    "p_success": 0.716084772591728,
+    "participants": [
+      {
+        "agent_id": "Claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2103_strict_same_step_candidate_replay_meso_gate/claude.json",
+        "forecasted_at": "2026-05-14T22:23:38Z",
+        "p_success": 0.7,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "ClaudeRD",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2103_strict_same_step_candidate_replay_meso_gate/clauderd.json",
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "p_success": 0.7,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Franklin",
+        "belief_update": true,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecast_updates/gp225_v2103_strict_same_step_candidate_replay_meso_gate/franklin/20260514t222205z_franklin.json",
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "p_success": 0.62,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Noether",
+        "belief_update": true,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecast_updates/gp225_v2103_strict_same_step_candidate_replay_meso_gate/noether/20260514t222205z_noether.json",
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "p_success": 0.82,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "new_strict_same_step_label_added",
+        "p": 0.7082587064676616
+      },
+      {
+        "mode": "truncated_candidate_leaves_wrong_open_state",
+        "p": 0.07480099502487562
+      },
+      {
+        "mode": "auxiliary_overclosure_again_despite_truncation",
+        "p": 0.04862562189054727
+      },
+      {
+        "mode": "withDensity_apply_le_implicit_arg_resolution_fails",
+        "p": 0.03740049751243781
+      },
+      {
+        "mode": "refine_question_mark_metavariable_mismatch",
+        "p": 0.03491293532338309
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2103_strict_same_step_candidate_replay_meso_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2103_strict_same_step_candidate_replay_meso_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2103_strict_same_step_candidate_replay_meso_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2103_strict_same_step_candidate_replay_meso_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2103_strict_same_step_candidate_replay_meso_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T22:19:28Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-15T03:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "analytics/public/leanmill/results/v2104_strict_same_step_bounded_replay.json:metrics.new_strict_same_target_rows >= 1 AND metrics.harmful_compiled_mismatch_actions == 0 AND metrics.replay_executed == true AND metrics.training_now == false",
+    "question": "Can bounded replay of v21.02 add at least one strict same-step heldout label on current_scale_0164 matching the gold intermediate open state, with zero harmful mismatches, no leakage, and no training?",
+    "success_threshold": "metrics.new_strict_same_target_rows >= 1 AND metrics.harmful_compiled_mismatch_actions == 0",
+    "task_type": "lean_replay_strict_same_step_label_acquisition"
+  },
+  "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "Claude",
+          "ClaudeRD"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Franklin",
+        "raw_agent_ids": [
+          "Franklin"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Noether",
+        "raw_agent_ids": [
+          "Noether"
+        ]
+      }
+    ],
+    "latest_forecast_count": 4,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Claude",
+      "ClaudeRD",
+      "Franklin",
+      "Noether"
+    ]
+  },
+  "forecasts": {
+    "history_count": 6,
+    "latest": [
+      {
+        "action_change_recommendation": "Run bounded replay; agent-effort estimate aggregates Franklin/Noether spread and accounts for v21.04 wiring overhead plus v21.05 union readiness re-check.",
+        "agent_id": "Claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2103_strict_same_step_candidate_replay_meso_gate/claude.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T22:23:38Z",
+        "p_success": 0.7,
+        "rationale_short": "RD aggregate of Franklin p=0.62 (empirical, 28min) and Noether p=0.82 (structural, 18min); split the difference but weight slightly toward Franklin given calibration anchor from v20.99 loss. Predictor uses canonical agent_id 'Claude' per GP-230 spec; supersedes prior ClaudeRD entry. Scientific-amnesia precheck clean; RD-tick brief WARN on monoculture/tenant-versions does not block.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Run bounded replay; agent-effort estimate aggregates Franklin/Noether spread and accounts for v21.04 wiring overhead beyond the raw replay time.",
+        "agent_id": "ClaudeRD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2103_strict_same_step_candidate_replay_meso_gate/clauderd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "p_success": 0.7,
+        "rationale_short": "RD aggregate of Franklin p=0.62 (empirical, 28min) and Noether p=0.82 (structural, 18min); split the difference but weight slightly toward Franklin given calibration anchor. Effort accounts for replay-bridge wiring plus v21.05 union readiness re-check, not raw Lean compile alone.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Run bounded replay; if any of the 4 lands strict same-step with 0 harmful mismatches, proceed to v21.05 strict-table update before any training.",
+        "agent_id": "Franklin",
+        "artifact_path": "analytics/public/forecast_pool/forecast_updates/gp225_v2103_strict_same_step_candidate_replay_meso_gate/franklin/20260514t222205z_franklin.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "p_success": 0.62,
+        "rationale_short": "Base rate: v20.99 compiled 4/4 on this lemma form; v21.02 truncates only the closing line that caused auxiliary reclassification, preserving the gold intermediate by le_trans typing. Residual ~38% sits in post-state signature mismatch and bridge reclassification; calibration anchor from prior 0.64 loss prevents inflation despite the structural fix.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Proceed to v21.04 bounded replay; truncated first-lines of already-compiled v20.99 actions force the gold intermediate post-state by le_trans/.trans unification.",
+        "agent_id": "Noether",
+        "artifact_path": "analytics/public/forecast_pool/forecast_updates/gp225_v2103_strict_same_step_candidate_replay_meso_gate/noether/20260514t222205z_noether.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "p_success": 0.82,
+        "rationale_short": "Structural: le_trans a\u2264b \u2192 b\u2264c \u2192 a\u2264c with a=\u222b\u207b... and c=(map X \u2119) s forces b=(\u03bc.withDensity (pdf X \u2119 \u03bc)) s, exactly the gold intermediate. v20.99 compiled all four first-line shapes inside 2-liners; truncation removes the over-closure vehicle. Residual mass on refine ?_ metavar order and schema noise; harmful mismatch structurally improbable.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 4
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T22:27:01Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.943584772591728,
+      "forecast_spread": 0.2,
+      "p_success": 0.716084772591728,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.9033
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 23.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.716084772591728,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "new_strict_same_step_label_added",
+        "p": 0.7082587064676616
+      },
+      {
+        "mode": "truncated_candidate_leaves_wrong_open_state",
+        "p": 0.07480099502487562
+      },
+      {
+        "mode": "auxiliary_overclosure_again_despite_truncation",
+        "p": 0.04862562189054727
+      },
+      {
+        "mode": "withDensity_apply_le_implicit_arg_resolution_fails",
+        "p": 0.03740049751243781
+      },
+      {
+        "mode": "refine_question_mark_metavariable_mismatch",
+        "p": 0.03491293532338309
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.5092,
+    "score_rows": 4,
+    "scored_at": "2026-05-14T22:27:01Z"
+  }
+}

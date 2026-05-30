@@ -1,0 +1,168 @@
+{
+  "audit_timestamp_utc": "2026-05-09T23:24:02.260614+00:00",
+  "n_pairs": 15,
+  "n_distinct_one_shots": 5,
+  "score_floor": 0.1,
+  "top_k_per_one_shot": 3,
+  "pairs": [
+    {
+      "one_shot": "GP-075 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "GP-189 (internal seam)",
+      "loop_confidence": 0.667,
+      "score": 0.32,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.40"
+      ]
+    },
+    {
+      "one_shot": "GP-030 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "GP-189 (internal seam)",
+      "loop_confidence": 0.667,
+      "score": 0.288,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.29"
+      ]
+    },
+    {
+      "one_shot": "GP-154 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "[internal-ref]",
+      "loop_confidence": 0.667,
+      "score": 0.286,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.29"
+      ]
+    },
+    {
+      "one_shot": "GP-075 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "[internal-ref]",
+      "loop_confidence": 0.667,
+      "score": 0.286,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.29"
+      ]
+    },
+    {
+      "one_shot": "GP-154 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "GP-157 (internal seam)",
+      "loop_confidence": 1.0,
+      "score": 0.28,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.27"
+      ]
+    },
+    {
+      "one_shot": "GP-030 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "[internal-ref]",
+      "loop_confidence": 0.667,
+      "score": 0.28,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.27"
+      ]
+    },
+    {
+      "one_shot": "GP-075 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "GP-157 (internal seam)",
+      "loop_confidence": 1.0,
+      "score": 0.28,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.27"
+      ]
+    },
+    {
+      "one_shot": "GP-030 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "GP-157 (internal seam)",
+      "loop_confidence": 1.0,
+      "score": 0.275,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.25"
+      ]
+    },
+    {
+      "one_shot": "GP-154 (internal seam)",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "GP-189 (internal seam)",
+      "loop_confidence": 0.667,
+      "score": 0.271,
+      "rationale": [
+        "path-class kinship = 0.5",
+        "lexical-token Jaccard = 0.24"
+      ]
+    },
+    {
+      "one_shot": "src/ztare/gates/deterministic_charter_gates_fixture_regression.py",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "src/ztare/gates/derived_constraints_fixture_regression.py",
+      "loop_confidence": 1.0,
+      "score": 0.167,
+      "rationale": [
+        "lexical-token Jaccard = 0.56"
+      ]
+    },
+    {
+      "one_shot": "src/ztare/gates/deterministic_charter_gates.py",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "src/ztare/gates/registry.py",
+      "loop_confidence": 1.0,
+      "score": 0.15,
+      "rationale": [
+        "lexical-token Jaccard = 0.50"
+      ]
+    },
+    {
+      "one_shot": "src/ztare/gates/deterministic_charter_gates.py",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "src/ztare/gates/derived_constraints.py",
+      "loop_confidence": 1.0,
+      "score": 0.129,
+      "rationale": [
+        "lexical-token Jaccard = 0.43"
+      ]
+    },
+    {
+      "one_shot": "src/ztare/gates/deterministic_charter_gates.py",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "src/ztare/gates/r8_r9_substrate_validators.py",
+      "loop_confidence": 0.6,
+      "score": 0.129,
+      "rationale": [
+        "lexical-token Jaccard = 0.43"
+      ]
+    },
+    {
+      "one_shot": "src/ztare/gates/deterministic_charter_gates_fixture_regression.py",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "src/ztare/orchestrator/mutator_briefing_fixture_regression.py",
+      "loop_confidence": 0.6,
+      "score": 0.12,
+      "rationale": [
+        "lexical-token Jaccard = 0.40"
+      ]
+    },
+    {
+      "one_shot": "src/ztare/gates/deterministic_charter_gates_fixture_regression.py",
+      "one_shot_kind": "unclassified",
+      "analogous_loop": "src/ztare/orchestrator/promotion_guard_fixture_regression.py",
+      "loop_confidence": 0.6,
+      "score": 0.12,
+      "rationale": [
+        "lexical-token Jaccard = 0.40"
+      ]
+    }
+  ]
+}

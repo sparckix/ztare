@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed, but treat result as source-split audit rather than closure.",
+  "agent_id": "codex-rd",
+  "contract_id": "ns_n8_beta_eventized_constructive_source_split_20260514_tick419",
+  "contract_question": "Will tick419 add a compiling Lean surface that decomposes the N8 beta eventized constructive-data source into existing L3 scale-truncation, singleton-incidence, monotone beta, pressure/Duhamel, and flat-skeleton inputs while explicitly recording the remaining same-tree/cofinality source dependency and avoiding a beta-closure overclaim?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_only_no_source_progress": 0.25,
+    "docs_logging_overhead": 0.12,
+    "lean_signature_mismatch": 0.18,
+    "overclaim_guard_needed": 0.18,
+    "same_tree_circularity_found": 0.27
+  },
+  "forecast_externality_tags": [
+    "anti_tautology_guard",
+    "beta_branch_sharpening",
+    "lean_reuse"
+  ],
+  "forecasted_at": "2026-05-14T21:42:44Z",
+  "p_dependency_issue": 0.25,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.12,
+  "p_success": 0.7,
+  "rationale_short": "Existing L3 declarations already expose most components. Main risk is circularity: the pressure lock and constructive data consume same-tree incidence, so the tick should record that boundary.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_tree_dependency_not_removed",
+    "cofinality_source_unproved",
+    "pressure_lock_depends_on_incidence"
+  ]
+}

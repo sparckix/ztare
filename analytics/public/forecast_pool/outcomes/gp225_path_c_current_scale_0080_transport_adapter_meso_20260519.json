@@ -1,0 +1,38 @@
+{
+  "actual_cost_agent_minutes": 17.0,
+  "artifact_hash": "d234f1bfff48ad0c703cf51c35e0080894e007ad7b18b7de3d0f8149ef178d9d",
+  "artifact_path": "/tmp/rung1/path_c_canary_after_lake_path.json",
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "pass",
+  "contract_id": "gp225_path_c_current_scale_0080_transport_adapter_meso_20260519",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "transport_adapter_fix",
+    "stale_market_debt_avoided"
+  ],
+  "failure_mode_preconditioner_used": false,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [
+    "forecaster_wake_not_consumed_before_resolution"
+  ],
+  "new_next_action": "promote current_scale_0080 to one-row official governed Path-C closure and continue queue",
+  "old_next_action": "treat current_scale_0080 as compile-clean but not ratified",
+  "ordering_override_no_codex": "Optional scratch-adjacent meso contract was created for low-latency forecaster input, but the bounded transport smoke resolved before any subscription forecaster was launched; no forecaster output influenced execution, so the contract is voided for market-scoring purposes.",
+  "ordering_override_no_independent_forecaster": "Optional scratch-adjacent meso contract was created for low-latency forecaster input, but the bounded transport smoke resolved before any subscription forecaster was launched; no forecaster output influenced execution, so the contract is voided for market-scoring purposes.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "persistent_lean_transport_open_file"
+  ],
+  "resolution_note": "VOIDED for market-scoring purposes because the optional forecaster wake was not consumed before the bounded transport smoke resolved. Scientific outcome was success: official govern closure persisted at /tmp/rung1/ratified_proofs/gp225_v1795_v1800_current_scale_0080_20260519T205044.lean. Keep PL-GP225-2026 as the calibrated self-bet record.",
+  "resolved_at": "2026-05-19T20:54:42Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": true
+}

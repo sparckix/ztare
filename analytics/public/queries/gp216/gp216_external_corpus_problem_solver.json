@@ -1,0 +1,542 @@
+{
+  "experiment": "gp216_external_corpus_problem_solver",
+  "n_arcs": 4,
+  "results": [
+    {
+      "arc": "erdos_discrepancy",
+      "n_moves": 11,
+      "by_conf": {
+        "high": 1,
+        "medium": 2,
+        "low": 2,
+        "unmapped": 6
+      },
+      "h_m_pct": 27.27272727272727,
+      "un_pct": 54.54545454545454,
+      "ops_used": [
+        "tb_03",
+        "tb_06",
+        "tb_02"
+      ],
+      "moves": [
+        {
+          "name": "Posing the Core Question",
+          "signature": "A foundational assertion or question is established, defining the scope of the inquiry.",
+          "anchor": "Erd\u0151s conjectured"
+        },
+        {
+          "name": "Reframing the Central Problem",
+          "signature": "The initial problem is translated into an equivalent but more conceptually accessible form.",
+          "anchor": "no sign sequence has bounded discrepancy"
+        },
+        {
+          "name": "Reducing Infinite to Finite",
+          "signature": "An unbounded problem space is transformed into a bounded one, making it logically tractable.",
+          "anchor": "reduced this to a finite verification problem"
+        },
+        {
+          "name": "Establishing a Contingency",
+          "signature": "The solution to the primary problem is made dependent on the resolution of a separate, existing problem.",
+          "anchor": "via the Elliott conjecture"
+        },
+        {
+          "name": "Resolving a Key Dependency",
+          "signature": "A previously established conditional requirement is satisfied, unlocking the next stage of the main problem.",
+          "anchor": "proved the Elliott conjecture"
+        },
+        {
+          "name": "Adapting a Proven Method",
+          "signature": "A technique successful in a different context is modified and applied to the current problem.",
+          "anchor": "analogue of the entropy decrement argument"
+        },
+        {
+          "name": "Synthesizing Diverse Components",
+          "signature": "Several independent lines of reasoning or technical components are integrated into a single, coherent argument.",
+          "anchor": "combined three components"
+        },
+        {
+          "name": "Revealing Latent Structure",
+          "signature": "A formal statement is proven that describes the underlying organization or pattern of a central object of study.",
+          "anchor": "ergodic-theoretic structure theorem"
+        },
+        {
+          "name": "Bridging Formalisms",
+          "signature": "A dedicated argument is constructed to connect two different conceptual or technical frameworks.",
+          "anchor": "tying the structure theorem to discrepancy"
+        },
+        {
+          "name": "Amplifying a Weak Signal",
+          "signature": "A subtle or small effect is methodically strengthened until it becomes decisive for the argument.",
+          "anchor": "careful amplification of the entropy decrement"
+        },
+        {
+          "name": "Unifying Disparate Regimes",
+          "signature": "Results from fundamentally different domains, such as discrete and continuous, are reconciled and integrated.",
+          "anchor": "gluing the discrete and continuous estimates"
+        }
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Posing the Core Question",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Reframing the Central Problem",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Reducing Infinite to Finite",
+            "best_op": "tb_03",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Establishing a Contingency",
+            "best_op": "tb_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Resolving a Key Dependency",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Adapting a Proven Method",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Synthesizing Diverse Components",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Revealing Latent Structure",
+            "best_op": "tb_06",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Bridging Formalisms",
+            "best_op": "tb_02",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Amplifying a Weak Signal",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 11,
+            "move_name": "Unifying Disparate Regimes",
+            "best_op": "tb_02",
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "green_tao",
+      "n_moves": 9,
+      "by_conf": {
+        "high": 2,
+        "medium": 1,
+        "low": 0,
+        "unmapped": 6
+      },
+      "h_m_pct": 33.33333333333333,
+      "un_pct": 66.66666666666666,
+      "ops_used": [
+        "tb_01",
+        "tb_06",
+        "tb_03"
+      ],
+      "moves": [
+        {
+          "name": "Leverage An Existing Result",
+          "signature": "Import a proven theorem from a simpler or more regular domain as a foundational component for the main argument.",
+          "anchor": "Szemer\u00e9di's theorem (arithmetic progressions in dense subsets of integers)"
+        },
+        {
+          "name": "Generalize The Target Domain",
+          "signature": "Extend a known principle from a specific, well-behaved context to a more abstract and broadly applicable class of structures.",
+          "anchor": "extended to subsets of a 'pseudorandom' set"
+        },
+        {
+          "name": "Define The Abstract Property",
+          "signature": "Establish a precise, operational definition for the abstract quality that enables the extended principle to function.",
+          "anchor": "define pseudorandomness via correlation conditions"
+        },
+        {
+          "name": "Execute A Transference Strategy",
+          "signature": "Prove a property for a complex object by showing it is a dense part of a simpler structure where the property is already known to hold.",
+          "anchor": "combinatorial transference"
+        },
+        {
+          "name": "Construct An Idealized Envelope",
+          "signature": "Embed the object of study within a larger, more well-behaved structure that possesses the desired analytical properties.",
+          "anchor": "sit inside a pseudorandom envelope"
+        },
+        {
+          "name": "Model Density Behavior",
+          "signature": "Create an auxiliary function that approximates the statistical or distributional properties of the primary object of study.",
+          "anchor": "construct a majorant function that captures prime density behavior"
+        },
+        {
+          "name": "Use A Weighted Proxy",
+          "signature": "Replace a simple indicator function with a weighted version that better captures the underlying structure and simplifies analysis.",
+          "anchor": "von Mangoldt \u03bb-function"
+        },
+        {
+          "name": "Isolate The Core Difficulty",
+          "signature": "Pre-process the problem to remove known sources of irregularity, allowing the main argument to focus on the essential challenge.",
+          "anchor": "remove the small primes by sifting before applying transference"
+        },
+        {
+          "name": "Shift Burden To Estimation",
+          "signature": "Rely on establishing precise quantitative bounds rather than inventing new conceptual objects to carry the argument.",
+          "anchor": "Most of the argument's load is borne by combinatorial estimates"
+        }
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Leverage An Existing Result",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Generalize The Target Domain",
+            "best_op": "tb_01",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Define The Abstract Property",
+            "best_op": "tb_06",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Execute A Transference Strategy",
+            "best_op": "tb_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Construct An Idealized Envelope",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Model Density Behavior",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Use A Weighted Proxy",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Isolate The Core Difficulty",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Shift Burden To Estimation",
+            "best_op": "unmapped",
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "hales_jewett_polymath",
+      "n_moves": 9,
+      "by_conf": {
+        "high": 1,
+        "medium": 1,
+        "low": 1,
+        "unmapped": 6
+      },
+      "h_m_pct": 22.22222222222222,
+      "un_pct": 66.66666666666666,
+      "ops_used": [
+        "tb_09",
+        "tb_06",
+        "tb_03"
+      ],
+      "moves": [
+        {
+          "name": "Establish Alternate Pathway",
+          "signature": "Develop a new method to reach a known conclusion, bypassing the undesirable properties of an existing method.",
+          "anchor": "Their proof used ergodic theory and was long."
+        },
+        {
+          "name": "Open Collaborative Search",
+          "signature": "Distribute the problem-solving process across a large, open community to explore many avenues in parallel.",
+          "anchor": "Polymath1 (organized by Gowers, 2009)"
+        },
+        {
+          "name": "Curate Collective Progress",
+          "signature": "Appoint a central agent to synthesize, organize, and steer contributions from a distributed group.",
+          "anchor": "with Gowers as moderator"
+        },
+        {
+          "name": "Adapt Proven Template",
+          "signature": "Modify a successful strategy from a different but related context to fit the current problem's requirements.",
+          "anchor": "in the spirit of Szemer\u00e9di's regularity lemma"
+        },
+        {
+          "name": "Monotonic Progress Iteration",
+          "signature": "Design a procedure that is applied repeatedly, with each application guaranteed to improve a specific, bounded metric.",
+          "anchor": "energy-increment iteration"
+        },
+        {
+          "name": "Isolate Invariant Property",
+          "signature": "Identify and formalize a key property that must be preserved through each step of a complex transformation.",
+          "anchor": "definition of 'partition regularity' for the increment step"
+        },
+        {
+          "name": "Reduce to Ideal Case",
+          "signature": "Prove the result for a simplified, more structured version of the problem, then show the general case follows from it.",
+          "anchor": "reduction to the case of a dense subset of an IP-rich set"
+        },
+        {
+          "name": "Synthesize from Components",
+          "signature": "Build a complete solution by developing a method for systematically combining smaller, more manageable pieces.",
+          "anchor": "finite combinatorial gluing"
+        },
+        {
+          "name": "Chain Bounding Arguments",
+          "signature": "Construct the final proof not from a single conceptual leap, but from a sequence of detailed, quantitative estimations.",
+          "anchor": "a sequence of specific combinatorial estimates"
+        }
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Establish Alternate Pathway",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Open Collaborative Search",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Curate Collective Progress",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Adapt Proven Template",
+            "best_op": "tb_09",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Monotonic Progress Iteration",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Isolate Invariant Property",
+            "best_op": "tb_06",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Reduce to Ideal Case",
+            "best_op": "tb_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Synthesize from Components",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Chain Bounding Arguments",
+            "best_op": "unmapped",
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "szemeredi_regularity",
+      "n_moves": 10,
+      "by_conf": {
+        "high": 0,
+        "medium": 0,
+        "low": 2,
+        "unmapped": 8
+      },
+      "h_m_pct": 0.0,
+      "un_pct": 80.0,
+      "ops_used": [
+        "tb_06",
+        "tb_03"
+      ],
+      "moves": [
+        {
+          "name": "Decompose into Uniformity",
+          "signature": "Partition a complex system into a collection of simpler, more uniform subsystems.",
+          "anchor": "every dense graph admits a partition of its vertices into ... regular pair"
+        },
+        {
+          "name": "Refine Through Iteration",
+          "signature": "Repeatedly apply a transformation to a state to progressively improve its quality according to some metric.",
+          "anchor": "proceeded by iterative refinement"
+        },
+        {
+          "name": "Guide with Potential",
+          "signature": "Define a scalar quantity that monotonically changes with each step of a process, ensuring progress and termination.",
+          "anchor": "using mean-square energy as a potential function"
+        },
+        {
+          "name": "Start with Triviality",
+          "signature": "Initiate a process from the simplest possible configuration of the system.",
+          "anchor": "starting with the trivial partition"
+        },
+        {
+          "name": "Bound the Process",
+          "signature": "Establish an upper limit on the resources or steps required to reach a solution, even if the limit is extremely large.",
+          "anchor": "bound the iteration by a tower-of-twos"
+        },
+        {
+          "name": "Leverage the Structure",
+          "signature": "Use the properties of a structured decomposition to derive a conclusion about the original system.",
+          "anchor": "The triangle removal lemma followed from regularity"
+        },
+        {
+          "name": "Aggregate Across Components",
+          "signature": "Infer a global property by counting or summing interactions between the constituent parts of a partitioned system.",
+          "anchor": "counting edges between regular pairs containing triangles"
+        },
+        {
+          "name": "Link Local to Global",
+          "signature": "Establish a quantitative relationship between a local structural property and a global modification.",
+          "anchor": "if a graph has o(n^3) triangles then they can be made triangle-free by removing o(n^2) edges"
+        },
+        {
+          "name": "Generalize the Apparatus",
+          "signature": "Apply a proven method or result to solve problems in different, seemingly unrelated domains.",
+          "anchor": "Applied to Roth's theorem, Behrend constructions, Ramsey theory, additive combinatorics"
+        },
+        {
+          "name": "Prioritize Quantitative Bounds",
+          "signature": "Achieve a result by establishing quantitative estimates and relationships rather than by constructing new entities.",
+          "anchor": "The proofs were combinatorial estimates, not new objects"
+        }
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Decompose into Uniformity",
+            "best_op": "tb_06",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Refine Through Iteration",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Guide with Potential",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Start with Triviality",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Bound the Process",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Leverage the Structure",
+            "best_op": "tb_03",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Aggregate Across Components",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Link Local to Global",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Generalize the Apparatus",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Prioritize Quantitative Bounds",
+            "best_op": "unmapped",
+            "confidence": "high"
+          }
+        ]
+      }
+    }
+  ],
+  "mean_h_m_coverage": 20.707070707070706,
+  "mean_unmapped": 66.96969696969697,
+  "n_distinct_ops_used": 5,
+  "ops_used": [
+    "tb_01",
+    "tb_02",
+    "tb_03",
+    "tb_06",
+    "tb_09"
+  ],
+  "comparison_to_theory_builder": {
+    "theory_builder_h_m": 58.1,
+    "problem_solver_h_m": 20.707070707070706,
+    "diff_pct_pts": -37.392929292929296
+  },
+  "verdict": "GOWERS HYPOTHESIS CONFIRMED \u2014 problem-solver mean h+m 20.7% is 37.4 pts BELOW theory-builder 58.1%. Vocabulary is theory-builder-specific."
+}

@@ -1,0 +1,142 @@
+{
+  "contract_id": "ns_route1_lineage_fresh_reservoir_source_20260514_tick392",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue local no-reuse wrapper work without basin/profile connection",
+      "counterfactual_action": "use graph basin and sidecar forecasts to decide source theorem vs no-go guard",
+      "externality_hypotheses": {
+        "negative": [
+          "could add another abstract wrapper if no declaration packet changes action"
+        ],
+        "positive": [
+          "connects local route-1 bridge back to global self-tax/profile basin",
+          "prevents treating language gate as proof"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd_graph_basin",
+        "codex_rd_no_go_skeptic"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "graph_basin_connection",
+        "residual_language_feedback",
+        "sidecar_no_go_agreement",
+        "same_tree_bridge"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "no_unconditional_route_closure",
+        "new_pde_lemma_required"
+      ],
+      "new_next_action": "attack EventLocalDefectDropNoReuse through LineageFreshMonotoneReservoirSource, event recurrence section incidence, and Duhamel same-tree reserve drop; if false add recurrent reuse fifth channel",
+      "old_next_action": "generic event-local no-reuse wrapper or profile self-tax detour",
+      "preconditioner_effect": "Prevented a false same-tree incidence closure claim; encoded the missing primitive and guard instead.",
+      "preconditioner_source": "graph basin closure scan plus Arendt/Plato xhigh sidecars plus GP-219 residual feedback",
+      "realized_failure_mode_ids": [
+        "same_tree_incidence_wrong_layer",
+        "adapter_only_no_pde_source",
+        "lineage_reservoir_missing_theorem"
+      ]
+    }
+  },
+  "mean_brier": 0.21265,
+  "mean_log_score": -0.6165291926105163,
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "artifact_hash": "acb29a7a33bfd80eb4146f26ea70f1e67c602253b43a1c12135352af5b24c380",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd_graph_basin",
+      "codex_rd_no_go_skeptic"
+    ],
+    "compile_status": "passed",
+    "contract_id": "ns_route1_lineage_fresh_reservoir_source_20260514_tick392",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "graph_basin_connection",
+      "residual_language_feedback",
+      "sidecar_no_go_agreement",
+      "same_tree_bridge"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "no_unconditional_route_closure",
+      "new_pde_lemma_required"
+    ],
+    "new_next_action": "attack EventLocalDefectDropNoReuse through LineageFreshMonotoneReservoirSource, event recurrence section incidence, and Duhamel same-tree reserve drop; if false add recurrent reuse fifth channel",
+    "old_next_action": "generic event-local no-reuse wrapper or profile self-tax detour",
+    "preconditioner_effect": "Prevented a false same-tree incidence closure claim; encoded the missing primitive and guard instead.",
+    "preconditioner_source": "graph basin closure scan plus Arendt/Plato xhigh sidecars plus GP-219 residual feedback",
+    "realized_failure_mode_ids": [
+      "same_tree_incidence_wrong_layer",
+      "adapter_only_no_pde_source",
+      "lineage_reservoir_missing_theorem"
+    ],
+    "resolution_note": "Connected route-1 event-local no-reuse to the same-tree/Duhamel/fresh-frequency basin by adding compile-checked LineageFreshMonotoneReservoirSource, SameTreeIncidenceLineageReservoirSource, and guards that bounded overlap or same-tree incidence alone do not source lineage-fresh reservoir drop. This is a proof-surface success, not route-1 closure.",
+    "resolved_at": "2026-05-14T15:26:34Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T15:26:41Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "codex_rd_graph_basin",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": -14.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.48,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:18:14Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:21:56Z",
+        "resolved_at": "2026-05-14T15:26:34Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "codex_rd_no_go_skeptic",
+      "brier": 0.28090000000000004,
+      "cost_error_agent_minutes": -8.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 34.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.6,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7550225842780328,
+      "p_success": 0.47,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:18:14Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:21:56Z",
+        "resolved_at": "2026-05-14T15:26:34Z"
+      }
+    }
+  ]
+}

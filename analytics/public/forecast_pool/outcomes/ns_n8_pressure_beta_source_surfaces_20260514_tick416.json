@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 9.0,
+  "artifact_hash": "8aa77f4fec0964bb71807dfc7a3ee3267a504af0e984aaaeb1322651a4dd5bb2",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_n8_pressure_beta_source_surfaces_20260514_tick416",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "pressure-beta-boundary",
+    "sidecar-capture",
+    "source-surface-only"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "names-not-sources",
+    "pressure-branch-still-open",
+    "beta-branch-still-open"
+  ],
+  "new_next_action": "Attack PressureConeFailureReducesToPreSummedVisibilityOrRigidity and BadCenterBetaEventIncidenceClosure as independent source theorems, while keeping FlatRadiusScaleReserveFailure separate.",
+  "old_next_action": "Attack PressureConeFailure and BetaIncidenceFailure as broad remaining branches.",
+  "preconditioner_effect": "Converted pressure and beta sidecar reports into compiling source surfaces without marking either branch closed.",
+  "preconditioner_source": "Pressure and beta sidecar audits after the flat radius scale-reserve reduction",
+  "realized_failure_mode_ids": [
+    "names_not_sources",
+    "pressure_branch_still_open",
+    "beta_branch_still_open"
+  ],
+  "resolution_note": "Added compiling source surfaces PressureConeFailureReducesToPreSummedVisibilityOrRigidity, BadCenterBetaEventIncidenceClosure, and ReducedFrontierAfterRadiusPressureBetaAudit. Lean passed, no sorry/admit was introduced, and the structures explicitly preserve pressure and beta as missing source theorems rather than branch closures.",
+  "resolved_at": "2026-05-14T21:00:49Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,38 @@
+{
+  "actual_cost_agent_minutes": 27.0,
+  "artifact_hash": "4eb63ff6d94b2052201317ea19e102a5c749ed8c57153b38ef95627af17daadc",
+  "artifact_path": "analytics/public/leanmill/results/v2031_corrected_scope_reprover_replay.json",
+  "changed_by_forecast_ids": [
+    "gp230_erdos_gp225_v2031",
+    "gp230_maxwell_gp225_v2031"
+  ],
+  "compile_status": "pass",
+  "contract_id": "gp225_v2031_corrected_scope_reprover_replay",
+  "counterfactual_value_bucket": "medium_positive",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "general_purpose_lean_harness",
+    "public_adapter_replay_negative",
+    "strict_compile_invariant",
+    "pre_gnn"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": null,
+  "negative_externality_tags": [
+    "long_replay_wall_time"
+  ],
+  "new_next_action": "Do not promote labels or train; run failure reducer/static filter analysis before another public-adapter replay.",
+  "old_next_action": "Potentially promote v20.30 public candidates to labels if replay succeeds.",
+  "preconditioner_effect": "Avoided a false under-attempted run from default per-row-limit 4; replay attempted all 88 candidate actions.",
+  "preconditioner_source": "GP-230 forecasters identified full top-8 replay requirement before execution",
+  "realized_failure_mode_ids": [
+    "raw_reprover_no_compile_backed_strict_row",
+    "no_clean_strict_same_target_row"
+  ],
+  "resolution_note": "v20.31 replay attempted all 88 v20.30 corrected-scope candidates with per-row-limit 8. Result: compiled_candidate_actions=0, new_strict_same_target_rows=0, harmful_compiled_mismatch_actions=0, source hygiene clean, no training, GNN blocked.",
+  "resolved_at": "2026-05-14T15:08:44Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

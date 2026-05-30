@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Proceed only if the patch records source obligations and a no-closure guard; otherwise do not count as progress.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_n8_beta_coherent_event_selection_surface_20260514_tick423",
+  "contract_question": "Will tick423 add a compiling Lean surface reducing coherent fresh event selection to residual-fresh-excess, inherited-or-flat routing, and pressure/same-carrier inputs, while recording that the actual coherent event-selection theorem remains open?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "inherited_flat_branch_unclosed": 0.2,
+    "overclaim_or_adapter_bloat": 0.15,
+    "pressure_visibility_smuggling": 0.2,
+    "signature_mismatch": 0.15,
+    "tautological_selection": 0.3
+  },
+  "forecast_externality_tags": [
+    "darwin",
+    "anti_smuggling",
+    "ns_n8_beta",
+    "residual_routing"
+  ],
+  "forecasted_at": "2026-05-14T22:25:07Z",
+  "p_dependency_issue": 0.55,
+  "p_needs_new_lemma": 0.92,
+  "p_regression": 0.2,
+  "p_success": 0.56,
+  "rationale_short": "The most likely failure is self-reference: constructing an audit event because beta needs one. A successful tick should expose that risk and preserve pressure/radius/beta residual separation.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "tautological_selection",
+    "pressure_visibility_smuggling",
+    "inherited_flat_branch_unclosed",
+    "signature_mismatch",
+    "overclaim_or_adapter_bloat"
+  ]
+}

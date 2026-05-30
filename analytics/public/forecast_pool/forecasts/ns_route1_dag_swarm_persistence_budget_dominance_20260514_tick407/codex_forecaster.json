@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Attack N1 first; if it fails, stop at a named no-go and classify the residual branch rather than widening activeTail.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+  "contract_question": "Will the route-1 DAG swarm produce at least one usable next proof node or no-go across N1 persistence, N2 lineage schedule budget, and N7 branch dominance, with Lean-facing surfaces and no overclaim?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lineage_schedule_prefix_budget_missing": 0.2,
+    "missing_negative_case_or_hidden_coupling": 0.18,
+    "persistence_source_too_broad": 0.22,
+    "upstream_branch_still_open": 0.22,
+    "wrapper_only_surface": 0.18
+  },
+  "forecast_externality_tags": [
+    "gp-233:route1",
+    "dag-void-discipline",
+    "branch-dominance",
+    "lean-facing-surface"
+  ],
+  "forecasted_at": "2026-05-14T19:19:38Z",
+  "p_dependency_issue": 0.29,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.06,
+  "p_success": 0.64,
+  "rationale_short": "N3 and N4 are already mechanized; the current DAG says N1 and N2 are the next route-1 nodes, while N7/N8 remain upstream hinges. I expect the swarm to produce either a first usable next proof node or a named no-go plus a Lean-facing surface, but the weakest points are a persistence source that stays too broad and branch-dominance evidence that remains unpriced.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "persistence_source_too_broad",
+    "lineage_schedule_prefix_budget_missing",
+    "upstream_branch_still_open",
+    "wrapper_only_surface",
+    "missing_negative_case_or_hidden_coupling"
+  ]
+}

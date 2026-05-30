@@ -1,0 +1,40 @@
+{
+  "action_change_recommendation": "Proceed with Level505 cover-selection source; keep the next residual as the PDE theorem producing the cover relation, not a Clay closure claim.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.145,
+  "b_width": 0.19,
+  "contract_id": "tick668_level505_cover_selection_target_event_candidate_source",
+  "contract_question": "Will Level505 introduce a compiled Lean source deriving the Level504 target event candidate, horizon bound, and incidence witness from an explicit cover-selection theorem and validate it through a strict gate, PDE workbench, and lake build?",
+  "domain": "ns_trackb",
+  "expected_cost_agent_minutes": 100.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cover_selection_too_weak": 0.25,
+    "lean_implicit_mismatch": 0.3,
+    "other": 0.2,
+    "receipt_or_workbench_wiring": 0.25
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T05:16:13Z",
+  "p_buy_yes_max": 0.66,
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.34,
+  "p_regression": 0.14,
+  "p_sell_yes_min": 0.79,
+  "p_success": 0.72,
+  "predicted_brier_hi": 0.24,
+  "predicted_brier_lo": 0.05,
+  "predicted_self_error_ratio": 0.24,
+  "rationale_short": "Level504 isolates candidate production; a cover-selection source should compile and sharpen the remaining theorem to finite cover totality plus horizon/incidence implications.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "lean_implicit_mismatch",
+    "receipt_or_workbench_wiring",
+    "cover_selection_too_weak"
+  ],
+  "spread": -0.13,
+  "tail_downside_worry": 34.0,
+  "tail_upside_surprise": 20.0,
+  "verbalized_confidence": 0.72
+}

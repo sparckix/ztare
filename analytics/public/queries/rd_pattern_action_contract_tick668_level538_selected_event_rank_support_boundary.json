@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 538,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "lateEvent_not_selectedBadNode is still too axiom-shaped",
+    "check": "derive it from selected-node event-rank support inequalities"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level538_selected_event_rank_support_boundary_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level538_provenance_acyclic_edge_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level538_selected_event_rank_support_boundary"
+  },
+  "anti_pattern_guards": [
+    "no downstream Level537 assumption",
+    "no bounded representative in place of every event image occurrence",
+    "no endpoint capacity-only rank bound",
+    "no post-payoff rank selection"
+  ],
+  "positive_forecast": "If the event-rank support boundary is paid, late-event selected-node exclusion follows by Nat order alone."
+}

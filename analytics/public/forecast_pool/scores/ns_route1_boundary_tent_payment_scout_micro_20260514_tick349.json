@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_boundary_tent_payment_scout_micro_20260514_tick349",
+  "mean_brier": 0.06920000000000001,
+  "mean_log_score": -0.30256815161861605,
+  "outcome": {
+    "actual_cost_agent_minutes": 27.0,
+    "artifact_hash": "e89c6c871831d39618e25a75e426d7728d305139e444ad263d3e95df3575ee39",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/boundary_tent_payment_scout_20260514.json",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_boundary_tent_payment_scout_micro_20260514_tick349",
+    "error_type": null,
+    "goal_delta": 3,
+    "resolution_note": "Added and ran boundary_tent_payment_scout.py. py_compile passed. Scout emitted JSON+MD artifacts with sentinel_ok true, 40 same-tent/cutoff pass rows, 20 cutoff mismatch gaps, 20 tent-family mismatch gaps, and verdict BOUNDARY_TENT_PROVENANCE_GAP.",
+    "resolved_at": "2026-05-14T04:23:58Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T04:24:06Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 27.0,
+      "agent_id": "hooke_forecast_tick349",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 7.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 34.0,
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T04:22:20Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T04:22:33Z",
+        "resolved_at": "2026-05-14T04:23:58Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 27.0,
+      "agent_id": "rawls_skeptic_tick349",
+      "brier": 0.09000000000000002,
+      "cost_error_agent_minutes": 15.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 42.0,
+      "log_score": -0.35667494393873245,
+      "p_success": 0.7,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T04:22:20Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T04:22:33Z",
+        "resolved_at": "2026-05-14T04:23:58Z"
+      }
+    }
+  ]
+}

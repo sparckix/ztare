@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "tick605_self_audit_was_tick604_s_kill_a_category_error_it_used_h_n_c_q_n_un_rescaled_summed_enstrophy_but_lei_ren_thm_b_",
+  "contract_question": "tick605 self-audit: was tick604's kill a CATEGORY ERROR \u2014 it used H_n=c*q^n (UN-rescaled summed enstrophy, \u2192\u221e) but Lei-Ren Thm B needs the RESCALED per-cylinder dissipation, which Type-I (rescaled ||U||_inf <= C* same constant for-all n) makes cascade-UNIFORM via unit-scale LEI, no summed enstrophy budget. Success = correctly establish/Lean-formalize that tick604 over-killed (rescaled per-cylinder H is Type-I-uniform; the q^n object is un-rescaled, distinct), REVERT the 15th-recurrence kill honestly, AND isolate the 3 GENUINE residuals (Type-I holds on flat-branch cylinders?; parabolic alignment r_n\u224dsqrt(T-t_n)?; is Type-I\u21d2uniformCKNBound\u21d2porosity bound by the tick578-580 machine-refutation of (s_z,Type-I,R1)\u21d2C-axiom?) WITHOUT laundering closure (no AP-013 over-correction). Fail = rescaling argument flawed, OR over-corrects into a closure claim, OR it IS the tick578-580-refuted move (amnesia).",
+  "domain": "general",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:42:32Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.7,
+  "rationale_short": "Category-error correction is solid: rescaled per-cylinder H \u2260 un-rescaled summed enstrophy; Type-I gives rescaled ||U||_inf\u2264C* same constant \u2200n \u21d2 unit-scale LEI \u21d2 rescaled H uniform, no summed budget. tick604 over-killed. Main risk = the tick578-580 binding (is Type-I\u21d2uniformCKNBound\u21d2porosity the machine-refuted (s_z,Type-I,R1)\u21d2C-axiom move? = amnesia) + Type-I-on-flat-branch is a regime assumption not free.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

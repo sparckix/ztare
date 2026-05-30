@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:20:57Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 15.0,
+    "expected_value": -20.164752369749493,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.32,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.04,
+    "p_success": 0.2736068043215005,
+    "participants": [
+      {
+        "agent_id": "gp230_noether_gp225_v2020",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.24,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_tarski_gp225_v2020",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.31,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "generic_candidates_too_weak",
+        "p": 0.17
+      },
+      {
+        "mode": "measurability_or_slope_candidates_fail",
+        "p": 0.15
+      },
+      {
+        "mode": "algebra_simp_row_closes",
+        "p": 0.12
+      },
+      {
+        "mode": "domain_specific_names_wrong",
+        "p": 0.12
+      },
+      {
+        "mode": "source_policy_clean_success",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2020_second_holdout_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2020_second_holdout_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2020_second_holdout_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2020_second_holdout_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2020_second_holdout_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 14.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:20:38Z",
+    "created_by": "codex_RD_2026_05_14",
+    "horizon": "2026-05-14T15:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve from analytics/public/leanmill/results/v2020_second_holdout_replay.json metrics: success iff new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions == 0, source-policy flags clean, training_now == false, gnn_blocked == true.",
+    "question": "Will v20.20 second internal randomized holdout replay produce at least one fresh primary strict row with zero harmful mismatches and clean source-policy flags?",
+    "success_threshold": ">=1 fresh strict row, harm 0, source-policy clean",
+    "task_type": "gp225_replay_gate"
+  },
+  "contract_id": "gp225_v2020_second_holdout_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_noether_gp225_v2020",
+        "raw_agent_ids": [
+          "gp230_noether_gp225_v2020"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_tarski_gp225_v2020",
+        "raw_agent_ids": [
+          "gp230_tarski_gp225_v2020"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_noether_gp225_v2020",
+      "gp230_tarski_gp225_v2020"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_noether_gp225_v2020",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2020_second_holdout_replay/gp230_noether_gp225_v2020.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 14.0,
+        "forecasted_at": "2026-05-14T13:20:52Z",
+        "p_success": 0.24,
+        "rationale_short": "Second holdout is more varied and less definitional than beta/interior wins; only algebraMap looks simple. Packet is source-safe but generic.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_tarski_gp225_v2020",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2020_second_holdout_replay/gp230_tarski_gp225_v2020.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T13:20:52Z",
+        "p_success": 0.31,
+        "rationale_short": "At least one of four rows may be simple enough for generic simp/measurability; replay is worthwhile but still below even odds.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:22:32Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 15.0,
+      "expected_value": -20.164752369749493,
+      "p_success": 0.2736068043215005,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 8.2687
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 15.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.2736068043215005,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "generic_candidates_too_weak",
+        "p": 0.17
+      },
+      {
+        "mode": "measurability_or_slope_candidates_fail",
+        "p": 0.15
+      },
+      {
+        "mode": "algebra_simp_row_closes",
+        "p": 0.12
+      },
+      {
+        "mode": "domain_specific_names_wrong",
+        "p": 0.12
+      },
+      {
+        "mode": "source_policy_clean_success",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.5268499999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:22:35Z"
+  }
+}

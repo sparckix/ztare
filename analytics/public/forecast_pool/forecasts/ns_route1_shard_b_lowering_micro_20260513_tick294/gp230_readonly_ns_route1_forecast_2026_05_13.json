@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+  "contract_id": "ns_route1_shard_b_lowering_micro_20260513_tick294",
+  "contract_question": "Can the immediate local tick add a compiling non-tautological Lean object that lowers or pays part of shard B from existing L3/CKN/residual-fresh primitives without a strictness oracle or pre-GNN mutation?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "available_primitives_are_prop_provenance_not_numeric_bounds": 0.26,
+    "lean_build_regression": 0.08,
+    "only_a_new_wrapper_is_possible_without_paying_b": 0.28,
+    "resolved_bound_requires_ckn_constant_normalization_not_present": 0.13,
+    "squareFunction_split_requires_fresh_auxiliary_lemma": 0.17,
+    "strictness_oracle_or_tail_budget_smuggling_risk": 0.08
+  },
+  "forecasted_at": "2026-05-13T21:55:26Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.36,
+  "p_regression": 0.1,
+  "p_success": 0.56,
+  "rationale_short": "A compiling B-side lowering object is feasible, but fully paying a numeric field may require a small new estimate lemma because many existing primitives are propositional.",
+  "read_only_attestation": true
+}

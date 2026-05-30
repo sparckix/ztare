@@ -1,0 +1,204 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T15:29:16Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 22.0,
+    "expected_value": 0.7825208433574555,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.18,
+    "p_needs_new_lemma": 0.845,
+    "p_regression": 0.065,
+    "p_success": 0.6647135541968193,
+    "participants": [
+      {
+        "agent_id": "codex_rd_language_gate",
+        "domain": "ns_route1_pde",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_pde_skeptic",
+        "domain": "ns_route1_pde",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "gate_no_decision_delta",
+        "p": 0.36
+      },
+      {
+        "mode": "input_too_synthetic",
+        "p": 0.18
+      },
+      {
+        "mode": "overclaims_gate_as_proof",
+        "p": 0.09
+      },
+      {
+        "mode": "recurrent_reuse_channel_underdescribed",
+        "p": 0.09
+      },
+      {
+        "mode": "lean_followup_not_needed",
+        "p": 0.085
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 25.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T15:28:52Z",
+    "created_by": "codex:RD",
+    "horizon": "same-session_tick393",
+    "layer": "micro",
+    "objective_resolver": "Structured ns_gate_check report plus, if warranted, a compile-checked Lean guard/source surface or logged no-change residual; no route-1 closure claimed",
+    "question": "Can the next NS tick use the GP-216/219 language gates on the compiled lineage-reservoir surface to sharpen the next route-1 action: prove event-section/Duhamel reservoir source vs promote recurrent reuse as fifth channel?",
+    "success_threshold": "true iff the tick records residual_language_feedback with a concrete next lever and either a gate report or Lean declaration changes the next proof action",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_language_gate",
+        "raw_agent_ids": [
+          "codex_rd_language_gate"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_pde_skeptic",
+        "raw_agent_ids": [
+          "codex_rd_pde_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_language_gate",
+      "codex_rd_pde_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run gate as residual classifier only; if it agrees, avoid more gate work and attack event-section/Duhamel reservoir source.",
+        "agent_id": "codex_rd_language_gate",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393/codex_rd_language_gate.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T15:29:11Z",
+        "p_success": 0.74,
+        "rationale_short": "The compiled surface already contains the relevant auxiliary object and threshold split, so the gate should pass and mostly serve to validate that the residual remains PDE theorem work, not language work.",
+        "specific_failure_mode_ids": [
+          "gate_no_decision_delta",
+          "overclaims_gate_as_proof",
+          "lineage_reservoir_missing_theorem"
+        ]
+      },
+      {
+        "action_change_recommendation": "Use the gate output only if it forces a sharper fifth-channel or event-section source target; otherwise skip logging beyond forecast resolution.",
+        "agent_id": "codex_rd_pde_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393/codex_rd_pde_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 26.0,
+        "forecasted_at": "2026-05-14T15:29:11Z",
+        "p_success": 0.58,
+        "rationale_short": "High chance the gate repeats tick389 rather than changing the theorem. The useful outcome is a crisp residual report that says to stop gate work and go back to PDE source/falsifier.",
+        "specific_failure_mode_ids": [
+          "gate_no_decision_delta",
+          "recurrent_reuse_channel_underdescribed",
+          "event_section_source_not_found"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 10.0,
+    "changed_by_forecast_ids": [
+      "codex_rd_language_gate",
+      "codex_rd_pde_skeptic"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:30:36Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.7825208433574555,
+      "forecast_spread": 0.16,
+      "p_success": 0.6647135541968193,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.8829
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 22.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6647135541968193,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "gate_no_decision_delta",
+        "p": 0.36
+      },
+      {
+        "mode": "input_too_synthetic",
+        "p": 0.18
+      },
+      {
+        "mode": "overclaims_gate_as_proof",
+        "p": 0.09
+      },
+      {
+        "mode": "recurrent_reuse_channel_underdescribed",
+        "p": 0.09
+      },
+      {
+        "mode": "lean_followup_not_needed",
+        "p": 0.085
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.44199999999999995,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:30:40Z"
+  }
+}

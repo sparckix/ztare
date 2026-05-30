@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:14:38Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 65.0,
+    "expected_value": -0.3102199710926147,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.18,
+    "p_needs_new_lemma": 0.44,
+    "p_regression": 0.1,
+    "p_success": 0.4397800289073853,
+    "participants": [
+      {
+        "agent_id": "hooke",
+        "domain": "ns_route1_pde",
+        "p_success": 0.47,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "mcclintock",
+        "domain": "ns_route1_pde",
+        "p_success": 0.41,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "target_rename",
+        "p": 0.17
+      },
+      {
+        "mode": "unclean_split",
+        "p": 0.13
+      },
+      {
+        "mode": "wrapper_churn",
+        "p": 0.12
+      },
+      {
+        "mode": "double_counting",
+        "p": 0.11
+      },
+      {
+        "mode": "build_regression",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_cutoff_cz_branch_meso_20260513_tick308.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_cutoff_cz_branch_meso_20260513_tick308.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_cutoff_cz_branch_meso_20260513_tick308.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_cutoff_cz_branch_meso_20260513_tick308.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_cutoff_cz_branch_meso_20260513_tick308.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 70.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:13:48Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-13T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "post_tick_branch_value_assessment",
+    "question": "Is cutoff/CZ commutator leakage the best next NS Route-1 branch versus recovered-Riesz localCZ, harmonic reserve, child integration, or velocity Caccioppoli?",
+    "success_threshold": "Cutoff/CZ branch compiles or reveals sharper blocker than alternatives",
+    "task_type": "branch_selection"
+  },
+  "contract_id": "ns_route1_cutoff_cz_branch_meso_20260513_tick308",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke",
+        "raw_agent_ids": [
+          "hooke"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:mcclintock",
+        "raw_agent_ids": [
+          "mcclintock"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke",
+      "mcclintock"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_cutoff_cz_branch_meso_20260513_tick308/hooke.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 85.0,
+        "forecasted_at": "2026-05-13T23:14:18Z",
+        "p_success": 0.47,
+        "rationale_short": "Ranks cutoff/CZ first over recovered-Riesz and child integration because it attacks suspicious shard-C leakage leg.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "mcclintock",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_cutoff_cz_branch_meso_20260513_tick308/mcclintock.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-13T23:14:18Z",
+        "p_success": 0.41,
+        "rationale_short": "Ranks cutoff/CZ first because it directly tests double-counting and leakage absorbability.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:16:25Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 65.0,
+      "expected_value": -0.3102199710926147,
+      "p_success": 0.4397800289073853,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.3064
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 65.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.4397800289073853,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "target_rename",
+        "p": 0.17
+      },
+      {
+        "mode": "unclean_split",
+        "p": 0.13
+      },
+      {
+        "mode": "wrapper_churn",
+        "p": 0.12
+      },
+      {
+        "mode": "double_counting",
+        "p": 0.11
+      },
+      {
+        "mode": "build_regression",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.31450000000000006,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:16:35Z"
+  }
+}

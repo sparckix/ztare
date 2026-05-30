@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_pde_tick353",
+  "contract_id": "ns_route1_transport_flux_lower_payment_scout_micro_20260514_tick353",
+  "contract_question": "Can a transport-only route-flux scout distinguish positive local flux lower-payment from signed/global cancellation underpay for normalized transport leakage under same event tent/cutoff?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_schema_mismatch": 0.12,
+    "does_not_isolate_same_cutoff": 0.22,
+    "other": 0.16,
+    "positive_flux_definition_ambiguous": 0.2,
+    "scout_too_toy": 0.3
+  },
+  "forecasted_at": "2026-05-14T11:57:14Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.36,
+  "p_regression": 0.04,
+  "p_success": 0.69,
+  "rationale_short": "Existing transport/boundary scout already has rows and the PDE mechanism is clear: distinguish positive localized flux from signed/global defect.",
+  "read_only_attestation": true
+}

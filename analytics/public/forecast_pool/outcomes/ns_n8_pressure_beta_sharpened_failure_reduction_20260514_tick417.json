@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 12.0,
+  "artifact_hash": "2718b2800df6f6a8fa3f7aa1d555173d3521d5163757fe3f6303624fc01c7b47",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "branch-sharpening",
+    "anti-tautology",
+    "pressure-source-theorem",
+    "beta-incidence-source-theorem"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "n8-not-closed",
+    "pressure-beta-still-open"
+  ],
+  "new_next_action": "Attack FixedFreshCoronaPreSummedPressureRieszVisibilitySource, SameTreeNonadaptiveEventIncidenceCarleson/weighted-square incidence, or FlatRadiusReuseConsumesScaleReserve",
+  "old_next_action": "Attack broad PressureConeFailure or BetaIncidenceFailure",
+  "preconditioner_effect": "Sharpened pressure/beta into explicit missing source primitives and added anti-smuggling guards",
+  "preconditioner_source": "Pressure, beta, and Meta-Darwin sidecars plus formalization-sequence precheck",
+  "realized_failure_mode_ids": [
+    "pressure_beta_still_open",
+    "names_not_sources"
+  ],
+  "resolution_note": "Added sharpened pressure/beta failure primitives, a fixed fresh-corona pre-summed pressure visibility source with theorem pressureVisibilityFeedsTriCarrier_of_fixedFreshCoronaPreSummed, anti-smuggling guard N8PressureBetaSourceSurfaceNotClosure, and theorem reducedFailure_of_pressureBetaAudit. Lean passed; no sorry/admit was introduced. Result is frontier sharpening, not pressure/beta/upstream closure.",
+  "resolved_at": "2026-05-14T21:24:04Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

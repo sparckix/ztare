@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "Encode finite-active-tail summability as a recurrence/failure-divergence adapter with an explicit guard that pointwise strict subratio requires separate reserve-drop or scalar strictness input.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_finite_active_tail_summability_adapter_20260514_tick398",
+  "contract_question": "Will the next NS tick compile a route-1 finite-active-tail summability closure adapter that separates summability closure from pointwise strict-subratio and preserves no-overclaim guards?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_namespace_field_refactor_error": 0.12,
+    "recurrence_adapter_too_wrapper_like": 0.24,
+    "reservoir_fields_underpowered_for_failure_divergence": 0.16,
+    "sorry_scan_or_touched_file_hygiene": 0.08,
+    "summability_to_strict_subratio_smuggling": 0.22,
+    "telescoping_or_finite_tail_index_mismatch": 0.18
+  },
+  "forecast_externality_tags": [
+    "summability_guard",
+    "no_overclaim_guard",
+    "route1_adapter",
+    "failure_divergence_surface"
+  ],
+  "forecasted_at": "2026-05-14T18:15:04Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.09,
+  "p_success": 0.64,
+  "rationale_short": "Recent NS ticks succeeded on bounded Lean adapter surfaces, and the current file already separates global active-tail summability from strict route closure; success risk is mainly wrapper-substance and accidental strict-subratio smuggling, not raw Lean syntax.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "recurrence_adapter_too_wrapper_like",
+    "summability_to_strict_subratio_smuggling",
+    "telescoping_or_finite_tail_index_mismatch"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "generated_utc": "2026-05-23T21:36:33.360266+00:00",
+  "key_ledger_coverage": {
+    "research_areas/EXPERIMENT_TRACK_RECORD.md": true,
+    "research_areas/insights_ledger.md": true,
+    "analytics/public/ledgers/prediction/prediction_ledger.jsonl": true,
+    "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md": true
+  },
+  "scanned": 86881,
+  "excluded_generated_vendored": 51251,
+  "indexed": 35630,
+  "by_tree": {
+    "projects": 14739,
+    "scripts": 1011,
+    "analytics": 179,
+    "ztare_proofs": 18762,
+    "org": 292,
+    "research_areas": 574,
+    "docs": 44,
+    "papers": 22,
+    "workspace": 7
+  },
+  "bifurcation": {
+    "iter_loop_artifacts": 8526,
+    "agent_work_artifacts": 27104,
+    "agent_work_share": 0.761
+  },
+  "as_of_today": {
+    "date": "2026-05-23",
+    "modified_today": {
+      "all": 181,
+      "iter_loop": 0,
+      "agent_work": 181
+    },
+    "modified_last_7d": {
+      "all": 2067,
+      "iter_loop": 164,
+      "agent_work": 1903
+    },
+    "note": "point-in-time snapshot (NOT weekly-bucketed): authored artifacts touched today / in the trailing 7 days, by lane."
+  },
+  "note": "iter_loop = the ZTARE iteration work files themselves (iter** artifacts: debate_log_iter_*, iteration_telemetry, current_iteration, debate_report, iter_*). agent_work = everything else, INCLUDING the rest of projects/ (the live out-of-loop substrate). The invariant is the iter** files, not project-dir membership."
+}

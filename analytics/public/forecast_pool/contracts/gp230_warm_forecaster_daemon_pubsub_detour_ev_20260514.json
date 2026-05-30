@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514.json"
+  },
+  "baseline_action": "continue one-off RD-added forecasts and externality audits",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "build local MVP for warm role-bound forecaster pub/sub before VPS deployment",
+  "created_at": "2026-05-14T17:14:04Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0612,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.55,
+    "requested_domain": "gp230_forecast_pool_infrastructure",
+    "score": 0.0612,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0612,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0612,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0541,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0541,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.04,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.04,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0333,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0333,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.025,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.025,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "infrastructure detour may slow active NS proof tick",
+      "warm agents may create anchoring or stale-context bias if not refreshed"
+    ],
+    "positive": [
+      "persistent calibration memory improves macro/meso pricing and ex-post update quality",
+      "separates forecaster role from RD executor and reduces self-scoring bias"
+    ]
+  },
+  "horizon": "next bounded infrastructure detour before returning to NS proof work",
+  "information_value": 0.55,
+  "layer": "meso",
+  "objective_resolver": "Resolve true if the detour produces, within this session or the next bounded daemon tick, a seam/spec/role-mandate update plus a lightweight code path or smoke artifact that queues forecast tasks and records warm-agent belief updates without granting outcome write access; false if it stays prose-only, consumes more than budget, or blocks NS proof work with no runnable artifact.",
+  "question": "Should RD detour now to specify and implement an MVP warm role-bound forecast-agent/pubsub mechanism for GP-230, so forecasters can maintain calibration memory and update odds over evidence instead of one-off forecasts?",
+  "risk_penalty": 0.18,
+  "success_threshold": "documented seam/spec plus minimal runnable or smoke-tested queue/status path; read-only forecasters; outcome isolation preserved; externality analysis logged",
+  "task_type": "forecast_pool_infrastructure_detour",
+  "value_if_success": 0.72,
+  "void_conditions": "void if user directs immediate return to NS only or if VPS credentials/deploy are required before a local MVP can be completed"
+}

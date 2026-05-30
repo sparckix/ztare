@@ -1,0 +1,227 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T23:26:28Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 4.5,
+    "expected_value": 0.9631531648208378,
+    "forecast_count": 3,
+    "forecast_history_count": 3,
+    "p_dependency_issue": 0.08,
+    "p_needs_new_lemma": 0.04666666666666667,
+    "p_regression": 0.05000000000000001,
+    "p_success": 0.6976914560260472,
+    "participants": [
+      {
+        "agent_id": "Claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate/claude.json",
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "p_success": 0.68,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Franklin",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate/franklin.json",
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "p_success": 0.62,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Noether",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate/noether.json",
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "row_0000_rank1_verbatim_gold_prefix_strict_match",
+        "p": 0.27666666666666667
+      },
+      {
+        "mode": "row_0079_split_rw_strict_match_at_least_one_of_three",
+        "p": 0.19333333333333336
+      },
+      {
+        "mode": "row_0079_alt_tactic_lands_same_compound_state_strict_or_witness_equality",
+        "p": 0.15
+      },
+      {
+        "mode": "simp_only_variants_divergence_non_match",
+        "p": 0.06333333333333334
+      },
+      {
+        "mode": "row_0000_typeclass_synthesis_fails_again",
+        "p": 0.06
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 25.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T23:24:24Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-15T04:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "analytics/public/leanmill/results/v22_06_artisanal_moat_extension_bounded_replay.json: metrics.new_strict_or_witness_equality_labels >= 1 AND metrics.harmful_compiled_mismatch_actions == 0 AND metrics.replay_executed == true",
+    "question": "Will bounded replay of v22.05 (8 candidates \u00d7 2 heldout-unsolved rows: current_scale_0079/dist_map_map_zero_lt and current_scale_0000/isoSpec_hom_apply) produce at least 1 NEW strict same-step heldout label (witness exactly equal to gold intermediate, or via the v21.06 witness-equality sub-bucket on a non-closing step) with zero harmful mismatches and no leakage?",
+    "success_threshold": "metrics.new_strict_or_witness_equality_labels >= 1 AND metrics.harmful_compiled_mismatch_actions == 0",
+    "task_type": "lean_replay_artisanal_moat_extension"
+  },
+  "contract_id": "gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "Claude"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Franklin",
+        "raw_agent_ids": [
+          "Franklin"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Noether",
+        "raw_agent_ids": [
+          "Noether"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Claude",
+      "Franklin",
+      "Noether"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": "Run bounded replay now; if true, populate witness-equality sub-bucket with the new labels; if false, the structural argument for row 0000 rank-1 was wrong and the data-side gate is harder than predicted.",
+        "agent_id": "Claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate/claude.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 5.0,
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "p_success": 0.68,
+        "rationale_short": "RD aggregate of Franklin p=0.62 (empirical) and Noether p=0.78 (structural); shaded slightly toward Franklin due to row 0000's historic 0-compile track record despite Noether's verbatim-prefix argument.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Proceed to bounded replay; row 0000 is the dominant downside given 3 prior 0-compile runs.",
+        "agent_id": "Franklin",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate/franklin.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 4.5,
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "p_success": 0.62,
+        "rationale_short": "Row 0079 split-rw variants very likely produce gold compound state via rw order-stability; row 0000 has historic 0-compile risk despite the verbatim-prefix argument.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Proceed; pre-verify adjudicator compares full goal-state witness (not just error signatures) before counting strict matches.",
+        "agent_id": "Noether",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate/noether.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 4.0,
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "p_success": 0.78,
+        "rationale_short": "Row 0000 rank-1 IS verbatim the gold-truncated prefix already shown to compile in v2099 gold adjudication; row 0079 split-rw on non-conflicting lemmas is sequentially equivalent to the full chain.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T23:28:59Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.9631531648208378,
+      "forecast_spread": 0.16,
+      "p_success": 0.6976914560260472,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.8709
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 4.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6976914560260472,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "row_0000_rank1_verbatim_gold_prefix_strict_match",
+        "p": 0.27666666666666667
+      },
+      {
+        "mode": "row_0079_split_rw_strict_match_at_least_one_of_three",
+        "p": 0.19333333333333336
+      },
+      {
+        "mode": "row_0079_alt_tactic_lands_same_compound_state_strict_or_witness_equality",
+        "p": 0.15
+      },
+      {
+        "mode": "simp_only_variants_divergence_non_match",
+        "p": 0.06333333333333334
+      },
+      {
+        "mode": "row_0000_typeclass_synthesis_fails_again",
+        "p": 0.06
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09839999999999999,
+    "score_rows": 3,
+    "scored_at": "2026-05-14T23:28:59Z"
+  }
+}

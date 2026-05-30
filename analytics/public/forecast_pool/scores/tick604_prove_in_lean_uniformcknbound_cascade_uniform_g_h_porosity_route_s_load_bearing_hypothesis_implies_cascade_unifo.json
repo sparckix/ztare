@@ -1,0 +1,90 @@
+{
+  "contract_id": "tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.027450000000000013,
+  "mean_log_score": -0.18048493411080663,
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "compile_status": null,
+    "contract_id": "tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "tick604 builds; PROVED uniformCKNBound \u27f9 cascade-uniform H, and cascade-uniform H false on Kolmogorov flat cascade (explicit witness, non-circular) \u27f9 porosity hypothesis CLOSED negatively (= the killed wall, alias#15 formalized). Not a closure; route-invariant terminus stands.",
+    "resolved_at": "2026-05-16T20:28:05Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:44Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "claude_rd",
+      "brier": 0.022500000000000006,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 25.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.16251892949777494,
+      "p_success": 0.85,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T20:24:32Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T20:25:21Z",
+        "resolved_at": "2026-05-16T20:28:05Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "codex",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T20:24:32Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T20:26:18Z",
+        "resolved_at": "2026-05-16T20:28:05Z"
+      }
+    }
+  ]
+}

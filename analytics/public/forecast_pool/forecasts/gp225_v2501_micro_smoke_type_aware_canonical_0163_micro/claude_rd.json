@@ -1,0 +1,25 @@
+{
+  "_renamed_from": "claude",
+  "action_change_recommendation": "Run smoke test as planned. Pre-register that fun_prop/measurability closures FAIL moat audit because Measure.measurable_rnDeriv is @[fun_prop] tagged (Lebesgue.lean:99). Any moat-grade closure must come from a lemma path NOT routed through the @[fun_prop] graph.",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",
+  "contract_question": "On canonical OPEN row current_scale_0163 (measurable_pdf), does ANY of 8 hand-curated candidate tactics (fun_prop, measurability, simp/exact variants on sibling measurability lemmas, NOT measurable_rnDeriv) produce a literal Lean-verified closure? Sub-question: does any literal closure pass the v24.01-style moat audit (not @[fun_prop]/@[simp]/@[grind=] tagged, not rfl/tauto reproducible)?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 10.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_closures_pass_audit_break_glass_finding": 0.03571428571428571,
+    "literal_close_but_indirect_leakage_via_simp_or_fun_prop_set": 0.3571428571428571,
+    "no_candidate_closes_literal": 0.21428571428571425,
+    "only_fun_prop_or_measurability_close_via_indirect_leakage": 0.39285714285714285
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T02:34:32Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.2,
+  "p_regression": 0.02,
+  "p_success": 0.05,
+  "rationale_short": "Goal: Measurable (pdf X \u2119 \u03bc). pdf = (map X \u2119).rnDeriv \u03bc by definition. Measure.measurable_rnDeriv is @[fun_prop] tagged \u2192 fun_prop and measurability close trivially via indirect leakage. Any non-fun_prop/non-measurability closure has to use a structurally different proof path; given Mathlib's design this is implausible at the smoke-test scale. P(literal close) ~0.30 (fun_prop/measurability are very likely to close); P(moat-grade after audit) ~0.05 because the only literal closers are predicted to be the @[fun_prop]/measurability tactics which are indirect-leakage by construction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

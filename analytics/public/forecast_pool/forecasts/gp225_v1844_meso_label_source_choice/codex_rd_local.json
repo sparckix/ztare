@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd_local",
+  "contract_id": "gp225_v1844_meso_label_source_choice",
+  "contract_question": "Which immediate source lane should GP-225 prioritize after v18.43: public before-action-after traces, natural local proof-step replay, target-state witness rows, or more same-factory hard-decoy residuals?",
+  "domain": "gp225_label_source",
+  "expected_cost_agent_minutes": 10.0,
+  "failure_mode_distribution": {
+    "hard_decoy_same_factory_overfit": 0.3,
+    "natural_replay_rows_too_few": 0.16,
+    "public_traces_have_state_not_labels": 0.22,
+    "schema_drift": 0.14,
+    "target_state_rows_false_accept_quarantine": 0.18
+  },
+  "forecasted_at": "2026-05-13T15:16:25Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.05,
+  "p_success": 0.62,
+  "rationale_short": "My prior selected lane is public/natural proof-delta inventory, with target-state witness rows as high-precision supplement and same-factory hard decoys deprioritized. Success means v18.44 can name a lane by unsaturated replayable rows, not by total row count.",
+  "read_only_attestation": true
+}

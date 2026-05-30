@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+  "contract_id": "ns_route1_shard_b_lowering_micro_20260513_tick294",
+  "contract_question": "Can the immediate local tick add a compiling non-tautological Lean object that lowers or pays part of shard B from existing L3/CKN/residual-fresh primitives without a strictness oracle or pre-GNN mutation?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compile_break_from_import_or_universe_details": 0.14,
+    "object_is_non_tautological_but_does_not_pay_a_field": 0.28,
+    "residual_fresh_or_ckn_primitives_are_too_abstract": 0.24,
+    "resolved_bound_needs_constants_not_present": 0.16,
+    "square_function_split_needs_new_tent_boundary_receipt": 0.18
+  },
+  "forecasted_at": "2026-05-13T21:55:26Z",
+  "p_dependency_issue": 0.19,
+  "p_needs_new_lemma": 0.41,
+  "p_regression": 0.08,
+  "p_success": 0.58,
+  "rationale_short": "A narrower source/audit layer under the existing B certificate is likely; fully paying one B inequality from current primitives is less likely without a new lemma.",
+  "read_only_attestation": true
+}

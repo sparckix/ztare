@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_forecast_tick348",
+  "contract_id": "ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348",
+  "contract_question": "Can we add a compile-checked boundary-specific lower-payment source/guard tying normalizedBoundaryLeakagePart to FreshFrequencyTentBoundaryTruncationReceipt.boundaryLeakageCharge, without confusing boundaryCharge \u2264 tentBoundaryError with lower payment?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bookkeeping_match_type_issue": 0.18,
+    "boundary_receipt_too_weak": 0.24,
+    "lean_arithmetic_noise": 0.1,
+    "other": 0.16,
+    "source_remains_conditional": 0.32
+  },
+  "forecasted_at": "2026-05-14T04:19:52Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.32,
+  "p_regression": 0.07,
+  "p_success": 0.71,
+  "rationale_short": "The boundary leg is simpler than transport, but the useful theorem must preserve the direction: normalized boundary part to boundary charge, not charge to tent error.",
+  "read_only_attestation": true
+}

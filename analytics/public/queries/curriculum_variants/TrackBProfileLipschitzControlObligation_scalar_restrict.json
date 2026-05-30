@@ -1,0 +1,11 @@
+{
+  "ts": "2026-05-06T13:11:27.308630+00:00",
+  "original_target": "TrackBProfileLipschitzControlObligation",
+  "original_file": "ns_profile_lipschitz_clay_bridge",
+  "transform": "SCALAR_RESTRICT",
+  "transform_description": "vector-valued \u2192 scalar",
+  "new_target_name": "TrackBProfileLipschitzControlObligation_Scalar",
+  "transformed_source": "/-- Profile-pricing plus Lipschitz-control obligation, before any continuation\ncriterion is attached.\n\nThe key anti-tautology requirement is that both maps are fixed:\n\n* `profile_bundle.profile_family_of_block` decomposes the block before\n  payoff is scored;\n* `lipschitz_bridge.ledger_of_evolution` declares the continuation-relevant\n  low-frequency budget before no-survivor is used.\n-/\nstructure TrackBProfileLipschitzControlObligation_Scalar where\n  evolution_of_initial_data : SmoothNSInitialData \u2192 NSEvolution\n  profile_bundle : TrackBProfileDecompositionBridgeBundle\n  lipschitz_bridge : LowFrequencyLipschitzBridge\n  source_coupling :\n    TrackBProfileLipschitzSourceCoupling\n      evolution_of_initial_data\n      (trackb_profile_decomposition_obligation_of_bridge_bundle\n        profile_bundle)\n      lipschitz_bridge\n  generated_quartic_survival_amplitude_projection :\n    \u2200 (U : NSEvolution) (n : \u2115),\n      QuarticSurvivalAmplitudeProjectionReceipt\n        ((lipschitz_bridge.ledger_of_evolution U).block n)\n",
+  "name_suffix": "_Scalar",
+  "honest_caveat": "Template-based transformation; the generated variant may be ill-typed. Codex must validate before sending to typed_endpoint_pack."
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_forecast_tick323",
+  "contract_id": "ns_route1_stress_angular_coherence_source_micro_20260514_tick323",
+  "contract_question": "Will the next NS route-1 tick add a build-passed fixed-window stress-angular-coherence dominance source that produces angularMomentDominance/Route1FixedWindowAngularDominanceSource without defining the source from the final carrier?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "final_carrier_lower_bound_smuggled_into_source_definition": 0.2,
+    "fixed_window_matching_props_are_too_opaque_for_gp233_credit": 0.14,
+    "import_or_namespace_friction": 0.06,
+    "lean_abs_or_nlinarith_friction": 0.1,
+    "source_restates_angularMomentDominance_as_a_field": 0.26,
+    "stress_coherence_bound_does_not_control_same_window_sheath_error": 0.24
+  },
+  "forecasted_at": "2026-05-14T01:20:24Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.56,
+  "p_regression": 0.07,
+  "p_success": 0.62,
+  "rationale_short": "Decent compile odds if source exposes stress coherence and derives dominance algebraically; risk is evidentiary smuggling.",
+  "read_only_attestation": true
+}

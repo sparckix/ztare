@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359",
+  "mean_brier": 0.10985,
+  "mean_log_score": -0.39770070729935086,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "dc3909fcdadadbcee28518dad81ab144941ff98a1bc02f849aefaec489244fa3",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359",
+    "error_type": null,
+    "goal_delta": 2,
+    "resolution_note": "Added LocalEnergyPositiveBoundaryFluxSubadditivitySource and theorem normalizedTransport_le_transport_plus_alternateCharges_of_boundaryFluxSubadditivity. This replaces exact split equality with positive-boundary-flux subadditivity; lake env lean and downstream build passed; touched file has no sorry/admit.",
+    "resolved_at": "2026-05-14T12:31:46Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T12:31:53Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex_rd_tick359",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 30.0,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:28:47Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:28:47Z",
+        "resolved_at": "2026-05-14T12:31:46Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex_skeptic_tick359",
+      "brier": 0.1521,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 40.0,
+      "log_score": -0.4942963218147801,
+      "p_success": 0.61,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:28:47Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:29:32Z",
+        "resolved_at": "2026-05-14T12:31:46Z"
+      }
+    }
+  ]
+}

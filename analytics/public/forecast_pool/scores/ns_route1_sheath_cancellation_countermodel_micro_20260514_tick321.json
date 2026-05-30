@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321",
+  "mean_brier": 0.20765,
+  "mean_log_score": -0.6080226927801027,
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "build_passed",
+    "contract_id": "ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321",
+    "error_type": "none",
+    "goal_delta": 2,
+    "resolution_note": "Resolved true as missing-hypothesis/countermechanism: exact same-window sheath cancellation is formalized to force zero projected carrier, so positive proof must derive angularMomentDominance from fixed-window PDE data.",
+    "resolved_at": "2026-05-14T00:56:55Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T00:56:55Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "gibbs_market_B",
+      "brier": 0.2304,
+      "cost_error_agent_minutes": 48.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 90.0,
+      "log_score": -0.6539264674066639,
+      "p_success": 0.52,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:50:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:51:10Z",
+        "resolved_at": "2026-05-14T00:56:55Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "herschel_market_A",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 13.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:50:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:51:10Z",
+        "resolved_at": "2026-05-14T00:56:55Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "action_change_recommendation": "If current fields are Prop-only, add a minimal extraction source object with selectable map/collision fields rather than weakening incidence-derived gate.",
+  "agent_family": "codex",
+  "agent_id": "codex:RD",
+  "b_mid": 0.215,
+  "b_width": 0.15,
+  "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+  "contract_question": "Can Level499 add a positive finite incidence extraction source that isolates the exact data needed to construct targetSlot and injectivity from same-tree incidence, while proving current Prop-only fields remain insufficient?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 75.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "existing_incidence_fields_prop_only": 0.53125,
+    "lean_dependency_shape_mismatch": 0.1875,
+    "new_schema_only_not_c5_progress": 0.28125
+  },
+  "forecast_externality_tags": [
+    "positive_extraction_interface",
+    "c5_facing_source_law"
+  ],
+  "forecasted_at": "2026-05-27T04:16:55Z",
+  "p_buy_yes_max": 0.61,
+  "p_dependency_issue": 0.21,
+  "p_needs_new_lemma": 0.46,
+  "p_regression": 0.12,
+  "p_sell_yes_min": 0.78,
+  "p_success": 0.69,
+  "predicted_brier_hi": 0.29,
+  "predicted_brier_lo": 0.14,
+  "predicted_self_error_ratio": 0.24,
+  "rationale_short": "Level498 already proves explicit targetSlot suffices and current labels are insufficient; likely success is a sharper extraction source/interface, not full analytic construction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "existing_incidence_fields_prop_only",
+    "lean_dependency_shape_mismatch"
+  ],
+  "spread": -0.17,
+  "tail_downside_worry": 32.0,
+  "tail_upside_surprise": 22.0,
+  "verbalized_confidence": 0.69
+}

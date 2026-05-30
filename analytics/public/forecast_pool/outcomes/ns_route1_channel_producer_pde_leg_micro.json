@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 0.0,
+  "artifact_hash": "not_applicable",
+  "artifact_path": "analytics/public/forecast_pool/contracts/ns_route1_channel_producer_pde_leg_micro.json",
+  "compile_status": "voided_single_rd_self_forecast_not_market",
+  "contract_id": "ns_route1_channel_producer_pde_leg_micro",
+  "error_type": "voided_single_bettor",
+  "goal_delta": 0,
+  "resolution_note": "Voided: this was a single RD self-forecast and should not be treated as prediction-market evidence. Market use requires independent agent bets; superseded by ns_route1_pressure_or_commutator_lower_bound_meso.",
+  "resolved_at": "2026-05-13T19:19:30Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": true
+}

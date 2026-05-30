@@ -1,0 +1,3162 @@
+{
+  "experiment": "gp216_pathA_4more_subfields",
+  "subfields": [
+    "logic_set_theory",
+    "algebraic_topology",
+    "applied_math",
+    "business_held_out"
+  ],
+  "n_arcs": 30,
+  "total_moves": 565,
+  "results": {
+    "logic_set_theory": {
+      "sonnet": {
+        "cantor_set_theory": {
+          "arc_id": "cantor_set_theory",
+          "moves": [
+            {
+              "name": "Redefine Sameness Criterion",
+              "signature": "Replace an intuitive equivalence notion with a precise structural test that works even when direct comparison fails.",
+              "anchor": "bijection-based equivalence"
+            },
+            {
+              "name": "Apply Criterion Across Boundary",
+              "signature": "Use the new equivalence test on a case previously assumed to be outside its scope, revealing unexpected sameness.",
+              "anchor": "integers and rationals are countable"
+            },
+            {
+              "name": "Construct the Counterexample Engine",
+              "signature": "Build a procedure that, given any proposed complete listing, mechanically produces an item the listing must have missed.",
+              "anchor": "diagonal argument"
+            },
+            {
+              "name": "Prove Incompleteness by Construction",
+              "signature": "Demonstrate that no mapping can be exhaustive by exhibiting a concrete object that escapes every candidate mapping.",
+              "anchor": "real numbers are uncountable"
+            },
+            {
+              "name": "Establish Strict Hierarchy",
+              "signature": "Show that two classes, previously treated as equally large or incomparable, stand in an irreversible lesser-greater relation.",
+              "anchor": "\u2135_0 < \u2135_1"
+            },
+            {
+              "name": "Iterate the Hierarchy",
+              "signature": "Apply the same size-exceeding operation repeatedly to generate an unbounded ascending sequence of distinct levels.",
+              "anchor": "transfinite cardinals \u2135_0 < \u2135_1 < ..."
+            },
+            {
+              "name": "Name the Unnamed Level",
+              "signature": "Assign a stable symbol to each newly discovered level so it can serve as a reference point for further reasoning.",
+              "anchor": "\u2135_0, \u2135_1"
+            },
+            {
+              "name": "Pose the Gap Question",
+              "signature": "Identify the open interval between two established levels and ask whether anything occupies that gap.",
+              "anchor": "continuum hypothesis 2^\u2135_0 = \u2135_1"
+            },
+            {
+              "name": "Extend Induction Beyond Finite",
+              "signature": "Generalize a step-by-step proof technique so it applies across infinite ordinal stages, not just finite ones.",
+              "anchor": "transfinite induction"
+            },
+            {
+              "name": "Reframe as Foundation",
+              "signature": "Reposition a specialized technical framework as the underlying language in which all other structures in the domain can be expressed.",
+              "anchor": "founded set theory as foundation of mathematics"
+            }
+          ]
+        },
+        "zf_axiomatization": {
+          "arc_id": "zf_axiomatization",
+          "moves": [
+            {
+              "name": "Crisis as Catalyst",
+              "signature": "A discovered contradiction is treated not as defeat but as the precise entry point for structural redesign.",
+              "anchor": "Russell's paradox"
+            },
+            {
+              "name": "Scope Restriction",
+              "signature": "The protagonist narrows the domain of permissible operations to eliminate the conditions that produced failure.",
+              "anchor": "replacing naive comprehension with specific axioms"
+            },
+            {
+              "name": "Explicit Rule Enumeration",
+              "signature": "Implicit assumptions are surfaced and converted into a finite, inspectable list of stated commitments.",
+              "anchor": "extensionality, pairing, union, power set, separation, infinity, replacement, regularity, choice"
+            },
+            {
+              "name": "Useful Structure Preservation",
+              "signature": "While closing off dangerous paths, the protagonist deliberately retains the productive capabilities of the prior system.",
+              "anchor": "preserve useful structure"
+            },
+            {
+              "name": "Staged Collaborative Refinement",
+              "signature": "An initial framework is extended by subsequent contributors who patch gaps the originator left open.",
+              "anchor": "Zermelo (1908) and Fraenkel-Skolem responded"
+            },
+            {
+              "name": "Foundation Designation",
+              "signature": "One formalized structure is elevated to serve as the common ground on which all subsequent work in the domain rests.",
+              "anchor": "Established ZFC as default mathematical foundation"
+            },
+            {
+              "name": "Paradox Localization",
+              "signature": "The protagonist isolates exactly which structural feature generates the contradiction rather than discarding the entire system.",
+              "anchor": "paradox identification"
+            },
+            {
+              "name": "Constraint as Enabler",
+              "signature": "Adding restrictions is reframed as a generative move that makes reliable construction possible rather than merely limiting freedom.",
+              "anchor": "axiomatic restriction"
+            },
+            {
+              "name": "Incremental Patch Sequence",
+              "signature": "The protagonist applies a series of targeted fixes in succession, each addressing a residual vulnerability left by the previous step.",
+              "anchor": "1908-1925"
+            },
+            {
+              "name": "Default Standard Setting",
+              "signature": "A solution gains adoption not by mandate but by becoming the most widely accepted reference point practitioners defer to.",
+              "anchor": "default mathematical foundation"
+            }
+          ]
+        },
+        "godel_incompleteness": {
+          "arc_id": "godel_incompleteness",
+          "moves": [
+            {
+              "name": "Encode System Into Itself",
+              "signature": "Map the domain's own elements onto a representation layer within that same domain, enabling self-reference.",
+              "anchor": "G\u00f6del numbering encoding system into itself"
+            },
+            {
+              "name": "Construct Self-Referential Object",
+              "signature": "Use the internal encoding to build an element that explicitly refers to its own status within the system.",
+              "anchor": "diagonal lemma constructing self-referential sentence"
+            },
+            {
+              "name": "Internalize the Metalanguage",
+              "signature": "Translate statements about the system into statements inside the system, collapsing the observer/observed boundary.",
+              "anchor": "arithmetization of provability predicate"
+            },
+            {
+              "name": "Confirm Sufficient Expressiveness",
+              "signature": "Verify at each step that the domain is rich enough to sustain the required representational moves before proceeding.",
+              "anchor": "showing system was expressive enough to represent its own metalanguage"
+            },
+            {
+              "name": "Leverage Consistency Assumption",
+              "signature": "Accept the adversary's own foundational premise as a given, then derive consequences that undermine the adversary's goal.",
+              "anchor": "any consistent formal system"
+            },
+            {
+              "name": "Identify Minimum Threshold",
+              "signature": "Establish the weakest conditions under which the argument holds, preventing over-specification and maximizing generality.",
+              "anchor": "strong enough to encode arithmetic"
+            },
+            {
+              "name": "Derive Unprovable Truth",
+              "signature": "Produce a well-formed element that is demonstrably valid yet unreachable by the system's own inference machinery.",
+              "anchor": "incomplete"
+            },
+            {
+              "name": "Reflect Limits Inward",
+              "signature": "Show that the system's inability to escape its own perspective prevents it from certifying its own reliability.",
+              "anchor": "cannot prove own consistency"
+            },
+            {
+              "name": "Settle Program Negatively",
+              "signature": "Use the constructed result to close an open research agenda by ruling out the possibility it sought to establish.",
+              "anchor": "settled Hilbert's program negatively"
+            },
+            {
+              "name": "Reuse Diagonal Trick",
+              "signature": "Apply a single recursive construction pattern across multiple distinct conclusions, multiplying impact from one mechanism.",
+              "anchor": "diagonal lemma constructing self-referential sentence"
+            }
+          ]
+        },
+        "cohen_forcing": {
+          "arc_id": "cohen_forcing",
+          "moves": [
+            {
+              "name": "Dual Witness Assembly",
+              "signature": "Protagonist pairs an existing result showing X is possible with a new construction showing not-X is also possible, together establishing that X is undecidable within the system.",
+              "anchor": "Combined with G\u00f6del's L (showing CH consistent), proves CH undecidable"
+            },
+            {
+              "name": "Controlled Universe Extension",
+              "signature": "Protagonist expands the ambient structure by carefully adjoining new elements, ensuring the extension obeys all prior rules while enabling new outcomes.",
+              "anchor": "forcing construction adjoining a generic filter"
+            },
+            {
+              "name": "Partial Commitment Scaffolding",
+              "signature": "Protagonist builds toward a target state incrementally through finite, reversible approximations rather than committing to a full specification at once.",
+              "anchor": "poset of finite partial functions"
+            },
+            {
+              "name": "Generic Element Injection",
+              "signature": "Protagonist introduces an object that is not definable from within the original structure yet is constrained enough to be coherent and useful.",
+              "anchor": "adjoining a generic filter"
+            },
+            {
+              "name": "Invariant Preservation Under Extension",
+              "signature": "Protagonist engineers the expansion so that structural quantities that must remain fixed are provably unchanged despite the addition of new material.",
+              "anchor": "preserving cardinal arithmetic"
+            },
+            {
+              "name": "Outcome Steering by Design",
+              "signature": "Protagonist configures the construction parameters in advance so that the resulting structure satisfies or violates a chosen target statement on demand.",
+              "anchor": "controlled to make new model satisfy or violate specified statements"
+            },
+            {
+              "name": "Framework Reuse Across Targets",
+              "signature": "Protagonist abstracts the core mechanism from a single solved case and redeploys it to resolve a broad class of structurally similar open problems.",
+              "anchor": "Generalized to many independence results"
+            },
+            {
+              "name": "Boundary Condition Exploitation",
+              "signature": "Protagonist locates a statement that sits exactly at the edge of what the system can decide, then uses that liminal position as the site of construction.",
+              "anchor": "CH is independent of ZFC"
+            },
+            {
+              "name": "External Vantage Construction",
+              "signature": "Protagonist builds a new model that can be viewed and verified from outside the system being studied, sidestepping internal unprovability.",
+              "anchor": "model-theoretic construction"
+            },
+            {
+              "name": "Compatibility Filter Imposition",
+              "signature": "Protagonist imposes a selection criterion on the approximating pieces so that only mutually consistent fragments are assembled into the final object.",
+              "anchor": "generic filter to a poset"
+            }
+          ]
+        },
+        "tarski_undefinability": {
+          "arc_id": "tarski_undefinability",
+          "moves": [
+            {
+              "name": "Semantic Import",
+              "signature": "A concept native to one level of description is formally translated into the language of a lower-level system to test whether it fits.",
+              "anchor": "formalize 'truth predicate' for arithmetic statements"
+            },
+            {
+              "name": "Level Conflation Test",
+              "signature": "The protagonist deliberately attempts to collapse a meta-level notion into an object-level representation to expose the tension.",
+              "anchor": "truth predicate cannot be expressed within arithmetic"
+            },
+            {
+              "name": "Self-Reference Construction",
+              "signature": "A statement is engineered to refer to a property of itself, creating a loop that the system must evaluate.",
+              "anchor": "diagonal-lemma argument"
+            },
+            {
+              "name": "Inherited Framework Extension",
+              "signature": "An existing structural result is adopted as scaffolding and its core mechanism is redirected toward a new target concept.",
+              "anchor": "Extends G\u00f6del's incompleteness from provability to truth"
+            },
+            {
+              "name": "Concept Boundary Mapping",
+              "signature": "The protagonist draws a precise line between what a system can express about itself and what necessarily escapes that expression.",
+              "anchor": "truth in arithmetic is not arithmetically definable"
+            },
+            {
+              "name": "Syntactic Containment Probe",
+              "signature": "A semantic notion is pressed into syntactic form to determine whether the host system can fully contain it without contradiction.",
+              "anchor": "formalize semantic notion within syntactic system"
+            },
+            {
+              "name": "Contradiction Harvest",
+              "signature": "The self-referential construction is run to completion, and the resulting contradiction is treated as the proof of impossibility rather than an error.",
+              "anchor": "derive undefinability via self-reference"
+            },
+            {
+              "name": "Structural Impossibility Declaration",
+              "signature": "Rather than seeking a workaround, the protagonist concludes that the obstacle is a permanent architectural feature of the system.",
+              "anchor": "structural impossibility"
+            },
+            {
+              "name": "Scope Escalation",
+              "signature": "A prior result limited to one property is shown to generalize to a broader or more fundamental property by the same mechanism.",
+              "anchor": "from provability to truth"
+            }
+          ]
+        },
+        "robinson_nonstandard_analysis": {
+          "arc_id": "robinson_nonstandard_analysis",
+          "moves": [
+            {
+              "name": "Forbidden Tool Rehabilitation",
+              "signature": "The protagonist rescues a discredited or abandoned instrument by constructing a rigorous framework that legitimizes its use.",
+              "anchor": "previously-heuristic intuitions"
+            },
+            {
+              "name": "Domain Extension",
+              "signature": "The protagonist enlarges an existing structure by appending new elements that preserve the original structure's rules while enabling new operations.",
+              "anchor": "nonstandard model *R extending R"
+            },
+            {
+              "name": "Alien Element Introduction",
+              "signature": "The protagonist formally admits objects that violate conventional magnitude assumptions, granting them full citizenship within the extended system.",
+              "anchor": "infinitesimals and infinite numbers"
+            },
+            {
+              "name": "Cross-Model Bridge",
+              "signature": "The protagonist establishes a principle that guarantees truths proven in one structural context automatically hold in a related but larger context.",
+              "anchor": "transfer principle: any first-order statement true in R is true in *R"
+            },
+            {
+              "name": "Syntactic Scope Restriction",
+              "signature": "The protagonist identifies the precise logical grammar that a bridging principle requires, limiting its application to statements of a specified expressive depth.",
+              "anchor": "first-order statement"
+            },
+            {
+              "name": "Algebraic Assembly Method",
+              "signature": "The protagonist builds the extended structure through a concrete combinatorial construction rather than by abstract existence assertion alone.",
+              "anchor": "ultraproduct construction"
+            },
+            {
+              "name": "Precision Layer Import",
+              "signature": "The protagonist borrows a mature toolkit from an adjacent discipline to supply the rigor that the home discipline lacked.",
+              "anchor": "transfer principle from model theory"
+            },
+            {
+              "name": "Collapse-Back Operator",
+              "signature": "The protagonist defines a canonical projection that maps exotic extended-domain objects back to their nearest conventional counterparts, recovering familiar results.",
+              "anchor": "standard-part function"
+            },
+            {
+              "name": "Intuition Formalization",
+              "signature": "The protagonist converts long-standing informal reasoning patterns into exact definitions, preserving the original insight while eliminating ambiguity.",
+              "anchor": "rigorous foundation for previously-heuristic intuitions"
+            },
+            {
+              "name": "Structural Inheritance Proof",
+              "signature": "The protagonist demonstrates that properties of the original system are automatically inherited by the extension, removing the need to re-prove them from scratch.",
+              "anchor": "structural transfer between models"
+            },
+            {
+              "name": "Retroactive Legitimization",
+              "signature": "The protagonist shows that historical practitioners were implicitly correct, reframing their errors as notational rather than conceptual.",
+              "anchor": "infinitesimal calculus done rigorously"
+            }
+          ]
+        },
+        "lowenheim_skolem": {
+          "arc_id": "lowenheim_skolem",
+          "moves": [
+            {
+              "name": "Intended Target Isolation",
+              "signature": "The protagonist identifies the assumed canonical object that the system is believed to uniquely describe, making it the implicit standard against which all findings will be measured.",
+              "anchor": "intended model"
+            },
+            {
+              "name": "Downward Closure Construction",
+              "signature": "A smaller valid instance is built by collecting only the elements reachable from a seed set, preserving all relational obligations within that reduced scope.",
+              "anchor": "generating substructure from named elements"
+            },
+            {
+              "name": "Witness Constant Injection",
+              "signature": "New named placeholders are introduced into the formal language to force the existence of additional distinct objects, expanding the structure without violating its rules.",
+              "anchor": "adjoining new constants"
+            },
+            {
+              "name": "Compactness Leverage",
+              "signature": "The protagonist exploits the principle that any finitely satisfiable collection of constraints is globally satisfiable, using finite consistency to guarantee infinite or arbitrarily large solutions.",
+              "anchor": "compactness theorem"
+            },
+            {
+              "name": "Scale Invariance Exposure",
+              "signature": "The protagonist demonstrates that the governing rules remain satisfiable at multiple incompatible sizes, revealing that the rules themselves cannot enforce a unique scale.",
+              "anchor": "models of every infinite cardinality"
+            },
+            {
+              "name": "Expressive Ceiling Mapping",
+              "signature": "The protagonist locates the precise boundary of what the chosen descriptive language can enforce, showing that certain distinctions lie permanently outside its reach.",
+              "anchor": "first-order limitations"
+            },
+            {
+              "name": "Paradox Surface Reveal",
+              "signature": "Two apparently contradictory truths are placed side by side to show they coexist without logical error, forcing a reexamination of intuitive assumptions.",
+              "anchor": "Skolem's paradox"
+            },
+            {
+              "name": "Internal Consistency Preservation",
+              "signature": "The protagonist confirms that the newly constructed deviant instance still satisfies every formal rule, neutralizing the objection that the construction is illegitimate.",
+              "anchor": "countable models of ZFC"
+            },
+            {
+              "name": "Cardinality Decoupling",
+              "signature": "The protagonist severs the assumed link between a theory's content and the size of its models, showing size is a free parameter rather than a fixed consequence.",
+              "anchor": "cardinality independence"
+            },
+            {
+              "name": "Reachability Boundary Tracing",
+              "signature": "The protagonist tracks exactly which objects are accessible from a starting point under the allowed operations, using that boundary to define a self-contained sub-instance.",
+              "anchor": "generating substructure"
+            },
+            {
+              "name": "Upward Iteration",
+              "signature": "The construction is repeated or extended in the expanding direction, producing arbitrarily large instances by the same mechanism used to produce small ones.",
+              "anchor": "upward direction"
+            }
+          ]
+        },
+        "solovay_reinhardt_large_cardinals": {
+          "arc_id": "solovay_reinhardt_large_cardinals",
+          "moves": [
+            {
+              "name": "Ladder Construction",
+              "signature": "Arrange candidate entities into a strict linear ordering where each level certifies the coherence of all levels below it.",
+              "anchor": "large cardinal axioms form a strict consistency-strength hierarchy"
+            },
+            {
+              "name": "Strength Delegation",
+              "signature": "Each node in a hierarchy inherits and re-exports the validating power of every weaker node, making the ordering cumulative.",
+              "anchor": "each implies consistency of weaker ones"
+            },
+            {
+              "name": "Structural Witness Posit",
+              "signature": "Assert existence of a mapping object whose mere presence guarantees a desired global property of the system.",
+              "anchor": "structural consistency via embedding existence"
+            },
+            {
+              "name": "Extremal Candidate Placement",
+              "signature": "Identify and position the strongest conceivable instance at the top of an ordered hierarchy to probe its limits.",
+              "anchor": "Reinhardt cardinals"
+            },
+            {
+              "name": "Critical Point Extraction",
+              "signature": "Isolate the first location where a transformation departs from identity, making that location the fulcrum of subsequent reasoning.",
+              "anchor": "critical-point sequence"
+            },
+            {
+              "name": "Iterated Trace Generation",
+              "signature": "Apply a transformation repeatedly to a seed element, producing an infinite sequence whose collective behavior carries the argument.",
+              "anchor": "derive contradiction via critical-point sequence"
+            },
+            {
+              "name": "Assumption Bundle Assembly",
+              "signature": "Combine multiple independent commitments into a single joint hypothesis so their combined consequences can be interrogated together.",
+              "anchor": "assuming embedding existence + AC + Replacement"
+            },
+            {
+              "name": "Internal Collision Detection",
+              "signature": "Show that the joint consequences of an assumption bundle contradict one another, invalidating the bundle without external evidence.",
+              "anchor": "derive contradiction"
+            },
+            {
+              "name": "Ceiling Demolition",
+              "signature": "Prove that the uppermost candidate in a hierarchy is self-undermining, collapsing the apparent summit.",
+              "anchor": "Reinhardt's axiom was shown inconsistent"
+            },
+            {
+              "name": "Auxiliary Axiom Leverage",
+              "signature": "Use a background principle not under direct scrutiny to amplify the consequences of the primary hypothesis until a contradiction emerges.",
+              "anchor": "inconsistent with AC by Kunen"
+            },
+            {
+              "name": "Hierarchy Boundary Marking",
+              "signature": "After demolishing a candidate, use the contradiction to draw a precise demarcation between coherent and incoherent regions of the ordering.",
+              "anchor": "falsification of strongest axioms"
+            },
+            {
+              "name": "Methodology Codification",
+              "signature": "Elevate the successful reasoning pattern into an explicit, reusable methodology that governs future investigations in the same domain.",
+              "anchor": "hierarchical consistency-strength ladder; structural consistency via embedding existence"
+            }
+          ]
+        }
+      },
+      "gemini": {
+        "cantor_set_theory": {
+          "arc_id": "cantor_set_theory",
+          "moves": [
+            {
+              "name": "Redefining Equivalence",
+              "signature": "Establishes a new, formal criterion for comparing two entities, replacing an intuitive or inherited notion.",
+              "anchor": "bijection-based equivalence"
+            },
+            {
+              "name": "Generalizing a Core Property",
+              "signature": "Extends a property from a familiar, limited context to a broader, more abstract domain, preserving its essential function.",
+              "anchor": "infinite sets have different sizes (cardinalities)"
+            },
+            {
+              "name": "Establishing a Core Dichotomy",
+              "signature": "Splits a monolithic concept into two fundamentally different categories, creating a new landscape for inquiry.",
+              "anchor": "real numbers are uncountable while integers and rationals are countable"
+            },
+            {
+              "name": "Constructing an Impossibility",
+              "signature": "Demonstrates a limit or impossibility by building a specific counterexample that violates the proposed rule.",
+              "anchor": "diagonal construction proving no bijection exists"
+            },
+            {
+              "name": "Systematizing a Hierarchy",
+              "signature": "Organizes a newly discovered distinction into a formal, ordered sequence or classification system.",
+              "anchor": "transfinite cardinals \u2135_0 < \u2135_1 < ..."
+            },
+            {
+              "name": "Posing a Unifying Conjecture",
+              "signature": "Formulates a specific, high-stakes hypothesis that connects a new system to existing structures and defines a central problem.",
+              "anchor": "continuum hypothesis 2^\u2135_0 = \u2135_1"
+            },
+            {
+              "name": "Forging a Recursive Tool",
+              "signature": "Develops a novel, iterative method to navigate and prove properties within a newly established structure.",
+              "anchor": "transfinite induction"
+            },
+            {
+              "name": "Proposing a New Foundation",
+              "signature": "Reframes an entire domain by offering a new set of fundamental concepts from which existing knowledge can be derived.",
+              "anchor": "Founded set theory as foundation of mathematics"
+            }
+          ]
+        },
+        "zf_axiomatization": {
+          "arc_id": "zf_axiomatization",
+          "moves": [
+            {
+              "name": "Isolate Generative Contradiction",
+              "signature": "Pinpoint a fundamental principle or assumption that produces systemic inconsistencies.",
+              "anchor": "Russell's paradox"
+            },
+            {
+              "name": "Abandon Unsound Premise",
+              "signature": "Discard a foundational, but flawed, general principle rather than attempting to patch it.",
+              "anchor": "replacing naive comprehension"
+            },
+            {
+              "name": "Constrain Generative Rules",
+              "signature": "Replace a single, overly permissive rule with a curated set of more restrictive, constructive principles.",
+              "anchor": "axiomatic restriction"
+            },
+            {
+              "name": "Enumerate Permitted Operations",
+              "signature": "Define a system by explicitly listing what constructive actions are allowed, rather than what is forbidden.",
+              "anchor": "with specific axioms"
+            },
+            {
+              "name": "Conserve Essential Functionality",
+              "signature": "Ensure the new, more restrictive system can still replicate the valuable outputs of the old system.",
+              "anchor": "preserve useful structure"
+            },
+            {
+              "name": "Refine Initial Framework",
+              "signature": "Augment an initial proposal with subsequent additions to address its limitations or expand its power.",
+              "anchor": "Fraenkel-Skolem responded"
+            },
+            {
+              "name": "Mandate Foundational Capacity",
+              "signature": "Explicitly assert the existence of a necessary construct to ensure the system has sufficient scale.",
+              "anchor": "infinity"
+            },
+            {
+              "name": "Propose Foundational Standard",
+              "signature": "Advance a new, coherent set of rules as the default operational basis for an entire field.",
+              "anchor": "Established ZFC as default"
+            }
+          ]
+        },
+        "godel_incompleteness": {
+          "arc_id": "godel_incompleteness",
+          "moves": [
+            {
+              "name": "Internal Representation Mapping",
+              "signature": "Translating a system's external structure into its own internal language.",
+              "anchor": "G\u00f6del numbering encoding system into itself"
+            },
+            {
+              "name": "Constructing Self-Reference",
+              "signature": "Creating an element within a system that asserts a property about itself.",
+              "anchor": "diagonal lemma constructing self-referential sentence"
+            },
+            {
+              "name": "Formalizing Operational Concepts",
+              "signature": "Defining a system's dynamic processes or relationships using its static elements.",
+              "anchor": "arithmetization of provability predicate"
+            },
+            {
+              "name": "Establishing Expressive Sufficiency",
+              "signature": "Demonstrating that a system possesses the necessary complexity to model its own meta-properties.",
+              "anchor": "showing system was expressive enough"
+            },
+            {
+              "name": "Collapsing Metatheory into Theory",
+              "signature": "Representing discourse about a system as objects within that same system.",
+              "anchor": "represent its own metalanguage"
+            },
+            {
+              "name": "Forging a Paradoxical Object",
+              "signature": "Constructing an entity whose properties contradict the system's own rules if applied to itself.",
+              "anchor": "self-referential sentence"
+            },
+            {
+              "name": "Exploiting a Forced Choice",
+              "signature": "Forcing a system into a dilemma where every possible outcome reveals a fundamental limitation.",
+              "anchor": "Any consistent formal system... is incomplete"
+            },
+            {
+              "name": "Deriving Secondary Incapacity",
+              "signature": "Using a demonstrated limitation to preclude the system from validating its own foundational assumptions.",
+              "anchor": "cannot prove own consistency"
+            },
+            {
+              "name": "Resolving a Foundational Program",
+              "signature": "Applying an internal discovery to definitively answer a major external question about the system's capabilities.",
+              "anchor": "settled Hilbert's program negatively"
+            }
+          ]
+        },
+        "cohen_forcing": {
+          "arc_id": "cohen_forcing",
+          "moves": [
+            {
+              "name": "Constructing an Alternate Model",
+              "signature": "Fabricate a new context or model where specific propositions can be tested for truth or falsehood.",
+              "anchor": "model-theoretic construction"
+            },
+            {
+              "name": "Introducing a Novel Element",
+              "signature": "Augment a base structure with a new, abstract component that embodies desired but previously absent properties.",
+              "anchor": "adjoining a generic filter"
+            },
+            {
+              "name": "Assembling from Partial Pieces",
+              "signature": "Build a complex entity from a structured collection of simple, incomplete approximations.",
+              "anchor": "poset of finite partial functions"
+            },
+            {
+              "name": "Engineering a Specific Outcome",
+              "signature": "Deliberately steer a constructive process to ensure the final system exhibits a predetermined property.",
+              "anchor": "controlled to make new model satisfy or violate"
+            },
+            {
+              "name": "Controlled System Extension",
+              "signature": "Carefully expand an existing universe of possibilities without altering its fundamental axioms.",
+              "anchor": "controlled extension of universe"
+            },
+            {
+              "name": "Maintaining Core Invariants",
+              "signature": "Ensure that a modification or extension to a system does not violate its most fundamental, established principles.",
+              "anchor": "preserving cardinal arithmetic"
+            },
+            {
+              "name": "Synthesizing with Prior Work",
+              "signature": "Combine a new finding with a previously established one to achieve a more powerful, conclusive proof.",
+              "anchor": "Combined with G\u00f6del's L"
+            },
+            {
+              "name": "Demonstrating Dual Possibility",
+              "signature": "Prove that a system can be consistently extended to support both a proposition and its negation, thereby showing the proposition's independence.",
+              "anchor": "CH is independent of ZFC"
+            },
+            {
+              "name": "Developing a Generalizable Framework",
+              "signature": "Create a novel method or technique that can be adapted to solve a wide class of similar problems.",
+              "anchor": "Generalized to many independence results"
+            },
+            {
+              "name": "Forcing a Desired State",
+              "signature": "Manipulate the conditions of a system's extension to compel a specific statement to become true within the new context.",
+              "anchor": "forcing construction"
+            }
+          ]
+        },
+        "tarski_undefinability": {
+          "arc_id": "tarski_undefinability",
+          "moves": [
+            {
+              "name": "Isolate a Core Property",
+              "signature": "Target a fundamental, high-level property of a system for formal investigation.",
+              "anchor": "Truth in arithmetic"
+            },
+            {
+              "name": "Delineate System and Metasystem",
+              "signature": "Establish a clear boundary between a formal system and the language used to describe that system's properties.",
+              "anchor": "Truth in arithmetic is not arithmetically definable."
+            },
+            {
+              "name": "Formalize an External Concept",
+              "signature": "Attempt to create a complete and precise definition for an abstract concept using only the system's internal language.",
+              "anchor": "formalize 'truth predicate'"
+            },
+            {
+              "name": "Encode Meaning into Form",
+              "signature": "Represent a concept's semantic properties using the purely symbolic, rule-based structure of a system.",
+              "anchor": "formalize semantic notion within syntactic system"
+            },
+            {
+              "name": "Forge a Self-Referential Object",
+              "signature": "Construct an element within a system that makes a claim about its own properties or status.",
+              "anchor": "diagonal-lemma argument"
+            },
+            {
+              "name": "Induce a Contradictory Loop",
+              "signature": "Use a self-referential element to show that assuming a certain property exists within the system leads to a logical paradox.",
+              "anchor": "derive undefinability via self-reference"
+            },
+            {
+              "name": "Generalize a Known Limitation",
+              "signature": "Apply a previously discovered structural limitation from one domain to a new, more general concept.",
+              "anchor": "Extends G\u00f6del's incompleteness from provability to truth."
+            },
+            {
+              "name": "Conclude Inherent Boundary",
+              "signature": "Demonstrate that a limitation is not a temporary flaw but an intrinsic and unavoidable property of the system's structure.",
+              "anchor": "structural impossibility"
+            },
+            {
+              "name": "Assert Systemic Incapacity",
+              "signature": "Propose that a system is fundamentally incapable of completely representing one of its own core properties.",
+              "anchor": "cannot be expressed within arithmetic"
+            }
+          ]
+        },
+        "robinson_nonstandard_analysis": {
+          "arc_id": "robinson_nonstandard_analysis",
+          "moves": [
+            {
+              "name": "Constructing an Extended System",
+              "signature": "Building a new, larger structure that contains the original one as a proper substructure while introducing novel elements.",
+              "anchor": "Construct nonstandard model *R extending R with infinitesimals and infinite numbers"
+            },
+            {
+              "name": "Importing an External Framework",
+              "signature": "Applying concepts and methods from one domain to solve a foundational problem in another.",
+              "anchor": "rigorously founded calculus with infinitesimals using model theory"
+            },
+            {
+              "name": "Establishing a Correspondence Principle",
+              "signature": "Defining a rule that guarantees properties holding in one system also hold in a related, extended system.",
+              "anchor": "transfer principle: any first-order statement true in R is true in *R"
+            },
+            {
+              "name": "Vindicating a Prior Heuristic",
+              "signature": "Demonstrating that an old, useful but non-rigorous method is valid within a new, more comprehensive framework.",
+              "anchor": "rigorous foundation for previously-heuristic intuitions"
+            },
+            {
+              "name": "Specifying a Generative Procedure",
+              "signature": "Providing a concrete, step-by-step method for creating the new, extended structure.",
+              "anchor": "Method: ultraproduct construction"
+            },
+            {
+              "name": "Defining a Bridging Function",
+              "signature": "Creating a mapping that connects elements from the extended system back to the original system.",
+              "anchor": "via standard-part function"
+            },
+            {
+              "name": "Ensuring Structural Inheritance",
+              "signature": "Guaranteeing that the extended system inherits the fundamental operational rules of the original system.",
+              "anchor": "structural transfer between models"
+            },
+            {
+              "name": "Isolating a Language Class",
+              "signature": "Restricting the scope of a principle to a specific class of statements for which it can be proven to hold.",
+              "anchor": "any first-order statement"
+            }
+          ]
+        },
+        "lowenheim_skolem": {
+          "arc_id": "lowenheim_skolem",
+          "moves": [
+            {
+              "name": "Constraining The Formalism",
+              "signature": "Restricting the analysis to a specific class of descriptive systems to achieve a universally applicable result within that class.",
+              "anchor": "Any first-order theory"
+            },
+            {
+              "name": "Assuming Infinite Ground",
+              "signature": "Establishing a baseline condition of non-finiteness from which all further scaling arguments proceed.",
+              "anchor": "with infinite model"
+            },
+            {
+              "name": "Generating Minimal Instance",
+              "signature": "Constructing a minimal, self-contained version of a system by starting with a core set of elements and including only what is necessary to satisfy all rules.",
+              "anchor": "generating substructure from named elements"
+            },
+            {
+              "name": "Inferring Global Coherence",
+              "signature": "Establishing the viability of an entire system by showing that any finite part of it is internally consistent.",
+              "anchor": "model-theoretic compactness"
+            },
+            {
+              "name": "Expanding The Population",
+              "signature": "Proving the existence of a larger valid configuration by introducing new, distinct entities and demonstrating the system's continued consistency.",
+              "anchor": "adjoining new constants"
+            },
+            {
+              "name": "Projecting Across All Sizes",
+              "signature": "Extending a conclusion about one infinite size to encompass all possible infinite sizes.",
+              "anchor": "models of every infinite cardinality"
+            },
+            {
+              "name": "Unpinning Scale From Structure",
+              "signature": "Demonstrating that a system's fundamental rules do not determine the absolute size of its valid instantiations.",
+              "anchor": "structural cardinality independence"
+            },
+            {
+              "name": "Mapping Expressive Boundaries",
+              "signature": "Identifying what a formal language or system is inherently incapable of specifying or controlling.",
+              "anchor": "revealing first-order limitations"
+            },
+            {
+              "name": "Exposing Counterintuitive Consequences",
+              "signature": "Applying a general result to a foundational system to reveal a conclusion that contradicts established intuitions.",
+              "anchor": "Skolem's paradox"
+            }
+          ]
+        },
+        "solovay_reinhardt_large_cardinals": {
+          "arc_id": "solovay_reinhardt_large_cardinals",
+          "moves": [
+            {
+              "name": "Establish Strength Ladder",
+              "signature": "Arrange propositions into a linear order where each implies the soundness of all preceding ones.",
+              "anchor": "form a strict consistency-strength hierarchy"
+            },
+            {
+              "name": "Calibrate via Relative Consistency",
+              "signature": "Measure the strength of axioms by their ability to prove the coherence of other axiomatic systems.",
+              "anchor": "each implies consistency of weaker ones"
+            },
+            {
+              "name": "Propose Structural Invariant",
+              "signature": "Assert the existence of a self-mapping that preserves the system's fundamental structure.",
+              "anchor": "existence of nontrivial elementary embedding j: V \u2192 V"
+            },
+            {
+              "name": "Probe The Limit Case",
+              "signature": "Formulate and investigate the most powerful conceivable extension of a known principle.",
+              "anchor": "Reinhardt's axiom"
+            },
+            {
+              "name": "Test Against Core Principles",
+              "signature": "Evaluate a new claim by conjoining it with accepted foundational axioms to check for emergent paradoxes.",
+              "anchor": "assuming embedding existence + AC + Replacement"
+            },
+            {
+              "name": "Generate Contradictory Sequence",
+              "signature": "Show that an initial assumption forces the creation of an infinite, paradoxical progression of elements within the system.",
+              "anchor": "derive contradiction via critical-point sequence"
+            },
+            {
+              "name": "Reveal Foundational Incompatibility",
+              "signature": "Demonstrate that a new proposition, when combined with established background assumptions, leads to a logical contradiction.",
+              "anchor": "shown inconsistent with AC"
+            },
+            {
+              "name": "Identify Upper Bound",
+              "signature": "Discover a definitive limit to a progression of increasingly powerful theoretical constructs.",
+              "anchor": "falsification of strongest axioms"
+            }
+          ]
+        }
+      }
+    },
+    "algebraic_topology": {
+      "sonnet": {
+        "poincare_duality": {
+          "arc_id": "poincare_duality",
+          "moves": [
+            {
+              "name": "Dimension Complement Pairing",
+              "signature": "A quantity at level k is systematically linked to its counterpart at the complementary level, making the two mutually defining.",
+              "anchor": "H_k(M) \u2245 H^(n-k)(M)"
+            },
+            {
+              "name": "Mediating Object Introduction",
+              "signature": "A third structural entity is inserted between two previously unconnected objects to carry the relationship between them.",
+              "anchor": "pairing between homology and cohomology mediated by orientation"
+            },
+            {
+              "name": "Global Anchor Designation",
+              "signature": "A single distinguished element is elevated to serve as the reference against which all local measurements are calibrated.",
+              "anchor": "cap product with fundamental class"
+            },
+            {
+              "name": "Operational Bridge Construction",
+              "signature": "An explicit algebraic operation is defined that physically enacts the correspondence rather than merely asserting it.",
+              "anchor": "chain-level construction"
+            },
+            {
+              "name": "Scope Restriction Relaxation",
+              "signature": "A result proven under idealized conditions is extended to a broader class by introducing a corrective modifier that absorbs the deviation.",
+              "anchor": "generalized to non-orientable case via twisted coefficients"
+            },
+            {
+              "name": "Decomposition-Recomposition Proof",
+              "signature": "A global claim is established by verifying it on simple pieces and then invoking a rule that reassembles the pieces into the whole.",
+              "anchor": "Mayer-Vietoris"
+            },
+            {
+              "name": "Duality Symmetry Assertion",
+              "signature": "The protagonist declares that two apparently different descriptive systems are mirror images of a single underlying structure.",
+              "anchor": "structural duality"
+            },
+            {
+              "name": "Integration Realization",
+              "signature": "An abstract algebraic pairing is grounded by identifying it with a concrete analytic operation, making the abstraction computable.",
+              "anchor": "integration-pairing realization"
+            },
+            {
+              "name": "Orientation as Parameter",
+              "signature": "A qualitative geometric property is converted into a formal algebraic input that controls which version of a result applies.",
+              "anchor": "twisted coefficients"
+            }
+          ]
+        },
+        "hurewicz_homotopy_homology": {
+          "arc_id": "hurewicz_homotopy_homology",
+          "moves": [
+            {
+              "name": "Cross-Domain Bridge",
+              "signature": "A canonical map is constructed linking two structurally distinct invariant systems, making one readable through the other.",
+              "anchor": "bridge between non-abelian and abelian invariants"
+            },
+            {
+              "name": "Canonical Map Construction",
+              "signature": "A specific, naturally-defined morphism is built from first principles to serve as the structural connector between domains.",
+              "anchor": "construct map via fundamental class of S^n"
+            },
+            {
+              "name": "Structural Abelianization",
+              "signature": "A non-commutative object is projected onto its commutative shadow, preserving essential information while gaining tractability.",
+              "anchor": "isomorphism for n=1 (abelianization)"
+            },
+            {
+              "name": "Boundary Condition Isolation",
+              "signature": "A special limiting case is identified where the general map collapses to an exact equivalence, anchoring the theorem's scope.",
+              "anchor": "isomorphism for n=1 and for simply-connected X"
+            },
+            {
+              "name": "Commutativity Diagram Lock",
+              "signature": "Relationships between objects are frozen into a commutative diagram, guaranteeing consistency across all transformation paths.",
+              "anchor": "commutative diagram with bordism"
+            },
+            {
+              "name": "Inductive Ladder Ascent",
+              "signature": "A result established at one level is systematically extended upward through successive levels via a staged inductive mechanism.",
+              "anchor": "spectral-sequence-style induction"
+            },
+            {
+              "name": "Simplifying Assumption Gate",
+              "signature": "A restrictive precondition is imposed on the domain object to unlock a stronger, cleaner form of the central result.",
+              "anchor": "for simply-connected X"
+            },
+            {
+              "name": "Representative Object Sampling",
+              "signature": "A single canonical exemplar object is used to probe and characterize the behavior of an entire structural class.",
+              "anchor": "fundamental class of S^n"
+            },
+            {
+              "name": "Invariant Comparison Frame",
+              "signature": "Two independently-defined invariants are placed in explicit correspondence so that information flows bidirectionally between their respective frameworks.",
+              "anchor": "first nontrivial homotopy group \u03c0_n(X) maps to H_n(X)"
+            },
+            {
+              "name": "Scope Restriction Sharpening",
+              "signature": "The protagonist narrows the claim to the first instance where full equivalence holds, trading generality for exactness.",
+              "anchor": "first nontrivial homotopy group"
+            }
+          ]
+        },
+        "adams_spectral_sequence": {
+          "arc_id": "adams_spectral_sequence",
+          "moves": [
+            {
+              "name": "Domain Translation",
+              "signature": "Recast an intractable problem in one domain as a tractable problem in a structurally richer domain.",
+              "anchor": "algebraic resolution of geometric problem"
+            },
+            {
+              "name": "Surrogate Object Construction",
+              "signature": "Build a proxy structure that faithfully encodes the target object's essential properties while admitting direct computation.",
+              "anchor": "E_2 page = Ext_A(H*X, Z/p)"
+            },
+            {
+              "name": "Layered Approximation",
+              "signature": "Decompose a complex object into a tower of simpler stages, each capturing one level of structure.",
+              "anchor": "Postnikov-tower-like resolution by Eilenberg-MacLane spaces"
+            },
+            {
+              "name": "Resolution Scaffolding",
+              "signature": "Construct an explicit sequence of intermediate objects whose relationships encode the hidden structure of the original.",
+              "anchor": "algebraic resolution"
+            },
+            {
+              "name": "Staged Convergence",
+              "signature": "Organize computation across successive pages or stages, each refining the previous approximation toward the true answer.",
+              "anchor": "spectral sequence machinery"
+            },
+            {
+              "name": "Inductive Differential Propagation",
+              "signature": "Determine unknown quantities at each stage by propagating constraints derived from earlier stages.",
+              "anchor": "computing differentials inductively"
+            },
+            {
+              "name": "Algebraic Invariant Extraction",
+              "signature": "Replace a geometric or dynamic quantity with an algebraic invariant that is computable from combinatorial data.",
+              "anchor": "reducing homotopy computation to homological algebra"
+            },
+            {
+              "name": "Operator Algebra Encoding",
+              "signature": "Capture the symmetry or action structure of a problem inside an algebraic object whose module theory governs the solution.",
+              "anchor": "Ext groups over Steenrod algebra"
+            },
+            {
+              "name": "Limit Certification",
+              "signature": "Prove that the staged approximation process terminates and its limit equals the originally sought quantity.",
+              "anchor": "converges to \u03c0_*^s(X)"
+            },
+            {
+              "name": "Complexity Redistribution",
+              "signature": "Transfer difficulty from an opaque computational step to a transparent structural one by changing the representational framework.",
+              "anchor": "spectral-sequence convergence"
+            }
+          ]
+        },
+        "bott_periodicity": {
+          "arc_id": "bott_periodicity",
+          "moves": [
+            {
+              "name": "Domain Substitution",
+              "signature": "Replace an intractable problem in one domain with a structurally equivalent problem in a more tractable domain.",
+              "anchor": "replace topological problem with analytic Morse function"
+            },
+            {
+              "name": "Analytic Proxy Construction",
+              "signature": "Build a measurable, computable object that encodes the structural properties of an abstract target.",
+              "anchor": "Morse theory on path space of U"
+            },
+            {
+              "name": "Spectral Decomposition",
+              "signature": "Decompose a complex structure into eigencomponents to expose hidden regularities.",
+              "anchor": "spectral analysis of Laplacian on loop spaces"
+            },
+            {
+              "name": "Rigidity Exploitation",
+              "signature": "Identify where a system has no degrees of freedom and use that constraint as a generative engine.",
+              "anchor": "periodicity from structural rigidity of analytic problem"
+            },
+            {
+              "name": "Pattern Extraction",
+              "signature": "Lift a recurring numerical or structural signature from computed cases into a universal claim.",
+              "anchor": "\u03c0_n(U) = \u03c0_(n+2)(U)"
+            },
+            {
+              "name": "Cross-Domain Transfer",
+              "signature": "Port a conclusion proven in one domain back as a result in the original domain.",
+              "anchor": "cross-domain transfer between topology and analysis"
+            },
+            {
+              "name": "Period Detection",
+              "signature": "Identify a repeating structural unit within an infinite sequence to collapse infinite complexity into finite description.",
+              "anchor": "stable homotopy groups of unitary group U have period 2"
+            },
+            {
+              "name": "Scope Stratification",
+              "signature": "Distinguish sub-cases of a phenomenon by a structural parameter and treat each stratum separately.",
+              "anchor": "For orthogonal: period 8"
+            },
+            {
+              "name": "Stability Framing",
+              "signature": "Restrict attention to a stable regime where transient noise vanishes and deep structure becomes visible.",
+              "anchor": "stable homotopy groups"
+            },
+            {
+              "name": "Loop Space Lifting",
+              "signature": "Shift the object of study to a higher-order construction built from paths or iterations of the original object.",
+              "anchor": "path space of U"
+            }
+          ]
+        },
+        "atiyah_singer_index": {
+          "arc_id": "atiyah_singer_index",
+          "moves": [
+            {
+              "name": "Dual Quantity Pairing",
+              "signature": "Two independently defined quantities measuring the same object are placed in explicit correspondence, making their equality the central claim.",
+              "anchor": "analytic index equals topological index"
+            },
+            {
+              "name": "Framework Unification",
+              "signature": "A single abstract structure is introduced that subsumes previously separate formalisms, allowing them to be manipulated as one.",
+              "anchor": "K-theoretic framework unifying multiple structures"
+            },
+            {
+              "name": "Invariant Identification",
+              "signature": "A quantity is shown to remain unchanged under a class of transformations, establishing it as a stable handle for further reasoning.",
+              "anchor": "cobordism invariance of index"
+            },
+            {
+              "name": "Reduction To Generators",
+              "signature": "A general case is decomposed by showing it can be built from a small set of fundamental instances whose properties are already known.",
+              "anchor": "reduction to fundamental cases via cobordism arguments"
+            },
+            {
+              "name": "Boundary Collapse",
+              "signature": "A continuous deformation argument is used to connect two configurations by passing through intermediate states, transferring properties across the path.",
+              "anchor": "cobordism invariance"
+            },
+            {
+              "name": "Symbol Extraction",
+              "signature": "A complex object is replaced by a simpler associated datum that captures the essential structural information needed for the argument.",
+              "anchor": "symbol class"
+            },
+            {
+              "name": "Integral Encoding",
+              "signature": "A discrete or algebraic quantity is recast as a continuous integral, enabling geometric and analytic tools to be applied.",
+              "anchor": "an integral over M of characteristic classes"
+            },
+            {
+              "name": "Class Attachment",
+              "signature": "Abstract topological invariants are assigned to the object under study, translating structural properties into computable cohomological data.",
+              "anchor": "characteristic classes"
+            },
+            {
+              "name": "Domain Restriction",
+              "signature": "The problem is confined to a well-behaved subclass of objects where the argument is tractable, then extended outward.",
+              "anchor": "elliptic operator D on closed manifold M"
+            },
+            {
+              "name": "Analytic-Geometric Bridge",
+              "signature": "A result about solutions to equations is reinterpreted as a statement about the shape of the underlying space, linking two disciplines.",
+              "anchor": "equate analytic and topological invariants"
+            }
+          ]
+        },
+        "quillen_k_theory": {
+          "arc_id": "quillen_k_theory",
+          "moves": [
+            {
+              "name": "Dimensional Upward Extension",
+              "signature": "Take a well-understood low-dimensional invariant and systematically lift it into a family of higher-dimensional analogues that preserve the original's essential character.",
+              "anchor": "Generalized lower K-theory to higher dimensions"
+            },
+            {
+              "name": "Machinery Import",
+              "signature": "Borrow an established formal apparatus from an adjacent domain and redeploy it as the foundational engine for the new construction.",
+              "anchor": "simplicial-set construction (Q-construction); homotopy-theoretic foundation"
+            },
+            {
+              "name": "Dual Construction Offer",
+              "signature": "Provide two independent but equivalent constructions of the same object, so each can serve as a check or entry point for the other.",
+              "anchor": "plus-construction or Q-construction"
+            },
+            {
+              "name": "Property Inheritance Check",
+              "signature": "After building a new structure, verify it reproduces every known desirable property of the thing it generalizes, treating those properties as mandatory acceptance criteria.",
+              "anchor": "checking expected properties (devissage, localization, reduction to known cases)"
+            },
+            {
+              "name": "Known-Case Reduction",
+              "signature": "Confirm the new framework collapses correctly to previously understood special cases, grounding the abstraction in familiar territory.",
+              "anchor": "reduction to known cases"
+            },
+            {
+              "name": "Exact-Sequence Scaffolding",
+              "signature": "Impose a long exact sequence on the new invariants so that relationships between objects are encoded as navigable algebraic chains.",
+              "anchor": "satisfies long exact sequences"
+            },
+            {
+              "name": "Localization Constraint Satisfaction",
+              "signature": "Demand that the construction behave well under localization, using that requirement as a structural discipline on the design.",
+              "anchor": "localization"
+            },
+            {
+              "name": "Filtration Compatibility",
+              "signature": "Require the new invariant to respect filtrations or stratifications of the underlying objects, enabling decomposition arguments.",
+              "anchor": "devissage"
+            },
+            {
+              "name": "Behavioral Specification First",
+              "signature": "Articulate the full list of expected behaviors before finalizing the construction, letting desired outputs constrain the choice of mechanism.",
+              "anchor": "build new higher invariants matching expected behavior of lower ones"
+            },
+            {
+              "name": "Homotopy-Type Encoding",
+              "signature": "Translate an algebraic or combinatorial problem into a homotopy-theoretic one so that topological intuition and machinery become applicable.",
+              "anchor": "homotopy-theoretic foundation"
+            },
+            {
+              "name": "Structural Lifting",
+              "signature": "Use a higher-level formal scaffold to carry lower-level data upward into a richer setting without losing the original information.",
+              "anchor": "structural lifting via simplicial machinery"
+            }
+          ]
+        },
+        "steenrod_operations": {
+          "arc_id": "steenrod_operations",
+          "moves": [
+            {
+              "name": "Cochain Level Lift",
+              "signature": "Descend from an abstract invariant to a finer constructive layer where new distinctions become visible.",
+              "anchor": "cup-i product construction"
+            },
+            {
+              "name": "Parametric Family Generation",
+              "signature": "Replace a single object with an indexed family, each member capturing a distinct structural degree.",
+              "anchor": "Sq^i: H^n(X; Z/2) \u2192 H^(n+i)(X; Z/2)"
+            },
+            {
+              "name": "Closure Into Algebra",
+              "signature": "Collect a family of operations under composition and linear combination until they form a self-contained algebraic system.",
+              "anchor": "Generated stable cohomology operations Steenrod algebra A"
+            },
+            {
+              "name": "Stability Extraction",
+              "signature": "Identify the sub-structure that remains invariant across dimensional shifts and promote it to the primary object of study.",
+              "anchor": "stable cohomology operations"
+            },
+            {
+              "name": "Enrichment of Existing Structure",
+              "signature": "Layer new operations onto an established framework without discarding prior results, increasing discriminating power.",
+              "anchor": "enrich existing cohomology with refined operations"
+            },
+            {
+              "name": "Distributive Rule Export",
+              "signature": "Derive how a new operation interacts with existing product structure, extending its reach across compound objects.",
+              "anchor": "Cartan formula"
+            },
+            {
+              "name": "Relation-Based Characterization",
+              "signature": "Define a system not by explicit construction alone but by the exhaustive set of identities its elements must satisfy.",
+              "anchor": "Adem relations characterizing A"
+            },
+            {
+              "name": "Redundancy Collapse",
+              "signature": "Show that a large generating set is governed by a smaller set of relations, reducing apparent complexity to essential structure.",
+              "anchor": "Adem relations characterizing A"
+            },
+            {
+              "name": "Governance Layer Identification",
+              "signature": "Isolate the meta-structure that controls how all instances of a class of operations behave relative to one another.",
+              "anchor": "algebraic structure governing operations"
+            }
+          ]
+        },
+        "sullivan_rational_homotopy": {
+          "arc_id": "sullivan_rational_homotopy",
+          "moves": [
+            {
+              "name": "Category Substitution",
+              "signature": "Replace the native domain's objects with a structurally equivalent class of objects from a more tractable domain.",
+              "anchor": "replace topological category with algebraic one (DGAs)"
+            },
+            {
+              "name": "Invariant Compression",
+              "signature": "Distill a complex object's identity down to a single canonical representative that captures only the information relevant to the chosen equivalence.",
+              "anchor": "minimal models"
+            },
+            {
+              "name": "Equivalence Bridge",
+              "signature": "Establish a formal correspondence that makes two superficially different categories interchangeable for the purposes of the problem.",
+              "anchor": "equivalence between rational homotopy types and isomorphism classes of minimal DGAs"
+            },
+            {
+              "name": "Precision Sacrifice",
+              "signature": "Deliberately discard a layer of information to gain tractability, accepting a coarser equivalence in exchange for solvability.",
+              "anchor": "structural equivalence at rational level"
+            },
+            {
+              "name": "Canonical Form Imposition",
+              "signature": "Impose a normalization condition that selects exactly one representative per equivalence class, eliminating redundancy.",
+              "anchor": "isomorphism classes of minimal DGAs"
+            },
+            {
+              "name": "Computational Pathway Opening",
+              "signature": "Reframe an existence or classification question so that explicit algorithmic construction becomes possible.",
+              "anchor": "computational accessibility"
+            },
+            {
+              "name": "Algebraic Encoding",
+              "signature": "Translate geometric or topological structure into algebraic language that supports direct calculation.",
+              "anchor": "differential graded algebras over Q computing rational homotopy invariants"
+            },
+            {
+              "name": "Differential Form Bridge",
+              "signature": "Use a differential-form construction as the concrete mechanism linking the original domain to the algebraic substitute.",
+              "anchor": "PL-de Rham forms"
+            },
+            {
+              "name": "Minimality Constraint",
+              "signature": "Add a minimality condition to a construction to guarantee uniqueness and eliminate extraneous degrees of freedom.",
+              "anchor": "minimal model theorem"
+            },
+            {
+              "name": "Explicit Construction Proof",
+              "signature": "Prove existence not abstractly but by exhibiting a concrete built object, making the proof itself a construction recipe.",
+              "anchor": "explicit DGA constructions"
+            },
+            {
+              "name": "Scope Restriction",
+              "signature": "Limit the domain of applicability to a well-behaved subclass where the method is guaranteed to work cleanly.",
+              "anchor": "simply-connected spaces"
+            }
+          ]
+        }
+      },
+      "gemini": {
+        "poincare_duality": {
+          "arc_id": "poincare_duality",
+          "moves": [
+            {
+              "name": "Reciprocal Mapping",
+              "signature": "Establishing a formal, invertible correspondence between two distinct structural descriptions of a system.",
+              "anchor": "H_k(M) \u2245 H^(n-k)(M)"
+            },
+            {
+              "name": "Defining The Keystone",
+              "signature": "Identifying a foundational entity or property that enables and mediates a core relationship within a system.",
+              "anchor": "cap product with fundamental class"
+            },
+            {
+              "name": "Extending The Domain",
+              "signature": "Adapting a core principle with a modified parameter to encompass a previously excluded class of cases.",
+              "anchor": "Generalized to non-orientable case via twisted coefficients."
+            },
+            {
+              "name": "Formulating The Pair",
+              "signature": "Reframing two independent concepts as a coupled pair, revealing an underlying symmetric relationship.",
+              "anchor": "pairing between homology and cohomology"
+            },
+            {
+              "name": "Ground-Up Construction",
+              "signature": "Demonstrating a high-level property by explicitly building it from the most fundamental elements of the system.",
+              "anchor": "chain-level construction"
+            },
+            {
+              "name": "Recursive Decomposition",
+              "signature": "Analyzing a complex whole by breaking it into simpler, overlapping components and reassembling the findings.",
+              "anchor": "Mayer-Vietoris"
+            },
+            {
+              "name": "Revealing Structural Duality",
+              "signature": "Uncovering a deep symmetry where properties of a system are mirrored in a transformed or complementary system.",
+              "anchor": "structural duality"
+            },
+            {
+              "name": "Analogical Realization",
+              "signature": "Making an abstract relationship concrete by modeling it on a well-understood process from another domain.",
+              "anchor": "integration-pairing realization"
+            }
+          ]
+        },
+        "hurewicz_homotopy_homology": {
+          "arc_id": "hurewicz_homotopy_homology",
+          "moves": [
+            {
+              "name": "Relate Disparate Invariants",
+              "signature": "Establish a formal relationship between two different systems of classification for the same object.",
+              "anchor": "homotopy and homology"
+            },
+            {
+              "name": "Establish Canonical Bridge",
+              "signature": "Define a natural transformation from a complex structure to a simpler, related one.",
+              "anchor": "maps to ... via Hurewicz homomorphism"
+            },
+            {
+              "name": "Translate to Simpler Algebra",
+              "signature": "Create a systematic way to project a non-commutative system onto a commutative one, preserving key information.",
+              "anchor": "bridge between non-abelian and abelian invariants"
+            },
+            {
+              "name": "Identify Foundational Equivalence",
+              "signature": "Show that in the simplest non-trivial case, the complex system's simplified representation is a perfect equivalent.",
+              "anchor": "isomorphism for n=1 (abelianization)"
+            },
+            {
+              "name": "Define Isomorphism Precondition",
+              "signature": "Specify a background state or property that guarantees a mapping between two systems becomes a perfect equivalence.",
+              "anchor": "for simply-connected X"
+            },
+            {
+              "name": "Construct via Foundational Object",
+              "signature": "Use a canonical, elementary object from one domain to generate a mapping into another domain.",
+              "anchor": "construct map via fundamental class"
+            },
+            {
+              "name": "Assert Path Independence",
+              "signature": "Demonstrate that multiple distinct operational sequences yield the same outcome, thereby validating the structure.",
+              "anchor": "commutative diagram"
+            },
+            {
+              "name": "Employ Layered Induction",
+              "signature": "Build a proof by iterating through successive levels of approximation or complexity, where each level refines the previous one.",
+              "anchor": "spectral-sequence-style induction"
+            },
+            {
+              "name": "Isolate First Operative Case",
+              "signature": "Focus analysis on the lowest-order or simplest case where a phenomenon of interest first appears.",
+              "anchor": "First nontrivial homotopy group"
+            },
+            {
+              "name": "Formalize Structural Connection",
+              "signature": "Define a connection between two frameworks that respects their internal structural transformations.",
+              "anchor": "structural connection via canonical map"
+            }
+          ]
+        },
+        "adams_spectral_sequence": {
+          "arc_id": "adams_spectral_sequence",
+          "moves": [
+            {
+              "name": "Domain Shift Computation",
+              "signature": "Translate a problem from its native, intractable domain into a foreign, more computable one.",
+              "anchor": "reducing homotopy computation to homological algebra"
+            },
+            {
+              "name": "Convergent Approximation Series",
+              "signature": "Construct a sequence of increasingly accurate approximations that converge to the true solution.",
+              "anchor": "spectral-sequence convergence"
+            },
+            {
+              "name": "Hierarchical Decomposition",
+              "signature": "Decompose a complex entity into a layered sequence of simpler, more fundamental components.",
+              "anchor": "Postnikov-tower-like resolution"
+            },
+            {
+              "name": "Initial Computable Model",
+              "signature": "Establish an initial, computable approximation of the target system, even if it is known to be imperfect.",
+              "anchor": "E_2 page = Ext_A(H*X, Z/p)"
+            },
+            {
+              "name": "Staged Error Correction",
+              "signature": "Systematically calculate correction terms at each stage to improve the approximation for the next stage.",
+              "anchor": "computing differentials inductively"
+            },
+            {
+              "name": "Canonical Element Basis",
+              "signature": "Use a standardized set of simple, well-understood elements as the basis for constructing or analyzing a complex system.",
+              "anchor": "resolution by Eilenberg-MacLane spaces"
+            },
+            {
+              "name": "Adopting Formal Machinery",
+              "signature": "Select a powerful, pre-existing formal system to structure the calculations in the new domain.",
+              "anchor": "Ext groups over Steenrod algebra"
+            },
+            {
+              "name": "Asymptotic Target Definition",
+              "signature": "Define the ultimate target of the process as the limit of the successive approximations.",
+              "anchor": "converges to \u03c0_*^s(X)"
+            },
+            {
+              "name": "Cross-Domain Equivalence",
+              "signature": "Establish a formal correspondence between a quantity in the problem domain and a quantity in the solution domain.",
+              "anchor": "Computes stable homotopy groups via Ext groups"
+            }
+          ]
+        },
+        "bott_periodicity": {
+          "arc_id": "bott_periodicity",
+          "moves": [
+            {
+              "name": "Problem Domain Translation",
+              "signature": "Re-express a problem from its native domain into a foreign one to unlock new tools and perspectives.",
+              "anchor": "replace topological problem with analytic Morse function"
+            },
+            {
+              "name": "Elevate to Process Space",
+              "signature": "Analyze the space of all possible transformations or paths between states, rather than the states themselves.",
+              "anchor": "Morse theory on path space of U"
+            },
+            {
+              "name": "Apply an Analytic Probe",
+              "signature": "Use methods of continuous change and optimization to investigate a system's discrete or structural properties.",
+              "anchor": "analytic Morse function"
+            },
+            {
+              "name": "Exploit Foreign Rigidity",
+              "signature": "Leverage the inherent, non-negotiable rules of a new problem domain to constrain the possible solutions.",
+              "anchor": "structural rigidity of analytic problem"
+            },
+            {
+              "name": "Isolate Stable Behavior",
+              "signature": "Focus on characteristics of a system that remain constant under a wide range of conditions or scaling.",
+              "anchor": "Stable homotopy groups"
+            },
+            {
+              "name": "Discover System Periodicity",
+              "signature": "Identify a fundamental pattern that repeats at regular intervals as a key parameter of the system changes.",
+              "anchor": "period 2"
+            },
+            {
+              "name": "Synthesize Disparate Fields",
+              "signature": "Combine methodologies from seemingly unrelated domains to create a novel and more powerful analytical framework.",
+              "anchor": "cross-domain transfer between topology and analysis"
+            },
+            {
+              "name": "Use Spectral Decomposition",
+              "signature": "Break down a complex system or operator into its fundamental frequencies or principal components to understand its behavior.",
+              "anchor": "spectral analysis of Laplacian"
+            },
+            {
+              "name": "Uncover Dimensional Recurrence",
+              "signature": "Discover a fundamental pattern that repeats as a system's scale or dimensionality changes.",
+              "anchor": "\u03c0_n(U) = \u03c0_(n+2)(U)"
+            }
+          ]
+        },
+        "atiyah_singer_index": {
+          "arc_id": "atiyah_singer_index",
+          "moves": [
+            {
+              "name": "Bridge Disparate Domains",
+              "signature": "Formulate a precise identity connecting a quantity derived from local analysis with a quantity derived from global structure.",
+              "anchor": "analytic index ... equals topological index"
+            },
+            {
+              "name": "Construct Higher Abstraction",
+              "signature": "Introduce a novel theoretical system that provides a common language for previously unrelated concepts.",
+              "anchor": "K-theory framework"
+            },
+            {
+              "name": "Isolate a Stable Property",
+              "signature": "Identify a central quantity that remains unchanged under a broad class of structural transformations.",
+              "anchor": "cobordism invariance of index"
+            },
+            {
+              "name": "Solve by Foundational Example",
+              "signature": "Prove a universal claim by demonstrating its truth on a minimal set of representative base cases.",
+              "anchor": "reduction to fundamental cases"
+            },
+            {
+              "name": "Leverage Invariance for Reduction",
+              "signature": "Use a demonstrated stable property to argue that any complex case is equivalent to a simpler, solvable one.",
+              "anchor": "via cobordism arguments"
+            },
+            {
+              "name": "Link Invariant Quantities",
+              "signature": "Establish a formal equivalence between two different measures that each remain constant under certain transformations.",
+              "anchor": "equate analytic and topological invariants"
+            },
+            {
+              "name": "Synthesize Multiple Structures",
+              "signature": "Develop a single, overarching model that explains and integrates multiple, seemingly independent systems.",
+              "anchor": "unifying multiple structures"
+            },
+            {
+              "name": "Define Operational Metric",
+              "signature": "Quantify a system's property through the difference between the dimensions of its core states and its constrained states.",
+              "anchor": "dim ker D - dim coker D"
+            },
+            {
+              "name": "Define Global Characteristic",
+              "signature": "Calculate a system's property by integrating a function of its intrinsic local features over its entire extent.",
+              "anchor": "an integral over M"
+            }
+          ]
+        },
+        "quillen_k_theory": {
+          "arc_id": "quillen_k_theory",
+          "moves": [
+            {
+              "name": "Generalize Known Invariant",
+              "signature": "Project an existing, well-understood structure into a higher-dimensional or more abstract context.",
+              "anchor": "Generalized lower K-theory to higher dimensions"
+            },
+            {
+              "name": "Define By Construction",
+              "signature": "Introduce a new entity by specifying the exact procedure or mechanism used to build it.",
+              "anchor": "defined higher algebraic K-theory... via... Q-construction"
+            },
+            {
+              "name": "Import External Machinery",
+              "signature": "Apply a powerful formal system from an adjacent domain to solve a problem in the current one.",
+              "anchor": "simplicial-set construction"
+            },
+            {
+              "name": "Establish New Foundation",
+              "signature": "Re-ground a concept on a more powerful or abstract theoretical basis.",
+              "anchor": "homotopy-theoretic foundation"
+            },
+            {
+              "name": "Confirm Structural Consistency",
+              "signature": "Ensure a new object integrates correctly with existing theoretical frameworks and their expected relationships.",
+              "anchor": "satisfies long exact sequences"
+            },
+            {
+              "name": "Test Against Desired Properties",
+              "signature": "Check if a new creation exhibits a pre-specified set of behaviors deemed essential for its function.",
+              "anchor": "checking expected properties (devissage, localization...)"
+            },
+            {
+              "name": "Calibrate With Known Cases",
+              "signature": "Confirm that a new, general model correctly reproduces the results of older, specific models in their shared domain of applicability.",
+              "anchor": "reduction to known cases"
+            },
+            {
+              "name": "Mandate Behavioral Inheritance",
+              "signature": "Constrain the design of a new system by requiring it to emulate the key behaviors of its predecessor.",
+              "anchor": "matching expected behavior of lower ones"
+            },
+            {
+              "name": "Lift Via Abstract Framework",
+              "signature": "Use a highly abstract framework to elevate a concept from a concrete setting to a more general one.",
+              "anchor": "structural lifting via simplicial machinery"
+            }
+          ]
+        },
+        "steenrod_operations": {
+          "arc_id": "steenrod_operations",
+          "moves": [
+            {
+              "name": "Layer Refined Operators",
+              "signature": "Introduce a new family of transformations upon an existing structure to expose finer-grained properties.",
+              "anchor": "Steenrod defined cohomology operations Sq^i"
+            },
+            {
+              "name": "Ground in Micro-Construction",
+              "signature": "Define a high-level entity through an explicit, step-by-step procedure using lower-level, pre-existing components.",
+              "anchor": "via cochain-level cup-i products"
+            },
+            {
+              "name": "Elevate Tools to Object",
+              "signature": "Shift perspective from viewing new constructs as mere processes to treating them as a primary object of study in their own right.",
+              "anchor": "Generated stable cohomology operations Steenrod algebra A"
+            },
+            {
+              "name": "Specify Compatibility Law",
+              "signature": "Articulate a precise rule describing how new operators interact with a fundamental composition law of the original system.",
+              "anchor": "Cartan formula"
+            },
+            {
+              "name": "Codify Internal Grammar",
+              "signature": "Fully characterize a new system by specifying the fundamental rules governing the composition of its own elements.",
+              "anchor": "Adem relations"
+            },
+            {
+              "name": "Augment Descriptive Power",
+              "signature": "Add a new layer of formal machinery to an existing model to increase its capacity for distinction and classification.",
+              "anchor": "enrich existing cohomology with refined operations"
+            },
+            {
+              "name": "Formalize the Toolkit",
+              "signature": "Treat a collection of newly introduced operators not as individual tools but as elements of a coherent, structured system.",
+              "anchor": "algebraic structure governing operations"
+            },
+            {
+              "name": "Define by Relation",
+              "signature": "Characterize a complex structure not by enumerating its elements, but by providing a finite set of rules governing its generators.",
+              "anchor": "characterization via relations"
+            }
+          ]
+        },
+        "sullivan_rational_homotopy": {
+          "arc_id": "sullivan_rational_homotopy",
+          "moves": [
+            {
+              "name": "Constructing a Minimal Proxy",
+              "signature": "Establishing a simpler, computationally tractable object that preserves the essential properties of a more complex one.",
+              "anchor": "constructed minimal models"
+            },
+            {
+              "name": "Forging a Formal Equivalence",
+              "signature": "Demonstrating a rigorous correspondence between two distinct conceptual frameworks, allowing translation between them.",
+              "anchor": "Established equivalence"
+            },
+            {
+              "name": "Substituting the Arena",
+              "signature": "Replacing a difficult-to-analyze domain with a more manageable one where the core problem can be solved.",
+              "anchor": "replace topological category with algebraic one"
+            },
+            {
+              "name": "Isolating a Solvable Subspace",
+              "signature": "Intentionally disregarding certain complexities of a system to achieve a complete solution within a simplified scope.",
+              "anchor": "at rational level"
+            },
+            {
+              "name": "Prioritizing Computability",
+              "signature": "Reframing a problem or theory to make its core questions answerable through direct calculation or algorithmic processes.",
+              "anchor": "computational accessibility"
+            },
+            {
+              "name": "Defining a New Calculus",
+              "signature": "Introducing a novel formal system with its own objects and rules of manipulation to model a phenomenon.",
+              "anchor": "differential graded algebras"
+            },
+            {
+              "name": "Developing a Bridging Method",
+              "signature": "Creating a specific technique or toolset to operationalize the connection between different domains.",
+              "anchor": "PL-de Rham forms"
+            },
+            {
+              "name": "Securing a Foundational Guarantee",
+              "signature": "Establishing a core theorem that guarantees the validity and uniqueness of the central method or object.",
+              "anchor": "minimal model theorem"
+            },
+            {
+              "name": "Targeting Invariant Properties",
+              "signature": "Focusing the analysis on identifying and calculating core properties that remain stable across transformations.",
+              "anchor": "computing rational homotopy invariants"
+            }
+          ]
+        }
+      }
+    },
+    "applied_math": {
+      "sonnet": {
+        "cooley_tukey_fft": {
+          "arc_id": "cooley_tukey_fft",
+          "moves": [
+            {
+              "name": "Complexity Gap Identification",
+              "signature": "Protagonist locates the measurable distance between current performance and theoretical possibility, making the gap itself the target.",
+              "anchor": "O(N^2) vs O(N log N)"
+            },
+            {
+              "name": "Problem Reframing via Structure",
+              "signature": "Protagonist redefines the problem not by its surface form but by an underlying structural property that unlocks new solution paths.",
+              "anchor": "exploit factorability of N"
+            },
+            {
+              "name": "Recursive Decomposition",
+              "signature": "Protagonist breaks a whole into self-similar sub-problems, applying the same logic at each level until a trivial base is reached.",
+              "anchor": "recursively halve until base case"
+            },
+            {
+              "name": "Composite Factor Exploitation",
+              "signature": "Protagonist discovers that a parameter's multiplicative structure (N = N1 \u00b7 N2) can be leveraged to redistribute work across independent sub-units.",
+              "anchor": "N = N_1 \u00b7 N_2"
+            },
+            {
+              "name": "Sub-problem Independence",
+              "signature": "Protagonist separates entangled components into parallel tracks that can be solved without mutual dependency.",
+              "anchor": "smaller DFTs of size N_1 and N_2"
+            },
+            {
+              "name": "Base Case Anchoring",
+              "signature": "Protagonist defines the irreducible stopping condition that terminates recursion and grounds the entire structure.",
+              "anchor": "base case"
+            },
+            {
+              "name": "Work Redistribution",
+              "signature": "Protagonist reorganizes where effort is spent so that total cost shrinks even though the same output is produced.",
+              "anchor": "divide-and-conquer using DFT decomposition"
+            },
+            {
+              "name": "Structural Symmetry Harvest",
+              "signature": "Protagonist identifies repeating patterns within the problem and routes computation through shared structure rather than redundant repetition.",
+              "anchor": "recursive structural decomposition"
+            },
+            {
+              "name": "Logarithmic Depth Compression",
+              "signature": "Protagonist converts a linear chain of dependencies into a tree of depth log N, collapsing the cost exponent.",
+              "anchor": "O(N log N)"
+            },
+            {
+              "name": "Divide Before Conquer",
+              "signature": "Protagonist commits to splitting the problem before attempting any solution, making partition the first and primary strategic act.",
+              "anchor": "divide-and-conquer"
+            }
+          ]
+        },
+        "strassen_matrix_mult": {
+          "arc_id": "strassen_matrix_mult",
+          "moves": [
+            {
+              "name": "Recount the Operations",
+              "signature": "Protagonist audits the assumed cost of a canonical procedure and identifies that the accepted operation count is not a lower bound.",
+              "anchor": "8 naive multiplications"
+            },
+            {
+              "name": "Decompose Into Subproblems",
+              "signature": "Protagonist breaks a monolithic task into smaller instances of the same task, enabling recursive treatment.",
+              "anchor": "2\u00d72 case"
+            },
+            {
+              "name": "Introduce Auxiliary Quantities",
+              "signature": "Protagonist defines intermediate constructs that do not correspond directly to desired outputs but enable cheaper computation of those outputs.",
+              "anchor": "7 scalar multiplications"
+            },
+            {
+              "name": "Trade Expensive for Cheap",
+              "signature": "Protagonist substitutes a costly operation type for a greater number of cheaper operation types, reducing overall expense.",
+              "anchor": "trade additions for multiplications"
+            },
+            {
+              "name": "Algebraic Reexpression",
+              "signature": "Protagonist rewrites an existing formula into an equivalent identity that exposes a more efficient computational path.",
+              "anchor": "algebraic identity expressing 2\u00d72 matrix product"
+            },
+            {
+              "name": "Shrink the Primitive",
+              "signature": "Protagonist reduces the irreducible unit of work by one, creating a gap that compounds under recursion.",
+              "anchor": "7 instead of 8"
+            },
+            {
+              "name": "Recursive Amplification",
+              "signature": "Protagonist applies a small local saving at every level of a recursive structure so that the gain multiplies across depth.",
+              "anchor": "recursively applied"
+            },
+            {
+              "name": "Complexity Exponent Shift",
+              "signature": "Protagonist translates a reduction in branching factor into a new asymptotic growth rate that strictly dominates the prior bound.",
+              "anchor": "O(n^2.807)"
+            },
+            {
+              "name": "Replace Naive Baseline",
+              "signature": "Protagonist treats the standard textbook method not as optimal but as a starting point to be strictly improved upon.",
+              "anchor": "replace naive operation count with smaller algebraic expression"
+            },
+            {
+              "name": "Divide and Conquer Scaffold",
+              "signature": "Protagonist erects a recursive splitting framework so that improvements at the base case propagate automatically to all larger instances.",
+              "anchor": "recursive divide-and-conquer"
+            }
+          ]
+        },
+        "simplex_method": {
+          "arc_id": "simplex_method",
+          "moves": [
+            {
+              "name": "Feasible Start Selection",
+              "signature": "Protagonist identifies a valid starting position within the constrained space before any improvement begins.",
+              "anchor": "identify initial basic feasible solution"
+            },
+            {
+              "name": "Boundary Restriction",
+              "signature": "Protagonist confines movement to the edges of the permissible region rather than exploring its interior.",
+              "anchor": "walking along edges of feasible polytope"
+            },
+            {
+              "name": "Discrete Position Set",
+              "signature": "Protagonist reframes a continuous landscape as a finite collection of candidate positions to evaluate.",
+              "anchor": "combinatorial walk on vertex set"
+            },
+            {
+              "name": "Local Neighbor Comparison",
+              "signature": "Protagonist evaluates immediately adjacent positions to determine which offers improvement over the current one.",
+              "anchor": "pivot to adjacent vertex with better objective"
+            },
+            {
+              "name": "Greedy Step Commitment",
+              "signature": "Protagonist commits fully to the best locally available move before reassessing, rather than planning multiple steps ahead.",
+              "anchor": "iterative improvement with pivot rule"
+            },
+            {
+              "name": "Iterative Position Advance",
+              "signature": "Protagonist repeats the same improvement operation in successive cycles until a stopping condition is met.",
+              "anchor": "iteratively pivot"
+            },
+            {
+              "name": "External Certificate Acquisition",
+              "signature": "Protagonist obtains an independent artifact from a dual or complementary system that confirms the current position cannot be improved.",
+              "anchor": "LP duality certifies"
+            },
+            {
+              "name": "Termination Condition Binding",
+              "signature": "Protagonist halts progress by linking the stopping rule to a provable external guarantee rather than an internal heuristic.",
+              "anchor": "terminate at optimum"
+            },
+            {
+              "name": "Structural Duality Leverage",
+              "signature": "Protagonist exploits a mirrored problem structure to extract information unavailable from the primal perspective alone.",
+              "anchor": "LP duality certifying optimality"
+            }
+          ]
+        },
+        "karmarkar_interior_point": {
+          "arc_id": "karmarkar_interior_point",
+          "moves": [
+            {
+              "name": "Domain Reframing",
+              "signature": "The protagonist redefines a problem native to one domain (combinatorial/discrete) as a problem in a structurally richer domain (continuous/geometric), unlocking new solution machinery.",
+              "anchor": "replace combinatorial search with continuous optimization"
+            },
+            {
+              "name": "Interior Commitment",
+              "signature": "The protagonist deliberately avoids the boundary of the feasible space, operating strictly within the interior to preserve degrees of freedom and prevent premature constraint.",
+              "anchor": "maintains strict-interior point of feasible region"
+            },
+            {
+              "name": "Potential Function Construction",
+              "signature": "The protagonist introduces a scalar surrogate that encodes global progress, allowing convergence to be tracked and guaranteed through its monotonic decrease.",
+              "anchor": "nonlinear potential function"
+            },
+            {
+              "name": "Boundary Repulsion Encoding",
+              "signature": "The protagonist embeds a term that grows prohibitively large near forbidden boundaries, so the search trajectory is organically steered away from infeasibility.",
+              "anchor": "barrier function controls boundary"
+            },
+            {
+              "name": "Gradient Projection",
+              "signature": "The protagonist takes a direction of steepest improvement and projects it onto the constraint surface, ensuring each step remains feasible while still making progress.",
+              "anchor": "projected gradient"
+            },
+            {
+              "name": "Curvature-Informed Stepping",
+              "signature": "The protagonist incorporates second-order information about the local geometry to choose step size and direction more precisely than first-order methods allow.",
+              "anchor": "projected Newton step"
+            },
+            {
+              "name": "Progress Metering",
+              "signature": "The protagonist measures each iteration not by proximity to the answer but by the guaranteed decrease in a surrogate quantity, making convergence provable.",
+              "anchor": "analyze convergence rate via potential decrease"
+            },
+            {
+              "name": "Iterative Reduction",
+              "signature": "The protagonist structures the solution as a sequence of steps each strictly improving the surrogate, so the cumulative effect drives the system toward the optimum.",
+              "anchor": "iterative reduction toward optimum"
+            },
+            {
+              "name": "Polynomial Bound Establishment",
+              "signature": "The protagonist demonstrates that the number of steps required scales as a polynomial of the input size, elevating the method from heuristic to theoretically certified.",
+              "anchor": "polynomial-time algorithm"
+            },
+            {
+              "name": "Paradigm Displacement",
+              "signature": "The protagonist introduces a structurally different approach that renders the previously dominant method non-obligatory, opening a new class of solution strategies.",
+              "anchor": "replace combinatorial search (simplex) with continuous optimization"
+            }
+          ]
+        },
+        "kalman_filter": {
+          "arc_id": "kalman_filter",
+          "moves": [
+            {
+              "name": "State Space Recast",
+              "signature": "Reformulate the problem in terms of hidden underlying quantities and observable proxies, separating what is tracked from what is measured.",
+              "anchor": "linear-Gaussian state-space models"
+            },
+            {
+              "name": "Conjugate Prior Exploit",
+              "signature": "Choose a representational family that is closed under the update operation, so each iteration stays within the same tractable form.",
+              "anchor": "exploit Gaussian conjugacy"
+            },
+            {
+              "name": "Two-Phase Cycle",
+              "signature": "Split each iteration into a forward projection step and a correction step, alternating between anticipation and revision.",
+              "anchor": "prediction + measurement-correction steps"
+            },
+            {
+              "name": "Uncertainty Bookkeeping",
+              "signature": "Carry an explicit representation of confidence alongside the primary estimate, updating both in tandem.",
+              "anchor": "covariance propagation tracks uncertainty"
+            },
+            {
+              "name": "Recursive Compression",
+              "signature": "Encode all past information into a fixed-size summary so that each new update requires only the current summary plus new data, not the full history.",
+              "anchor": "recursive form for online estimation"
+            },
+            {
+              "name": "Optimality Derivation",
+              "signature": "Derive the update rule from a formal criterion rather than choosing it heuristically, guaranteeing best-possible performance under stated assumptions.",
+              "anchor": "optimal Bayesian estimation"
+            },
+            {
+              "name": "Assumption Crystallization",
+              "signature": "Identify the minimal structural assumptions that make the problem tractable and build the entire method on exactly those assumptions.",
+              "anchor": "linear-Gaussian assumption"
+            },
+            {
+              "name": "Online Operability",
+              "signature": "Design the procedure so it can process each new observation immediately without waiting for the full dataset.",
+              "anchor": "online estimation"
+            },
+            {
+              "name": "Gain Mediation",
+              "signature": "Introduce a weighting coefficient that dynamically balances reliance on the prior prediction versus the new observation based on relative uncertainty.",
+              "anchor": "state estimate updated via"
+            },
+            {
+              "name": "Probabilistic Framing",
+              "signature": "Cast the estimation problem as inference over a probability distribution rather than a point-search, enabling principled uncertainty propagation.",
+              "anchor": "derive Bayesian update"
+            }
+          ]
+        },
+        "finite_element_method": {
+          "arc_id": "finite_element_method",
+          "moves": [
+            {
+              "name": "Domain Subdivision",
+              "signature": "A continuous, intractable whole is partitioned into a finite collection of simple, manageable sub-units.",
+              "anchor": "discretize domain into mesh of simple elements"
+            },
+            {
+              "name": "Local Approximation",
+              "signature": "Within each sub-unit, a tractable surrogate representation replaces the exact, complex behavior.",
+              "anchor": "approximate solution as piecewise polynomial"
+            },
+            {
+              "name": "Weak Form Recast",
+              "signature": "An unsolvable strong constraint is relaxed into an equivalent integral form that admits broader solution classes.",
+              "anchor": "variational formulation (weak form)"
+            },
+            {
+              "name": "Basis Function Selection",
+              "signature": "The solution space is spanned by a chosen family of simple, local functions that encode the approximation.",
+              "anchor": "piecewise polynomial basis on mesh"
+            },
+            {
+              "name": "Local-to-Global Assembly",
+              "signature": "Independently constructed local descriptions are systematically aggregated into a single unified representation.",
+              "anchor": "assemble local stiffness matrices into global system"
+            },
+            {
+              "name": "Problem Class Reduction",
+              "signature": "A problem from a hard class is transformed into an equivalent problem from a well-solved, simpler class.",
+              "anchor": "reduce PDE to linear system"
+            },
+            {
+              "name": "Algebraic Solver Handoff",
+              "signature": "Once reduced to a standard algebraic form, the problem is delegated to existing computational machinery.",
+              "anchor": "solve linear algebra problem"
+            },
+            {
+              "name": "Refinement Convergence Guarantee",
+              "signature": "Accuracy is secured not by a single construction but by a systematic densification process that provably closes the gap to the true answer.",
+              "anchor": "convergence as mesh refines"
+            },
+            {
+              "name": "Incremental Formalization",
+              "signature": "A practical technique is progressively given rigorous theoretical grounding across successive contributors over time.",
+              "anchor": "Courant 1943, Argyris 1954, Clough 1960"
+            }
+          ]
+        },
+        "monte_carlo_method": {
+          "arc_id": "monte_carlo_method",
+          "moves": [
+            {
+              "name": "Expectation Reframing",
+              "signature": "Recast an intractable deterministic quantity as the expected value of a tractable random variable.",
+              "anchor": "identify random variable whose expectation is desired quantity"
+            },
+            {
+              "name": "Randomized Substitution",
+              "signature": "Replace a deterministic procedure with a stochastic one that yields equivalent results in aggregate.",
+              "anchor": "replace deterministic computation with randomized one"
+            },
+            {
+              "name": "Sample Generation",
+              "signature": "Produce a collection of independent instances drawn from a defined probability space to stand in for exhaustive enumeration.",
+              "anchor": "generate samples"
+            },
+            {
+              "name": "Empirical Aggregation",
+              "signature": "Combine sampled observations into a single summary statistic that approximates the target quantity.",
+              "anchor": "compute empirical estimator"
+            },
+            {
+              "name": "Law-of-Large-Numbers Grounding",
+              "signature": "Invoke a convergence guarantee to justify that accumulated samples will approach the true value as volume grows.",
+              "anchor": "law of large numbers / CLT for convergence"
+            },
+            {
+              "name": "Precision-Cost Trade",
+              "signature": "Accept bounded approximation error in exchange for tractable computational cost.",
+              "anchor": "trade exact for approximate solution"
+            },
+            {
+              "name": "Convergence Rate Characterization",
+              "signature": "Quantify how quickly the approximation tightens as sample count increases, setting expectations for resource investment.",
+              "anchor": "characterize convergence rate"
+            },
+            {
+              "name": "Stochastic System Simulation",
+              "signature": "Model a complex evolving process by repeatedly enacting its probabilistic rules rather than solving governing equations analytically.",
+              "anchor": "simulate stochastic systems"
+            },
+            {
+              "name": "Distribution Traversal",
+              "signature": "Navigate a complex probability landscape by constructing a chain of dependent samples that collectively represent the target distribution.",
+              "anchor": "sample from complex distributions via Metropolis-Hastings"
+            },
+            {
+              "name": "Integral Estimation",
+              "signature": "Approximate a continuous accumulation by averaging function evaluations at randomly chosen points within the domain.",
+              "anchor": "estimate integrals via random samples"
+            }
+          ]
+        },
+        "automatic_differentiation": {
+          "arc_id": "automatic_differentiation",
+          "moves": [
+            {
+              "name": "Atomic Decomposition",
+              "signature": "Break a complex whole into its smallest indivisible units so that rules can be applied uniformly at each unit.",
+              "anchor": "decompose program into elementary operations"
+            },
+            {
+              "name": "Rule Delegation",
+              "signature": "Assign a governing rule to each atomic unit rather than to the whole, distributing responsibility downward.",
+              "anchor": "apply chain rule at operation level"
+            },
+            {
+              "name": "Graph Encoding",
+              "signature": "Represent the sequence and dependency of operations as an explicit traversable structure.",
+              "anchor": "computation graph"
+            },
+            {
+              "name": "Structural Mirroring",
+              "signature": "Align the analytical framework's shape to match the shape of the object being analyzed.",
+              "anchor": "structural decomposition matching program structure"
+            },
+            {
+              "name": "Dual Carrier",
+              "signature": "Attach a secondary quantity to each primary value so both propagate together through the same process.",
+              "anchor": "dual numbers"
+            },
+            {
+              "name": "Forward Accumulation",
+              "signature": "Propagate derived quantities in the same direction as the primary computation, building results incrementally.",
+              "anchor": "forward-mode"
+            },
+            {
+              "name": "Reverse Accumulation",
+              "signature": "Traverse the encoded structure in reverse to distribute credit backward from outputs to inputs.",
+              "anchor": "adjoints"
+            },
+            {
+              "name": "Exactness Claim",
+              "signature": "Distinguish the method from approximations by asserting it produces the precise quantity, not an estimate.",
+              "anchor": "exact (not approximate) derivatives"
+            },
+            {
+              "name": "Mode Bifurcation",
+              "signature": "Offer two traversal directions of the same structure, each optimal for a different input-output ratio.",
+              "anchor": "forward-mode and reverse-mode"
+            },
+            {
+              "name": "Adjoint Assignment",
+              "signature": "Attach a sensitivity scalar to each node that accumulates contributions from all downstream dependents.",
+              "anchor": "accumulate via adjoints"
+            },
+            {
+              "name": "Reduction Reframe",
+              "signature": "Recast a hard problem as a simpler known operation applied repeatedly on a structured representation.",
+              "anchor": "reduce derivative computation to chain-rule application"
+            }
+          ]
+        }
+      },
+      "gemini": {
+        "cooley_tukey_fft": {
+          "arc_id": "cooley_tukey_fft",
+          "moves": [
+            {
+              "name": "Isolate The Scaling Bottleneck",
+              "signature": "Pinpoint the component of a system whose performance degrades most rapidly as the problem size increases.",
+              "anchor": "naive O(N^2)"
+            },
+            {
+              "name": "Target Asymptotic Improvement",
+              "signature": "Focus on changing the fundamental scaling law of a process rather than making constant-factor optimizations.",
+              "anchor": "O(N log N) time vs naive O(N^2)"
+            },
+            {
+              "name": "Shift To A New Paradigm",
+              "signature": "Replace a direct, brute-force method with an indirect, structurally-aware strategy.",
+              "anchor": "Method: divide-and-conquer"
+            },
+            {
+              "name": "Exploit Inherent Structure",
+              "signature": "Identify and leverage a non-obvious, intrinsic property of the problem to enable a more efficient approach.",
+              "anchor": "exploit factorability of N"
+            },
+            {
+              "name": "Formalize The Breakdown",
+              "signature": "Articulate a precise, repeatable rule for how a complex entity can be broken down into its constituent parts.",
+              "anchor": "recursive structural decomposition"
+            },
+            {
+              "name": "Reframe The Core Operation",
+              "signature": "Redefine a primary task in terms of a composition of simpler, self-similar tasks.",
+              "anchor": "using DFT decomposition for N=N_1\u00b7N_2"
+            },
+            {
+              "name": "Decompose Into Subproblems",
+              "signature": "Break a large problem into smaller, more manageable instances of the same problem.",
+              "anchor": "into smaller DFTs of size N_1 and N_2"
+            },
+            {
+              "name": "Apply Recursive Logic",
+              "signature": "Repeatedly apply the same procedure to progressively smaller versions of the problem until a terminal condition is met.",
+              "anchor": "Recursively halve until base case"
+            },
+            {
+              "name": "Establish A Terminal State",
+              "signature": "Define a simple, non-decomposable condition where a recursive or iterative process must stop.",
+              "anchor": "until base case"
+            }
+          ]
+        },
+        "strassen_matrix_mult": {
+          "arc_id": "strassen_matrix_mult",
+          "moves": [
+            {
+              "name": "Isolate Core Unit",
+              "signature": "Deconstruct a complex system into its smallest repeating functional unit to find a local optimization.",
+              "anchor": "...using only 7 multiplications for 2\u00d72 case (vs 8 naive)..."
+            },
+            {
+              "name": "Redefine Operational Formula",
+              "signature": "Replace a standard computational formula with a non-obvious algebraic equivalent that possesses more desirable properties.",
+              "anchor": "...algebraic identity expressing 2\u00d72 matrix product via 7 scalar multiplications + additions..."
+            },
+            {
+              "name": "Substitute Costly Resource",
+              "signature": "Re-architect a process to use more of a cheaper resource in order to use less of a more expensive one.",
+              "anchor": "...trade additions for multiplications."
+            },
+            {
+              "name": "Frame Self-Similar Structure",
+              "signature": "Define a problem at a large scale in terms of the same problem at a smaller scale.",
+              "anchor": "...recursively applied."
+            },
+            {
+              "name": "Propagate Local Advantage",
+              "signature": "Apply a small-scale optimization recursively throughout a self-similar structure to achieve a global performance gain.",
+              "anchor": "...recursive application."
+            },
+            {
+              "name": "Challenge Primitive Count",
+              "signature": "Question the assumed minimum number of primitive operations required for a task and search for a more efficient combination.",
+              "anchor": "...replace naive operation count with smaller algebraic expression..."
+            },
+            {
+              "name": "Decompose into Subproblems",
+              "signature": "Break a large problem into smaller, independent instances of the same problem.",
+              "anchor": "...recursive divide-and-conquer..."
+            },
+            {
+              "name": "Synthesize from Intermediates",
+              "signature": "Construct the final desired output by combining a set of specially designed intermediate components.",
+              "anchor": "...expressing 2\u00d72 matrix product via 7 scalar multiplications + additions..."
+            }
+          ]
+        },
+        "simplex_method": {
+          "arc_id": "simplex_method",
+          "moves": [
+            {
+              "name": "Formalize Problem Class",
+              "signature": "Abstracting a set of specific challenges into a general class of problems defined by a shared mathematical structure.",
+              "anchor": "Solves linear programs"
+            },
+            {
+              "name": "Reduce to Vertex Search",
+              "signature": "Transforming the problem from a search over a continuous space to a search over a finite set of critical points.",
+              "anchor": "combinatorial walk on vertex set"
+            },
+            {
+              "name": "Secure Initial Foothold",
+              "signature": "Locating a starting configuration that satisfies all baseline constraints of the system.",
+              "anchor": "identify initial basic feasible solution"
+            },
+            {
+              "name": "Walk the Viability Network",
+              "signature": "Limiting transitions to only those between directly connected, valid states within the problem's solution space.",
+              "anchor": "walking along edges of feasible polytope"
+            },
+            {
+              "name": "Codify Improvement Rule",
+              "signature": "Establishing a deterministic rule for selecting which adjacent, improved state to transition to at each step.",
+              "anchor": "pivot rule"
+            },
+            {
+              "name": "Stepwise Value Ascent",
+              "signature": "Repeatedly transitioning from the current state to an adjacent state that improves a target metric.",
+              "anchor": "iteratively pivot to adjacent vertex with better objective"
+            },
+            {
+              "name": "Attain Local Optimum",
+              "signature": "Concluding the process when no adjacent state offers an improvement over the current state.",
+              "anchor": "terminate at optimum"
+            },
+            {
+              "name": "Invoke Dual Confirmation",
+              "signature": "Employing a complementary theoretical framework to independently validate that a locally optimal solution is also globally optimal.",
+              "anchor": "LP duality certifies"
+            }
+          ]
+        },
+        "karmarkar_interior_point": {
+          "arc_id": "karmarkar_interior_point",
+          "moves": [
+            {
+              "name": "Reframe Solution Space",
+              "signature": "Redefine the nature of the problem's landscape from discrete states to a continuous field to enable new movement types.",
+              "anchor": "replace combinatorial search (simplex) with continuous optimization"
+            },
+            {
+              "name": "Define Operational Interior",
+              "signature": "Constrain all operations to a region safely away from problematic boundaries or failure states.",
+              "anchor": "Maintains strict-interior point of feasible region"
+            },
+            {
+              "name": "Install Proximity Penalty",
+              "signature": "Implement a mechanism that increasingly penalizes approaches toward a forbidden boundary.",
+              "anchor": "uses logarithmic barrier function"
+            },
+            {
+              "name": "Formulate Surrogate Objective",
+              "signature": "Create a new function to optimize that combines the original goal with navigational constraints, making progress easier to measure.",
+              "anchor": "nonlinear potential function"
+            },
+            {
+              "name": "Execute Stepwise Refinement",
+              "signature": "Employ a repeatable process that incrementally improves the current state toward a desired outcome.",
+              "anchor": "iteratively moves toward optimum"
+            },
+            {
+              "name": "Calculate Next Vector",
+              "signature": "Determine the optimal direction and magnitude for the next incremental move based on local information.",
+              "anchor": "projected Newton step"
+            },
+            {
+              "name": "Rescale Local Geometry",
+              "signature": "Temporarily warp the problem space to simplify the calculation of the next best move from the current position.",
+              "anchor": "projected gradient"
+            },
+            {
+              "name": "Demonstrate Monotonic Improvement",
+              "signature": "Prove that each step of the process guarantees a measurable decrease in a key metric, ensuring eventual convergence.",
+              "anchor": "analyze convergence rate via potential decrease"
+            }
+          ]
+        },
+        "kalman_filter": {
+          "arc_id": "kalman_filter",
+          "moves": [
+            {
+              "name": "Establishing Optimality",
+              "signature": "The proposed solution is proven to be the best possible one given a specific set of criteria and constraints.",
+              "anchor": "Optimal recursive estimator"
+            },
+            {
+              "name": "Iterative Refinement Cycle",
+              "signature": "A process is structured as a repeating loop of projecting a future state and then adjusting it with new information.",
+              "anchor": "prediction + measurement-correction steps"
+            },
+            {
+              "name": "Incremental State Update",
+              "signature": "The system's current state is updated using only the previous state and new input, without reprocessing all historical data.",
+              "anchor": "recursive form for online estimation"
+            },
+            {
+              "name": "Quantifying Confidence Bounds",
+              "signature": "A parallel process is maintained to explicitly calculate and propagate the degree of uncertainty in the primary estimate.",
+              "anchor": "covariance propagation tracks uncertainty"
+            },
+            {
+              "name": "Deriving from First Principles",
+              "signature": "A novel method is shown to be a specific application of a more general, foundational theory.",
+              "anchor": "derive Bayesian update"
+            },
+            {
+              "name": "Constraining the Problem Space",
+              "signature": "A solution is made tractable by imposing specific, simplifying assumptions on the nature of the system and its inputs.",
+              "anchor": "linear-Gaussian assumption"
+            },
+            {
+              "name": "Exploiting Structural Symmetry",
+              "signature": "A special property of the chosen mathematical framework is leveraged to simplify calculations or guarantee a closed-form solution.",
+              "anchor": "exploit Gaussian conjugacy"
+            },
+            {
+              "name": "Formalizing the System Model",
+              "signature": "The problem is framed within a specific, formal mathematical structure that defines states, transitions, and observations.",
+              "anchor": "linear-Gaussian state-space models"
+            }
+          ]
+        },
+        "finite_element_method": {
+          "arc_id": "finite_element_method",
+          "moves": [
+            {
+              "name": "Decompose Continuous Space",
+              "signature": "Replace a continuous, intractable problem space with a finite collection of simpler, standardized sub-units.",
+              "anchor": "discretize domain into mesh of simple elements"
+            },
+            {
+              "name": "Relax Governing Constraints",
+              "signature": "Reformulate a problem by replacing strict, pointwise conditions with a less demanding, integrated or averaged equivalent.",
+              "anchor": "variational formulation (weak form)"
+            },
+            {
+              "name": "Define Local Approximants",
+              "signature": "Choose a family of simple functions to represent the unknown solution within each discrete sub-unit of the problem space.",
+              "anchor": "piecewise polynomial basis on mesh"
+            },
+            {
+              "name": "Build Solution From Pieces",
+              "signature": "Construct a global approximate solution by combining the simple, locally-defined functions from each sub-unit.",
+              "anchor": "approximate solution as piecewise polynomial"
+            },
+            {
+              "name": "Formulate Local Equations",
+              "signature": "Apply the problem's governing principles to each individual sub-unit to derive a local system of equations.",
+              "anchor": "local stiffness matrices"
+            },
+            {
+              "name": "Aggregate Local Systems",
+              "signature": "Systematically combine the equations derived from each sub-unit to form a single, global representation of the entire problem.",
+              "anchor": "assemble local stiffness matrices into global system"
+            },
+            {
+              "name": "Shift Representational Framework",
+              "signature": "Convert the problem's formulation from one mathematical domain into another that is more amenable to computation.",
+              "anchor": "reduce PDE to linear system"
+            },
+            {
+              "name": "Apply Generic Engine",
+              "signature": "Employ a standard, powerful algorithm from the target computational domain to solve the globally aggregated system.",
+              "anchor": "solve linear algebra problem"
+            },
+            {
+              "name": "Link Fidelity to Granularity",
+              "signature": "Establish that the approximation's accuracy improves predictably as the decomposition of the problem space becomes finer.",
+              "anchor": "convergence as mesh refines"
+            }
+          ]
+        },
+        "monte_carlo_method": {
+          "arc_id": "monte_carlo_method",
+          "moves": [
+            {
+              "name": "Estimation Through Sampling",
+              "signature": "Determine a property of a whole system by examining a representative random subset of its behavior.",
+              "anchor": "Estimate quantities via random sampling"
+            },
+            {
+              "name": "Stochastic Substitution",
+              "signature": "Substitute a deterministic process with a stochastic equivalent to enable estimation.",
+              "anchor": "replace deterministic computation with randomized one"
+            },
+            {
+              "name": "Probabilistic Problem Reframing",
+              "signature": "Re-express a deterministic target quantity as the expected value of a random variable.",
+              "anchor": "identify random variable whose expectation is desired quantity"
+            },
+            {
+              "name": "Trading Precision for Feasibility",
+              "signature": "Accept an approximate result in exchange for the ability to compute a solution that would otherwise be intractable.",
+              "anchor": "trade exact for approximate solution"
+            },
+            {
+              "name": "Empirical Instance Generation",
+              "signature": "Systematically produce a set of observations from a model to serve as raw input for analysis.",
+              "anchor": "generate samples"
+            },
+            {
+              "name": "Aggregating Trial Outcomes",
+              "signature": "Synthesize the results from multiple generated instances into a single summary statistic.",
+              "anchor": "compute empirical estimator"
+            },
+            {
+              "name": "Grounding in Foundational Law",
+              "signature": "Justify the validity and convergence of a novel method by linking it to a fundamental, established theorem.",
+              "anchor": "law of large numbers / CLT for convergence"
+            },
+            {
+              "name": "Characterizing Convergence",
+              "signature": "Define the relationship between the effort expended and the expected accuracy of the resulting estimate.",
+              "anchor": "characterize convergence rate"
+            },
+            {
+              "name": "Modeling Dynamic Processes",
+              "signature": "Model the evolution of a complex system by repeatedly applying probabilistic rules to its state.",
+              "anchor": "simulate stochastic systems"
+            },
+            {
+              "name": "Introducing Strategic Randomness",
+              "signature": "Inject randomness into a process not as a source of error, but as a tool for exploration or computation.",
+              "anchor": "randomized one"
+            }
+          ]
+        },
+        "automatic_differentiation": {
+          "arc_id": "automatic_differentiation",
+          "moves": [
+            {
+              "name": "Atomic Unit Decomposition",
+              "signature": "Breaking down a complex system into its fundamental, indivisible components to analyze or operate on them individually.",
+              "anchor": "decompose program into elementary operations"
+            },
+            {
+              "name": "Local Rule Application",
+              "signature": "Applying a single, consistent transformation or rule to each individual component of a decomposed system.",
+              "anchor": "apply chain rule at operation level"
+            },
+            {
+              "name": "Systematic Result Aggregation",
+              "signature": "Combining the outputs from operations on individual components into a coherent, composite result for the entire system.",
+              "anchor": "accumulate via dual numbers (forward) or adjoints (reverse)"
+            },
+            {
+              "name": "Graph-Based System Model",
+              "signature": "Representing a process or system as a network of nodes and edges to make its structure and dependencies explicit.",
+              "anchor": "computation graph"
+            },
+            {
+              "name": "Directed Path Traversal",
+              "signature": "Processing the components of a networked system by following a specific directional path, either with or against the system's natural flow.",
+              "anchor": "forward-mode and reverse-mode"
+            },
+            {
+              "name": "Exact Structural Derivation",
+              "signature": "Deriving a property of a system directly from its internal structure rather than by external measurement or approximation.",
+              "anchor": "exact (not approximate) derivatives"
+            },
+            {
+              "name": "Paired Structural Transformation",
+              "signature": "Creating a new structure that directly mirrors the composition of an original structure, where each new component is a transformation of an original component.",
+              "anchor": "structural decomposition matching program structure"
+            },
+            {
+              "name": "Recursive Problem Reduction",
+              "signature": "Reducing a complex, global problem to the repeated application of a simple, local solution.",
+              "anchor": "reduce derivative computation to chain-rule application"
+            }
+          ]
+        }
+      }
+    },
+    "business_held_out": {
+      "sonnet": {
+        "christensen_disruption": {
+          "arc_id": "christensen_disruption",
+          "moves": [
+            {
+              "name": "Invert Success Premise",
+              "signature": "Reframe the domain's celebrated outcome (success) as the hidden cause of a catastrophic vulnerability.",
+              "anchor": "successful companies fail"
+            },
+            {
+              "name": "Performance Gap Mapping",
+              "signature": "Plot two trajectories on the same axis to reveal the moment an inferior entrant crosses the incumbent's line.",
+              "anchor": "improve faster, eventually overtaking"
+            },
+            {
+              "name": "Stakeholder Capture Diagnosis",
+              "signature": "Identify how loyalty to the current power-holder blinds the actor to signals from outside that constituency.",
+              "anchor": "incumbents listen to current customers"
+            },
+            {
+              "name": "Resource Allocation Trap",
+              "signature": "Show how rational internal investment decisions systematically starve the threat that will later prove fatal.",
+              "anchor": "invest in sustaining innovation"
+            },
+            {
+              "name": "Dual Entry Vector Split",
+              "signature": "Distinguish two structurally different attack routes\u2014low-end displacement and entirely new-market creation\u2014to prevent conflation.",
+              "anchor": "low-end and new-market disruption"
+            },
+            {
+              "name": "Cross-Domain Pattern Lock",
+              "signature": "Repeat the same structural mechanism across unrelated industries to isolate the mechanism from any single context.",
+              "anchor": "disk drives, steel mills, retailing"
+            },
+            {
+              "name": "Mechanism Extraction",
+              "signature": "Strip away domain-specific detail to name the underlying causal engine that operates across all observed cases.",
+              "anchor": "identify structural mechanism"
+            },
+            {
+              "name": "Asymmetric Improvement Rate",
+              "signature": "Establish that the challenger's rate of change exceeds the incumbent's, making current inferiority a temporary and misleading signal.",
+              "anchor": "worse performance than incumbents but improve faster"
+            },
+            {
+              "name": "Rational-Action Paradox",
+              "signature": "Demonstrate that the losing actor's choices were locally optimal yet globally self-defeating, removing moral blame and exposing structural inevitability.",
+              "anchor": "miss low-end and new-market disruption"
+            },
+            {
+              "name": "Framework Crystallization",
+              "signature": "Consolidate the recurring pattern into a named, portable model that can be applied prospectively rather than only retrospectively.",
+              "anchor": "Generalized into Innovator's Dilemma framework"
+            }
+          ]
+        },
+        "porter_five_forces": {
+          "arc_id": "porter_five_forces",
+          "moves": [
+            {
+              "name": "Profitability Source Reframe",
+              "signature": "Relocates the explanatory target from internal attributes to external structural conditions.",
+              "anchor": "Industry profitability determined by five forces"
+            },
+            {
+              "name": "Force Enumeration",
+              "signature": "Partitions a complex phenomenon into a fixed, exhaustive set of discrete causal agents.",
+              "anchor": "rivalry among competitors, threat of new entrants, threat of substitutes, bargaining power of suppliers, bargaining power of buyers"
+            },
+            {
+              "name": "Structural Decomposition",
+              "signature": "Breaks a unified domain into constituent components whose individual characterization enables aggregate prediction.",
+              "anchor": "decompose industry into structural components"
+            },
+            {
+              "name": "Force Characterization",
+              "signature": "Assigns descriptive properties to each enumerated agent to establish its intensity and direction.",
+              "anchor": "characterize each force"
+            },
+            {
+              "name": "Configuration Reading",
+              "signature": "Treats the combined state of all components as a pattern whose gestalt predicts an outcome.",
+              "anchor": "predict profitability from force configuration"
+            },
+            {
+              "name": "Outcome Derivation",
+              "signature": "Derives a measurable result as a downstream consequence of the mapped structural arrangement.",
+              "anchor": "predict profitability from force configuration"
+            },
+            {
+              "name": "Response Design",
+              "signature": "Translates a structural diagnosis into a prescriptive action oriented toward altering or exploiting the identified conditions.",
+              "anchor": "design competitive strategy"
+            },
+            {
+              "name": "Boundary Setting",
+              "signature": "Defines the unit of analysis explicitly so that the framework applies to a delimited arena rather than an unbounded field.",
+              "anchor": "structural industry analysis"
+            },
+            {
+              "name": "Leverage Point Identification",
+              "signature": "Locates the nodes within the structure where intervention yields disproportionate influence over the outcome.",
+              "anchor": "identify strategic response"
+            },
+            {
+              "name": "Cross-Force Synthesis",
+              "signature": "Integrates findings across all enumerated components into a unified interpretive judgment.",
+              "anchor": "force configuration"
+            },
+            {
+              "name": "Methodology Codification",
+              "signature": "Packages the sequence of analytical steps into a repeatable procedure transferable across instances.",
+              "anchor": "Methodology: decompose industry into structural components"
+            }
+          ]
+        },
+        "munger_mental_models": {
+          "arc_id": "munger_mental_models",
+          "moves": [
+            {
+              "name": "Disciplinary Boundary Crossing",
+              "signature": "Deliberately importing explanatory structures from outside one's home domain to reframe a problem.",
+              "anchor": "mental models from major disciplines (psychology, mathematics, biology, physics, economics)"
+            },
+            {
+              "name": "Repertoire Capping",
+              "signature": "Setting a finite, manageable ceiling on the number of core tools so the set remains operable rather than infinite.",
+              "anchor": "~80 mental models"
+            },
+            {
+              "name": "Multi-Lens Triangulation",
+              "signature": "Applying several independent frameworks simultaneously to a single situation and reading where their outputs converge.",
+              "anchor": "Apply multiple models to any decision"
+            },
+            {
+              "name": "Convergence Amplification",
+              "signature": "Treating the simultaneous agreement of independent lines of reasoning as a signal of disproportionately higher confidence or force.",
+              "anchor": "lollapalooza effect when several models point same direction"
+            },
+            {
+              "name": "Cross-Domain Pattern Harvest",
+              "signature": "Scanning disparate fields specifically to extract recurring structural regularities that transfer across contexts.",
+              "anchor": "pattern recognition across domains"
+            },
+            {
+              "name": "Broad Intake Discipline",
+              "signature": "Sustaining a reading and learning practice that spans unrelated fields to continuously replenish the model repertoire.",
+              "anchor": "cross-disciplinary reading"
+            },
+            {
+              "name": "Procedural Externalization",
+              "signature": "Encoding judgment steps into an explicit sequential list so cognitive load and omission risk are reduced under pressure.",
+              "anchor": "explicit checklist for high-stakes decisions"
+            },
+            {
+              "name": "Stakes-Gated Rigor",
+              "signature": "Reserving the most thorough analytical protocol for decisions whose consequences exceed a defined threshold.",
+              "anchor": "checklist application to specific decisions"
+            },
+            {
+              "name": "Negative-Space Targeting",
+              "signature": "Orienting effort toward identifying and eliminating bad outcomes rather than directly pursuing good ones.",
+              "anchor": "inversion (avoid mistakes vs seek wins)"
+            },
+            {
+              "name": "Outcome Reframing by Inversion",
+              "signature": "Restating a goal as its opposite to surface constraints and failure modes that forward-looking analysis misses.",
+              "anchor": "avoid mistakes vs seek wins"
+            },
+            {
+              "name": "Lattice Assembly",
+              "signature": "Organizing acquired models into an interconnected structure so each node reinforces and contextualizes the others.",
+              "anchor": "latticework of mental models"
+            }
+          ]
+        },
+        "drucker_management_by_objectives": {
+          "arc_id": "drucker_management_by_objectives",
+          "moves": [
+            {
+              "name": "Cross-Domain Pattern Harvest",
+              "signature": "Protagonist samples diverse real-world instances to extract a pattern that transcends any single context.",
+              "anchor": "case observation across industries"
+            },
+            {
+              "name": "Abstraction Ladder Climb",
+              "signature": "Protagonist lifts concrete observations to a generalized framework, stripping domain-specific detail to reveal transferable structure.",
+              "anchor": "framework abstraction"
+            },
+            {
+              "name": "Dual Alignment Reframe",
+              "signature": "Protagonist reframes a tension between two levels or parties as a solvable alignment problem rather than an inherent conflict.",
+              "anchor": "align organizational and individual goals"
+            },
+            {
+              "name": "Progress Made Visible",
+              "signature": "Protagonist installs a measurement mechanism so that movement toward a goal becomes legible and actionable.",
+              "anchor": "measure progress against objectives"
+            },
+            {
+              "name": "Means-of-Production Shift",
+              "signature": "Protagonist identifies that the locus of productive power has migrated from external assets to internal, person-held capacity.",
+              "anchor": "workers who own means of production (knowledge)"
+            },
+            {
+              "name": "Era Boundary Declaration",
+              "signature": "Protagonist draws a historical threshold, asserting that prior rules no longer apply and a new operating logic has taken hold.",
+              "anchor": "post-industrial economy"
+            },
+            {
+              "name": "Practice-Over-Theory Inversion",
+              "signature": "Protagonist subordinates theoretical elegance to demonstrated applicability, judging ideas by what they enable practitioners to do.",
+              "anchor": "emphasize practice over theory"
+            },
+            {
+              "name": "Explicit Prescription Delivery",
+              "signature": "Protagonist converts analytical findings into direct, actionable recommendations rather than leaving implications implicit.",
+              "anchor": "explicit recommendations"
+            },
+            {
+              "name": "Recurring-Pattern Isolation",
+              "signature": "Protagonist scans multiple cases to identify a structural regularity that persists across surface variation.",
+              "anchor": "identify recurring organizational patterns"
+            },
+            {
+              "name": "Framework Portability Claim",
+              "signature": "Protagonist asserts that the abstracted structure applies beyond its origin context, inviting adoption in unrelated domains.",
+              "anchor": "transferable framework"
+            }
+          ]
+        },
+        "kahneman_prospect_theory": {
+          "arc_id": "kahneman_prospect_theory",
+          "moves": [
+            {
+              "name": "Normative Frame Rejection",
+              "signature": "The protagonist discards the prevailing ideal-standard model as the operative framework, replacing it with an empirically grounded alternative.",
+              "anchor": "replace normative with descriptive theory"
+            },
+            {
+              "name": "Reference Point Insertion",
+              "signature": "The protagonist introduces a relative baseline against which all outcomes are measured, shifting evaluation from absolute to differential.",
+              "anchor": "evaluate gains/losses relative to reference point"
+            },
+            {
+              "name": "Systematic Deviation Mapping",
+              "signature": "The protagonist catalogs consistent departures from the dominant model as the primary evidential material rather than treating them as noise.",
+              "anchor": "identify systematic deviations from EU"
+            },
+            {
+              "name": "Controlled Elicitation Design",
+              "signature": "The protagonist constructs minimal, repeatable decision tasks to isolate a single cognitive mechanism from confounding variables.",
+              "anchor": "experimental decision tasks"
+            },
+            {
+              "name": "Asymmetry Foregrounding",
+              "signature": "The protagonist elevates an observed directional imbalance between two nominally equivalent quantities into a central explanatory principle.",
+              "anchor": "loss-averse"
+            },
+            {
+              "name": "Nonlinear Rescaling",
+              "signature": "The protagonist replaces a linear input-output mapping with a curved function that captures differential sensitivity across the input range.",
+              "anchor": "weight probabilities nonlinearly"
+            },
+            {
+              "name": "Bias Quantification",
+              "signature": "The protagonist converts qualitative cognitive tendencies into measurable parameters embedded within a formal model.",
+              "anchor": "quantify cognitive biases"
+            },
+            {
+              "name": "Empirical Pattern Fitting",
+              "signature": "The protagonist constructs the model's architecture to conform to observed data rather than deriving predictions from first principles.",
+              "anchor": "build descriptive model fitting empirical patterns"
+            },
+            {
+              "name": "Domain Boundary Redraw",
+              "signature": "The protagonist redefines the scope of the field by distinguishing what the model is meant to describe from what it is meant to prescribe.",
+              "anchor": "replace normative with descriptive theory"
+            },
+            {
+              "name": "Dual-Outcome Framing",
+              "signature": "The protagonist structures the problem space around two opposing outcome categories to expose differential responses that a unified treatment would obscure.",
+              "anchor": "gains/losses relative to reference point"
+            }
+          ]
+        },
+        "mintzberg_emergent_strategy": {
+          "arc_id": "mintzberg_emergent_strategy",
+          "moves": [
+            {
+              "name": "Reframe Core Concept",
+              "signature": "The protagonist replaces a dominant single definition with a richer, multi-faceted set of definitions that expose hidden dimensions of the subject.",
+              "anchor": "Five Ps: plan, ploy, pattern, position, perspective"
+            },
+            {
+              "name": "Expose Received Wisdom Gap",
+              "signature": "The protagonist identifies a widely held assumption and demonstrates empirically that practice systematically diverges from it.",
+              "anchor": "plans rarely match implementation"
+            },
+            {
+              "name": "Invert Causality Arrow",
+              "signature": "The protagonist reverses the assumed direction of cause and effect, showing that outcomes precede and generate the principles attributed to them.",
+              "anchor": "strategy emerges from organizational action over time"
+            },
+            {
+              "name": "Legitimize the Residual",
+              "signature": "The protagonist elevates what was previously treated as noise, deviation, or failure into a recognized and valued category of the phenomenon.",
+              "anchor": "emergent learning"
+            },
+            {
+              "name": "Dual-Source Synthesis",
+              "signature": "The protagonist resolves an apparent opposition by arguing that both poles are necessary components of a functional whole rather than rivals.",
+              "anchor": "effective strategy combines deliberate intent and emergent learning"
+            },
+            {
+              "name": "Longitudinal Evidence Shift",
+              "signature": "The protagonist replaces cross-sectional or theoretical evidence with time-extended observation to reveal processes invisible in snapshots.",
+              "anchor": "longitudinal case studies of strategy formation"
+            },
+            {
+              "name": "Descriptive Over Prescriptive",
+              "signature": "The protagonist repositions the field's goal from telling practitioners what to do toward accurately describing what actually occurs.",
+              "anchor": "descriptive empirical strategy theory; reject prescriptive planning models"
+            },
+            {
+              "name": "Pattern Extraction Move",
+              "signature": "The protagonist identifies coherent structure not in stated intentions but in the accumulated trace of repeated actions across time.",
+              "anchor": "pattern-from-action emergence"
+            },
+            {
+              "name": "Institutional Critique",
+              "signature": "The protagonist targets a dominant professional practice or formal system and argues it systematically produces the failure it claims to prevent.",
+              "anchor": "formal strategic planning often fails"
+            },
+            {
+              "name": "Temporal Recontextualization",
+              "signature": "The protagonist reframes a static object as a dynamic process by insisting it can only be understood across an extended time horizon.",
+              "anchor": "strategy is not just deliberate planning; emerges over time"
+            }
+          ]
+        }
+      },
+      "gemini": {
+        "christensen_disruption": {
+          "arc_id": "christensen_disruption",
+          "moves": [
+            {
+              "name": "Isolate Core Anomaly",
+              "signature": "Identify a recurring, paradoxical outcome that defies conventional wisdom.",
+              "anchor": "why successful companies fail"
+            },
+            {
+              "name": "Assemble Comparative Set",
+              "signature": "Select a diverse set of instances exhibiting the same core anomaly to enable cross-case analysis.",
+              "anchor": "case studies (disk drives, steel mills, retailing)"
+            },
+            {
+              "name": "Extract Repeating Pattern",
+              "signature": "Discern a common sequence of events or relationships that appears across multiple independent instances.",
+              "anchor": "pattern recognition"
+            },
+            {
+              "name": "Model Competing Trajectories",
+              "signature": "Define the system by the opposing or intersecting developmental paths of its key components.",
+              "anchor": "worse performance than incumbents but improve faster"
+            },
+            {
+              "name": "Frame Local Optimum Trap",
+              "signature": "Explain a systemic failure as the result of agents rationally pursuing their immediate, localized incentives.",
+              "anchor": "incumbents listen to current customers"
+            },
+            {
+              "name": "Pinpoint Reinforcing Loop",
+              "signature": "Identify the primary activity that reinforces the existing system's structure and prevents adaptation.",
+              "anchor": "invest in sustaining innovation"
+            },
+            {
+              "name": "Delineate Sub-Types",
+              "signature": "Classify a general phenomenon into distinct variants based on their entry mechanism or target.",
+              "anchor": "low-end and new-market disruption"
+            },
+            {
+              "name": "Articulate Causal Engine",
+              "signature": "Propose the underlying causal process that generates the observed pattern of outcomes.",
+              "anchor": "identify structural mechanism"
+            },
+            {
+              "name": "Abstract to General Framework",
+              "signature": "Elevate a specific explanation into a portable, abstract model applicable to other domains.",
+              "anchor": "Generalized into Innovator's Dilemma framework"
+            }
+          ]
+        },
+        "porter_five_forces": {
+          "arc_id": "porter_five_forces",
+          "moves": [
+            {
+              "name": "Adopt Governing Model",
+              "signature": "Select a pre-defined framework to explain the dynamics of a complex system.",
+              "anchor": "Industry profitability determined by five forces"
+            },
+            {
+              "name": "Decompose Into Factors",
+              "signature": "Break down a complex whole into a discrete set of constituent elements or influences.",
+              "anchor": "decompose industry into structural components"
+            },
+            {
+              "name": "Enumerate Core Elements",
+              "signature": "List the specific, named components dictated by the chosen framework.",
+              "anchor": "rivalry among competitors, threat of new entrants, threat of substitutes, bargaining power of suppliers, bargaining power of buyers"
+            },
+            {
+              "name": "Characterize Each Component",
+              "signature": "Assess the state, intensity, or nature of each identified element in isolation.",
+              "anchor": "characterize each force"
+            },
+            {
+              "name": "Synthesize System Configuration",
+              "signature": "Combine the individual component assessments to form a holistic understanding of the system's current structure.",
+              "anchor": "force configuration"
+            },
+            {
+              "name": "Predict System Outcome",
+              "signature": "Use the synthesized understanding of the system's structure to forecast a key result or behavior.",
+              "anchor": "predict profitability"
+            },
+            {
+              "name": "Design Responsive Action",
+              "signature": "Develop a course of action based on the structural analysis to achieve a desired outcome.",
+              "anchor": "design competitive strategy"
+            },
+            {
+              "name": "Label The Method",
+              "signature": "Assign a formal label to the overall method of inquiry and action.",
+              "anchor": "Method: structural industry analysis"
+            }
+          ]
+        },
+        "munger_mental_models": {
+          "arc_id": "munger_mental_models",
+          "moves": [
+            {
+              "name": "Constructing a Cognitive Toolkit",
+              "signature": "Intentionally assemble a personal library of fundamental concepts to be used for problem-solving.",
+              "anchor": "building latticework of ~80 mental models"
+            },
+            {
+              "name": "Broad Spectrum Sourcing",
+              "signature": "Consume information from a wide variety of fields to build a robust intellectual toolkit.",
+              "anchor": "cross-disciplinary reading"
+            },
+            {
+              "name": "Multi-Lens Analysis",
+              "signature": "Deliberately examine a single problem through several distinct conceptual viewpoints before forming a conclusion.",
+              "anchor": "Apply multiple models to any decision"
+            },
+            {
+              "name": "Convergent Signal Amplification",
+              "signature": "Identify and prioritize outcomes indicated by the convergence of multiple, independent analytical frameworks.",
+              "anchor": "lollapalooza effect when several models point same direction"
+            },
+            {
+              "name": "Cross-Domain Synthesis",
+              "signature": "Actively seek out and connect underlying patterns that recur across disparate areas of knowledge.",
+              "anchor": "pattern recognition across domains"
+            },
+            {
+              "name": "Triangulating from Principles",
+              "signature": "Validate a conclusion by ensuring it is supported by several independent, fundamental principles.",
+              "anchor": "multi-model triangulation"
+            },
+            {
+              "name": "Procedural Scaffolding",
+              "signature": "Formalize a sequence of analytical steps into a repeatable protocol for critical situations.",
+              "anchor": "explicit checklist for high-stakes decisions"
+            },
+            {
+              "name": "Inverting the Problem",
+              "signature": "Reframe a goal from achieving success to systematically avoiding sources of failure.",
+              "anchor": "inversion (avoid mistakes vs seek wins)"
+            }
+          ]
+        },
+        "drucker_management_by_objectives": {
+          "arc_id": "drucker_management_by_objectives",
+          "moves": [
+            {
+              "name": "Isolate Recurring Pattern",
+              "signature": "Identify a consistent structure or behavior by observing multiple, seemingly disparate instances.",
+              "anchor": "identify recurring organizational patterns"
+            },
+            {
+              "name": "Sample Diverse Contexts",
+              "signature": "Collect evidence from a wide range of environments to establish the generality of a phenomenon.",
+              "anchor": "case observation across industries"
+            },
+            {
+              "name": "Construct Abstract Model",
+              "signature": "Build a simplified representation of a complex system to explain its core dynamics and relationships.",
+              "anchor": "framework abstraction"
+            },
+            {
+              "name": "Generalize Specific Instances",
+              "signature": "Distill a set of specific observations into a universal model or principle that can be applied elsewhere.",
+              "anchor": "abstract into transferable framework"
+            },
+            {
+              "name": "Synchronize Component Goals",
+              "signature": "Create a mechanism that aligns the objectives of individual agents with the overarching goals of the system.",
+              "anchor": "align organizational and individual goals"
+            },
+            {
+              "name": "Define Progress Metrics",
+              "signature": "Establish clear, quantifiable indicators to track movement toward a desired state.",
+              "anchor": "measure progress against objectives"
+            },
+            {
+              "name": "Identify New Power Source",
+              "signature": "Recognize and articulate a fundamental shift in the primary resource or control mechanism within a system.",
+              "anchor": "workers who own means of production (knowledge)"
+            },
+            {
+              "name": "Prioritize Practical Application",
+              "signature": "Value actionable implementation and observable results more highly than purely theoretical constructs.",
+              "anchor": "emphasize practice over theory"
+            },
+            {
+              "name": "Formulate Actionable Directives",
+              "signature": "Translate a general model or insight into specific, prescriptive actions for others to follow.",
+              "anchor": "explicit recommendations"
+            },
+            {
+              "name": "Establish New Field",
+              "signature": "Synthesize disparate observations and principles to create a novel and coherent domain of inquiry.",
+              "anchor": "founded modern management theory"
+            }
+          ]
+        },
+        "kahneman_prospect_theory": {
+          "arc_id": "kahneman_prospect_theory",
+          "moves": [
+            {
+              "name": "Displace The Incumbent",
+              "signature": "Propose a new explanatory framework intended to supersede a dominant, established theory.",
+              "anchor": "Replaced expected utility theory with prospect theory"
+            },
+            {
+              "name": "Establish A Relative Datum",
+              "signature": "Define outcomes not in absolute terms but in relation to a contextual, shifting baseline.",
+              "anchor": "evaluate gains/losses relative to a reference point"
+            },
+            {
+              "name": "Isolate An Asymmetric Response",
+              "signature": "Identify a consistent, unequal reaction to stimuli that are superficially opposites.",
+              "anchor": "are loss-averse"
+            },
+            {
+              "name": "Model Subjective Distortion",
+              "signature": "Account for the non-linear way actors internally represent objective external values.",
+              "anchor": "weight probabilities nonlinearly"
+            },
+            {
+              "name": "Construct Choice Architectures",
+              "signature": "Design controlled, hypothetical scenarios to elicit and observe decision-making processes.",
+              "anchor": "experimental decision tasks"
+            },
+            {
+              "name": "Systematize The Anomalies",
+              "signature": "Treat recurring exceptions to a rule not as noise but as a coherent pattern requiring its own explanation.",
+              "anchor": "identify systematic deviations from EU"
+            },
+            {
+              "name": "Swap 'Ought' For 'Is'",
+              "signature": "Shift the theoretical goal from prescribing ideal behavior to describing actual behavior.",
+              "anchor": "replace normative with descriptive theory"
+            },
+            {
+              "name": "Build From Empirical Fit",
+              "signature": "Develop a model primarily based on its ability to match observed, real-world data patterns.",
+              "anchor": "build descriptive model fitting empirical patterns"
+            },
+            {
+              "name": "Measure Predictable Error",
+              "signature": "Assign formal, quantitative measures to consistent, non-rational patterns of judgment.",
+              "anchor": "quantify cognitive biases"
+            }
+          ]
+        },
+        "mintzberg_emergent_strategy": {
+          "arc_id": "mintzberg_emergent_strategy",
+          "moves": [
+            {
+              "name": "Exposing Framework Brittleness",
+              "signature": "Reveal the practical failures of a prevailing theoretical model.",
+              "anchor": "formal strategic planning often fails"
+            },
+            {
+              "name": "Codifying Organic Formation",
+              "signature": "Articulate a new model where structure arises from accumulated actions rather than from a pre-ordained design.",
+              "anchor": "emerges from organizational action over time"
+            },
+            {
+              "name": "Decomposing a Monolith",
+              "signature": "Reframe a singular concept as a multi-faceted system of interacting components.",
+              "anchor": "Five Ps: plan, ploy, pattern, position, perspective"
+            },
+            {
+              "name": "Synthesizing Intent and Emergence",
+              "signature": "Create a hybrid model that combines directed planning with adaptive, responsive learning.",
+              "anchor": "combines deliberate intent + emergent learning"
+            },
+            {
+              "name": "Tracking Evolution Over Time",
+              "signature": "Observe a system's behavior across a long duration to identify developmental patterns.",
+              "anchor": "longitudinal case studies"
+            },
+            {
+              "name": "Highlighting Intent-Outcome Gap",
+              "signature": "Isolate a persistent discrepancy between stated goals and realized results.",
+              "anchor": "'plans' rarely match implementation"
+            },
+            {
+              "name": "Shifting to Descriptive Theory",
+              "signature": "Change the analytical focus from how a system should work to how it actually does.",
+              "anchor": "descriptive empirical strategy theory"
+            },
+            {
+              "name": "Rejecting Prescriptive Models",
+              "signature": "Abandon idealized instructions in favor of models that reflect observed reality.",
+              "anchor": "reject prescriptive planning models"
+            },
+            {
+              "name": "Finding Signal in Action",
+              "signature": "Identify a coherent, underlying pattern within a stream of discrete actions.",
+              "anchor": "embrace pattern-from-action emergence"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

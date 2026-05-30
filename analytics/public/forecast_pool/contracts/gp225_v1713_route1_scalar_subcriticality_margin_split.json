@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1713_route1_scalar_subcriticality_margin_split.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1713_route1_scalar_subcriticality_margin_split.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1713_route1_scalar_subcriticality_margin_split",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1713_route1_scalar_subcriticality_margin_split.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1713_route1_scalar_subcriticality_margin_split.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "contract_id": "gp225_v1713_route1_scalar_subcriticality_margin_split",
+  "cost_penalty": 0.2,
+  "created_at": "2026-05-12T15:25:28Z",
+  "created_by": "research_director",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "one NS tick",
+  "information_value": 0.8,
+  "layer": "meso",
+  "objective_resolver": "v17.13 artifact reports strict_margin_split_compiled, lean_compiled true, source_obligation_closed 0, and explicit unpaid margin inequalities",
+  "question": "Will v17.13 reduce the route-1 scalar subcriticality hinge to a smaller Lean-checkable strict-margin guard without closing/laundering the analytic source obligation?",
+  "risk_penalty": 0.6,
+  "success_threshold": "strict_margin_split_compiled && source_obligation_closed == 0",
+  "task_type": "live_ns_scalar_hinge",
+  "value_if_success": 0.7,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

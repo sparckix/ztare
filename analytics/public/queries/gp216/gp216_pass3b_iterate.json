@@ -1,0 +1,749 @@
+{
+  "experiment": "gp216_pass3b_iterate",
+  "vocabulary": [
+    {
+      "cluster_id": "tb_01",
+      "name": "Foundational Object Redefinition",
+      "structural_mechanism": "An existing class of core objects is replaced by a more general or abstract class, designed to absorb complexity or represent phenomena that were previously invisible or ad-hoc.",
+      "arc_spread": [
+        "grothendieck_schemes",
+        "lurie_htt",
+        "riemann_surfaces",
+        "scholze_perfectoid"
+      ],
+      "n_arcs": 4,
+      "n_moves": 13,
+      "example_moves": [
+        "M011",
+        "M044",
+        "M025",
+        "M099",
+        "M124"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not just 'generalization'; it is a specific replacement of a foundational object to solve a known representational deficit, absorbing prior anomalies into the new object's intrinsic structure."
+    },
+    {
+      "cluster_id": "tb_02",
+      "name": "Cross-Domain Unification",
+      "structural_mechanism": "A new formalism or object is constructed to demonstrate that two or more previously separate conceptual domains are instances of a single, underlying structure, enabling translation and transfer between them.",
+      "arc_spread": [
+        "wiles_flt",
+        "grothendieck_schemes",
+        "lurie_htt",
+        "scholze_perfectoid",
+        "riemann_surfaces",
+        "newton_calculus"
+      ],
+      "n_arcs": 6,
+      "n_moves": 18,
+      "example_moves": [
+        "M013",
+        "M039",
+        "M049",
+        "M136",
+        "M027"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not just finding an analogy; it is building a formal, operational bridge or a common super-structure that makes the analogy rigorous and computationally productive."
+    },
+    {
+      "cluster_id": "tb_03",
+      "name": "Surrogate Problem Substitution",
+      "structural_mechanism": "An intractable problem is solved by replacing it with a different, more tractable problem in a new domain, after establishing a formal implication that a solution to the surrogate problem guarantees a solution to the original.",
+      "arc_spread": [
+        "wiles_flt",
+        "riemann_surfaces",
+        "einstein_gr"
+      ],
+      "n_arcs": 3,
+      "n_moves": 8,
+      "example_moves": [
+        "M000",
+        "M087",
+        "M047",
+        "M062"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is distinct from simple reframing; it requires leveraging a pre-existing or newly forged, load-bearing implication chain (e.g., Frey-Ribet) to justify the strategic substitution."
+    },
+    {
+      "cluster_id": "tb_04",
+      "name": "Constraint-Driven Solution Forcing",
+      "structural_mechanism": "A solution is found not by direct construction, but by defining a set of fundamental principles or constraints so restrictive that they collectively determine a unique or very small set of possible solutions.",
+      "arc_spread": [
+        "grothendieck_schemes",
+        "lurie_htt",
+        "einstein_gr"
+      ],
+      "n_arcs": 3,
+      "n_moves": 12,
+      "example_moves": [
+        "M067",
+        "M015",
+        "M146",
+        "M026",
+        "M105"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not just 'testing a hypothesis'; it is using abstract principles a priori to carve out the solution space, often before a concrete candidate solution even exists."
+    },
+    {
+      "cluster_id": "tb_05",
+      "name": "External Formalism Importation",
+      "structural_mechanism": "Progress is enabled by importing a mature formal language, a specific theorem, or a computational toolkit from an external discipline, providing necessary structure or leverage that was unavailable internally.",
+      "arc_spread": [
+        "wiles_flt",
+        "einstein_gr",
+        "grothendieck_schemes"
+      ],
+      "n_arcs": 3,
+      "n_moves": 6,
+      "example_moves": [
+        "M064",
+        "M010",
+        "M096",
+        "M144"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not just 'collaboration'; it is the specific act of adopting a pre-packaged, powerful piece of formalism or a load-bearing result from another context to solve a specific blockage."
+    },
+    {
+      "cluster_id": "tb_06",
+      "name": "Tacit Pattern Formalization",
+      "structural_mechanism": "An informal, recurring, or empirically observed pattern of success is made explicit by codifying it into a systematic framework, a formal object, or a named heuristic, making it reliable and transmissible.",
+      "arc_spread": [
+        "scholze_perfectoid",
+        "polya_hadamard_meta",
+        "newton_calculus",
+        "lurie_htt"
+      ],
+      "n_arcs": 4,
+      "n_moves": 11,
+      "example_moves": [
+        "M032",
+        "M114",
+        "M075",
+        "M149",
+        "M052"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not just 'discovery'; it is the meta-level act of turning a pattern of discovery or of structure into a first-class object of study or a formal tool itself."
+    },
+    {
+      "cluster_id": "tb_07",
+      "name": "Scaffolding with Provisional Structures",
+      "structural_mechanism": "A theory is advanced by deliberately using concepts or frameworks that are known to be incomplete, non-rigorous, or flawed, treating them as temporary scaffolding to reach a more stable successor structure.",
+      "arc_spread": [
+        "wiles_flt",
+        "newton_calculus",
+        "einstein_gr"
+      ],
+      "n_arcs": 3,
+      "n_moves": 7,
+      "example_moves": [
+        "M055",
+        "M134",
+        "M065",
+        "M007"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not just 'trial and error'; it is the strategic deployment of a known-to-be-imperfect tool, where the nature of its failure provides crucial information for the next step."
+    },
+    {
+      "cluster_id": "tb_08",
+      "name": "Parameter Space Internalization",
+      "structural_mechanism": "A collection of related objects, previously studied individually, is re-conceptualized as a single object (a 'space' or 'family') within the theory, allowing the study of variation and deformation using the framework's own tools.",
+      "arc_spread": [
+        "wiles_flt",
+        "grothendieck_schemes",
+        "scholze_perfectoid"
+      ],
+      "n_arcs": 3,
+      "n_moves": 7,
+      "example_moves": [
+        "M006",
+        "M017",
+        "M101",
+        "M037"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not just creating a set; it is elevating a collection of objects to the status of a single, first-class object of the same kind as its elements, with its own geometric or categorical structure."
+    },
+    {
+      "cluster_id": "tb_09",
+      "name": "Systematic Vocabulary Lifting",
+      "structural_mechanism": "An entire apparatus of concepts and operations from an established theory is systematically reconstructed within a new, more general setting, preserving the relational structure of the original.",
+      "arc_spread": [
+        "lurie_htt",
+        "grothendieck_schemes",
+        "scholze_perfectoid"
+      ],
+      "n_arcs": 3,
+      "n_moves": 7,
+      "example_moves": [
+        "M024",
+        "M109",
+        "M110",
+        "M111",
+        "M102"
+      ],
+      "what_distinguishes_this_from_a_paraphrase": "This is not importing a single tool (tb_05), but a wholesale, systematic translation of an entire framework's vocabulary and machinery into a higher-level context."
+    },
+    {
+      "cluster_id": "tb_10",
+      "name": "Self-Referential Encoding",
+      "structural_mechanism": "Encode the system's own description (axioms, formulas, machines) into objects of the system itself, so meta-level statements become object-level expressions; this permits internal reasoning about what the system can and cannot do."
+    },
+    {
+      "cluster_id": "tb_11",
+      "name": "Limitative Theorem Construction",
+      "structural_mechanism": "Use a constructed self-referential or diagonal object to derive a structural impossibility within the framework \u2014 establishing a permanent limit (incompleteness, undecidability, unsolvability) rather than a positive theorem."
+    },
+    {
+      "cluster_id": "tb_12",
+      "name": "Problem Boundary Specification",
+      "structural_mechanism": "Make precise what counts as a solution / member / instance of the central question \u2014 fixing the success criterion so that 'solvable' or 'computable' or 'provable' has determinate meaning before the main argument runs."
+    }
+  ],
+  "n_ops": 12,
+  "results": [
+    {
+      "arc": "russell_zf",
+      "n_moves": 10,
+      "by_conf": {
+        "high": 4,
+        "medium": 3,
+        "low": 0,
+        "unmapped": 3
+      },
+      "h_m_pct": 70.0,
+      "un_pct": 30.0,
+      "pass_70_30": true,
+      "ops_used": [
+        "tb_11",
+        "tb_04"
+      ],
+      "new_ops_used": [
+        "tb_11"
+      ],
+      "moves": [
+        {
+          "name": "Stating the Core Principle",
+          "signature": "An initial, powerful, and general rule is presented as the basis for a system.",
+          "anchor": "Naive set theory... allowed arbitrary properties to define sets."
+        },
+        {
+          "name": "Constructing a Counterexample",
+          "signature": "A specific instance is created using the system's own rules that reveals a fundamental inconsistency.",
+          "anchor": "Russell showed... that the property 'is not a member of itself' produces a contradiction"
+        },
+        {
+          "name": "Articulating the Paradox",
+          "signature": "The self-referential or contradictory nature of the counterexample is explicitly stated.",
+          "anchor": "the set R... is a member of itself iff it is not."
+        },
+        {
+          "name": "Shifting to Formalism",
+          "signature": "A response to a flaw is initiated by moving from a general, intuitive principle to a set of explicit, formal rules.",
+          "anchor": "Zermelo... responded by axiomatizing set theory"
+        },
+        {
+          "name": "Replacing General Principle",
+          "signature": "A single, overly permissive rule is swapped out for a curated list of more constrained, specific rules.",
+          "anchor": "replacing 'every property defines a set' with a specific list of axioms"
+        },
+        {
+          "name": "Bounding New Creation",
+          "signature": "A new rule is introduced that requires new entities to be formed only from components of existing, well-defined entities.",
+          "anchor": "Separation restricts comprehension to subsets of an existing set"
+        },
+        {
+          "name": "Forbidding Recursive Structures",
+          "signature": "A rule is added to explicitly prohibit the kind of self-containing loop that caused the original paradox.",
+          "anchor": "regularity excludes self-membership chains"
+        },
+        {
+          "name": "Achieving System Stability",
+          "signature": "The new set of rules is shown to successfully prevent the previously identified contradiction.",
+          "anchor": "a formal system that avoided the paradox"
+        },
+        {
+          "name": "Preserving Useful Structure",
+          "signature": "The solution is designed to keep the valuable and functional parts of the old system intact.",
+          "anchor": "preserving most of Cantorian set theory"
+        },
+        {
+          "name": "Establishing New Foundation",
+          "signature": "The revised system becomes the new standard upon which future work is built.",
+          "anchor": "ZF became the de facto foundation for 20th-century math."
+        }
+      ],
+      "mapping": {
+        "arc_id": "russell_zf",
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Stating the Core Principle",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "Presenting naive comprehension is setup rather than a theory-building operation in the vocabulary."
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Constructing a Counterexample",
+            "best_op": "tb_11",
+            "confidence": "high",
+            "reason": "Russell's set is a constructed self-referential object used to expose a structural impossibility in the system."
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Articulating the Paradox",
+            "best_op": "tb_11",
+            "confidence": "medium",
+            "reason": "Explicitly stating the contradiction is part of deriving the limitative inconsistency, though it is not a separate construction."
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Shifting to Formalism",
+            "best_op": "tb_04",
+            "confidence": "medium",
+            "reason": "Axiomatization responds by replacing intuition with restrictive formal constraints on allowable set formation."
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Replacing General Principle",
+            "best_op": "tb_04",
+            "confidence": "high",
+            "reason": "The permissive comprehension principle is replaced by a constrained axiom system that narrows possible constructions."
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Bounding New Creation",
+            "best_op": "tb_04",
+            "confidence": "high",
+            "reason": "Separation is a restrictive constraint that forces new sets to arise only within already given sets."
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Forbidding Recursive Structures",
+            "best_op": "tb_04",
+            "confidence": "high",
+            "reason": "Regularity adds a fundamental constraint designed to rule out self-membership pathologies."
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Achieving System Stability",
+            "best_op": "tb_04",
+            "confidence": "medium",
+            "reason": "Avoiding the paradox is the stabilizing effect of the restrictive axioms rather than a distinct operation."
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Preserving Useful Structure",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "Retaining Cantorian results is a design goal of the repair, not a close match to any listed operation."
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Establishing New Foundation",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Becoming the standard foundation is an outcome of the theory-building process rather than one of the specified operations."
+          }
+        ]
+      }
+    },
+    {
+      "arc": "cohen_forcing",
+      "n_moves": 9,
+      "by_conf": {
+        "high": 1,
+        "medium": 1,
+        "low": 1,
+        "unmapped": 6
+      },
+      "h_m_pct": 22.22222222222222,
+      "un_pct": 66.66666666666666,
+      "pass_70_30": false,
+      "ops_used": [
+        "tb_12",
+        "tb_04",
+        "tb_06"
+      ],
+      "new_ops_used": [
+        "tb_12"
+      ],
+      "moves": [
+        {
+          "name": "Establish One Boundary",
+          "signature": "Demonstrate that a proposition is compatible with an axiomatic system, defining one side of a possibility space.",
+          "anchor": "G\u00f6del had shown CH is consistent with ZFC"
+        },
+        {
+          "name": "Isolate The Converse Problem",
+          "signature": "Frame the central challenge as determining if the converse of an established compatibility is also true.",
+          "anchor": "The reverse direction \u2014 CH not provable from ZFC \u2014 was open"
+        },
+        {
+          "name": "Introduce Novel Construction Method",
+          "signature": "Develop a new, systematic procedure for generating alternative structures that conform to a base set of rules.",
+          "anchor": "Cohen introduced forcing: a method for constructing models of ZFC"
+        },
+        {
+          "name": "Augment A Base Model",
+          "signature": "Systematically extend a foundational structure with a new, carefully chosen element to create a new, larger structure.",
+          "anchor": "adjoining a 'generic' filter to a poset"
+        },
+        {
+          "name": "Engineer A Specific Outcome",
+          "signature": "Design the construction process to guarantee that a particular proposition is either true or false in the resulting structure.",
+          "anchor": "in a controlled way that makes the new model satisfy or violate specified statements"
+        },
+        {
+          "name": "Construct The Counter-Model",
+          "signature": "Apply the new method to produce a concrete example where a key proposition, previously shown to be possible, is now demonstrably false.",
+          "anchor": "The forcing argument constructs a model where CH fails."
+        },
+        {
+          "name": "Synthesize Opposing Instances",
+          "signature": "Juxtapose a structure where a proposition holds with one where it fails to prove the proposition's independence from the underlying axioms.",
+          "anchor": "Combined with G\u00f6del's L showing CH holds, this proved CH is independent of ZFC."
+        },
+        {
+          "name": "Generalize The Technique",
+          "signature": "Abstract the novel method from its initial application, transforming it into a versatile tool for a broader class of problems.",
+          "anchor": "Forcing generalized: it became the main technique"
+        },
+        {
+          "name": "Expand Application Domain",
+          "signature": "Deploy the generalized technique to resolve open questions in adjacent or related fields.",
+          "anchor": "applied to axiom of choice variants, large cardinals, and many descriptive set-theoretic questions"
+        }
+      ],
+      "mapping": {
+        "arc_id": "cohen_forcing",
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Establish One Boundary",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "This is a one-sided relative-consistency result, not a redefinition, encoding, import, or boundary-specification operation in the listed sense."
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Isolate The Converse Problem",
+            "best_op": "tb_12",
+            "confidence": "medium",
+            "reason": "It fixes the target criterion for the later argument: show ZFC does not decide CH by establishing the reverse consistency direction."
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Introduce Novel Construction Method",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "The move invents a model-construction technique, but the vocabulary has no general operation for novel method creation absent import, scaffolding, or tacit-pattern formalization."
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Augment A Base Model",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Adjoining a generic filter is a specific construction step, not a listed structural operation such as parameter-space internalization or foundational redefinition."
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Engineer A Specific Outcome",
+            "best_op": "tb_04",
+            "confidence": "high",
+            "reason": "The forcing setup chooses conditions and generic data so that constraints control which statements hold in the resulting model."
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Construct The Counter-Model",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "Producing a model where CH fails is central to independence, but it is not a self-referential or diagonal limitative construction as specified by tb_11."
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Synthesize Opposing Instances",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "The independence conclusion is limitative in outcome, but the operation is model comparison rather than the self-referential or diagonal construction required by tb_11."
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Generalize The Technique",
+            "best_op": "tb_06",
+            "confidence": "low",
+            "reason": "Abstracting forcing into a reusable framework partly resembles codifying a successful pattern, though it was not merely tacit or empirical beforehand."
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Expand Application Domain",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Applying forcing to further set-theoretic questions is downstream deployment rather than one of the listed theory-building operations."
+          }
+        ]
+      }
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "n_moves": 8,
+      "by_conf": {
+        "high": 3,
+        "medium": 2,
+        "low": 0,
+        "unmapped": 3
+      },
+      "h_m_pct": 62.5,
+      "un_pct": 37.5,
+      "pass_70_30": false,
+      "ops_used": [
+        "tb_01",
+        "tb_06",
+        "tb_02",
+        "tb_05"
+      ],
+      "new_ops_used": [],
+      "moves": [
+        {
+          "name": "Identify A Descriptive Gap",
+          "signature": "Articulate a class of phenomena that an existing formal system fails to adequately model.",
+          "anchor": "Coastlines, mountains, blood vessels, cotton prices, and clouds resisted description by Euclidean geometry"
+        },
+        {
+          "name": "Generalize A Metric",
+          "signature": "Adapt an existing quantitative measure to a broader class of cases by relaxing one of its core constraints.",
+          "anchor": "extending Hausdorff-Besicovitch dimension to non-integer values"
+        },
+        {
+          "name": "Characterize The Irregular",
+          "signature": "Apply a novel descriptive framework to phenomena previously considered outside the scope of formal analysis.",
+          "anchor": "natural objects often have characteristic non-integer dimensions"
+        },
+        {
+          "name": "Isolate A Core Principle",
+          "signature": "Identify and name a fundamental, recurring structural property that explains a system's behavior across different scales.",
+          "anchor": "introduced self-similarity (the same shape recurs at all scales)"
+        },
+        {
+          "name": "Propose A Canonical Form",
+          "signature": "Designate a pure, idealized example that perfectly embodies the new conceptual framework.",
+          "anchor": "named the Mandelbrot set as the canonical example"
+        },
+        {
+          "name": "Unify Disparate Phenomena",
+          "signature": "Demonstrate that a single underlying mechanism can explain a wide range of previously unconnected observations.",
+          "anchor": "unified disparate empirical observations... under a single mathematical framework"
+        },
+        {
+          "name": "Repurpose An Existing Tool",
+          "signature": "Reframe a problem by recognizing that a known but overlooked tool provides the correct descriptive language for it.",
+          "anchor": "a recognition that an existing mathematical tool... was the right description"
+        },
+        {
+          "name": "Enable Cross-Domain Application",
+          "signature": "Show how a new conceptual model opens up practical uses and analytical approaches in multiple, distinct fields.",
+          "anchor": "Applications spread to physics, biology, finance, computer graphics"
+        }
+      ],
+      "mapping": {
+        "arc_id": "mandelbrot_fractals",
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Identify A Descriptive Gap",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Diagnosing a mismatch between Euclidean geometry and natural forms is a motivating gap, not one of the listed structural operations."
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Generalize A Metric",
+            "best_op": "tb_01",
+            "confidence": "medium",
+            "reason": "Extending dimension beyond integers redefines a core geometric measure to cover a broader class of objects."
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Characterize The Irregular",
+            "best_op": "tb_01",
+            "confidence": "high",
+            "reason": "Fractal description replaces the Euclidean object class with a more general class able to represent previously ad-hoc irregular phenomena."
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Isolate A Core Principle",
+            "best_op": "tb_06",
+            "confidence": "high",
+            "reason": "Self-similarity codifies a recurring informal visual pattern into an explicit named structural principle."
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Propose A Canonical Form",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Selecting the Mandelbrot set as an ideal exemplar is not covered by any listed operation."
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Unify Disparate Phenomena",
+            "best_op": "tb_02",
+            "confidence": "high",
+            "reason": "A single fractal framework is used to treat many formerly separate empirical domains as manifestations of a common structure."
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Repurpose An Existing Tool",
+            "best_op": "tb_05",
+            "confidence": "medium",
+            "reason": "The move imports or repurposes an existing mathematical apparatus as the descriptive language for a new class of phenomena."
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Enable Cross-Domain Application",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "Spreading applications across fields is a consequence of the framework rather than a distinct listed theory-building operation."
+          }
+        ]
+      }
+    },
+    {
+      "arc": "connes_ncg",
+      "n_moves": 9,
+      "by_conf": {
+        "high": 5,
+        "medium": 2,
+        "low": 0,
+        "unmapped": 2
+      },
+      "h_m_pct": 77.77777777777779,
+      "un_pct": 22.22222222222222,
+      "pass_70_30": true,
+      "ops_used": [
+        "tb_02",
+        "tb_01",
+        "tb_09",
+        "tb_04"
+      ],
+      "new_ops_used": [],
+      "moves": [
+        {
+          "name": "Establish Foundational Duality",
+          "signature": "Identify a core, bidirectional mapping between two distinct conceptual domains that underpins the existing paradigm.",
+          "anchor": "a compact Hausdorff space is determined by its C*-algebra of continuous functions"
+        },
+        {
+          "name": "Isolate a Limiting Assumption",
+          "signature": "Identify a core property of a framework that is violated by an important external phenomenon, revealing the framework's boundary.",
+          "anchor": "Quantum mechanics introduced noncommutative algebras naturally."
+        },
+        {
+          "name": "Generalize by Abstraction",
+          "signature": "Redefine a category by removing a limiting property, treating the new, broader class of objects as first-class citizens.",
+          "anchor": "study NONCOMMUTATIVE C*-algebras as if they were function algebras on 'noncommutative spaces,' even when no underlying point set exists"
+        },
+        {
+          "name": "Construct an Analogous Tool",
+          "signature": "Develop a new tool in the generalized domain that serves the same functional role as a key tool in the original domain.",
+          "anchor": "He developed cyclic cohomology as a noncommutative analog of de Rham cohomology"
+        },
+        {
+          "name": "Define a General Object",
+          "signature": "Formulate a new, more general definition for a fundamental object that mirrors the structure of its specialized predecessor.",
+          "anchor": "defined spectral triples (algebra + Hilbert space + Dirac operator) as noncommutative Riemannian manifolds"
+        },
+        {
+          "name": "Apply to External Domain",
+          "signature": "Apply the newly developed abstract framework to explain or derive a known result in a seemingly unrelated field.",
+          "anchor": "applied the framework to the standard model of particle physics"
+        },
+        {
+          "name": "Derive Known Structure",
+          "signature": "Demonstrate that a complex, empirically known structure can be generated from the fundamental principles of the new system.",
+          "anchor": "deriving its action functional from spectral data on a specific noncommutative space"
+        },
+        {
+          "name": "Subsume the Predecessor",
+          "signature": "Demonstrate that the original, more constrained system is a special case of the new, more general framework.",
+          "anchor": "absorbs ... Riemannian geometry (commutative case) ... as instances of the same theory"
+        },
+        {
+          "name": "Unify Disparate Fields",
+          "signature": "Show that the new framework can model and integrate phenomena from multiple, previously disconnected fields under a single conceptual roof.",
+          "anchor": "absorbs both Riemannian geometry ... and quantum statistical mechanics"
+        }
+      ],
+      "mapping": {
+        "arc_id": "connes_ncg",
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Establish Foundational Duality",
+            "best_op": "tb_02",
+            "confidence": "high",
+            "reason": "The Gelfand-style duality identifies topology and commutative C*-algebras as two presentations of one underlying structure."
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Isolate a Limiting Assumption",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Noting that commutativity is a boundary condition exposed by quantum mechanics is a diagnostic move rather than one of the listed theory-building operations."
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Generalize by Abstraction",
+            "best_op": "tb_01",
+            "confidence": "high",
+            "reason": "It replaces spaces with the broader foundational class of possibly noncommutative C*-algebras treated as generalized spaces."
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Construct an Analogous Tool",
+            "best_op": "tb_09",
+            "confidence": "medium",
+            "reason": "Cyclic cohomology reconstructs a de Rham-like cohomological apparatus in the noncommutative setting."
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Define a General Object",
+            "best_op": "tb_01",
+            "confidence": "high",
+            "reason": "Spectral triples redefine Riemannian manifolds as a more general algebraic-operator structure."
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Apply to External Domain",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "Using the framework on the standard model is an application/export of the theory, not clearly one of the specified operations."
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Derive Known Structure",
+            "best_op": "tb_04",
+            "confidence": "medium",
+            "reason": "The standard-model action is obtained from restrictive spectral data, resembling solution forcing by structural constraints."
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Subsume the Predecessor",
+            "best_op": "tb_01",
+            "confidence": "high",
+            "reason": "Showing commutative Riemannian geometry as a special case is part of replacing the old object-class with a broader one."
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Unify Disparate Fields",
+            "best_op": "tb_02",
+            "confidence": "high",
+            "reason": "The framework integrates Riemannian geometry and quantum statistical mechanics as instances under one noncommutative-geometric structure."
+          }
+        ]
+      }
+    }
+  ],
+  "n_pass": 2,
+  "mean_h_m": 58.125,
+  "mean_unmapped": 39.09722222222222,
+  "verdict": "FAIL \u2014 2/4 arcs pass. Vocabulary still in-room or genuinely insufficient. Close GP-216 with 'theory-building too varied for small bounded vocabulary.'"
+}

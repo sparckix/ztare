@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Queue remaining rows by content-delta mechanism and defer replay.",
+  "agent_id": "Pascal2",
+  "contract_id": "gp225_v2061_public_union_next_source_discovery_queue",
+  "contract_question": "Will v20.61 produce a source-discovery queue after the charFun strict repair that removes the solved row, ranks remaining public/internal rows for candidate-content delta, and keeps replay/training blocked?",
+  "domain": "gp225_pre_gnn_source_discovery_queue",
+  "expected_cost_agent_minutes": 15.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "next_artifact_missing": 0.22,
+    "queue_priority_vague": 0.3,
+    "solved_row_not_excluded": 0.28,
+    "training_boundary_missing": 0.2
+  },
+  "forecast_externality_tags": [
+    "source_discovery",
+    "candidate_content",
+    "no_training"
+  ],
+  "forecasted_at": "2026-05-14T18:30:48Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.03,
+  "p_success": 0.81,
+  "rationale_short": "The main risk is picking priorities by vibes rather than explicit reducer/source-contract features.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "queue_priority_vague",
+    "next_artifact_missing"
+  ]
+}

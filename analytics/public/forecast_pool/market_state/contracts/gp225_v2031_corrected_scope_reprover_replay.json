@@ -1,0 +1,168 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T14:55:07Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 15.0,
+    "expected_value": 0.02242957103008192,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.2874119637876023,
+    "participants": [
+      {
+        "agent_id": "gp230_erdos_gp225_v2031",
+        "domain": "general",
+        "p_success": 0.34,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_maxwell_gp225_v2031",
+        "domain": "general",
+        "p_success": 0.24,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2031_corrected_scope_reprover_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2031_corrected_scope_reprover_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2031_corrected_scope_reprover_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2031_corrected_scope_reprover_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2031_corrected_scope_reprover_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 14.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T14:51:35Z",
+    "created_by": "codex_RD_2026_05_14",
+    "horizon": "one local Lean replay over v20.30 candidates using patched strict-implies-compile bridge",
+    "layer": "micro",
+    "objective_resolver": "Success iff analytics/public/leanmill/results/v2031_corrected_scope_reprover_replay.json exists and reports attempted_candidate_rows >= 48, compiled_candidate_actions >= 1, new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions == 0, post_target_same_file_declarations_used_for_primary=false, target_proof_lines_used_for_candidate_generation=false, teacher_oracle_candidates_excluded_from_primary=true, gold_state_used_for_generation=false, train_gnn_now=false, and gnn_blocked=true.",
+    "question": "Will strict-implies-compile replay of the v20.30 corrected-scope ReProver candidates add at least one clean same-target strict row without harmful mismatches?",
+    "success_threshold": "attempted_candidate_rows>=48,compiled_candidate_actions>=1,new_strict_same_target_rows>=1,harmful_mismatches=0,no_forbidden_context,no_training,gnn_blocked_true",
+    "task_type": "gp225_public_adapter_strict_replay_micro"
+  },
+  "contract_id": "gp225_v2031_corrected_scope_reprover_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_erdos_gp225_v2031",
+        "raw_agent_ids": [
+          "gp230_erdos_gp225_v2031"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_maxwell_gp225_v2031",
+        "raw_agent_ids": [
+          "gp230_maxwell_gp225_v2031"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_erdos_gp225_v2031",
+      "gp230_maxwell_gp225_v2031"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run after static preflight using full top-8 replay, explicit candidate/output paths, no training, and GNN blocked regardless of result.",
+        "agent_id": "gp230_erdos_gp225_v2031",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2031_corrected_scope_reprover_replay/gp230_erdos_gp225_v2031.json",
+        "canonical_agent_id": null,
+        "domain": "general",
+        "expected_cost_agent_minutes": 12.0,
+        "forecasted_at": "2026-05-14T14:55:04Z",
+        "p_success": 0.34,
+        "rationale_short": "Candidate supply hygiene risk is low; success is sparse, so sampling is the wrong shape. Full replay is the cheapest discriminator for public adapter label yield.",
+        "specific_failure_mode_ids": [
+          "no_clean_strict_same_target_row",
+          "compiled_non_strict_progress_or_mismatch",
+          "per_row_limit_default_under_attempts",
+          "hydration_static_prefilter_issue",
+          "harmful_compiled_mismatch",
+          "source_hygiene_or_gnn_flag_regression"
+        ]
+      },
+      {
+        "action_change_recommendation": "Run only to close the raw corrected-scope ReProver question cheaply; force per-row-limit 8 and do not treat as likely label source or training trigger.",
+        "agent_id": "gp230_maxwell_gp225_v2031",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2031_corrected_scope_reprover_replay/gp230_maxwell_gp225_v2031.json",
+        "canonical_agent_id": null,
+        "domain": "general",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T14:55:04Z",
+        "p_success": 0.24,
+        "rationale_short": "v20.30 supply is clean and broad, but raw ReProver replay history is weak after discounting old strict-without-compile artifacts. Full top-8 is required to meet attempted threshold.",
+        "specific_failure_mode_ids": [
+          "raw_reprover_no_compile_backed_strict_row",
+          "per_row_limit_default_under_attempts",
+          "compiled_progress_only_or_target_mismatch",
+          "hydration_or_toolchain_join_issue",
+          "source_hygiene_or_contamination_block",
+          "harmful_compiled_mismatch"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 27.0,
+    "changed_by_forecast_ids": [
+      "gp230_erdos_gp225_v2031",
+      "gp230_maxwell_gp225_v2031"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:08:44Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.02242957103008192,
+      "forecast_spread": 0.1,
+      "p_success": 0.2874119637876023,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 1.0048
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 15.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.2874119637876023,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.08660000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:08:52Z"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "action_change_recommendation": "Attempt Level513 because it can bind the selectedPrefixEventIndex to the BadCenterEventPrefixCoversSelectedBadTree packet and expose the exact remaining finite-choice theorem.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.22,
+  "b_width": 0.16,
+  "contract_id": "tick668_level513_event_prefix_coverage_selected_index_source",
+  "contract_question": "Can Level513 bind selectedPrefixEventIndex to BadCenterEventPrefixCoversSelectedBadTree coverage fields and package it into Level512 without label-only or adaptive-selection substitutes?",
+  "domain": "ns_trackb_formal_bridge",
+  "expected_cost_agent_minutes": 80.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "coverage_still_prop_level_not_selector": 0.45,
+    "gate_or_workbench_integration_regression": 0.15,
+    "lean_adapter_field_mismatch": 0.15,
+    "target_node_membership_not_explicit_enough": 0.25
+  },
+  "forecast_externality_tags": [
+    "positive_source_ladder",
+    "clay_adjacent_conditional_bridge",
+    "coverage_packet_binding"
+  ],
+  "forecasted_at": "2026-05-27T06:57:46Z",
+  "p_buy_yes_max": 0.48,
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.32,
+  "p_regression": 0.06,
+  "p_sell_yes_min": 0.6,
+  "p_success": 0.62,
+  "predicted_brier_hi": 0.3,
+  "predicted_brier_lo": 0.14,
+  "rationale_short": "The coverage packet is already present as a same-carrier structure with anti-shortcut fields. It is Prop-level, so Level513 likely cannot construct the selector outright, but can remove generic provenance and isolate the finite-choice theorem.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "coverage_still_prop_level_not_selector",
+    "target_node_membership_not_explicit_enough"
+  ],
+  "spread": -0.12,
+  "tail_downside_worry": 16.0,
+  "tail_upside_surprise": 14.0
+}

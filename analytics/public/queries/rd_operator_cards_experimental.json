@@ -1,0 +1,161 @@
+{
+  "note": "Experimental operator-card surface. V128 policy: coarse obligation classes route machinery; fine cards and GP-219 handles are recall, receipt, and nearest-confuser surfaces. V177R narrows the active carrier to action-constraint content; field names are scaffold and routing support.",
+  "obligation_route": [
+    {
+      "class_id": "bound",
+      "evidence_basis": "v128b/v128d: binary covered-vs-none and coarse obligations are more reliable than full/partial labels.",
+      "falsifier": "the boundary is asserted without a checkable pass/fail condition",
+      "matched_terms": [
+        "evidence",
+        "constraint",
+        "constrain"
+      ],
+      "name": "Bound / Boundary",
+      "owes": [
+        "the claimed bound, boundary, or update",
+        "the evidence that licenses it",
+        "the pass/fail condition that blocks overclaim"
+      ],
+      "score": 6.0,
+      "trigger_terms": [
+        "bound",
+        "estimate",
+        "threshold",
+        "criterion",
+        "falsifier",
+        "receipt",
+        "claim",
+        "overclaim",
+        "boundary",
+        "scope",
+        "update",
+        "evidence",
+        "validation",
+        "failure",
+        "range",
+        "lower bound",
+        "upper bound",
+        "control",
+        "constraint",
+        "constrain",
+        "count",
+        "counts",
+        "asymptotic",
+        "minimal",
+        "separation",
+        "distinguish",
+        "distinguishes",
+        "diagnostic"
+      ]
+    },
+    {
+      "class_id": "construct",
+      "evidence_basis": "v128d: construct is one of the four higher-reliability obligation classes.",
+      "falsifier": "the object exists only as prose, or the claimed property is not checked on the object",
+      "matched_terms": [
+        "artifact"
+      ],
+      "name": "Construct / Witness",
+      "owes": [
+        "a concrete object or artifact",
+        "the property it is meant to witness",
+        "the check that would falsify the witness"
+      ],
+      "score": 2.0,
+      "trigger_terms": [
+        "construct",
+        "construction",
+        "example",
+        "witness",
+        "candidate",
+        "auxiliary object",
+        "engineered object",
+        "object",
+        "build",
+        "artifact",
+        "counterexample",
+        "define",
+        "defined",
+        "explicit",
+        "algorithm",
+        "procedure",
+        "scaffold",
+        "scaffolds",
+        "diagram",
+        "diagrams",
+        "family",
+        "families",
+        "seed",
+        "exhibit",
+        "certificate"
+      ]
+    }
+  ],
+  "ok": true,
+  "promotion_policy": {
+    "cand_g": "decline_core_promotion_merge_pressure_with_core_01",
+    "pec_a": "freeze_as_portable_receipt_schema",
+    "pec_b": "freeze_as_portable_receipt_schema",
+    "pec_e": "freeze_as_portable_receipt_schema"
+  },
+  "top_cards": [
+    {
+      "boundary": "This supports only the named claim update, not the broader thesis.",
+      "breaker": "Find a case where the carrier is true but the claim update is false, or where the carrier is confounded.",
+      "card_id": "OP-ECR-01",
+      "disambiguators": [],
+      "entry_conditions": [
+        "A claim depends on an indirect signal, proxy, benchmark, theorem import, or measurement.",
+        "The next update is unsafe unless the evidence carrier is named and tested."
+      ],
+      "fine_handles": [],
+      "matched_terms": [
+        "endpoint"
+      ],
+      "name": "Evidence-Carrier Routing",
+      "obligation_classes": [
+        "bound"
+      ],
+      "problem_classes": [
+        "proxy_evidence",
+        "measurement_validity",
+        "claim_update"
+      ],
+      "required_output": [
+        "4-row table: claim, carrier, receipt needed, failure condition.",
+        "One falsifier sentence.",
+        "One stop/update rule.",
+        "One boundary sentence saying what cannot yet be claimed."
+      ],
+      "required_schema_fields": [],
+      "score": 2.0,
+      "source_ops": [
+        "core_01",
+        "core_05",
+        "core_07"
+      ],
+      "steps": [
+        "Name the exact claim update.",
+        "Name the evidence carrier that would license that update.",
+        "State the receipt that makes the carrier admissible.",
+        "State what observation invalidates the carrier."
+      ],
+      "stop_update_rule": "Do not update the claim until the carrier receipt is present and the breaker has been checked.",
+      "trigger_terms": [
+        "proxy",
+        "evidence carrier",
+        "measurement",
+        "readout",
+        "claim update",
+        "indirect evidence",
+        "observable",
+        "assay",
+        "biopsy",
+        "reproducibility",
+        "endpoint",
+        "receipt",
+        "validation"
+      ]
+    }
+  ]
+}

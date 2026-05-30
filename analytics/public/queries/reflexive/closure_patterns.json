@@ -1,0 +1,1101 @@
+{
+  "audit_timestamp_utc": "2026-05-09T23:23:48.587237+00:00",
+  "since": null,
+  "total_rows": 446,
+  "verified_axioms_count": 2612,
+  "verified_axioms_with_v5_ops": 113,
+  "by_status": {
+    "in_progress": 434,
+    "verified": 9,
+    "falsified_null": 2,
+    "falsified_with_finding": 1
+  },
+  "verified_op_distribution": {
+    "subfield_pde_estimate_craft": 98,
+    "subfield_residual_chasing": 13,
+    "core_05_canonical_invariance": 5,
+    "core_03_decomposition": 2,
+    "subfield_basin_hopping": 1,
+    "broad_inversion": 1
+  },
+  "axiom_lane_op_distribution": {
+    "subfield_pde_estimate_craft": 97,
+    "subfield_residual_chasing": 10,
+    "core_05_canonical_invariance": 5,
+    "broad_inversion": 1
+  },
+  "falsified_finding_op_distribution": {},
+  "in_progress_op_distribution": {
+    "subfield_residual_chasing": 126,
+    "subfield_pde_estimate_craft": 96,
+    "core_03_decomposition": 45,
+    "core_05_canonical_invariance": 42,
+    "core_04_local_to_global": 21,
+    "core_02_iterative_refinement": 19,
+    "subfield_proof_search_pivot": 16,
+    "core_07_generalization": 15,
+    "subfield_basin_hopping": 13,
+    "broad_falsification": 12,
+    "broad_inversion": 12,
+    "core_01_reformulation": 2,
+    "broad_compression": 1,
+    "broad_extremal_case": 1
+  },
+  "per_class_verified_ops": {
+    "uncategorized": {
+      "core_03_decomposition": 1,
+      "subfield_pde_estimate_craft": 96,
+      "core_05_canonical_invariance": 1,
+      "subfield_residual_chasing": 4
+    },
+    "ns_pde": {
+      "core_03_decomposition": 1
+    },
+    "gp_unspecified": {
+      "subfield_residual_chasing": 3,
+      "subfield_basin_hopping": 1,
+      "core_05_canonical_invariance": 1
+    },
+    "nd_features": {
+      "subfield_residual_chasing": 3
+    },
+    "audit": {
+      "broad_inversion": 1,
+      "core_05_canonical_invariance": 2,
+      "subfield_pde_estimate_craft": 2,
+      "subfield_residual_chasing": 2
+    },
+    "proof_target": {
+      "core_05_canonical_invariance": 1,
+      "subfield_residual_chasing": 1
+    }
+  },
+  "per_class_axiom_ops": {
+    "uncategorized": {
+      "subfield_pde_estimate_craft": 95,
+      "core_05_canonical_invariance": 1,
+      "subfield_residual_chasing": 4
+    },
+    "gp_unspecified": {
+      "core_05_canonical_invariance": 1
+    },
+    "nd_features": {
+      "subfield_residual_chasing": 3
+    },
+    "audit": {
+      "broad_inversion": 1,
+      "core_05_canonical_invariance": 2,
+      "subfield_pde_estimate_craft": 2,
+      "subfield_residual_chasing": 2
+    },
+    "proof_target": {
+      "core_05_canonical_invariance": 1,
+      "subfield_residual_chasing": 1
+    }
+  },
+  "candidates": [
+    {
+      "v5_op": "subfield_pde_estimate_craft",
+      "closure_count": 98,
+      "verified_count": 98,
+      "falsified_finding_count": 0,
+      "f_row_count": 1,
+      "axiom_count": 97,
+      "n_substrate_classes": 2,
+      "existing_gates": [
+        "noise_profile"
+      ],
+      "verdict": "covered_load_bearing",
+      "rationale": "Recurs in 98 closing rows (1 F-row + 97 axiom); existing gates ['noise_profile'] already cover. Load-bearing \u2014 do not retire."
+    },
+    {
+      "v5_op": "subfield_residual_chasing",
+      "closure_count": 13,
+      "verified_count": 13,
+      "falsified_finding_count": 0,
+      "f_row_count": 3,
+      "axiom_count": 10,
+      "n_substrate_classes": 5,
+      "existing_gates": [
+        "per_class_farther_tail"
+      ],
+      "verdict": "covered_load_bearing",
+      "rationale": "Recurs in 13 closing rows (3 F-row + 10 axiom); existing gates ['per_class_farther_tail'] already cover. Load-bearing \u2014 do not retire."
+    },
+    {
+      "v5_op": "core_05_canonical_invariance",
+      "closure_count": 5,
+      "verified_count": 5,
+      "falsified_finding_count": 0,
+      "f_row_count": 0,
+      "axiom_count": 5,
+      "n_substrate_classes": 4,
+      "existing_gates": [
+        "feature_coverage_adequacy",
+        "target_convention_homogeneity",
+        "symbolic_logic_cage",
+        "substrate_critic",
+        "framer_1d",
+        "endpoint_type_compression_gate"
+      ],
+      "verdict": "covered_load_bearing",
+      "rationale": "Recurs in 5 closing rows (0 F-row + 5 axiom); existing gates ['feature_coverage_adequacy', 'target_convention_homogeneity', 'symbolic_logic_cage', 'substrate_critic', 'framer_1d', 'endpoint_type_compression_gate'] already cover. Load-bearing \u2014 do not retire."
+    }
+  ],
+  "honest_caveats": [
+    "v5-op detection is keyword-based \u2014 false positives expected on multi-meaning words (e.g. 'compress' may match prose about compression but not the structural move).",
+    "closure_status classifier is also keyword-based; F-row prose uses varied vocabulary across vintages.",
+    "EXISTING_CAGE_GATES table is hand-curated \u2014 a new gate that covers an op but isn't in this table will look like a missing primitive when it isn't.",
+    "v0.1 surfaces candidates \u2014 operator/PM disposes whether to ship."
+  ],
+  "rows_classified_sample": [
+    {
+      "id": "E-NS-TRACKB-20260505-UNBOUNDED-PREFIX-CONTRADICTION-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-HIGHHIGH-RESONANT-RANDOM-TAIL-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition",
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-SHEAR-SEQUENCE-FALSIFIER-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-SHEAR-EXTENDED-TAIL-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-OPERATOR-RECEIPT-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-MATRIX-OPERATOR-PSD-RECEIPT-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "broad_inversion",
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-HIGHHIGH-STRICT-RESONANT-ESCAPE-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-FIXED-TOPOLOGY-RECEIPT-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-OPERATOR-ZTARE-SUBSTRATE-01",
+      "date": "2026-05-05",
+      "project": "ns_proofsearch_low_high_operator_norm_bridge",
+      "substrate_class": "audit",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-OPERATOR-FALSEZERO-REPLAY-01",
+      "date": "2026-05-05",
+      "project": "ns_proofsearch_low_high_operator_norm_bridge",
+      "substrate_class": "audit",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP216-PASS1-CORPUS-20260504",
+      "date": "2026-05-04",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "verified",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PASS2-CLUSTER-20260504",
+      "date": "2026-05-04",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-GP216-PASS4-CROSS-LLM-20260504",
+      "date": "2026-05-04",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PASS7-KILLING-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "broad_falsification"
+      ]
+    },
+    {
+      "id": "E-GP216-PASS8-MINE-ZTARE-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PASS10-IMPLEMENT-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PASS11-EXTERNAL-CORPUS-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PASS12-PROBE2-RETROSPECTIVE-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_02_iterative_refinement"
+      ]
+    },
+    {
+      "id": "E-GP216-PAPER5C-PASS1C-CORPUS-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "verified",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PAPER5C-PASS2C-CLUSTER-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP216-PAPER5C-CROSS-DISTRIBUTION-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-GPT41-97-AUDIT-01",
+      "date": "2026-05-05",
+      "project": "ns_proofsearch_low_high_operator_norm_bridge",
+      "substrate_class": "audit",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP216-PANEL-ROUND2-SHARPER-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition"
+      ]
+    },
+    {
+      "id": "E-GP216-NEGATIVE-CONTROL-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition"
+      ]
+    },
+    {
+      "id": "E-GP216-4OP-COMPRESSION-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-ZTARE-SEAM-CLASSIFICATION-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-MECHANIZATION-ROADMAP-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP216-TEST1-RELABEL-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-TEST2-HYBRID-RETAG-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-TEST3-OOS-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-GATES-SHIPPED-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP216-NS-TRACKB-APPLICATION-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP216-PATHA-MINING-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PATHAB-CLUSTER-5SF-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_04_local_to_global",
+        "core_05_canonical_invariance"
+      ]
+    },
+    {
+      "id": "E-GP216-HELDOUT-6TH-SUBFIELD-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_04_local_to_global"
+      ]
+    },
+    {
+      "id": "E-GP216-PATHA-MINING-ROUND2-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-PATHA-8SF-CLUSTER-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_02_iterative_refinement",
+        "core_04_local_to_global",
+        "core_05_canonical_invariance"
+      ]
+    },
+    {
+      "id": "E-GP216-BUSINESS-OOD-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-ZTARE-V4-RECLASSIFICATION-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_02_iterative_refinement",
+        "broad_inversion"
+      ]
+    },
+    {
+      "id": "E-GP216-NS-TRACKB-V4-APPLICATION-20260505",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_04_local_to_global",
+        "core_05_canonical_invariance",
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP216-ARC-CONTEXT-ABLATION-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-FOLK-KNOWLEDGE-PROPER-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_04_local_to_global",
+        "core_05_canonical_invariance"
+      ]
+    },
+    {
+      "id": "E-GP216-NS-DEPLOYMENT-DIRECTIVE-20260505",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP216-SPARSE-COVERAGE-OOD-20260505",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_01_reformulation"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-ALLOUTPUT-LSC-EXTENDED-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-EVENT-MULTIPLICITY-LIFT-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_05_canonical_invariance"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-LOWHIGH-CHAIN-TAIL-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-EVENT-SECTION-INCIDENCE-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_05_canonical_invariance"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-EDGE-RECURRENCE-WEIGHT-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-RECURRENCE-INCIDENCE-LEAN-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-ALLOUTPUT-TAIL-LSC-PANEL-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-EVENT-RECURRENCE-ADVERSARY-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-EVENT-LOWER-ENVELOPE-GEOMETRY-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-SELF-TAX-GRAM-GLUING-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_04_local_to_global"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-COUNTABLE-GRAM-LSC-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-EVENT-SMOOTH-FALSIFIER-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-FRACTIONAL-LOG-GAIN-ADVERSARY-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-RESERVE-GAIN-DECOUPLING-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition",
+        "broad_falsification"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-SETUP-LATENCY-EXECUTION-COST-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-DYNAMIC-LATENCY-COUNTEREXAMPLE-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "broad_falsification",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-SMOOTH-LATENCY-PDE-FALSIFIER-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "broad_falsification",
+        "subfield_proof_search_pivot"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-SETUP-LATENCY-LEAN-RECEIPT-01",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-CONCRETE-FOURIER-LATENCY-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-2028-REGRESSION-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-CONTROL-GRAMIAN-RECEIPT-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-OT-GRAM-LSC-IMPORT-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-TIME-BANDWIDTH-SNAP-GUARD-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-GP216-COMPOSITION-HARDENING-01",
+      "date": "2026-05-05",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-GP216-PHASE-LATENCY-COMPOSITION-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260505-GP216-COORDINATE-GUARD-01",
+      "date": "2026-05-05",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-GP224-NS-TYPED-ENDPOINT-AGENT-PANEL-20260506",
+      "date": "2026-05-06",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260506-SOURCE-ROUTE-HARDENING-01",
+      "date": "2026-05-06",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260506-DECOMPOSITION-COMPRESSION-01",
+      "date": "2026-05-06",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260506-PHASE-LATENCY-SYMPY-01",
+      "date": "2026-05-06",
+      "project": "ns",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260506-GP216-PHASE-SOURCE-IDENTITY-01",
+      "date": "2026-05-06",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-GP218-POSTCUTOFF-BLIND-VALIDATION-01",
+      "date": "2026-05-05",
+      "project": "ztare_on_ztare",
+      "substrate_class": "uncategorized",
+      "closure_status": "verified",
+      "v5_ops": [
+        "subfield_pde_estimate_craft"
+      ]
+    },
+    {
+      "id": "E-RH-DESK-AUDIT-20260505-01",
+      "date": "2026-05-05",
+      "project": "riemann_operator_search",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_02_iterative_refinement",
+        "subfield_pde_estimate_craft",
+        "subfield_proof_search_pivot"
+      ]
+    },
+    {
+      "id": "E-RH-AUDIT-R1R2R3-20260505",
+      "date": "2026-05-05",
+      "project": "riemann_operator_search",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_02_iterative_refinement",
+        "subfield_basin_hopping"
+      ]
+    },
+    {
+      "id": "E-GP219-PHASE2-COMBINED-METHODOLOGY-20260505",
+      "date": "2026-05-05",
+      "project": "ztare_on_ztare",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-GP226-CHARTER-CRITIC-20260506-01",
+      "date": "2026-05-06",
+      "project": "human_ai_interaction_primitive",
+      "substrate_class": "proof_target",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_04_local_to_global",
+        "subfield_pde_estimate_craft",
+        "subfield_proof_search_pivot"
+      ]
+    },
+    {
+      "id": "E-HAI-PLATEAU-DIAGNOSTIC-20260506-01",
+      "date": "2026-05-06",
+      "project": "human_ai_interaction_primitive",
+      "substrate_class": "proof_target",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-PHASE5FB-VOID-EXTRACTOR-01",
+      "date": "2026-05-07",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-PREFIX-TAIL-VOID-01",
+      "date": "2026-05-07",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "broad_falsification",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-GP216-SAME-TOPOLOGY-TAIL-EVENT-01",
+      "date": "2026-05-07",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-COMPACTNESS-PROVENANCE-VOID-01",
+      "date": "2026-05-07",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-NUMERIC-LIMINF-VOID-01",
+      "date": "2026-05-07",
+      "project": "ns",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-SWARM-NEGATIVE-VOID-01",
+      "date": "2026-05-07",
+      "project": "ns",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition",
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-FORWARD-LIMINF-CONSTRUCTOR-01",
+      "date": "2026-05-07",
+      "project": "ns",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "broad_inversion",
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-TYPED-COMPANION-EXTENSION-01",
+      "date": "2026-05-07",
+      "project": "ns",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-FULL-TYPED-COMPANION-CLOSURE-01",
+      "date": "2026-05-07",
+      "project": "ns_millennium_hunt",
+      "substrate_class": "ns_pde",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-ANALYTICAL-BRIDGE-PLUS-SYMPY-01",
+      "date": "2026-05-07",
+      "project": "ns",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NS-TRACKB-20260507-LEAN-COMPOSITION-FULL-LERAY-HOPF-SKELETON-01",
+      "date": "2026-05-07",
+      "project": null,
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "subfield_pde_estimate_craft",
+        "subfield_residual_chasing"
+      ]
+    },
+    {
+      "id": "E-NEURAL-HUNT-H17-H18-OLMES-RUN-PACKET-20260508-01",
+      "date": "2026-05-08",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NEURAL-HUNT-H19-CHECKPOINT-EVAL-LAW-GATE-20260508-01",
+      "date": "2026-05-08",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NEURAL-HUNT-H20-H21-PUBLIC-EVAL-FORK-20260508-01",
+      "date": "2026-05-08",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NEURAL-HUNT-H22-TARGETED-OLMES-PACKET-20260508-01",
+      "date": "2026-05-08",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NEURAL-HUNT-H23-TARGETED-GATE-20260508-01",
+      "date": "2026-05-08",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NEURAL-HUNT-H24-LEAKAGE-AWARE-GATE-20260508-01",
+      "date": "2026-05-08",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    },
+    {
+      "id": "E-NEURAL-HUNT-H25-H22-EXECUTION-PREFLIGHT-20260509-01",
+      "date": "2026-05-09",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": [
+        "core_03_decomposition"
+      ]
+    },
+    {
+      "id": "E-NEURAL-HUNT-H26-H23-SYNTHETIC-FIXTURE-20260509-01",
+      "date": "2026-05-09",
+      "project": "neural_hunt",
+      "substrate_class": "uncategorized",
+      "closure_status": "in_progress",
+      "v5_ops": []
+    }
+  ]
+}

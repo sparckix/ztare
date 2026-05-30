@@ -1,0 +1,23 @@
+{
+  "agent_id": "lagrange_independent_forecaster",
+  "contract_id": "ns_route1_pressure_or_commutator_lower_bound_meso",
+  "contract_question": "Which next NS route1 PDE leg is likely to yield the best compiled non-tautological progress: pressure reserve/no-escape lower-bound, commutator endpoint lower-semicontinuity, or profile module build repair?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "commutator_endpoint_needs_unavailable_strong_tail_compactness_lsc": 0.24,
+    "lean_dependency_or_import_drift": 0.08,
+    "pressure_leg_reduces_to_tautological_receipt_projection_not_lower_bound": 0.27,
+    "profile_module_build_debt_blocks_route_integration": 0.21,
+    "routine_tactic_or_linter_regression": 0.04,
+    "strict_source_subratio_still_missing_after_leg": 0.16
+  },
+  "forecasted_at": "2026-05-13T19:15:15Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.18,
+  "p_success": 0.57,
+  "rationale_short": "Recommends pressure reserve/no-escape lower-bound: pressure module builds and exposes receipts; best next test is whether receipts strengthen into lower-bound producer or typed blocker.",
+  "read_only_attestation": true
+}

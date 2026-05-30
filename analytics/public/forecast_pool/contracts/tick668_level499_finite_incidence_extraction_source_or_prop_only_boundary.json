@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary.json"
+  },
+  "baseline_action": "continue carrying targetSlot and injectivity as opaque Level498 fields",
+  "budget_agent_minutes": 75.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_branch_projected_audited_output_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_branch_projected_audited_output_source' is an EXACT match of surfaced id 'selected_branch_projected_audited_output_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+  "cost_penalty": 0.18,
+  "counterfactual_action": "factor targetSlot construction into a finite incidence extraction law with totality, uniqueness/collision exclusion, same-family binding, and pre-payoff choice discipline",
+  "created_at": "2026-05-27T04:16:21Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_formal_frontier",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "may expose that current incidence language lacks all selectable/collision fields and require a new analytic source",
+    "positive": "turns the C5-facing bridge into a named finite matching/extraction theorem rather than another socket"
+  },
+  "horizon": "2026-05-27T06:00:00Z",
+  "information_value": 0.91,
+  "layer": "meso",
+  "objective_resolver": "TRUE iff Lean adds a compiled source/theorem that either constructs a reusable finite incidence extraction interface feeding L3AIncidenceDerivedTargetFinalSlotInjectionSource or proves a sharper minimal-field obstruction; plus gates/workbench/ledger artifacts pass.",
+  "question": "Can Level499 add a positive finite incidence extraction source that isolates the exact data needed to construct targetSlot and injectivity from same-tree incidence, while proving current Prop-only fields remain insufficient?",
+  "risk_penalty": 0.24,
+  "success_threshold": "lake build passes; strict receipt gates pass; workbench surfaces the relevant incidence extraction check; next lever names exact C5-facing source law",
+  "task_type": "ns_formal_frontier",
+  "value_if_success": 0.82,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

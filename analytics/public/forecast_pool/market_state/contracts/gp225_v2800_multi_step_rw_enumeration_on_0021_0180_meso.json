@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T03:36:49Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 25.0,
+    "expected_value": -0.20180018148835271,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.1,
+    "p_needs_new_lemma": 0.5,
+    "p_regression": 0.05,
+    "p_success": 0.0981998185116473,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso/claude.json",
+        "forecasted_at": "2026-05-15T03:36:48Z",
+        "p_success": 0.12,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso/noether.json",
+        "forecasted_at": "2026-05-15T03:36:48Z",
+        "p_success": 0.08,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": [
+      {
+        "mode": "gold_pair_is_unique_minimal_rewrite",
+        "p": 0.19117647058823528
+      },
+      {
+        "mode": "gold_chain_is_unique_and_blind_excludes_all_members",
+        "p": 0.16176470588235295
+      },
+      {
+        "mode": "remaining_simp_tagged_alternatives_dominate_top_32",
+        "p": 0.16176470588235295
+      },
+      {
+        "mode": "non_simp_alternatives_have_wrong_direction_or_LHS_RHS_shape",
+        "p": 0.14705882352941174
+      },
+      {
+        "mode": "interior_sInter_gold_uses_simp_rw_not_rw_so_pure_rw_chain_insufficient",
+        "p": 0.1323529411764706
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T03:36:48Z",
+    "created_by": "codex:RD",
+    "horizon": "1 tick",
+    "layer": "meso",
+    "objective_resolver": "Lean compile in v4.29.0 sandbox + 4-way audit. rw chains are machinery-free (no simp/aesop) so machinery flag does not fire. Tautology audit checks chain components against original theorem name.",
+    "question": "Will multi-step rw enumeration on the 2 multi-step-rw moat-surface rows (0021 interior_sInter gold simp_rw [sInter_eq_biInter, interior_iInter], 0180 comp_right_injective gold rw [comp_assoc, self_comp_symm, comp_refl]) close AT LEAST 1 row at moat-grade via  or  chain of non-gold, non-@[simp]/@[fun_prop]/@[grind] tagged candidates from cloud top-32?",
+    "success_threshold": "at-least-one-moat-grade-closure-on-2-multi-step-rw-rows",
+    "task_type": "moat_grade_multi_step_rw"
+  },
+  "contract_id": "gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude",
+          "claude_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude",
+      "claude_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Per row: gold for 0021 is 2-step simp_rw on @[simp]-tagged sInter/interior lemmas; for 0180 gold is 3-step rw on @[simp]-tagged comp lemmas. P_close ~ 0.08 joint. Recommend running but pre-register failure mode 'all viable rewrite chains hit gold-overlap or @[simp]-exclusion'.",
+        "agent_id": "claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso/claude_20260515T03364.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-15T03:36:48Z",
+        "p_success": 0.08,
+        "rationale_short": "Per-row p_close: 0021 ~0.06 (gold uses simp_rw, pure rw chain may fail rewriting under-binder; @[simp] tags exclude direct alternatives); 0180 ~0.05 (gold is precisely the minimal rewrite chain via @[simp]-tagged comp lemmas). Joint P(>=1) ~ 1 - 0.94*0.95 ~ 0.11; shaded to 0.08 for shared retrieval correlation.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Run with combinations: rw [A, B], rw [A]; rw [B], simp_rw [A, B] (latter machinery-flagged but worth seeing if it closes literally). Include also rw [A, B, C] 3-chains for 0180 since gold is 3-step. Parallel 8 workers.",
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-15T03:36:48Z",
+        "p_success": 0.12,
+        "rationale_short": "Multi-step rw is structurally closer to gold than single-exact, but gold members ARE @[simp]/@[grind] tagged (interior_iInter is @[simp]; comp_assoc is @[simp]). Blind exclusion removes them. Surviving 2-chain pairs unlikely to compose into a goal-closing rewrite.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 3.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T03:37:37Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "kill_branch",
+      "expected_value": -0.20180018148835271,
+      "p_success": 0.0981998185116473,
+      "reason": "low probability, negative expected value, and no declared information value",
+      "voi_proxy": 0.1286
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 25.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": 0.0981998185116473,
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": [
+      {
+        "mode": "gold_pair_is_unique_minimal_rewrite",
+        "p": 0.19117647058823528
+      },
+      {
+        "mode": "gold_chain_is_unique_and_blind_excludes_all_members",
+        "p": 0.16176470588235295
+      },
+      {
+        "mode": "remaining_simp_tagged_alternatives_dominate_top_32",
+        "p": 0.16176470588235295
+      },
+      {
+        "mode": "non_simp_alternatives_have_wrong_direction_or_LHS_RHS_shape",
+        "p": 0.14705882352941174
+      },
+      {
+        "mode": "interior_sInter_gold_uses_simp_rw_not_rw_so_pure_rw_chain_insufficient",
+        "p": 0.1323529411764706
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

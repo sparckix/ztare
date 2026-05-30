@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580",
+  "cost_penalty": 0.4,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T13:46:51Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_two_sided_wall_symmetric_negative_20260516",
+    "score": 0.1111,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1111,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 10,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1,
+        "score_rows": 2,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 140,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0182,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 7,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0769,
+        "score_rows": 4,
+        "token_jaccard": 0.0769
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "14d",
+  "information_value": 7.0,
+  "layer": "meso",
+  "objective_resolver": "Lean: construction_outcome_underdetermined + no_derivation_of_construction_outcome + two_sided_wall_is_symmetric all PROVED, builds clean, Tier-3 clean. success iff symmetric-wall negative PROVED; 0.5 weak; fail iff trivial/overclaim.",
+  "question": "Is the nu-pi^2 wall SYMMETRIC: blowup-candidacy (concentration scale l vs viscous l_nu) provably NOT a function of (s_z,Type-I,R1,nu) just as CF-regularity isn't (tick578/579)? \u21d2 construction/inversion channel underdetermined by same data; route-1 open precisely because the nu-pi^2 scale-comparison is two-sidedly free; NOT undecidability (classical scaling gap).",
+  "risk_penalty": 0.4,
+  "success_threshold": "success iff symmetric two-sided-wall formalized-negative PROVED + Tier-3 clean; 0.5 weak; fail trivial",
+  "task_type": "ns_clay_two_sided_wall_symmetric_negative_20260516",
+  "value_if_success": 6.5,
+  "void_conditions": "tick578/579 refactored"
+}

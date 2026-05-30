@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Canary replay is worth running only because it is small; do not interpret compile as GNN readiness.",
+  "agent_id": "McCarthy3",
+  "contract_id": "gp225_v2066_bayesRisk_hydrated_canary_replay_gate",
+  "contract_question": "If GP-225 runs the v20.65 hydrated one-row bayesRisk canary replay, will at least one candidate compile with zero harmful mismatches, without using target proof lines for generation?",
+  "domain": "gp225_pre_gnn_hydrated_canary_replay",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bayesRisk_le_mul_argument_shape_mismatch": 0.19,
+    "branch_hypothesis_name_still_wrong": 0.35,
+    "bridge_hydration_skip": 0.12,
+    "finite_bound_simp_needs_extra_instances": 0.2,
+    "gold_witness_target_shape_gap": 0.09,
+    "harmful_mismatch_from_overclosure": 0.05
+  },
+  "forecast_externality_tags": [
+    "bounded_replay",
+    "calibration_hygiene",
+    "no_training"
+  ],
+  "forecasted_at": "2026-05-14T18:57:25Z",
+  "p_dependency_issue": 0.23,
+  "p_needs_new_lemma": 0.16,
+  "p_regression": 0.1,
+  "p_success": 0.39,
+  "rationale_short": "The patch is cleaner than v20.62, but Lean may not expose the exact h\u2113C binder expected by the static tactic.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "branch_hypothesis_name_still_wrong",
+    "finite_bound_simp_needs_extra_instances"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "codex_readonly_gp230",
+  "contract_id": "gp225_v1845_public_trace_label_builder",
+  "contract_question": "Will v18.45 convert v17.39 public before/action/after traces into at least 50 candidate-pool target-label rows, with at least 20 baseline-unsaturated rows and zero unquarantined false accepts, while keeping GNN/cross-encoder training blocked?",
+  "domain": "gp225_public_trace_labels",
+  "expected_cost_agent_minutes": 3.0,
+  "failure_mode_distribution": {
+    "baseline_unsaturated_rows_below_20_after_stronger_bm25_or_action_sweep": 0.16,
+    "candidate_pool_rows_below_50_under_non_oracle_policy": 0.07,
+    "extractable_target_ref_rows_below_55_if_clean_only": 0.12,
+    "false_accept_quarantine_gap": 0.05,
+    "other": 0.28,
+    "schema_or_source_join_drift": 0.08,
+    "target_refs_not_independent_of_tactic_text": 0.24
+  },
+  "forecasted_at": "2026-05-13T15:24:59Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.03,
+  "p_success": 0.58,
+  "rationale_short": "Forecast agent was dispatched before v18.45 execution but recorded after completion notification; use as pre-dispatch-agent-inclusive price, not strict timestamp-sealed price. Positive prior from v17.39/v17.40/v17.78; main risk is tactic-string target refs not independent target-equivalence labels.",
+  "read_only_attestation": true
+}

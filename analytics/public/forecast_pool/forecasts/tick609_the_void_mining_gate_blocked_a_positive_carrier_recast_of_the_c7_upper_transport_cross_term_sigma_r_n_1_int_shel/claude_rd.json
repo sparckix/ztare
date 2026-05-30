@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel",
+  "contract_question": "tick609: the void-mining gate BLOCKED a positive carrier-recast of the C7-upper transport-cross-term Sigma r_n^-1 int_shell |u||omega|^2 (tick608 adversary already gave the decisive r^-1-per-scale computation = the scale-critical atom relocated to shells). Required move = negative_result_object_discovery chain [A] invariant across all recurrences [B] structurally-absent move [C] eigenquestion targeting an out-of-space move not a re-vocab. Success = a DERIVED negative verdict (transport-cross-term = 17th recurrence; route-1 route-invariant-terminal WITHIN the explored {carrier,admissible-cut,nu-capacity,scale-transfer,porosity,Gevrey,paired-dichotomy} space; the only escape = the out-of-program move tick607 derived) that SURVIVES an adversarial-survival run whose brief carries the dogfood clause (must-catch: is this laundering of a missable lever / is the block wrong; must-not: declaring NS impossible). Fail = pessimism without derivation, OR a missed in-space lever the adversary surfaces, OR laundering.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T22:22:20Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.7,
+  "rationale_short": "Gate-mandated negative chain; tick607 theorem + tick608 adversary r^-1 computation already DERIVE the terminus, so the verdict is derived not asserted (anti-pessimism satisfied). Main risk = adversary surfaces an in-space lever I treated as exhausted (would flip to fail, correctly), or the recast-block is itself over-broad. 0.7 = P(derived verdict survives a dogfood-claused adversary).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

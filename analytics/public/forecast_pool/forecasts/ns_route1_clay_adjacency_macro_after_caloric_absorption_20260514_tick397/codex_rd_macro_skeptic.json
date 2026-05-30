@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Keep macro optimism capped until the Young/Bernstein source and reserve-drop source are no longer Prop-level fields.",
+  "agent_id": "codex_rd_macro_skeptic",
+  "contract_id": "ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397",
+  "contract_question": "From the current tick397 state, will the NS route-1 program reach Clay-proof-adjacent status within the next 10 RD proof ticks under the strict predicate: build-passed Lean plus E/F and GP-233 evidence showing route-1 strictness reduced to one externally meaningful Navier-Stokes PDE estimate station with a paper-proof skeleton, not route wiring or scalar oracle?",
+  "domain": "ns_route1_clay_adjacency",
+  "expected_cost_agent_minutes": 720.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "caloric_reserve_drop_not_sourceable": 0.18,
+    "global_no_reuse_still_open": 0.16,
+    "need_real_analytic_packet_definitions": 0.21,
+    "qp_overflow_requires_new_residual": 0.25,
+    "reaches_estimate_station": 0.08,
+    "wrapper_progress_only": 0.12
+  },
+  "forecast_externality_tags": [
+    "macro_skeptic",
+    "analytic_definition_gap",
+    "no_reuse_risk"
+  ],
+  "forecasted_at": "2026-05-14T17:13:17Z",
+  "p_dependency_issue": 0.66,
+  "p_needs_new_lemma": 0.98,
+  "p_regression": 0.2,
+  "p_success": 0.36,
+  "rationale_short": "The state is much cleaner, but not yet an externally meaningful PDE estimate unless the analytic fields can be sourced from actual packet/cutoff assumptions.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "need_real_analytic_packet_definitions",
+    "global_no_reuse_still_open"
+  ]
+}

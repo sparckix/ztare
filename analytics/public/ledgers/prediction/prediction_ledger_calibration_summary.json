@@ -1,0 +1,507 @@
+{
+  "n_rows_total": 1060,
+  "n_rows_resolved": 571,
+  "n_rows_unresolved": 481,
+  "n_rows_brier_scored": 17,
+  "n_rows_brier_skipped": 0,
+  "tier_distribution": {
+    "tier_1": 403,
+    "tier_2": 192,
+    "tier_3": 0,
+    "untagged": 460
+  },
+  "per_predictor": {
+    "research_director_claude_opus_4_7": {
+      "n_scored": 5,
+      "brier_mean": 0.656,
+      "brier_uniform_baseline_mean": 0.6666666666666666,
+      "brier_minus_baseline_mean": -0.010666666666666602,
+      "p_realized_mean": 0.36,
+      "underconfident_on_correct_call_fraction": 0.6,
+      "avg_max_p_minus_uniform": 0.1266666666666667,
+      "hedging_flag_5a_underconfident_on_correct": true,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "research_director_claude_opus_4_7_agent_E": {
+      "n_scored": 1,
+      "brier_mean": 0.375,
+      "brier_uniform_baseline_mean": 0.6666666666666666,
+      "brier_minus_baseline_mean": -0.29166666666666663,
+      "p_realized_mean": 0.5,
+      "underconfident_on_correct_call_fraction": 0.0,
+      "avg_max_p_minus_uniform": 0.16666666666666669,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "research_director_claude_opus_4_7_atom8c_agent": {
+      "n_scored": 1,
+      "brier_mean": 0.43000000000000005,
+      "brier_uniform_baseline_mean": 0.75,
+      "brier_minus_baseline_mean": -0.31999999999999995,
+      "p_realized_mean": 0.45,
+      "underconfident_on_correct_call_fraction": 0.0,
+      "avg_max_p_minus_uniform": 0.2,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "research_director_claude_opus_4_7_agent_G": {
+      "n_scored": 1,
+      "brier_mean": 0.855,
+      "brier_uniform_baseline_mean": 0.6666666666666666,
+      "brier_minus_baseline_mean": 0.18833333333333335,
+      "p_realized_mean": 0.25,
+      "underconfident_on_correct_call_fraction": 1.0,
+      "avg_max_p_minus_uniform": 0.1166666666666667,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "research_director_claude_opus_4_7_atom8b_agent": {
+      "n_scored": 1,
+      "brier_mean": 0.5,
+      "brier_uniform_baseline_mean": 0.75,
+      "brier_minus_baseline_mean": -0.25,
+      "p_realized_mean": 0.4,
+      "underconfident_on_correct_call_fraction": 0.0,
+      "avg_max_p_minus_uniform": 0.15000000000000002,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "operator_directed_calibration_agent_2026_05_08": {
+      "n_scored": 1,
+      "brier_mean": 0.5249999999999999,
+      "brier_uniform_baseline_mean": 0.75,
+      "brier_minus_baseline_mean": -0.2250000000000001,
+      "p_realized_mean": 0.4,
+      "underconfident_on_correct_call_fraction": 0.0,
+      "avg_max_p_minus_uniform": 0.15000000000000002,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "claude_opus_4_7_apparatus_self_audit_agent": {
+      "n_scored": 1,
+      "brier_mean": 0.5850000000000001,
+      "brier_uniform_baseline_mean": 0.75,
+      "brier_minus_baseline_mean": -0.16499999999999992,
+      "p_realized_mean": 0.35,
+      "underconfident_on_correct_call_fraction": 1.0,
+      "avg_max_p_minus_uniform": 0.09999999999999998,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "claude_opus_4_7_metric_design_debate_agent": {
+      "n_scored": 1,
+      "brier_mean": 0.5850000000000001,
+      "brier_uniform_baseline_mean": 0.75,
+      "brier_minus_baseline_mean": -0.16499999999999992,
+      "p_realized_mean": 0.35,
+      "underconfident_on_correct_call_fraction": 1.0,
+      "avg_max_p_minus_uniform": 0.09999999999999998,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "codex:RD_2026_05_10_perelman_l3a_critical_no_collapse_eigenframe": {
+      "n_scored": 1,
+      "brier_mean": 0.8752000000000001,
+      "brier_uniform_baseline_mean": 0.8,
+      "brier_minus_baseline_mean": 0.07520000000000004,
+      "p_realized_mean": 0.18,
+      "underconfident_on_correct_call_fraction": 1.0,
+      "avg_max_p_minus_uniform": 0.14,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "codex:RD_2026_05_11_v52_ns_advisory": {
+      "n_scored": 1,
+      "brier_mean": 0.6129999999999999,
+      "brier_uniform_baseline_mean": 0.8333333333333334,
+      "brier_minus_baseline_mean": -0.2203333333333335,
+      "p_realized_mean": 0.3,
+      "underconfident_on_correct_call_fraction": 1.0,
+      "avg_max_p_minus_uniform": 0.13333333333333333,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "claude:trackA_gpt41_residual_loop_20260516": {
+      "n_scored": 1,
+      "brier_mean": 0.30499999999999994,
+      "brier_uniform_baseline_mean": 0.6666666666666666,
+      "brier_minus_baseline_mean": -0.3616666666666667,
+      "p_realized_mean": 0.55,
+      "underconfident_on_correct_call_fraction": 0.0,
+      "avg_max_p_minus_uniform": 0.21666666666666673,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "claude:known_possible_corpus_fix_20260516": {
+      "n_scored": 1,
+      "brier_mean": 0.45500000000000007,
+      "brier_uniform_baseline_mean": 0.6666666666666666,
+      "brier_minus_baseline_mean": -0.21166666666666656,
+      "p_realized_mean": 0.45,
+      "underconfident_on_correct_call_fraction": 0.0,
+      "avg_max_p_minus_uniform": 0.1166666666666667,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    },
+    "claude:escape_route_clean_prover_20260516": {
+      "n_scored": 1,
+      "brier_mean": 0.585,
+      "brier_uniform_baseline_mean": 0.6666666666666666,
+      "brier_minus_baseline_mean": -0.08166666666666667,
+      "p_realized_mean": 0.4,
+      "underconfident_on_correct_call_fraction": 0.0,
+      "avg_max_p_minus_uniform": 0.1166666666666667,
+      "hedging_flag_5a_underconfident_on_correct": false,
+      "hedging_flag_5b_clustering_near_uniform": false
+    }
+  },
+  "cross_predictor": {
+    "n_predictors_compared": 1,
+    "best_predictor": "research_director_claude_opus_4_7",
+    "best_brier_mean": 0.656,
+    "worst_predictor": "research_director_claude_opus_4_7",
+    "worst_brier_mean": 0.656
+  },
+  "effort_ratio": {
+    "n": 15,
+    "mean": 3.979193196916958,
+    "median": 1.7142857142857142,
+    "min": 0.7894736842105263,
+    "max": 11.764705882352942,
+    "histogram": {
+      "[0.25, 0.5)": 0,
+      "[0.5, 1)": 2,
+      "[1, 2)": 7,
+      "[2, 4)": 1,
+      "[4, 8)": 1,
+      "[8, 16)": 4,
+      ">= 16": 0,
+      "< 0.25": 0
+    },
+    "per_predictor": {
+      "research_director_claude_opus_4_7": {
+        "n": 5,
+        "mean_ratio": 8.114198592657582,
+        "out_of_band": true
+      },
+      "research_director_claude_opus_4_7_agent_E": {
+        "n": 1,
+        "mean_ratio": 3.846153846153846,
+        "out_of_band": true
+      },
+      "research_director_claude_opus_4_7_atom8c_agent": {
+        "n": 1,
+        "mean_ratio": 1.7142857142857142,
+        "out_of_band": false
+      },
+      "research_director_claude_opus_4_7_agent_G": {
+        "n": 1,
+        "mean_ratio": 0.7894736842105263,
+        "out_of_band": false
+      },
+      "research_director_claude_opus_4_7_atom8b_agent": {
+        "n": 1,
+        "mean_ratio": 1.4,
+        "out_of_band": false
+      },
+      "operator_directed_calibration_agent_2026_05_08": {
+        "n": 1,
+        "mean_ratio": 1.2,
+        "out_of_band": false
+      },
+      "research_director_claude_opus_4_7_concurring_gate_round2_agent": {
+        "n": 1,
+        "mean_ratio": 1.1363636363636365,
+        "out_of_band": false
+      },
+      "research_director_claude_opus_4_7_t9_axiom_elimination_agent": {
+        "n": 1,
+        "mean_ratio": 1.40625,
+        "out_of_band": false
+      },
+      "claude_opus_4_7_apparatus_self_audit_agent": {
+        "n": 1,
+        "mean_ratio": 5.0,
+        "out_of_band": true
+      },
+      "claude_opus_4_7_metric_design_debate_agent": {
+        "n": 1,
+        "mean_ratio": 0.8333333333333334,
+        "out_of_band": false
+      },
+      "codex:RD_2026_05_11_v52_ns_advisory": {
+        "n": 1,
+        "mean_ratio": 1.791044776119403,
+        "out_of_band": false
+      }
+    },
+    "in_band_range": [
+      0.5,
+      2.0
+    ]
+  },
+  "cost_ratio": {
+    "n": 5,
+    "mean": 1.5333333333333332,
+    "median": 1.4999999999999998,
+    "histogram": {
+      "[0.25, 0.5)": 0,
+      "[0.5, 1)": 0,
+      "[1, 2)": 4,
+      "[2, 4)": 1,
+      "[4, 8)": 0,
+      "[8, 16)": 0,
+      ">= 16": 0,
+      "< 0.25": 0
+    },
+    "per_predictor": {
+      "research_director_claude_opus_4_7_atom8c_agent": {
+        "n": 1,
+        "mean_ratio": 1.6666666666666667,
+        "out_of_band": false
+      },
+      "research_director_claude_opus_4_7_atom8b_agent": {
+        "n": 1,
+        "mean_ratio": 1.4999999999999998,
+        "out_of_band": false
+      },
+      "operator_directed_calibration_agent_2026_05_08": {
+        "n": 1,
+        "mean_ratio": 1.3888888888888888,
+        "out_of_band": false
+      },
+      "research_director_claude_opus_4_7_concurring_gate_round2_agent": {
+        "n": 1,
+        "mean_ratio": 1.1111111111111112,
+        "out_of_band": false
+      },
+      "research_director_claude_opus_4_7_t9_axiom_elimination_agent": {
+        "n": 1,
+        "mean_ratio": 2.0,
+        "out_of_band": false
+      }
+    },
+    "in_band_range": [
+      0.5,
+      2.0
+    ],
+    "note": null
+  },
+  "brier_rows": [
+    {
+      "prediction_id": "PL-001",
+      "K": 3,
+      "realized_index": 0,
+      "p_realized": 0.25,
+      "brier": 0.875,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7",
+      "substrate": "gravity / PMOND v5_locked",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-002",
+      "K": 3,
+      "realized_index": 2,
+      "p_realized": 0.3,
+      "brier": 0.74,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7",
+      "substrate": "gravity / PMOND v5_locked",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-003",
+      "K": 3,
+      "realized_index": 0,
+      "p_realized": 0.45,
+      "brier": 0.4850000000000001,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7",
+      "substrate": "gravity / PMOND v5_locked / catch ledger",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-004",
+      "K": 3,
+      "realized_index": 0,
+      "p_realized": 0.55,
+      "brier": 0.33499999999999996,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7",
+      "substrate": "gravity / PMOND v5_locked / variant convergence",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-005",
+      "K": 3,
+      "realized_index": 0,
+      "p_realized": 0.5,
+      "brier": 0.375,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7_agent_E",
+      "substrate": "gravity / PMOND v5_locked / R2 continuous-gext refit",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-006",
+      "K": 3,
+      "realized_index": 2,
+      "p_realized": 0.25,
+      "brier": 0.845,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7",
+      "substrate": "gravity / PMOND v5_locked / atom 3 robustness",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-008",
+      "K": 4,
+      "realized_index": 2,
+      "p_realized": 0.45,
+      "brier": 0.43000000000000005,
+      "brier_uniform_baseline": 0.75,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7_atom8c_agent",
+      "substrate": "NS Track B / atom 8 typed-companion bridge / atom 8c Reynolds-stress L^3(L^3) on rough Galerkin",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-007",
+      "K": 3,
+      "realized_index": 2,
+      "p_realized": 0.25,
+      "brier": 0.855,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7_agent_G",
+      "substrate": "gravity / PMOND v5_locked / atom 3 expansion",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-009",
+      "K": 4,
+      "realized_index": 2,
+      "p_realized": 0.4,
+      "brier": 0.5,
+      "brier_uniform_baseline": 0.75,
+      "skipped_reason": null,
+      "predictor": "research_director_claude_opus_4_7_atom8b_agent",
+      "substrate": "NS Track B / atom 8 typed-companion bridge / atom 8b correlation defect floor (cross + coherence)",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-017",
+      "K": 4,
+      "realized_index": 0,
+      "p_realized": 0.4,
+      "brier": 0.5249999999999999,
+      "brier_uniform_baseline": 0.75,
+      "skipped_reason": null,
+      "predictor": "operator_directed_calibration_agent_2026_05_08",
+      "substrate": "PATTERN-012 / calibration analyzer scaffolding",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-029",
+      "K": 4,
+      "realized_index": 1,
+      "p_realized": 0.35,
+      "brier": 0.5850000000000001,
+      "brier_uniform_baseline": 0.75,
+      "skipped_reason": null,
+      "predictor": "claude_opus_4_7_apparatus_self_audit_agent",
+      "substrate": "apparatus / RP-001 architecture-index meta-graph falsifier wire-up",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-047",
+      "K": 4,
+      "realized_index": 1,
+      "p_realized": 0.35,
+      "brier": 0.5850000000000001,
+      "brier_uniform_baseline": 0.75,
+      "skipped_reason": null,
+      "predictor": "claude_opus_4_7_metric_design_debate_agent",
+      "substrate": "apparatus / insight-yield-per-wall-clock-min metric design (operator concern: too atomic, doesn't capture grunt-work scaffolding)",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-156",
+      "K": 5,
+      "realized_index": 1,
+      "p_realized": 0.18,
+      "brier": 0.8752000000000001,
+      "brier_uniform_baseline": 0.8,
+      "skipped_reason": null,
+      "predictor": "codex:RD_2026_05_10_perelman_l3a_critical_no_collapse_eigenframe",
+      "substrate": "NS-L3A/Perelman_style_critical_no_collapse",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-174",
+      "K": 6,
+      "realized_index": 1,
+      "p_realized": 0.3,
+      "brier": 0.6129999999999999,
+      "brier_uniform_baseline": 0.8333333333333334,
+      "skipped_reason": null,
+      "predictor": "codex:RD_2026_05_11_v52_ns_advisory",
+      "substrate": "NS-L3A/v5.2-premise-advisory-to-fresh-frequency-route",
+      "tier": 1
+    },
+    {
+      "prediction_id": "PL-366",
+      "K": 3,
+      "realized_index": 0,
+      "p_realized": 0.55,
+      "brier": 0.30499999999999994,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "claude:trackA_gpt41_residual_loop_20260516",
+      "substrate": "GP-225 / Track-A stronger-prover escape-route (residual-to-lever loop)",
+      "tier": "1"
+    },
+    {
+      "prediction_id": "PL-367",
+      "K": 3,
+      "realized_index": 0,
+      "p_realized": 0.45,
+      "brier": 0.45500000000000007,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "claude:known_possible_corpus_fix_20260516",
+      "substrate": "GP-225 / solver-0 corpus fix (known-possible Lean closure)",
+      "tier": "1"
+    },
+    {
+      "prediction_id": "PL-368",
+      "K": 3,
+      "realized_index": 0,
+      "p_realized": 0.4,
+      "brier": 0.585,
+      "brier_uniform_baseline": 0.6666666666666666,
+      "skipped_reason": null,
+      "predictor": "claude:escape_route_clean_prover_20260516",
+      "substrate": "GP-225 / un-confounded solver-category test",
+      "tier": "1"
+    }
+  ],
+  "demotion_check": {
+    "rule_brier_worse_than_uniform_at_N20": false,
+    "rule_hedging_detected_AND_n_ge_20": false,
+    "rule_hedging_flagged_informational": true,
+    "rule_unit_regression_human_hours": false,
+    "n_resolved_scored": 17,
+    "n_gate": 20,
+    "overall_brier_mean": 0.5863647058823529,
+    "overall_uniform_baseline_mean": 0.7088235294117646
+  },
+  "demote_now": false
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_fermat_gp225_v2022",
+  "contract_id": "gp225_v2022_route_selection_adapter_readiness_meso",
+  "contract_question": "Will v20.22 produce a no-replay GP-225 route-selection/adapter-readiness artifact that consumes v20.21, cites public/union benchmark state, selects the next executable bridge, includes GP-233 decomposition, and keeps GNN blocked?",
+  "domain": "gp225_route_selection_meso",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "descriptive_no_route_decision": 0.18,
+    "gnn_readiness_overclaim": 0.2,
+    "no_executable_bridge_thresholds": 0.2,
+    "older_manifest_consumed": 0.22,
+    "static_public_coverage_laundered_as_replay": 0.2
+  },
+  "forecasted_at": "2026-05-14T13:33:25Z",
+  "p_dependency_issue": 0.13,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.08,
+  "p_success": 0.82,
+  "rationale_short": "v20.21 already names external_public_adapter_or_larger_source_safe_strict_label_supply_before_gnn; public/blended artifacts are sufficient for a no-replay selector; best next bridge is executable public tacgen/adapter-backed replay with strict/harm thresholds.",
+  "read_only_attestation": true
+}

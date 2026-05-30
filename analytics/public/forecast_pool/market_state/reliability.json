@@ -1,0 +1,1162 @@
+{
+  "domain_reliability": [
+    {
+      "domain": "GP-225",
+      "effort_reliability": {
+        "large_overestimate_rows": 3,
+        "large_underestimate_rows": 1,
+        "mean_error_agent_minutes": 6.31,
+        "median_abs_error_agent_minutes": 9.0,
+        "median_expected_over_actual": 1.3868,
+        "rows": 8
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": 0.34,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.1156,
+          "mean_predicted_p_success": 0.34,
+          "n": 1
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": 0.49,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.241,
+          "mean_predicted_p_success": 0.49,
+          "n": 2
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": 0.0,
+          "empirical_success_rate": 0.6667,
+          "mean_brier": 0.2072,
+          "mean_predicted_p_success": 0.6667,
+          "n": 3
+        },
+        {
+          "bucket": "0.8-1.0",
+          "calibration_gap": -0.15,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0234,
+          "mean_predicted_p_success": 0.85,
+          "n": 2
+        }
+      ],
+      "rows": 8
+    },
+    {
+      "domain": "NS_route1",
+      "effort_reliability": {
+        "large_overestimate_rows": 3,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 20.2,
+        "median_abs_error_agent_minutes": 12.0,
+        "median_expected_over_actual": 1.4632,
+        "rows": 10
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "n": 0
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.5375,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.2936,
+          "mean_predicted_p_success": 0.4625,
+          "n": 4
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.335,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.1149,
+          "mean_predicted_p_success": 0.665,
+          "n": 6
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 10
+    },
+    {
+      "domain": "general",
+      "effort_reliability": {
+        "large_overestimate_rows": 8,
+        "large_underestimate_rows": 1,
+        "mean_error_agent_minutes": 10.21,
+        "median_abs_error_agent_minutes": 5.0,
+        "median_expected_over_actual": 1.1364,
+        "rows": 53
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "calibration_gap": 0.12,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.0163,
+          "mean_predicted_p_success": 0.12,
+          "n": 8
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": 0.2221,
+          "empirical_success_rate": 0.0714,
+          "mean_brier": 0.1181,
+          "mean_predicted_p_success": 0.2936,
+          "n": 14
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": 0.0906,
+          "empirical_success_rate": 0.4118,
+          "mean_brier": 0.2082,
+          "mean_predicted_p_success": 0.5024,
+          "n": 17
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.21,
+          "empirical_success_rate": 0.9024,
+          "mean_brier": 0.136,
+          "mean_predicted_p_success": 0.6924,
+          "n": 41
+        },
+        {
+          "bucket": "0.8-1.0",
+          "calibration_gap": -0.1681,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0286,
+          "mean_predicted_p_success": 0.8319,
+          "n": 16
+        }
+      ],
+      "rows": 96
+    },
+    {
+      "domain": "gp225_pre_gnn",
+      "effort_reliability": {
+        "large_overestimate_rows": 3,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 10.25,
+        "median_abs_error_agent_minutes": 6.0,
+        "median_expected_over_actual": 1.0455,
+        "rows": 26
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "calibration_gap": 0.105,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.0147,
+          "mean_predicted_p_success": 0.105,
+          "n": 4
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": 0.2067,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.0428,
+          "mean_predicted_p_success": 0.2067,
+          "n": 3
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": 0.275,
+          "empirical_success_rate": 0.25,
+          "mean_brier": 0.2523,
+          "mean_predicted_p_success": 0.525,
+          "n": 4
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": 0.1377,
+          "empirical_success_rate": 0.5385,
+          "mean_brier": 0.2566,
+          "mean_predicted_p_success": 0.6762,
+          "n": 13
+        },
+        {
+          "bucket": "0.8-1.0",
+          "calibration_gap": 0.385,
+          "empirical_success_rate": 0.5,
+          "mean_brier": 0.3374,
+          "mean_predicted_p_success": 0.885,
+          "n": 2
+        }
+      ],
+      "rows": 26
+    },
+    {
+      "domain": "gp225_repair_micro",
+      "effort_reliability": {
+        "large_overestimate_rows": 28,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 10.05,
+        "median_abs_error_agent_minutes": 11.0,
+        "median_expected_over_actual": 2.25,
+        "rows": 43
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "calibration_gap": -0.33,
+          "empirical_success_rate": 0.5,
+          "mean_brier": 0.369,
+          "mean_predicted_p_success": 0.17,
+          "n": 2
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": -0.2633,
+          "empirical_success_rate": 0.5667,
+          "mean_brier": 0.3226,
+          "mean_predicted_p_success": 0.3033,
+          "n": 30
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": 0.0855,
+          "empirical_success_rate": 0.3636,
+          "mean_brier": 0.2253,
+          "mean_predicted_p_success": 0.4491,
+          "n": 11
+        },
+        {
+          "bucket": "0.6-0.8",
+          "n": 0
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 43
+    },
+    {
+      "domain": "lean_gnn_harness",
+      "effort_reliability": {
+        "large_overestimate_rows": 0,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 1.93,
+        "median_abs_error_agent_minutes": 2.0,
+        "median_expected_over_actual": 1.0192,
+        "rows": 14
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": 0.36,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.1296,
+          "mean_predicted_p_success": 0.36,
+          "n": 1
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.348,
+          "empirical_success_rate": 0.8,
+          "mean_brier": 0.2695,
+          "mean_predicted_p_success": 0.452,
+          "n": 5
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.24,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.058,
+          "mean_predicted_p_success": 0.76,
+          "n": 2
+        },
+        {
+          "bucket": "0.8-1.0",
+          "calibration_gap": -0.14,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0207,
+          "mean_predicted_p_success": 0.86,
+          "n": 6
+        }
+      ],
+      "rows": 14
+    },
+    {
+      "domain": "navier_stokes_route1",
+      "effort_reliability": {
+        "large_overestimate_rows": 12,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 21.25,
+        "median_abs_error_agent_minutes": 21.0,
+        "median_expected_over_actual": 2.3056,
+        "rows": 16
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": -0.69,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.4779,
+          "mean_predicted_p_success": 0.31,
+          "n": 6
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.51,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.2633,
+          "mean_predicted_p_success": 0.49,
+          "n": 7
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.2833,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0816,
+          "mean_predicted_p_success": 0.7167,
+          "n": 3
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 16
+    },
+    {
+      "domain": "ns-proof-falsification",
+      "effort_reliability": {
+        "large_overestimate_rows": 3,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 13.89,
+        "median_abs_error_agent_minutes": 15.0,
+        "median_expected_over_actual": 1.6667,
+        "rows": 9
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "n": 0
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.435,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.1897,
+          "mean_predicted_p_success": 0.565,
+          "n": 4
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.354,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.1259,
+          "mean_predicted_p_success": 0.646,
+          "n": 5
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 9
+    },
+    {
+      "domain": "ns_clay_pressure",
+      "effort_reliability": {
+        "large_overestimate_rows": 0,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 2.88,
+        "median_abs_error_agent_minutes": 5.0,
+        "median_expected_over_actual": 1.2679,
+        "rows": 8
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "calibration_gap": 0.1325,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.0184,
+          "mean_predicted_p_success": 0.1325,
+          "n": 4
+        },
+        {
+          "bucket": "0.2-0.4",
+          "n": 0
+        },
+        {
+          "bucket": "0.4-0.6",
+          "n": 0
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.2667,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0723,
+          "mean_predicted_p_success": 0.7333,
+          "n": 3
+        },
+        {
+          "bucket": "0.8-1.0",
+          "calibration_gap": -0.2,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.04,
+          "mean_predicted_p_success": 0.8,
+          "n": 1
+        }
+      ],
+      "rows": 8
+    },
+    {
+      "domain": "ns_live_scalar_hinge",
+      "effort_reliability": {
+        "large_overestimate_rows": 0,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 5.5,
+        "median_abs_error_agent_minutes": 3.5,
+        "median_expected_over_actual": 1.2857,
+        "rows": 7
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": -0.64,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.4096,
+          "mean_predicted_p_success": 0.36,
+          "n": 1
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.55,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.3034,
+          "mean_predicted_p_success": 0.45,
+          "n": 2
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.28,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0784,
+          "mean_predicted_p_success": 0.72,
+          "n": 1
+        },
+        {
+          "bucket": "0.8-1.0",
+          "calibration_gap": -0.14,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0199,
+          "mean_predicted_p_success": 0.86,
+          "n": 3
+        }
+      ],
+      "rows": 7
+    },
+    {
+      "domain": "ns_millennium_hunt",
+      "effort_reliability": {
+        "large_overestimate_rows": 5,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 35.8,
+        "median_abs_error_agent_minutes": 33.5,
+        "median_expected_over_actual": 1.9792,
+        "rows": 10
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "n": 0
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.54,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.2916,
+          "mean_predicted_p_success": 0.46,
+          "n": 1
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.2833,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0823,
+          "mean_predicted_p_success": 0.7167,
+          "n": 9
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 10
+    },
+    {
+      "domain": "ns_n8_beta",
+      "effort_reliability": {
+        "large_overestimate_rows": 3,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 12.62,
+        "median_abs_error_agent_minutes": 12.5,
+        "median_expected_over_actual": 1.8083,
+        "rows": 8
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "n": 0
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.45,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.2034,
+          "mean_predicted_p_success": 0.55,
+          "n": 2
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.31,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0997,
+          "mean_predicted_p_success": 0.69,
+          "n": 6
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 8
+    },
+    {
+      "domain": "ns_proof_frontier",
+      "effort_reliability": {
+        "large_overestimate_rows": 6,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 23.67,
+        "median_abs_error_agent_minutes": 16.5,
+        "median_expected_over_actual": 1.9444,
+        "rows": 12
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": 0.34,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.1156,
+          "mean_predicted_p_success": 0.34,
+          "n": 1
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.27,
+          "empirical_success_rate": 0.8,
+          "mean_brier": 0.2068,
+          "mean_predicted_p_success": 0.53,
+          "n": 5
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.3167,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.1021,
+          "mean_predicted_p_success": 0.6833,
+          "n": 6
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 12
+    },
+    {
+      "domain": "ns_route1_pde",
+      "effort_reliability": {
+        "large_overestimate_rows": 52,
+        "large_underestimate_rows": 1,
+        "mean_error_agent_minutes": 19.66,
+        "median_abs_error_agent_minutes": 16.0,
+        "median_expected_over_actual": 1.619,
+        "rows": 173
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "calibration_gap": 0.15,
+          "empirical_success_rate": 0.0,
+          "mean_brier": 0.0225,
+          "mean_predicted_p_success": 0.15,
+          "n": 1
+        },
+        {
+          "bucket": "0.2-0.4",
+          "calibration_gap": -0.7175,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.5176,
+          "mean_predicted_p_success": 0.2825,
+          "n": 4
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.4671,
+          "empirical_success_rate": 0.9841,
+          "mean_brier": 0.2385,
+          "mean_predicted_p_success": 0.517,
+          "n": 63
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.3066,
+          "empirical_success_rate": 0.9898,
+          "mean_brier": 0.1079,
+          "mean_predicted_p_success": 0.6832,
+          "n": 98
+        },
+        {
+          "bucket": "0.8-1.0",
+          "calibration_gap": -0.17,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.0294,
+          "mean_predicted_p_success": 0.83,
+          "n": 7
+        }
+      ],
+      "rows": 173
+    },
+    {
+      "domain": "ns_trackb_formal_bridge",
+      "effort_reliability": {
+        "large_overestimate_rows": 4,
+        "large_underestimate_rows": 0,
+        "mean_error_agent_minutes": 52.5,
+        "median_abs_error_agent_minutes": 50.5,
+        "median_expected_over_actual": 2.3485,
+        "rows": 6
+      },
+      "probability_reliability": [
+        {
+          "bucket": "0.0-0.2",
+          "n": 0
+        },
+        {
+          "bucket": "0.2-0.4",
+          "n": 0
+        },
+        {
+          "bucket": "0.4-0.6",
+          "calibration_gap": -0.425,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.1807,
+          "mean_predicted_p_success": 0.575,
+          "n": 2
+        },
+        {
+          "bucket": "0.6-0.8",
+          "calibration_gap": -0.365,
+          "empirical_success_rate": 1.0,
+          "mean_brier": 0.1337,
+          "mean_predicted_p_success": 0.635,
+          "n": 4
+        },
+        {
+          "bucket": "0.8-1.0",
+          "n": 0
+        }
+      ],
+      "rows": 6
+    }
+  ],
+  "effort_reliability": {
+    "large_overestimate_rows": 162,
+    "large_underestimate_rows": 4,
+    "mean_error_agent_minutes": 13.86,
+    "median_abs_error_agent_minutes": 10.0,
+    "median_expected_over_actual": 1.4194,
+    "rows": 551
+  },
+  "failure_mode_reliability": {
+    "mean_realized_failure_mode_mass": 0.254,
+    "recall_proxy_note": "Exact recall requires outcome-level realized-mode cardinality per row; mean_realized_failure_mode_mass is the current probability-mass recall proxy.",
+    "scoreable_rows": 149,
+    "specific_id_precision": 0.6019,
+    "top1_precision": 0.4362
+  },
+  "generated_at": "2026-05-27T08:40:51Z",
+  "high_confidence_miss_incidents": [
+    {
+      "agent_id": "gp230_noether_gp225_v2004",
+      "brier": 0.7056,
+      "contract_id": "gp225_v2004_high_yield_top3_replay",
+      "domain": "gp225_repair_micro",
+      "p_success": 0.16,
+      "score_path": "analytics/public/forecast_pool/scores/gp225_v2004_high_yield_top3_replay.json",
+      "success_bool": true
+    },
+    {
+      "agent_id": "Noether",
+      "brier": 0.6723999999999999,
+      "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+      "domain": "gp225_pre_gnn",
+      "p_success": 0.82,
+      "score_path": "analytics/public/forecast_pool/scores/gp225_v2103_strict_same_step_candidate_replay_meso_gate.json",
+      "success_bool": false
+    },
+    {
+      "agent_id": "gp230_noether_gp225_v2001",
+      "brier": 0.6241,
+      "contract_id": "gp225_v2001_fresh_clean_topology_replay",
+      "domain": "gp225_repair_micro",
+      "p_success": 0.21,
+      "score_path": "analytics/public/forecast_pool/scores/gp225_v2001_fresh_clean_topology_replay.json",
+      "success_bool": true
+    },
+    {
+      "agent_id": "gp230_tarski_gp225_v2004",
+      "brier": 0.6084,
+      "contract_id": "gp225_v2004_high_yield_top3_replay",
+      "domain": "gp225_repair_micro",
+      "p_success": 0.22,
+      "score_path": "analytics/public/forecast_pool/scores/gp225_v2004_high_yield_top3_replay.json",
+      "success_bool": true
+    },
+    {
+      "agent_id": "codex",
+      "brier": 0.6084,
+      "contract_id": "tick631-energy-to-critical-is-scaling-supercriticality-wall",
+      "domain": "general",
+      "p_success": 0.78,
+      "score_path": "analytics/public/forecast_pool/scores/tick631-energy-to-critical-is-scaling-supercriticality-wall.json",
+      "success_bool": false
+    },
+    {
+      "agent_id": "pascal_adversarial_forecaster",
+      "brier": 0.5776,
+      "contract_id": "gp225_v1941_scope_clean_signature_repair_execution",
+      "domain": "gp225_repair_micro",
+      "p_success": 0.24,
+      "score_path": "analytics/public/forecast_pool/scores/gp225_v1941_scope_clean_signature_repair_execution.json",
+      "success_bool": true
+    },
+    {
+      "agent_id": "gp230_noether_gp225_v2010",
+      "brier": 0.5776,
+      "contract_id": "gp225_v2010_high_yield_tail_holdout_replay",
+      "domain": "gp225_repair_micro",
+      "p_success": 0.24,
+      "score_path": "analytics/public/forecast_pool/scores/gp225_v2010_high_yield_tail_holdout_replay.json",
+      "success_bool": true
+    },
+    {
+      "agent_id": "gp230_noether_gp225_v2020",
+      "brier": 0.5776,
+      "contract_id": "gp225_v2020_second_holdout_replay",
+      "domain": "gp225_repair_micro",
+      "p_success": 0.24,
+      "score_path": "analytics/public/forecast_pool/scores/gp225_v2020_second_holdout_replay.json",
+      "success_bool": true
+    },
+    {
+      "agent_id": "codex",
+      "brier": 0.5776,
+      "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+      "domain": "ns_route1_pde",
+      "p_success": 0.24,
+      "score_path": "analytics/public/forecast_pool/scores/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+      "success_bool": true
+    },
+    {
+      "agent_id": "codex",
+      "brier": 0.5776,
+      "contract_id": "tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_",
+      "domain": "ns_route1_pde",
+      "p_success": 0.24,
+      "score_path": "analytics/public/forecast_pool/scores/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_.json",
+      "success_bool": true
+    }
+  ],
+  "per_agent_drift": {
+    "Franklin": {
+      "brier_delta_recent_minus_prior": 0.1026,
+      "prior_mean_brier": 0.1371,
+      "prior_rows": 5,
+      "prior_signed_bias": -0.112,
+      "recent_mean_brier": 0.2397,
+      "recent_signed_bias": 0.312,
+      "recent_window": 5,
+      "rows": 10,
+      "signed_bias_delta_recent_minus_prior": 0.424
+    },
+    "Noether": {
+      "brier_delta_recent_minus_prior": 0.1733,
+      "prior_mean_brier": 0.1403,
+      "prior_rows": 7,
+      "prior_signed_bias": -0.15,
+      "recent_mean_brier": 0.3136,
+      "recent_signed_bias": 0.41,
+      "recent_window": 5,
+      "rows": 12,
+      "signed_bias_delta_recent_minus_prior": 0.56
+    },
+    "claude:RD": {
+      "brier_delta_recent_minus_prior": -0.0087,
+      "prior_mean_brier": 0.0582,
+      "prior_rows": 13,
+      "prior_signed_bias": -0.0662,
+      "recent_mean_brier": 0.0494,
+      "recent_signed_bias": -0.104,
+      "recent_window": 5,
+      "rows": 18,
+      "signed_bias_delta_recent_minus_prior": -0.0378
+    },
+    "claude_rd": {
+      "brier_delta_recent_minus_prior": 0.0367,
+      "prior_mean_brier": 0.0919,
+      "prior_rows": 13,
+      "prior_signed_bias": 0.0392,
+      "recent_mean_brier": 0.1287,
+      "recent_signed_bias": -0.29,
+      "recent_window": 5,
+      "rows": 18,
+      "signed_bias_delta_recent_minus_prior": -0.3292
+    },
+    "codex": {
+      "brier_delta_recent_minus_prior": -0.1102,
+      "prior_mean_brier": 0.1835,
+      "prior_rows": 39,
+      "prior_signed_bias": -0.0613,
+      "recent_mean_brier": 0.0732,
+      "recent_signed_bias": -0.08,
+      "recent_window": 5,
+      "rows": 44,
+      "signed_bias_delta_recent_minus_prior": -0.0187
+    },
+    "codex-meta-darwin-proxy": {
+      "brier_delta_recent_minus_prior": -0.0427,
+      "prior_mean_brier": 0.1779,
+      "prior_rows": 4,
+      "prior_signed_bias": -0.42,
+      "recent_mean_brier": 0.1352,
+      "recent_signed_bias": -0.366,
+      "recent_window": 5,
+      "rows": 9,
+      "signed_bias_delta_recent_minus_prior": 0.054
+    },
+    "codex-rd": {
+      "brier_delta_recent_minus_prior": -0.0027,
+      "prior_mean_brier": 0.1004,
+      "prior_rows": 9,
+      "prior_signed_bias": -0.3133,
+      "recent_mean_brier": 0.0978,
+      "recent_signed_bias": -0.312,
+      "recent_window": 5,
+      "rows": 14,
+      "signed_bias_delta_recent_minus_prior": 0.0013
+    },
+    "codex-rd-main": {
+      "brier_delta_recent_minus_prior": -0.0276,
+      "prior_mean_brier": 0.074,
+      "prior_rows": 4,
+      "prior_signed_bias": -0.27,
+      "recent_mean_brier": 0.0463,
+      "recent_signed_bias": -0.212,
+      "recent_window": 5,
+      "rows": 9,
+      "signed_bias_delta_recent_minus_prior": 0.058
+    },
+    "codex:RD": {
+      "brier_delta_recent_minus_prior": -0.1796,
+      "prior_mean_brier": 0.2483,
+      "prior_rows": 4,
+      "prior_signed_bias": -0.105,
+      "recent_mean_brier": 0.0687,
+      "recent_signed_bias": -0.26,
+      "recent_window": 5,
+      "rows": 9,
+      "signed_bias_delta_recent_minus_prior": -0.155
+    },
+    "codex_forecaster": {
+      "brier_delta_recent_minus_prior": 0.0443,
+      "prior_mean_brier": 0.1309,
+      "prior_rows": 7,
+      "prior_signed_bias": -0.3586,
+      "recent_mean_brier": 0.1752,
+      "recent_signed_bias": -0.412,
+      "recent_window": 5,
+      "rows": 12,
+      "signed_bias_delta_recent_minus_prior": -0.0534
+    },
+    "codex_rd": {
+      "brier_delta_recent_minus_prior": 0.055,
+      "prior_mean_brier": 0.1025,
+      "prior_rows": 43,
+      "prior_signed_bias": -0.2656,
+      "recent_mean_brier": 0.1575,
+      "recent_signed_bias": -0.396,
+      "recent_window": 5,
+      "rows": 48,
+      "signed_bias_delta_recent_minus_prior": -0.1304
+    },
+    "codex_skeptic": {
+      "brier_delta_recent_minus_prior": -0.1642,
+      "prior_mean_brier": 0.4278,
+      "prior_rows": 5,
+      "prior_signed_bias": -0.644,
+      "recent_mean_brier": 0.2636,
+      "recent_signed_bias": -0.498,
+      "recent_window": 5,
+      "rows": 10,
+      "signed_bias_delta_recent_minus_prior": 0.146
+    },
+    "meta_darwin_proxy": {
+      "brier_delta_recent_minus_prior": -0.0677,
+      "prior_mean_brier": 0.1397,
+      "prior_rows": 23,
+      "prior_signed_bias": -0.303,
+      "recent_mean_brier": 0.072,
+      "recent_signed_bias": -0.264,
+      "recent_window": 5,
+      "rows": 28,
+      "signed_bias_delta_recent_minus_prior": 0.039
+    },
+    "research_director_claude_opus_4_7": {
+      "brier_delta_recent_minus_prior": 0.0083,
+      "prior_mean_brier": 0.1792,
+      "prior_rows": 12,
+      "prior_signed_bias": 0.075,
+      "recent_mean_brier": 0.1875,
+      "recent_signed_bias": 0.07,
+      "recent_window": 5,
+      "rows": 17,
+      "signed_bias_delta_recent_minus_prior": -0.005
+    }
+  },
+  "per_domain_drift": {
+    "GP-225": {
+      "brier_delta_recent_minus_prior": 0.1922,
+      "prior_mean_brier": 0.0381,
+      "prior_rows": 3,
+      "prior_signed_bias": -0.1867,
+      "recent_mean_brier": 0.2303,
+      "recent_signed_bias": 0.316,
+      "recent_window": 5,
+      "rows": 8,
+      "signed_bias_delta_recent_minus_prior": 0.5027
+    },
+    "NS_route1": {
+      "brier_delta_recent_minus_prior": 0.0421,
+      "prior_mean_brier": 0.1653,
+      "prior_rows": 5,
+      "prior_signed_bias": -0.394,
+      "recent_mean_brier": 0.2074,
+      "recent_signed_bias": -0.438,
+      "recent_window": 5,
+      "rows": 10,
+      "signed_bias_delta_recent_minus_prior": -0.044
+    },
+    "general": {
+      "brier_delta_recent_minus_prior": -0.0217,
+      "prior_mean_brier": 0.1194,
+      "prior_rows": 91,
+      "prior_signed_bias": -0.0454,
+      "recent_mean_brier": 0.0978,
+      "recent_signed_bias": -0.312,
+      "recent_window": 5,
+      "rows": 96,
+      "signed_bias_delta_recent_minus_prior": -0.2666
+    },
+    "gp225_pre_gnn": {
+      "brier_delta_recent_minus_prior": -0.209,
+      "prior_mean_brier": 0.2405,
+      "prior_rows": 21,
+      "prior_signed_bias": 0.2214,
+      "recent_mean_brier": 0.0315,
+      "recent_signed_bias": 0.01,
+      "recent_window": 5,
+      "rows": 26,
+      "signed_bias_delta_recent_minus_prior": -0.2114
+    },
+    "gp225_repair_micro": {
+      "brier_delta_recent_minus_prior": -0.0334,
+      "prior_mean_brier": 0.3037,
+      "prior_rows": 38,
+      "prior_signed_bias": -0.1868,
+      "recent_mean_brier": 0.2704,
+      "recent_signed_bias": -0.104,
+      "recent_window": 5,
+      "rows": 43,
+      "signed_bias_delta_recent_minus_prior": 0.0828
+    },
+    "lean_gnn_harness": {
+      "brier_delta_recent_minus_prior": 0.0237,
+      "prior_mean_brier": 0.1142,
+      "prior_rows": 9,
+      "prior_signed_bias": -0.1356,
+      "recent_mean_brier": 0.1379,
+      "recent_signed_bias": -0.296,
+      "recent_window": 5,
+      "rows": 14,
+      "signed_bias_delta_recent_minus_prior": -0.1604
+    },
+    "navier_stokes_route1": {
+      "brier_delta_recent_minus_prior": -0.1038,
+      "prior_mean_brier": 0.3422,
+      "prior_rows": 11,
+      "prior_signed_bias": -0.5682,
+      "recent_mean_brier": 0.2384,
+      "recent_signed_bias": -0.462,
+      "recent_window": 5,
+      "rows": 16,
+      "signed_bias_delta_recent_minus_prior": 0.1062
+    },
+    "ns-proof-falsification": {
+      "brier_delta_recent_minus_prior": -0.0427,
+      "prior_mean_brier": 0.1779,
+      "prior_rows": 4,
+      "prior_signed_bias": -0.42,
+      "recent_mean_brier": 0.1352,
+      "recent_signed_bias": -0.366,
+      "recent_window": 5,
+      "rows": 9,
+      "signed_bias_delta_recent_minus_prior": 0.054
+    },
+    "ns_clay_pressure": {
+      "brier_delta_recent_minus_prior": 0.0358,
+      "prior_mean_brier": 0.0189,
+      "prior_rows": 3,
+      "prior_signed_bias": 0.1333,
+      "recent_mean_brier": 0.0547,
+      "recent_signed_bias": -0.174,
+      "recent_window": 5,
+      "rows": 8,
+      "signed_bias_delta_recent_minus_prior": -0.3073
+    },
+    "ns_millennium_hunt": {
+      "brier_delta_recent_minus_prior": -0.0556,
+      "prior_mean_brier": 0.131,
+      "prior_rows": 5,
+      "prior_signed_bias": -0.348,
+      "recent_mean_brier": 0.0754,
+      "recent_signed_bias": -0.27,
+      "recent_window": 5,
+      "rows": 10,
+      "signed_bias_delta_recent_minus_prior": 0.078
+    },
+    "ns_n8_beta": {
+      "brier_delta_recent_minus_prior": -0.006,
+      "prior_mean_brier": 0.1293,
+      "prior_rows": 3,
+      "prior_signed_bias": -0.3467,
+      "recent_mean_brier": 0.1234,
+      "recent_signed_bias": -0.344,
+      "recent_window": 5,
+      "rows": 8,
+      "signed_bias_delta_recent_minus_prior": 0.0027
+    },
+    "ns_proof_frontier": {
+      "brier_delta_recent_minus_prior": 0.0172,
+      "prior_mean_brier": 0.1397,
+      "prior_rows": 7,
+      "prior_signed_bias": -0.3657,
+      "recent_mean_brier": 0.1569,
+      "recent_signed_bias": -0.07,
+      "recent_window": 5,
+      "rows": 12,
+      "signed_bias_delta_recent_minus_prior": 0.2957
+    },
+    "ns_route1_pde": {
+      "brier_delta_recent_minus_prior": 0.21,
+      "prior_mean_brier": 0.1552,
+      "prior_rows": 168,
+      "prior_signed_bias": -0.3627,
+      "recent_mean_brier": 0.3651,
+      "recent_signed_bias": -0.49,
+      "recent_window": 5,
+      "rows": 173,
+      "signed_bias_delta_recent_minus_prior": -0.1273
+    }
+  },
+  "probability_reliability": [
+    {
+      "bucket": "0.0-0.2",
+      "calibration_gap": 0.076,
+      "empirical_success_rate": 0.05,
+      "mean_brier": 0.0519,
+      "mean_predicted_p_success": 0.126,
+      "n": 20
+    },
+    {
+      "bucket": "0.2-0.4",
+      "calibration_gap": -0.1461,
+      "empirical_success_rate": 0.4507,
+      "mean_brier": 0.2727,
+      "mean_predicted_p_success": 0.3046,
+      "n": 71
+    },
+    {
+      "bucket": "0.4-0.6",
+      "calibration_gap": -0.2699,
+      "empirical_success_rate": 0.7756,
+      "mean_brier": 0.238,
+      "mean_predicted_p_success": 0.5057,
+      "n": 156
+    },
+    {
+      "bucket": "0.6-0.8",
+      "calibration_gap": -0.245,
+      "empirical_success_rate": 0.9414,
+      "mean_brier": 0.116,
+      "mean_predicted_p_success": 0.6964,
+      "n": 290
+    },
+    {
+      "bucket": "0.8-1.0",
+      "calibration_gap": -0.1472,
+      "empirical_success_rate": 0.9825,
+      "mean_brier": 0.0392,
+      "mean_predicted_p_success": 0.8353,
+      "n": 57
+    }
+  ],
+  "score_rows": 594
+}

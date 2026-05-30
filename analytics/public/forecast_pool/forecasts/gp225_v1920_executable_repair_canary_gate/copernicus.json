@@ -1,0 +1,24 @@
+{
+  "agent_id": "copernicus",
+  "contract_id": "gp225_v1920_executable_repair_canary_gate",
+  "contract_question": "Will an executable GP-225 repair-loop canary over the v19.16 contract rows produce compile-checked repair progress beyond ranking-only baseline without gold-tactic leakage?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "canary_row_context_or_manifest_adapter_bug": 0.1,
+    "candidate_action_compiles_rate_stays_zero": 0.26,
+    "false_accept_detected_by_decoy_or_quarantine_guard": 0.12,
+    "hidden_gold_or_primary_attempt_contract_mismatch": 0.14,
+    "lean_runtime_or_local_toolchain_issue": 0.09,
+    "other": 0.05,
+    "same_target_state_as_gold_rate_stays_zero": 0.24
+  },
+  "forecasted_at": "2026-05-13T22:11:46Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.08,
+  "p_success": 0.52,
+  "rationale_short": "Slightly above even because the gate is a canary with >=8 rows and any positive compile/same-target rate; main concern is rich static context not translating into executable candidate actions.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed only if the patch records fresh packet side-condition audit as still open.",
+  "agent_id": "meta-darwin-proxy",
+  "contract_id": "ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421",
+  "contract_question": "Will tick421 add a compiling Lean surface assembling NonflatNonInheritedBadCenterForcesFreshFrequencyPacket from existing fresh-packet side-condition audit, pressure same-carrier lock, square-budget, and bounded-fanout/no-log-reuse sources while explicitly recording that fresh packet side-condition data remains unproved?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "beta_price_definition_smuggling": 0.2,
+    "decorative_source_split": 0.25,
+    "event_per_bad_node_smuggling": 0.25,
+    "overclaim": 0.15,
+    "signature_friction": 0.15
+  },
+  "forecast_externality_tags": [
+    "darwin_guard",
+    "fresh_packet_risk",
+    "tautology_risk"
+  ],
+  "forecasted_at": "2026-05-14T21:56:39Z",
+  "p_dependency_issue": 0.48,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.2,
+  "p_success": 0.6,
+  "rationale_short": "The adapter is likely easy; the theorem is not. Watch for event-per-bad-node naming.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "badness_does_not_create_fresh_event",
+    "not_defined_from_beta_radius_sum_unproved",
+    "fresh_packet_selection_unproved"
+  ]
+}

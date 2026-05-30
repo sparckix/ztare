@@ -1,0 +1,24 @@
+{
+  "agent_id": "rawls_forecast_tick328",
+  "contract_id": "ns_route1_overflow_critical_profile_eigq_micro_20260514_tick328",
+  "contract_question": "Will the next NS route-1 tick craft a non-duplicative Gowers-style eigenquestion targeting fixed-window opposite-cone overflow -> no-invisible-critical-profile failure/zero visibility, with exact artifact pointers and anti-tautology guardrails?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "anti_tautology_guardrails_are_generic_not_operational": 0.14,
+    "artifact_pointers_to_rows_326_327_or_current_lean_objects_are_incomplete": 0.16,
+    "asks_for_proof_without_countermodel_or_missing_hypothesis_option": 0.1,
+    "overflow_to_no_invisible_failure_map_is_too_vague": 0.22,
+    "path_or_naming_drift_for_external_prover_packet": 0.08,
+    "question_packet_duplicates_prior_angular_dominance_prompt": 0.24,
+    "scope_creeps_into_full_clay_route1_instead_of_fixed_window_branch": 0.06
+  },
+  "forecasted_at": "2026-05-14T02:23:40Z",
+  "p_dependency_issue": 0.04,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.03,
+  "p_success": 0.81,
+  "rationale_short": "Writing/specification tick with clear branch state; success depends on targeting overflow-to-critical-profile rather than re-asking angular dominance.",
+  "read_only_attestation": true
+}

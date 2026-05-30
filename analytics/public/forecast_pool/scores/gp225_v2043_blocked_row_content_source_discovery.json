@@ -1,0 +1,129 @@
+{
+  "contract_id": "gp225_v2043_blocked_row_content_source_discovery",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Stop at router without source contracts",
+      "counterfactual_action": "Emit concrete blocked-row source-discovery contracts before any replay",
+      "externality_hypotheses": {
+        "negative": [
+          "source contracts may still be too abstract for candidate generation"
+        ],
+        "positive": [
+          "turns blocked rows into candidate-content obligations",
+          "reduces timeout replay churn"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Hilbert",
+        "Lovasz"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "candidate_content_bottleneck",
+        "source_discovery",
+        "timeout_guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "static_contracts_not_replay_evidence"
+      ],
+      "new_next_action": "generate small candidate packet from source contracts, then static-check before GP-230 replay",
+      "old_next_action": "blocked-row router without candidate-content contracts",
+      "preconditioner_effect": "forced row-level content-changing source contracts after rank-policy abort",
+      "preconditioner_source": "analytics/public/leanmill/results/v2042_public_adapter_content_source_router.json"
+    }
+  },
+  "mean_brier": 0.097,
+  "mean_log_score": -0.37200975546685094,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "9b13c0c5ed8cffce4df9bc192b302fb3215ee7e481fe6141b10fd3915a777429",
+    "artifact_path": "analytics/public/leanmill/results/v2043_blocked_row_content_source_discovery_packet.json",
+    "changed_by_forecast_ids": [
+      "Hilbert",
+      "Lovasz"
+    ],
+    "compile_status": "passed_static_source_discovery",
+    "contract_id": "gp225_v2043_blocked_row_content_source_discovery",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "candidate_content_bottleneck",
+      "source_discovery",
+      "timeout_guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "static_contracts_not_replay_evidence"
+    ],
+    "new_next_action": "generate small candidate packet from source contracts, then static-check before GP-230 replay",
+    "old_next_action": "blocked-row router without candidate-content contracts",
+    "preconditioner_effect": "forced row-level content-changing source contracts after rank-policy abort",
+    "preconditioner_source": "analytics/public/leanmill/results/v2042_public_adapter_content_source_router.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.43 emitted the blocked-row content source-discovery packet: 5 source rows, each with non-timeout candidate family, future templates, forbidden prior patterns, no candidate generation, no replay, no training, GNN blocked=true.",
+    "resolved_at": "2026-05-14T17:22:28Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T17:22:35Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Hilbert",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "gp225_pre_gnn_source_discovery",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:20:54Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:21:08Z",
+        "resolved_at": "2026-05-14T17:22:28Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Lovasz",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "gp225_pre_gnn_source_discovery",
+      "expected_cost_agent_minutes": 32.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:20:54Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:21:08Z",
+        "resolved_at": "2026-05-14T17:22:28Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+  "contract_id": "ns_route1_b_vs_c_next_branch_meso_20260513_tick294",
+  "contract_question": "Is shard B mean-free Poincare the better next branch than shard C transportCharge_bound, measured by a compiled theorem/source bridge with fewer unpaid fields in this tick?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "b_poincare_split_still_only_repackaged": 0.3,
+    "c_transport_bound_turns_out_lower_hanging_fruit": 0.18,
+    "existing_l3_ckn_objects_do_not_align_with_route1_fields": 0.24,
+    "lean_elaboration_or_namespace_friction": 0.12,
+    "numeric_constants_or_nonnegativity_block_bridge": 0.16
+  },
+  "forecasted_at": "2026-05-13T21:55:09Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.46,
+  "p_regression": 0.12,
+  "p_success": 0.64,
+  "rationale_short": "Shard B is the better next attack because its unpaid fields are local to the adapter and coercivity surface; C depends on weaker route-flux vocabulary.",
+  "read_only_attestation": true
+}

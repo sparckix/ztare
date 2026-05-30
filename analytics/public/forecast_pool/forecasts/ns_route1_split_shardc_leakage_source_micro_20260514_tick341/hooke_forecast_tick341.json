@@ -1,0 +1,21 @@
+{
+  "agent_id": "hooke_forecast_tick341",
+  "contract_id": "ns_route1_split_shardc_leakage_source_micro_20260514_tick341",
+  "contract_question": "Will we add a Lean source that routes the frequency-leakage share of pressure/Riesz cone stress through FreshFrequencyLeakageChargeBookkeeping/shard-C charges instead of pressure child receipt, while still feeding the visible overflow branch?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 72.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "algebra_needs_child_nonnegativity": 0.16666666666666666,
+    "constructor_type_mismatch": 0.2333333333333333,
+    "leakage_charge_sum_not_pressure_receipt": 0.2666666666666666,
+    "tail_visibility_bound_too_global": 0.3333333333333333
+  },
+  "forecasted_at": "2026-05-14T03:44:09Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.06,
+  "p_success": 0.66,
+  "rationale_short": "The adapter already has FreshFrequencyLeakageChargeBookkeeping, so an adapter-side source should compile. Main risk is needing an extra route1TailVisibility bound for receipt sum plus leakage charges.",
+  "read_only_attestation": true
+}

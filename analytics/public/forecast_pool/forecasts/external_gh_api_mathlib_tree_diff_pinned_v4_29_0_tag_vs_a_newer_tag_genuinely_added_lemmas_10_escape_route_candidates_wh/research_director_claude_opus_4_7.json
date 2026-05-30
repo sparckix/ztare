@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh",
+  "contract_question": "External gh-api Mathlib tree-diff (pinned v4.29.0 tag vs a newer tag) -> genuinely-added lemmas -> >=10 escape-route candidates whose closer #check-FAILS in pinned AND no canonical equivalent: can a CLEAN Tier-2 corpus (>=5 valid rows) be sourced this way (vs cold-author guessing which gave 0/12)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T23:10:22Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.6,
+  "rationale_short": "gh-api tree-diff is the validated method (feedback_solver_pessimism UPDATE-2: 184 added files found that way); main risk is attrition (added lemmas often helper-about-new-defs -> HARNESS-FAIL, not clean escape-route) but >=5 clean plausibly survives from a broad diff",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

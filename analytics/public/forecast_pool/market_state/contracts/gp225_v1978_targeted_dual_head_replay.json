@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T04:06:30Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 19.0,
+    "expected_value": -44.315032845716885,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.11,
+    "p_needs_new_lemma": 0.07,
+    "p_regression": 0.045,
+    "p_success": 0.3979139295235931,
+    "participants": [
+      {
+        "agent_id": "gp230_noether_gp225_v1978",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.33,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_tarski_gp225_v1978",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.47,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "handcrafted_candidates_do_not_compile",
+        "p": 0.155
+      },
+      {
+        "mode": "other",
+        "p": 0.155
+      },
+      {
+        "mode": "lean_syntax_or_elab_breaks_hand_candidates",
+        "p": 0.12
+      },
+      {
+        "mode": "solver_closure_candidates_progress_but_do_not_close",
+        "p": 0.12
+      },
+      {
+        "mode": "source_name_guesses_underpowered",
+        "p": 0.115
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1978_targeted_dual_head_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1978_targeted_dual_head_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1978_targeted_dual_head_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1978_targeted_dual_head_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1978_targeted_dual_head_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T04:06:14Z",
+    "created_by": "codex_rd_gp225_2026_05_14",
+    "horizon": "2026-05-14T08:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "Replay v1977 with v1953 bridge; then classify results by v1977 head_target. Success if excluding known wins current_scale_0137/current_scale_0295, fresh strict_step_head rows + fresh solver_closure_head rows >= 1, harmful_compiled_mismatch_actions=0, target_proof_lines_used=false, gold_tactic_text_used=false, training_now=false, gnn_blocked=true.",
+    "question": "Will v19.78 replay of the v19.77 targeted dual-head packet add at least one fresh strict-step or solver-closure row, with harmful mismatches zero and source-policy flags clean?",
+    "success_threshold": "fresh_strict_step_head_rows + fresh_solver_closure_head_rows >= 1; harmful=0; source_policy_clean=true; gnn_blocked=true; report heads separately",
+    "task_type": "targeted_dual_head_replay"
+  },
+  "contract_id": "gp225_v1978_targeted_dual_head_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_noether_gp225_v1978",
+        "raw_agent_ids": [
+          "gp230_noether_gp225_v1978"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_tarski_gp225_v1978",
+        "raw_agent_ids": [
+          "gp230_tarski_gp225_v1978"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_noether_gp225_v1978",
+      "gp230_tarski_gp225_v1978"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_noether_gp225_v1978",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1978_targeted_dual_head_replay/gp230_noether_gp225_v1978.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T04:06:25Z",
+        "p_success": 0.33,
+        "rationale_short": "Small targeted packet has better information value than broad replay, but candidates are still mostly hand-written from progress witnesses and prior compile rate was low. I price one fresh dual-head win below even odds.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_tarski_gp225_v1978",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1978_targeted_dual_head_replay/gp230_tarski_gp225_v1978.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T04:06:25Z",
+        "p_success": 0.47,
+        "rationale_short": "The packet contains one plausible exact logical closure and several low-cost closure probes. Probability is still under 50 because source-name guesses remain weak and strict-step alignment is hard.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T04:07:36Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.14,
+      "p_success": 0.3979139295235931,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "handcrafted_candidates_do_not_compile",
+        "p": 0.155
+      },
+      "voi_proxy": 8.3796
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 19.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3979139295235931,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "handcrafted_candidates_do_not_compile",
+        "p": 0.155
+      },
+      {
+        "mode": "other",
+        "p": 0.155
+      },
+      {
+        "mode": "lean_syntax_or_elab_breaks_hand_candidates",
+        "p": 0.12
+      },
+      {
+        "mode": "solver_closure_candidates_progress_but_do_not_close",
+        "p": 0.12
+      },
+      {
+        "mode": "source_name_guesses_underpowered",
+        "p": 0.115
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1649,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T04:07:41Z"
+  }
+}

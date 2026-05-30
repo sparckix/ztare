@@ -1,0 +1,1019 @@
+{
+  "generated": "2026-04-24",
+  "source": "/analytics/public/ledgers/trajectory/trajectory_archive_enriched.jsonl",
+  "total_groups": 230,
+  "total_with_scores": 219,
+  "top_20_ceilings": [
+    {
+      "project": "ai_competitive_landscape",
+      "rubric_hash": "494de9b58703f157",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "ai_competitive_landscape__session_001",
+      "max_score": 115,
+      "max_score_iter_timestamp": 1776141382,
+      "max_score_iteration_index": 4,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "The practical measurability of 'critical error-to-remediation cycle time' and the 'Fidelity Debt Decay Constant' (k) across different enterprise providers for external observers, which, while theoretically sound for falsification, presents a significant data acquisition challenge in practice.",
+      "group_iter_count": 6,
+      "group_scored_count": 6
+    },
+    {
+      "project": "hormuz_oil_shock_2026",
+      "rubric_hash": "59e5d538effa6f38",
+      "mutator_model_id": "claude-sonnet-4-6",
+      "judge_model_id": "claude-sonnet-4-6",
+      "run_session_id": "hormuz_oil_shock_2026__session_004",
+      "max_score": 115,
+      "max_score_iter_timestamp": 1776212499,
+      "max_score_iteration_index": null,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "The 'Minimum Market Coherence Threshold' (P_PHYS_MIN_MARKET_IMPACT = $1.00/bbl) remains an exogenously determined axiom, despite its justification. Its ongoing validity requires continuous empirical validation against future disruption events and could be falsified by detailed econometric analysis proving a similarly scaled physical impact below this threshold, potentially compromising the derived kappa span ratio.",
+      "group_iter_count": 10,
+      "group_scored_count": 10
+    },
+    {
+      "project": "us_tariff_passthrough_2026",
+      "rubric_hash": "07092a470e77166d",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "us_tariff_passthrough_2026__session_001",
+      "max_score": 115,
+      "max_score_iter_timestamp": 1776142301,
+      "max_score_iteration_index": 2,
+      "active_constraints": [],
+      "weakest_point_at_ceiling": "The single most catastrophic assumption identified in this thesis is: that firms solely optimize for short-term profit by passing on tariff costs. This assumption forms the bedrock of the 'catastrophically naive and uniform tariff pass-through rate across all sectors' which the thesis aims to correct.",
+      "group_iter_count": 11,
+      "group_scored_count": 10
+    },
+    {
+      "project": "eu_union_failure_probability_2035",
+      "rubric_hash": "107ed7467d7f8fd2",
+      "mutator_model_id": null,
+      "judge_model_id": null,
+      "run_session_id": "eu_union_failure_probability_2035__session_004",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1775937506,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The qualitative grounding of the precise integer N=3 as the minimal robust threshold for 'multi-state breakdown' from textual evidence, despite the logical consistency of its discriminatory behavior.",
+      "group_iter_count": 18,
+      "group_scored_count": 15
+    },
+    {
+      "project": "gp023_sandbox_09",
+      "rubric_hash": "fdc309fd81c01150",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "gp023_sandbox_09__session_001",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1776259248,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The primary friction point is the precise functional form of the R-dependence within the exponent, specifically whether the proposed `R^(C1 + C2*log(R))` structure is the exact and sufficient solution for the farther-tail behavior, or if another structure would provide a better or more parsimonious fit.",
+      "group_iter_count": 9,
+      "group_scored_count": 7
+    },
+    {
+      "project": "gp045_cold_residual_01",
+      "rubric_hash": "155f39f030b47914",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "gp045_cold_residual_01__session_001",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1776037332,
+      "max_score_iteration_index": 8,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator"
+      ],
+      "weakest_point_at_ceiling": "The precise physical origin of the power-law exponents is not derived, nor is the uniqueness of the additive superposition rule.",
+      "group_iter_count": 11,
+      "group_scored_count": 11
+    },
+    {
+      "project": "gp163d_unified_accel",
+      "rubric_hash": "f9a430cea0c8c396",
+      "mutator_model_id": "gpt-5.5",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp163d_unified_accel__session_001",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777263212,
+      "max_score_iteration_index": 2,
+      "active_constraints": [
+        "dag_steering",
+        "falsification_mode.bounded_discriminator",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_(class_a_holdout)",
+        "rubric_dim.generative_yield",
+        "rubric_dim.newton-step_pre-commit",
+        "rubric_dim.newton-step_validation_(farther-tail)",
+        "rubric_dim.structural_derivation",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "The regime-completeness assumption: all regime-defining physics relevant to the B/C class break is captured by (x, mass_log10, radius_log10). If any class-specific effect survives conditioning on these, the thesis is catastrophically falsified; the law cannot absorb such a break without explicit class or unobservable features.",
+      "group_iter_count": 8,
+      "group_scored_count": 8
+    },
+    {
+      "project": "gp163d_unified_accel",
+      "rubric_hash": "f9a430cea0c8c396",
+      "mutator_model_id": "gpt-5.5",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp163d_unified_accel__session_002",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777288752,
+      "max_score_iteration_index": 2,
+      "active_constraints": [
+        "dag_steering",
+        "falsification_mode.bounded_discriminator",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_(class_a_holdout)",
+        "rubric_dim.generative_yield",
+        "rubric_dim.newton-step_pre-commit",
+        "rubric_dim.newton-step_validation_(farther-tail)",
+        "rubric_dim.structural_derivation",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "Catastrophic dependency on unproven cross-class acceleration feature equivalence: Without explicit audit of the construction and unit conventions of the operational acceleration (x) across all system classes (A/B/C), any claim to have established a physical cross-class law collapses to a schema fit, not physics. The thesis, however, explicitly makes this a two-key requirement and does not overclaim. Further progress requires the ledger and closure audits of class B (and C, as possible).",
+      "group_iter_count": 17,
+      "group_scored_count": 17
+    },
+    {
+      "project": "gp163d_unified_accel",
+      "rubric_hash": "f9a430cea0c8c396",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp163d_unified_accel__session_002",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777303462,
+      "max_score_iteration_index": 2,
+      "active_constraints": [
+        "dag_steering",
+        "falsification_mode.bounded_discriminator",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_(class_a_holdout)",
+        "rubric_dim.generative_yield",
+        "rubric_dim.newton-step_pre-commit",
+        "rubric_dim.newton-step_validation_(farther-tail)",
+        "rubric_dim.structural_derivation",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "The entire thesis' status as a 'physical law' is contingent on a future Blind SI-Closure Certificate audit passing in the withheld classes. No amount of operational or numerical success now can prove the physical claim; if there is any hidden, class-dependent transform in the construction of x (acceleration) in Class B or C, the entire physical scale-dependent law collapses. This is an irreducible uncertainty until ledgers and closure diagnostics are released.",
+      "group_iter_count": 12,
+      "group_scored_count": 12
+    },
+    {
+      "project": "gp163d_unified_accel",
+      "rubric_hash": "f9a430cea0c8c396",
+      "mutator_model_id": "gpt-5.5",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp163d_unified_accel__session_003",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777313184,
+      "max_score_iteration_index": 2,
+      "active_constraints": [
+        "dag_steering",
+        "falsification_mode.bounded_discriminator",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_(class_a_holdout)",
+        "rubric_dim.generative_yield",
+        "rubric_dim.newton-step_pre-commit",
+        "rubric_dim.newton-step_validation_(farther-tail)",
+        "rubric_dim.structural_derivation",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "The single most catastrophic and load-bearing vulnerability is the unprovable (at this time) assumption that the observable acceleration `x` is constructed, reported, and processed identically in SI units in classes B and C as in visible class A. The entire physics claim, even if numerically validated, collapses if a hidden class-dependent offset or fudge is ever found. This SI-closure assumption is a veto, not a pillar: until the ledger shows closure, any physical claim is strictly conditional.",
+      "group_iter_count": 7,
+      "group_scored_count": 7
+    },
+    {
+      "project": "gp163d_unified_accel",
+      "rubric_hash": "f9a430cea0c8c396",
+      "mutator_model_id": "gpt-5.5",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp163d_unified_accel__session_004",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777324729,
+      "max_score_iteration_index": 1,
+      "active_constraints": [
+        "dag_steering",
+        "falsification_mode.bounded_discriminator",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_(class_a_holdout)",
+        "rubric_dim.generative_yield",
+        "rubric_dim.newton-step_pre-commit",
+        "rubric_dim.newton-step_validation_(farther-tail)",
+        "rubric_dim.structural_derivation",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "The single most catastrophic assumption is that the acceleration variable 'x' is constructed in a genuinely SI-invariant, class-independent way, with no hidden classwise or instrument-specific offsets. The full physical-bridge claim is absolutely vetoed unless future source-ledger audits confirm this. Current status: all numerical gates pass, but the SI closure audit is pending future release.",
+      "group_iter_count": 23,
+      "group_scored_count": 22
+    },
+    {
+      "project": "gp163d_unified_accel",
+      "rubric_hash": "f9a430cea0c8c396",
+      "mutator_model_id": "gpt-5.5",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp163d_unified_accel__session_008",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777410319,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "dag_steering",
+        "falsification_mode.bounded_discriminator",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_(class_a_holdout)",
+        "rubric_dim.generative_yield",
+        "rubric_dim.newton-step_pre-commit",
+        "rubric_dim.newton-step_validation_(farther-tail)",
+        "rubric_dim.structural_derivation",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "The thesis structurally assumes that all systematic farther-tail residuals can be eliminated by conditioning only on measured continuous features (local density, transformed radius, disk/gas), with no irreducible class-driven residual or missing causal variable. If this assumption fails in future substrate enrichments, the thesis would be existentially falsified, as no fallback (e.g. class-multiplier) is present.",
+      "group_iter_count": 2,
+      "group_scored_count": 1
+    },
+    {
+      "project": "gp165_analogy_architecture_review",
+      "rubric_hash": "5df0bffab41d59b2",
+      "mutator_model_id": "gemini-2.5-flash",
+      "judge_model_id": "gemini-2.5-flash",
+      "run_session_id": "gp165_analogy_architecture_review__session_001",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777209928,
+      "max_score_iteration_index": 1,
+      "active_constraints": [
+        "falsification_mode.qualitative_thesis",
+        "rubric_dim.compositional_interaction_discovery",
+        "rubric_dim.concrete_bypass_exploit_demonstrated",
+        "rubric_dim.generative_yield",
+        "rubric_dim.hybrid_coverage_(prose_+_python)",
+        "rubric_dim.mitigation_structural-property_naming",
+        "rubric_dim.new_failure_modes_beyond_f1–f8",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "The thesis's strongest findings (F9, F12) hinge on a rigorous interpretation of 'structural-only' fingerprinting which, while logically sound, may face practical implementation challenges in ensuring perfect semantic isolation from derived metadata. The audit assumes a motivated LLM that can infer domain from subtle statistical cues, which requires robust engineering to prevent.",
+      "group_iter_count": 13,
+      "group_scored_count": 8
+    },
+    {
+      "project": "gp165_analogy_architecture_review",
+      "rubric_hash": "5df0bffab41d59b2",
+      "mutator_model_id": "o3",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp165_analogy_architecture_review__session_001",
+      "max_score": 100,
+      "max_score_iter_timestamp": 1777213701,
+      "max_score_iteration_index": 1,
+      "active_constraints": [
+        "falsification_mode.qualitative_thesis",
+        "rubric_dim.compositional_interaction_discovery",
+        "rubric_dim.concrete_bypass_exploit_demonstrated",
+        "rubric_dim.generative_yield",
+        "rubric_dim.hybrid_coverage_(prose_+_python)",
+        "rubric_dim.mitigation_structural-property_naming",
+        "rubric_dim.new_failure_modes_beyond_f1–f8",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "The meta-architecture suffers from a fundamental tension between aggressive contamination defense and core utility (ANALOGY's structural anonymity tax) and silent numerical instability. This leads to either a degradation of the system's intended capability (ANALOGY returning baseline forms) or critical numerical errors bypassing pathology enforcement, resulting in a system that fails silently or provides misleading diagnostic signals.",
+      "group_iter_count": 1,
+      "group_scored_count": 1
+    },
+    {
+      "project": "gp080_01",
+      "rubric_hash": "6de0faf3beac8240",
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp080_01__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1776475986,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_rmse",
+        "holdout_hard_gate",
+        "rubric_dim.fit_quality_on_visible_set",
+        "rubric_dim.generalization_quality",
+        "rubric_dim.structural_derivation"
+      ],
+      "weakest_point_at_ceiling": "The inability to guarantee global uniqueness of the continuous generating law based only on perfect finite fit; countless higher-order hybrid expressions can interpolate the discrete evidence with zero residual, so all claims of generalization beyond local algebraic sufficiency rest on pragmatic (not deductive) parsimony.",
+      "group_iter_count": 25,
+      "group_scored_count": 25
+    },
+    {
+      "project": "gp096_kww_sandbox_17",
+      "rubric_hash": "10a655b4170afd96",
+      "mutator_model_id": "gemini-3.1-pro-preview",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp096_kww_sandbox_17__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1776565723,
+      "max_score_iteration_index": 2,
+      "active_constraints": [
+        "INV-3_layer3_exclusive",
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.continuous_l2",
+        "holdout_hard_gate"
+      ],
+      "weakest_point_at_ceiling": "The catastrophic assumption is exclusion of multi-exponential (Prony series) rivals: that the observed curve cannot be explained as a sum of standard exponential decays plus offset, and thus a fractional exponent in the decay law is strictly required.",
+      "group_iter_count": 4,
+      "group_scored_count": 4
+    },
+    {
+      "project": "gp156_apparatus_hardening_review",
+      "rubric_hash": "d8157f497e965162",
+      "mutator_model_id": "o3",
+      "judge_model_id": "gemini-3.1-pro-preview",
+      "run_session_id": "gp156_apparatus_hardening_review__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1777089316,
+      "max_score_iteration_index": null,
+      "active_constraints": [
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.none",
+        "mform_alignment_audit",
+        "rubric_dim.adversarial_bypass_concreteness",
+        "rubric_dim.compositional_interaction_discovery",
+        "rubric_dim.generative_yield",
+        "rubric_dim.implementation-layer_specificity",
+        "rubric_dim.m-form_charter_alignment:_attack_surface",
+        "rubric_dim.m-form_charter_alignment:_breadth_of_exe",
+        "rubric_dim.m-form_charter_alignment:_concrete_execu",
+        "rubric_dim.m-form_charter_alignment:_forbid_theoret",
+        "rubric_dim.m-form_charter_alignment:_full_axis_audi",
+        "rubric_dim.m-form_charter_alignment:_multi_vector_e",
+        "rubric_dim.m-form_charter_alignment:_must_demonstra",
+        "rubric_dim.m-form_charter_alignment:_probe_all_host",
+        "rubric_dim.m-form_charter_alignment:_requires_full_",
+        "rubric_dim.smoke-test_floor_verification",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "No automated cross-check between PARAMETRIC_FORM referenced keys and actual features provided; a static or runtime audit would fully close this vector.",
+      "group_iter_count": 11,
+      "group_scored_count": 11
+    },
+    {
+      "project": "gp156_apparatus_hardening_review",
+      "rubric_hash": "d8157f497e965162",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp156_apparatus_hardening_review__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1777088860,
+      "max_score_iteration_index": 3,
+      "active_constraints": [
+        "falsification_mode.bounded_discriminator",
+        "fit_score_mode.none",
+        "mform_alignment_audit",
+        "rubric_dim.adversarial_bypass_concreteness",
+        "rubric_dim.compositional_interaction_discovery",
+        "rubric_dim.generative_yield",
+        "rubric_dim.implementation-layer_specificity",
+        "rubric_dim.m-form_charter_alignment:_attack_surface",
+        "rubric_dim.m-form_charter_alignment:_breadth_of_exe",
+        "rubric_dim.m-form_charter_alignment:_concrete_execu",
+        "rubric_dim.m-form_charter_alignment:_forbid_theoret",
+        "rubric_dim.m-form_charter_alignment:_full_axis_audi",
+        "rubric_dim.m-form_charter_alignment:_multi_vector_e",
+        "rubric_dim.m-form_charter_alignment:_must_demonstra",
+        "rubric_dim.m-form_charter_alignment:_probe_all_host",
+        "rubric_dim.m-form_charter_alignment:_requires_full_",
+        "rubric_dim.smoke-test_floor_verification",
+        "rubric_mode.newton"
+      ],
+      "weakest_point_at_ceiling": "There is no static or runtime check for the presence/validity of feature keys referenced in PARAMETRIC_FORM, enabling silent acceptance of pathological fits when feature names are misspelled—every fit is accepted as 'success=true', regardless of all objectives being flat constant penalty (1e9), with plausible parameter values recorded and not flagged. This allows motivated or accidental bypass in all Proposal 3-engaged substrates.",
+      "group_iter_count": 13,
+      "group_scored_count": 10
+    },
+    {
+      "project": "gp169_consciousness_ascription_audit",
+      "rubric_hash": "a79b342e2c881b68",
+      "mutator_model_id": "gpt-4.1",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp169_consciousness_ascription_audit__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1777757574,
+      "max_score_iteration_index": 3,
+      "active_constraints": [
+        "falsification_mode.qualitative_thesis",
+        "rubric_dim.alien-statability_gate",
+        "rubric_dim.anti-calibration-closure-drift_gate_(v3.",
+        "rubric_dim.anti-trivial-result_gate_(harsher)",
+        "rubric_dim.causal_identification_grounding_(new_v4.",
+        "rubric_dim.endogenous-closure_gate",
+        "rubric_dim.literature-novelty_self-audit_(v4.0_rais",
+        "rubric_dim.no-citation_gate",
+        "rubric_dim.non-applicability_concrete_admission",
+        "rubric_dim.operational_decidability_or_concrete-cas",
+        "rubric_dim.specific_borderline_case_engagement",
+        "rubric_dim.three-rival_defense_(no-citation-compati",
+        "rubric_mode.kepler"
+      ],
+      "weakest_point_at_ceiling": "Empirical / operationalization drag: The pluralist reframe correctly identifies the catastrophic assumption of unitary ascription, but leaves open how to formalize, weight, and update the plural heuristics—or how to map drift as ascription norms shift across time, culture, and technology. Falsifiability is preserved via quantitative SD predictions, but future robustness depends on the specification of context and aggregation parameters.",
+      "group_iter_count": 13,
+      "group_scored_count": 13
+    },
+    {
+      "project": "gp169_consciousness_ascription_audit",
+      "rubric_hash": "a79b342e2c881b68",
+      "mutator_model_id": "gpt-5.5",
+      "judge_model_id": "gpt-4.1",
+      "run_session_id": "gp169_consciousness_ascription_audit__session_001",
+      "max_score": 98,
+      "max_score_iter_timestamp": 1777758709,
+      "max_score_iteration_index": 3,
+      "active_constraints": [
+        "falsification_mode.qualitative_thesis",
+        "rubric_dim.alien-statability_gate",
+        "rubric_dim.anti-calibration-closure-drift_gate_(v3.",
+        "rubric_dim.anti-trivial-result_gate_(harsher)",
+        "rubric_dim.causal_identification_grounding_(new_v4.",
+        "rubric_dim.endogenous-closure_gate",
+        "rubric_dim.literature-novelty_self-audit_(v4.0_rais",
+        "rubric_dim.no-citation_gate",
+        "rubric_dim.non-applicability_concrete_admission",
+        "rubric_dim.operational_decidability_or_concrete-cas",
+        "rubric_dim.specific_borderline_case_engagement",
+        "rubric_dim.three-rival_defense_(no-citation-compati",
+        "rubric_mode.kepler"
+      ],
+      "weakest_point_at_ceiling": "The thesis must permanently remove—not attempt to repair—the assumption that a non-anthropic, alien-statable residue of 'consciousness' exists after all anthropic content is subtracted. Any attempt to instantiate a positive selector recapitulates forbidden anthropic gates.",
+      "group_iter_count": 9,
+      "group_scored_count": 9
+    }
+  ],
+  "wall_analysis": {
+    "wall_range": "70 <= max_score <= 85",
+    "high_range": "max_score >= 86",
+    "wall_range_group_count": 40,
+    "high_range_group_count": 91,
+    "potential_wall_constraints": [
+      {
+        "constraint": "rubric_dim.adversarial_kill_quality",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.ambient_leray_scope",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.cross-term_honesty",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.explicit_law_specificity",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.implementation_cash-out",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.law-packet_ambition",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.literature_resolution_value",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.nonclaim_and_resource_safety",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.nullspace_branch",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.observable_class_and_matrix_intertwiners",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.rival_falsification",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.scope_honesty",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.threshold_defect_convexity",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "rubric_dim.vector_ledger_explicitness",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 50.0
+      },
+      {
+        "constraint": "charter_refs.GP-143",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.admissibility_and_scaling",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.anti-overfitting_audit",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.apparatus_self-model_citation",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.asymptotic_discipline",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.bridge_or_obstruction_quality",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.bug-class_carryover",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.class-selection_independence",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.coupled_observable_compression",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.defect_concreteness",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.detector_specificity",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.euclidean_pressure_discipline",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.farther-tail_prediction",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.generative_mechanism",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.internal_consistency",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.m-form_charter_alignment:_cage_specific_",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.m-form_charter_alignment:_cite_bug_taxon",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.m-form_charter_alignment:_forbid_more_la",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.m-form_charter_alignment:_full_axis_cove",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.m-form_charter_alignment:_pre_implementa",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.m-form_charter_alignment:_reflexive_prim",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.mathematical_definition_and_formalizatio",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.mechanism_usefulness",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.no-go_or_construction_strength",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.observable_compression",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.pressure-profit_discipline",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.projected_channel_specificity",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.proof-path_usefulness",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.q_scalar_connection",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.reachability_defect_discovery",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.reflexive_consistency_check",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.residual-defect_accounting",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.rival_mechanism_falsification",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.stationary-euler_escape_ambition",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.structural_completeness",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.structural_gap_identification",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "rubric_dim.test_case_and_kernel_specification",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 0,
+        "high_range_freq": 0.0,
+        "freq_ratio": 25.0
+      },
+      {
+        "constraint": "charter_refs.GP-133",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "fit_score_mode.continuous_mre",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.empirical_fit_on_visible_set",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.evidence_discipline",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.external_correctness-tax_and_gate_modeli",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.fit_quality",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.holdout_generalization",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.holdout_validation",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.primitive-substrate_mapping_clarity",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.rival_mechanism_enumeration",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.test_&_derivation_specificity",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 4.55
+      },
+      {
+        "constraint": "rubric_dim.anti-tautology",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 2.27
+      },
+      {
+        "constraint": "rubric_dim.anti-tautology_discipline",
+        "wall_range_count": 2,
+        "wall_range_freq": 0.05,
+        "high_range_count": 2,
+        "high_range_freq": 0.022,
+        "freq_ratio": 2.27
+      },
+      {
+        "constraint": "rubric_dim.m-form_charter_alignment:_formal_lean_ar",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 2.27
+      },
+      {
+        "constraint": "rubric_dim.mathlib_api_concreteness",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 2.27
+      },
+      {
+        "constraint": "rubric_dim.proof_progress",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 2.27
+      },
+      {
+        "constraint": "rubric_dim.reduction_quality_(impossibility/counter",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 2.27
+      },
+      {
+        "constraint": "rubric_dim.statement_validity",
+        "wall_range_count": 1,
+        "wall_range_freq": 0.025,
+        "high_range_count": 1,
+        "high_range_freq": 0.011,
+        "freq_ratio": 2.27
+      }
+    ]
+  },
+  "anti_overfitting_notes": [
+    "active_constraints reflects current rubric state, not historical.",
+    "Wall-constraint analysis uses frequency comparison, not statistical testing.",
+    "Wall range has 40 groups; results are exploratory.",
+    "Groups with null rubric_hash or model IDs may merge distinct configurations."
+  ]
+}

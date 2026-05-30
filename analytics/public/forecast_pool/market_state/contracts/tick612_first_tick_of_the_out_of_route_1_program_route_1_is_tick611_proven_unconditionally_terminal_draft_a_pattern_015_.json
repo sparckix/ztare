@@ -1,0 +1,190 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-16T23:18:03Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 28.0,
+    "expected_value": 0.0677250673358125,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.095,
+    "p_needs_new_lemma": 0.34500000000000003,
+    "p_regression": 0.05,
+    "p_success": 0.39772506733581253,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_/claude_rd.json",
+        "forecasted_at": "2026-05-16T22:41:56Z",
+        "p_success": 0.58,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_/codex.json",
+        "forecasted_at": "2026-05-16T22:43:40Z",
+        "p_success": 0.24,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "in_lattice_recast_disguised_as_off_lattice_escape",
+        "p": 0.18
+      },
+      {
+        "mode": "structural_derivation_stalls_before_derived_verdict",
+        "p": 0.15
+      },
+      {
+        "mode": "sqrt_nu_t_or_scale_critical_companion_disguise",
+        "p": 0.12
+      },
+      {
+        "mode": "adversary_check_slips_provenance",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_.json",
+    "score": "analytics/public/forecast_pool/scores/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T22:41:56Z",
+    "created_by": "claude_rd",
+    "horizon": "1 tick",
+    "layer": "micro",
+    "objective_resolver": "eigenquestion_pattern015_conformant_logged_external_prover_and_attempted_adversary_survived",
+    "question": "tick612 (FIRST tick of the out-of-route-1 program; route-1 is tick611-proven unconditionally terminal): draft a PATTERN-015 eigenquestion for a coercive global-regularity functional Phi NOT built from the route-1 algebra {Biot-Savart,grad,omega} \u2014 Lagrangian flow-map / Cauchy-invariants / relative-entropy-along-characteristics / optimal-transport displacement / Constantin-Iyer stochastic-Lagrangian \u2014 where nu enters via the back-to-labels stochastic flow (NOT nuDelta on algebra fields), so the nu-length is genuinely OFF-LATTICE and decoupled from the parabolic heat-length, paired vs a SUBCRITICAL companion (delta>0). Route it to the external prover (log to external_prover_ledger) + an independent external-prover attempt. Success = a PATTERN-015-conformant single falsifiable eigenquestion (anti-laundering: the Phi must provably NOT reduce to a {B,grad,omega} word NOR a parabolic/heat functional \u2014 respecting the tick611 closing-the-space theorem) logged to external_prover + an external-prover attempt whose verdict (Y construct / N forcing-extends-to-this-class-too / U) SURVIVES dogfood-claused adversarial-survival. Fail = eigenq is laundering/non-falsifiable, OR collapses to a route-1 recast, OR the external attempt is asserted-not-derived.",
+    "success_threshold": "0.5",
+    "task_type": "ns_tick612_outofroute1_eigenquestion_external_prover_20260516"
+  },
+  "contract_id": "tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-16T22:41:56Z",
+        "p_success": 0.58,
+        "rationale_short": "Drafting a PATTERN-015 eigenq is reliable; the risk is the out-of-route-1 Phi class being a disguised route-1 word or a parabolic/heat length (tick611 theorem must be respected as the anti-laundering bar). Lagrangian/stochastic-flow nu-length is the most credible genuinely-off-lattice candidate (\u03bd enters via back-to-labels noise, not \u03bd\u0394 on {B,grad,\u03c9}) \u2014 non-vacuous to ASK. P(clean conformant eigenq + external attempt surviving dogfood-claused adversary) ~0.58; P(the eigenq's YES branch actually constructible) much lower, not the contract criterion.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-16T22:43:40Z",
+        "p_success": 0.24,
+        "rationale_short": "No prior codex forecast exists. Closest anchor is tick611 codex at p_success=0.28 and 34m cost. Tick612 adds the PATTERN-015 eigenquestion drafting plus external-prover logging/attempt requirement, so I trim success modestly and keep cost in the low 30s; main risks are a route-1 recast, sqrt(nu t) or subcritical-companion disguise, or stalling before a derived verdict.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T23:18:03Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.34,
+      "p_success": 0.39772506733581253,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 0.5795
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 28.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.39772506733581253,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "in_lattice_recast_disguised_as_off_lattice_escape",
+        "p": 0.18
+      },
+      {
+        "mode": "structural_derivation_stalls_before_derived_verdict",
+        "p": 0.15
+      },
+      {
+        "mode": "sqrt_nu_t_or_scale_critical_companion_disguise",
+        "p": 0.12
+      },
+      {
+        "mode": "adversary_check_slips_provenance",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.377,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:47Z"
+  }
+}

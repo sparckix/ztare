@@ -1,0 +1,32 @@
+{
+  "tick_id": "tick668",
+  "contract_id": "tick668_level522_cofinal_event_selector_final_prefix_bound_source",
+  "surface": "NS Track-B L3A named cofinal event selector with same-selector final-prefix bound",
+  "selected_patterns": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second"
+  ],
+  "anti_patterns_guarded": [
+    "tool_underuse_formal_satisficing",
+    "bare_prop_choice",
+    "classical_choice_witness_only",
+    "subtype_witness_without_selector_rule",
+    "endpoint_capacity_as_bound",
+    "shell_only_enumeration"
+  ],
+  "carrier_schema_receipts": {
+    "residual_to_check_edge": {
+      "residual": "Level521 takes the explicit subtype witness directly.",
+      "check": "Require a named Nat selector, selector eventToBadNode equality, and strict final-prefix bound on that same selector.",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level522_cofinal_event_selector_final_prefix_bound_receipt.json"
+    },
+    "surplus_projection_artifact": {
+      "surplus": "Cofinal incidence supplies event existence for every selected bad node.",
+      "projection": "Expose the event as a named selector before subtype packaging, making the final-prefix bound refer to the same selector.",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    }
+  },
+  "nearest_universal_op": "GP-219 estimate-craft selector/equality/bound separation",
+  "nearest_confuser": "Level521 explicit subtype witness source, which does not name the selector before packaging"
+}

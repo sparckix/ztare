@@ -1,0 +1,58 @@
+{
+  "contract_id": "gp225_v2022_route_selection_adapter_readiness_meso",
+  "mean_brier": 0.03240000000000002,
+  "mean_log_score": -0.19845093872383832,
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "artifact_hash": "de8cbf70829b694e7d6bb33a9afc5e8be5ffb4fabd1c09b7046d925403145c6b",
+    "artifact_path": "analytics/public/leanmill/results/v2022_route_selection_adapter_readiness.json",
+    "compile_status": "py_compile_passed",
+    "contract_id": "gp225_v2022_route_selection_adapter_readiness_meso",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "v20.22 route selector passed: consumed latest v20.23 manifest, cited public/union benchmark state, selected patched public tacgen adapter bridge with strict-implies-compile thresholds, no replay/training, GNN blocked.",
+    "resolved_at": "2026-05-14T13:37:46Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T13:37:50Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "gp230_fermat_gp225_v2022",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_route_selection_meso",
+      "expected_cost_agent_minutes": 22.0,
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T13:31:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T13:33:25Z",
+        "resolved_at": "2026-05-14T13:37:46Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "gp230_kant_gp225_v2022",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": -4.0,
+      "domain": "gp225_route_selection_meso",
+      "expected_cost_agent_minutes": 16.0,
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T13:31:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T13:33:25Z",
+        "resolved_at": "2026-05-14T13:37:46Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_cutoff_cz_branch_meso_20260513_tick308",
+  "mean_brier": 0.31450000000000006,
+  "mean_log_score": -0.8233103517809082,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_cutoff_cz_branch_meso_20260513_tick308",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "Cutoff/CZ branch proved to be a useful next branch this tick: compiled endpoint/boundary split and exposed double-counting guards.",
+    "resolved_at": "2026-05-13T23:16:25Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:16:35Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "hooke",
+      "brier": 0.28090000000000004,
+      "cost_error_agent_minutes": 67.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 85.0,
+      "log_score": -0.7550225842780328,
+      "p_success": 0.47,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "mcclintock",
+      "brier": 0.3481000000000001,
+      "cost_error_agent_minutes": 27.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 45.0,
+      "log_score": -0.8915981192837836,
+      "p_success": 0.41,
+      "success_bool": true
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json"
+  },
+  "baseline_action": "Attempt analytic ResidualFreshExcessSameLedgerAuditEventSource proof directly.",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426",
+  "cost_penalty": 1.0,
+  "counterfactual_action": "Wait for GPT-5.5 xhigh Banach before adding another surface.",
+  "created_at": "2026-05-14T22:40:55Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0645,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_proof_frontier_lean_surface",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0645,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.3333,
+        "score_rows": 2,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 10,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 3,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 140,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0455,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "risk of proving only a tautological eligibility predicate"
+    ],
+    "positive": [
+      "turns event selection into per-node eligibility plus coherence-derived index"
+    ],
+    "process": [
+      "continues bounded Lean descent while GPT-5.5 audits in parallel"
+    ]
+  },
+  "horizon": "same RD tick 2026-05-14",
+  "information_value": 9.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff the tick adds a compiling no-sorry Lean structure for residual-fresh audit eligibility, plus projection to ResidualFreshExcessSameLedgerAuditEventSource and at least one concrete same-ledger event-index/matching theorem; false if it remains a pure Prop wrapper, overclaims analytic event selection, or Lean fails.",
+  "question": "Will tick426 add a compiling Lean surface that lowers residualBranchCreatesAuditSelection to per-node residual-fresh audit eligibility data and derives the same-ledger event index plus bad-node/weight/gain matches?",
+  "risk_penalty": 6.0,
+  "success_threshold": "Lean compiles; no sorry/admit; git diff check clean; residual fresh node eligibility is explicit; event index and at least bad-node match are derived from existing FreshPacketAuditSameEventStreamCoherence.",
+  "task_type": "ns_proof_frontier_lean_surface",
+  "value_if_success": 14.0,
+  "void_conditions": "Void if it defines residual-fresh nodes from beta endpoint accounting, hides pressure-only nodes as eligible, or duplicates tick425 without deriving index/match facts."
+}

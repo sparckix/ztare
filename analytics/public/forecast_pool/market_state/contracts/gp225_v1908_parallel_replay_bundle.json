@@ -1,0 +1,218 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T20:58:04Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 37.333333333333336,
+    "expected_value": 0.5197266148868214,
+    "forecast_count": 3,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.28,
+    "p_needs_new_lemma": 0.03666666666666667,
+    "p_regression": 0.09666666666666666,
+    "p_success": 0.319839185227542,
+    "participants": [
+      {
+        "agent_id": "copernicus_readonly_forecaster",
+        "domain": "gp225_parallel_replay",
+        "p_success": 0.31,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "kant_skeptical_forecaster",
+        "domain": "gp225_parallel_replay",
+        "p_success": 0.31,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "plato_operational_forecaster",
+        "domain": "gp225_parallel_replay",
+        "p_success": 0.34,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "one_or_both_lanes_clean_replay_rows_below_90",
+        "p": 0.25333333333333335
+      },
+      {
+        "mode": "pde_functional_density_below_0_50",
+        "p": 0.19999999999999998
+      },
+      {
+        "mode": "no_lane_reaches_density_0_50",
+        "p": 0.08
+      },
+      {
+        "mode": "worker_contention_or_timeout",
+        "p": 0.06
+      },
+      {
+        "mode": "parallel_runner_or_worker_contention_blocks_completion",
+        "p": 0.05333333333333334
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1908_parallel_replay_bundle.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1908_parallel_replay_bundle.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1908_parallel_replay_bundle.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1908_parallel_replay_bundle.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1908_parallel_replay_bundle.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T20:55:39Z",
+    "created_by": "codex_rd",
+    "horizon": "through v19.08 replay closure or earlier static-blocker",
+    "layer": "micro",
+    "objective_resolver": "Resolve from analytics/public/leanmill/results/v1908_parallel_replay_bundle.json metrics.",
+    "question": "Will the next GP-225 parallel replay bundle over the v19.07 PDE+functional shard and v19.06 non-PDE variety shard complete cleanly, keep false accepts at zero, and produce at least one validated high-density holdout shard while keeping GNN blocked?",
+    "success_threshold": "both_lanes_completed=true AND pde_functional.clean_replay_rows>=90 AND non_pde.clean_replay_rows>=90 AND selected_true_false_accepts_total=0 AND all_post_quarantine_false_accepts_total=0 AND at_least_one_lane_density>=0.50 AND at_least_one_lane_source_packets>=3 AND at_least_one_lane_top_areas>=8 AND at_least_one_lane_action_families>=4 AND training_now=false AND gnn_blocked=true",
+    "task_type": "gp225_parallel_replay_bundle"
+  },
+  "contract_id": "gp225_v1908_parallel_replay_bundle",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:copernicus_readonly_forecaster",
+        "raw_agent_ids": [
+          "copernicus_readonly_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:kant_skeptical_forecaster",
+        "raw_agent_ids": [
+          "kant_skeptical_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:plato_operational_forecaster",
+        "raw_agent_ids": [
+          "plato_operational_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "copernicus_readonly_forecaster",
+      "kant_skeptical_forecaster",
+      "plato_operational_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "copernicus_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1908_parallel_replay_bundle/copernicus_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-13T20:57:59Z",
+        "p_success": 0.31,
+        "rationale_short": "Static readiness is real, but success lives or dies on replay: prior PDE just cleared density and broadening to LinearAlgebra may dilute it; both lanes also need >=90 clean rows and zero false accepts over 240 attempted rows.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "kant_skeptical_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1908_parallel_replay_bundle/kant_skeptical_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-13T20:57:59Z",
+        "p_success": 0.31,
+        "rationale_short": "Static blocker is repaired, but clean replay threshold is close to prior empirical rates and density mostly depends on PDE+functional preserving the earlier PDE signal after broadening.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "plato_operational_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1908_parallel_replay_bundle/plato_operational_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes": 38.0,
+        "forecasted_at": "2026-05-13T20:57:59Z",
+        "p_success": 0.34,
+        "rationale_short": "Both lanes are independent and static-ready; use capped parallel, but density and clean replay thresholds remain fragile under broader PDE+functional selection.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T21:47:47Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.5197266148868214,
+      "forecast_spread": 0.03,
+      "p_success": 0.319839185227542,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 1.0475
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 37.333333333333336,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.319839185227542,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "one_or_both_lanes_clean_replay_rows_below_90",
+        "p": 0.25333333333333335
+      },
+      {
+        "mode": "pde_functional_density_below_0_50",
+        "p": 0.19999999999999998
+      },
+      {
+        "mode": "no_lane_reaches_density_0_50",
+        "p": 0.08
+      },
+      {
+        "mode": "worker_contention_or_timeout",
+        "p": 0.06
+      },
+      {
+        "mode": "parallel_runner_or_worker_contention_blocks_completion",
+        "p": 0.05333333333333334
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10260000000000001,
+    "score_rows": 3,
+    "scored_at": "2026-05-13T21:47:50Z"
+  }
+}

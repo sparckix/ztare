@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 70.0,
+  "artifact_hash": null,
+  "artifact_path": "/tmp/bundle_T2/result.txt",
+  "changed_by_forecast_ids": [],
+  "codex_bet_present": true,
+  "compile_status": "COMPILE_OK",
+  "contract_id": "screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": false,
+  "error_type": null,
+  "externality_tags": [
+    "tier2_first_genuinely_sourced_signal",
+    "two_genuine_closures",
+    "zero_false_ratify_advisory_corroborated"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [
+    "powered_ge10_row_run_deferred_screener_yield_7pct",
+    "n3_underpowered_AP013",
+    "ce_organ_flawed_until_re_review_advisory_only"
+  ],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [],
+  "resolution_note": "n=3 pilot (NOT the scoped >=10-row powered run; screener pin-stable yield ~7% -> scale deferred). Pilot via canonical pinned v4.29.0 sandbox + bundle_run: T2_02 COMPILE_OK + exact? cannot single-close = genuine_novel_closure; T2_03 COMPILE_OK (T2_02 inlined as real proven dependency, not assumed hyp) + exact? cannot single-close = genuine_novel_closure; T2_01 PROVER_GAP = honest prover refusal (would not guess post-pin IsMulCommutative accessor = anti-laundering). gp233 dual-scoreboard shows 0/{} = KNOWN [A-Z]+d+ id-regex artifact on T2_0X ids (hand-classified per gp233 rules, transparent). 0 false-ratify, 0 wrong-kind; v33 CE organ run ADVISORY-only (NOT wired; FLAWED-until-re-review) -> CE_suspect=False on both closures, corroborates 0-false-ratify for pilot. Gate >=2-clean-non-control-closures branch numerically clears on pilot BUT contract scoped >=10 powered rows -> resolving NO (resolving YES on n=3 = over-claim confounder, AP-013). First non-zero genuinely-sourced (local version-delta mined) Tier-2 signal vs cold-author 0/12.",
+  "resolved_at": "2026-05-17T02:57:59Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

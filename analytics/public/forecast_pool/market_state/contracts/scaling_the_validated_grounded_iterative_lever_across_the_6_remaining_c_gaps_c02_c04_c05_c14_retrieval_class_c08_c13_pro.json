@@ -1,0 +1,203 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:39Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 62.5,
+      "expected_value": -0.10394528673181908,
+      "p_success": 0.640060792520201,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.2504
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 62.5,
+    "expected_value": -0.10394528673181908,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.10500000000000001,
+    "p_needs_new_lemma": 0.145,
+    "p_regression": 0.055,
+    "p_success": 0.640060792520201,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "scale_grounded_iterative_remaining_cgaps",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro/codex.json",
+        "forecasted_at": "2026-05-16T21:34:21Z",
+        "p_success": 0.63,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T21:32:27Z",
+        "p_success": 0.65,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "retrieval_class_partial_generalization",
+        "p": 0.175
+      },
+      {
+        "mode": "c13_genuine_construction_ceiling",
+        "p": 0.14
+      },
+      {
+        "mode": "exact_checker_or_namespace_drift",
+        "p": 0.1
+      },
+      {
+        "mode": "c08_reasoning_or_search_ceiling",
+        "p": 0.085
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json",
+    "contract": "analytics/public/forecast_pool/contracts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json",
+    "score": "analytics/public/forecast_pool/scores/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 75.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T21:32:27Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "verify 6 grounded-iterative proofs through canonical v4.29.0 + exact?; C08/C13 outcome classifies reasoning-ceiling vs grounding",
+    "question": "Scaling the validated grounded-iterative lever across the 6 remaining C-gaps (C02,C04,C05,C14 retrieval-class + C08,C13 prover-called-genuine-construction): will >=4/6 close GENUINE in canonical v4.29.0, and will C08/C13 reveal whether a TRUE reasoning ceiling exists or also fall to grounding?",
+    "success_threshold": "0.5",
+    "task_type": "scale_grounded_iterative_remaining_cgaps"
+  },
+  "contract_id": "scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "scale_grounded_iterative_remaining_cgaps",
+        "expected_cost_agent_minutes": 50.0,
+        "forecasted_at": "2026-05-16T21:34:21Z",
+        "p_success": 0.63,
+        "rationale_short": "Four retrieval-class gaps are likely to yield to the validated grounded-iterative lever; the residual risk is that C13 stays a genuine construction gap and C08 exposes a ceiling, but the threshold only needs 4/6.",
+        "specific_failure_mode_ids": [
+          "retrieval_class_partial_generalization",
+          "c13_genuine_construction_ceiling",
+          "c08_reasoning_or_search_ceiling",
+          "exact_checker_or_namespace_drift"
+        ]
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 75.0,
+        "forecasted_at": "2026-05-16T21:32:27Z",
+        "p_success": 0.65,
+        "rationale_short": "C02/C04/C05/C14 retrieval-class should yield to grounded-iterative like C10/C15/C06 (~3-4/4); C08(\u221b2-irrat) likely has irrational_nrt library closer=grounding; C13(Erd\u0151s odd-part pigeonhole) is the real genuine-construction risk -> may be the 1 true reasoning-ceiling row; >=4/6 favored",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 0.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T22:24:35Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 62.5,
+      "expected_value": -0.10394528673181908,
+      "p_success": 0.640060792520201,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.2504
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 62.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.640060792520201,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "retrieval_class_partial_generalization",
+        "p": 0.175
+      },
+      {
+        "mode": "c13_genuine_construction_ceiling",
+        "p": 0.14
+      },
+      {
+        "mode": "exact_checker_or_namespace_drift",
+        "p": 0.1
+      },
+      {
+        "mode": "c08_reasoning_or_search_ceiling",
+        "p": 0.085
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

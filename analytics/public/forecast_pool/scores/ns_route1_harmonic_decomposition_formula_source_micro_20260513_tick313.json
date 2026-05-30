@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313",
+  "mean_brier": 0.30805000000000005,
+  "mean_log_score": -0.8097441241438009,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "419375d97ff81a1c669e58e069550c82e24444fad2efdece2e3f0af5e7f91999",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "pass",
+    "contract_id": "ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313",
+    "error_type": "none",
+    "goal_delta": 1,
+    "resolution_note": "Added FreshFrequencyHarmonicPressureDecompositionSource, theorem harmonicReserveSource_le_decompositionReserve_of_decompositionSource, and constructor into FreshFrequencyHarmonicPressureReserveSource; Lean check and lake build passed.",
+    "resolved_at": "2026-05-13T23:41:46Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:41:46Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "Hooke",
+      "brier": 0.31360000000000005,
+      "cost_error_agent_minutes": 86.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 100.0,
+      "log_score": -0.8209805520698302,
+      "p_success": 0.44,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "McClintock",
+      "brier": 0.30250000000000005,
+      "cost_error_agent_minutes": 34.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 48.0,
+      "log_score": -0.7985076962177716,
+      "p_success": 0.45,
+      "success_bool": true
+    }
+  ]
+}

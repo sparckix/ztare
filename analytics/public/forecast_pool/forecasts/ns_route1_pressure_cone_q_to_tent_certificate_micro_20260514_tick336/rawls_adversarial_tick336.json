@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_adversarial_tick336",
+  "contract_id": "ns_route1_pressure_cone_q_to_tent_certificate_micro_20260514_tick336",
+  "contract_question": "Will we bridge the pressure/Riesz cone local-quadratic payment source to the existing Route1LocalQuadraticTentExcessCertificate without duplicating CKN/tent machinery?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 76.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "already_have_reduced_input_but_not_pressure_cone": 0.3,
+    "build_regression": 0.2,
+    "proof_is_wiring_only": 0.2,
+    "shape_mismatch_between_pressureSmall_and_overflow": 0.3
+  },
+  "forecasted_at": "2026-05-14T03:10:52Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.22,
+  "p_success": 0.57,
+  "rationale_short": "There is existing tent-excess machinery, but connecting it to the pressure-cone overflow source may remain a conditional wiring theorem unless overflow/Q payment constants are made explicit.",
+  "read_only_attestation": true
+}

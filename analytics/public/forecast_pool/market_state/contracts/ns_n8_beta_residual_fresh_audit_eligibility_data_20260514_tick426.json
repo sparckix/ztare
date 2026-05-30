@@ -1,0 +1,219 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T22:41:16Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.0,
+    "expected_value": -19.406894688999355,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.455,
+    "p_needs_new_lemma": 0.8300000000000001,
+    "p_regression": 0.2,
+    "p_success": 0.6280789507857601,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_proof_frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426/codex_rd.json",
+        "forecasted_at": "2026-05-14T22:41:10Z",
+        "p_success": 0.7,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "ns_proof_frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T22:41:10Z",
+        "p_success": 0.55,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tautological_eligibility",
+        "p": 0.15
+      },
+      {
+        "mode": "dependent_match_theorem_syntax",
+        "p": 0.125
+      },
+      {
+        "mode": "dependent_type_failure",
+        "p": 0.11
+      },
+      {
+        "mode": "overclaim",
+        "p": 0.11
+      },
+      {
+        "mode": "eligibility_tautology",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T22:40:55Z",
+    "created_by": "codex_rd",
+    "horizon": "same RD tick 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff the tick adds a compiling no-sorry Lean structure for residual-fresh audit eligibility, plus projection to ResidualFreshExcessSameLedgerAuditEventSource and at least one concrete same-ledger event-index/matching theorem; false if it remains a pure Prop wrapper, overclaims analytic event selection, or Lean fails.",
+    "question": "Will tick426 add a compiling Lean surface that lowers residualBranchCreatesAuditSelection to per-node residual-fresh audit eligibility data and derives the same-ledger event index plus bad-node/weight/gain matches?",
+    "success_threshold": "Lean compiles; no sorry/admit; git diff check clean; residual fresh node eligibility is explicit; event index and at least bad-node match are derived from existing FreshPacketAuditSameEventStreamCoherence.",
+    "task_type": "ns_proof_frontier_lean_surface"
+  },
+  "contract_id": "ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed with a per-node eligibility surface and derived coherence facts.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_proof_frontier",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-14T22:41:10Z",
+        "p_success": 0.7,
+        "rationale_short": "Existing coherence receipt has the exact index and matching fields; eligibility data can expose the missing bridge without full analytic proof. Dependent theorem syntax is the main compile risk.",
+        "specific_failure_mode_ids": [
+          "dependent_match_theorem_syntax",
+          "pure_prop_wrapper",
+          "eligibility_tautology",
+          "pressure_only_smuggling",
+          "logging_gap",
+          "overclaim"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed only if concrete index/match theorems are derived; otherwise stop.",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns_proof_frontier",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T22:41:10Z",
+        "p_success": 0.55,
+        "rationale_short": "Eligibility can still be a name for the thing we need. It earns value only if it connects residual nodes to existing audit/coherence fields and keeps pressure/flat alternatives out.",
+        "specific_failure_mode_ids": [
+          "tautological_eligibility",
+          "dependent_type_failure",
+          "pressure_flat_branch_hidden",
+          "no_new_information",
+          "overclaim"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 21.0,
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "meta_darwin_proxy",
+      "banach_gpt55_xhigh"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T22:43:45Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.15,
+      "p_success": 0.6280789507857601,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "tautological_eligibility",
+        "p": 0.15
+      },
+      "voi_proxy": 9.3836
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6280789507857601,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tautological_eligibility",
+        "p": 0.15
+      },
+      {
+        "mode": "dependent_match_theorem_syntax",
+        "p": 0.125
+      },
+      {
+        "mode": "dependent_type_failure",
+        "p": 0.11
+      },
+      {
+        "mode": "overclaim",
+        "p": 0.11
+      },
+      {
+        "mode": "eligibility_tautology",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.14625,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T22:43:49Z"
+  }
+}

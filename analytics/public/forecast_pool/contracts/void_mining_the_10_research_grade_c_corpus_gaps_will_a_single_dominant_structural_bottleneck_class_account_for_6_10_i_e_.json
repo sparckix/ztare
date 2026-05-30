@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json",
+    "contract": "analytics/public/forecast_pool/contracts/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_",
+    "outcome": "analytics/public/forecast_pool/outcomes/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json",
+    "score": "analytics/public/forecast_pool/scores/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T20:22:47Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0426,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "voidmine_c_gaps_bottleneck",
+    "score": 0.0426,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0426,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0426,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0417,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0333,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0333,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.027,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.027,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0233,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.0233,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual structural classification of the 10 C-gaps by missing-capability class, recorded in F-row",
+  "question": "Void-mining the 10 research-grade C-corpus gaps: will a SINGLE dominant structural bottleneck class account for >=6/10 (i.e. the gaps are one improvable failure mode, not scattered)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "voidmine_c_gaps_bottleneck",
+  "value_if_success": 0.75,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

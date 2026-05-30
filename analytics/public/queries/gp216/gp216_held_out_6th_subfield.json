@@ -1,0 +1,268 @@
+{
+  "experiment": "gp216_held_out_6th_subfield_probability_ito",
+  "n_shared_core_ops": 7,
+  "n_broadly_shared_ops": 7,
+  "n_total_vocab": 14,
+  "results": [
+    {
+      "arc": "ito_calculus",
+      "shared_core_pct": 30.0,
+      "shared_plus_broadly_pct": 10.0,
+      "shared_core_ops_used": [
+        "core_02",
+        "core_03"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_07",
+        "core_06"
+      ],
+      "moves": [
+        {
+          "name": "Define on Simple Forms",
+          "signature": "Establish the operation's meaning for a tractable, elementary subset of the domain.",
+          "anchor": "define integral as ... simple-process integrals"
+        },
+        {
+          "name": "Isolate a Core Invariant",
+          "signature": "Identify a structural property that remains constant or scales predictably under the defined operation for the simple case.",
+          "anchor": "prove isometry property"
+        },
+        {
+          "name": "Generalize by Approximation",
+          "signature": "Define the operation for a broader class of inputs by treating them as the limit of a sequence of simpler inputs.",
+          "anchor": "extend by completion"
+        },
+        {
+          "name": "Preserve Structure in Limit",
+          "signature": "Ensure a core structural property holds for the generalized operation by demonstrating its stability through the limiting process.",
+          "anchor": "preserved structure through limits"
+        },
+        {
+          "name": "Specify Operational Constraints",
+          "signature": "Explicitly state the conditions or class of inputs for which the new framework is valid.",
+          "anchor": "for non-anticipating integrands"
+        },
+        {
+          "name": "Apply a Standard Expansion",
+          "signature": "Employ a well-established decomposition technique from a related field to analyze the new structure.",
+          "anchor": "via Taylor expansion"
+        },
+        {
+          "name": "Identify the Anomaly",
+          "signature": "Recognize a new, non-classical term that emerges from applying standard tools to the unique properties of the new domain.",
+          "anchor": "The dt-correction term"
+        },
+        {
+          "name": "Ground Anomaly in Axioms",
+          "signature": "Explain the origin of the novel term by tracing it back to a fundamental, defining property of the underlying system.",
+          "anchor": "arises from the quadratic variation [B,B]_t = t"
+        },
+        {
+          "name": "Leverage Probabilistic Identity",
+          "signature": "Justify a pathwise relationship by appealing to the average behavior or expectation-based properties of the underlying random process.",
+          "anchor": "martingale property of Brownian increments"
+        },
+        {
+          "name": "Codify the Central Formula",
+          "signature": "Synthesize the core discovery into a concise, powerful equation that becomes the signature result of the new framework.",
+          "anchor": "proving the It\u00f4 formula"
+        }
+      ]
+    },
+    {
+      "arc": "kolmogorov_axioms",
+      "shared_core_pct": 77.77777777777779,
+      "shared_plus_broadly_pct": 88.88888888888889,
+      "shared_core_ops_used": [
+        "core_06",
+        "core_01",
+        "core_07",
+        "core_03"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_06",
+        "core_01",
+        "core_07",
+        "core_03",
+        "broad_05"
+      ],
+      "moves": [
+        {
+          "name": "Establish Foundational Rules",
+          "signature": "Define a system's behavior through a small set of self-consistent, fundamental principles or axioms.",
+          "anchor": "axiomatic foundation"
+        },
+        {
+          "name": "Import External Structure",
+          "signature": "Apply a well-developed formal system from one domain to provide structure and rigor to another.",
+          "anchor": "import abstract measure theory"
+        },
+        {
+          "name": "Translate Core Concepts",
+          "signature": "Map the components of an imported framework to the native concepts of the target domain.",
+          "anchor": "reinterpret the axioms in probability language"
+        },
+        {
+          "name": "Unify Disparate Cases",
+          "signature": "Demonstrate that previously distinct phenomena or models are special instances of a single, more general framework.",
+          "anchor": "structural unification of disparate probability traditions"
+        },
+        {
+          "name": "Define a Composite Object",
+          "signature": "Specify a central entity as a formal tuple of well-defined components and their relationships.",
+          "anchor": "a probability space is a triple (\u03a9, F, P)"
+        },
+        {
+          "name": "Impose Structural Constraints",
+          "signature": "Introduce specific rules or properties that components of the system must satisfy to ensure coherence.",
+          "anchor": "F is a \u03c3-algebra"
+        },
+        {
+          "name": "Redefine Native Concepts",
+          "signature": "Re-express existing concepts within the new foundational system, giving them a more rigorous or general meaning.",
+          "anchor": "Random variables are measurable functions"
+        },
+        {
+          "name": "Equate Operations",
+          "signature": "Show that a familiar operation in the target domain is equivalent to a more powerful or general operation in the source framework.",
+          "anchor": "expectations are Lebesgue integrals"
+        },
+        {
+          "name": "Repurpose an Advanced Tool",
+          "signature": "Use a powerful construct from the source framework to solve a specific, complex problem in the target domain.",
+          "anchor": "conditional expectation as Radon-Nikodym derivative"
+        }
+      ]
+    },
+    {
+      "arc": "large_deviations",
+      "shared_core_pct": 44.44444444444444,
+      "shared_plus_broadly_pct": 55.55555555555556,
+      "shared_core_ops_used": [
+        "core_01",
+        "core_07",
+        "core_05"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "broad_01",
+        "core_07",
+        "broad_04",
+        "core_01"
+      ],
+      "moves": [
+        {
+          "name": "Establish Scaling Law",
+          "signature": "Posit that a system's behavior at scale follows a predictable, often exponential, relationship governed by a core function.",
+          "anchor": "the rare-event probabilities decay exponentially with a rate function I"
+        },
+        {
+          "name": "Define Cost Function",
+          "signature": "Introduce a function that quantifies the difficulty, cost, or improbability of achieving a particular state or outcome.",
+          "anchor": "a rate function I"
+        },
+        {
+          "name": "Employ Duality Transform",
+          "signature": "Use a mathematical transformation to switch between two complementary descriptions of a system, revealing underlying structure.",
+          "anchor": "I is the Legendre transform of the log-MGF"
+        },
+        {
+          "name": "Generalize Core Principle",
+          "signature": "Apply a foundational principle, previously established in a simpler context, to a more complex or abstract class of systems.",
+          "anchor": "Cram\u00e9r's theorem: for i.i.d. sums... Sanov: for empirical measures... Donsker-Varadhan: for Markov processes"
+        },
+        {
+          "name": "Identify Concrete Form",
+          "signature": "Show that a general, abstract function or principle takes the form of a specific, well-understood entity in a particular context.",
+          "anchor": "the rate function is relative entropy"
+        },
+        {
+          "name": "Propagate Through Mapping",
+          "signature": "Determine the properties of a transformed system by applying a consistent rule to the properties of the original system.",
+          "anchor": "contraction principle (transport rate function under continuous maps)"
+        },
+        {
+          "name": "Establish Bounding Argument",
+          "signature": "Constrain the value of an unknown quantity by proving it is simultaneously greater than a lower limit and less than an upper limit.",
+          "anchor": "upper bound via Markov inequality; lower bound via tilted measures"
+        },
+        {
+          "name": "Shift Governing Framework",
+          "signature": "Temporarily alter the underlying rules or reference frame of a system to make a difficult-to-analyze phenomenon become typical and easier to study.",
+          "anchor": "exponential change of measure"
+        },
+        {
+          "name": "Reframe as Optimization",
+          "signature": "Convert a problem of direct calculation into a search for an optimal value within a defined space of possibilities.",
+          "anchor": "variational characterization of probabilities"
+        }
+      ]
+    },
+    {
+      "arc": "kpz_universality",
+      "shared_core_pct": 77.77777777777779,
+      "shared_plus_broadly_pct": 77.77777777777779,
+      "shared_core_ops_used": [
+        "core_01",
+        "core_07",
+        "core_04"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_07",
+        "core_01",
+        "core_04"
+      ],
+      "moves": [
+        {
+          "name": "Formalize Forbidden Operations",
+          "signature": "Introduce a new symbolic or abstract system where previously undefined operations are given rigorous meaning.",
+          "anchor": "gives meaning to products of distributions"
+        },
+        {
+          "name": "Introduce Novel Primitives",
+          "signature": "Define a new class of fundamental objects to represent and manipulate problematic elements of a system.",
+          "anchor": "introduce new mathematical objects"
+        },
+        {
+          "name": "Broaden a Proven Tool",
+          "signature": "Abstract the core principles from a successful but narrow method to create a more general and powerful framework.",
+          "anchor": "generalizing rough-path theory"
+        },
+        {
+          "name": "Substitute Symbols for Objects",
+          "signature": "Replace direct manipulation of complex objects with operations on a well-behaved symbolic representation.",
+          "anchor": "algebra of formal symbols representing irregular distributions"
+        },
+        {
+          "name": "Assemble from Local Rules",
+          "signature": "Construct a global solution or object by ensuring consistency among its local components or descriptions.",
+          "anchor": "reconstruct solutions via consistent localizations"
+        },
+        {
+          "name": "Propose a Unifying Structure",
+          "signature": "Develop a comprehensive system that organizes and provides a consistent approach to a class of previously ad-hoc problems.",
+          "anchor": "structural framework for regularity"
+        },
+        {
+          "name": "Demonstrate Common Destination",
+          "signature": "Prove that disparate systems or processes evolve towards a single, canonical endpoint or state.",
+          "anchor": "convergence to fixed point"
+        },
+        {
+          "name": "Define an Equivalence Class",
+          "signature": "Group seemingly different models by demonstrating they share the same fundamental behavior under certain limits.",
+          "anchor": "many growth models... have the same scaling limits"
+        },
+        {
+          "name": "Rigorize Heuristic Knowledge",
+          "signature": "Replace informal, intuitive, or non-rigorous solutions with a formally proven and well-defined method.",
+          "anchor": "exact solution had been heuristic for decades"
+        }
+      ]
+    }
+  ],
+  "mean_shared_core_pct": 57.5,
+  "mean_shared_plus_broadly_pct": 58.05555555555556,
+  "comparison_oos_baseline": 43.0,
+  "comparison_in_subfield_baseline": 62.0,
+  "verdict": "SHARED-CORE HYPOTHESIS HOLDS \u2014 shared-core covers held-out 6th subfield at 58%; shared+broadly covers at 58% (above OOS baseline of 43%). The vocabulary IS becoming generic when mined across subfields. Path A+B works."
+}

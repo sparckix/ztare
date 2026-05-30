@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json",
+    "contract": "analytics/public/forecast_pool/contracts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu",
+    "outcome": "analytics/public/forecast_pool/outcomes/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json",
+    "score": "analytics/public/forecast_pool/scores/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T21:24:27Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0444,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "grounded_iterative_loop_h2_residual",
+    "score": 0.0444,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0444,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0444,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0357,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0357,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0303,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0303,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0294,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0294,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.027,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.027,
+        "score_rows": 140,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "verify final C15/C06 proofs through canonical v4.29.0 + exact? adjudication",
+  "question": "Bounded grounded-ITERATIVE typed-assembly (assemble->compile->read v4.29.0 error->fix, <=6 iters/row) on the post-name H2 residual C15(Basel reindex) + C06(legendreSym chi4 iff), correct names already harvested: will >=1/2 close GENUINE in the canonical pinned v4.29.0 sandbox \u2014 validating the lever as grounded-iterative (not just name-resolution)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "grounded_iterative_loop_h2_residual",
+  "value_if_success": 0.9,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

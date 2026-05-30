@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+  "contract_question": "Can xhigh pull forward ActiveSingularResidualDensityGap by proving the RN density route, killing it with a route-native countermodel, or isolating the exact compactness/lsc sublemma below density failure?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 36.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compactness_lsc_sublemma_found": 0.28,
+    "density_gap_restated": 0.2,
+    "fifth_channel_formalized": 0.22,
+    "proof_route_actual": 0.12,
+    "route_native_countermodel": 0.18
+  },
+  "forecasted_at": "2026-05-14T13:12:33Z",
+  "p_dependency_issue": 0.46,
+  "p_needs_new_lemma": 0.93,
+  "p_regression": 0.06,
+  "p_success": 0.43,
+  "rationale_short": "GPT gives exact RN density route; sidecar likely reduces to compactness/LSC sublemmas or fifth-channel criterion, not proof.",
+  "read_only_attestation": true
+}

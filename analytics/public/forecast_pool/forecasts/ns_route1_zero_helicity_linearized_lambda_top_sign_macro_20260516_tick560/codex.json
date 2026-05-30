@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560",
+  "contract_question": "Channel 5 (genuine extra-scaling spectral input): route-1 Clay closure (narrow Track-B) reduces to sign(lambdaTop), the principal eigenvalue of the explicit self-similar zero-helicity linearized transverse operator L = -nu*Delta + (U.grad) - partial_z^2 p[U]. lambdaTop is scale-invariant by the self-similar symmetry (NOT a scaling-pinned homogeneity endpoint, unlike the 4 collapsed channels). Is lambdaTop>0 strict (transverse mode grows => theta<1 => PROVED tick559->558->552->551 => closure) or lambdaTop<=0 (zero helicity removes vortex stretching => transverse-stable => Ghost survives)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "hidden_normalization_gap_or_stale_reformulation": 0.08,
+    "missing_boundary_or_domain_data_for_operator_sign": 0.17,
+    "needs_new_coercivity_or_compactness_lemma": 0.31,
+    "transverse_stability_from_zero_helicity_no_stretching": 0.44
+  },
+  "forecast_externality_tags": [
+    "zero-helicity-transverse-stability",
+    "spectral-gap",
+    "missing-coercivity-witness"
+  ],
+  "forecasted_at": "2026-05-16T00:23:35Z",
+  "p_dependency_issue": 0.11,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.03,
+  "p_success": 0.24,
+  "rationale_short": "The contract is an explicit spectral sign question, but the supplied artifacts do not expose a probability DAG, boundary/domain conditions, or a coercivity/compactness witness for the operator. Zero helicity makes transverse stability plausible, so the priced center stays on lambdaTop<=0 unless a new spectral lemma is found; that keeps success below one-third and the main risk in lemma discovery rather than regression.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

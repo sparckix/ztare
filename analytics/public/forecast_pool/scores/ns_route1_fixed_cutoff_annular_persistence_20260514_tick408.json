@@ -1,0 +1,139 @@
+{
+  "contract_id": "ns_route1_fixed_cutoff_annular_persistence_20260514_tick408",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue ad hoc N1 reasoning without a scored contract",
+      "counterfactual_action": "run a scored N1 persistence proof attempt with sidecar reuse and Darwin residual logging",
+      "externality_hypotheses": {
+        "negative": "may reveal that pointwise tailSquare needs an extra trace or inherited-energy residual",
+        "positive": "may turn tail-square persistence from broad wrapper into a fixed-cutoff annular packet-energy estimate"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "rd_codex",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "gp-233:positive:n1-proof-surface",
+        "gowers-first-dag",
+        "sidecar-reuse"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "sup-tail-needs-trace-or-inherited-charge",
+        "n2-no-double-counting-still-source",
+        "branch-dominance-open"
+      ],
+      "new_next_action": "prove averaged persistence directly or prove pointwise backward-Duhamel/Gronwall trace; then prove concrete N2 aggregate schedule budget and branch dominance",
+      "old_next_action": "treat FixedCutoffAnnularPacketEnergyPersistenceSource as a single opaque field",
+      "preconditioner_effect": "Separated averaged tail square from pointwise/sup trace, lowered N2 away from a compressed schedule budget field, and wired persistence charges directly into same-carrier schedule control.",
+      "preconditioner_source": "GP-230 forecasts, reused N1/N2 sidecars, PATTERN-025 dependency DAG",
+      "realized_failure_mode_ids": [
+        "trace_or_sup_tail_square_not_paid",
+        "persistence_trace_too_broad",
+        "same_packet_identity_missing"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.22250000000000003,
+  "mean_log_score": -0.637734403015503,
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "artifact_hash": "c1f63b9e6b2e743891cf341a7fc15c027a0759ac4b593f888e34705474a670b6",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/route1_fixed_cutoff_annular_persistence_proof_attempt_20260514.md",
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "compile_status": "lean_pass",
+    "contract_id": "ns_route1_fixed_cutoff_annular_persistence_20260514_tick408",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "gp-233:positive:n1-proof-surface",
+      "gowers-first-dag",
+      "sidecar-reuse"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "sup-tail-needs-trace-or-inherited-charge",
+      "n2-no-double-counting-still-source",
+      "branch-dominance-open"
+    ],
+    "new_next_action": "prove averaged persistence directly or prove pointwise backward-Duhamel/Gronwall trace; then prove concrete N2 aggregate schedule budget and branch dominance",
+    "old_next_action": "treat FixedCutoffAnnularPacketEnergyPersistenceSource as a single opaque field",
+    "preconditioner_effect": "Separated averaged tail square from pointwise/sup trace, lowered N2 away from a compressed schedule budget field, and wired persistence charges directly into same-carrier schedule control.",
+    "preconditioner_source": "GP-230 forecasts, reused N1/N2 sidecars, PATTERN-025 dependency DAG",
+    "realized_failure_mode_ids": [
+      "trace_or_sup_tail_square_not_paid",
+      "persistence_trace_too_broad",
+      "same_packet_identity_missing"
+    ],
+    "resolution_note": "Saved math-first N1 persistence proof packet. Split Lean surface into averaged packet persistence and pointwise/sup trace persistence, added PointwiseTailSquarePersistenceGap, lowered N2 to a concrete aggregate budget source, and added a direct persistence-to-same-carrier schedule control projection. Lean route1 adapter compiles; no sorry/admit; upstream branch dominance remains open.",
+    "resolved_at": "2026-05-14T19:34:50Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:34:55Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.2601,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.6,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7133498878774648,
+      "p_success": 0.49,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:26:06Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:26:21Z",
+        "resolved_at": "2026-05-14T19:34:50Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "rd_codex",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 13.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.34,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:26:06Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:26:21Z",
+        "resolved_at": "2026-05-14T19:34:50Z"
+      }
+    }
+  ]
+}

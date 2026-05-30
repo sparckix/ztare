@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Run gate as residual classifier only; if it agrees, avoid more gate work and attack event-section/Duhamel reservoir source.",
+  "agent_id": "codex_rd_language_gate",
+  "contract_id": "ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+  "contract_question": "Can the next NS tick use the GP-216/219 language gates on the compiled lineage-reservoir surface to sharpen the next route-1 action: prove event-section/Duhamel reservoir source vs promote recurrent reuse as fifth channel?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cpu_overuse": 0.15,
+    "gate_no_decision_delta": 0.3,
+    "input_too_synthetic": 0.2,
+    "lean_followup_not_needed": 0.17,
+    "overclaims_gate_as_proof": 0.18
+  },
+  "forecast_externality_tags": [
+    "residual_language_feedback",
+    "gate_value_test"
+  ],
+  "forecasted_at": "2026-05-14T15:29:11Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.81,
+  "p_regression": 0.05,
+  "p_success": 0.74,
+  "rationale_short": "The compiled surface already contains the relevant auxiliary object and threshold split, so the gate should pass and mostly serve to validate that the residual remains PDE theorem work, not language work.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "gate_no_decision_delta",
+    "overclaims_gate_as_proof",
+    "lineage_reservoir_missing_theorem"
+  ]
+}

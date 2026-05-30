@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 545,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level544 still carries an arbitrary support Finset with membership iff and range subset laws",
+    "check": "define support as Finset.range filtered by eventToBadNode equality and derive nonempty, range membership, and membership iff from filter laws"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level545_filtered_range_event_preimage_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level545_provenance_edge_direction_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level545_filtered_range_event_preimage"
+  },
+  "anti_pattern_guards": [
+    "no arbitrary support Finset",
+    "no carried membership iff without filter derivation",
+    "no downstream Level544 source dependency",
+    "no post-payoff selected-node prefix event"
+  ],
+  "positive_forecast": "If every occurrence of a selected bad node lies in the fixed final-prefix range, the concrete filtered-range support fiber supplies Level544."
+}

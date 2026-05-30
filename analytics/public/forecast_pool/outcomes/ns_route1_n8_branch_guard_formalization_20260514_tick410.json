@@ -1,0 +1,34 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "32994a6c2b9f7c0e5126a6b881f0614dc15bdb40beb77e199abadf3d42f9aebf",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_route1_n8_branch_guard_formalization_20260514_tick410",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "overclaim-prevention",
+    "n8-branch-visibility",
+    "machine-visible-stop-conditions"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "n8-not-closed",
+    "guard-only-no-pde-closure"
+  ],
+  "new_next_action": "Wait for actual N8 closure attempt; locally attack scalar failure semantics and single-use lineage accounting only",
+  "old_next_action": "Potentially continue route1 wrappers",
+  "preconditioner_effect": "Kept the edit to guard surfaces and prevented route1-to-critical-increment overclaim",
+  "preconditioner_source": "Meta-Darwin/N8 inversion packet",
+  "realized_failure_mode_ids": [
+    "route1_boundary_already_encoded"
+  ],
+  "resolution_note": "Added compiling N8 branch guard and branch-exhaustion surfaces: Route1ClosedFromSchedulePincer, CriticalIncrementBranchExhaustion, CriticalIncrementClosedFromBranchExhaustion, and specific CKN/pressure/beta/unfresh/reuse guard structures. This is guard formalization only, not N8 closure.",
+  "resolved_at": "2026-05-14T20:07:35Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

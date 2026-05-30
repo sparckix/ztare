@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_lamport_gp225_v1973",
+  "contract_id": "gp225_v1973_lane_specific_small_replay",
+  "contract_question": "Will the v19.72 lane-specific candidate packet replay improve over v19.69 by reaching compile_rate>=0.08 and producing at least one fresh strict target-state or closure-conversion label, with harmful mismatches zero and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "closure_conversion_still_zero": 0.24,
+    "compile_rate_below_0_08": 0.18,
+    "fresh_strict_label_zero": 0.14,
+    "lane_specific_candidates_still_generic": 0.3,
+    "other": 0.08,
+    "runtime_or_hydration_regression": 0.06
+  },
+  "forecasted_at": "2026-05-14T03:43:00Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.29,
+  "rationale_short": "The packet is better scoped but still mostly heuristic tactics. It may improve compile rate, but fresh strict labels beyond the known simp/range case and closure conversion remain unlikely.",
+  "read_only_attestation": true
+}

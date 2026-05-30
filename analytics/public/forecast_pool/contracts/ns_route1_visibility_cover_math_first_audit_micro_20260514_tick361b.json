@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json"
+  },
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b",
+  "cost_penalty": 1.0,
+  "created_at": "2026-05-14T12:40:15Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 56.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 56.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 124,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1034,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-14T23:59:00-04:00",
+  "information_value": 7.0,
+  "layer": "micro",
+  "objective_resolver": "success iff a workspace note is written with eigenquestion, proof attempt, first illegal inference/countermodel, corrected theorem surface, and next PDE sublemmas; no Lean edits required",
+  "question": "Can a math-first Gowers-style audit of the route-1 critical-tail visibility cover identify whether it is a proof route, no-go, or missing-hypothesis surface, and define the next non-tautological PDE theorem without new Lean?",
+  "risk_penalty": 1.0,
+  "success_threshold": "math_first_note_with_verdict_and_next_theorem",
+  "task_type": "ns_route1_pde",
+  "value_if_success": 6.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 14.0,
+  "artifact_hash": "45348813bcb679a4c2cbfafc631ca2753e20ffcd44d947a5d62fd4e44fe972aa",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_n8_beta_same_tree_adapter_20260514_tick418",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "beta-adapter",
+    "reuse-existing-L3-source",
+    "eventized-constructive-data",
+    "frontier-sharpening"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "adapter-only-no-source-proof",
+    "beta-not-closed"
+  ],
+  "new_next_action": "Source EventizedParabolicBetaCarlesonQuantStratConstructiveData: scale truncations, incidence geometry, monotone beta carrier, cofinal prefixes, same-carrier pressure/Duhamel, and no post-hoc matching",
+  "old_next_action": "Attack generic BadCenterWeightedSquareIncidenceFailure",
+  "preconditioner_effect": "Moved beta next theorem from generic weighted-square incidence to sourcing EventizedParabolicBetaCarlesonQuantStratConstructiveData and its same-carrier inputs",
+  "preconditioner_source": "Scientific-amnesia precheck found existing L3 same-tree incidence, eventized constructive data, and beta Carleson constructors",
+  "realized_failure_mode_ids": [
+    "adapter_only_no_source_proof"
+  ],
+  "resolution_note": "Added BadCenterBetaSameTreeIncidenceAdapterSource, projections betaWeightedSquareDomination_of_sameTreeIncidence and betaCarlesonDrop_of_sameTreeEventBudgetedPrefixData, plus the stronger projection sameTreeIncidence_of_eventizedConstructiveData and BetaBranchReducedToEventizedConstructiveData. Lean passed; no sorry/admit introduced. This reuses existing L3 same-tree/eventized constructors and reduces the beta next theorem to EventizedParabolicBetaCarlesonQuantStratConstructiveData, not beta closure.",
+  "resolved_at": "2026-05-14T21:38:23Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

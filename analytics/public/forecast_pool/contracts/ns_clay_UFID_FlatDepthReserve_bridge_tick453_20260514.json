@@ -1,0 +1,34 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514.json"
+  },
+  "baseline_action": "Ship UFID + FlatDepthReserveLike.ofUFID bridge with omega-discharged depth_child_le and induction-discharged finite radius packing; honest scope guards.",
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Skip; chain NoSilentFlatDefectProfile -> UFID -> FlatDepthReserve remains broken at the middle link.",
+  "created_at": "2026-05-15T03:30:00Z",
+  "created_by": "claude_principal",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14 EOD",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "lean_compile_plus_sorry_admit_scan_clean",
+  "question": "Can a UniformFlatInheritanceDepth structure + FlatDepthReserveLike.ofUFID bridge def + finite radius packing theorem be shipped in a new self-contained Lean file with omega/linarith-discharged verification (no Prop wrappers in the core inequalities, no sorry/admit)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_clay_bridge_construction",
+  "value_if_success": 1.0,
+  "void_conditions": "Toolchain timeout > 30 min OR namespace collision with tick451/452/454"
+}

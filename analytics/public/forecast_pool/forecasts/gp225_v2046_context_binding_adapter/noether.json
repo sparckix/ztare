@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Proceed with static context-binding adapter; do not replay until it emits canary split.",
+  "agent_id": "Noether",
+  "contract_id": "gp225_v2046_context_binding_adapter",
+  "contract_question": "If we build v20.46 context-binding/source-hinge adapter for the v20.44 blocked-row source candidates, will it classify all 10 candidates and surface at least one no-replay canary-eligible candidate while keeping replay/training blocked?",
+  "domain": "gp225_pre_gnn_context_binding",
+  "expected_cost_agent_minutes": 23.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "canary_eligibility_overstated": 0.22,
+    "candidate_context_not_available": 0.35,
+    "row_specific_overfit": 0.15,
+    "source_hinge_binding_too_shallow": 0.28
+  },
+  "forecast_externality_tags": [
+    "context_binding",
+    "replay_budget_guard"
+  ],
+  "forecasted_at": "2026-05-14T17:33:55Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.03,
+  "p_success": 0.72,
+  "rationale_short": "v20.45 identified context mismatch as top replay risk, and v20.44 already has structured source hinges; static classification should be cheaper than replay.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "candidate_context_not_available",
+    "source_hinge_binding_too_shallow"
+  ]
+}

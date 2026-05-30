@@ -1,0 +1,58 @@
+{
+  "contract_id": "gp225_v1960_deterministic_scope_template_replay",
+  "mean_brier": 0.34,
+  "mean_log_score": -0.8778102113060909,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "9c49c476d8025a50ad2592a3590b755c4e2fedc62d41541fe7977b745a79f6dc",
+    "artifact_path": "analytics/public/leanmill/results/v1960_deterministic_scope_template_replay.json",
+    "compile_status": "target_state_label_no_full_closure",
+    "contract_id": "gp225_v1960_deterministic_scope_template_replay",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Resolved true: deterministic scope-template packet emitted 3 candidates across 2 rows; replay attempted 3, found 1 new strict target-state label, 0 pull-forward closures, 0 harmful compiled mismatches, no forbidden source fields, train_gnn_now=false. Full compiled closure count remains 0, so this is target-state label progress only.",
+    "resolved_at": "2026-05-14T02:53:46Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T02:53:52Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "gp230_babbage_gp225_v1960",
+      "brier": 0.27040000000000003,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 22.0,
+      "log_score": -0.7339691750802004,
+      "p_success": 0.48,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T02:50:36Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T02:52:49Z",
+        "resolved_at": "2026-05-14T02:53:46Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "gp230_lovelace_gp225_v1960",
+      "brier": 0.4096,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 18.0,
+      "log_score": -1.0216512475319814,
+      "p_success": 0.36,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T02:50:36Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T02:52:49Z",
+        "resolved_at": "2026-05-14T02:53:46Z"
+      }
+    }
+  ]
+}

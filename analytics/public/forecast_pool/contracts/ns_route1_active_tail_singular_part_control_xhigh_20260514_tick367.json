@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-14T13:05:04Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "xhigh_math_pullforward",
+    "score": 0.0,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same session",
+  "information_value": 0.7,
+  "layer": "meso",
+  "objective_resolver": "success iff sidecar returns a nontrivial proof route, countermodel/fifth-channel witness, or concrete mapping to existing profile residual primitives; not success for restating Lebesgue decomposition",
+  "question": "Can xhigh pull forward ActiveTailSingularPartControlledByProfileResidual by proving control of mu_A_perp by mu_I, producing a valid V_A_perp countermodel, or mapping mu_I to existing profile residual primitives?",
+  "risk_penalty": 1.0,
+  "success_threshold": "new proof route/countermodel/profile-residual mapping",
+  "task_type": "xhigh_math_pullforward",
+  "value_if_success": 1.0,
+  "void_conditions": "agent unavailable, operator redirects, or no sidecar response"
+}

@@ -1,0 +1,114 @@
+{
+  "contract_id": "gp225_v2071_post_bayesRisk_union_heldout_delta_packet",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "stop at v20.70 union gate",
+      "counterfactual_action": "write v20.71 post-bayesRisk heldout delta packet before any training"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "anti_goodhart",
+        "training_delta_triage",
+        "heldout_policy_delta"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "parallelize label-inventory, heldout candidate-content delta, and null-training-baseline gates; keep GNN blocked",
+      "old_next_action": "start or discuss GNN training after 15 strict rows",
+      "preconditioner_effect": "v20.70 forced heldout-policy evidence before training, preventing row-count Goodharting.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+      "realized_failure_mode_ids": [
+        "no_replayable_policy_delta"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.038650000000000004,
+  "mean_log_score": -0.21739546874499655,
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "artifact_hash": "7f6104fa70bfa2711ba4994e4daeef90fea8ee4fe5a854825f2cdf34ba2a7ec6",
+    "artifact_path": "analytics/public/leanmill/results/v2071_post_bayesRisk_union_heldout_delta_packet.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": "py_compile_passed",
+    "contract_id": "gp225_v2071_post_bayesRisk_union_heldout_delta_packet",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "anti_goodhart",
+      "training_delta_triage",
+      "heldout_policy_delta"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "parallelize label-inventory, heldout candidate-content delta, and null-training-baseline gates; keep GNN blocked",
+    "old_next_action": "start or discuss GNN training after 15 strict rows",
+    "preconditioner_effect": "v20.70 forced heldout-policy evidence before training, preventing row-count Goodharting.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+    "realized_failure_mode_ids": [
+      "no_replayable_policy_delta"
+    ],
+    "resolution_note": "v20.71 passed as a no-replay/no-training post-bayesRisk heldout delta packet. It found 0/5 replayable changed heldout policy arms from the bayesRisk strict row, preserved 15 strict rows, and routed to v20.72 parallel training-delta triage rather than GNN training.",
+    "resolved_at": "2026-05-14T19:14:56Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:15:06Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "Shannon4",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:12:17Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:12:29Z",
+        "resolved_at": "2026-05-14T19:14:56Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "Turing4",
+      "brier": 0.028900000000000012,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 16.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.18632957819149348,
+      "p_success": 0.83,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:12:17Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:12:29Z",
+        "resolved_at": "2026-05-14T19:14:56Z"
+      }
+    }
+  ]
+}

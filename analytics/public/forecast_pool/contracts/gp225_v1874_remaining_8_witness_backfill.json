@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1874_remaining_8_witness_backfill.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1874_remaining_8_witness_backfill.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1874_remaining_8_witness_backfill",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1874_remaining_8_witness_backfill.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1874_remaining_8_witness_backfill.json"
+  },
+  "budget_agent_minutes": 3.0,
+  "contract_id": "gp225_v1874_remaining_8_witness_backfill",
+  "cost_penalty": 2.0,
+  "created_at": "2026-05-13T17:38:01Z",
+  "created_by": "codex_RD_2026_05_13",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-13",
+  "information_value": 8.0,
+  "layer": "micro",
+  "objective_resolver": "analytics/public/leanmill/results/v1874_remaining_8_witness_backfill_runner.json metrics: rows_attempted=8, clean_target_labels>=5, static_prefilter_not_run_rows=0, true_false_accepts<=2, training_now=false, gnn_blocked=true",
+  "question": "Will v18.74 over the remaining 8 actionable GP-225 rows attempt all rows, harvest at least 5 clean closure/target witnesses, have at most 2 true false accepts, and keep GNN blocked pending baseline audit?",
+  "risk_penalty": 2.0,
+  "success_threshold": "rows_attempted==8 AND clean_target_labels>=5 AND static_prefilter_not_run_rows==0 AND true_false_accepts<=2 AND training_now==false AND gnn_blocked==true",
+  "task_type": "lean_witness_backfill_runner",
+  "value_if_success": 7.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

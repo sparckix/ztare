@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2501_micro_smoke_type_aware_canonical_0163_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2501_micro_smoke_type_aware_canonical_0163_micro.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2501_micro_smoke_type_aware_canonical_0163_micro.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2501_micro_smoke_type_aware_canonical_0163_micro.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 15.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T02:34:32Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2778,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "premise_selection_smoke_test",
+    "score": 0.2778,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2778,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.2778,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.2571,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.2571,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.093,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.1389,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1389,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.098,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.098,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "Bridge-verified Lean compile per v1953 + v24.01 indirect-leakage scan + rfl/tauto reproducibility check, all in-artifact.",
+  "question": "On canonical OPEN row current_scale_0163 (measurable_pdf), does ANY of 8 hand-curated candidate tactics (fun_prop, measurability, simp/exact variants on sibling measurability lemmas, NOT measurable_rnDeriv) produce a literal Lean-verified closure? Sub-question: does any literal closure pass the v24.01-style moat audit (not @[fun_prop]/@[simp]/@[grind=] tagged, not rfl/tauto reproducible)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "at-least-one-literal-closure-AND-at-least-one-moat-grade-closure-after-audit",
+  "task_type": "premise_selection_smoke_test",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

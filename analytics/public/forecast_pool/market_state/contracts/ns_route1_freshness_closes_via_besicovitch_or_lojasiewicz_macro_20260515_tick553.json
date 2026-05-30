@@ -1,0 +1,203 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:30Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 3.8300511837923796,
+      "forecast_spread": 0.03,
+      "p_success": 0.20459186396539655,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 3.1927
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": 3.8300511837923796,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.1,
+    "p_needs_new_lemma": 0.825,
+    "p_regression": 0.03,
+    "p_success": 0.20459186396539655,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553/claude_rd.json",
+        "forecasted_at": "2026-05-15T23:39:27Z",
+        "p_success": 0.22,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553/codex.json",
+        "forecasted_at": "2026-05-15T23:41:01Z",
+        "p_success": 0.19,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "non_besicovitch_nesting_or_overlap",
+        "p": 0.2
+      },
+      {
+        "mode": "localized_lojasiewicz_gamma_collapses_to_zero",
+        "p": 0.16
+      },
+      {
+        "mode": "one_new_gmt_or_pde_lemma_required",
+        "p": 0.09
+      },
+      {
+        "mode": "stale_or_underpriced_route1_event_tent_observables",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T23:39:27Z",
+    "created_by": "claude_rd",
+    "horizon": "30d",
+    "layer": "macro",
+    "objective_resolver": "GMT/PDE judgment (NOT a Lean tick \u2014 \u03a6-iterates proved futile tick549): does route-1's stopping-tree event-tent family meet Besicovitch eccentricity (cite GMT), OR does a localized \u0141ojasiewicz-Simon inequality give scale-invariant \u03b3>0 for a high-freq reversing wave (cite gradient-flow). Resolve success iff one channel's KNOWN condition is verified for the construction; fail iff both falsifiers (non-Besicovitch nesting / \u03b3_n\u21920) hold",
+    "question": "TERMINAL: the whole route-1 strict-margin edifice provably (tick544-553) localizes to ONE combinatorial core (scale-freshness/bounded-overlap of positive same-carrier cutoff-flux event tents) with TWO orthogonal solved-elsewhere attack channels. Does the route-1 event-tent construction satisfy EITHER (G) the Besicovitch controlled-eccentricity condition (\u21d2 dimension-only bounded multiplicity \u21d2 freshness) OR (A) a localized \u0141ojasiewicz-Simon strict scale-invariant entropy-dissipation debit per reversal (\u03b3>0)? Either \u21d2 Clay flat-radius cascade closure (narrow Track-B route-1 sense); neither \u21d2 the P4 reuse-cascade fixed point is the irreducible residual.",
+    "success_threshold": "success if either channel condition verified for the route-1 construction; 0.5 if one channel reduces to a single new GMT/PDE lemma; fail if both falsifiers hold (reuse-cascade irreducible)",
+    "task_type": "ns_clay_dual_channel_freshness_macro_20260515"
+  },
+  "contract_id": "ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-15T23:39:27Z",
+        "p_success": 0.22,
+        "rationale_short": "Recursion terminus: edifice provably localized to ONE combinatorial core + TWO orthogonal solved-elsewhere channels (Besicovitch geometric / \u0141ojasiewicz analytic), either sufficient, both falsifiable. Discipline held (Tier-2/3 3/3 validated the Caloric kill). p_success 0.22 (macro Clay-adjacency, not closure): Besicovitch likely fails (cascade nesting is engineered non-Besicovitch by the reuse mechanism), \u0141ojasiewicz \u03b3>0 scale-invariance is the genuine 20-page open. p_needs_new_lemma 0.80 \u2014 but the targets are now NAMED solved-elsewhere objects, the strongest honest state this route has reached.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-15T23:41:01Z",
+        "p_success": 0.19,
+        "rationale_short": "The ledger narrows the route to a Besicovitch-vs-localized-entropy split, but it does not verify either condition on the construction. No probability DAG is supplied, so the main priced risk is still that the event-tent nesting fails Besicovitch control or that the localized Lojasiewicz gamma degenerates to zero; one new GMT/PDE lemma remains the likeliest escape hatch.",
+        "specific_failure_mode_ids": [
+          "non_besicovitch_nesting_or_overlap",
+          "localized_lojasiewicz_gamma_collapses_to_zero",
+          "one_new_gmt_or_pde_lemma_required",
+          "stale_or_underpriced_route1_event_tent_observables"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T00:06:49.521722+00:00",
+    "success_bool": null,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 3.8300511837923796,
+      "forecast_spread": 0.03,
+      "p_success": 0.20459186396539655,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 3.1927
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.20459186396539655,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "non_besicovitch_nesting_or_overlap",
+        "p": 0.2
+      },
+      {
+        "mode": "localized_lojasiewicz_gamma_collapses_to_zero",
+        "p": 0.16
+      },
+      {
+        "mode": "one_new_gmt_or_pde_lemma_required",
+        "p": 0.09
+      },
+      {
+        "mode": "stale_or_underpriced_route1_event_tent_observables",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

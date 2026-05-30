@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 44.0,
+  "artifact_hash": "3bbac69e8fb82842a37c4f171eec4fc2a2ce8881c3e8e7cae7ac4f5b04c6a585",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/pressure_cone_charge_receipt_scout_20260514.json",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Scout produced FINAL_CARRIER_RECEIPT_NO_GO for 128/128 exact cancellations; Lean guard proves positive cone charge cannot be paid by final-carrier or zero receipt under cancellation; target and downstream builds passed.",
+  "resolved_at": "2026-05-14T03:01:06Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

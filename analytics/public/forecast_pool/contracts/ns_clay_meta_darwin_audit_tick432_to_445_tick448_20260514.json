@@ -1,0 +1,34 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json"
+  },
+  "baseline_action": "Ship a read-only adversarial audit applying the 6-point Meta-Darwin checklist (null, distinct-outcome, class-balance, LOO, floor-satisfiable, source-leakage) to every named primitive in the tick432-tick445 chain across the three Lean files. Produce per-primitive HONEST/WRAPPER/LAUNDERED/PURE-NAMING verdicts.",
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Skip the audit; rely on in-artifact scope guards as the only kill-test. Risk: the chain shipped 13+ named primitives in one session without an outsider Meta-Darwin pass, exactly the failure mode the 2026-05-14 GP-225 v22.05-07 incident demonstrated.",
+  "created_at": "2026-05-15T01:00:00Z",
+  "created_by": "claude_principal",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14T23:59:59Z",
+  "information_value": 0.4,
+  "layer": "micro",
+  "objective_resolver": "(1) analytics/public/audits/meta_darwin_tick448_audit_tick432_to_445.md exists and applies the 6-point checklist to every named primitive in tick432-tick445; (2) each named primitive receives a verdict in {HONEST, WRAPPER, LAUNDERED, PURE_NAMING, UNCLEAR}; (3) audit explicitly inspects flatDepthReserve_drop, noSilentFlatDefectProfile_of_dichotomy_and_killers, radiusCharge_le_L3DefectMeasure, radiusCharge_le_decoherenceMeasure, NoConcentrationLemmaAxiom, and TwoRouteCompositionRoute1AndNoConcentration; (4) NO Lean files modified during audit; (5) GP-233 ledger entry + E-row + F-row + handover updated with retraction or demotion recommendations if warranted.",
+  "question": "Will the tick448 Meta-Darwin audit of the tick432-tick445 Lean primitive chain (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE-NAMING verdicts using the 6-point checklist, (b) identify at least one PURE-NAMING or LAUNDERED structure if any exists, (c) confirm or retract the in-artifact scope guards, and (d) leave Lean files unmodified?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "meta_darwin_lean_audit",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or audit file missing"
+}

@@ -1,0 +1,227 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T00:58:25Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 88.33333333333333,
+    "expected_value": -0.07373509366439379,
+    "forecast_count": 3,
+    "forecast_history_count": 3,
+    "p_dependency_issue": 0.08,
+    "p_needs_new_lemma": 0.3233333333333333,
+    "p_regression": 0.05000000000000001,
+    "p_success": 0.19949779958617445,
+    "participants": [
+      {
+        "agent_id": "Claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso/claude.json",
+        "forecasted_at": "2026-05-15T00:58:25Z",
+        "p_success": 0.2,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Franklin",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso/franklin.json",
+        "forecasted_at": "2026-05-15T00:58:24Z",
+        "p_success": 0.22,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Noether",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso/noether.json",
+        "forecasted_at": "2026-05-15T00:58:25Z",
+        "p_success": 0.18,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "all_210_or_fewer_candidates_zero_positive_paradigm_dead",
+        "p": 0.41
+      },
+      {
+        "mode": "1plus_same_namespace_family_transfer_lands_target_equivalent",
+        "p": 0.27
+      },
+      {
+        "mode": "wrong_state_progress_only_no_target_equivalent",
+        "p": 0.11
+      },
+      {
+        "mode": "false_positive_from_compile_but_wrong_target",
+        "p": 0.09000000000000001
+      },
+      {
+        "mode": "indirect_simp_set_leakage_produces_false_positive",
+        "p": 0.085
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T00:56:36Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-15T06:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "analytics/public/leanmill/results/v23_06_cross_theorem_transfer_on_train_rows_audit.json:metrics.target_equivalent_positives_total >= 1 AND metrics.false_positives_total == 0",
+    "question": "Will cross-theorem transfer (gold tactics from 14 other train rows applied as candidates on each of the 15 canonical train rows under strict source!=target row/theorem and direct-gold-token leakage exclusion) recover AT LEAST 1 target-equivalent positive (under GPT-5.5 review contract: target_equivalent_closure OR target_equivalent_transition) across the 15 train rows? Threshold: at least 1 row \u00d7 1 distinct witness signature.",
+    "success_threshold": "metrics.target_equivalent_positives_total >= 1 AND metrics.false_positives_total == 0",
+    "task_type": "cross_theorem_transfer_calibration_on_known_positive_rows"
+  },
+  "contract_id": "gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "Claude"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Franklin",
+        "raw_agent_ids": [
+          "Franklin"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Noether",
+        "raw_agent_ids": [
+          "Noether"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Claude",
+      "Franklin",
+      "Noether"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": "If true with positives spread across >=3 rows and >=3 distinct witness signatures, route to LOO+null gate; if false, retire v23 model lane.",
+        "agent_id": "Claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso/claude.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-15T00:58:25Z",
+        "p_success": 0.2,
+        "rationale_short": "RD aggregate of Franklin 0.22 (empirical) and Noether 0.18 (structural); both converge that target-equivalent on train rows is at the edge of plausibility, with 0-FP gate the binding constraint.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Bucket candidates by namespace family; budget on same-family pairs first; pre-register indirect-simp-set FP audit.",
+        "agent_id": "Franklin",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso/franklin.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 95.0,
+        "forecasted_at": "2026-05-15T00:58:24Z",
+        "p_success": 0.22,
+        "rationale_short": "Heldout-unsolved base rate 0/230, but train rows have richer label structure with Topology cluster (0017/0076/0163/0180); same-family transfer has nonzero hit probability lifting p(>=1) to 0.30-0.35; conjoint 0-FP gate attenuates to ~0.22.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Count distinct_positive_witness_signatures and verify each positives post-state matches target with normalized pretty-print.",
+        "agent_id": "Noether",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso/noether.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 80.0,
+        "forecasted_at": "2026-05-15T00:58:25Z",
+        "p_success": 0.18,
+        "rationale_short": "Structural: p(>=1 target-equiv positive) = 0.32 via same-namespace sibling pairs; p(0 false positive | positive) = 0.58 because operator-dual sibling pairs typically yield wrong-state not target-equivalent; joint ~ 0.186.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-15T01:05:22Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 88.33333333333333,
+      "expected_value": -0.07373509366439379,
+      "p_success": 0.19949779958617445,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.8997
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 88.33333333333333,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.19949779958617445,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "all_210_or_fewer_candidates_zero_positive_paradigm_dead",
+        "p": 0.41
+      },
+      {
+        "mode": "1plus_same_namespace_family_transfer_lands_target_equivalent",
+        "p": 0.27
+      },
+      {
+        "mode": "wrong_state_progress_only_no_target_equivalent",
+        "p": 0.11
+      },
+      {
+        "mode": "false_positive_from_compile_but_wrong_target",
+        "p": 0.09000000000000001
+      },
+      {
+        "mode": "indirect_simp_set_leakage_produces_false_positive",
+        "p": 0.085
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.040266666666666666,
+    "score_rows": 3,
+    "scored_at": "2026-05-15T01:05:22Z"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2071_post_bayesRisk_union_heldout_delta_packet.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2071_post_bayesRisk_union_heldout_delta_packet.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2071_post_bayesRisk_union_heldout_delta_packet",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2071_post_bayesRisk_union_heldout_delta_packet.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2071_post_bayesRisk_union_heldout_delta_packet.json"
+  },
+  "baseline_action": "stop at v20.70 union gate",
+  "budget_agent_minutes": 20.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2071_post_bayesRisk_union_heldout_delta_packet",
+  "cost_penalty": 0.04,
+  "counterfactual_action": "write v20.71 post-bayesRisk heldout delta packet before any training",
+  "created_at": "2026-05-14T19:12:17Z",
+  "created_by": "codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0714,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "heldout_delta_gate",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0714,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0645,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0526,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0526,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0455,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0455,
+        "score_rows": 140,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0345,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14",
+  "information_value": 0.7,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2071_post_bayesRisk_union_heldout_delta_packet.json exists, status is passed, consumes v20.70/v20.69/v20.68/v20.60/v20.40, reports heldout row count, rows_with_replayable_changed_policy_arm, replay=false, training=false, gnn_blocked=true unless a compile-backed changed arm is found, and records next move.",
+  "question": "Will v20.71 produce an artifact-backed post-bayesRisk heldout delta packet that classifies whether the bayesRisk strict row creates any replayable changed policy arm over the v20.40 heldout rows, while running no replay/training and keeping GNN blocked if no changed arm exists?",
+  "risk_penalty": 0.2,
+  "success_threshold": "passed packet with no overclaim; unchanged policy arm must not be replayed or promoted to GNN readiness",
+  "task_type": "heldout_delta_gate",
+  "value_if_success": 1.6,
+  "void_conditions": "target proof leakage; replay or training run hidden inside packet; claiming row-count alone as GNN readiness"
+}

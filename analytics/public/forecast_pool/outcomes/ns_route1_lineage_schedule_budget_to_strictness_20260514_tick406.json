@@ -1,0 +1,38 @@
+{
+  "actual_cost_agent_minutes": 14.0,
+  "artifact_hash": "b4a791cfb5a90dea3af4d4a1ffb5a1af9f38c4fece05b53970b9c88fcd1b8b17",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "rd_codex",
+    "codex_forecaster"
+  ],
+  "compile_status": "lean_pass",
+  "contract_id": "ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "gp-233:positive:lineage-schedule-interface",
+    "interface-wiring",
+    "overclaim-guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "persistence-unproved",
+    "branch-dominance-open"
+  ],
+  "new_next_action": "use Route1FiniteTailAmortizedStrictness.ofLineageScheduleSources once persistence and schedule-budget fields are proved",
+  "old_next_action": "manually combine lineage schedule source with finite-tail adapter in future ticks",
+  "preconditioner_effect": "Kept the patch to constructor/interface wiring and left persistence/upstream closure as explicit obligations.",
+  "preconditioner_source": "GP-230 forecasts + tick405 audit",
+  "realized_failure_mode_ids": [
+    "constructor_type_friction",
+    "overclaim_persistence"
+  ],
+  "resolution_note": "Added LineageTailScheduleFiniteBudgetSource, Route1FiniteActiveTailBudget.ofLineageScheduleFiniteBudgetSource, and Route1FiniteTailAmortizedStrictness.ofLineageScheduleSources. The patch wires a finite active-or-passive lineage schedule into the existing finite-tail strictness adapter without claiming the fresh-frequency persistence PDE estimate or upstream closure. Lean compiles; no new sorry/admit.",
+  "resolved_at": "2026-05-14T19:15:00Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

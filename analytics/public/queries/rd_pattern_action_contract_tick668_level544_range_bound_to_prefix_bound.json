@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 544,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level543 carries every-support-member strict prefix inequality as a field",
+    "check": "replace the raw inequality with Finset.range membership and derive the inequality by Finset.mem_range.mp"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level544_range_bound_to_prefix_bound_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level544_provenance_edge_direction_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level544_range_bound_to_prefix_bound"
+  },
+  "anti_pattern_guards": [
+    "no carried raw strict prefix inequality",
+    "no endpoint-capacity-only range label",
+    "no downstream Level543 source dependency",
+    "no post-payoff finite-domain pruning"
+  ],
+  "positive_forecast": "If support members lie in the fixed final-prefix Finset range, Level543's strict prefix bound is a direct range-membership consequence."
+}

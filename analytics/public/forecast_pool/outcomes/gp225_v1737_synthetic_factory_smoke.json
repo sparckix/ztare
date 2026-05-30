@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 7.13,
+  "artifact_hash": "6ed86177446badf49b43d1c8e75cc7016a913a9e3292cce6db48f27128f84e87",
+  "artifact_path": "analytics/public/leanmill/results/v1737_synthetic_factory_smoke_packet.json",
+  "compile_status": "not_applicable_schema_artifact",
+  "contract_id": "gp225_v1737_synthetic_factory_smoke",
+  "error_type": "none",
+  "goal_delta": 0,
+  "resolution_note": "v17.37 produced 20 rows, 9 domain labels, 11 mutation families, row_schema_complete=true, wrong_accepts=0, generator holdout metadata present, and training_now=false. It remains smoke/schema data, not training data.",
+  "resolved_at": "2026-05-12T18:42:07Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

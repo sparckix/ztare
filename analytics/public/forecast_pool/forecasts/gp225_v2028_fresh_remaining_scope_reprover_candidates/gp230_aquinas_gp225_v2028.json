@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": "Reconcile queue definition against v20.27 and avoid counting contaminated rows before candidate generation.",
+  "agent_id": "gp230_aquinas_gp225_v2028",
+  "contract_id": "gp225_v2028_fresh_remaining_scope_reprover_candidates",
+  "contract_question": "Will local cached ReProver context-enriched generation on remaining GP-225 scope-holdout rows produce a clean fresh candidate packet without replay/training?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [
+    "avoid_bad_success_predicate",
+    "requires_corrected_queue"
+  ],
+  "forecasted_at": "2026-05-14T14:40:57Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.18,
+  "rationale_short": "Candidate generation likely works locally, but the literal remaining_scope_holdout queue has only 4 rows, below the >=8 row threshold; corrected queue semantics are needed.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "literal_queue_has_four_rows",
+    "threshold_candidate_rows_ge_8_not_satisfied",
+    "v2027_contamination_filter_needed"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "agent_id": "gp230_einstein_gp225_v2024",
+  "contract_id": "gp225_v2024_patched_public_tacgen_adapter_replay",
+  "contract_question": "Will the patched public tacgen adapter replay over cached v1952 candidates produce at least one compile-backed strict same-target GP-225 row with zero harmful compiled mismatches while keeping training false and GNN blocked?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecasted_at": "2026-05-14T13:44:58Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.09,
+  "rationale_short": "The only known public tacgen strict row was invalidated because candidate_action_compiles=false; cached v1952 pool appears exhausted and patched bridge is more likely to filter stale success than surface a new compile-backed strict row. Operational harm/training risk is low.",
+  "read_only_attestation": true
+}

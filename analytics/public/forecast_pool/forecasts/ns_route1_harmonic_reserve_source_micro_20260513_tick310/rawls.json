@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls",
+  "contract_id": "ns_route1_harmonic_reserve_source_micro_20260513_tick310",
+  "contract_question": "Can harmonic pressure reserve be lowered into a source object tied to the existing pressure-reserve decomposition receipt and composed with child/cutoff sources?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accounting_drift": 0.14,
+    "analytic_provenance_gap": 0.24,
+    "macro_gain_too_small": 0.12,
+    "other": 0.1,
+    "receipt_mismatch": 0.12,
+    "tautology_risk": 0.28
+  },
+  "forecasted_at": "2026-05-13T23:29:54Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.06,
+  "p_success": 0.82,
+  "rationale_short": "High micro odds if harmonic source carries pre-receipt bound to pressureObligation.decomposition.pressureReserve and provenance guards.",
+  "read_only_attestation": true
+}

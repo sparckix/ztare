@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "reading_the_8_cg_ablation_fail_actual_v4_29_0_errors_will_a_single_error_class_unknown_identifier_h1_type_mismatch_h2_un",
+  "contract_question": "Reading the 8 Cg-ablation FAIL actual v4.29.0 errors: will a SINGLE error class (unknown-identifier H1 / type-mismatch H2 / unsolved-goals H3 / env H4) account for >=5/8, cleanly identifying the real lever?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:43:02Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.6,
+  "rationale_short": "expect mixed but H2 type-mismatch/elaboration likely dominant (prover had right idea, wrong pinned signature) - if so lever=agentic typed verify-loop not static index; >=5/8 single-class plausible",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

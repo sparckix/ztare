@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:47:58Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 41.5,
+    "expected_value": 3.898417396352955,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.26,
+    "p_needs_new_lemma": 0.8200000000000001,
+    "p_regression": 0.07,
+    "p_success": 0.7944724654509852,
+    "participants": [
+      {
+        "agent_id": "Euler",
+        "domain": "ns_route1_pde",
+        "p_success": 0.84,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Rawls",
+        "domain": "ns_route1_pde",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "same_scale_sheath_cancellation",
+        "p": 0.27
+      },
+      {
+        "mode": "angular_to_hessian_carrier_comparison_missing",
+        "p": 0.16
+      },
+      {
+        "mode": "angular_to_hessian_carrier_gap",
+        "p": 0.14
+      },
+      {
+        "mode": "route_tail_scale_laundering",
+        "p": 0.12
+      },
+      {
+        "mode": "route_tail_scale_to_core_floor_gap",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:46:13Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-13 same tick",
+    "layer": "micro",
+    "objective_resolver": "lake env lean and lake build pass for ns_pressure_hessian_l2_bridge; bridge must use existing angular_moment_floor_of_dominance and not define visibility from receipt sum",
+    "question": "Will this tick add a compiling angular-moment pressure tail-mass visibility bridge that routes existing angularMomentDominance into Route1PressureHessianL2TailMassCertificate or TailMassVisibility?",
+    "success_threshold": "compiles and no new sorry; angular certificate feeds pressure tail-mass visibility or pressure Hessian L2 certificate",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Euler",
+        "raw_agent_ids": [
+          "Euler"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Rawls",
+        "raw_agent_ids": [
+          "Rawls"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Euler",
+      "Rawls"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Euler",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314/euler.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-13T23:47:44Z",
+        "p_success": 0.84,
+        "rationale_short": "Compile surface likely high from existing angular and pressure-tail certificate objects; true PDE discharge remains low because non-null visibility is the hard direction.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Rawls",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314/rawls.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 48.0,
+        "forecasted_at": "2026-05-13T23:47:44Z",
+        "p_success": 0.74,
+        "rationale_short": "Existing algebra should compile, but the mathematical bridge needs independent angular-to-Hessian and route-scale comparisons.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 31.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:50:20Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 3.898417396352955,
+      "forecast_spread": 0.1,
+      "p_success": 0.7944724654509852,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 2.2633
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 41.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7944724654509852,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "same_scale_sheath_cancellation",
+        "p": 0.27
+      },
+      {
+        "mode": "angular_to_hessian_carrier_comparison_missing",
+        "p": 0.16
+      },
+      {
+        "mode": "angular_to_hessian_carrier_gap",
+        "p": 0.14
+      },
+      {
+        "mode": "route_tail_scale_laundering",
+        "p": 0.12
+      },
+      {
+        "mode": "route_tail_scale_to_core_floor_gap",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.04660000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:54:32Z"
+  }
+}

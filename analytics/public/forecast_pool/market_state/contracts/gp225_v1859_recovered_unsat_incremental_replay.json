@@ -1,0 +1,218 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T16:31:50Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 24.666666666666668,
+    "expected_value": -2.179487490293474,
+    "forecast_count": 3,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.08666666666666667,
+    "p_needs_new_lemma": 0.03666666666666667,
+    "p_regression": 0.09666666666666668,
+    "p_success": 0.6715451523701751,
+    "participants": [
+      {
+        "agent_id": "codex_rd_local",
+        "domain": "lean_replay_verification",
+        "p_success": 0.61,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "faraday_readonly_forecaster",
+        "domain": "lean_replay_verification",
+        "p_success": 0.68,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "hume_readonly_forecaster",
+        "domain": "lean_replay_verification",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "show_or_closure_guard_rejects_nested_or_line_contains_rows",
+        "p": 0.22666666666666668
+      },
+      {
+        "mode": "closure_guard_rejects_non_atomic_line_contains_rows",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "insufficient_clean_rows_below_threshold",
+        "p": 0.07333333333333333
+      },
+      {
+        "mode": "insufficient_rows_compile_below_3_of_5",
+        "p": 0.06666666666666667
+      },
+      {
+        "mode": "below_three_clean_rows",
+        "p": 0.06
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1859_recovered_unsat_incremental_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1859_recovered_unsat_incremental_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1859_recovered_unsat_incremental_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1859_recovered_unsat_incremental_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1859_recovered_unsat_incremental_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 8.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T16:28:23Z",
+    "created_by": "codex_RD_2026_05_13",
+    "horizon": "2026-05-13T18:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "analytics/public/leanmill/results/v1859_recovered_unsat_incremental_replay_verifier.json metrics: recovered_rows_attempted=5, new_gold_transition_compiled_rows>=3, new_residual_or_closure_rows>=3, audited_true_false_accepts=0, training_now=false, gnn_blocked=true",
+    "question": "Will v18.59 compile-check at least 3 of 5 recovered baseline-unsaturated public-trace rows as clean residual/closure labels with zero audited false accepts?",
+    "success_threshold": "new_gold_transition_compiled_rows>=3 AND new_residual_or_closure_rows>=3 AND audited_true_false_accepts=0",
+    "task_type": "gp225_recovered_unsat_incremental_replay"
+  },
+  "contract_id": "gp225_v1859_recovered_unsat_incremental_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd_local"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:faraday_readonly_forecaster",
+        "raw_agent_ids": [
+          "faraday_readonly_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:hume_readonly_forecaster",
+        "raw_agent_ids": [
+          "hume_readonly_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_local",
+      "faraday_readonly_forecaster",
+      "hume_readonly_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_local",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1859_recovered_unsat_incremental_replay/codex_rd_local.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes": 4.0,
+        "forecasted_at": "2026-05-13T16:31:34Z",
+        "p_success": 0.61,
+        "rationale_short": "Recovered static matches are strong, but two are line_contains/proof-term or calc fragments; clean atomic threshold may lose those. Five-row parallel batch should be minutes, not 35.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "faraday_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1859_recovered_unsat_incremental_replay/faraday_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-13T16:31:24Z",
+        "p_success": 0.68,
+        "rationale_short": "v18.58 recovered all compatible matches and prior replay has zero false accepts; main risk is guard strictness and clean-row threshold under 3 of 5.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hume_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1859_recovered_unsat_incremental_replay/hume_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-13T16:29:12Z",
+        "p_success": 0.72,
+        "rationale_short": "Prior replay has zero false accepts and v18.58 recovered five replay-ready compatible rows; main risk is guard strictness on nested/line_contains recovered rows.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 0.86,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T16:33:48Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 24.666666666666668,
+      "expected_value": -2.179487490293474,
+      "p_success": 0.6715451523701751,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.1306
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 24.666666666666668,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6715451523701751,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "show_or_closure_guard_rejects_nested_or_line_contains_rows",
+        "p": 0.22666666666666668
+      },
+      {
+        "mode": "closure_guard_rejects_non_atomic_line_contains_rows",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "insufficient_clean_rows_below_threshold",
+        "p": 0.07333333333333333
+      },
+      {
+        "mode": "insufficient_rows_compile_below_3_of_5",
+        "p": 0.06666666666666667
+      },
+      {
+        "mode": "below_three_clean_rows",
+        "p": 0.06
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.4509666666666667,
+    "score_rows": 3,
+    "scored_at": "2026-05-13T16:33:53Z"
+  }
+}

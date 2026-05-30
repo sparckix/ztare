@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke",
+  "contract_id": "ns_route1_next_pressure_branch_meso_20260513_tick309",
+  "contract_question": "Which next pressure branch should be executed after cutoff/CZ source lowering: integrate lower sources, harmonic reserve, recovered Riesz/local CZ, or velocity Caccioppoli?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "harmonic_blocks_full_composition": 0.28,
+    "lean_parameter_friction": 0.18,
+    "other": 0.12,
+    "semantic_gain_too_weak": 0.2,
+    "source_objects_misaligned": 0.22
+  },
+  "forecasted_at": "2026-05-13T23:21:40Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.08,
+  "p_success": 0.72,
+  "rationale_short": "Ranks C first: integrate child/cutoff source constructors into the full pressure-remainder bundle, then do A.",
+  "read_only_attestation": true
+}

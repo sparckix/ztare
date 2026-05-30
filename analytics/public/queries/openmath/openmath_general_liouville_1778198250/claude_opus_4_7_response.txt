@@ -1,0 +1,104 @@
+## 1. Stochastic Lagrangian rigidity via pathwise constancy of the back-to-labels map
+
+## 2. The mechanism
+
+The idea is to exploit the **stochastic Lagrangian representation** of Navier–Stokes (Constantin–Iyer 2008) in the ancient setting, where the solution exists for all $t \in \mathbb{R}$.
+
+**Setup.** For a bounded mild ancient solution $u$, the Constantin–Iyer theorem gives: on any time interval $[s,t]$, there exists a stochastic flow $X^s_{t}(x)$ solving the SDE $dX = u(X,t)\,dt + \sqrt{2\nu}\,dW_t$, $X^s_s(x) = x$, and the velocity is recovered as
+$$
+u(x,t) = \mathbb{E}\left[\nabla_a A^{s,t}(x)^{\top} \cdot u(A^{s,t}(x), s)\right]
+$$
+where $A^{s,t}$ is the **back-to-labels map** (the stochastic inverse of $X^s_t$). The key object is the **Weber formula**: $u$ is expressed as a conditional expectation of a pullback along stochastic characteristics.
+
+**The ancient regime.** Send $s \to -\infty$. Because $\|u\|_{L^\infty} \leq M$, the stochastic flow has uniformly controlled Jacobian (the drift is bounded, diffusion is $\sqrt{2\nu}$). As $s \to -\infty$, the heat kernel underlying the Brownian motion diffuses information to infinity. The crucial analytical engine is the following **decorrelation / mixing estimate**: for the bounded-drift diffusion $X^s_t$, the back-to-labels map $A^{s,t}$ becomes, in an appropriate sense, *asymptotically independent of the initial velocity field* as $|t - s| \to \infty$.
+
+Concretely, I propose to show that $\nabla_a A^{s,t}(x)$ converges (in $L^2(\Omega)$ and in spatial Sobolev norms) to a **gradient of a harmonic function** (actually to the identity, up to volume-preserving corrections), so the Weber formula collapses. The mechanism producing triviality is:
+
+1. **Exponential mixing of the stochastic flow.** The generator $\mathcal{L} = u \cdot \nabla + \nu \Delta$ with $u$ bounded and divergence-free has a spectral gap on $L^2$ of any large torus (after periodic localization), by hypoelliptic/Villani-type hypocoercivity estimates. This gives exponential decay of correlations.
+
+2. **Decay of the deformation tensor.** The deformation gradient $\nabla X^s_t$ satisfies a multiplicative SDE. With bounded drift and positive diffusion, Lyapunov exponent theory (Furstenberg–Khasminskii) gives that $\nabla A^{s,t}$ loses all "memory" of the data at time $s$ exponentially fast.
+
+3. **Collapse of the Weber formula.** Taking $s \to -\infty$ in the Constantin–Iyer representation, the expectation converges to zero because the integrand decorrelates: $u(A^{s,t}(x), s)$ (bounded, but evaluated at a point that is essentially an independent Brownian endpoint) has expectation zero against $\nabla_a A^{s,t}$ which has become asymptotically deterministic. Hence $u(\cdot, t) = 0$.
+
+The contradiction with non-triviality arises at every point $(x,t)$: the Weber integral representation forces $u(x,t) = 0$.
+
+## 3. Why this is NEW
+
+- **KNSŠ** uses a *deterministic* backward uniqueness + Carleman estimate strategy, applied to vorticity. It needs the scalar maximum-principle structure of $\omega_\theta/r$, which is unavailable without symmetry. My approach bypasses vorticity transport entirely.
+
+- **ESS 2003** backward uniqueness is for *parabolic PDEs at a final time*. The stochastic Lagrangian decorrelation argument is about *ergodic mixing of a diffusion process over infinite time horizons*, a fundamentally different mechanism.
+
+- **Chen–Strain–Tsai–Yau** requires polynomial spatial decay of $u$. Here, only $L^\infty$ boundedness is used; the decorrelation is driven by the Brownian noise in the stochastic flow, not by spatial decay of the solution.
+
+- **Tao's localization/compactness program** is deterministic and uses profile decomposition. The stochastic Lagrangian viewpoint has, to my knowledge, never been deployed in the Liouville/ancient-solution context.
+
+The genuinely new ingredients are: (a) the Constantin–Iyer stochastic representation *in the ancient limit*, (b) hypocoercive spectral gap for the advection–diffusion generator with merely bounded divergence-free drift, and (c) Furstenberg-type multiplicative ergodic theory for the deformation gradient to control $\nabla A$.
+
+## 4. Three specific lemmas / sub-targets
+
+**Lemma A (Hypocoercive spectral gap, uniform in domain size).** Let $u \in L^\infty(\mathbb{R}^3; \mathbb{R}^3)$ be divergence-free with $\|u\|_\infty \leq M$. Consider the operator $\mathcal{L} = u \cdot \nabla + \nu\Delta$ on $L^2_0(B_R)$ (mean-zero functions on a ball of radius $R$ with Dirichlet conditions). Then for every $R \geq R_0(\nu, M)$, the semigroup $e^{t\mathcal{L}}$ satisfies
+$$
+\|e^{t\mathcal{L}} f\|_{L^2(B_R)} \leq C e^{-\lambda t} \|f\|_{L^2(B_R)}, \quad t > 0,
+$$
+with $\lambda = \lambda(\nu, M) > 0$ independent of $R$ (for $R$ large) and independent of the specific choice of $u$.
+
+*Comment:* The key difficulty is uniformity in the drift $u$. For *fixed smooth* $u$, this is classical (Villani's hypocoercivity, or Harnack inequality for the adjoint). Uniformity over all bounded divergence-free drifts is hard but plausible by the Constantin–Kiselev–Ryzhik diffusion-enhancement results.
+
+**Lemma B (Decorrelation of back-to-labels map from ancient data).** Let $u$ be a bounded ancient mild NS solution and let $(X^s_t, A^{s,t})$ be the associated Constantin–Iyer stochastic flow/inverse flow. Then for each fixed $(x,t)$:
+$$
+\left\|\text{Cov}\!\left(\nabla_a A^{s,t}(x),\; u(A^{s,t}(x), s)\right)\right\|_{L^2(\Omega)} \leq C(M,\nu)\, e^{-\lambda (t-s)}
+$$
+as $s \to -\infty$. Here the covariance is the matrix-valued quantity $\mathbb{E}[(\nabla_a A - \mathbb{E}[\nabla_a A]) \otimes (u \circ A - \mathbb{E}[u \circ A])]$.
+
+*Comment:* This is where the multiplicative ergodic theory enters. One needs to separate the fluctuations of $\nabla_a A^{s,t}$ (controlled by the Jacobian SDE) from the pointwise values $u(A^{s,t}(x), s)$ (controlled by the transition kernel of the diffusion). The exponential decorrelation should follow from Lemma A applied to the two-point motion.
+
+**Lemma C (Vanishing of the mean field in the ancient limit).** Under the same hypotheses, $\mathbb{E}[u(A^{s,t}(x), s)] \to 0$ as $s \to -\infty$. More precisely,
+$$
+\left|\mathbb{E}\left[u(A^{s,t}(x), s)\right]\right| \leq C \frac{M}{(t - s)^{3/2}} \|u(\cdot, s)\|_{L^1 \cap L^\infty} \to 0
+$$
+provided $u(\cdot, s) \in L^1(\mathbb{R}^3)$ uniformly, or alternatively by an ergodic-averaging argument if $u$ is merely bounded.
+
+*Comment:* If $u \in L^\infty \setminus L^1$, this requires more care. The distribution of $A^{s,t}(x)$ at time $s$ has a density controlled by the Aronson-type Gaussian bounds for the fundamental solution of $\partial_s + u \cdot \nabla + \nu\Delta$. The integral of $u$ against this mollified Gaussian converges to the spatial average of $u$, which for a bounded ancient NS solution should vanish (this connects to the Liouville-type theorem for bounded harmonic functions in a parabolic sense). This is the most delicate point.
+
+## 5. Self-criticism (Mungerian inversion)
+
+**Most dangerous circularity: Lemma C.** The claim that $\mathbb{E}[u(A^{s,t}(x),s)] \to 0$ as $s \to -\infty$ is essentially saying that the spatial average of $u$ against a broadening kernel vanishes. For a merely $L^\infty$ function, this is **not automatic** — the spatial mean of $u$ on large balls might be nonzero. If $u$ had a nonzero spatial mean (even one that oscillates slowly), the argument breaks. In fact, showing that a bounded ancient NS solution has vanishing spatial average on large scales is quite close to showing it is trivial. This is the **potential circularity**: Lemma C might be nearly as hard as the conjecture itself.
+
+**Second danger: uniformity in Lemma A.** The spectral gap $\lambda(\nu, M) > 0$ uniform over *all* bounded divergence-free drifts is optimistic. Constantin–Kiselev–Ryzhik (2008) showed diffusion enhancement for *specific* classes of flows (relaxation-enhancing). A general bounded divergence-free drift can create cells that trap trajectories and potentially make $\lambda$ depend on the flow geometry in a fatal way. If certain flows create trapping regions with exponentially long exit times, $\lambda$ could degenerate.
+
+**Third danger: regularity of the back-to-labels map.** The Constantin–Iyer representation requires $u$ to be smooth enough that the stochastic flow is well-defined and the back-to-labels map has $\nabla_a A \in L^p(\Omega)$. For a mild solution with merely $L^\infty$ bounds, the flow theory (Kunita) gives the SDE is well-posed (bounded measurable drift + Brownian motion, by Veretennikov or Krylov-Röckner), but the *inverse* flow regularity in the Jacobian is more delicate. One may need to regularize and pass to limits, introducing approximation errors that could absorb the smallness one is trying to extract.
+
+**Fourth issue: the approach, even if it works for truly bounded ancient solutions, does not obviously extend to the Type I blowup scenario**, which is the main application of the Liouville theorem in the regularity programme. The stochastic flow may not survive near a singularity. So even success might not immediately give the desired regularity consequences.
+
+## 6. Lean sketch
+
+A sub-lemma corresponding to Lemma C in a simplified deterministic form: the heat-kernel average of a bounded divergence-free vector field decays.
+
+```lean
+import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.MeasureTheory.Integral.Bochner
+import Mathlib.Analysis.SpecialFunctions.Gaussian
+
+open MeasureTheory Filter
+
+/--
+**Sub-lemma (deterministic core of Lemma C):**
+Let `u : ℝ³ → ℝ³` be bounded, divergence-free, and suppose
+`u` is an ancient NS velocity field at some fixed time.
+Then its convolution with the heat kernel `Gₜ` satisfies
+`‖Gₜ * u‖_{L^∞} → 0` as `t → ∞`,
+*provided* `u ∈ L^p(ℝ³)` for some `p < ∞`.
+
+This is the deterministic avatar of the statement that
+`𝔼[u(A^{s,t}(x), s)] → 0` as `s → -∞`,
+since the law of `A^{s,t}(x)` has a density comparable to `G_{c(t-s)}`.
+-/
+theorem heat_kernel_average_decay_of_Lp_velocity
+    {u : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
+    (hu_bdd : ∃ M : ℝ, ∀ x, ‖u x‖ ≤ M)
+    (hu_Lp : ∃ p : ℝ, 1 ≤ p ∧ p < ⊤ ∧ Memℒp u (ENNReal.ofReal p) volume)
+    -- Note: divergence-free is not needed for this decay statement
+    : Tendsto (fun t : ℝ => ‖gaussianKernel t ⋆ u‖_∞) atTop (nhds 0) := by
+  sorry -- Young's convolution inequality: ‖G_t * u‖_∞ ≤ ‖G_t‖_{p'} ‖u‖_p
+         -- and ‖G_t‖_{p'} = C t^{-3/(2p)} → 0 as t → ∞ for p < ∞.
+```

@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_skeptic_pre",
+  "contract_id": "ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356",
+  "contract_question": "Can we add a Lean-checked transport visible/invisible route-level closure theorem from the Gowers-first informal proof, without substituting DR/pressure carriers or adding sorry/admit?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_type_surface_mismatch": 0.2,
+    "other": 0.05,
+    "proof_passes_but_no_next_move_change": 0.15,
+    "route_level_charge_not_integrated_with_shardC": 0.35,
+    "tautology_or_relabeling_risk": 0.25
+  },
+  "forecasted_at": "2026-05-14T12:15:56Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.27,
+  "p_regression": 0.06,
+  "p_success": 0.62,
+  "rationale_short": "The scalar closure should compile, but it may only be useful if it exposes a real alternate-charge path rather than renaming unpaid transport.",
+  "read_only_attestation": true
+}

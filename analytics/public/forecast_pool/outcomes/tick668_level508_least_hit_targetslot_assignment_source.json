@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 72.0,
+  "artifact_hash": null,
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level508_least_hit_targetslot_assignment/20260527T060023Z_L3ATargetSlotFromBoundedIncidenceLeastHitSource_toFinalSlotEventDataAssignmentSource_least_hit_bounded_incidence_targetS/pack.json",
+  "changed_by_forecast_ids": [
+    "codex_rd"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "pass",
+  "contract_id": "tick668_level508_least_hit_targetslot_assignment_source",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "positive_bridge",
+    "least_hit_selector",
+    "pde_workbench"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [],
+  "new_next_action": "derive boundedIncidentEventExists from same-tree eventData/prefix domination/no-reuse geometry",
+  "old_next_action": "construct opaque targetSlot assignment",
+  "ordering_override_no_codex": "single-agent micro/meso continuation inside active formalization lane; validation used deterministic Lean/gate/workbench checks",
+  "ordering_override_no_independent_forecaster": "single-agent micro/meso continuation inside active formalization lane; validation used deterministic Lean/gate/workbench checks",
+  "preconditioner_effect": "prevented endpoint-capacity and label-only substitutions while preserving a positive least-hit construction",
+  "preconditioner_source": "G-TARGET-SLOT-BOUNDED-INCIDENCE-LEAST-HIT plus active-chain gate_semantics_audit",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Level508 succeeded: Lean derives targetSlot by Nat.find from boundedIncidentEventExists, strict receipt/workbench/gate audit passed, lake build passed, and workbench tests passed.",
+  "resolved_at": "2026-05-27T06:02:38Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick635-mega-CV-C7-junction-depthn",
+  "contract_question": "tick635 MEGA (CV\u2194C7 junction, portfolio B1-B4 depth-n in-thread): B3 \u2014 in the De Giorgi level-set energy for {|\u03c9|>k}, div u=0 \u21d2 the drift term integrates to ZERO by parts (exactly the CV/SQG free-drift mechanism), so tick634/M3's 'drift-BMO closure fails' was IMPRECISE: the drift IS controlled for NS too; the SOLE residual obstruction is the vortex-stretching SOURCE \u222b(\u03be\u00b7S\u03be)|\u03c9|(|\u03c9|-k)_+. B1: that source = C7 alignment-surplus \u21d2 CV-closure \u27fa C7 fresh-surplus budget (CV requires, does not bypass, C7). B2: De Giorgi \u03bd\u0394-gain on |\u03c9| = exponent-0 at NS-critical parabolic scaling (tick610 recurrence). B4: C7-budget depth-n = indefinite \u03c9\u00b7S\u00b7\u03be sign-control = critical a-priori atom (route-invariant manifest:180). Net: CV transfers FURTHER than M3 stated (div-free handles drift \u2014 M3 corrected), obstruction localized PURELY to the stretching source = C7 = \u03c9\u00b7S\u00b7\u03c9 atom.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T12:18:07Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.72,
+  "rationale_short": "core deliverable B3 (depth-n correction of tick634/M3: div-free handles the NS drift exactly as CV; sole residual = vortex-stretching SOURCE) codex-confirmed survives; conceding B1/B2/B4 downgraded to obstruction-heuristics (not equivalences) \u2014 folded, not laundered; honest depth-n correction not a closure not inflated",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

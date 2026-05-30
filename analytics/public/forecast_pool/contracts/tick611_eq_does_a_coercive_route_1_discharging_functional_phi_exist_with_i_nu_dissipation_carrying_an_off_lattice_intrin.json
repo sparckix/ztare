@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick611_eq_does_a_coercive_route_1_discharging_functional_phi_exist_with_i_nu_dissipation_carrying_an_off_lattice_intrin.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick611_eq_does_a_coercive_route_1_discharging_functional_phi_exist_with_i_nu_dissipation_carrying_an_off_lattice_intrin.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick611_eq_does_a_coercive_route_1_discharging_functional_phi_exist_with_i_nu_dissipation_carrying_an_off_lattice_intrin",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick611_eq_does_a_coercive_route_1_discharging_functional_phi_exist_with_i_nu_dissipation_carrying_an_off_lattice_intrin.json",
+    "score": "analytics/public/forecast_pool/scores/tick611_eq_does_a_coercive_route_1_discharging_functional_phi_exist_with_i_nu_dissipation_carrying_an_off_lattice_intrin.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick611_eq_does_a_coercive_route_1_discharging_functional_phi_exist_with_i_nu_dissipation_carrying_an_off_lattice_intrin",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T22:34:34Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_tick611_eigenquestion_phi_offlattice_offcritical_20260516",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0161,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0132,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 4,
+        "token_jaccard": 0.0833
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "cold_carveout3_constructs_phi_with_i_ii_OR_derives_forcing_extends_adversary_survived_dogfood",
+  "question": "tick611 EQ: does a coercive route-1-discharging functional Phi exist with (i) nu-dissipation carrying an OFF-LATTICE intrinsic length (r-dependent under blowup rescaling, NOT the r-independent sqrt(nu t) heat-length) AND (ii) production dominated by a strictly SUBCRITICAL off-critical companion (non-degenerate delta>0)? Cold de-anchored carve-out-3 attempts YES (construct Phi + verify i,ii) OR returns the derived NO (extend the tick607 {BS,grad,omega} lattice + tick609 scale-criticality forcing to ALL coercive Phi). Success = a DERIVED answer (constructed Phi with i,ii verified, OR forcing-extends proof) that SURVIVES an adversarial-survival run carrying the dogfood clause (must-catch: in-lattice recast disguised as escape / sqrt(nu t) in disguise / scale-critical companion in disguise; must-not: declare NS impossible). Fail = in-lattice recast, OR asserted-not-derived, OR laundering.",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_tick611_eigenquestion_phi_offlattice_offcritical_20260516",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

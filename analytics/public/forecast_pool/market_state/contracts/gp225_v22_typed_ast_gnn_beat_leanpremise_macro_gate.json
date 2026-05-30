@@ -1,0 +1,230 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T23:01:57Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 17120.0,
+    "expected_value": -854.732558880152,
+    "forecast_count": 3,
+    "forecast_history_count": 3,
+    "p_dependency_issue": 0.3,
+    "p_needs_new_lemma": 0.17666666666666667,
+    "p_regression": 0.16333333333333333,
+    "p_success": 0.12811027996197352,
+    "participants": [
+      {
+        "agent_id": "Claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate/claude.json",
+        "forecasted_at": "2026-05-14T23:01:57Z",
+        "p_success": 0.13,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Franklin",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate/franklin.json",
+        "forecasted_at": "2026-05-14T23:01:57Z",
+        "p_success": 0.07,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Noether",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate/noether.json",
+        "forecasted_at": "2026-05-14T23:01:57Z",
+        "p_success": 0.22,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "mathlib_test_below_0p635",
+        "p": 0.37000000000000005
+      },
+      {
+        "mode": "carleson_r_at_1_below_0p05",
+        "p": 0.18000000000000002
+      },
+      {
+        "mode": "both_thresholds_met_v22_wins",
+        "p": 0.12333333333333334
+      },
+      {
+        "mode": "training_time_overruns_2_week_budget",
+        "p": 0.11
+      },
+      {
+        "mode": "ablation_shows_typed_ast_does_not_help",
+        "p": 0.10000000000000002
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 1200.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T23:00:47Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-06-15T00:00:00Z",
+    "layer": "macro",
+    "objective_resolver": "trained-model eval json must show mathlib_test_r_at_16 > 0.635 AND carleson_r_at_1 > 0.05 AND text_only_baseline_ablation_r_at_16 < typed_ast_r_at_16",
+    "question": "Conditional on the v22 design (TypedAST-GNN + dep-DAG online embedding + Lean-verifier-grounded rerank + CoRNStack hard-negative curriculum) passing the CPU validation gate and getting approximately 2 weeks on 3x A6000, will the trained model beat LeanPremise-Large R@16 = 63.5% on Mathlib-test AND lift Carleson OOD R@1 above 5%?",
+    "success_threshold": "mathlib_test_r_at_16 > 0.635 AND carleson_r_at_1 > 0.05",
+    "task_type": "beat_published_lean_premise_selection_sota"
+  },
+  "contract_id": "gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "Claude"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Franklin",
+        "raw_agent_ids": [
+          "Franklin"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Noether",
+        "raw_agent_ids": [
+          "Noether"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Claude",
+      "Franklin",
+      "Noether"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": "Recommend operator split macro into two contracts: (a) Carleson R@1 > 5% milestone (higher p, mechanism-aligned), (b) Mathlib-test R@16 > 63.5% stretch (lower p, AND-coupled now). Run CPU gate before either.",
+        "agent_id": "Claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate/claude.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 16800.0,
+        "forecasted_at": "2026-05-14T23:01:57Z",
+        "p_success": 0.13,
+        "rationale_short": "RD aggregate of Franklin p=0.07 (base-rate dominated) and Noether p=0.22 (mechanism-of-signal); my number is closer to Franklin because forecaster base rates have historically been better-calibrated than structural arguments on novelty bets. Both agents converge on the AND-conjunction being the killer; the operator-facing action is decomposition before committing GPU.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Reframe success: drop Mathlib-test SOTA bar; commit only to Carleson R@1 lift as discriminating gate.",
+        "agent_id": "Franklin",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate/franklin.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 14400.0,
+        "forecasted_at": "2026-05-14T23:01:57Z",
+        "p_success": 0.07,
+        "rationale_short": "Base rate ~10-15% for 2-week project beating heavily-engineered SOTA on home benchmark; LeanPremise already trained on same 5.8M pairs / 82M params; Mathlib-test bar is the harder leg; Carleson > 5% from 0% plausibly ~40-50% conditional but conjunctive AND lands near 0.07; GNN-over-ReProver's fragile graph ablation discounts the typed-AST prior.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Decompose AND-of-two-gates: ship Carleson OOD R@1>5% as standalone milestone first (higher base rate via Graph2Tac analogue); treat Mathlib-test R@16>63.5% as the separable stretch bet.",
+        "agent_id": "Noether",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate/noether.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 20160.0,
+        "forecasted_at": "2026-05-14T23:01:57Z",
+        "p_success": 0.22,
+        "rationale_short": "Joint AND is the structural killer: at p~0.45 each marginally the joint sits near 0.20-0.25. Mathlib-test bar is harder because ByT5 at 82M may already implicitly recover binder/type structure that explicit typed-AST duplicates not complements. Carleson OOD is more tractable: dep-DAG online embedding mechanism-matches Graph2Tac (17.4-26.1 unseen-package lift) and verifier-rerank adds orthogonal domain-invariant evidence.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 17120.0,
+      "expected_value": -854.732558880152,
+      "p_success": 0.12811027996197352,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.2617
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 17120.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.12811027996197352,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "mathlib_test_below_0p635",
+        "p": 0.37000000000000005
+      },
+      {
+        "mode": "carleson_r_at_1_below_0p05",
+        "p": 0.18000000000000002
+      },
+      {
+        "mode": "both_thresholds_met_v22_wins",
+        "p": 0.12333333333333334
+      },
+      {
+        "mode": "training_time_overruns_2_week_budget",
+        "p": 0.11
+      },
+      {
+        "mode": "ablation_shows_typed_ast_does_not_help",
+        "p": 0.10000000000000002
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

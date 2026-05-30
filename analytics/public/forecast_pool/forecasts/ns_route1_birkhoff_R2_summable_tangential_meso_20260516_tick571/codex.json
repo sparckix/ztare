@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_birkhoff_R2_summable_tangential_meso_20260516_tick571",
+  "contract_question": "R2: with R1 discharged (harmonic-tail pressure-work <= C Lambda^-1 M per scale-gap, tick570), the additive energy-drop route's dissipation term is Phi-(b) (nested re-counting). Reframe: drop the dissipation term entirely; along a geometric sparse subsequence Lambda_k=2^k the total injected harmonic pressure-work Sum_k C Lambda_k^-1 M < infinity (convergent, NOT re-counted), and budget transport growth Prod(1+O(s_n)) is finite iff Sum_n s_n < infinity. Does route-1 closure (Birkhoff near-2D) reduce, with NO dissipation re-counting, to the single named condition: the asymptotic tangentiality is SUMMABLE Sum_n s_n < infinity on the inherited cascade (s_n = transverse/in-plane ratio), linked to the quantitative form of the verified KRZ 2017 epsilon(M)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 31.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "KRZ_link_remains_qualitative_not_quantitative": 0.12,
+    "dissipation_recounting_resurfaces_or_cannot_be_removed": 0.28,
+    "summable_tangentiality_is_old_atom_relabelled": 0.2,
+    "uniform_M_or_theorem_application_gap": 0.4
+  },
+  "forecast_externality_tags": [
+    "summability-closure",
+    "KRZ-link",
+    "uniform-M-premise"
+  ],
+  "forecasted_at": "2026-05-16T12:53:36Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.66,
+  "p_regression": 0.04,
+  "p_success": 0.29,
+  "rationale_short": "Read-only price: the geometric-series and product-summability pieces are standard, but the contract still hinges on whether the local-energy inequality really drops the dissipation term without smuggling it back into Phi-(b), and on a uniform-M/theorem-applicability premise that is not supplied here. I treat the KRZ link as plausible but not yet earned from the artifacts, so success stays below one-third and the main residual is a theorem-application gap, not regression.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T12:18:07Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": 0.31261676718757614,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.7301167671875761,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick635-mega-CV-C7-junction-depthn/claude_rd.json",
+        "forecasted_at": "2026-05-17T12:18:07Z",
+        "p_success": 0.72,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick635-mega-CV-C7-junction-depthn/codex.json",
+        "forecasted_at": "2026-05-17T12:18:07Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick635-mega-CV-C7-junction-depthn.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick635-mega-CV-C7-junction-depthn.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick635-mega-CV-C7-junction-depthn.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick635-mega-CV-C7-junction-depthn.json",
+    "score": "analytics/public/forecast_pool/scores/tick635-mega-CV-C7-junction-depthn.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T12:16:55Z",
+    "created_by": "claude:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "manual_rd",
+    "question": "tick635 MEGA (CV\u2194C7 junction, portfolio B1-B4 depth-n in-thread): B3 \u2014 in the De Giorgi level-set energy for {|\u03c9|>k}, div u=0 \u21d2 the drift term integrates to ZERO by parts (exactly the CV/SQG free-drift mechanism), so tick634/M3's 'drift-BMO closure fails' was IMPRECISE: the drift IS controlled for NS too; the SOLE residual obstruction is the vortex-stretching SOURCE \u222b(\u03be\u00b7S\u03be)|\u03c9|(|\u03c9|-k)_+. B1: that source = C7 alignment-surplus \u21d2 CV-closure \u27fa C7 fresh-surplus budget (CV requires, does not bypass, C7). B2: De Giorgi \u03bd\u0394-gain on |\u03c9| = exponent-0 at NS-critical parabolic scaling (tick610 recurrence). B4: C7-budget depth-n = indefinite \u03c9\u00b7S\u00b7\u03be sign-control = critical a-priori atom (route-invariant manifest:180). Net: CV transfers FURTHER than M3 stated (div-free handles drift \u2014 M3 corrected), obstruction localized PURELY to the stretching source = C7 = \u03c9\u00b7S\u00b7\u03c9 atom.",
+    "success_threshold": "B3 div-free level-set-energy correction of M3 is CORRECT (drift vanishes by div-free; sole residual = stretching source), B1/B2/B4 reductions correct (CV\u27faC7; gain exponent-0=tick610; C7-budget=\u03c9\u00b7S\u00b7\u03c9 atom); honest \u2014 a genuine depth-n correction+sharpening of M3, NOT a closure, NOT inflated; survives ONE codex adversarial-kill",
+    "task_type": "ns_mega_portfolio"
+  },
+  "contract_id": "tick635-mega-CV-C7-junction-depthn",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick635-mega-CV-C7-junction-depthn/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T12:18:07Z",
+        "p_success": 0.72,
+        "rationale_short": "core deliverable B3 (depth-n correction of tick634/M3: div-free handles the NS drift exactly as CV; sole residual = vortex-stretching SOURCE) codex-confirmed survives; conceding B1/B2/B4 downgraded to obstruction-heuristics (not equivalences) \u2014 folded, not laundered; honest depth-n correction not a closure not inflated",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick635-mega-CV-C7-junction-depthn/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T12:18:07Z",
+        "p_success": 0.74,
+        "rationale_short": "B3 essentially right (div-free kills drift term in |\u03c9| level-set energy, no commutator where \u03c9\u22600, stretching extraction correct) \u2014 M3 correction SURVIVES; B1/B2/B4 downgraded equivalence\u2192obstruction-heuristic (B1 not logically equiv to all DeGiorgi closures, B2 not standalone theorem, B4 philosophical not proof)",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T12:18:07Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.31261676718757614,
+      "forecast_spread": 0.02,
+      "p_success": 0.7301167671875761,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.217
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7301167671875761,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.07300000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:55Z"
+  }
+}

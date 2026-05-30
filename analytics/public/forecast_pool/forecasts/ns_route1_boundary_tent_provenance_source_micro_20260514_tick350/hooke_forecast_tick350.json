@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_forecast_tick350",
+  "contract_id": "ns_route1_boundary_tent_provenance_source_micro_20260514_tick350",
+  "contract_question": "Can we add a compile-checked Lean provenance source/guard for boundary tent lower payment: same tent-family and same cutoff feed the boundary lower-payment source, while mismatch-undercharge blocks any matching lower-payment source?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_noise": 0.08,
+    "exists_theorem_type_friction": 0.16,
+    "mismatch_guard_too_weak": 0.22,
+    "other": 0.26,
+    "source_duplicates_existing_fields": 0.28
+  },
+  "forecasted_at": "2026-05-14T11:41:52Z",
+  "p_dependency_issue": 0.21,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.06,
+  "p_success": 0.73,
+  "rationale_short": "Scout says provenance is the lever; Lean already has boundary source fields, so the value is making same-tent/cutoff a named constructor and mismatch-undercharge a no-instantiation rule.",
+  "read_only_attestation": true
+}

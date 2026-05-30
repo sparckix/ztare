@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_tarski_gp225_v2010",
+  "contract_id": "gp225_v2010_high_yield_tail_holdout_replay",
+  "domain": "gp225_repair_micro",
+  "forecasted_at": "2026-05-14T12:47:30Z",
+  "p_success": 0.29,
+  "expected_cost_agent_minutes": 22.0,
+  "p_regression": 0.05,
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.20,
+  "failure_mode_distribution": {
+    "fresh_strict_success": 0.25,
+    "ordered_lineMap_candidates_too_weak": 0.24,
+    "cardinal_candidate_names_wrong": 0.19,
+    "progress_only_no_strict": 0.18,
+    "source_policy_or_schema_issue": 0.04,
+    "other": 0.10
+  },
+  "rationale": "The IsInitial row may be solved by unfolding/simp if the definition is direct, but the ordered affine inequality probably needs the exact file lemma family. Success below v20.07 is appropriate.",
+  "rationale_short": "Potential cardinal/simple-definition win, but ordered affine inequality likely misses.",
+  "read_only_attestation": true
+}

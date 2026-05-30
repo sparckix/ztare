@@ -1,0 +1,32 @@
+{
+  "tick": "TICK668",
+  "level": 511,
+  "residual": "Level510 carries targetEventDataIndexCover as an arbitrary relation.",
+  "pattern_chain": [
+    "PATTERN-011 hard mathematical residual swarm lane",
+    "PATTERN-028 recursive tool-depth loop",
+    "Gowers-First-Formalize-Second",
+    "positive source-ladder reduction"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018 tool underuse formal satisficing",
+    "arbitrary cover relation",
+    "endpoint capacity as cover production",
+    "label-only prefix domination",
+    "post-payoff selected index"
+  ],
+  "carrier_schema_receipts": {
+    "claim_boundary": {
+      "broad": "finite scale-prefix comparison and event-prefix cofinality should produce the eventData-index cover needed by the same-tree source ladder",
+      "narrow": "Level511 only defines the cover relation as a selected-index graph guarded by the two displayed prefix primitive fields"
+    },
+    "residual_to_check": {
+      "residual": "targetEventDataIndexCover is still supplied as a relation",
+      "check": "strict G-FINITE-SCALE-COFINALITY-PREFIX-COVER receipt plus Lean constructor to Level510"
+    },
+    "surplus_projection_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level511_finite_scale_cofinality_prefix_cover_pencil.md"
+  },
+  "nearest_universal_op": "gp219_estimate_craft__source_ladder",
+  "nearest_confuser": "using finiteScalePrefixComparison/eventPrefixCofinalWithScalePrefix as labels without defining the cover graph",
+  "next_lever": "derive selectedEventDataIndex from the finite event-prefix enumeration and displayed bad-center incidence geometry"
+}

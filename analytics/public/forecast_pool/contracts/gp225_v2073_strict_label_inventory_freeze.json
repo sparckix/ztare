@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2073_strict_label_inventory_freeze.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2073_strict_label_inventory_freeze.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2073_strict_label_inventory_freeze",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2073_strict_label_inventory_freeze.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2073_strict_label_inventory_freeze.json"
+  },
+  "baseline_action": "leave labels only inside latest manifest",
+  "budget_agent_minutes": 14.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2073_strict_label_inventory_freeze",
+  "cost_penalty": 0.03,
+  "counterfactual_action": "freeze explicit strict label inventory for future trainer/dry-run consumers",
+  "created_at": "2026-05-14T19:20:10Z",
+  "created_by": "codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2593,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "label_inventory_freeze",
+    "score": 0.2593,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2593,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.2593,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0857,
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.0857,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0741,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0741,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0541,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0541,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14",
+  "information_value": 0.5,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2073_strict_label_inventory_freeze.json exists, status is passed, consumes v20.72/latest manifest/v1988/v2026, enumerates 15 strict row ids with provenance guard sources, and reports train_now=false, gnn_blocked=true.",
+  "question": "Will v20.73 produce an artifact-backed strict-label inventory freeze for the 15 current GP-225 labels, preserving source-safety/compile-invariant guards and keeping training blocked?",
+  "risk_penalty": 0.16,
+  "success_threshold": "passed deterministic label inventory, no training execution, no quarantine loss",
+  "task_type": "label_inventory_freeze",
+  "value_if_success": 1.2,
+  "void_conditions": "starts training; omits source-safety or compile-invariant guards; changes strict row count"
+}

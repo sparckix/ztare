@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2051_source_safe_nonself_charfun_dual_discovery",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json"
+  },
+  "baseline_action": "Drop current_scale_0329 after post-target helper failure.",
+  "budget_agent_minutes": 24.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2051_source_safe_nonself_charfun_dual_discovery",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Search imported non-self sources before deciding drop.",
+  "created_at": "2026-05-14T17:48:42Z",
+  "created_by": "Codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.7917,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_source_discovery",
+    "score": 0.8,
+    "selected_domain": "gp225_pre_gnn_source_discovery",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.8,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.7917,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.8,
+        "score_rows": 2,
+        "token_jaccard": 0.8
+      },
+      {
+        "char_trigram_jaccard": 0.2381,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.4286,
+        "score_rows": 2,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.1026,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1053,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1176,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may produce only static routing, not compile evidence"
+    ],
+    "positive": [
+      "prevents premature row drop",
+      "keeps source-safety boundary explicit"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.22,
+  "layer": "micro",
+  "objective_resolver": "Artifact analytics/public/leanmill/results/v2051_source_safe_nonself_charfun_dual_discovery_or_drop_row.json has status passed, cites before-target non-self source availability or explicit drop, replay_run=false, training_now=false, gnn_blocked=true.",
+  "question": "Will v20.51 decide whether current_scale_0329 has a before-target non-self charFunDual source after v20.50, and route either to a source-safe contract or row drop without replay/training?",
+  "risk_penalty": 0.04,
+  "success_threshold": "source-safe non-self discovery or drop decision completed",
+  "task_type": "pre_gnn_source_discovery",
+  "value_if_success": 0.45,
+  "void_conditions": "Void if v20.50 reducer is modified before v20.51 runs."
+}

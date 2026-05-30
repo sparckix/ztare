@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_local_rd_v1872",
+  "contract_id": "gp225_v1872_next_remaining_witness_pilot",
+  "contract_question": "Will the v18.72 explicit-manifest runner over the v18.71 six-row non-ambiguous pilot attempt all 6 rows, produce at least 4 clean closure/target witnesses, have at most 2 quarantined accepted-decoy ambiguity rows, and keep training/GNN blocked?",
+  "domain": "gp225_lean_witness_backfill",
+  "expected_cost_agent_minutes": 8.0,
+  "failure_mode_distribution": {
+    "clean_labels_below_4": 0.2,
+    "lean_runtime_noise": 0.08,
+    "other": 0.28,
+    "selection_overfits_v1869_clean_distribution": 0.16,
+    "source_context_hydration_edge_case": 0.1,
+    "true_false_accepts_above_2": 0.18
+  },
+  "forecasted_at": "2026-05-13T17:23:50Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.07,
+  "p_success": 0.62,
+  "rationale_short": "v18.69 proved hydration/static-prefilter works and yielded 6/8 clean labels. v18.72 uses a softer but still useful harvest/quarantine objective over 6 non-quarantined rows; main risks are clean labels below 4 and accepted-decoy ambiguity above 2.",
+  "read_only_attestation": true
+}

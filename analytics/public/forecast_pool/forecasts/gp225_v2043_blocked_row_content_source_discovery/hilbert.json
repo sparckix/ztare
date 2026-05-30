@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Proceed static source-discovery packet; require non-timeout families before candidate generation.",
+  "agent_id": "Hilbert",
+  "contract_id": "gp225_v2043_blocked_row_content_source_discovery",
+  "contract_question": "Will v20.43 emit a no-replay blocked-row content source-discovery packet that names concrete non-timeout source contracts for the v20.42 selected rows and keeps replay/training blocked?",
+  "domain": "gp225_pre_gnn_source_discovery",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_schema_mismatch": 0.12307692307692307,
+    "one_row_missing_source_context": 0.1846153846153846,
+    "source_contracts_too_abstract": 0.3846153846153846,
+    "timeout_rows_still_timeout_like": 0.3076923076923077
+  },
+  "forecast_externality_tags": [
+    "candidate_content_bottleneck",
+    "source_discovery",
+    "timeout_guard"
+  ],
+  "forecasted_at": "2026-05-14T17:21:08Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.04,
+  "p_success": 0.72,
+  "rationale_short": "The source snippets expose useful named declarations; success depends on converting them into concrete content-changing contracts.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "source_contracts_too_abstract",
+    "timeout_rows_still_timeout_like"
+  ]
+}

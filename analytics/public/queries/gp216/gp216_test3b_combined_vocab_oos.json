@@ -1,0 +1,108 @@
+{
+  "experiment": "gp216_test3b_combined_vocab_oos",
+  "n_arcs": 4,
+  "results": [
+    {
+      "arc": "robertson_seymour",
+      "n_moves": 10,
+      "combined_h_m_pct": 50.0,
+      "ps_only_pct": 50.0,
+      "tb_only_pct": 20.0,
+      "by_conf": {
+        "high": 3,
+        "medium": 2,
+        "low": 0,
+        "unmapped": 5
+      },
+      "op_use": {
+        "ps_01": 2,
+        "ps_05": 1,
+        "ps_04": 2
+      },
+      "tb_used": [],
+      "ps_used": [
+        "ps_01",
+        "ps_04",
+        "ps_05"
+      ]
+    },
+    {
+      "arc": "cook_levin_npc",
+      "n_moves": 10,
+      "combined_h_m_pct": 60.0,
+      "ps_only_pct": 50.0,
+      "tb_only_pct": 50.0,
+      "by_conf": {
+        "high": 3,
+        "medium": 3,
+        "low": 0,
+        "unmapped": 4
+      },
+      "op_use": {
+        "tb_06": 1,
+        "ps_03": 3,
+        "tb_04": 1,
+        "ps_06": 1
+      },
+      "tb_used": [
+        "tb_04",
+        "tb_06"
+      ],
+      "ps_used": [
+        "ps_03",
+        "ps_06"
+      ]
+    },
+    {
+      "arc": "perelman_ricci_flow",
+      "n_moves": 10,
+      "combined_h_m_pct": 40.0,
+      "ps_only_pct": 30.0,
+      "tb_only_pct": 10.0,
+      "by_conf": {
+        "high": 3,
+        "medium": 1,
+        "low": 0,
+        "unmapped": 6
+      },
+      "op_use": {
+        "ps_02": 2,
+        "tb_04": 1,
+        "ps_01": 1
+      },
+      "tb_used": [
+        "tb_04"
+      ],
+      "ps_used": [
+        "ps_01",
+        "ps_02"
+      ]
+    },
+    {
+      "arc": "appel_haken_4ct",
+      "n_moves": 9,
+      "combined_h_m_pct": 22.22222222222222,
+      "ps_only_pct": 11.11111111111111,
+      "tb_only_pct": 11.11111111111111,
+      "by_conf": {
+        "high": 0,
+        "medium": 2,
+        "low": 1,
+        "unmapped": 6
+      },
+      "op_use": {
+        "ps_05": 2,
+        "ps_01": 1
+      },
+      "tb_used": [],
+      "ps_used": [
+        "ps_01",
+        "ps_05"
+      ]
+    }
+  ],
+  "mean_combined_h_m": 43.05555555555556,
+  "mean_ps_only": 35.27777777777778,
+  "mean_tb_only": 22.77777777777778,
+  "verdict": "COMBINED FAILS \u2014 43% h+m on OOS arcs, even with full 18-op vocabulary. The OOS failure is real: these arcs use moves outside the entire vocabulary. Reframe required: vocabulary is canon-fitted, not generic."
+}

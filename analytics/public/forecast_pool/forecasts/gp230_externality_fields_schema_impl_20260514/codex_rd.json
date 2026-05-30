@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "keep fields optional, preserve legacy contract validity, and make externality scoring separate from Brier",
+  "agent_id": "codex_rd",
+  "contract_id": "gp230_externality_fields_schema_impl_20260514",
+  "contract_question": "Can we implement optional structured externality fields in forecast_pool.py, update the GP-230 seam/spec, and preserve smoke/audit compatibility?",
+  "domain": "meta_prediction_market",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "argparse_schema_breaks_existing_contracts": 0.25,
+    "audit_script_misses_new_fields": 0.2,
+    "docs_overstate_enforcement": 0.18,
+    "smoke_regression": 0.12,
+    "success_clean_patch": 0.25
+  },
+  "forecast_externality_tags": [
+    "schema_coverage",
+    "anti_gaming",
+    "backward_compatibility"
+  ],
+  "forecasted_at": "2026-05-14T14:30:08Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.11,
+  "p_success": 0.78,
+  "rationale_short": "The patch is optional-field compatible and local to CLI serialization/audit. Main risks are backward compatibility and overstating enforcement in the seam/spec.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "argparse_schema_breaks_existing_contracts",
+    "audit_script_misses_new_fields",
+    "docs_overstate_enforcement"
+  ]
+}

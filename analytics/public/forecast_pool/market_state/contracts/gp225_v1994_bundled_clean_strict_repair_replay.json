@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T09:22:00Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 26.0,
+    "expected_value": -45.744,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.13,
+    "p_needs_new_lemma": 0.09,
+    "p_regression": 0.055,
+    "p_success": 0.393,
+    "participants": [
+      {
+        "agent_id": "gp230_noether_gp225_v1994",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.36,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_tarski_gp225_v1994",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.43,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "conditional_strict_replay_after_v1992_v1993_packets_exist",
+    "top_failure_modes": [
+      {
+        "mode": "fresh_primary_row_closes",
+        "p": 0.17
+      },
+      {
+        "mode": "candidate_packets_missing_or_not_replay_ready",
+        "p": 0.15
+      },
+      {
+        "mode": "one_fresh_primary_strict_row_closes",
+        "p": 0.14
+      },
+      {
+        "mode": "clean_repair_candidates_compile_but_do_not_reach_strict",
+        "p": 0.12
+      },
+      {
+        "mode": "candidate_templates_underfit_primary_strict_target_state",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1994_bundled_clean_strict_repair_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1994_bundled_clean_strict_repair_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1994_bundled_clean_strict_repair_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1994_bundled_clean_strict_repair_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1994_bundled_clean_strict_repair_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T09:20:00Z",
+    "created_by": "codex_worker_c_gp230_2026_05_14",
+    "horizon": "next GP-225 strict replay session after v1992 and v1993 candidate packets are available",
+    "layer": "micro",
+    "objective_resolver": "Conditional on v1992 and v1993 clean strict repair candidate packets existing at replay time, run a bundled strict replay over both packets with the clean source-policy gates used by v1990. Success if the replay verifies at least one fresh primary strict target-state row, harmful_compiled_mismatch_actions=0, source-policy flags clean, training_now=false, and gnn_blocked=true. Solver-only, auxiliary-only, known prior wins, or rows using target proof lines/gold tactic text do not satisfy this contract.",
+    "question": "Conditional on v1992 and v1993 candidate packets existing, will v19.94 bundled clean strict repair replay add at least one fresh primary strict row, with harm zero, source-policy clean, no training, and GNN still blocked?",
+    "success_threshold": "fresh_primary_strict_rows >= 1; harmful=0; source_policy_clean=true; training_now=false; gnn_blocked=true",
+    "task_type": "bundled_clean_strict_repair_replay"
+  },
+  "contract_id": "gp225_v1994_bundled_clean_strict_repair_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_noether_gp225_v1994",
+        "raw_agent_ids": [
+          "gp230_noether_gp225_v1994"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_tarski_gp225_v1994",
+        "raw_agent_ids": [
+          "gp230_tarski_gp225_v1994"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_noether_gp225_v1994",
+      "gp230_tarski_gp225_v1994"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_noether_gp225_v1994",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1994_bundled_clean_strict_repair_replay/gp230_noether_gp225_v1994.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T09:21:00Z",
+        "p_success": 0.36,
+        "rationale_short": "Bundling two repair packets improves the chance of at least one strict row versus v1990, but the market is conditional because the v1992/v1993 packets were not present during scaffolding. Clean source policy and freshness filters remain the main suppressors.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_tarski_gp225_v1994",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1994_bundled_clean_strict_repair_replay/gp230_tarski_gp225_v1994.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T09:21:00Z",
+        "p_success": 0.43,
+        "rationale_short": "A bundled repair replay only needs one fresh primary strict row, so two packets should give enough variance if they are real repair packets rather than static audits. I still discount for packet availability and strict/fresh classification loss.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T11:54:32Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.07,
+      "p_success": 0.393,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "fresh_primary_row_closes",
+        "p": 0.17
+      },
+      "voi_proxy": 8.8086
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 26.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.393,
+    "routing_hint": "conditional_strict_replay_after_v1992_v1993_packets_exist",
+    "top_failure_modes": [
+      {
+        "mode": "fresh_primary_row_closes",
+        "p": 0.17
+      },
+      {
+        "mode": "candidate_packets_missing_or_not_replay_ready",
+        "p": 0.15
+      },
+      {
+        "mode": "one_fresh_primary_strict_row_closes",
+        "p": 0.14
+      },
+      {
+        "mode": "clean_repair_candidates_compile_but_do_not_reach_strict",
+        "p": 0.12
+      },
+      {
+        "mode": "candidate_templates_underfit_primary_strict_target_state",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.36725,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T11:54:32Z"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562",
+  "contract_question": "tick562 DISCHARGES (Tier-3 PASS 2/3, not defer) the anti-lamellar input: PROVED (a) tangentially-coherent zero-helicity shear solves the pure heat equation => globally regular => NOT a singular CKN-bad node; (b) Bernstein composition: nonlinearity/dissipation ratio <= (Cb/cb)*xi_tau*r from CITED Bernstein inequality + proved algebra; (c) CKN-bad + CITED Serrin/Ladyzhenskaya threshold R*>0 => xi_tau >= R**xi_z => s_z >= R*^2/(R*^2+1) > 0 scale-invariant => tick559->558->552->551 => route-1 closure. Every cited input (heat regularity, Serrin, Bernstein) is a real textbook theorem, no Prop placeholder. Does the cited Serrin+Bernstein chain genuinely apply to the actual Leray-Hopf cascade in the precise form used (closing route-1), or is there a gap in the classical-theorem application to the cascade geometry?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T00:40:12Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.03,
+  "p_success": 0.34,
+  "rationale_short": "FIRST genuine discharge (Tier-3 PASS 2/3, validated non-laundering, HARD-GUARD option-1): anti-lamellar input reduced to TWO real cited textbook theorems (Serrin/Ladyzhenskaya conditional regularity; Bernstein inequality) + proved algebra + elementary heat-exclusion \u2014 NO Prop placeholder remaining. p_success 0.34 (highest of the arc): the chain is fully proved-Lean + genuinely-cited-classical. Residual risk: whether Serrin applies to the ASYMPTOTICALLY-tangential cascade (not exactly-tangential) in the precise subcritical regime \u2014 a standard but non-trivial classical-theorem application to verify/dispatch. p_needs_new_lemma 0.62 (down from 0.75-0.85: this is theorem-application, not a missing lemma).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

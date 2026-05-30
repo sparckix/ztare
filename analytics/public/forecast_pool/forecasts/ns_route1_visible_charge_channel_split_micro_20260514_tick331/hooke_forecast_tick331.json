@@ -1,0 +1,23 @@
+{
+  "agent_id": "hooke_forecast_tick331",
+  "contract_id": "ns_route1_visible_charge_channel_split_micro_20260514_tick331",
+  "contract_question": "Will the current NS route-1 tick add a compiled channel-level surface lowering visibleOverflowCharge into pressure/Riesz, local quadratic, transport, or commutator/Reynolds visibility alternatives?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "downstream_build_regression": 0.1,
+    "pressure_riesz_alignment": 0.15,
+    "props_without_numeric_charge_content": 0.21,
+    "restates_visible_charge_as_disjunction": 0.29,
+    "transport_commutator_import_plumbing": 0.13,
+    "visibility_constant_smuggling": 0.12
+  },
+  "forecasted_at": "2026-05-14T02:38:34Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.57,
+  "p_regression": 0.09,
+  "p_success": 0.48,
+  "rationale_short": "Compile likely enough, but non-tautology requires concrete numeric same-window channel charges, not a renamed visibleOverflowCharge disjunction.",
+  "read_only_attestation": true
+}

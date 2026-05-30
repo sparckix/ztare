@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1866_current_toolchain_witness_backfill_pilot.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1866_current_toolchain_witness_backfill_pilot.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1866_current_toolchain_witness_backfill_pilot",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1866_current_toolchain_witness_backfill_pilot.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1866_current_toolchain_witness_backfill_pilot.json"
+  },
+  "budget_agent_minutes": 12.0,
+  "contract_id": "gp225_v1866_current_toolchain_witness_backfill_pilot",
+  "cost_penalty": 0.12,
+  "created_at": "2026-05-13T16:55:40Z",
+  "created_by": "codex_RD_2026_05_13",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-13T20:00:00Z",
+  "information_value": 0.85,
+  "layer": "micro",
+  "objective_resolver": "analytics/public/leanmill/results/v1866_current_toolchain_witness_backfill_pilot.json metrics: attempted_rows=6, gold_witness_driver_compiled_rows>=4, closure_or_target_witness_rows>=3, audited_true_false_accepts=0, training_now=false, gnn_blocked=true",
+  "question": "Will v18.66 backfill closure/target witnesses for at least 3 of 6 selected current-toolchain hard-residual packet rows with zero audited false accepts?",
+  "risk_penalty": 0.12,
+  "success_threshold": "gold_witness_driver_compiled_rows>=4 AND closure_or_target_witness_rows>=3 AND audited_true_false_accepts=0",
+  "task_type": "gp225_current_toolchain_witness_backfill_pilot",
+  "value_if_success": 0.85,
+  "void_conditions": "void only if v18.65 pilot-row artifact is missing or the current-toolchain source artifacts required to build witness drivers are unavailable"
+}

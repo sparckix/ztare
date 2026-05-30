@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 6.0,
+  "artifact_hash": null,
+  "artifact_path": "analytics/public/queries/formalization_sequence/latest.json",
+  "compile_status": "not_run",
+  "contract_id": "ns_route1_four_channel_visibility_cover_micro_20260514_tick361",
+  "error_type": "redirected_to_math_first",
+  "goal_delta": 0,
+  "resolution_note": "Voided before implementation after operator correction: formalization classifier required Gowers-first and the immediate work was redirected to a math-first visibility-cover proof/countermodel attempt rather than another Lean producer surface.",
+  "resolved_at": "2026-05-14T12:39:45Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": true
+}

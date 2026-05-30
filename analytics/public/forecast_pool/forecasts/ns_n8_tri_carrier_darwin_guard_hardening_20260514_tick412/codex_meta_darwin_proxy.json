@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "proceed_only_as_guard",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412",
+  "contract_question": "Will the Darwin follow-up tick add compiling Lean guard surfaces for fourth-carrier exclusion, tri-carrier supermartingale, radius lower bound, pressure visibility, and beta cofinality without claiming N8 closure?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 26.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "fourth_carrier_still_not_named": 0.25,
+    "guards_become_tautology_themselves": 0.25,
+    "lean_compile_issue": 0.25,
+    "supermartingale_gate_too_abstract": 0.25
+  },
+  "forecast_externality_tags": [
+    "negative-externality-audit",
+    "n8-not-closed"
+  ],
+  "forecasted_at": "2026-05-14T20:20:53Z",
+  "p_dependency_issue": 0.4,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.1,
+  "p_success": 0.64,
+  "rationale_short": "Good as anti-overclaim hygiene, but it will mostly record missing hypotheses. Do not treat success as PDE yield.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "guards_become_tautology_themselves",
+    "fourth_carrier_still_not_named",
+    "supermartingale_gate_too_abstract",
+    "lean_compile_issue"
+  ]
+}

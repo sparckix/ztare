@@ -1,0 +1,103 @@
+{
+  "contract_id": "tick668_level512_event_to_badnode_selected_index_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Keep selectedEventDataIndex as an arbitrary selected Fin index.",
+      "counterfactual_action": "Bind selectedEventDataIndex to the finite event-prefix enumeration through eventToBadNode and displayed incidence."
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "positive",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "positive_source_ladder",
+        "clay_adjacent_conditional_bridge",
+        "gate_semantics_cleaned"
+      ],
+      "new_next_action": "derive selectedPrefixEventIndex from BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix",
+      "old_next_action": "derive selectedEventDataIndex from finite event-prefix enumeration and displayed incidence",
+      "realized_failure_mode_ids": [
+        "selected_prefix_event_still_supplied_as_next_residual"
+      ]
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.18490000000000004,
+  "mean_log_score": -0.5621189181535413,
+  "outcome": {
+    "actual_cost_agent_minutes": 10.0,
+    "artifact_hash": "2e9d1d3b966822729899cdae8a16eb7a2f3836ed6d4858004aa40f1075778661",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "passed",
+    "contract_id": "tick668_level512_event_to_badnode_selected_index_source",
+    "counterfactual_value_bucket": "positive",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "positive_source_ladder",
+      "clay_adjacent_conditional_bridge",
+      "gate_semantics_cleaned"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "derive selectedPrefixEventIndex from BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix",
+    "old_next_action": "derive selectedEventDataIndex from finite event-prefix enumeration and displayed incidence",
+    "ordering_override_no_codex": "Local continuation lacked a live independent forecaster; ordering override recorded after strict Lean/workbench verification.",
+    "ordering_override_no_independent_forecaster": "Local continuation lacked a live independent forecaster; ordering override recorded after strict Lean/workbench verification.",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "selected_prefix_event_still_supplied_as_next_residual"
+    ],
+    "resolution_note": "Level512 added L3ASelectedIndexFromEventToBadNodeSource, selectedPrefixEventIndex_incident, and toFiniteScaleCofinalitySource; Lean file check and module build passed; PDE workbench accepted strict G-EVENT-TO-BADNODE-SELECTED-INDEX receipt.",
+    "resolved_at": "2026-05-27T06:53:18Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T06:53:25Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 10.0,
+      "agent_id": "codex_rd",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 78.0,
+      "domain": "ns_trackb_formal_bridge",
+      "expected_cost_agent_minutes": 88.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.5621189181535413,
+      "p_buy_yes_max": 0.42,
+      "p_dependency_issue": 0.08,
+      "p_needs_new_lemma": 0.37,
+      "p_regression": 0.07,
+      "p_sell_yes_min": 0.55,
+      "p_success": 0.57,
+      "predicted_brier_hi": 0.32,
+      "predicted_brier_lo": 0.17,
+      "success_bool": true,
+      "tail_downside_worry": 18.0,
+      "tail_upside_surprise": 12.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T06:43:24Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T06:43:35Z",
+        "resolved_at": "2026-05-27T06:53:18Z"
+      }
+    }
+  ]
+}

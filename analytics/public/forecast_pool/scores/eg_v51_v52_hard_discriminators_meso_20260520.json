@@ -1,0 +1,95 @@
+{
+  "contract_id": "eg_v51_v52_hard_discriminators_meso_20260520",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue broad naturalistic family-mapping/check-shop experiments",
+      "counterfactual_action": "Concentrate on hard-slice consequence/allocation and MM revision-quality endpoints",
+      "externality_hypotheses": {
+        "negative": [
+          "constructed hard slices may overfit to prior case families"
+        ],
+        "positive": [
+          "clarifies where primitive operators have agent-facing value",
+          "reduces wasted spend on ceiling endpoints"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "raise generic headroom and test operator counterfactuals where evidence requirements are less transparent; avoid more naturalistic family-mapping or simple check-shop endpoints",
+      "old_next_action": "run hard-slice artifact-quality and MM revision-quality endpoints as likely high-yield discriminators",
+      "realized_failure_mode_ids": [
+        "generic_ceiling",
+        "judge_or_gold_artifact"
+      ]
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.5184,
+  "mean_log_score": -1.2729656758128873,
+  "outcome": {
+    "actual_cost_agent_minutes": 70.0,
+    "artifact_hash": null,
+    "artifact_path": "/research_log.md",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": null,
+    "contract_id": "eg_v51_v52_hard_discriminators_meso_20260520",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "raise generic headroom and test operator counterfactuals where evidence requirements are less transparent; avoid more naturalistic family-mapping or simple check-shop endpoints",
+    "old_next_action": "run hard-slice artifact-quality and MM revision-quality endpoints as likely high-yield discriminators",
+    "ordering_override_no_codex": "A live consumer process was present, and warm-consumer-once was invoked directly for this contract, but no consumer message or independent forecast was available at closure.",
+    "ordering_override_no_independent_forecaster": "A live consumer process was present, and warm-consumer-once was invoked directly for this contract, but no consumer message or independent forecast was available at closure.",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "generic_ceiling",
+      "judge_or_gold_artifact"
+    ],
+    "resolution_note": "Resolved negative. V51 target artifact quality was perfect but target-over-generic was only 1 win, 0 losses, 11 ties, mean delta +0.33. MM-V5 target revision beat original and wrong/adjacent cards, but target-over-generic was 4 wins, 1 loss, 5 ties, mean delta +0.3. The predicted stronger discriminating signal did not clear the contract criterion.",
+    "resolved_at": "2026-05-20T22:59:01Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-20T22:59:06Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 70.0,
+      "agent_id": "codex:RD",
+      "brier": 0.5184,
+      "cost_error_agent_minutes": 30.0,
+      "domain": "epistemic-generation",
+      "expected_cost_agent_minutes": 100.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.55,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -1.2729656758128873,
+      "p_success": 0.72,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-20T22:43:34Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-20T22:43:45Z",
+        "resolved_at": "2026-05-20T22:59:01Z"
+      }
+    }
+  ]
+}

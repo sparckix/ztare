@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:00:11Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 47.70903614457831,
+    "expected_value": 0.4712456501260274,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.47709036144578315,
+    "p_needs_new_lemma": 0.9375662650602409,
+    "p_regression": 0.08317469879518073,
+    "p_success": 0.3815107103669913,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.46,
+        "weight": 1.2103
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.29,
+        "weight": 0.9477
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "needs_profile_topology",
+        "p": 0.16825301204819276
+      },
+      {
+        "mode": "requires_real_measure_theory",
+        "p": 0.15809638554216868
+      },
+      {
+        "mode": "singular_channel_only",
+        "p": 0.15703614457831327
+      },
+      {
+        "mode": "restates_domination",
+        "p": 0.11216867469879518
+      },
+      {
+        "mode": "too_abstract_to_progress",
+        "p": 0.0966144578313253
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 50.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:59:53Z",
+    "created_by": "codex:RD",
+    "horizon": "same session",
+    "layer": "meso",
+    "objective_resolver": "success iff sidecar returns a nontrivial proof route, countermodel/singular-channel witness, or sharper topology lemma below ActiveTailCarrierVisibilityDomination",
+    "question": "Can Feynman/xhigh pull forward ActiveTailCarrierVisibilityDomination by proving it, producing a V_A_perp countermodel, or identifying the exact missing topology/submeasure split?",
+    "success_threshold": "new proof route/countermodel/topology split; not just restating domination",
+    "task_type": "xhigh_math_pullforward"
+  },
+  "contract_id": "ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T13:00:06Z",
+        "p_success": 0.46,
+        "rationale_short": "The previous xhigh sidecar was useful. Domination is harder; success likely means a sharper topology or V_A_perp split, not a proof.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T13:00:06Z",
+        "p_success": 0.29,
+        "rationale_short": "Active-carrier domination is a real PDE measure/topology theorem; a same-session sidecar may only identify missing definitions.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:02:41Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.17,
+      "p_success": 0.3815107103669913,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "needs_profile_topology",
+        "p": 0.16825301204819276
+      },
+      "voi_proxy": 1.056
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 47.70903614457831,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3815107103669913,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "needs_profile_topology",
+        "p": 0.16825301204819276
+      },
+      {
+        "mode": "requires_real_measure_theory",
+        "p": 0.15809638554216868
+      },
+      {
+        "mode": "singular_channel_only",
+        "p": 0.15703614457831327
+      },
+      {
+        "mode": "restates_domination",
+        "p": 0.11216867469879518
+      },
+      {
+        "mode": "too_abstract_to_progress",
+        "p": 0.0966144578313253
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.39785000000000004,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:02:46Z"
+  }
+}

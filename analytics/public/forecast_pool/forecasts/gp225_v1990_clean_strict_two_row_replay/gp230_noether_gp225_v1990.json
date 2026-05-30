@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_noether_gp225_v1990",
+  "contract_id": "gp225_v1990_clean_strict_two_row_replay",
+  "contract_question": "Will v19.90 replay of the v19.89 clean strict two-row packet add at least one fresh primary strict target-state row with harmful mismatches zero?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "clean_rows_are_harder_than_quarantined_easy_rows": 0.24,
+    "generic_simp_candidates_progress_but_do_not_close": 0.28,
+    "unknown_identifier_or_unavailable_simp_lemma": 0.16,
+    "one_strict_row_closes": 0.18,
+    "other": 0.14
+  },
+  "forecasted_at": "2026-05-14T08:46:00Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.05,
+  "p_success": 0.22,
+  "rationale_short": "The source-safety audit preserved the right denominator but removed the easiest rows. The remaining candidates are generic and likely to progress without closing; I price a fresh strict row low.",
+  "read_only_attestation": true
+}

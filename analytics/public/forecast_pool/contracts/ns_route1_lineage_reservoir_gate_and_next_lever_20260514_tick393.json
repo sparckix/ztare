@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393.json"
+  },
+  "baseline_action": "continue directly from LineageFreshMonotoneReservoirSource without gate residual audit",
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "run ns_gate_check and use the residual to choose source theorem versus fifth-channel guard",
+  "created_at": "2026-05-14T15:28:52Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 55.12,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 55.12,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 128,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.1875,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.25,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 16,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "gate may merely confirm known residual without changing action"
+    ],
+    "positive": [
+      "tests whether GP-216/219 gates add decision value after Lean surface exists",
+      "prevents overclaiming a language route as PDE proof"
+    ]
+  },
+  "horizon": "same-session_tick393",
+  "information_value": 0.5,
+  "layer": "micro",
+  "objective_resolver": "Structured ns_gate_check report plus, if warranted, a compile-checked Lean guard/source surface or logged no-change residual; no route-1 closure claimed",
+  "question": "Can the next NS tick use the GP-216/219 language gates on the compiled lineage-reservoir surface to sharpen the next route-1 action: prove event-section/Duhamel reservoir source vs promote recurrent reuse as fifth channel?",
+  "risk_penalty": 0.45,
+  "success_threshold": "true iff the tick records residual_language_feedback with a concrete next lever and either a gate report or Lean declaration changes the next proof action",
+  "task_type": "ns_route1_pde",
+  "value_if_success": 0.8,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

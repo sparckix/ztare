@@ -1,0 +1,41 @@
+{
+  "contract_id": "tick668_level533_cofinal_selector_appearance_join",
+  "surface": "NS Track-B cofinal selector theorem to final-prefix appearance selector join",
+  "pattern_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "GP-219:pde_estimate_craft_ops"
+  ],
+  "anti_patterns": [
+    "ANTI-PATTERN-018",
+    "Level517/518/519 downstream enumeration recurrence",
+    "coverage Prop name used as proof"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level532 final-prefix selector is a fresh source whose relation to the older cofinal selector theorem is not connected",
+      "check": "construct Level532 from L3AFinalPrefixCofinalSelectorTheoremSource with explicit coverage proofs and Level517/518/519 exclusions"
+    }
+  ],
+  "carrier_schema_receipts": [
+    {
+      "schema": "typed_coverage_packet_appearance",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level533_cofinal_selector_appearance_join_receipt.json"
+    },
+    {
+      "schema": "provenance_edge_direction",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level533_provenance_edge_direction_receipt.json"
+    },
+    {
+      "schema": "provenance_acyclic_edge",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level533_provenance_acyclic_edge_receipt.json"
+    }
+  ],
+  "positive_construction": {
+    "source": "L3AFinalPrefixCofinalSelectorTheoremSource",
+    "projection": "Use finalPrefixCofinalSelector as the final-prefix appearance selector and forward its displayed eventToBadNode equality.",
+    "target": "L3AFinalPrefixAppearanceSelectorPrimitiveSource"
+  },
+  "nearest_confuser": "cofinal theorem wrapper without explicit coverage proof fields",
+  "next_lever": "prove L3AFinalPrefixCofinalSelectorTheoremSource from ordinary coverage and cofinal selected-tree incidence"
+}

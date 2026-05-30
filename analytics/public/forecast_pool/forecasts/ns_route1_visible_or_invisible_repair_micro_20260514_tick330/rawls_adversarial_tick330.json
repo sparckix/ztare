@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_adversarial_tick330",
+  "contract_id": "ns_route1_visible_or_invisible_repair_micro_20260514_tick330",
+  "contract_question": "Will the next NS route-1 Lean tick repair the overflow-map branch by adding a guard that overflow alone does not force zero visibility plus a corrected visible-or-invisible-profile bridge?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 58.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dichotomy_restatement_not_derivation": 0.29,
+    "gp233_rejects_wrapper_repair": 0.1,
+    "guard_conflicts_with_existing_surface": 0.18,
+    "lean_constructor_friction": 0.11,
+    "no_invisible_shape_mismatch": 0.14,
+    "visible_quotient_underformalized": 0.18
+  },
+  "forecasted_at": "2026-05-14T02:32:53Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.1,
+  "p_success": 0.49,
+  "rationale_short": "A repaired Lean surface can compile, but success requires explicit separation of visible charge and invisible remainder rather than an opaque bundle.",
+  "read_only_attestation": true
+}

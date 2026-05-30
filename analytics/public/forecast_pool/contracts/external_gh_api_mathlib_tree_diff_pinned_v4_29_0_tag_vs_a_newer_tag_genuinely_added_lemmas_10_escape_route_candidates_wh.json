@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh.json",
+    "contract": "analytics/public/forecast_pool/contracts/external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh",
+    "outcome": "analytics/public/forecast_pool/outcomes/external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh.json",
+    "score": "analytics/public/forecast_pool/scores/external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T23:10:08Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1277,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "tier2_external_version_delta_mining",
+    "score": 0.1277,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1277,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.1277,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0465,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0465,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0426,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0426,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.04,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.04,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0233,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0233,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "gh-api tree-diff + per-candidate #check-gate in pinned v4.29.0; count valid rows",
+  "question": "External gh-api Mathlib tree-diff (pinned v4.29.0 tag vs a newer tag) -> genuinely-added lemmas -> >=10 escape-route candidates whose closer #check-FAILS in pinned AND no canonical equivalent: can a CLEAN Tier-2 corpus (>=5 valid rows) be sourced this way (vs cold-author guessing which gave 0/12)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "tier2_external_version_delta_mining",
+  "value_if_success": 0.85,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

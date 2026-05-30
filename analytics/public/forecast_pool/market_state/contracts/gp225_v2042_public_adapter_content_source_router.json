@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:17:28Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 22.0,
+    "expected_value": 1.0946901663874746,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.09,
+    "p_needs_new_lemma": 0.045,
+    "p_regression": 0.035,
+    "p_success": 0.7310563539921716,
+    "participants": [
+      {
+        "agent_id": "Fisher",
+        "domain": "gp225_pre_gnn_route_selection",
+        "p_success": 0.76,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Kolmogorov",
+        "domain": "gp225_pre_gnn_route_selection",
+        "p_success": 0.7,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "source_discovery_not_content_changing",
+        "p": 0.17142857142857143
+      },
+      {
+        "mode": "blocked_row_selection_too_broad",
+        "p": 0.15625
+      },
+      {
+        "mode": "artifact_schema_mismatch",
+        "p": 0.14955357142857145
+      },
+      {
+        "mode": "router_restates_prior_without_new_next_action",
+        "p": 0.140625
+      },
+      {
+        "mode": "blocked_rows_too_timeout_heavy",
+        "p": 0.1285714285714286
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2042_public_adapter_content_source_router.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2042_public_adapter_content_source_router.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2042_public_adapter_content_source_router.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2042_public_adapter_content_source_router.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2042_public_adapter_content_source_router.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:17:11Z",
+    "created_by": "codex:RD",
+    "horizon": "45m",
+    "layer": "micro",
+    "objective_resolver": "success iff v2042 JSON exists, consumes v2034/v2041/v1918/v1921, records rank-policy replay abort, records external exact coverage 0.0 as schema-mapping blocker, selects >=3 blocked rows for content-changing source discovery, replay_run=false, training_now=false, gnn_blocked=true",
+    "question": "Will v20.42 emit a no-replay public-adapter content-source router that chooses blocked-row source discovery over rank-policy replay, while keeping external adapters gated by schema mapping?",
+    "success_threshold": "all objective resolver clauses true",
+    "task_type": "gp225_pre_gnn_route_selection"
+  },
+  "contract_id": "gp225_v2042_public_adapter_content_source_router",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Fisher",
+        "raw_agent_ids": [
+          "Fisher"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Kolmogorov",
+        "raw_agent_ids": [
+          "Kolmogorov"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Fisher",
+      "Kolmogorov"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed static router; next candidate content should come from blocked-row source discovery, not replay ranking.",
+        "agent_id": "Fisher",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2042_public_adapter_content_source_router/fisher.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T17:17:25Z",
+        "p_success": 0.76,
+        "rationale_short": "All inputs already indicate rank replay abort and zero exact external coverage; likely success if the router names concrete blocked rows and blockers.",
+        "specific_failure_mode_ids": [
+          "router_restates_prior_without_new_next_action",
+          "blocked_row_selection_too_broad"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed only if source discovery names concrete non-timeout source contracts and keeps external schema mapping as prerequisite.",
+        "agent_id": "Kolmogorov",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2042_public_adapter_content_source_router/kolmogorov.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T17:17:25Z",
+        "p_success": 0.7,
+        "rationale_short": "Static routing is straightforward, but the chosen blocked rows must avoid becoming another timeout-only packet.",
+        "specific_failure_mode_ids": [
+          "source_discovery_not_content_changing",
+          "blocked_rows_too_timeout_heavy"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "Fisher",
+      "Kolmogorov"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:18:40Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 1.0946901663874746,
+      "forecast_spread": 0.06,
+      "p_success": 0.7310563539921716,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.6566
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 22.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7310563539921716,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "source_discovery_not_content_changing",
+        "p": 0.17142857142857143
+      },
+      {
+        "mode": "blocked_row_selection_too_broad",
+        "p": 0.15625
+      },
+      {
+        "mode": "artifact_schema_mismatch",
+        "p": 0.14955357142857145
+      },
+      {
+        "mode": "router_restates_prior_without_new_next_action",
+        "p": 0.140625
+      },
+      {
+        "mode": "blocked_rows_too_timeout_heavy",
+        "p": 0.1285714285714286
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0738,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:18:43Z"
+  }
+}

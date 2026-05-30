@@ -1,0 +1,24 @@
+{
+  "_renamed_from": "noether",
+  "action_change_recommendation": "Per row: gold for 0021 is 2-step simp_rw on @[simp]-tagged sInter/interior lemmas; for 0180 gold is 3-step rw on @[simp]-tagged comp lemmas. P_close ~ 0.08 joint. Recommend running but pre-register failure mode 'all viable rewrite chains hit gold-overlap or @[simp]-exclusion'.",
+  "agent_id": "claude",
+  "contract_id": "gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso",
+  "contract_question": "Will multi-step rw enumeration on the 2 multi-step-rw moat-surface rows (0021 interior_sInter gold simp_rw [sInter_eq_biInter, interior_iInter], 0180 comp_right_injective gold rw [comp_assoc, self_comp_symm, comp_refl]) close AT LEAST 1 row at moat-grade via  or  chain of non-gold, non-@[simp]/@[fun_prop]/@[grind] tagged candidates from cloud top-32?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "gold_pair_is_unique_minimal_rewrite": 0.38235294117647056,
+    "non_simp_alternatives_have_wrong_direction_or_LHS_RHS_shape": 0.2941176470588235,
+    "remaining_simp_tagged_alternatives_dominate_top_32": 0.3235294117647059
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T03:36:48Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.05,
+  "p_success": 0.08,
+  "rationale_short": "Per-row p_close: 0021 ~0.06 (gold uses simp_rw, pure rw chain may fail rewriting under-binder; @[simp] tags exclude direct alternatives); 0180 ~0.05 (gold is precisely the minimal rewrite chain via @[simp]-tagged comp lemmas). Joint P(>=1) ~ 1 - 0.94*0.95 ~ 0.11; shaded to 0.08 for shared retrieval correlation.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

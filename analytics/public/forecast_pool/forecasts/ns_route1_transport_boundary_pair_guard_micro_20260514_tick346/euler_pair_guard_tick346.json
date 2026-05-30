@@ -1,0 +1,21 @@
+{
+  "agent_id": "euler_pair_guard_tick346",
+  "contract_id": "ns_route1_transport_boundary_pair_guard_micro_20260514_tick346",
+  "contract_question": "Can we add a compile-checked Lean theorem that a strict transport+boundary undercharge gap forbids the pair of inequalities normalizedTransportPart \u2264 transportCharge and normalizedBoundaryPart \u2264 boundaryCharge?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 14.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_noise": 0.16,
+    "nlinarith_direction_issue": 0.34,
+    "other": 0.28,
+    "theorem_duplicates_existing_guard": 0.22
+  },
+  "forecasted_at": "2026-05-14T04:13:17Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.03,
+  "p_success": 0.88,
+  "rationale_short": "This is a direct scalar consequence of the summed strict undercharge and the two proposed channel payment inequalities.",
+  "read_only_attestation": true
+}

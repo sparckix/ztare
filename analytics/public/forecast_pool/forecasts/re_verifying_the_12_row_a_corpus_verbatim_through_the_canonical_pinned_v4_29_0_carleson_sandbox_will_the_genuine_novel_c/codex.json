@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c",
+  "contract_question": "Re-verifying the 12-row A-corpus VERBATIM through the canonical pinned v4.29.0 carleson sandbox: will the genuine-novel-closure count be within +/-2 of the original (5) AND false_ratifications=0 (i.e. provenance defect was routing-only, original yield structurally reproduces)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "false_ratification_leak": 0.1,
+    "hidden_provenance_coupling": 0.2,
+    "routing_drift": 0.45,
+    "sandbox_pin_mismatch": 0.25
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:00:52Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.07,
+  "p_success": 0.69,
+  "rationale_short": "Verbatim corpus plus canonical pinned sandbox makes structural reproduction likely; main residuals are routing drift, pin mismatch, and any hidden provenance coupling that would surface as false ratifications.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

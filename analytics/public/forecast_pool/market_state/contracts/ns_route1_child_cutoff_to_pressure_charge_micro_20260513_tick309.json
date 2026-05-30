@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:21:48Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 43.561345917111204,
+    "expected_value": -7.326522362561533,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.2,
+    "p_needs_new_lemma": 0.31989331144850225,
+    "p_regression": 0.0949199835863767,
+    "p_success": 0.681548524024183,
+    "participants": [
+      {
+        "agent_id": "hooke",
+        "domain": "ns_route1_pde",
+        "p_success": 0.72,
+        "weight": 0.98
+      },
+      {
+        "agent_id": "mcclintock",
+        "domain": "ns_route1_pde",
+        "p_success": 0.64,
+        "weight": 0.9696
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "harmonic_reserve_remains_raw",
+        "p": 0.1256668034468609
+      },
+      {
+        "mode": "harmonic_prevents_full_composition",
+        "p": 0.11935986869101353
+      },
+      {
+        "mode": "child_cutoff_objects_misaligned",
+        "p": 0.11561345917111203
+      },
+      {
+        "mode": "source_fields_do_not_align",
+        "p": 0.10941321296676242
+      },
+      {
+        "mode": "other",
+        "p": 0.10518670496512107
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 55.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:21:09Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-13T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "lake env lean plus lake build on ns_route1_fresh_frequency_coercivity_adapter",
+    "question": "Can child-collar and cutoff/CZ lower source objects be composed into FreshFrequencyPressureRemainderChargeSource, leaving harmonic reserve as the explicit remaining open source?",
+    "success_threshold": "Compiled constructor consumes FreshFrequencyChildCollarGeometricChargeSource and FreshFrequencyCutoffCZCommutatorLeakageSource instead of re-asking child/cutoff raw inequalities",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke",
+        "raw_agent_ids": [
+          "hooke"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:mcclintock",
+        "raw_agent_ids": [
+          "mcclintock"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke",
+      "mcclintock"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309/hooke.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-13T23:21:40Z",
+        "p_success": 0.72,
+        "rationale_short": "Micro target should consume child/cutoff lower sources and leave at most harmonic as explicit unlowered branch.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "mcclintock",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309/mcclintock.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-13T23:21:40Z",
+        "p_success": 0.64,
+        "rationale_short": "Micro success if child/cutoff obligations are paid by named lower sources, not reintroduced as raw fields.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:24:16Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 43.561345917111204,
+      "expected_value": -7.326522362561533,
+      "p_success": 0.681548524024183,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.147
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 43.561345917111204,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.681548524024183,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "harmonic_reserve_remains_raw",
+        "p": 0.1256668034468609
+      },
+      {
+        "mode": "harmonic_prevents_full_composition",
+        "p": 0.11935986869101353
+      },
+      {
+        "mode": "child_cutoff_objects_misaligned",
+        "p": 0.11561345917111203
+      },
+      {
+        "mode": "source_fields_do_not_align",
+        "p": 0.10941321296676242
+      },
+      {
+        "mode": "other",
+        "p": 0.10518670496512107
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10400000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:24:25Z"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_adversarial_tick332",
+  "contract_id": "ns_route1_pressure_riesz_cone_charge_source_micro_20260514_tick332",
+  "contract_question": "Will real tick 2 add a compiled pressure/Riesz cone charge source that specializes the visible overflow channel split to the pressureRieszCone channel?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_smuggling_not_excluded": 0.17,
+    "downstream_regression": 0.07,
+    "numeric_bounds_assumed_without_content": 0.23,
+    "only_wraps_existing_channel_receipt": 0.27,
+    "same_kernel_guard_opaque": 0.14,
+    "selectedCharge_rewrite_friction": 0.12
+  },
+  "forecasted_at": "2026-05-14T02:44:05Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.38,
+  "p_regression": 0.07,
+  "p_success": 0.61,
+  "rationale_short": "Bounded Lean tick; skeptical risk is the source compiles as routing but does not discharge PDE content.",
+  "read_only_attestation": true
+}

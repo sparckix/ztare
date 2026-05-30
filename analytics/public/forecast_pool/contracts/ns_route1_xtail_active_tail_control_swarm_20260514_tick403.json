@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json"
+  },
+  "baseline_action": "continue scalar route work without attacking same-carrier tail control",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+  "cost_penalty": 0.16,
+  "counterfactual_action": "dispatch proof/no-go swarm on X_tail <= C_A activeTail",
+  "created_at": "2026-05-14T18:53:13Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2727,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_swarm_proof_attack",
+    "score": 0.4,
+    "selected_domain": "NS_route1",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2727,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 10,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.24,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 140,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.1333,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.2222,
+        "score_rows": 4,
+        "token_jaccard": 0.2222
+      },
+      {
+        "char_trigram_jaccard": 0.1515,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.1515,
+        "score_rows": 16,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "failure_mode_preconditioner": "agents may catch carrier mismatch, activeTail underdefinition, or tautological tail-control surface before implementation"
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.7,
+  "layer": "meso",
+  "objective_resolver": "At least one agent report plus local synthesis identifies PROOF_ROUTE/MISSING_HYPOTHESIS/NO_GO; if positive, a Lean-facing source/guard is added or precisely specified; no claim of upstream Clay closure.",
+  "question": "Will a 3-agent swarm plus local work produce a usable proof route or decisive no-go for same-carrier tail control X_tail <= C_A * activeTail in route 1?",
+  "risk_penalty": 0.28,
+  "success_threshold": "usable_route_or_decisive_no_go",
+  "task_type": "ns_route1_swarm_proof_attack",
+  "value_if_success": 0.95,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

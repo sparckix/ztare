@@ -1,0 +1,207 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T15:33:50Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.0,
+    "expected_value": 0.7493983455895508,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.26,
+    "p_needs_new_lemma": 0.87,
+    "p_regression": 0.075,
+    "p_success": 0.6034981617661674,
+    "participants": [
+      {
+        "agent_id": "codex_rd_event_bridge",
+        "domain": "ns_route1_pde",
+        "p_success": 0.69,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_reuse_skeptic",
+        "domain": "ns_route1_pde",
+        "p_success": 0.51,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "event_price_not_omega_reserve",
+        "p": 0.31
+      },
+      {
+        "mode": "wrapper_too_prop_valued",
+        "p": 0.26
+      },
+      {
+        "mode": "lean_type_mismatch",
+        "p": 0.13
+      },
+      {
+        "mode": "lineage_schedule_index_mismatch",
+        "p": 0.09
+      },
+      {
+        "mode": "recurrent_reuse_countermodel_survives",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T15:33:21Z",
+    "created_by": "codex:RD",
+    "horizon": "same-session_tick394",
+    "layer": "micro",
+    "objective_resolver": "Single-file Lean check passes and the new declaration names the first missing field from event-section/Duhamel to omega fresh-region reserve drop, or no-go guard compiles",
+    "question": "Can the next NS tick encode the exact adapter/guard between event-section Duhamel recurrence machinery and LineageFreshMonotoneReservoirSource without claiming PDE content?",
+    "success_threshold": "true iff Lean compiles with no sorry/admit delta and the new surface changes the next proof action from generic reservoir source to a concrete event-ledger-to-omega-reserve source/guard",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_event_bridge",
+        "raw_agent_ids": [
+          "codex_rd_event_bridge"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_reuse_skeptic",
+        "raw_agent_ids": [
+          "codex_rd_reuse_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_event_bridge",
+      "codex_rd_reuse_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Name the carrier-conversion theorem explicitly: eventWeightedGainPrice/reciprocal budget must become omega(freshRegion) reserve drop before LineageFreshMonotoneReservoirSource can be used.",
+        "agent_id": "codex_rd_event_bridge",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394/codex_rd_event_bridge.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T15:33:40Z",
+        "p_success": 0.69,
+        "rationale_short": "Existing event-section and Duhamel declarations are close, but they live on event price/reciprocal ledgers; route-1 no-reuse needs omega fresh-region reserve drop. A good adapter should make that gap explicit.",
+        "specific_failure_mode_ids": [
+          "event_price_not_omega_reserve",
+          "wrapper_too_prop_valued",
+          "lineage_schedule_index_mismatch"
+        ]
+      },
+      {
+        "action_change_recommendation": "Prefer a guard if the adapter cannot identify route omega/freshRegion with event weighted prices and Duhamel reserve depletion.",
+        "agent_id": "codex_rd_reuse_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394/codex_rd_reuse_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T15:33:40Z",
+        "p_success": 0.51,
+        "rationale_short": "Event recurrence machinery proves finite price/reciprocal certificates, not necessarily depletion of the route-1 active source measure. The useful outcome may be a guard, not a source.",
+        "specific_failure_mode_ids": [
+          "event_price_not_omega_reserve",
+          "recurrent_reuse_countermodel_survives",
+          "wrapper_too_prop_valued"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "codex_rd_event_bridge",
+      "codex_rd_reuse_skeptic"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:35:56Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.6034981617661674,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "event_price_not_omega_reserve",
+        "p": 0.31
+      },
+      "voi_proxy": 1.0193
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6034981617661674,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "event_price_not_omega_reserve",
+        "p": 0.31
+      },
+      {
+        "mode": "wrapper_too_prop_valued",
+        "p": 0.26
+      },
+      {
+        "mode": "lean_type_mismatch",
+        "p": 0.13
+      },
+      {
+        "mode": "lineage_schedule_index_mismatch",
+        "p": 0.09
+      },
+      {
+        "mode": "recurrent_reuse_countermodel_survives",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1681,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:36:02Z"
+  }
+}

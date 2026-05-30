@@ -1,0 +1,205 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:10:34Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 37.96306201745976,
+    "expected_value": -5.514003672079809,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.5093535853055456,
+    "p_needs_new_lemma": 0.9699076550436494,
+    "p_regression": 0.09981531008729877,
+    "p_success": 0.520849412509669,
+    "participants": [
+      {
+        "agent_id": "codex_rd_no_go_skeptic",
+        "domain": "ns_route1_pde",
+        "p_success": 0.46,
+        "weight": 0.9817
+      },
+      {
+        "agent_id": "codex_rd_source_route",
+        "domain": "ns_route1_pde",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "muQP_overflow_not_sourceable",
+        "p": 0.31981531008729874
+      },
+      {
+        "mode": "need_real_packet_definitions",
+        "p": 0.1238456880456174
+      },
+      {
+        "mode": "cutoff_frequency_too_prop_valued",
+        "p": 0.12110813947620729
+      },
+      {
+        "mode": "proof_succeeds",
+        "p": 0.10018468991270121
+      },
+      {
+        "mode": "lean_type_surface_too_abstract",
+        "p": 0.09083110460715547
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:10:11Z",
+    "created_by": "codex:RD",
+    "horizon": "same RD tick on 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Success iff Lean compiles after adding either a source theorem/interface that lowers youngBernsteinAbsorption to fixed cutoff scale bounds plus local-quadratic overflow, or a guard proving the current fields are insufficient because muQP/cutoff/frequency carrier is missing.",
+    "question": "Can this tick encode a sharper non-tautological source or guard for SameCutoffTransportFluxAbsorption.youngBernsteinAbsorption, including QP overflow compatibility, without broad route-wrapper progress?",
+    "success_threshold": "lake env lean ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean passes; no new sorry; artifact names the next PDE field or countermodel.",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_young_bernstein_transport_absorption_20260514_tick397",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_no_go_skeptic",
+        "raw_agent_ids": [
+          "codex_rd_no_go_skeptic"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_source_route",
+        "raw_agent_ids": [
+          "codex_rd_source_route"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_no_go_skeptic",
+      "codex_rd_source_route"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Expect a guard or lower interface rather than a true analytic proof because packet/cutoff definitions are still Prop-level.",
+        "agent_id": "codex_rd_no_go_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_young_bernstein_transport_absorption_20260514_tick397/codex_rd_no_go_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T17:10:29Z",
+        "p_success": 0.46,
+        "rationale_short": "The Young inequality is easy on paper, but current Lean objects may lack enough analytic structure to source it without another interface.",
+        "specific_failure_mode_ids": [
+          "muQP_overflow_not_sourceable",
+          "need_real_packet_definitions"
+        ]
+      },
+      {
+        "action_change_recommendation": "Split same-cutoff Young/Bernstein source from QP residual compatibility before claiming active-tail PDE progress.",
+        "agent_id": "codex_rd_source_route",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_young_bernstein_transport_absorption_20260514_tick397/codex_rd_source_route.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T17:10:29Z",
+        "p_success": 0.58,
+        "rationale_short": "The scalar theorem is already compiled. The next useful tick needs either a lower source for the Young/Bernstein field or a guard showing QP/cutoff data are insufficient.",
+        "specific_failure_mode_ids": [
+          "muQP_overflow_not_sourceable",
+          "cutoff_frequency_too_prop_valued"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "changed_by_forecast_ids": [
+      "codex_rd_source_route",
+      "codex_rd_no_go_skeptic"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:45:48Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.12,
+      "p_success": 0.520849412509669,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "muQP_overflow_not_sourceable",
+        "p": 0.31981531008729874
+      },
+      "voi_proxy": 1.2796
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 37.96306201745976,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.520849412509669,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "muQP_overflow_not_sourceable",
+        "p": 0.31981531008729874
+      },
+      {
+        "mode": "need_real_packet_definitions",
+        "p": 0.1238456880456174
+      },
+      {
+        "mode": "cutoff_frequency_too_prop_valued",
+        "p": 0.12110813947620729
+      },
+      {
+        "mode": "proof_succeeds",
+        "p": 0.10018468991270121
+      },
+      {
+        "mode": "lean_type_surface_too_abstract",
+        "p": 0.09083110460715547
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.23400000000000004,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:45:54Z"
+  }
+}

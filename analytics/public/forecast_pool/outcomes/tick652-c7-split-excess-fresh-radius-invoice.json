@@ -1,0 +1,48 @@
+{
+  "actual_cost_agent_minutes": 135.0,
+  "artifact_hash": "aac3b7989aa838a1911389d6449787d48bf716b285fe8c858730e9a5fce027a0",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean",
+  "changed_by_forecast_ids": [
+    "codex:RD",
+    "codex_forecaster"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "compiled_local_and_vps",
+  "contract_id": "tick652-c7-split-excess-fresh-radius-invoice",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "useful_negative_missing_same_tree_invoice_side_condition",
+  "externality_tags": [
+    "preconditioned_failure_mode",
+    "apparatus_graph_sink_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex_forecaster",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-19T18:31:05Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick652-c7-split-excess-fresh-radius-invoice/codex_forecaster.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": "Prove or refute FreshFrequencyEventSameTreeLock -> BadNodeResidualOrInheritedDichotomy -> C7SameTreeFreshRadiusInvoice.",
+  "old_next_action": "Promote split-excess witness directly to quantity-level radius invoice.",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Market top failure modes matched the outcome and constrained the proof target to same-tree invoice / anti-rebilling rather than capacity promotion.",
+  "preconditioner_source": "forecast_aggregate_and_swarm",
+  "realized_failure_mode_ids": [
+    "fresh_invoice_requires_new_side_condition",
+    "artifact_dependency_not_inequality",
+    "rebilling_log_pileup_countermodel"
+  ],
+  "resolution_note": "Construction not obtained: split-excess projects to abstract radius charge, but displayed same-tree one-use fresh invoice remains a new side condition; next lever shifts to FreshFrequencyEventSameTreeLock -> BadNodeResidualOrInheritedDichotomy -> C7SameTreeFreshRadiusInvoice.",
+  "resolved_at": "2026-05-19T18:53:55Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

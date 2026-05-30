@@ -1,0 +1,33 @@
+{
+  "contract_id": "rd_pattern_action_contract_tick668_level537_late_event_selected_node_exclusion",
+  "tick_id": "TICK668",
+  "level": 537,
+  "selected_patterns": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018",
+    "GP-219:pde_estimate_craft_ops"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level536 assumes selectedBadNodePreimage_bound.",
+      "check": "Construct selectedBadNodePreimage_bound from lateEvent_not_selectedBadNode by contrapositive event-order reasoning.",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean:L3ALateEventSelectedNodeExclusionSource.selectedBadNodePreimage_bound"
+    },
+    {
+      "residual": "Endpoint capacity does not prevent late events from mapping back into selectedBadNodes.",
+      "check": "Require lateEvent_not_selectedBadNode as a universal exclusion over all e >= supportLength - 1.",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level537_late_event_selected_node_exclusion_receipt.json"
+    }
+  ],
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level537_late_event_selected_node_exclusion_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level537_classical_choose_bound_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level537_provenance_edge_direction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level537_provenance_acyclic_edge_receipt.json"
+  ],
+  "nearest_universal_op": "contrapositive preimage bound from late-event exclusion",
+  "nearest_confuser": "finite endpoint capacity with late selected-node reuse",
+  "status": "implemented"
+}

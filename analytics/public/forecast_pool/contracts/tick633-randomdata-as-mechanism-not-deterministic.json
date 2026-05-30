@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick633-randomdata-as-mechanism-not-deterministic.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick633-randomdata-as-mechanism-not-deterministic.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick633-randomdata-as-mechanism-not-deterministic",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick633-randomdata-as-mechanism-not-deterministic.json",
+    "score": "analytics/public/forecast_pool/scores/tick633-randomdata-as-mechanism-not-deterministic.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick633-randomdata-as-mechanism-not-deterministic",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T12:03:25Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_new_mechanism_probe",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick633 (fork-2, genuinely-DISTINCT non-deterministic probe): does random-data/measure-valued probabilistic-smoothing (Burq-Tzvetkov/Nahmod-type a.s. global regularity for randomized supercritical NS data) constitute a genuinely-new MECHANISM transportable to the DETERMINISTIC critical a-priori (Clay, \u2200-data), or is a.s.\u2260\u2200 the honest structural wall \u2014 the probabilistic gain (independence/Wiener-chaos cancellation in the random Fourier series) being by construction UNAVAILABLE for the worst-case deterministic datum (which lies in the measure-zero complement the method discards)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "honest DERIVED verdict: random-data is genuinely-distinct (not in deterministic taxonomy, not an amnesia-relabel) AND either (a) a transport mechanism to deterministic \u2200-data is identified, or (b) it is shown structurally non-transportable (a.s.\u2260\u2200; gain is randomization-intrinsic) \u2014 codex-survived, non-laundered",
+  "task_type": "ns_new_mechanism_probe",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

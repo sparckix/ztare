@@ -1,0 +1,164 @@
+{
+  "generated_utc": "2026-05-20T01:37:07.614676+00:00",
+  "target": "NonflatNonInheritedBadCenterForcesFreshFrequencyPacket",
+  "field": "producesFreshPacketDichotomy",
+  "tool_scope": "RD caller over existing ZTARE primitives; not a second autoresearch loop or replacement workbench",
+  "target_context": {
+    "found": true,
+    "target": "NonflatNonInheritedBadCenterForcesFreshFrequencyPacket",
+    "field": "producesFreshPacketDichotomy",
+    "target_file": "ns_L3_multiscale_YM_rescaled_increments",
+    "endpoint_exposure": null,
+    "n_downstream_users": null,
+    "priority": null,
+    "n_fields": 11,
+    "fields": [
+      {
+        "name": "suitableWeakLocalEnergyInput",
+        "type": "Prop"
+      },
+      {
+        "name": "galileanInvariantBadCenterCarrierFixed",
+        "type": "Prop"
+      },
+      {
+        "name": "betaMeasuredOnSameCarrier",
+        "type": "Prop"
+      },
+      {
+        "name": "flatNodesRemovedOrChargedToSkeleton",
+        "type": "Prop"
+      },
+      {
+        "name": "inheritedAncestorPacketsExcluded",
+        "type": "Prop"
+      },
+      {
+        "name": "pressureTailsBookedOnSameCarrier",
+        "type": "Prop"
+      },
+      {
+        "name": "freshPacketAtFrequencyComparableToRadiusInverse",
+        "type": "Prop"
+      },
+      {
+        "name": "squareBudgetPaysRadiusBeta",
+        "type": "FreshFrequencySquareBudgetPaysRadiusBeta _seq _K hRho hCarrier hBeta hEvents L"
+      },
+      {
+        "name": "boundedFanoutNoLogReuse",
+        "type": "FreshFrequencyBoundedFanoutNoLogReuse _seq _K hRho hCarrier hBeta hEvents L"
+      },
+      {
+        "name": "producesFreshPacketDichotomy",
+        "type": "NonflatBadNodeFreshPacketDichotomy _seq _K hRho hCarrier hBeta hEvents L"
+      },
+      {
+        "name": "producesGainPayment",
+        "type": "FreshPacketGainPaysNonflatBeta _seq _K hRho hCarrier hBeta hEvents L"
+      }
+    ],
+    "field_info": {
+      "field_name": "producesFreshPacketDichotomy",
+      "field_type": "NonflatBadNodeFreshPacketDichotomy _seq _K hRho hCarrier hBeta hEvents L",
+      "result_surface": "NonflatBadNodeFreshPacketDichotomy _seq _K hRho hCarrier hBeta hEvents L",
+      "type_head": "NonflatBadNodeFreshPacketDichotomy"
+    },
+    "constructors": [
+      {
+        "type_head": "NonflatBadNodeFreshPacketDichotomy",
+        "kind": "structure",
+        "file": "ns_L3_multiscale_YM_rescaled_increments",
+        "body_preview": "structure NonflatBadNodeFreshPacketDichotomy\n    (_seq : LerayHopfSequence) (_K : CompactSubCylinder)\n    (hRho : RhoFromNormalizedCKNExcess _seq _K)\n    (hCarrier :\n      NonadaptiveBadCenterCarrierFromNormalizedExcess _seq _K hRho)\n    (hBeta : BadCenterParabolicBetaData _seq _K hRho hCarrier)\n    (hEvents : BadCenterEventNodeIdentification _seq _K hRho hCarrier)\n    (L : EventRecurrencePriceLedger) where\n  nonflatNodeSelection : Prop\n  inheritedNodeAlternative : Prop\n  flatSkeletonAlternative : Prop\n  freshPacketAtComparableFrequency : Prop\n  freshPacketGeneratedBeforeRadiusAccounting : Prop\n  rulesOutEventPerBadNodeTautology : Prop\n\n/-- Atomic fresh-packet primitive below the dichotomy record.  This is the\n    narrow PDE obligation: after the nonflat / inherited / flat partition has\n    been fixed from the normalized-excess carrier, every selected nonflat node\n    that is neither inherited nor flat produces a Duhamel/Bernstein packet at\n    the node's scale.  The packet-selection rule is required to be independent\n    of the later beta-radius Carleson sum. -/",
+        "fields": [
+          {
+            "name": "nonflatNodeSelection",
+            "type": "Prop"
+          },
+          {
+            "name": "inheritedNodeAlternative",
+            "type": "Prop"
+          },
+          {
+            "name": "flatSkeletonAlternative",
+            "type": "Prop"
+          },
+          {
+            "name": "freshPacketAtComparableFrequency",
+            "type": "Prop"
+          },
+          {
+            "name": "freshPacketGeneratedBeforeRadiusAccounting",
+            "type": "Prop"
+          },
+          {
+            "name": "rulesOutEventPerBadNodeTautology",
+            "type": "Prop"
+          }
+        ]
+      }
+    ],
+    "type_producers": [
+      {
+        "name": "NonflatBadNodeFreshPacketDichotomy.ofFreshComparablePacket",
+        "kind": "def",
+        "file": "ns_L3_multiscale_YM_rescaled_increments",
+        "signature_preview": "def NonflatBadNodeFreshPacketDichotomy.ofFreshComparablePacket\n    {seq : LerayHopfSequence} {K : CompactSubCylinder}\n    {hRho : RhoFromNormalizedCKNExcess seq K}\n    {hCarrier :\n      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}\n    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}\n    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}\n    {L : EventRecurrencePriceLedger}\n    (hFresh :\n      FreshComparablePacketForNonflatNonInheritedNode\n        seq K hRho hCarrier hBeta) :\n    NonflatBadNodeFreshPacketDichotomy\n      seq K hRho hCarrier hBeta hEvents L",
+        "type_uses": 1,
+        "score": 6
+      }
+    ],
+    "nearby_theorems": [
+      {
+        "name": "badCenterEventBetaSquarePrefix_le_eventBudget_ofDuhamelIncidenceSource",
+        "file": "ns_L3_multiscale_YM_rescaled_increments",
+        "body_preview": "theorem badCenterEventBetaSquarePrefix_le_eventBudget_ofDuhamelIncidenceSource\n    {seq : LerayHopfSequence} {K : CompactSubCylinder}\n    {hRho : RhoFromNormalizedCKNExcess seq K}\n    {hCarrier :\n      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}\n    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}\n    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}\n    {L : EventRecurrencePriceLedger}\n    (hPoint :\n      BadCenterEventPointwiseBetaSquareIdentity\n-- [truncated preview; full declaration omitted]",
+        "field_uses": 1,
+        "type_uses": 8,
+        "score": 17
+      },
+      {
+        "name": "pressureVisibilityFeedsTriCarrier_of_fixedFreshCoronaPreSummed",
+        "file": "ns_route1_fresh_frequency_coercivity_adapter",
+        "body_preview": "theorem pressureVisibilityFeedsTriCarrier_of_fixedFreshCoronaPreSummed\n    {\u03a9 : Type u} {BadNode : Type v}\n    (h : FixedFreshCoronaPreSummedPressureRieszVisibilitySource \u03a9 BadNode) :\n    \u2200 Q : BadNode,\n      h.pressureComponent Q \u2264\n        h.pressureCoeff * h.omegaPressure (h.freshRegion Q) := by\n  intro Q\n  exact\n    le_trans (h.pressureComponent_le_visibility Q)\n      (mul_le_mul_of_nonneg_left\n        (h.pressureVisibility_le_omegaPressure Q)\n        h.pressureCoeff_nonneg)\n\n/--\n-- [truncated preview; full declaration omitted]",
+        "field_uses": 1,
+        "type_uses": 2,
+        "score": 5
+      }
+    ]
+  },
+  "gap_classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched carrier/region identity language. These gaps usually need a tailored localization or test-object construction before Lean wiring.",
+    "classifier": "local_heuristic"
+  },
+  "mathlib_lemmas": [],
+  "auxiliary_families": [],
+  "inequality_checks": [
+    {
+      "name": "G-PDE-INEQ-DIM",
+      "passed": true,
+      "lhs": "NonflatBeta_Q",
+      "op": "<=",
+      "rhs": "FreshDuhamelBernsteinGain_Q",
+      "violations": [],
+      "dim_check": {
+        "consistent": true,
+        "mode": "physical_vector",
+        "lhs_dim": {},
+        "rhs_dim": {}
+      },
+      "endpoint_check": {
+        "all_bound": true,
+        "unbound": []
+      },
+      "hard_fail": false,
+      "severity": "advisory",
+      "source": "pde_inequality_dimensional_gate",
+      "RELIABILITY_NOTE": "Advisory v0.1. Catches dimensional + endpoint-exposure violations on LLM-proposed inequalities. Does NOT verify mathematical correctness \u2014 passes inequalities that are well-typed but mathematically false. Use as a CHEAP PRE-FILTER before lake build."
+    }
+  ],
+  "curriculum_variants": [],
+  "next_step_rule": "Codex chooses a patch/falsifier route. Feed only verified snippets or summarized failure categories back into ZTARE briefing memory."
+}

@@ -1,0 +1,235 @@
+{
+  "n_cycles_total": 22,
+  "n_clusters": 6,
+  "clusters": [
+    {
+      "cluster_id": "cluster_1",
+      "n_members": 1,
+      "member_phases": [
+        "5bp\u21925bp"
+      ],
+      "member_classes": [
+        "certificate_portability_abstraction"
+      ],
+      "sample_resolutions": [
+        "Lift the mode-specific SOS receipt into an abstract spectral-diseconomy structure (ToxicBlock + schurSlack) that encodes"
+      ],
+      "meta_move_name": "Lift SOS to Certificate",
+      "signature": "Reify a mode-specific sum-of-squares receipt into an abstract spectral-diseconomy certificate structure (ToxicBlock + schurSlack) that decouples the witness from its originating proof mode.",
+      "stall_recognized_by": "mode-locked SOS receipt that cannot transfer across spectral or combinatorial contexts without re-derivation",
+      "object_created": "abstract certificate"
+    },
+    {
+      "cluster_id": "cluster_2",
+      "n_members": 1,
+      "member_phases": [
+        "5fr\u21925fr"
+      ],
+      "member_classes": [
+        "shell_residual_pre_declaration"
+      ],
+      "sample_resolutions": [
+        "Instantiate the abstract profile obligation into a dyadic-shell pricing stream with pre-declared cross-shell residual le"
+      ],
+      "meta_move_name": "Residual Pre-Declaration Instantiation",
+      "signature": "Bind an abstract profile obligation into a concrete dyadic-shell pricing stream by pre-declaring cross-shell residual ledger entries as typed structural certificates before runtime resolution.",
+      "stall_recognized_by": "Abstract obligation floating without a typed ledger anchor across shell boundaries",
+      "object_created": "pre-declared residual ledger certificate"
+    },
+    {
+      "cluster_id": "cluster_3",
+      "n_members": 1,
+      "member_phases": [
+        "5fs\u21925fs"
+      ],
+      "member_classes": [
+        "interaction_class_partition"
+      ],
+      "sample_resolutions": [
+        "Introduce a typed inductive partition of Bony/LP interaction classes (lowHigh, highLow, highHigh, sameShell, remainder) "
+      ],
+      "meta_move_name": "Partition Interaction Space",
+      "signature": "Reify an unstructured case-split into a named inductive type whose constructors exhaustively cover all interaction classes, converting implicit proof obligations into structurally-checkable constructor branches.",
+      "stall_recognized_by": "ad-hoc case analysis on interaction pairs with no governing type to enforce exhaustiveness or carry class-specific invariants",
+      "object_created": "inductive type (typed partition)"
+    },
+    {
+      "cluster_id": "cluster_4",
+      "n_members": 1,
+      "member_phases": [
+        "5fz\u21925fz"
+      ],
+      "member_classes": [
+        "interface_composition_bridge"
+      ],
+      "sample_resolutions": [
+        "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces"
+      ],
+      "meta_move_name": "Obligation Composition Bridge",
+      "signature": "Fuse two independent interface obligations into a single named Lean structure that enforces both contracts simultaneously as a unified proof object.",
+      "stall_recognized_by": "two separately discharged interface obligations with no shared carrier forcing joint satisfaction",
+      "object_created": "composite Lean obligation structure"
+    },
+    {
+      "cluster_id": "cluster_5",
+      "n_members": 1,
+      "member_phases": [
+        "5gb\u21925gb"
+      ],
+      "member_classes": [
+        "branch_decomposition_with_falsifier"
+      ],
+      "sample_resolutions": [
+        "Split the low-high branch into a rotator/stretcher dichotomy by introducing a flat-torus Killing-mode falsifier theorem "
+      ],
+      "meta_move_name": "Dichotomy via Killing Falsifier",
+      "signature": "Refine a coarse binary branch by constructing a geometric falsifier theorem that certifies mutual exclusivity between the two sub-cases, converting an ambiguous split into a provably disjoint decomposition.",
+      "stall_recognized_by": "a low-high or weak-strong branch whose cases overlap or lack a separating invariant, blocking case-exhaustion closure",
+      "object_created": "falsifier theorem"
+    },
+    {
+      "cluster_id": "cluster_6",
+      "n_members": 17,
+      "member_phases": [
+        "5gc\u21925gc",
+        "5ga\u21925ga",
+        "5ci\u21925ct",
+        "5cu\u21925cz",
+        "5ch\u21925ch",
+        "5da\u21925dd",
+        "5fx\u21925fx",
+        "5fv\u21925fw",
+        "5fu\u21925fu",
+        "5fy\u21925fy",
+        "5gd\u21925gd",
+        "5ge\u21925ge",
+        "5fm\u21925fm",
+        "5fj\u21925fl",
+        "5fn\u21925fq",
+        "5bq\u21925cg",
+        "5ft\u21925ft"
+      ],
+      "member_classes": [
+        "obligation_charging_gate",
+        "branch_coverage_completion",
+        "capacity_escape_recurrence_pivot",
+        "scalar_inequality_obligation_lift",
+        "definitional_kill_stratification",
+        "pincer_obligation_decomposition",
+        "obligation_naming",
+        "continuation_obligation_naming",
+        "obligation_field_identification",
+        "branch_obligation_mirroring",
+        "constitutive_split",
+        "receipt_interface_gate",
+        "obligation_skeleton_branching",
+        "branch_obligation_isolation",
+        "branch_obligation_decomposition",
+        "obligation_naming",
+        "gap_obligation_formalization"
+      ],
+      "sample_resolutions": [
+        "Encode a mandatory four-charge gate (PSD ballast, damping, independent normalization, cross term) as a Lean predicate `M",
+        "Introduce a dedicated Lean adapter structure (SameShellRemainderProfileBridge) that gates same-shell/remainder pricing o",
+        "Shift from pressure-capacity material-control as the proof hinge to an exhaust-horizon recurrence bridge, encoding the c"
+      ],
+      "meta_move_name": "Obligation Field Stratification",
+      "signature": "Decompose an undifferentiated proof burden into a named lattice of typed Lean obligation objects, each gated by a structural predicate that enforces branch coverage and charge completeness before continuation.",
+      "stall_recognized_by": "proof arc with unnamed or monolithic obligation blocks that block branch closure and resist decomposition into independently dischargeable sub-goals",
+      "object_created": "typed Lean obligation lattice with named gate predicates"
+    }
+  ],
+  "heldout_test": {
+    "n_holdout": 5,
+    "n_match": 4,
+    "accuracy": 0.8,
+    "random_baseline": 0.16666666666666666,
+    "predictions": [
+      {
+        "heldout_phase": "5ga\u21925ga",
+        "actual_cluster": "cluster_6",
+        "predicted_cluster": "cluster_6",
+        "nearest_training_phase": "5fy\u21925fy",
+        "cosine": 0.9067070598467519,
+        "match": "\u2713"
+      },
+      {
+        "heldout_phase": "5gb\u21925gb",
+        "actual_cluster": "cluster_5",
+        "predicted_cluster": "cluster_6",
+        "nearest_training_phase": "5ch\u21925ch",
+        "cosine": 0.9005399209875469,
+        "match": "\u2717"
+      },
+      {
+        "heldout_phase": "5gc\u21925gc",
+        "actual_cluster": "cluster_6",
+        "predicted_cluster": "cluster_6",
+        "nearest_training_phase": "5fm\u21925fm",
+        "cosine": 0.9048566477376542,
+        "match": "\u2713"
+      },
+      {
+        "heldout_phase": "5gd\u21925gd",
+        "actual_cluster": "cluster_6",
+        "predicted_cluster": "cluster_6",
+        "nearest_training_phase": "5fm\u21925fm",
+        "cosine": 0.9228745207899399,
+        "match": "\u2713"
+      },
+      {
+        "heldout_phase": "5ge\u21925ge",
+        "actual_cluster": "cluster_6",
+        "predicted_cluster": "cluster_6",
+        "nearest_training_phase": "5fm\u21925fm",
+        "cosine": 0.9231227905629242,
+        "match": "\u2713"
+      }
+    ]
+  },
+  "self_recursive_test": {
+    "n_open_branches": 4,
+    "predictions": [
+      {
+        "open_branch": "low-high catalyst payoff charging \u2014 PDE instantiation",
+        "nearest_closed_cycle": "5fu\u21925fu",
+        "nearest_cycle_class": "obligation_field_identification",
+        "predicted_meta_move": "Obligation Field Stratification",
+        "predicted_cluster": "cluster_6",
+        "cosine": 0.8886999842224025,
+        "object_to_create": "typed Lean obligation lattice with named gate predicates",
+        "stall_recognized_by": "proof arc with unnamed or monolithic obligation blocks that block branch closure and resist decomposition into independently dischargeable sub-goals"
+      },
+      {
+        "open_branch": "high-high self-tax cancellation control",
+        "nearest_closed_cycle": "5fx\u21925fx",
+        "nearest_cycle_class": "obligation_naming",
+        "predicted_meta_move": "Obligation Field Stratification",
+        "predicted_cluster": "cluster_6",
+        "cosine": 0.8939944624584607,
+        "object_to_create": "typed Lean obligation lattice with named gate predicates",
+        "stall_recognized_by": "proof arc with unnamed or monolithic obligation blocks that block branch closure and resist decomposition into independently dischargeable sub-goals"
+      },
+      {
+        "open_branch": "remainder/cross payoff charging before the limit",
+        "nearest_closed_cycle": "5fv\u21925fw",
+        "nearest_cycle_class": "continuation_obligation_naming",
+        "predicted_meta_move": "Obligation Field Stratification",
+        "predicted_cluster": "cluster_6",
+        "cosine": 0.871722829417001,
+        "object_to_create": "typed Lean obligation lattice with named gate predicates",
+        "stall_recognized_by": "proof arc with unnamed or monolithic obligation blocks that block branch closure and resist decomposition into independently dischargeable sub-goals"
+      },
+      {
+        "open_branch": "continuation bridge from no-survivor to critical control",
+        "nearest_closed_cycle": "5fv\u21925fw",
+        "nearest_cycle_class": "continuation_obligation_naming",
+        "predicted_meta_move": "Obligation Field Stratification",
+        "predicted_cluster": "cluster_6",
+        "cosine": 0.8795166622090924,
+        "object_to_create": "typed Lean obligation lattice with named gate predicates",
+        "stall_recognized_by": "proof arc with unnamed or monolithic obligation blocks that block branch closure and resist decomposition into independently dischargeable sub-goals"
+      }
+    ]
+  }
+}

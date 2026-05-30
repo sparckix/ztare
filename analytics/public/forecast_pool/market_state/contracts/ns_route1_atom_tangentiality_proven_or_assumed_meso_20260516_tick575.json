@@ -1,0 +1,175 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:27Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.17999999999999997,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 9.1476
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 32.0,
+    "expected_value": -5.412000000000001,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.29,
+    "p_needs_new_lemma": 0.63,
+    "p_regression": 0.04,
+    "p_success": 0.17999999999999997,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575/codex.json",
+        "forecasted_at": "2026-05-16T13:24:55Z",
+        "p_success": 0.18,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tangentiality_carried_as_unproven_selection_premise",
+        "p": 0.42
+      },
+      {
+        "mode": "tick559_to_tick562_chain_does_not_force_cascade_geometry",
+        "p": 0.24
+      },
+      {
+        "mode": "theorem_hypothesis_or_geometry_mismatch",
+        "p": 0.2
+      },
+      {
+        "mode": "missing_negative_case_for_nontangential_branch",
+        "p": 0.14
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T13:23:29Z",
+    "created_by": "claude_rd",
+    "horizon": "14d",
+    "layer": "meso",
+    "objective_resolver": "Trace the provenance of 'asymptotically tangential' in the arc and test against CKN/Type-I: does CKN-badness + Type-I FORCE the inherited cascade tangential (e.g. via the s_z>0 / transverse-lower-bound chain tick559-562), or was tangentiality assumed at some tick? success iff tangentiality is PROVEN forced by CKN/Type-I (atom bounded on it, Gemini undecidability refuted); 0.5 if forced only under an extra stated hypothesis; fail iff tangentiality is an unjustified assumption (then the non-tangential 3D-stretching regime is the genuine open core and the inversion/construction track is warranted in parallel).",
+    "question": "Munger-inversion dichotomy (Gemini-prompted, ANTI-PATTERN-014-screened): a Turing-pump blowup needs strong 3D vortex stretching (NON-tangential); the Birkhoff/slaving reduction operates only on the asymptotically-TANGENTIAL (near-2D, Ladyzhenskaya-regular) branch. So is 'asymptotically tangential' a PROVEN property of the inherited CKN-bad cascade (\u21d2 near-2D \u21d2 atom A_n bounded \u21d2 regularity, undecidability claim refuted) OR an unjustified ASSUMPTION carried through the arc (\u21d2 the real open regime is non-tangential 3D-stretching = where blowup/Turing-pump would live)? Resolve which, with the CKN/Type-I structure of the inherited bad cascade.",
+    "success_threshold": "success iff asymptotic-tangentiality PROVEN forced by CKN/Type-I structure; 0.5 if under one extra hypothesis; fail iff it was an assumption (\u21d2 non-tangential regime is the real open core)",
+    "task_type": "ns_clay_atom_tangentiality_provenance_20260516"
+  },
+  "contract_id": "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-16T13:24:55Z",
+        "p_success": 0.18,
+        "rationale_short": "The adjacent arc already uses tangentiality as a selection premise, but the supplied artifacts do not independently witness a CKN/Type-I implication from badness to asymptotic tangentiality. I price the main miss as provenance/circularity, with a smaller residual on theorem-hypothesis mismatch and missing negative-case coverage.",
+        "specific_failure_mode_ids": [
+          "tangentiality_carried_as_unproven_selection_premise",
+          "tick559_to_tick562_chain_does_not_force_cascade_geometry",
+          "theorem_hypothesis_or_geometry_mismatch",
+          "missing_negative_case_for_nontangential_branch"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "resolved_scored"
+    ],
+    "next_action": "score",
+    "state": "resolved_unscored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T13:24:51Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.17999999999999997,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 9.1476
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 32.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "score",
+    "p_success": 0.17999999999999997,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tangentiality_carried_as_unproven_selection_premise",
+        "p": 0.42
+      },
+      {
+        "mode": "tick559_to_tick562_chain_does_not_force_cascade_geometry",
+        "p": 0.24
+      },
+      {
+        "mode": "theorem_hypothesis_or_geometry_mismatch",
+        "p": 0.2
+      },
+      {
+        "mode": "missing_negative_case_for_nontangential_branch",
+        "p": 0.14
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

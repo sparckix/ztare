@@ -1,0 +1,22 @@
+{
+  "agent_id": "Hooke",
+  "contract_id": "ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313",
+  "contract_question": "Will this tick add a compiling harmonic pressure decomposition source below FreshFrequencyHarmonicPressureReserveSource without mutating pre-GNN harness?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 100.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.1,
+    "decomposition_reserve_not_exposed": 0.24,
+    "identity_wrapper_only": 0.34,
+    "lean_friction": 0.12,
+    "needs_pressure_decomposition_lemma": 0.2
+  },
+  "forecasted_at": "2026-05-13T23:39:37Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.08,
+  "p_success": 0.44,
+  "rationale_short": "B is second-ranked; useful if it splits harmonic source from receipt projection without wrapper laundering.",
+  "read_only_attestation": true
+}

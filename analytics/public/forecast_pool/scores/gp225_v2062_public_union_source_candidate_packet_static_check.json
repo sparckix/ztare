@@ -1,0 +1,134 @@
+{
+  "contract_id": "gp225_v2062_public_union_source_candidate_packet_static_check",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Stop at v20.61 queue or reuse old v20.44 candidate packet including solved charFun.",
+      "counterfactual_action": "Generate a refreshed strict static candidate packet only for unsolved v20.61 rows.",
+      "externality_hypotheses": {
+        "negative": [
+          "static packet may still overstate replayability",
+          "row context may remain underhydrated"
+        ],
+        "positive": [
+          "candidate-content delta for public/internal union",
+          "solved-row exclusion prevents leakage/accounting reuse"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Noether3",
+        "Hilbert3"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "candidate_content_delta",
+        "source_discovery",
+        "anti_goodhart"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "static_only",
+        "replay_blockers_present"
+      ],
+      "new_next_action": "price bounded canary replay with replay blockers as preconditions",
+      "old_next_action": "reuse v20.44 loose candidate packet or stop at queue",
+      "preconditioner_effect": "Excluded solved charFun row and constrained v20.62 to unsolved source-content rows.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.08499999999999999,
+  "mean_log_score": -0.3433837867979531,
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "artifact_hash": "04b8d8a2caba94285eebd39b0bf46ebe07e08279bc113c3fc87c299556dd6e2a",
+    "artifact_path": "analytics/public/leanmill/results/v2062_public_union_source_candidate_packet_static_check.json",
+    "changed_by_forecast_ids": [
+      "Noether3",
+      "Hilbert3"
+    ],
+    "compile_status": "static_candidate_packet_passed",
+    "contract_id": "gp225_v2062_public_union_source_candidate_packet_static_check",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "candidate_content_delta",
+      "source_discovery",
+      "anti_goodhart"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "static_only",
+      "replay_blockers_present"
+    ],
+    "new_next_action": "price bounded canary replay with replay blockers as preconditions",
+    "old_next_action": "reuse v20.44 loose candidate packet or stop at queue",
+    "preconditioner_effect": "Excluded solved charFun row and constrained v20.62 to unsolved source-content rows.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.62 passed: four unsolved v20.61 rows, eight candidate actions, eight strict static-passed actions, three replay blockers recorded, no replay/training, GNN blocked.",
+    "resolved_at": "2026-05-14T18:37:53Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:37:56Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "Hilbert3",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "gp225_pre_gnn_static_candidate_packet",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:35:43Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:35:56Z",
+        "resolved_at": "2026-05-14T18:37:53Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "Noether3",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "gp225_pre_gnn_static_candidate_packet",
+      "expected_cost_agent_minutes": 20.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:35:43Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:35:56Z",
+        "resolved_at": "2026-05-14T18:37:53Z"
+      }
+    }
+  ]
+}

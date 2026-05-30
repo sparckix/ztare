@@ -1,0 +1,24 @@
+{
+  "agent_id": "rawls_forecast_tick327",
+  "contract_id": "ns_route1_fixed_window_packet_scout_micro_20260514_tick327",
+  "contract_question": "Will a deterministic fixed-window trace-free tensor packet scout produce a clear geometry-only same-window cancellation/overflow obstruction artifact for the cone-mass branch?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "amplitude_tuning_proves_cancellation_only_by_free_rescaling": 0.22,
+    "artifact_is_toy_linear_algebra_but_not_same_window_geometry": 0.25,
+    "json_markdown_schema_too_weak_for_gp233_or_rd_consumption": 0.07,
+    "local_dependency_or_path_friction": 0.05,
+    "output_does_not_clearly_inform_cone_mass_branch": 0.16,
+    "positive_negative_orientation_claim_not_tied_to_trace_free_projection": 0.17,
+    "script_accidentally_mutates_or_depends_on_pre_gnn_harness": 0.08
+  },
+  "forecasted_at": "2026-05-14T01:41:59Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.04,
+  "p_success": 0.74,
+  "rationale_short": "Offline deterministic scout likely runs; main risk is that exact STF orientation cancellation is too algebraic to guide the same-window cone branch.",
+  "read_only_attestation": true
+}

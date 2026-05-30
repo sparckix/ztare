@@ -1,0 +1,535 @@
+{
+  "action_counts": {
+    "aggregate_when_rd_releases": 17,
+    "await_objective_outcome": 14,
+    "closed": 288,
+    "malformed_forecast_skipped": 1,
+    "resolved_without_forecasts": 15,
+    "score": 1,
+    "voided_no_score": 32
+  },
+  "aggregate_missing": {
+    "count": 17,
+    "samples": [
+      "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+      "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+      "tick668_level500_bounded_event_index_selector_source",
+      "tick668_level501_least_hit_incidence_selector_source",
+      "tick668_level502_pde_bounded_incidence_collision_source",
+      "tick668_level503_no_reuse_collision_free_incidence_source",
+      "tick668_level504_eventdata_horizon_bounded_incident_existence_source",
+      "tick668_level505_cover_selection_target_event_candidate_source",
+      "tick668_level506_eventdata_incidence_cover_source",
+      "tick668_level507_finalslot_eventdata_cover_selector_source",
+      "tick668_level508_least_hit_targetslot_assignment_source",
+      "tick668_level509_sametree_eventdata_index_bounded_existence_source",
+      "tick668_level519_unbounded_event_witness_prefix_bound_source",
+      "tick668_level520_cofinal_incidence_witness_bound_source",
+      "tick668_level521_explicit_cofinal_event_witness_bound_source",
+      "tick668_level522_cofinal_event_selector_final_prefix_bound_source",
+      "tick668_level523_finite_cofinal_event_selector_source"
+    ]
+  },
+  "awaiting_forecasts": {
+    "count": 0,
+    "samples": []
+  },
+  "calibration": {
+    "domain_effort_priors": [
+      {
+        "domain": "GP-225",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 14.88,
+        "median_expected_over_actual": 1.3868,
+        "sample_limited": false,
+        "score_rows": 8
+      },
+      {
+        "domain": "NS_route1",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 42.0,
+        "median_expected_over_actual": 1.4632,
+        "sample_limited": false,
+        "score_rows": 10
+      },
+      {
+        "domain": "general",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 36.75,
+        "median_expected_over_actual": 1.0611,
+        "sample_limited": false,
+        "score_rows": 8
+      },
+      {
+        "domain": "gnn_synthetic_data_factory",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 12.48,
+        "median_expected_over_actual": 3.9271,
+        "sample_limited": false,
+        "score_rows": 3
+      },
+      {
+        "domain": "gp225_baseline",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 31.5,
+        "median_expected_over_actual": 1.9444,
+        "sample_limited": false,
+        "score_rows": 3
+      },
+      {
+        "domain": "gp225_blended_contract",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 21.0,
+        "median_expected_over_actual": 2.1666,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_external_baseline_smoke",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 15.75,
+        "median_expected_over_actual": 2.0,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_inventory_gate",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 1.0,
+        "median_expected_over_actual": 8.0,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_label_source",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 1.0,
+        "median_expected_over_actual": 55.0,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_lean_witness_backfill",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 1.89,
+        "median_expected_over_actual": 11.9369,
+        "sample_limited": false,
+        "score_rows": 4
+      },
+      {
+        "domain": "gp225_micro_probe",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 4.34,
+        "median_expected_over_actual": 6.1071,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_parallel_replay",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 52.5,
+        "median_expected_over_actual": 1.2667,
+        "sample_limited": false,
+        "score_rows": 3
+      },
+      {
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 31.5,
+        "median_expected_over_actual": 1.4164,
+        "sample_limited": false,
+        "score_rows": 4
+      },
+      {
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 50.75,
+        "median_expected_over_actual": 1.1035,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_pre_gnn_context_binding",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 36.75,
+        "median_expected_over_actual": 1.1905,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_pre_gnn_replay_gate",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 42.0,
+        "median_expected_over_actual": 1.0416,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_pre_gnn_route_selection",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 28.88,
+        "median_expected_over_actual": 1.3666,
+        "sample_limited": false,
+        "score_rows": 4
+      },
+      {
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 31.5,
+        "median_expected_over_actual": 1.0555,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_pre_gnn_source_discovery",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 42.0,
+        "median_expected_over_actual": 1.25,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_public_trace_labels",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 1.0,
+        "median_expected_over_actual": 8.3333,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_repair_micro",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 14.0,
+        "median_expected_over_actual": 2.25,
+        "sample_limited": false,
+        "score_rows": 43
+      },
+      {
+        "domain": "gp225_route_selection_meso",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 35.0,
+        "median_expected_over_actual": 0.95,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp225_typed_feedback",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 42.0,
+        "median_expected_over_actual": 1.8125,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "gp230_forecast_pool_infrastructure",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 49.0,
+        "median_expected_over_actual": 3.8393,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "lean_replay_verification",
+        "effort_overestimated": true,
+        "expected_cost_agent_minutes_prior": 1.5,
+        "median_expected_over_actual": 40.6977,
+        "sample_limited": false,
+        "score_rows": 3
+      },
+      {
+        "domain": "meta_prediction_market",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 54.25,
+        "median_expected_over_actual": 1.3361,
+        "sample_limited": false,
+        "score_rows": 4
+      },
+      {
+        "domain": "navier_stokes_route1",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 28.88,
+        "median_expected_over_actual": 2.3056,
+        "sample_limited": false,
+        "score_rows": 16
+      },
+      {
+        "domain": "ns_lean_micro",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 31.5,
+        "median_expected_over_actual": 1.0555,
+        "sample_limited": true,
+        "score_rows": 2
+      },
+      {
+        "domain": "ns_live_scalar_hinge",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 10.5,
+        "median_expected_over_actual": 1.2857,
+        "sample_limited": false,
+        "score_rows": 7
+      },
+      {
+        "domain": "ns_route1_local_energy_measure_split",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 38.5,
+        "median_expected_over_actual": 1.6966,
+        "sample_limited": false,
+        "score_rows": 4
+      },
+      {
+        "domain": "ns_route1_pde",
+        "effort_overestimated": false,
+        "expected_cost_agent_minutes_prior": 54.25,
+        "median_expected_over_actual": 1.625,
+        "sample_limited": false,
+        "score_rows": 140
+      }
+    ],
+    "rd_consumption_rule": "use GP-230 for replay/Lean batches, GNN/GPU/training gates, public claims, or branch choices with real opportunity cost; use raw PL plus GP-233 for cheap saved audits",
+    "score_count": 314,
+    "score_rows_in_summary": 294,
+    "stale": true,
+    "summary_exists": true,
+    "summary_path": "analytics/public/forecast_pool/calibration_summary.json",
+    "weights_exists": true,
+    "weights_path": "analytics/public/forecast_pool/calibration_weights.json"
+  },
+  "contract_count": 368,
+  "decision_use": {
+    "decision_changed_rows": 2,
+    "ignored_without_reason": 0,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "recent": [
+      {
+        "aggregate_present": false,
+        "aggregate_summary": {
+          "excluded_from_calibration": false,
+          "exists": false,
+          "scratch_contract": true
+        },
+        "artifact_paths": {
+          "aggregate": "analytics/public/forecast_pool/aggregates/scratch_9e7572ea8cc99cba.json",
+          "contract": "analytics/analytics/public/forecast_pool/scratch/20260520t124656_codex_rd_gp225_factory_pathc_residual_lane_meso_20260520.json",
+          "decision_use_ledger": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
+        },
+        "contract_id": "scratch_9e7572ea8cc99cba",
+        "contract_question": null,
+        "decision_changed_bool": true,
+        "decision_stage": "manual",
+        "decision_use_id": "du_e10552fcf492",
+        "failure_modes_adopted": [
+          "path_a_template_underpowered",
+          "residual_classes_too_sparse_for_policy",
+          "source_packet_quality_ceiling"
+        ],
+        "forecast_delta": null,
+        "ignored_forecast_reason": null,
+        "new_action": "prioritize Path-C residual planner plus typed repair-family lanes; increase B workers only when to_govern queue is nonempty",
+        "notes": "Decision row for GP225 A/B/C path forward after factory scoreboard: conveyor works, new lanes yielded 5/5 Path-C residuals, bottleneck is repair-template generation rather than B governance capacity.",
+        "old_action": "scale workers and keep draining lanes equally",
+        "owner": "codex:RD",
+        "recorded_at": "2026-05-20T12:48:13Z",
+        "tick_id": "gp225_factory_pathc_20260520",
+        "used_for": "split"
+      },
+      {
+        "aggregate_present": false,
+        "aggregate_summary": {
+          "excluded_from_calibration": true,
+          "exists": false,
+          "scratch_contract": true
+        },
+        "artifact_paths": {
+          "aggregate": "analytics/public/forecast_pool/aggregates/scratch_9e7572ea8cc99cba.json",
+          "contract": "analytics/public/forecast_pool/scratch/20260520t124656_codex_rd_gp225_factory_pathc_residual_lane_meso_20260520.json",
+          "decision_use_ledger": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
+        },
+        "contract_id": "scratch_9e7572ea8cc99cba",
+        "contract_question": "Will the GP225 A/B/C LeanSearch factory path produce at least two additional ratified proof closures or exact-gap/falsifier packets from the current MCB intake/residual buffer by the next factory decision review, without false ratification or source-order leakage?",
+        "decision_changed_bool": true,
+        "decision_stage": "manual",
+        "decision_use_id": "du_7c7881d2ad27",
+        "failure_modes_adopted": [
+          "path_a_template_underpowered",
+          "residual_classes_too_sparse_for_policy",
+          "source_packet_quality_ceiling"
+        ],
+        "forecast_delta": null,
+        "ignored_forecast_reason": null,
+        "new_action": "prioritize Path-C residual planner plus typed repair-family lanes; increase B workers only when to_govern queue is nonempty",
+        "notes": "Corrected scratch decision-use row after enabling scratch contract support; prior du_e10552fcf492 had a malformed artifact path because scratch contracts were not accepted by record-decision-use.",
+        "old_action": "scale workers and keep draining lanes equally",
+        "owner": "codex:RD",
+        "recorded_at": "2026-05-20T12:49:38Z",
+        "tick_id": "gp225_factory_pathc_20260520",
+        "used_for": "split"
+      }
+    ],
+    "rows": 2,
+    "stage_counts": {
+      "manual": 2
+    },
+    "used_for_counts": {
+      "split": 2
+    }
+  },
+  "forecast_pool_root": "analytics/public/forecast_pool",
+  "generated_at": "2026-05-27T08:40:51Z",
+  "lifecycle_counts": {
+    "aggregate_ready": 14,
+    "forecast_fulfilled": 17,
+    "malformed_forecast": 1,
+    "resolved_scored": 288,
+    "resolved_unscored": 1,
+    "resolved_without_forecasts": 15,
+    "voided": 32
+  },
+  "maintenance_plan": {
+    "path": "analytics/public/forecast_pool/market_state/maintenance_plan.json",
+    "summary": "generated score, aggregate, void/backfill, and decision-use hygiene queue"
+  },
+  "rd_fast_path": {
+    "consume": "analytics/public/forecast_pool/market_state/global_health.json",
+    "record_decision_use": "forecast_pool.py record-decision-use --contract-id <cid> --tick-id <tick> --owner <rd> --decision-stage pretick --used-for <run|split|defer|kill|ask_more|ignore|override>",
+    "refresh": "forecast_pool.py materialize-state"
+  },
+  "reflexive_insights": {
+    "path": "analytics/public/forecast_pool/market_state/reflexive_insights.json",
+    "summary": "market-generated positive externalities, calibration incidents, decision-use gaps, and maintenance nudges"
+  },
+  "reliability": {
+    "path": "analytics/public/forecast_pool/market_state/reliability.json",
+    "summary": "probability buckets, effort reliability, failure-mode precision, drift, high-confidence misses"
+  },
+  "resolved_without_score": {
+    "count": 16,
+    "samples": [
+      "ns_route1_C7_surplus_cf_depletion_reduction_meso_20260516_tick582",
+      "ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581",
+      "ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577",
+      "ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578",
+      "ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576",
+      "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+      "ns_route1_birkhoff_R3_slaving_bypass_quantKRZ_meso_20260516_tick572",
+      "ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573",
+      "ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579",
+      "ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580",
+      "test-fix52-1779140589",
+      "tick641-micro-dyadic-beta-rg-transport-discriminator",
+      "tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator",
+      "tick643-omega-sup-coercive-entropy-atom",
+      "tick644-lagrangian-vortexline-history-observable",
+      "tick645-biotsavart-commutator-defect-nonlocality"
+    ]
+  },
+  "transport": {
+    "channel_dir": "org/channels/forecasting_agent",
+    "claim_files": 60,
+    "claimed_without_response": 0,
+    "fulfilled_messages_missing_aggregate": 2,
+    "fulfilled_missing_aggregate_samples": [
+      {
+        "contract_id": "tick668_level500_bounded_event_index_selector_source",
+        "message_id": "msg_70434678e08648a8827bfae991ecd71e",
+        "obligation_state": "fulfilled",
+        "path": "org/channels/forecasting_agent/inbox/msg_70434678e08648a8827bfae991ecd71e.json",
+        "status": "closed"
+      },
+      {
+        "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+        "message_id": "msg_eca16389ddba424b9e5202ccd0adc4b1",
+        "obligation_state": "fulfilled",
+        "path": "org/channels/forecasting_agent/inbox/msg_eca16389ddba424b9e5202ccd0adc4b1.json",
+        "status": "closed"
+      }
+    ],
+    "inbox_messages": 84,
+    "obligation_state_counts": {
+      "blocked_input": 5,
+      "expired": 13,
+      "fulfilled": 52,
+      "pending": 11,
+      "refused": 3
+    },
+    "open_for_resolved_contract_samples": [
+      {
+        "contract_id": "ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544",
+        "message_id": "msg_11a6c073935c4d04a00d4172b367e1d9",
+        "obligation_state": "pending",
+        "path": "org/channels/forecasting_agent/inbox/msg_11a6c073935c4d04a00d4172b367e1d9.json",
+        "status": "open"
+      },
+      {
+        "contract_id": "gp225_path_c_current_scale_0080_transport_adapter_meso_20260519",
+        "message_id": "msg_38634c9a0f334e47bb86c150d7975928",
+        "obligation_state": "pending",
+        "path": "org/channels/forecasting_agent/inbox/msg_38634c9a0f334e47bb86c150d7975928.json",
+        "status": "open"
+      },
+      {
+        "contract_id": "sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z",
+        "message_id": "msg_5152d5ad99c043b8af65cffa8370626d",
+        "obligation_state": "pending",
+        "path": "org/channels/forecasting_agent/inbox/msg_5152d5ad99c043b8af65cffa8370626d.json",
+        "status": "open"
+      },
+      {
+        "contract_id": "flatkineticloadnoreuse_derivable_from_lerayhopf_20260515t151818z",
+        "message_id": "msg_53c3ea1050594589bc19eb408e071564",
+        "obligation_state": "pending",
+        "path": "org/channels/forecasting_agent/inbox/msg_53c3ea1050594589bc19eb408e071564.json",
+        "status": "open"
+      },
+      {
+        "contract_id": "flatbranchkineticloadcarrier_lean_formalization_builds_clean_with_real_ns_inhabitation_20260515t151851z",
+        "message_id": "msg_5492769afde7476898a74baaa19c1b15",
+        "obligation_state": "pending",
+        "path": "org/channels/forecasting_agent/inbox/msg_5492769afde7476898a74baaa19c1b15.json",
+        "status": "open"
+      },
+      {
+        "contract_id": "gp225_path_c_current_scale_0080_transport_adapter_meso_20260519",
+        "message_id": "msg_7215381d9dc94792b2c213d4f78ca85f",
+        "obligation_state": "pending",
+        "path": "org/channels/forecasting_agent/inbox/msg_7215381d9dc94792b2c213d4f78ca85f.json",
+        "status": "open"
+      },
+      {
+        "contract_id": "gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+        "message_id": "msg_9eab4e5602fc4bdd970ee01da9f2d76d",
+        "obligation_state": "blocked_input",
+        "path": "org/channels/forecasting_agent/inbox/msg_9eab4e5602fc4bdd970ee01da9f2d76d.json",
+        "status": "acknowledged"
+      },
+      {
+        "contract_id": "tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f",
+        "message_id": "msg_a9a2742dde2c45eead168aba7fcfc048",
+        "obligation_state": "blocked_input",
+        "path": "org/channels/forecasting_agent/inbox/msg_a9a2742dde2c45eead168aba7fcfc048.json",
+        "status": "acknowledged"
+      },
+      {
+        "contract_id": "gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+        "message_id": "msg_b03863f482854e1c9e15b6e2958c7f2f",
+        "obligation_state": "blocked_input",
+        "path": "org/channels/forecasting_agent/inbox/msg_b03863f482854e1c9e15b6e2958c7f2f.json",
+        "status": "acknowledged"
+      },
+      {
+        "contract_id": "gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+        "message_id": "msg_bb8698d0e7ad40dd9a2e436615a6a6dd",
+        "obligation_state": "blocked_input",
+        "path": "org/channels/forecasting_agent/inbox/msg_bb8698d0e7ad40dd9a2e436615a6a6dd.json",
+        "status": "acknowledged"
+      }
+    ],
+    "open_for_resolved_contracts": 16,
+    "open_messages": 16,
+    "response_files": 73,
+    "status_counts": {
+      "acknowledged": 5,
+      "closed": 68,
+      "open": 11
+    }
+  }
+}

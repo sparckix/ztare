@@ -1,0 +1,138 @@
+{
+  "contract_id": "ns_route1_noncircular_frequency_duhamel_source_20260514_tick395",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "leave tick394 surface as an audit object despite circular input",
+      "counterfactual_action": "repair surface into noncircular source before attempting PDE sublemma",
+      "externality_hypotheses": {
+        "negative": [
+          "may expose that prior tick394 source was only an audit wrapper"
+        ],
+        "positive": [
+          "prevents source/target circularity",
+          "names exact first PDE sublemma"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd_surface_repair",
+        "codex_rd_pde_no_go"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "circularity_repair",
+        "first_pde_sublemma",
+        "sidecar_caught_interface_bug"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "abstract_lineage_interface_still_overstrong"
+      ],
+      "new_next_action": "attack ActiveTailPaidByCaloricDissipationOfSameTreeFreshFrequency; optionally split reservoir-data interface from no-reuse output",
+      "old_next_action": "treat FrequencyLocalizedDuhamelLineageReservoirEstimate as source",
+      "preconditioner_effect": "Caught and repaired source/target circularity before further PDE work; first hard sublemma is now explicit.",
+      "preconditioner_source": "Lovelace xhigh sidecar plus local Lean check",
+      "realized_failure_mode_ids": [
+        "active_tail_sublemma_underdefined",
+        "still_too_wrapper_like",
+        "lineage_reservoir_interface_too_strong"
+      ]
+    }
+  },
+  "mean_brier": 0.14045,
+  "mean_log_score": -0.4631705338638282,
+  "outcome": {
+    "actual_cost_agent_minutes": 17.0,
+    "artifact_hash": "82f0e0c46e0e785aa41d060612436d384781dbc6a46a24c24c94e9503169c2ca",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd_surface_repair",
+      "codex_rd_pde_no_go"
+    ],
+    "compile_status": "passed",
+    "contract_id": "ns_route1_noncircular_frequency_duhamel_source_20260514_tick395",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "circularity_repair",
+      "first_pde_sublemma",
+      "sidecar_caught_interface_bug"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "abstract_lineage_interface_still_overstrong"
+    ],
+    "new_next_action": "attack ActiveTailPaidByCaloricDissipationOfSameTreeFreshFrequency; optionally split reservoir-data interface from no-reuse output",
+    "old_next_action": "treat FrequencyLocalizedDuhamelLineageReservoirEstimate as source",
+    "preconditioner_effect": "Caught and repaired source/target circularity before further PDE work; first hard sublemma is now explicit.",
+    "preconditioner_source": "Lovelace xhigh sidecar plus local Lean check",
+    "realized_failure_mode_ids": [
+      "active_tail_sublemma_underdefined",
+      "still_too_wrapper_like",
+      "lineage_reservoir_interface_too_strong"
+    ],
+    "resolution_note": "Repaired the tick394 circularity flagged by Lovelace: added FrequencyLocalizedDuhamelLineageReservoirSource, which does not take LineageFreshMonotoneReservoirSource as input and constructs it via ofFrequencyLocalizedDuhamelSource. Added first hard PDE target ActiveTailPaidByCaloricDissipationOfSameTreeFreshFrequency. Residual: because the older abstract LineageFreshMonotoneReservoirSource still contains producesNoReuse, the source still carries an event-local no-reuse projection; next cleanup is to split reservoir data from no-reuse output if needed.",
+    "resolved_at": "2026-05-14T15:40:14Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T15:40:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 17.0,
+      "agent_id": "codex_rd_pde_no_go",
+      "brier": 0.20249999999999996,
+      "cost_error_agent_minutes": 23.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 40.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.6,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5978370007556204,
+      "p_success": 0.55,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:37:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:37:43Z",
+        "resolved_at": "2026-05-14T15:40:14Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 17.0,
+      "agent_id": "codex_rd_surface_repair",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 13.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 30.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.52,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:37:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:37:43Z",
+        "resolved_at": "2026-05-14T15:40:14Z"
+      }
+    }
+  ]
+}

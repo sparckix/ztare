@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "tick446 M^3 narrative is definitional fiat at the Lean level; tick450 inhabits a FlatDepthReserveLike clone not the original FlatDepthReserve — flag both as separately scoped",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514",
+  "contract_question": "Will the tick454 Meta-Darwin v2 audit of the tick446-tick450 Lean additions (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) identify whether tick450 is honest combinatorial substance or a wrapper in disguise, (c) confirm or refute tick446's r*M^3 scaling identity as carrier-forced vs definitional fiat, (d) confirm or refute tick449's Sum.elim as a real 2->1 reduction vs renaming, and (e) leave Lean files unmodified?",
+  "domain": "meta_darwin_lean_audit",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": ["self_meta_darwin_load_bearing", "wrapper_inflation_risk_round_2"],
+  "forecasted_at": "2026-05-15T02:30:30Z",
+  "p_dependency_issue": 0.02,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.82,
+  "rationale_short": "Read-only audit on a small, well-bounded set of four post-tick448 additions in two files. Expected primary findings: tick446 ESS constructor's r*M^3 is *definitional fiat* — the M^3 cube is chosen by the constructor and the _scaling_identity rfl audits the naming not an analytic identity (carrier offers no Hölder/Tonelli step in Lean); tick447 self-flag confirmed as accurate (carrier carries inequalities as fields, constructor plumbs them); tick449 Sum.elim is renaming + sourceTag enumeration of two identical-shape records, the unified r-linear theorem is field projection; tick450 dyadic instance is HONEST combinatorial substance (real zpow_sub₀, real omega, real Finset.sum_insert with side-condition discharge) with two caveats: charge fields all zero (analytic side of telescoping not exercised) and the structure used is a FlatDepthReserveLike clone not the original FlatDepthReserve. The narrative '1 HONEST + 3 WRAPPER, 0 LAUNDERED' is the expected distribution.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

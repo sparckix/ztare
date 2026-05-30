@@ -1,0 +1,37 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2010_high_yield_tail_holdout_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2010_high_yield_tail_holdout_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2010_high_yield_tail_holdout_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2010_high_yield_tail_holdout_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2010_high_yield_tail_holdout_replay.json"
+  },
+  "budget_agent_minutes": 40.0,
+  "budget_agent_minutes_source": "operator_authorized_gp225_tick",
+  "contract_id": "gp225_v2010_high_yield_tail_holdout_replay",
+  "contract_question": "Will v20.10 tail-holdout replay pass the frozen v20.09 gate: at least one fresh primary strict row across current_scale_0249/current_scale_0017, harm zero, source-policy clean, no training, and GNN still blocked?",
+  "cost_penalty": 0.03,
+  "created_at": "2026-05-14T12:47:20Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "this_v2010_tick",
+  "information_value": 2.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve true from analytics/public/leanmill/results/v2010_high_yield_tail_holdout_replay.json if new_strict_same_target_rows>=1, harmful_compiled_mismatch_actions=0, source-policy flags clean, training_now=false, and gnn_blocked=true; false otherwise. Partial is recorded separately if progress or auxiliary closure appears with 0 strict.",
+  "question": "v20.10 tail-holdout replay adds >=1 fresh primary strict row with harm=0 and clean source policy",
+  "risk_penalty": 1.0,
+  "resolution_predicate": {
+    "success_bool": "new_strict_same_target_rows >= 1 and harmful_compiled_mismatch_actions == 0 and source-policy flags clean and training_now == false and gnn_blocked == true",
+    "artifact_path": "analytics/public/leanmill/results/v2010_high_yield_tail_holdout_replay.json"
+  },
+  "success_threshold": "new_strict_same_target_rows>=1 harmful=0 clean_source=true training_now=false gnn_blocked=true",
+  "task_type": "gp225_repair_micro",
+  "value_if_success": 4.5,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing",
+  "notes": "Material two-row tail-holdout replay frozen by v20.09. Failure should route to reducer/error-packet repair, not raw beam widening."
+}

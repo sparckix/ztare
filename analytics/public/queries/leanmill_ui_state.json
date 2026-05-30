@@ -1,0 +1,144 @@
+{
+  "schema": "leanmill-ui-state-v1",
+  "generated_at": "2026-05-29T16:47:37.118947+00:00",
+  "lane_b": {
+    "available": true,
+    "generated_at": "2026-05-29T16:02:47.795989+00:00",
+    "n_targets": 8,
+    "audit_clean": 6,
+    "summary_by_status": {
+      "compile_pass_l3_advisory_review": 1,
+      "audit_invocation_failed": 1,
+      "compile_failed": 4,
+      "compile_pass_l3_advisory_review_helper_blockers_only": 2
+    },
+    "rows": [
+      {
+        "target": "Conjecture2",
+        "status": "compile_failed",
+        "compile_ok": false,
+        "axiom_allowlist_ok": false,
+        "drift": false,
+        "sidecar_status": "compile_pass_l3_advisory_review_helper_blockers_only",
+        "combined_verdict": "passes_at_native_toolchain"
+      },
+      {
+        "target": "P1",
+        "status": "compile_pass_l3_advisory_review",
+        "compile_ok": true,
+        "axiom_allowlist_ok": true,
+        "drift": false,
+        "sidecar_status": null,
+        "combined_verdict": null
+      },
+      {
+        "target": "P2",
+        "status": "compile_pass_l3_advisory_review_helper_blockers_only",
+        "compile_ok": true,
+        "axiom_allowlist_ok": true,
+        "drift": false,
+        "sidecar_status": null,
+        "combined_verdict": null
+      },
+      {
+        "target": "P3",
+        "status": "compile_failed",
+        "compile_ok": false,
+        "axiom_allowlist_ok": false,
+        "drift": true,
+        "sidecar_status": "compile_pass_l3_advisory_review_helper_blockers_only",
+        "combined_verdict": "passes_at_native_toolchain"
+      },
+      {
+        "target": "P4",
+        "status": "compile_failed",
+        "compile_ok": false,
+        "axiom_allowlist_ok": false,
+        "drift": false,
+        "sidecar_status": "sidecar_invocation_failed",
+        "combined_verdict": "sidecar_inconclusive:sidecar_invocation_failed"
+      },
+      {
+        "target": "apn_p5",
+        "status": "audit_invocation_failed",
+        "compile_ok": null,
+        "axiom_allowlist_ok": null,
+        "drift": null,
+        "sidecar_status": "sidecar_invocation_failed",
+        "combined_verdict": "sidecar_inconclusive:sidecar_invocation_failed"
+      },
+      {
+        "target": "P7",
+        "status": "compile_failed",
+        "compile_ok": false,
+        "axiom_allowlist_ok": false,
+        "drift": false,
+        "sidecar_status": "compile_pass_l3_advisory_review_helper_blockers_only",
+        "combined_verdict": "passes_at_native_toolchain"
+      },
+      {
+        "target": "P8",
+        "status": "compile_pass_l3_advisory_review_helper_blockers_only",
+        "compile_ok": true,
+        "axiom_allowlist_ok": true,
+        "drift": false,
+        "sidecar_status": null,
+        "combined_verdict": null
+      }
+    ]
+  },
+  "solver_lane": {
+    "available": true,
+    "generated_at": "2026-05-29T00:04:16.177447+00:00",
+    "lane": "solver_lane",
+    "rows": [
+      {
+        "row_id": "APN_hilbert_1_sorried",
+        "target": "P1",
+        "outcome": "closed",
+        "compile_ok": null,
+        "provider": "claude_opus",
+        "providers_tried": []
+      }
+    ]
+  },
+  "solver_attempts": {
+    "total_attempts": 0,
+    "distinct_rows": 0,
+    "closures": 0,
+    "by_provider": [],
+    "recent": []
+  },
+  "corpus_mandates": {
+    "available": true,
+    "mandates": [
+      {
+        "mandate_id": "spectral_apn_2026_05_28",
+        "status": "active",
+        "purpose": "First non-Mathlib strict-C-eligible seed corpus. 8 APN (DeepMind AlphaProof Nexus AICollaborator) bare-Mathlib statements + 21 spectral/operator-theory candidates that survived type-check + 7-tactic static gate (exact?/simp/aesop/nlinarith/",
+        "row_count": 29,
+        "lane_eligibility": [
+          "source_scout",
+          "source_binding_probe",
+          "solver_lane"
+        ],
+        "credit_lanes_allowed": [
+          "strict_c"
+        ]
+      },
+      {
+        "mandate_id": "mcb_calibration_2026_05",
+        "status": "calibration_only",
+        "purpose": "Historical MCB/Mathlib-derived corpus. Retained for static-baseline calibration only. Per the Credit Truth Ledger 2026-05-28: the family-matched MCB slice is 78/99 static_tool_positive (79% too easy) and the harness slice is 46/46 existing_",
+        "row_count": 132,
+        "lane_eligibility": [
+          "static_sweep_calibration"
+        ],
+        "credit_lanes_allowed": [
+          "calibration_only"
+        ]
+      }
+    ]
+  },
+  "carrier_receipt_ledger_recent": []
+}

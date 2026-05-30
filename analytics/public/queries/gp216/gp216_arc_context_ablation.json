@@ -1,0 +1,79 @@
+{
+  "experiment": "gp216_arc_context_ablation",
+  "results": [
+    {
+      "arc": "prob_ito_calculus",
+      "n_moves": 10,
+      "ctrl_pct": 90.0,
+      "abl_pct": 90.0,
+      "drop_pp": 0.0
+    },
+    {
+      "arc": "prob_kolmogorov_axioms",
+      "n_moves": 9,
+      "ctrl_pct": 100.0,
+      "abl_pct": 100.0,
+      "drop_pp": 0.0
+    },
+    {
+      "arc": "prob_large_deviations",
+      "n_moves": 9,
+      "ctrl_pct": 77.77777777777779,
+      "abl_pct": 88.88888888888889,
+      "drop_pp": -11.1111111111111
+    },
+    {
+      "arc": "prob_kpz_universality",
+      "n_moves": 9,
+      "ctrl_pct": 100.0,
+      "abl_pct": 100.0,
+      "drop_pp": 0.0
+    },
+    {
+      "arc": "biz_christensen_disruption",
+      "n_moves": 10,
+      "ctrl_pct": 100.0,
+      "abl_pct": 70.0,
+      "drop_pp": 30.0
+    },
+    {
+      "arc": "biz_porter_five_forces",
+      "n_moves": 11,
+      "ctrl_pct": 81.81818181818183,
+      "abl_pct": 72.72727272727273,
+      "drop_pp": 9.090909090909093
+    },
+    {
+      "arc": "biz_munger_mental_models",
+      "n_moves": 11,
+      "ctrl_pct": 63.63636363636363,
+      "abl_pct": 63.63636363636363,
+      "drop_pp": 0.0
+    },
+    {
+      "arc": "biz_drucker_management_by_objectives",
+      "n_moves": 10,
+      "ctrl_pct": 60.0,
+      "abl_pct": 50.0,
+      "drop_pp": 10.0
+    },
+    {
+      "arc": "biz_kahneman_prospect_theory",
+      "n_moves": 10,
+      "ctrl_pct": 70.0,
+      "abl_pct": 90.0,
+      "drop_pp": -20.0
+    },
+    {
+      "arc": "biz_mintzberg_emergent_strategy",
+      "n_moves": 10,
+      "ctrl_pct": 70.0,
+      "abl_pct": 80.0,
+      "drop_pp": -10.0
+    }
+  ],
+  "mean_ctrl_pct": 81.32323232323232,
+  "mean_abl_pct": 80.52525252525253,
+  "mean_drop_pp": 0.7979797979797922,
+  "verdict": "STRUCTURAL RECOGNITION IS REAL \u2014 coverage drops only +0.8pp without arc context. The LLM's mapping is using move-mechanism recognition, NOT arc-name lookup. Vector C of the LLM-bias critique is substantially mitigated. Claim B holds; partial movement toward claim A."
+}

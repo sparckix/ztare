@@ -1,0 +1,58 @@
+{
+  "contract_id": "gp225_v1951_public_tacgen_plus_local_error_replay",
+  "mean_brier": 0.3212499999999999,
+  "mean_log_score": -0.8442405598872766,
+  "outcome": {
+    "actual_cost_agent_minutes": 44.0,
+    "artifact_hash": "c2658caca57be7f088cb6c6fc1739a2632fdce7be4e55201cb54003e43167be5",
+    "artifact_path": "analytics/public/leanmill/results/v1953_reprover_candidate_replay_bridge.json",
+    "compile_status": "public_tacgen_strict_target_state_passed_no_compiled_closures",
+    "contract_id": "gp225_v1951_public_tacgen_plus_local_error_replay",
+    "error_type": "none",
+    "goal_delta": 1,
+    "resolution_note": "v19.51 local error-packet replay produced 0 new strict rows and 1 pull-forward closure. v19.52 public ReProver direct tacgen staged the uncached model and emitted 96 candidates across 12 rows. v19.53 replayed top-4 per row: new_strict_same_target_rows=1 via current_scale_0256/rw [normThreshold_zero], harmful_compiled_mismatch_actions=0, forbidden generation fields absent, training_now=false, gnn_blocked=true.",
+    "resolved_at": "2026-05-14T01:18:48Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T01:19:01Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 44.0,
+      "agent_id": "gp230_ampere_gp225_v1951",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": -2.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 42.0,
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:06:06Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:09:35Z",
+        "resolved_at": "2026-05-14T01:18:48Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 44.0,
+      "agent_id": "gp230_ohm_skeptical_gp225_v1951",
+      "brier": 0.4488999999999999,
+      "cost_error_agent_minutes": -13.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 31.0,
+      "log_score": -1.1086626245216111,
+      "p_success": 0.33,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:06:06Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:09:35Z",
+        "resolved_at": "2026-05-14T01:18:48Z"
+      }
+    }
+  ]
+}

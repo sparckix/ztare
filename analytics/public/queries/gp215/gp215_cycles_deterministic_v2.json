@@ -1,0 +1,316 @@
+[
+  {
+    "start_phase": "5f",
+    "end_phase": "5bo",
+    "lean_files_created": [
+      "ns_sos_section_margin_bridge.lean",
+      "ns_spectral_diseconomy_toxic_block.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5bo_lean_adapter_peer_review.md",
+      "phase5bo_reduced_toxic_block_certificate.md"
+    ],
+    "n_phases_in_cycle": 62
+  },
+  {
+    "start_phase": "5bp",
+    "end_phase": "5bp",
+    "lean_files_created": [
+      "ns_spectral_diseconomy_toxic_block.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5bp_mode20_substitution_attack.md",
+      "phase5bp_spectral_n_pre_registration.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5bq",
+    "end_phase": "5cg",
+    "lean_files_created": [
+      "ns_2028_hindsight_obligations.lean",
+      "ns_coherent_stretch_depletion.lean",
+      "ns_commutator_tower_proofsearch.lean",
+      "ns_decisive_ns_theorem_search.lean",
+      "ns_decisive_post_obstruction_theorem_search.lean",
+      "ns_exhaust_scale_reserve_bridge.lean",
+      "ns_gauge_topology_bypass.lean",
+      "ns_l2_carrier_bridge.lean",
+      "ns_l2_carrier_transport.lean",
+      "ns_pressure_hessian_l2_bridge.lean",
+      "ns_quadrupole_identity.lean",
+      "ns_route5_global_offset_sufficiency.lean",
+      "ns_route5_next_killer_hinges.lean",
+      "ns_route5_postrun_survivor_surface.lean",
+      "ns_route5_tensor_absorption_ellipticity.lean",
+      "ns_route5_topological_offset_mismatch.lean",
+      "ns_strain_aligned_connection_bypass.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5cg_2028_hindsight_pullforward.md",
+      "phase5cg_cold_shot_deanchored_summary.md",
+      "phase5cg_deanchored_synthesis_checkpoint.md",
+      "phase5cg_decisive_fork_status.md",
+      "phase5cg_decisive_theorem_run_packet.md",
+      "phase5cg_exhaust_discount_bridge_note.md",
+      "phase5cg_fd_rescaling_sanity.md",
+      "phase5cg_fd_rescaling_sanity_N32.md",
+      "phase5cg_fd_rescaling_sanity_N64.md",
+      "phase5cg_geometric_bypass_note.md",
+      "phase5cg_irrep_panel_debate.md",
+      "phase5cg_l2_carrier_note.md",
+      "phase5cg_leray_rescaling_discriminator_design.md",
+      "phase5cg_literature_novelty_bar.md",
+      "phase5cg_literature_position.md",
+      "phase5cg_local_leray_pilot.md",
+      "phase5cg_local_leray_pilot_N32.md",
+      "phase5cg_local_leray_pilot_N64.md",
+      "phase5cg_paper7_obstruction_candidate.md",
+      "phase5cg_pressure_quadrupole_instrumentation.md",
+      "phase5cg_proofsearch_packet.md",
+      "phase5cg_route1_vs_route5_comparison.md",
+      "phase5cg_route5_denominator_robustness_note.md"
+    ],
+    "n_phases_in_cycle": 17
+  },
+  {
+    "start_phase": "5ch",
+    "end_phase": "5ch",
+    "lean_files_created": [
+      "ns_exponential_metric_nontriviality_bar.lean",
+      "ns_exponential_metric_transport_ratio_obstruction.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ch_capacity_realization_falsifier.md",
+      "phase5ch_capacity_realization_falsifier_packet.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5ci",
+    "end_phase": "5ct",
+    "lean_files_created": [
+      "ns_exhaust_horizon_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ct_exhaust_horizon_bridge.md"
+    ],
+    "n_phases_in_cycle": 12
+  },
+  {
+    "start_phase": "5cu",
+    "end_phase": "5cz",
+    "lean_files_created": [
+      "ns_exhaust_horizon_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5cz_ztare_anisotropic_fractional_bridge_packet.md"
+    ],
+    "n_phases_in_cycle": 6
+  },
+  {
+    "start_phase": "5da",
+    "end_phase": "5dd",
+    "lean_files_created": [
+      "ns_resupply_escape_pincer.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5dd_resupply_escape_pincer.md"
+    ],
+    "n_phases_in_cycle": 4
+  },
+  {
+    "start_phase": "5de",
+    "end_phase": "5fi",
+    "lean_files_created": [
+      "ns_pricing_kernel_countable_limit.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fi_countable_limit_pricing_bridge.md"
+    ],
+    "n_phases_in_cycle": 57
+  },
+  {
+    "start_phase": "5fj",
+    "end_phase": "5fl",
+    "lean_files_created": [
+      "ns_null_profile_cap_branch.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fl_null_profile_cap_branch.md"
+    ],
+    "n_phases_in_cycle": 3
+  },
+  {
+    "start_phase": "5fm",
+    "end_phase": "5fm",
+    "lean_files_created": [
+      "ns_low_high_kinematic_dichotomy.lean",
+      "ns_trackb_sos_pricing_kernel_receipt.lean",
+      "ns_universal_state_pricing_split.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fm_trackb_branch_killer_grid.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5fn",
+    "end_phase": "5fq",
+    "lean_files_created": [
+      "ns_concentration_impact_branch.lean",
+      "ns_dichotomy_cross_profile_branch.lean",
+      "ns_null_profile_cap_branch.lean",
+      "ns_vanishing_branch.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fq_trackb_profile_decomposition_obligation.md"
+    ],
+    "n_phases_in_cycle": 4
+  },
+  {
+    "start_phase": "5fr",
+    "end_phase": "5fr",
+    "lean_files_created": [
+      "ns_littlewood_paley_profile_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fr_littlewood_paley_profile_bridge.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5fs",
+    "end_phase": "5fs",
+    "lean_files_created": [
+      "ns_littlewood_paley_paraproduct_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fs_littlewood_paley_paraproduct_bridge.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5ft",
+    "end_phase": "5ft",
+    "lean_files_created": [
+      "ns_clay_closure_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ft_clay_closure_bridge.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5fu",
+    "end_phase": "5fu",
+    "lean_files_created": [
+      "ns_littlewood_paley_paraproduct_bridge.lean",
+      "ns_low_high_catalyst_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fu_low_high_catalyst_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5fv",
+    "end_phase": "5fw",
+    "lean_files_created": [
+      "ns_low_frequency_lipschitz_control_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fw_low_frequency_lipschitz_control_bridge.md"
+    ],
+    "n_phases_in_cycle": 2
+  },
+  {
+    "start_phase": "5fx",
+    "end_phase": "5fx",
+    "lean_files_created": [
+      "ns_high_high_self_tax_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fx_high_high_self_tax_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5fy",
+    "end_phase": "5fy",
+    "lean_files_created": [
+      "ns_high_low_transport_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fy_high_low_transport_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5fz",
+    "end_phase": "5fz",
+    "lean_files_created": [
+      "ns_profile_lipschitz_clay_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fz_profile_lipschitz_clay_bridge.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5ga",
+    "end_phase": "5ga",
+    "lean_files_created": [
+      "ns_same_shell_remainder_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ga_same_shell_remainder_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5gb",
+    "end_phase": "5gb",
+    "lean_files_created": [
+      "ns_flat_torus_killing_mode.lean",
+      "ns_low_high_kinematic_dichotomy.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5gb_low_high_kinematic_dichotomy.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5gc",
+    "end_phase": "5gc",
+    "lean_files_created": [
+      "ns_matrix_block_ledger_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5gc_matrix_block_ledger_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5gd",
+    "end_phase": "5gd",
+    "lean_files_created": [
+      "ns_universal_state_pricing_split.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5gd_universal_state_pricing_split.md"
+    ],
+    "n_phases_in_cycle": 1
+  },
+  {
+    "start_phase": "5ge",
+    "end_phase": "5ge",
+    "lean_files_created": [
+      "ns_trackb_sos_pricing_kernel_receipt.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ge_trackb_sos_pricing_kernel_receipt.md"
+    ],
+    "n_phases_in_cycle": 1
+  }
+]

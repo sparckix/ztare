@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2065_public_union_hydrated_top_row_patch.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2065_public_union_hydrated_top_row_patch.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2065_public_union_hydrated_top_row_patch",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2065_public_union_hydrated_top_row_patch.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2065_public_union_hydrated_top_row_patch.json"
+  },
+  "baseline_action": "Replay or reprice the synthetic v20.62 bayesRisk candidates.",
+  "budget_agent_minutes": 14.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2065_public_union_hydrated_top_row_patch",
+  "cost_penalty": 0.018,
+  "counterfactual_action": "Patch bayesRisk binder/finite-bound hydration before replay pricing.",
+  "created_at": "2026-05-14T18:46:39Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.3721,
+    "expected_cost_agent_minutes_prior": 50.75,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_pre_gnn_hydrated_candidate_patch",
+    "score": 0.5,
+    "selected_domain": "gp225_pre_gnn_candidate_static_check",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.3721,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.2,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2326,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2564,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2045,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "still static-only",
+      "branch-local hypothesis name may still differ in replay harness"
+    ],
+    "positive": [
+      "removes synthetic binder failure before replay",
+      "creates a smaller executable canary target"
+    ]
+  },
+  "horizon": "same session 2026-05-14",
+  "information_value": 0.18,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2065 consumes v20.64 and v20.62, emits a one-row hydrated bayesRisk candidate packet using branch-local \u03c0/h\u2113C/P.bound_lt_top rather than pi/hLC/hP_bound, passes strict static checks, records no replay/training and GNN blocked, and names separate replay pricing.",
+  "question": "Will v20.65 generate a hydrated static patch for the top queued row current_scale_0126/bayesRisk_lt_top that removes synthetic binders and names replay preconditions without running replay or training?",
+  "risk_penalty": 0.5,
+  "success_threshold": "one row; >=2 hydrated candidates; zero synthetic binder tokens; no replay/training; next replay pricing named",
+  "task_type": "hydrated_candidate_patch",
+  "value_if_success": 0.52,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

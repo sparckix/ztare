@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:35:51Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 18.0,
+    "expected_value": 0.935,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.48,
+    "p_needs_new_lemma": 0.42500000000000004,
+    "p_regression": 0.1,
+    "p_success": 0.31,
+    "participants": [
+      {
+        "agent_id": "pascal_adversarial_forecaster",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.31,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "peirce_readonly_forecaster",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.31,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "local_lemma_name_guesses_fail",
+        "p": 0.17
+      },
+      {
+        "mode": "local_lemma_name_hallucination",
+        "p": 0.15
+      },
+      {
+        "mode": "context_templates_too_generic",
+        "p": 0.12
+      },
+      {
+        "mode": "templates_compile_but_do_not_reach_strict_or_pull_forward_threshold",
+        "p": 0.115
+      },
+      {
+        "mode": "only_existing_0308_pull_forward_repeats",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1935_context_enriched_repair_execution.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1935_context_enriched_repair_execution.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1935_context_enriched_repair_execution.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1935_context_enriched_repair_execution.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1935_context_enriched_repair_execution.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 20.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:33:43Z",
+    "created_by": "codex:RD_2026_05_13",
+    "horizon": "2026-05-13T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Run scripts/public/models/gnn_lemma_relevance/v1935_context_enriched_repair_execution.py and resolve from analytics/public/leanmill/results/v1935_context_enriched_repair_execution.json metrics.",
+    "question": "Will v19.35 context-enriched Lean repair execution improve beyond v19.33 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, while excluding teacher/oracle candidates from primary evidence?",
+    "success_threshold": "attempted_rows>=5 AND strict_or_pull_forward_rows>=2 AND harmful_compiled_mismatch_rows=0 AND teacher_oracle_candidates_excluded_from_primary=true AND training_now=false AND gnn_blocked=true",
+    "task_type": "gp225_context_enriched_repair_execution"
+  },
+  "contract_id": "gp225_v1935_context_enriched_repair_execution",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:pascal_adversarial_forecaster",
+        "raw_agent_ids": [
+          "pascal_adversarial_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:peirce_readonly_forecaster",
+        "raw_agent_ids": [
+          "peirce_readonly_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "pascal_adversarial_forecaster",
+      "peirce_readonly_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "pascal_adversarial_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1935_context_enriched_repair_execution/pascal_adversarial_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-13T23:35:46Z",
+        "p_success": 0.31,
+        "rationale_short": "Prior anchored by v19.33: one of five pull-forward and no harmful mismatch. v19.34 improves candidate shape but mostly with inferred templates, not mined exact local lemmas, so the second success is plausible but below even odds.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "peirce_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1935_context_enriched_repair_execution/peirce_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-13T23:35:46Z",
+        "p_success": 0.31,
+        "rationale_short": "v19.35 has a real chance because v19.33 already found one no-harm pull-forward and v19.34 increases candidate diversity to 15 templates, but second hit likely depends on exact local context or lemma names.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:37:07Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.935,
+      "forecast_spread": 0.0,
+      "p_success": 0.31,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 1.0139
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 18.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.31,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "local_lemma_name_guesses_fail",
+        "p": 0.17
+      },
+      {
+        "mode": "local_lemma_name_hallucination",
+        "p": 0.15
+      },
+      {
+        "mode": "context_templates_too_generic",
+        "p": 0.12
+      },
+      {
+        "mode": "templates_compile_but_do_not_reach_strict_or_pull_forward_threshold",
+        "p": 0.115
+      },
+      {
+        "mode": "only_existing_0308_pull_forward_repeats",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0961,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:37:09Z"
+  }
+}

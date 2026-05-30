@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "proceed_minimal",
+  "agent_id": "codex-rd-main",
+  "contract_id": "ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412",
+  "contract_question": "Will the Darwin follow-up tick add compiling Lean guard surfaces for fourth-carrier exclusion, tri-carrier supermartingale, radius lower bound, pressure visibility, and beta cofinality without claiming N8 closure?",
+  "domain": "ns-n8-proof-frontier",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "darwin_report_not_fully_captured": 0.25,
+    "guards_duplicate_existing_surfaces": 0.25,
+    "lean_compile_issue": 0.2,
+    "too_many_wrappers": 0.3
+  },
+  "forecast_externality_tags": [
+    "tautology-guard",
+    "darwin-falsifier-capture"
+  ],
+  "forecasted_at": "2026-05-14T20:20:53Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.07,
+  "p_success": 0.78,
+  "rationale_short": "Small Lean guard edit should compile; main risk is more surfaces without mathematical progress, so keep it minimal and explicitly non-closure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "lean_compile_issue",
+    "guards_duplicate_existing_surfaces",
+    "too_many_wrappers",
+    "darwin_report_not_fully_captured"
+  ]
+}

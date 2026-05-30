@@ -1,0 +1,20 @@
+{
+  "agent_id": "ohm_independent_forecaster",
+  "contract_id": "ns_route1_tail_square_shard_micro_20260513",
+  "contract_question": "Will attacking shard A, tail-square identification, produce a non-tautological typechecked Lean bridge below the fresh-frequency adapter in this bounded tick?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "graph_path_not_theorem_dependency": 0.2375,
+    "new_numeric_tail_definition_needed": 0.3375,
+    "no_fixed_carrier_equality": 0.425
+  },
+  "forecasted_at": "2026-05-13T21:00:35Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.48,
+  "p_regression": 0.12,
+  "p_success": 0.61,
+  "rationale_short": "A is the best first attack if X_tail and tailSquareFunction are fixed before the theorem and strictness/source margin are absent.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": "Proceed with a small source object that reuses the existing tent-excess/local-quadratic receipt path for the resolved mean-free share only.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514",
+  "contract_question": "Will the next pressure tick compile a non-tautological resolved-mean-free-to-local-quadratic receipt source or guard in ns_pressure_hessian_l2_bridge.lean, with Lean pass and no pressure-closure overclaim?",
+  "domain": "ns_pressure",
+  "expected_cost_agent_minutes": 31.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "existing_tent_excess_path_not_share_specific": 0.34,
+    "lean_structure_mismatch": 0.18,
+    "local_quadratic_receipt_overgeneralized": 0.28,
+    "tautology_guard_insufficient": 0.2
+  },
+  "forecast_externality_tags": [
+    "pressure_visible_branch",
+    "receipt_share_routing",
+    "gp233"
+  ],
+  "forecasted_at": "2026-05-14T23:23:24Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.52,
+  "p_regression": 0.1,
+  "p_success": 0.69,
+  "rationale_short": "The local-quadratic/tent-excess certificate already exists, so resolved mean-free is the most plausible share to route first; risk is that the existing path pays full cone charge, not this share.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

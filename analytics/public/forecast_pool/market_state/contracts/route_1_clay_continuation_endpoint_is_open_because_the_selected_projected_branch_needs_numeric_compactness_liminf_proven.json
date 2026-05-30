@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:36Z",
+    "allocation_recommendation": {
+      "action": "kill_branch",
+      "expected_value": -0.3907061950207092,
+      "p_success": 0.1342938049792908,
+      "reason": "low probability, negative expected value, and no declared information value",
+      "voi_proxy": 0.1463
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 47.5,
+    "expected_value": -0.3907061950207092,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.32499999999999996,
+    "p_needs_new_lemma": 0.8,
+    "p_regression": 0.05,
+    "p_success": 0.1342938049792908,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "ns_pde_measure_valued_compactness",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven/claude_rd.json",
+        "forecasted_at": "2026-05-18T03:34:30Z",
+        "p_success": 0.12,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven/codex.json",
+        "forecasted_at": "2026-05-18T03:38:55Z",
+        "p_success": 0.15,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": [
+      {
+        "mode": "selected_branch_compactness_source_stays_transport_only",
+        "p": 0.17
+      },
+      {
+        "mode": "same_family_liminf_binding_needs_new_lemma",
+        "p": 0.14
+      },
+      {
+        "mode": "cross_coherence_or_local_energy_channel_missing",
+        "p": 0.105
+      },
+      {
+        "mode": "positive_generated_measure_defect_not_attained",
+        "p": 0.085
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json",
+    "contract": "analytics/public/forecast_pool/contracts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json",
+    "score": "analytics/public/forecast_pool/scores/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_projected_compactness_measure_valued_source",
+    "created_at": "2026-05-18T03:33:35Z",
+    "created_by": "claude_rd",
+    "horizon": "short",
+    "layer": "micro",
+    "objective_resolver": "PATTERN-009 independent verification artifact: a single-fixed-family numeric compactness/liminf check (sympy/numeric, in-loop primitive) demonstrating the measure-valued defect liminf provenance is supplied from one approximation family; artifact written, family-switch credit-launder absent",
+    "question": "Route-1 clay_continuation_endpoint is OPEN because the selected projected branch needs numeric compactness/liminf provenance from a SINGLE FIXED approximation family (no family-switching credit launder). Can a mechanized independent numeric/CAS verification (PATTERN-009) exhibit a fixed Galerkin-family compactness/liminf certificate that supplies selected_projected_compactness_measure_valued_source WITHOUT the banned forget_numeric_provenance_after_source_credit pattern?",
+    "success_threshold": "0.5",
+    "task_type": "ns_route1_compactness_measure_valued_provenance"
+  },
+  "contract_id": "route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "ns_pde_measure_valued_compactness",
+        "expected_cost_agent_minutes": 50.0,
+        "forecasted_at": "2026-05-18T03:34:30Z",
+        "p_success": 0.12,
+        "rationale_short": "Honest low odds: selected_projected_compactness_measure_valued_source = a genuine measure-valued/Young-measure defect compactness-liminf from a SINGLE fixed Galerkin family with no family-switch credit-launder is Clay-adjacent open. In-loop primitive numeric/CAS (PATTERN-009) can VERIFY an identity / CHARACTERIZE the obstruction, unlikely to close it (p_needs_new_lemma 0.8). Likely honest outcome = characterization/partial-negative; GP-233 records the negative.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Prioritize fixed-family numeric liminf binding and defect-channel provenance; do not spend on generic family transport or zero-defect adapters.",
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-18T03:38:55Z",
+        "p_success": 0.15,
+        "rationale_short": "The selected-projective source and forward liminf plumbing already exist, plus a toy SymPy check, but the remaining same-family compactness/provenance and multiscale defect channels are still open; short-horizon success is possible but unlikely.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 55.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-18T03:41:07Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "kill_branch",
+      "expected_value": -0.3907061950207092,
+      "p_success": 0.1342938049792908,
+      "reason": "low probability, negative expected value, and no declared information value",
+      "voi_proxy": 0.1463
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 47.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.1342938049792908,
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": [
+      {
+        "mode": "selected_branch_compactness_source_stays_transport_only",
+        "p": 0.17
+      },
+      {
+        "mode": "same_family_liminf_binding_needs_new_lemma",
+        "p": 0.14
+      },
+      {
+        "mode": "cross_coherence_or_local_energy_channel_missing",
+        "p": 0.105
+      },
+      {
+        "mode": "positive_generated_measure_defect_not_attained",
+        "p": 0.085
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.01845,
+    "score_rows": 2,
+    "scored_at": "2026-05-18T03:41:07Z"
+  }
+}

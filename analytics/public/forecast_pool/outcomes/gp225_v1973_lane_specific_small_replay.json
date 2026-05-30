@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "6ee9e926e08d579ccccdb18c7235a76a164e824677f082b7c5b844586c8f6cf0",
+  "artifact_path": "analytics/public/leanmill/results/v1973_lane_specific_small_replay.json",
+  "compile_status": "lane_specific_replay_completed",
+  "contract_id": "gp225_v1973_lane_specific_small_replay",
+  "error_type": null,
+  "goal_delta": 0,
+  "resolution_note": "Replay attempted 38 candidate actions across 16 rows. compiled_candidate_action_rate=0.0526 below the 0.08 gate; fresh strict rows=0; pull-forward auxiliary closures=2 on current_scale_0137; harmful mismatches=0; GNN blocked. Useful auxiliary signal but full success threshold false.",
+  "resolved_at": "2026-05-14T03:45:41Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

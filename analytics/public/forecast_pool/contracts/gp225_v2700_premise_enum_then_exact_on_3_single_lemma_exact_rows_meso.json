@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T03:19:37Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0417,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "moat_grade_closure_attempt",
+    "score": 0.0417,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0417,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0208,
+        "domain": "gp230_forecast_pool_infrastructure",
+        "expected_cost_agent_minutes_prior": 49.0,
+        "sample_limited": true,
+        "score": 0.0208,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "meso",
+  "objective_resolver": "Lean compile in v4.29.0 sandbox + v24.01-style 4-way audit (no tautology, no gold-overlap, no @[simp]/@[fun_prop]/@[grind] indirect leakage in Mathlib, no automation-machinery in suggestion). Pure 'exact CAND' suggestions are automation-machinery-free by construction.",
+  "question": "Will the premise-enum-then-exact strategy (use cloud premises 32 to enumerate top-32 candidates, filter out gold-lemma + @[simp]/@[fun_prop]/@[grind] tagged, try each as 'exact CAND _ _' application) produce AT LEAST 1 moat-grade closure on the 3 single-lemma-exact moat-surface rows (0162, 0163, 0329)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "at-least-one-moat-grade-closure-on-3-priority-rows",
+  "task_type": "moat_grade_closure_attempt",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

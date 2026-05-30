@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:39:20Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 45.0,
+    "expected_value": -44.49183513564298,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.24,
+    "p_needs_new_lemma": 0.365,
+    "p_regression": 0.05,
+    "p_success": 0.6533092663367165,
+    "participants": [
+      {
+        "agent_id": "codex_rd_tick361",
+        "domain": "ns_route1_pde",
+        "p_success": 0.72,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic_tick361",
+        "domain": "ns_route1_pde",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "success",
+        "p": 0.3
+      },
+      {
+        "mode": "algebra_compile",
+        "p": 0.125
+      },
+      {
+        "mode": "field_alignment",
+        "p": 0.125
+      },
+      {
+        "mode": "nlinarith_algebra",
+        "p": 0.125
+      },
+      {
+        "mode": "tautology_risk",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_four_channel_visibility_cover_micro_20260514_tick361.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_four_channel_visibility_cover_micro_20260514_tick361.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_four_channel_visibility_cover_micro_20260514_tick361.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_four_channel_visibility_cover_micro_20260514_tick361.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_four_channel_visibility_cover_micro_20260514_tick361.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:39:07Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00-04:00",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean compiles, no new sorry/admit in touched file, cover has individual channel charges/losses, rho-sum/kappa-star/visibility fields, constructor to Route1ChannelVisibilityProducer, and strict-subratio theorem via existing algebra",
+    "question": "Can we add a compiled Route1CriticalTailVisibilityCover with individual channel charges/losses and visibility cover that constructs the existing Route1ChannelVisibilityProducer, without claiming the PDE visibility theorem is proved?",
+    "success_threshold": "compile_passed_and_cover_producer_added",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_four_channel_visibility_cover_micro_20260514_tick361",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_tick361",
+        "raw_agent_ids": [
+          "codex_rd_tick361"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic_tick361",
+        "raw_agent_ids": [
+          "codex_skeptic_tick361"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_tick361",
+      "codex_skeptic_tick361"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_tick361",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_four_channel_visibility_cover_micro_20260514_tick361/codex_rd_tick361.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-14T12:39:20Z",
+        "p_success": 0.72,
+        "rationale_short": "Existing aggregate producer makes this mostly algebra. The non-tautology comes from individual loss fields and explicit visibility cover; risk is algebra/field alignment, not PDE proof.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic_tick361",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_four_channel_visibility_cover_micro_20260514_tick361/codex_skeptic_tick361.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T12:39:20Z",
+        "p_success": 0.58,
+        "rationale_short": "Useful if it is clearly a producer surface, not a proof of visibility. Main risk is smuggling no-invisible residual as a channel without an independent visibility field.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 6.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:39:45Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 45.0,
+      "expected_value": -44.49183513564298,
+      "p_success": 0.6533092663367165,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 5.3665
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 45.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.6533092663367165,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "success",
+        "p": 0.3
+      },
+      {
+        "mode": "algebra_compile",
+        "p": 0.125
+      },
+      {
+        "mode": "field_alignment",
+        "p": 0.125
+      },
+      {
+        "mode": "nlinarith_algebra",
+        "p": 0.125
+      },
+      {
+        "mode": "tautology_risk",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

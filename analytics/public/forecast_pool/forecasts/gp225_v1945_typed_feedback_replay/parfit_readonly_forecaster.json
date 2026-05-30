@@ -1,0 +1,21 @@
+{
+  "agent_id": "parfit_readonly_forecaster",
+  "contract_id": "gp225_v1945_typed_feedback_replay",
+  "contract_question": "v19.45 typed-feedback replay reaches attempted_rows>=8, compiled_candidate_rows>=2, harmful_compiled_mismatch_rows=0, and no teacher/oracle primary inputs",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compile_count_zero_or_one": 0.36,
+    "filters_skip_repair": 0.22,
+    "goal_decomposition_fails": 0.24,
+    "harmful_mismatch": 0.18
+  },
+  "forecasted_at": "2026-05-14T00:28:27Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.42,
+  "p_regression": 0.07,
+  "p_success": 0.37,
+  "rationale_short": "v19.44 defines a clean resolver; the hard clause is lifting v19.43 from 0 compiled candidates to at least 2.",
+  "read_only_attestation": true
+}

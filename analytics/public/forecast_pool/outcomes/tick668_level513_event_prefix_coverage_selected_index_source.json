@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 8.0,
+  "artifact_hash": "2875a9319680e287ef83cc12e2ec96d34a5091d781f52d52be6bc2881e1af1a9",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "passed",
+  "contract_id": "tick668_level513_event_prefix_coverage_selected_index_source",
+  "counterfactual_value_bucket": "positive",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "positive_source_ladder",
+    "clay_adjacent_conditional_bridge",
+    "coverage_packet_binding"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [],
+  "new_next_action": "strengthen the Prop-level coverage appearance field into a finite selector theorem using target-node membership in the selected bad-tree prefix",
+  "old_next_action": "derive selectedPrefixEventIndex from BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix",
+  "ordering_override_no_codex": "Local continuation lacked a live independent forecaster; ordering override recorded after strict Lean/workbench verification.",
+  "ordering_override_no_independent_forecaster": "Local continuation lacked a live independent forecaster; ordering override recorded after strict Lean/workbench verification.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "coverage_still_prop_level_not_selector"
+  ],
+  "resolution_note": "Level513 added L3ASelectedPrefixEventIndexFromCoverageSource and toEventToBadNodeSelectedIndexSource; Lean file check and module build passed; PDE workbench accepted strict G-EVENT-PREFIX-COVERAGE-SELECTED-INDEX receipt.",
+  "resolved_at": "2026-05-27T07:03:41Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

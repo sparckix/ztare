@@ -1,0 +1,46 @@
+{
+  "action_change_recommendation": "Proceed with a construct-or-refute split: accept a positive constructor only if targetSlot and injectivity are concrete fields; otherwise bank the no-current-field obstruction and add the missing incidence-targetSlot source schema.",
+  "agent_family": "codex",
+  "agent_id": "codex:RD",
+  "b_mid": 0.23,
+  "b_width": 0.14,
+  "contract_id": "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+  "contract_question": "TICK668 Level498: derive an explicit targetSlot injection from current same-tree incidence geometry, or prove the current incidence/prefix fields do not expose the data needed for targetSlot construction",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructive_incidence_source_compiles": 0.28,
+    "current_fields_prop_only_obstruction": 0.36,
+    "gate_schema_missing_incidence_dependency": 0.14,
+    "lean_plumbing_collision": 0.12,
+    "socket_only_without_c5_progress": 0.1
+  },
+  "forecast_externality_tags": [
+    "ns_trackb",
+    "tick668",
+    "level498",
+    "incidence_targetslot",
+    "c5_adjacent"
+  ],
+  "forecasted_at": "2026-05-27T03:45:05Z",
+  "p_buy_yes_max": 0.59,
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.38,
+  "p_regression": 0.1,
+  "p_sell_yes_min": 0.76,
+  "p_success": 0.66,
+  "predicted_brier_hi": 0.3,
+  "predicted_brier_lo": 0.16,
+  "predicted_self_error_ratio": 0.25,
+  "rationale_short": "Level497 shows finite injection is enough; current incidence/prefix objects look Prop-level, so success is likely as either a sharp obstruction or a new source schema, while true construction from existing fields is lower probability.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "current_fields_prop_only_obstruction",
+    "constructive_incidence_source_compiles"
+  ],
+  "spread": -0.17,
+  "tail_downside_worry": 30.0,
+  "tail_upside_surprise": 20.0,
+  "verbalized_confidence": 0.66
+}

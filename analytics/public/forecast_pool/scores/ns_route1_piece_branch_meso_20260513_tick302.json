@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_piece_branch_meso_20260513_tick302",
+  "mean_brier": 0.23465000000000003,
+  "mean_log_score": -0.6610029356187643,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "build_passed",
+    "contract_id": "ns_route1_piece_branch_meso_20260513_tick302",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Pressure branch selected and produced FreshFrequencyPressureEnergyLocalCZReserveControl plus theorem and constructor; build passed. The result changes the next lever to local CZ pressure estimate plus outside-shard booking for harmonic child and cutoff terms.",
+    "resolved_at": "2026-05-13T22:47:45Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T22:47:52Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "hooke_independent_micro",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 18.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 42.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "rawls_independent_micro",
+      "brier": 0.3249000000000001,
+      "cost_error_agent_minutes": 31.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.843970070294529,
+      "p_success": 0.43,
+      "success_bool": true
+    }
+  ]
+}

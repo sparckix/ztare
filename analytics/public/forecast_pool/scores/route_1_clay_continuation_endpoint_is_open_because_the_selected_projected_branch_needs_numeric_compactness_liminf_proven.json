@@ -1,0 +1,92 @@
+{
+  "contract_id": "route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.01845,
+  "mean_log_score": -0.14517615050382993,
+  "outcome": {
+    "actual_cost_agent_minutes": 55.0,
+    "artifact_hash": null,
+    "artifact_path": "scratch/ns_compactness_measure_valued/pattern009_cas.txt",
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "PATTERN-009 independent CAS: single-fixed-family compactness/liminf provenance NOT supplied; selected_projected_compactness_measure_valued_source reduces to the perennial strictly-positive-subcritical-margin atom at 3D critical scaling (CF-equivalent, tick576). Verified characterization-NEGATIVE; re-derivation FORBIDDEN. claude_rd p=0.12.",
+    "resolved_at": "2026-05-18T03:41:07Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-18T03:41:07Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 55.0,
+      "agent_id": "claude_rd",
+      "brier": 0.0144,
+      "cost_error_agent_minutes": -5.0,
+      "domain": "ns_pde_measure_valued_compactness",
+      "expected_cost_agent_minutes": 50.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.12783337150988489,
+      "p_success": 0.12,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-18T03:33:35Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-18T03:34:30Z",
+        "resolved_at": "2026-05-18T03:41:07Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 55.0,
+      "agent_id": "codex",
+      "brier": 0.0225,
+      "cost_error_agent_minutes": -10.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.16251892949777494,
+      "p_success": 0.15,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-18T03:33:35Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-18T03:38:55Z",
+        "resolved_at": "2026-05-18T03:41:07Z"
+      }
+    }
+  ]
+}

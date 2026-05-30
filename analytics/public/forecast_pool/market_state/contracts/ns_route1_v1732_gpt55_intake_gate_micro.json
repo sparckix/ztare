@@ -1,0 +1,159 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T18:33:18Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 8.0,
+    "expected_value": 2.294,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.1,
+    "p_needs_new_lemma": 0.65,
+    "p_regression": 0.06,
+    "p_success": 0.8800000000000001,
+    "participants": [
+      {
+        "agent_id": "codex_rd_ns_route1_intake_gate",
+        "domain": "ns_live_scalar_hinge",
+        "p_success": 0.88,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "heuristic_gate_too_lexical",
+        "p": 0.35
+      },
+      {
+        "mode": "criteria_too_permissive",
+        "p": 0.25
+      },
+      {
+        "mode": "response_format_unexpected",
+        "p": 0.25
+      },
+      {
+        "mode": "artifact_not_used",
+        "p": 0.15
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_v1732_gpt55_intake_gate_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_v1732_gpt55_intake_gate_micro.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_v1732_gpt55_intake_gate_micro.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_v1732_gpt55_intake_gate_micro.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_v1732_gpt55_intake_gate_micro.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 10.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T18:33:08Z",
+    "created_by": "codex:RD",
+    "horizon": "1h",
+    "layer": "micro",
+    "objective_resolver": "Resolve success if an executable artifact exists, reads the rewritten eigenquestion and v17.30/v17.31 evidence, emits criteria for replacement-object/proof-skeleton/obstruction classes, and can evaluate a response path without Lean mutation.",
+    "question": "Will building a local GPT-5.5 response intake gate improve NS route-1 progress by making the returned answer immediately triageable for non-tautological PDE content?",
+    "success_threshold": "0.70",
+    "task_type": "local_gate_builder"
+  },
+  "contract_id": "ns_route1_v1732_gpt55_intake_gate_micro",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_ns_route1_intake_gate",
+        "raw_agent_ids": [
+          "codex_rd_ns_route1_intake_gate"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_ns_route1_intake_gate"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_ns_route1_intake_gate",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_v1732_gpt55_intake_gate_micro/codex_rd_ns_route1_intake_gate.json",
+        "canonical_agent_id": null,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes": 8.0,
+        "forecasted_at": "2026-05-13T18:33:13Z",
+        "p_success": 0.88,
+        "rationale_short": "The external answer is already in flight; a deterministic intake gate converts waiting time into immediate triage capacity and reduces tautology risk.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 6.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T18:34:25Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.8800000000000001,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 1.9056
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 8.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.8800000000000001,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "heuristic_gate_too_lexical",
+        "p": 0.35
+      },
+      {
+        "mode": "criteria_too_permissive",
+        "p": 0.25
+      },
+      {
+        "mode": "response_format_unexpected",
+        "p": 0.25
+      },
+      {
+        "mode": "artifact_not_used",
+        "p": 0.15
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0144,
+    "score_rows": 1,
+    "scored_at": "2026-05-13T18:34:27Z"
+  }
+}

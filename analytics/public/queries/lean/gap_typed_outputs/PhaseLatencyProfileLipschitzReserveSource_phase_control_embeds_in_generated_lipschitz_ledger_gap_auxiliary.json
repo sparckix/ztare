@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-06T14:57:25.863016+00:00",
+  "target": "PhaseLatencyProfileLipschitzReserveSource",
+  "field": "phase_control_embeds_in_generated_lipschitz_ledger",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched AUXILIARY evidence in the target/field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

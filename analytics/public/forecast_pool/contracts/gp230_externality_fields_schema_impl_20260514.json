@@ -1,0 +1,97 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp230_externality_fields_schema_impl_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp230_externality_fields_schema_impl_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp230_externality_fields_schema_impl_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp230_externality_fields_schema_impl_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/gp230_externality_fields_schema_impl_20260514.json"
+  },
+  "baseline_action": "leave forecast externality value in GP-233 prose and resolution notes",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp230_externality_fields_schema_impl_20260514",
+  "cost_penalty": 0.12,
+  "counterfactual_action": "record externality fields in contract, forecast, outcome, score, and audit artifacts",
+  "created_at": "2026-05-14T14:29:50Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1081,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "meta_prediction_market",
+    "score": 0.1081,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1081,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1081,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0556,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0556,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.027,
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.027,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "fields may create bookkeeping drag if used on trivial ticks",
+    "positive": "structured fields expose whether a forecast changed execution"
+  },
+  "horizon": "2026-05-14T16:00:00Z",
+  "information_value": 0.74,
+  "layer": "micro",
+  "objective_resolver": "py_compile and forecast_pool smoke pass; audit report reruns; seam/spec document panel result and externality fields.",
+  "question": "Can we implement optional structured externality fields in forecast_pool.py, update the GP-230 seam/spec, and preserve smoke/audit compatibility?",
+  "risk_penalty": 0.18,
+  "success_threshold": "Code accepts optional fields on init-contract/add-forecast/resolve, score payload surfaces externality audit fields, smoke passes, externality audit reruns, and docs mention the fields.",
+  "task_type": "forecast_pool_schema_patch",
+  "value_if_success": 0.82,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

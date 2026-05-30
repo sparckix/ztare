@@ -1,0 +1,116 @@
+{
+  "contract_id": "gp225_v2075_heldout_changed_arm_replay_meso_gate",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "do not replay; continue source discovery",
+      "counterfactual_action": "bounded one-row heldout changed-arm replay if meso EV permits"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "meso_only_forecast",
+        "anti_goodhart",
+        "low_ev_replay_abort"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "abort replay and build v2076 slope changed-arm context hydration reducer",
+      "old_next_action": "run one-row heldout changed-arm replay immediately",
+      "preconditioner_effect": "v20.74 supplied one changed heldout arm but exposed context and namespace blockers before replay.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2074_heldout_source_candidate_content_discovery.json",
+      "realized_failure_mode_ids": [
+        "branch_context_validation_fails",
+        "hydration_missing_source_block"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.15299999999999997,
+  "mean_log_score": -0.49550713903504573,
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "artifact_hash": "3c13da52dc857ae86c84005065d6657c16752b6819f9f65cdbccaaca02d1d460",
+    "artifact_path": "analytics/public/leanmill/results/v2075_heldout_changed_arm_replay_meso_gate.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": "py_compile_passed",
+    "contract_id": "gp225_v2075_heldout_changed_arm_replay_meso_gate",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "meso_only_forecast",
+      "anti_goodhart",
+      "low_ev_replay_abort"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "abort replay and build v2076 slope changed-arm context hydration reducer",
+    "old_next_action": "run one-row heldout changed-arm replay immediately",
+    "preconditioner_effect": "v20.74 supplied one changed heldout arm but exposed context and namespace blockers before replay.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2074_heldout_source_candidate_content_discovery.json",
+    "realized_failure_mode_ids": [
+      "branch_context_validation_fails",
+      "hydration_missing_source_block"
+    ],
+    "resolution_note": "v20.75 meso gate aborted replay. v20.74 found one changed heldout arm, but aggregate p_success=0.3896, EV=-0.1123, and routing=audit_or_explore_only; no replay/training ran. Next is context hydration reducer before repricing.",
+    "resolved_at": "2026-05-14T19:28:28Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:28:32Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "Kleene4",
+      "brier": 0.17639999999999997,
+      "cost_error_agent_minutes": 9.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.533333,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5447271754416719,
+      "p_success": 0.42,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:27:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:27:25Z",
+        "resolved_at": "2026-05-14T19:28:28Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "Scott4",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 15.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 34.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.574713,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4462871026284195,
+      "p_success": 0.36,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:27:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:27:25Z",
+        "resolved_at": "2026-05-14T19:28:28Z"
+      }
+    }
+  ]
+}

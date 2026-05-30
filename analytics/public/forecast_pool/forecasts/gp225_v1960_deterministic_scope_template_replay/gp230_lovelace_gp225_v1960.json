@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_lovelace_gp225_v1960",
+  "contract_id": "gp225_v1960_deterministic_scope_template_replay",
+  "contract_question": "Will deterministic scope-template candidates generated from v19.59 replay into at least one strict or pull-forward label, with harmful mismatches zero and clean source policy?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_packet_too_small": 0.14,
+    "funext_or_ext_template_type_mismatch": 0.24,
+    "other": 0.06,
+    "progress_only_no_strict_or_pull_forward": 0.18,
+    "replay_runtime_or_hydration_regression": 0.08,
+    "scope_name_templates_still_not_target_aligned": 0.3
+  },
+  "forecasted_at": "2026-05-14T02:52:49Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.04,
+  "p_success": 0.36,
+  "rationale_short": "Static progress traces expose target-adjacent scope names, but v19.43 and v19.57 both warn that generic templates often produce progress without target alignment. Success is plausible only if the deterministic templates land on an ext/funext shape already supported by the local context.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "copernicus_popper_skeptic_v1869",
+  "contract_id": "gp225_v1869_remaining_witness_backfill_runner",
+  "contract_question": "Will the v18.69 explicit-manifest adaptation of the v18.01 target-state witness runner backfill clean closure/target witnesses for at least 4 of the 8 v18.68 selected remaining hard-residual rows, with zero true false accepts and no training?",
+  "domain": "gp225_lean_witness_backfill",
+  "expected_cost_agent_minutes": 20.0,
+  "failure_mode_distribution": {
+    "clean_labels_below_4_after_actual_witness_run": 0.18,
+    "explicit_manifest_to_source_context_adaptation_bug": 0.16,
+    "hidden_selection_bias_from_prior_schema_rows": 0.13,
+    "known_selected_row_ambiguity_or_true_false_accept": 0.3,
+    "lean_runtime_parallelism_or_local_changes_noise": 0.1,
+    "other": 0.05,
+    "static_prefilter_or_non_run_sentinel_failure": 0.08
+  },
+  "forecasted_at": "2026-05-13T17:12:27Z",
+  "p_dependency_issue": 0.26,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.09,
+  "p_success": 0.43,
+  "rationale_short": "Base rate is favorable from v18.01/v18.02, but v18.68 is only a runner plan and selected remaining-unwitnessed rows import priors from a different schema. One selected row may already be ambiguity-prone; zero true false accepts is the binding gate.",
+  "read_only_attestation": true
+}

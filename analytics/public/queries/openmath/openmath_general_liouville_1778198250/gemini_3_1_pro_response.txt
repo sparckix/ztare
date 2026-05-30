@@ -1,0 +1,80 @@
+## 1. Approach name
+Lagrangian-Metric Differential Harnack Rigidity via Dynamic Pullback
+
+## 2. The mechanism
+
+The core mechanism shifts the entire PDE from the standard Eulerian frame into a geometric flow on a time-dependent Riemannian manifold, completely eliminating the vortex stretching term from the governing equations, and then forcing triviality via a differential Harnack inequality integrated to $t = -\infty$. 
+
+We change to the Lagrangian frame $\Phi_t(x)$ where $\partial_t \Phi_t = u(t, \Phi_t)$. We pull back the flat Euclidean metric $\delta$ to define a dynamic metric $g(t) = \Phi_t^* \delta$. Because the fluid is incompressible ($\nabla \cdot u = 0$), $g(t)$ is a volume-preserving metric flow. 
+
+In the Eulerian frame, the vorticity 2-form $\omega = du^\flat$ satisfies $\partial_t \omega + \mathcal{L}_u \omega = \nu \Delta_d \omega$, where vortex stretching explicitly obstructs the maximum principle. However, pulling back by the flow yields the exact identity $\partial_t (\Phi_t^* \omega) = \nu \Phi_t^*(\Delta_d \omega)$. A foundational geometric identity is that the pullback of the Euclidean Hodge Laplacian is exactly the Hodge Laplacian of the pullback metric. Thus, the Lagrangian vorticity $\tilde{\omega} = \Phi_t^* \omega$ strictly satisfies a covariant heat equation:
+$$ \partial_t \tilde{\omega} = \nu \Delta_{g(t)} \tilde{\omega} $$
+The vortex stretching term has strictly vanished, entirely absorbed into the evolution of $g(t)$. 
+
+Because $(M, g(t))$ is defined via diffeomorphism from Euclidean space, it is **globally flat** at every time $t$ ($\text{Ric}_{g(t)} \equiv 0$). Its temporal evolution is governed by the Eulerian strain tensor $S$: $\partial_t g(t) = -2 \Phi_t^* S$. Because $u$ is mild and uniformly bounded in $L^\infty$, standard parabolic regularity bounds $S$ uniformly in space and time. A remarkable feature of the pullback is that the norm of the pullback strain measured in the dynamic metric is identical to the Euclidean norm of the Eulerian strain. Hence, $|\partial_t g|_{g(t)} \le C$ globally.
+
+We then apply a Bailesteanu–Cao–Pulemotov–style Li-Yau differential Harnack inequality for the heat equation on manifolds with evolving metrics. For an ancient solution, we track the enstrophy density $E = |\tilde{\omega}|_{g(t)}^2$ backward to $t = -T$. By integrating the Harnack inequality from $-T$ to $0$ and taking the limit $T \to \infty$, the temporal decay error term $\mathcal{O}(1/T)$ must strictly vanish. This forces $\tilde{\omega}$ to identically satisfy the Harnack equality case (a static geometric soliton), which is incompatible with finite bounded energy unless $\tilde{\omega} \equiv 0$. Triviality of the vorticity then implies $u \equiv 0$ by standard finite-energy / bounded advection arguments.
+
+## 3. Why this is NEW
+
+Classical approaches (KNSŠ, Seregin) work strictly in the Eulerian frame. In that frame, the vortex stretching term $\omega \cdot \nabla u$ prevents the application of maximum principles, forcing reliance on Carleman estimates (backward uniqueness) which lack a sign condition and cannot easily close the Liouville rigidity on their own without axisymmetry. 
+
+This approach completely bypasses Carleman backward uniqueness. By treating the fluid flow as an active Riemannian metric flow, it geometrizes the vortex stretching. The advection and stretching are fully absorbed into $g(t)$, reducing the problem to a sign-preserving scalar-like heat equation on a globally flat (albeit dynamic) manifold. It brings in rigidity tools from geometric analysis (Ricci flow, Perelman/Li-Yau Harnack estimates) that natively exploit the $t \to -\infty$ ancient hypothesis.
+
+## 4. Three specific lemmas / sub-targets
+
+*   **Lemma 1 (Exact Pullback Hodge Heat Equation):** Let $u \in L^\infty_{t,x}$ be a mild NS solution, and $\Phi_t$ its flow map. Then the pulled-back vorticity 2-form $\tilde{\omega} \in C^\infty(\mathbb{R} \times \mathbb{R}^3, \Lambda^2 T^* \mathbb{R}^3)$ satisfies the exact covariant heat equation $\partial_t \tilde{\omega} = \nu \Delta_{g(t)} \tilde{\omega}$, where $\Delta_{g(t)}$ is the Hodge Laplacian of the metric $g(t) = \Phi_t^* \delta$.
+*   **Lemma 2 (Uniform Dynamic Geometric Bounds):** For all $t \in \mathbb{R}$, the Riemannian manifold $(\mathbb{R}^3, g(t))$ is flat ($\text{Ric}_{g(t)} \equiv 0$), and its temporal evolution is globally bounded in the dynamic metric: $\|\partial_t g(t)\|_{L^\infty(g(t))} = 2 \|S(t)\|_{L^\infty(\delta)} \le M'$.
+*   **Lemma 3 (Dynamic Differential Harnack):** If $E = |\tilde{\omega}|_{g(t)}^2$, then the sub-caloric modified variable $v = E e^{-\lambda t}$ (for $\lambda = M'$) satisfies the matrix Li-Yau inequality on $(\mathbb{R}^3, g(t))$: $\frac{|\nabla v|^2_{g(t)}}{v^2} - \alpha \frac{\partial_t v}{v} \le \frac{K}{t - t_0}$, where $K$ depends only on $M'$ and the spatial dimension. 
+
+## 5. Self-criticism (REQUIRED)
+
+The approach is technically valid in its geometric identities, but the final rigidity deduction contains a fatal, vacuous limit mechanism. 
+
+The exact failure occurs in Lemma 3 and the subsequent $T \to \infty$ limit. While it is true that the curvature $\text{Ric}_{g(t)}$ vanishes and the metric derivative $|\partial_t g|_{g(t)}$ is uniformly bounded, the metric evolution induces a zeroth-order term in the Bochner formula for the squared norm: $\partial_t E \le \nu \Delta_{g(t)} E + C \|S\|_{L^\infty} E$. 
+
+To apply the Li-Yau inequality (which requires positivity and a strict heat sub-solution), we must use the integrating factor $v = E e^{-Ct}$. Because we are evaluating the solution at time $t=0$ by integrating from $t_0 = -T$, the initial value of $v$ at the start of the integration window scales as $E(-T) e^{C T}$. As $T \to \infty$, the base magnitude of the sub-solution grows exponentially. The $\mathcal{O}(1/T)$ temporal decay in the Harnack inequality is easily overpowered by this $e^{CT}$ blow-up. 
+
+In short: we successfully hid the vortex stretching inside the metric geometry, but it perfectly re-emerges as the exponential divergence of the Harnack integrating factor along the chaotic Lagrangian trajectories (Lyapunov exponents). The limit $T \to \infty$ does not force equality; it diverges completely.
+
+## 6. (Optional) Lean sketch
+
+We sketch the local geometric formulation of Lemma 2, showing how the temporal derivative of the pullback metric is precisely bounded by the Eulerian strain tensor (the symmetric part of the velocity gradient). 
+
+```lean
+import Mathlib.Geometry.Manifold.Instances.Real
+import Mathlib.Analysis.Calculus.FDeriv.Basic
+import Mathlib.Analysis.InnerProductSpace.Basic
+
+-- Sketch of the geometric framing for Lemma 2
+-- We define the pullback metric conceptual property and its temporal bound.
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+
+/-- The Euclidean strain tensor (symmetric gradient) evaluated at a point. -/
+def strainTensor (u : ℝ → E → E) (t : ℝ) (x : E) : E →L[ℝ] E :=
+  let grad_u := fderiv ℝ (u t) x
+  -- simplified symmetric part sketch
+  (grad_u + grad_u) -- (placeholder for actual symmetric projection)
+
+/-- The Lagrangian flow map associated to a velocity field. -/
+structure LagrangianFlow (u : ℝ → E → E) where
+  Φ : ℝ → E → E
+  flow_eq : ∀ t x, HasDerivAt (fun τ => Φ τ x) (u t (Φ t x)) t
+  Φ_zero : ∀ x, Φ 0 x = x
+
+/-- 
+For Lemma 2: The time derivative of the pullback metric's norm 
+is pointwise controlled by the Eulerian strain tensor's norm.
+-/
+axiom pullback_metric_evolution_bound 
+  (u : ℝ → E → E) (flow : LagrangianFlow u) 
+  (t : ℝ) (x : E) (v : E) :
+  -- The rate of change of the length of a pulled-back tangent vector
+  -- is bounded by the operator norm of the strain tensor at the Eulerian position.
+  let Φ_t := flow.Φ t
+  let dΦ_t := fderiv ℝ Φ_t x
+  let pulled_v := dΦ_t v
+  -- Conceptual statement: ∂t |dΦ_t v|^2 ≤ 2 * ||Strain|| * |dΦ_t v|^2
+  ∃ (C : ℝ), C ≤ 2 * ‖strainTensor u t (Φ_t x)‖ * ‖pulled_v‖^2
+```

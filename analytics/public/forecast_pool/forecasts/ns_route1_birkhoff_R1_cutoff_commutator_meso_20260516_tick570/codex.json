@@ -1,0 +1,29 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570",
+  "contract_question": "R1 of the Birkhoff near-2D route: in the suitable-weak local-energy pressure-work term INT p (u.grad phi), does the pressure localization commutator [chi, Delta^-1] land entirely in the Calderon-Zygmund-controlled local part p_loc (cited Wolf 2015 / Seregin local pressure decomposition), so that p_har := p - p_loc is EXACTLY harmonic in Q_n and the incompressibility (div u=0) mean-cancellation INT (mean p_har)(u.grad phi)=0 is exact with NO uncontrolled O(1) commutator remainder in the harmonic-tail term? Success => R1 discharged, harmonic-tail pressure-work = oscillation-only <= C Lambda^-1 M ||u.grad phi||_1.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "citation_or_definition_mismatch_in_local_pressure_decomposition": 0.18,
+    "commutator_not_cleanly_absorbed_into_local_pressure_piece": 0.12,
+    "extra_cutoff_integrability_hypothesis_needed": 0.46,
+    "hidden_boundary_or_domain_term_survives": 0.24
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T12:51:27Z",
+  "p_dependency_issue": 0.11,
+  "p_needs_new_lemma": 0.24,
+  "p_regression": 0.03,
+  "p_success": 0.68,
+  "rationale_short": "Wolf/Seregin local-pressure decompositions normally make the harmonic tail exact by construction; the remaining risk is a cutoff-regularity or formulation mismatch, not an O(1) commutator remainder. No DAG or separate boundary/domain witness was supplied, so I keep a residual on the exact hypotheses needed to justify the split.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "extra_cutoff_integrability_hypothesis_needed",
+    "hidden_boundary_or_domain_term_survives",
+    "citation_or_definition_mismatch_in_local_pressure_decomposition",
+    "commutator_not_cleanly_absorbed_into_local_pressure_piece"
+  ]
+}

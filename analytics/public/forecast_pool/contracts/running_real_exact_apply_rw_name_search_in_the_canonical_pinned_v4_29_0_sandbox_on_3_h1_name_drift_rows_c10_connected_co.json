@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json",
+    "contract": "analytics/public/forecast_pool/contracts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co",
+    "outcome": "analytics/public/forecast_pool/outcomes/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json",
+    "score": "analytics/public/forecast_pool/scores/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T21:10:26Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0732,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "grounded_search_validation_h1",
+    "score": 0.0732,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0732,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0732,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0714,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.0714,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0682,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0682,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.06,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.06,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.05,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.05,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "verify the 3 grounded proofs through canonical v4.29.0 + exact? adjudication",
+  "question": "Running REAL exact?/apply?/rw? + name-search in the canonical pinned v4.29.0 sandbox on 3 H1 name-drift rows (C10 connected->constant, C15 Basel, C06 chi4): will >=2/3 close genuine, confirming research-tier is grounding-bound and recoverable by grounded tool-exec (not a dead static-memory index)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "grounded_search_validation_h1",
+  "value_if_success": 0.9,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

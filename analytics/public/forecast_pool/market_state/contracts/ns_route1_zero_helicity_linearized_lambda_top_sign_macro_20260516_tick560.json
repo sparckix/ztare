@@ -1,0 +1,201 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:33Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 6.421747183978872,
+      "forecast_spread": 0.04,
+      "p_success": 0.2594996871087636,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 4.7322
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 38.375,
+    "expected_value": 6.421747183978872,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.1,
+    "p_needs_new_lemma": 0.765,
+    "p_regression": 0.03,
+    "p_success": 0.2594996871087636,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560/claude_rd.json",
+        "forecasted_at": "2026-05-16T00:22:04Z",
+        "p_success": 0.28,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560/codex.json",
+        "forecasted_at": "2026-05-16T00:23:35Z",
+        "p_success": 0.24,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "transverse_stability_from_zero_helicity_no_stretching",
+        "p": 0.22
+      },
+      {
+        "mode": "needs_new_coercivity_or_compactness_lemma",
+        "p": 0.155
+      },
+      {
+        "mode": "missing_boundary_or_domain_data_for_operator_sign",
+        "p": 0.085
+      },
+      {
+        "mode": "hidden_normalization_gap_or_stale_reformulation",
+        "p": 0.04
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T00:22:04Z",
+    "created_by": "claude_rd",
+    "horizon": "30d",
+    "layer": "macro",
+    "objective_resolver": "spectral-theory PDE judgment: sign of the principal eigenvalue of the explicit zero-helicity self-similar linearized transverse NS operator. success iff lambdaTop>0 provable; fail iff lambdaTop<=0 (zero-helicity transverse-stability => Ghost survives => atom invariant across all 5 enumerated channels = Clay-hardness localization)",
+    "question": "Channel 5 (genuine extra-scaling spectral input): route-1 Clay closure (narrow Track-B) reduces to sign(lambdaTop), the principal eigenvalue of the explicit self-similar zero-helicity linearized transverse operator L = -nu*Delta + (U.grad) - partial_z^2 p[U]. lambdaTop is scale-invariant by the self-similar symmetry (NOT a scaling-pinned homogeneity endpoint, unlike the 4 collapsed channels). Is lambdaTop>0 strict (transverse mode grows => theta<1 => PROVED tick559->558->552->551 => closure) or lambdaTop<=0 (zero helicity removes vortex stretching => transverse-stable => Ghost survives)?",
+    "success_threshold": "success iff lambdaTop>0 for the zero-helicity operator; 0.5 if sign reduces to one explicit decidable spectral inequality; fail iff lambdaTop<=0 (transverse-stable)",
+    "task_type": "ns_clay_transverse_spectral_gap_macro_20260516"
+  },
+  "contract_id": "ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-16T00:22:04Z",
+        "p_success": 0.28,
+        "rationale_short": "Strongest reformulation: closure <=> sign(lambdaTop) of an explicit FIXED operator \u2014 genuinely NOT scaling-pinned (unlike ratio/delta/theta endpoints that tick545/557 proved auto-critical). This is the first genuine extra-scaling input per META-PATTERN-024. p_success 0.28 (up from 0.20): spectral sign is decidable-in-principle and not auto-critical. Pre-flight risk: zero helicity removes vortex stretching => lambdaTop<=0 plausible (transverse-stable Ghost). If so = Clay-hardness localization across all 5 channels. p_needs_new_lemma 0.75.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-16T00:23:35Z",
+        "p_success": 0.24,
+        "rationale_short": "The contract is an explicit spectral sign question, but the supplied artifacts do not expose a probability DAG, boundary/domain conditions, or a coercivity/compactness witness for the operator. Zero helicity makes transverse stability plausible, so the priced center stays on lambdaTop<=0 unless a new spectral lemma is found; that keeps success below one-third and the main risk in lemma discovery rather than regression.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 6.421747183978872,
+      "forecast_spread": 0.04,
+      "p_success": 0.2594996871087636,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 4.7322
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 38.375,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.2594996871087636,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "transverse_stability_from_zero_helicity_no_stretching",
+        "p": 0.22
+      },
+      {
+        "mode": "needs_new_coercivity_or_compactness_lemma",
+        "p": 0.155
+      },
+      {
+        "mode": "missing_boundary_or_domain_data_for_operator_sign",
+        "p": 0.085
+      },
+      {
+        "mode": "hidden_normalization_gap_or_stale_reformulation",
+        "p": 0.04
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

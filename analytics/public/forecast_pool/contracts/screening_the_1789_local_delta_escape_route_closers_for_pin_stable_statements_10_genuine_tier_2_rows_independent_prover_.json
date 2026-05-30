@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json",
+    "contract": "analytics/public/forecast_pool/contracts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_",
+    "outcome": "analytics/public/forecast_pool/outcomes/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json",
+    "score": "analytics/public/forecast_pool/scores/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 130.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T02:17:05Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0606,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "tier2_mined_corpus_run",
+    "score": 0.0606,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0606,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0606,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.037,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.037,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0312,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.025,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.025,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0204,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0204,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "screener (statement typechecks in pinned v4.29.0) + bundle_run + tier_scoreboard tier2; consequence-exposure by hand-judgment (organ FLAWED-until-rereview, caveat stated)",
+  "question": "Screening the 1789 local-delta escape-route closers for pin-stable statements -> >=10 genuine Tier-2 rows -> independent prover -> bundle_run through canonical v4.29.0: does it hit the Tier-2 gate (>=2 clean non-control closures OR >=5 exact-gaps/falsifiers, 0 false-ratify, 0 wrong-kind)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "tier2_mined_corpus_run",
+  "value_if_success": 0.85,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

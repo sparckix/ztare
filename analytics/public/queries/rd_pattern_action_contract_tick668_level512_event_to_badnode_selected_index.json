@@ -1,0 +1,33 @@
+{
+  "tick": "TICK668",
+  "level": 512,
+  "residual": "Level511 defines the cover graph but still carries selectedEventDataIndex as a direct field.",
+  "pattern_chain": [
+    "PATTERN-011 hard mathematical residual swarm lane",
+    "PATTERN-028 recursive tool-depth loop",
+    "Gowers-First-Formalize-Second",
+    "positive source-ladder reduction"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018 tool underuse formal satisficing",
+    "opaque selected index",
+    "eventToBadNode label-only transfer",
+    "incidence label-only transfer",
+    "endpoint capacity as index construction",
+    "post-payoff selected index"
+  ],
+  "carrier_schema_receipts": {
+    "claim_boundary": {
+      "broad": "finite event-prefix enumeration should select the eventData indices used by the same-tree prefix-cover source",
+      "narrow": "Level512 only rebuilds Level511 with a selectedPrefixEventIndex tied pointwise to eventToBadNode and displayed incidence"
+    },
+    "residual_to_check": {
+      "residual": "selectedEventDataIndex is still supplied directly",
+      "check": "strict G-EVENT-TO-BADNODE-SELECTED-INDEX receipt plus Lean adapter to Level511"
+    },
+    "surplus_projection_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level512_event_to_badnode_selected_index_pencil.md"
+  },
+  "nearest_universal_op": "gp219_estimate_craft__source_ladder",
+  "nearest_confuser": "naming eventToBadNode while still selecting the eventData index from the target deficit",
+  "next_lever": "construct selectedPrefixEventIndex from BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix or an equivalent finite enumeration lemma"
+}

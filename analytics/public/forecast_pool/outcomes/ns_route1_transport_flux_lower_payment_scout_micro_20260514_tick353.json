@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 40.0,
+  "artifact_hash": "b49dd89bb01ce2d86d536fc13a0839f837e6ab04243b6b460e8069f28af5d0e4",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/transport_flux_lower_payment_scout_20260514.json",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_transport_flux_lower_payment_scout_micro_20260514_tick353",
+  "error_type": null,
+  "goal_delta": 6,
+  "resolution_note": "Built and ran transport_flux_lower_payment_scout.py with v1995 manifest consumed as harness protocol. py_compile passed. Scout emitted sentinel_ok true, 32 transport lower-payment pass rows, 32 signed/global cancellation underpay rows, 16 cutoff mismatch underpay rows. Added compiled Lean positive-localized-flux source and signed/global cancellation no-go guard; lake env lean and downstream lake build passed.",
+  "resolved_at": "2026-05-14T12:01:13Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

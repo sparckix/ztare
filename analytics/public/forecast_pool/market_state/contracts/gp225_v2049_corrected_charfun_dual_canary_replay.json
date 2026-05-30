@@ -1,0 +1,203 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:43:17Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 25.0,
+    "expected_value": 0.0035246696636367925,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.19,
+    "p_needs_new_lemma": 0.065,
+    "p_regression": 0.055,
+    "p_success": 0.3597564856439399,
+    "participants": [
+      {
+        "agent_id": "Mirzakhani",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2049_corrected_charfun_dual_canary_replay/mirzakhani.json",
+        "forecasted_at": "2026-05-14T17:43:12Z",
+        "p_success": 0.34,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Russell",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2049_corrected_charfun_dual_canary_replay/russell.json",
+        "forecasted_at": "2026-05-14T17:43:12Z",
+        "p_success": 0.38,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "helper_source_safety_or_name_missing",
+        "p": 0.315
+      },
+      {
+        "mode": "aemeasurable_or_instance_mismatch",
+        "p": 0.29000000000000004
+      },
+      {
+        "mode": "historic_gold_shape_parser_issue",
+        "p": 0.22
+      },
+      {
+        "mode": "corrected_template_closes_wrong_side",
+        "p": 0.175
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2049_corrected_charfun_dual_canary_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 28.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:42:58Z",
+    "created_by": "Codex",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Replay artifact reports attempted_candidate_rows >= 1, compiled_candidate_actions + verified_overclosure_pull_forward_actions + new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions = 0, train_gnn_now=false, gnn_blocked=true.",
+    "question": "If we replay the two corrected v20.48 charFunDual/L candidate templates for current_scale_0329, will at least one compile into strict, solver-closure, or auxiliary progress with harmful mismatches zero?",
+    "success_threshold": "one corrected charFunDual canary compiles/progresses with harmful mismatch zero",
+    "task_type": "pre_gnn_replay_gate"
+  },
+  "contract_id": "gp225_v2049_corrected_charfun_dual_canary_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Mirzakhani",
+        "raw_agent_ids": [
+          "Mirzakhani"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Russell",
+        "raw_agent_ids": [
+          "Russell"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Mirzakhani",
+      "Russell"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Prefer helper source-safety/static instance audit if aggregate EV is negative.",
+        "agent_id": "Mirzakhani",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2049_corrected_charfun_dual_canary_replay/mirzakhani.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T17:43:12Z",
+        "p_success": 0.34,
+        "rationale_short": "One-row replay is cheap, but the corrected templates still depend on source-safe helper availability and instances not proved by static text.",
+        "specific_failure_mode_ids": [
+          "aemeasurable_or_instance_mismatch",
+          "historic_gold_shape_parser_issue"
+        ]
+      },
+      {
+        "action_change_recommendation": "Run only if EV clears; otherwise statically verify helper source-safety before replay.",
+        "agent_id": "Russell",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2049_corrected_charfun_dual_canary_replay/russell.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes": 26.0,
+        "forecasted_at": "2026-05-14T17:43:12Z",
+        "p_success": 0.38,
+        "rationale_short": "Corrected target shape helps, but historic feedback already showed field/name failures around charFunDual helpers.",
+        "specific_failure_mode_ids": [
+          "helper_source_safety_or_name_missing",
+          "aemeasurable_or_instance_mismatch"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": [
+      "Russell",
+      "Mirzakhani"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:44:39Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.04,
+      "p_success": 0.3597564856439399,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "helper_source_safety_or_name_missing",
+        "p": 0.315
+      },
+      "voi_proxy": 0.4703
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 25.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3597564856439399,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "helper_source_safety_or_name_missing",
+        "p": 0.315
+      },
+      {
+        "mode": "aemeasurable_or_instance_mismatch",
+        "p": 0.29000000000000004
+      },
+      {
+        "mode": "historic_gold_shape_parser_issue",
+        "p": 0.22
+      },
+      {
+        "mode": "corrected_template_closes_wrong_side",
+        "p": 0.175
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.13,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:44:42Z"
+  }
+}

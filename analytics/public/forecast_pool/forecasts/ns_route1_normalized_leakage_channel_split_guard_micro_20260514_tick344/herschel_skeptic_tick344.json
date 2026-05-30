@@ -1,0 +1,24 @@
+{
+  "agent_id": "herschel_skeptic_tick344",
+  "contract_id": "ns_route1_normalized_leakage_channel_split_guard_micro_20260514_tick344",
+  "contract_question": "Will we add and verify a Lean normalized shard-C channel split source plus undercharge guard below the leakage normalizer compatibility source?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dirty_worktree_or_parallel_agent_edit_conflict": 0.14,
+    "namespace_or_field_drift_from_tick343": 0.13,
+    "normalizer_or_channel_parts_chosen_after_final_carrier_magnitude": 0.2,
+    "scalar_bridge_fails_compile_missing_nonnegativity": 0.11,
+    "split_source_restates_existing_bookkeeping_without_new_normalized_bridge": 0.18,
+    "strict_guard_direction_too_weak_or_vacuous": 0.1,
+    "undercharge_guard_checks_total_charge_not_channelwise_parts": 0.14
+  },
+  "forecasted_at": "2026-05-14T04:03:22Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.36,
+  "p_regression": 0.05,
+  "p_success": 0.72,
+  "rationale_short": "Likely to compile if scalar, but value depends on fixed normalized channel split before final-carrier comparison and avoiding a vacuous total-charge restatement.",
+  "read_only_attestation": true
+}

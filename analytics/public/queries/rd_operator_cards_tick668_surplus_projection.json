@@ -1,0 +1,157 @@
+{
+  "note": "Experimental operator-card surface only; not wired into RD brief.",
+  "ok": true,
+  "top_cards": [
+    {
+      "boundary": "The ambient construction is only a proof engine after projection and multiplicity are paid.",
+      "breaker": "Show the target projection has unbounded multiplicity, the loss grows like the surplus, the constants are chosen after the limit, or the target packet has no ambient surplus fiber.",
+      "card_id": "OP-SLP-01",
+      "entry_conditions": [
+        "A hard target may be easier after lifting to an auxiliary ambient representation.",
+        "The lifted proof must show surplus choices beat all loss/quotient costs before projecting back.",
+        "The target claim depends on preserving a concrete target-side invariant under projection, not on ambient abundance alone."
+      ],
+      "matched_terms": [
+        "ambient",
+        "entropy",
+        "high-dimensional",
+        "injective",
+        "lift",
+        "loss",
+        "multiplicity",
+        "project",
+        "quotient",
+        "surplus"
+      ],
+      "name": "Surplus-Loss Projection Certificate",
+      "problem_classes": [
+        "surplus_loss",
+        "dimensional_lift",
+        "projection_certificate",
+        "ambient_certificate"
+      ],
+      "required_output": [
+        "7-row certificate table: target, lift, surplus, loss budget, projection, target-size bound, breaker.",
+        "One inequality showing surplus beats all losses after constants are fixed, or one missing-surplus slot.",
+        "One projection/injectivity or finite-multiplicity receipt.",
+        "One target-size/denominator/packing receipt.",
+        "One target-domain falsifier packet.",
+        "One boundary sentence forbidding ambient authority as target proof."
+      ],
+      "score": 20.0,
+      "source_ops": [
+        "core_06",
+        "broad_07",
+        "core_05"
+      ],
+      "steps": [
+        "Name the target object and the ambient lifted object.",
+        "State the surplus lower bound in the ambient representation.",
+        "State every loss, quotient, denominator, or bad-class budget.",
+        "State the projection back to the target and its injectivity or finite-multiplicity receipt.",
+        "Fix constants and selection rules before the limiting process.",
+        "State the target-size upper bound or packing bound used to convert ambient surplus into target exponent/decision gain.",
+        "Name a target-domain packet that would break the certificate."
+      ],
+      "stop_update_rule": "Do not claim target progress from a lift until surplus, loss, and projection receipts are all present with constants fixed before the limit and a target-size bound paid.",
+      "trigger_terms": [
+        "ambient",
+        "bounded multiplicity",
+        "chebotarev",
+        "class number",
+        "class group",
+        "constants before limit",
+        "denominator",
+        "entropy",
+        "fiber",
+        "frattini",
+        "frobenius",
+        "golod",
+        "high-dimensional",
+        "injective",
+        "lattice",
+        "lift",
+        "loss budget",
+        "loss",
+        "minkowski",
+        "multiplicity",
+        "norm-one",
+        "pigeonhole",
+        "packing",
+        "project",
+        "projection",
+        "quotient",
+        "root discriminant",
+        "shafarevich",
+        "splitting",
+        "surplus",
+        "tower",
+        "unit distance",
+        "window"
+      ]
+    },
+    {
+      "boundary": "The analogy is only a generator of target-side receipt obligations; it is never evidence for the imported claim by itself.",
+      "breaker": "Find an invariant that holds in the source frame but fails in the target frame, or show the mapped object lacks a target-side receipt.",
+      "card_id": "OP-XFT-01",
+      "entry_conditions": [
+        "A move is imported from another field, representation, or formal frame.",
+        "The imported move must change the target-side evidence path, not just rename the residual."
+      ],
+      "matched_terms": [
+        "representation"
+      ],
+      "name": "Analogy-to-Receipt Transfer Audit",
+      "problem_classes": [
+        "analogy_transfer",
+        "domain_translation",
+        "invariant_preservation",
+        "receipt_forced_transfer"
+      ],
+      "required_output": [
+        "4-row source-target mapping table.",
+        "Invariant checklist.",
+        "One target-side receipt or explicit missing-receipt slot.",
+        "One transfer falsifier tied to the target domain.",
+        "One decision rule saying what changes if the receipt passes or fails.",
+        "One boundary sentence forbidding source-domain authority as evidence."
+      ],
+      "score": 2.0,
+      "source_ops": [
+        "core_06",
+        "core_05"
+      ],
+      "steps": [
+        "Name the source frame and target frame.",
+        "Map source objects to target objects.",
+        "List invariants that must survive transfer.",
+        "Compile the analogy into a target-side receipt: theorem, gate, workbench check, formal field, or falsifier.",
+        "Name the decision consequence: proceed, kill as recurrence, or narrow to a missing primitive."
+      ],
+      "stop_update_rule": "Do not spend another analogy step unless it produced a target-side receipt, a falsifier, or a narrowed missing primitive.",
+      "trigger_terms": [
+        "analogy",
+        "isomorphism",
+        "isomorphic",
+        "translation",
+        "transfer",
+        "cross-domain",
+        "de-anchor",
+        "state pricing",
+        "state price",
+        "superhedging",
+        "max-flow",
+        "min-cut",
+        "hall",
+        "representation",
+        "mapping",
+        "invariant",
+        "bridge",
+        "toric",
+        "lattice",
+        "metalanguage",
+        "primitive"
+      ]
+    }
+  ]
+}

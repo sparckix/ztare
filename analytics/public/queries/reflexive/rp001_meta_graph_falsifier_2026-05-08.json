@@ -1,0 +1,89 @@
+{
+  "computed_at": "2026-05-08T21:13:38.248544Z",
+  "falsifier_a_impact_vs_frequency": {
+    "ci_95": [
+      0.6862680112980811,
+      0.8567994650329236
+    ],
+    "demote_now": false,
+    "demote_threshold": 0.9,
+    "frequency_proxy": "recency_days_negated (last_used)",
+    "limitation": "true call-frequency counters not instrumented; recency is a proxy",
+    "n": 183,
+    "rho_impact_vs_frequency_proxy": 0.7801866553297987
+  },
+  "falsifier_b_criticality_vs_discharge": {
+    "leg1_all_three_above_0_30": false,
+    "leg1_three_variants_agree_on_sign": false,
+    "leg2_inversion_primitives_with_edges_but_zero_discharge": {
+      "count": 27,
+      "fraction": 0.7941176470588235,
+      "sample": [
+        "BUCKINGHAM-PI",
+        "CAS-ATOM8-VERIFICATION",
+        "CAS-W6-VERIFICATION",
+        "EIGENQUESTION-GENERATOR",
+        "FIT-PRIMITIVE",
+        "FRACTAL-DEANCHORING",
+        "G-LAGRANGIAN-NONTRIVIAL",
+        "GP-226-CHARTER-CRITIC",
+        "INVARIANT-SEARCH-RUBRIC-MODE",
+        "LAGRANGIAN-DERIVATION"
+      ]
+    },
+    "leg3_min_n_eff": 34,
+    "leg3_verdict": "UNDETERMINED_ci_spans_zero",
+    "universe_size": 34,
+    "variants": {
+      "eigenvector_centrality": {
+        "ci_95": [
+          -0.3224925035116227,
+          0.24357742046734493
+        ],
+        "ci_spans_zero": true,
+        "n_pairs": 34,
+        "n_with_criticality_gt_zero": 34,
+        "n_with_discharge_gt_zero": 7,
+        "passes_threshold_0_30": false,
+        "rho": -0.03746407679840814
+      },
+      "out_degree": {
+        "ci_95": [
+          0.09176038316993633,
+          0.6569884505999045
+        ],
+        "ci_spans_zero": false,
+        "n_pairs": 34,
+        "n_with_criticality_gt_zero": 34,
+        "n_with_discharge_gt_zero": 7,
+        "passes_threshold_0_30": true,
+        "rho": 0.40499348463973606
+      },
+      "weighted_out_degree": {
+        "ci_95": [
+          0.17345229509946294,
+          0.6855065421501154
+        ],
+        "ci_spans_zero": false,
+        "n_pairs": 34,
+        "n_with_criticality_gt_zero": 34,
+        "n_with_discharge_gt_zero": 7,
+        "passes_threshold_0_30": true,
+        "rho": 0.4705039619864048
+      }
+    }
+  },
+  "inputs": {
+    "n_catches": 32,
+    "n_catches_ratified_load_bearing": 18,
+    "n_graph_edges": 35,
+    "n_index_rows": 189
+  },
+  "registration_window": {
+    "end": "2026-06-05",
+    "start": "2026-05-08"
+  },
+  "schema": "rp001_meta_graph_falsifier/v1",
+  "today": "2026-05-08",
+  "weeks_into_window": 0
+}

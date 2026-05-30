@@ -1,0 +1,29 @@
+{
+  "name": "ztare-analytics-dashboard",
+  "version": "0.1.0",
+  "description": "Apparatus trajectory + reference-graph dashboard. Built per GP-227.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "refresh-data": "bash scripts/refresh-data.sh",
+    "dev": "npm run refresh-data && vite",
+    "build": "bash scripts/safe-build.sh",
+    "build:dev": "npm run refresh-data && tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.8.1",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}

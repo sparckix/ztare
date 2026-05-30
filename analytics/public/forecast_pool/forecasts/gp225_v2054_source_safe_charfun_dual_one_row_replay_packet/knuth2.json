@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Keep candidate packet generation distinct from replay scoring.",
+  "agent_id": "Knuth2",
+  "contract_id": "gp225_v2054_source_safe_charfun_dual_one_row_replay_packet",
+  "contract_question": "Will v20.54 generate a one-row source-safe charFunDual replay packet that passes leakage checks, uses audited normalizers, and remains replay-ready only through a separately priced bridge run?",
+  "domain": "gp225_pre_gnn_candidate_packet",
+  "expected_cost_agent_minutes": 19.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bridge_replay_overclaim": 0.26,
+    "candidate_schema_mismatch": 0.22,
+    "full_target_rw_copy_accident": 0.34,
+    "normalizer_source_missing_from_packet": 0.18
+  },
+  "forecast_externality_tags": [
+    "anti_leakage",
+    "candidate_packet",
+    "no_training"
+  ],
+  "forecasted_at": "2026-05-14T18:03:09Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.04,
+  "p_success": 0.72,
+  "rationale_short": "A small packet is likely, but replay readiness can be overclaimed unless the artifact explicitly keeps replay false and avoids the full target rw-list.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "full_target_rw_copy_accident",
+    "bridge_replay_overclaim"
+  ]
+}

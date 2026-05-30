@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:05:44Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 40.14819277108434,
+    "expected_value": 0.5659898067905214,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.4914819277108433,
+    "p_needs_new_lemma": 0.9319578313253013,
+    "p_regression": 0.07756626506024096,
+    "p_success": 0.3450379995616057,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.41,
+        "weight": 1.2103
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.27,
+        "weight": 0.9477
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "mu_I_underdefined",
+        "p": 0.16825301204819276
+      },
+      {
+        "mode": "requires_new_profile_topology",
+        "p": 0.1537048192771084
+      },
+      {
+        "mode": "V_A_perp_required",
+        "p": 0.14021084337349396
+      },
+      {
+        "mode": "V_A_perp_unavoidable",
+        "p": 0.10539759036144578
+      },
+      {
+        "mode": "restates_decomposition",
+        "p": 0.10095180722891567
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:05:04Z",
+    "created_by": "codex:RD",
+    "horizon": "same session",
+    "layer": "meso",
+    "objective_resolver": "success iff sidecar returns a nontrivial proof route, countermodel/fifth-channel witness, or concrete mapping to existing profile residual primitives; not success for restating Lebesgue decomposition",
+    "question": "Can xhigh pull forward ActiveTailSingularPartControlledByProfileResidual by proving control of mu_A_perp by mu_I, producing a valid V_A_perp countermodel, or mapping mu_I to existing profile residual primitives?",
+    "success_threshold": "new proof route/countermodel/profile-residual mapping",
+    "task_type": "xhigh_math_pullforward"
+  },
+  "contract_id": "ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T13:05:18Z",
+        "p_success": 0.41,
+        "rationale_short": "The prior sidecar produced a strong split. Next success likely maps mu_I to existing profile residual machinery or exposes V_A_perp.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 48.0,
+        "forecasted_at": "2026-05-14T13:05:18Z",
+        "p_success": 0.27,
+        "rationale_short": "Controlling a singular measure by a profile residual is too strong unless the residual topology is already defined; expect a missing topology verdict.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 17.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:08:58Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.5659898067905214,
+      "forecast_spread": 0.14,
+      "p_success": 0.3450379995616057,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 1.066
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 40.14819277108434,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3450379995616057,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "mu_I_underdefined",
+        "p": 0.16825301204819276
+      },
+      {
+        "mode": "requires_new_profile_topology",
+        "p": 0.1537048192771084
+      },
+      {
+        "mode": "V_A_perp_required",
+        "p": 0.14021084337349396
+      },
+      {
+        "mode": "V_A_perp_unavoidable",
+        "p": 0.10539759036144578
+      },
+      {
+        "mode": "restates_decomposition",
+        "p": 0.10095180722891567
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.4405,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:09:06Z"
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:12:24Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 34.0,
+    "expected_value": -0.3075143933711342,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.11,
+    "p_needs_new_lemma": 0.07500000000000001,
+    "p_regression": 0.055,
+    "p_success": 0.26424280331443295,
+    "participants": [
+      {
+        "agent_id": "Lakatos",
+        "domain": "gp225_pre_gnn_replay_gate",
+        "p_success": 0.29,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Popper",
+        "domain": "gp225_pre_gnn_replay_gate",
+        "p_success": 0.24,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "zero_compile_like_v2031",
+        "p": 0.3250758341759353
+      },
+      {
+        "mode": "auxiliary_conditioning_not_transferable",
+        "p": 0.28235591506572294
+      },
+      {
+        "mode": "no_arm_delta_same_candidate_set",
+        "p": 0.13043478260869565
+      },
+      {
+        "mode": "no_strict_delta",
+        "p": 0.11627906976744186
+      },
+      {
+        "mode": "lean_timeout_or_unresolved_goals",
+        "p": 0.07608695652173914
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2041_heldout_dual_head_delta_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2041_heldout_dual_head_delta_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2041_heldout_dual_head_delta_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2041_heldout_dual_head_delta_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2041_heldout_dual_head_delta_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:11:55Z",
+    "created_by": "codex:RD",
+    "horizon": "90m",
+    "layer": "micro",
+    "objective_resolver": "success iff replay attempts the v20.40 heldout arms, reports baseline and auxiliary-conditioned head counts separately, harmful rows are zero, and auxiliary-conditioned strict_target_head_rows > baseline strict_target_head_rows OR auxiliary-conditioned solver+auxiliary rows > baseline solver+auxiliary rows without strict regression",
+    "question": "If we replay the v20.40 heldout baseline and auxiliary-conditioned arms, will the auxiliary-conditioned arm beat baseline on separate strict/solver/auxiliary head deltas with harmful rows zero?",
+    "success_threshold": "objective resolver true; static packet construction alone is false",
+    "task_type": "gp225_pre_gnn_replay_gate"
+  },
+  "contract_id": "gp225_v2041_heldout_dual_head_delta_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Lakatos",
+        "raw_agent_ids": [
+          "Lakatos"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Popper",
+        "raw_agent_ids": [
+          "Popper"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Lakatos",
+      "Popper"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Prefer static abort now; run only if the contract is explicitly valued as falsification of auxiliary transfer.",
+        "agent_id": "Lakatos",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2041_heldout_dual_head_delta_replay/lakatos.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T17:12:20Z",
+        "p_success": 0.29,
+        "rationale_short": "There is some value in falsifying auxiliary transfer, but the actual success target is strict: rank-policy-only changes on previously failing rows should be under even odds.",
+        "specific_failure_mode_ids": [
+          "auxiliary_conditioning_not_transferable",
+          "zero_compile_like_v2031"
+        ]
+      },
+      {
+        "action_change_recommendation": "Abort unless information-value threshold explicitly allows an audit replay; static packet is enough for now.",
+        "agent_id": "Popper",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2041_heldout_dual_head_delta_replay/popper.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-14T17:12:09Z",
+        "p_success": 0.24,
+        "rationale_short": "The heldout rows are exactly the non-ofScalars rows that failed to compile under v20.37; rank reordering alone is unlikely to create a measured head delta.",
+        "specific_failure_mode_ids": [
+          "zero_compile_like_v2031",
+          "no_arm_delta_same_candidate_set"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 9.0,
+    "changed_by_forecast_ids": [
+      "Popper",
+      "Lakatos"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:13:43Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 34.0,
+      "expected_value": -0.3075143933711342,
+      "p_success": 0.26424280331443295,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.4944
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 34.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.26424280331443295,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "zero_compile_like_v2031",
+        "p": 0.3250758341759353
+      },
+      {
+        "mode": "auxiliary_conditioning_not_transferable",
+        "p": 0.28235591506572294
+      },
+      {
+        "mode": "no_arm_delta_same_candidate_set",
+        "p": 0.13043478260869565
+      },
+      {
+        "mode": "no_strict_delta",
+        "p": 0.11627906976744186
+      },
+      {
+        "mode": "lean_timeout_or_unresolved_goals",
+        "p": 0.07608695652173914
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

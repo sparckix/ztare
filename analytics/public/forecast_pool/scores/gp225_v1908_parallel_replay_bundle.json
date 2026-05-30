@@ -1,0 +1,55 @@
+{
+  "contract_id": "gp225_v1908_parallel_replay_bundle",
+  "mean_brier": 0.10260000000000001,
+  "mean_log_score": -0.38588093558111,
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "artifact_hash": null,
+    "artifact_path": "analytics/public/leanmill/results/v1908_parallel_replay_bundle.json",
+    "compile_status": "replay_bundle_failed_density_breadth_gate",
+    "contract_id": "gp225_v1908_parallel_replay_bundle",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "v19.08 completed both lanes under capped parallel mode. Base contract passed for both lanes: non-PDE clean=112/120, PDE+functional clean=107/120, selected false accepts total=0, post-quarantine false accepts total=0. Full success failed because high_density_breadth_lanes=0: non-PDE density=0.3482; PDE+functional density=0.4206 and top_areas=7 < 8. Training=false and GNN blocked=true.",
+    "resolved_at": "2026-05-13T21:47:47Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T21:47:50Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "copernicus_readonly_forecaster",
+      "brier": 0.0961,
+      "cost_error_agent_minutes": 12.0,
+      "domain": "gp225_parallel_replay",
+      "expected_cost_agent_minutes": 42.0,
+      "log_score": -0.37106368139083207,
+      "p_success": 0.31,
+      "success_bool": false
+    },
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "kant_skeptical_forecaster",
+      "brier": 0.0961,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_parallel_replay",
+      "expected_cost_agent_minutes": 32.0,
+      "log_score": -0.37106368139083207,
+      "p_success": 0.31,
+      "success_bool": false
+    },
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "plato_operational_forecaster",
+      "brier": 0.11560000000000002,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "gp225_parallel_replay",
+      "expected_cost_agent_minutes": 38.0,
+      "log_score": -0.41551544396166595,
+      "p_success": 0.34,
+      "success_bool": false
+    }
+  ]
+}

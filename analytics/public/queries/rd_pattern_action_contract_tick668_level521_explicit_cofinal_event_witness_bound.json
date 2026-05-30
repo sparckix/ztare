@@ -1,0 +1,31 @@
+{
+  "tick_id": "tick668",
+  "contract_id": "tick668_level521_explicit_cofinal_event_witness_bound_source",
+  "surface": "NS Track-B L3A explicit cofinal event witness plus same-witness final-prefix bound",
+  "selected_patterns": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second"
+  ],
+  "anti_patterns_guarded": [
+    "tool_underuse_formal_satisficing",
+    "bare_prop_choice",
+    "classical_choice_witness_only",
+    "endpoint_capacity_as_bound",
+    "shell_only_enumeration"
+  ],
+  "carrier_schema_receipts": {
+    "residual_to_check_edge": {
+      "residual": "Level520 still packages the cofinal selected-node witness through Classical.choose.",
+      "check": "Require an explicit witness family {e // eventToBadNode e = Q} and a strict bound on that same explicit witness.",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level521_explicit_cofinal_event_witness_bound_receipt.json"
+    },
+    "surplus_projection_artifact": {
+      "surplus": "Cofinal incidence already asserts every selected bad node has an event.",
+      "projection": "Expose the selected event as typed witness data before feeding Level519, instead of selecting inside the constructor.",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    }
+  },
+  "nearest_universal_op": "GP-219 estimate-craft witness-source separation",
+  "nearest_confuser": "Level520 cofinal incidence witness bound source, which still uses Classical.choose internally"
+}

@@ -1,0 +1,58 @@
+{
+  "contract_id": "gp225_v1943_scope_clean_pde_holdout_replay",
+  "mean_brier": 0.05,
+  "mean_log_score": -0.2497780157538799,
+  "outcome": {
+    "actual_cost_agent_minutes": 12.0,
+    "artifact_hash": "abd5d523c55f2a0b25149cacdecddbb8936634278bf3c9242179194f24b5ea31",
+    "artifact_path": "analytics/public/leanmill/results/v1943_scope_clean_pde_holdout_replay.json",
+    "compile_status": "no_compiled_candidates",
+    "contract_id": "gp225_v1943_scope_clean_pde_holdout_replay",
+    "error_type": "generic_scope_templates_no_compile_on_pde_holdout",
+    "goal_delta": 0,
+    "resolution_note": "v19.43 attempted 14 of 16 v19.42 PDE-functional holdout rows with 49 generic scope-clean signature templates. compiled_candidate_rows=0, strict_same_target_rows=0, verified_overclosure_pull_forward_rows=0, harmful_compiled_mismatch_rows=0, post-target declarations and target proof lines excluded, teacher/oracle primary candidates excluded, training_now=false, gnn_blocked=true. Negative result: generic scope-name templates do not generalize from v19.41 canary to PDE-functional holdout.",
+    "resolved_at": "2026-05-14T00:18:27Z",
+    "sorry_delta": 0,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T00:18:34Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "pascal_adversarial_forecaster",
+      "brier": 0.0324,
+      "cost_error_agent_minutes": 20.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 32.0,
+      "log_score": -0.19845093872383818,
+      "p_success": 0.18,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:14:06Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:14:16Z",
+        "resolved_at": "2026-05-14T00:18:27Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "peirce_readonly_forecaster",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 12.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 24.0,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.26,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:14:06Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:14:24Z",
+        "resolved_at": "2026-05-14T00:18:27Z"
+      }
+    }
+  ]
+}

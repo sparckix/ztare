@@ -1,0 +1,211 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T19:02:02Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 23.0,
+    "expected_value": 0.6125180960297083,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.16999999999999998,
+    "p_needs_new_lemma": 0.11,
+    "p_regression": 0.08499999999999999,
+    "p_success": 0.5452234133580903,
+    "participants": [
+      {
+        "agent_id": "Knuth4",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_step_index_canary_replay",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2068_bayesRisk_step_index_finite_bound_replay/knuth4.json",
+        "forecasted_at": "2026-05-14T19:01:52Z",
+        "p_success": 0.58,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Wirth3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_step_index_canary_replay",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2068_bayesRisk_step_index_finite_bound_replay/wirth3.json",
+        "forecasted_at": "2026-05-14T19:01:52Z",
+        "p_success": 0.51,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "finite_product_associativity_shape_mismatch",
+        "p": 0.265
+      },
+      {
+        "mode": "measure_lt_top_namespace_or_instance_fail",
+        "p": 0.265
+      },
+      {
+        "mode": "ENNReal_mul_lt_top_argument_order_wrong",
+        "p": 0.185
+      },
+      {
+        "mode": "bridge_insertion_state_differs",
+        "p": 0.155
+      },
+      {
+        "mode": "harmful_mismatch_from_wrong_subgoal",
+        "p": 0.07500000000000001
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2068_bayesRisk_step_index_finite_bound_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2068_bayesRisk_step_index_finite_bound_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2068_bayesRisk_step_index_finite_bound_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2068_bayesRisk_step_index_finite_bound_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2068_bayesRisk_step_index_finite_bound_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 26.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T19:01:27Z",
+    "created_by": "codex:RD",
+    "horizon": "same session 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff the v2068 replay runs v20.67 through the bridge, at least one candidate action compiles, harmful compiled mismatches are zero, target proof lines were not used for generation, training remains false, and GNN remains blocked.",
+    "question": "If GP-225 runs the v20.67 step-index finite-bound bayesRisk replay, will at least one candidate compile with zero harmful mismatches?",
+    "success_threshold": "compiled_candidate_actions >= 1; harmful_compiled_mismatch_actions == 0; no target proof generation; no training; GNN blocked",
+    "task_type": "step_index_canary_replay"
+  },
+  "contract_id": "gp225_v2068_bayesRisk_step_index_finite_bound_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Knuth4",
+        "raw_agent_ids": [
+          "Knuth4"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Wirth3",
+        "raw_agent_ids": [
+          "Wirth3"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Knuth4",
+      "Wirth3"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run the two-candidate canary; if it fails, reduce exact finite-product shape before any broader replay.",
+        "agent_id": "Knuth4",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2068_bayesRisk_step_index_finite_bound_replay/knuth4.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_step_index_canary_replay",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T19:01:52Z",
+        "p_success": 0.58,
+        "rationale_short": "The replay subgoal is explicit and the candidates use source lemmas, so compile odds are materially better than v20.66 but still not guaranteed.",
+        "specific_failure_mode_ids": [
+          "measure_lt_top_namespace_or_instance_fail",
+          "finite_product_associativity_shape_mismatch"
+        ]
+      },
+      {
+        "action_change_recommendation": "Run only because the canary is tiny; success is compile signal only, not strict-label or model-training readiness.",
+        "agent_id": "Wirth3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2068_bayesRisk_step_index_finite_bound_replay/wirth3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_step_index_canary_replay",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T19:01:52Z",
+        "p_success": 0.51,
+        "rationale_short": "The exact product association in Lean may differ from the static candidate, so odds are only slightly above even.",
+        "specific_failure_mode_ids": [
+          "finite_product_associativity_shape_mismatch",
+          "measure_lt_top_namespace_or_instance_fail"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 23.0,
+    "changed_by_forecast_ids": [
+      "Knuth4",
+      "Wirth3"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T19:03:05Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.07,
+      "p_success": 0.5452234133580903,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "finite_product_associativity_shape_mismatch",
+        "p": 0.265
+      },
+      "voi_proxy": 0.668
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 23.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5452234133580903,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "finite_product_associativity_shape_mismatch",
+        "p": 0.265
+      },
+      {
+        "mode": "measure_lt_top_namespace_or_instance_fail",
+        "p": 0.265
+      },
+      {
+        "mode": "ENNReal_mul_lt_top_argument_order_wrong",
+        "p": 0.185
+      },
+      {
+        "mode": "bridge_insertion_state_differs",
+        "p": 0.155
+      },
+      {
+        "mode": "harmful_mismatch_from_wrong_subgoal",
+        "p": 0.07500000000000001
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.20825,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T19:03:08Z"
+  }
+}

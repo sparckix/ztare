@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json"
+  },
+  "budget_agent_minutes": 20.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-14T12:50:05Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0323,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "math_first_proof_surface",
+    "score": 0.0323,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0323,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.0323,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0263,
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.0263,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0256,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0256,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same tick",
+  "information_value": 0.35,
+  "layer": "micro",
+  "objective_resolver": "success iff projects/ns_millennium_hunt/workspace/route1_active_tail_zero_visibility_profile_work_packet_20260514.md exists and names strict-failure map, zero-visibility map, falsifiers, and next theorem; not resolved by final route closure",
+  "question": "Can this tick produce a concrete math-first work packet mapping active all-channel-invisible route-1 tail failure to the existing no-invisible compactness obligation, with falsifiers and next discriminator?",
+  "risk_penalty": 1.0,
+  "success_threshold": "packet contains two maps plus anti-tautology and falsifier audit",
+  "task_type": "math_first_proof_surface",
+  "value_if_success": 1.0,
+  "void_conditions": "operator redirects before packet or external artifact unavailable"
+}

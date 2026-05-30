@@ -1,0 +1,355 @@
+{
+  "generated_utc": "2026-05-09T23:23:48.148682+00:00",
+  "since": null,
+  "substrate_filter": null,
+  "total_events": 174,
+  "n_substrate_classes": 3,
+  "n_projects_with_data": 37,
+  "class_summary": {
+    "audit": {
+      "total_events": 120,
+      "n_projects": 26,
+      "by_cap_kind": {
+        "none": 120
+      },
+      "dominant_cap_kind": "none",
+      "dominant_concentration": 1.0
+    },
+    "proof_target": {
+      "total_events": 28,
+      "n_projects": 5,
+      "by_cap_kind": {
+        "none": 28
+      },
+      "dominant_cap_kind": "none",
+      "dominant_concentration": 1.0
+    },
+    "nd_features": {
+      "total_events": 26,
+      "n_projects": 6,
+      "by_cap_kind": {
+        "none": 26
+      },
+      "dominant_cap_kind": "none",
+      "dominant_concentration": 1.0
+    }
+  },
+  "top_pairs": [
+    {
+      "substrate_class": "audit",
+      "cap_kind": "none",
+      "count": 120
+    },
+    {
+      "substrate_class": "proof_target",
+      "cap_kind": "none",
+      "count": 28
+    },
+    {
+      "substrate_class": "nd_features",
+      "cap_kind": "none",
+      "count": 26
+    }
+  ],
+  "per_project": {
+    "fermi_paradox_discriminator": {
+      "substrate_class": "proof_target",
+      "n_iters": 5,
+      "cap_kind_counts": {
+        "none": 5
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp116b_transformer_successor": {
+      "substrate_class": "nd_features",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp154_inversion_alpha_from_dimension": {
+      "substrate_class": "nd_features",
+      "n_iters": 5,
+      "cap_kind_counts": {
+        "none": 5
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp154_phase_flow_law": {
+      "substrate_class": "nd_features",
+      "n_iters": 3,
+      "cap_kind_counts": {
+        "none": 3
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp154_scaling_law_normalized": {
+      "substrate_class": "nd_features",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp154_scaling_law_raw": {
+      "substrate_class": "nd_features",
+      "n_iters": 5,
+      "cap_kind_counts": {
+        "none": 5
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp163d_admsr_attack_and_cleanroom_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 5,
+      "cap_kind_counts": {
+        "none": 5
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp163d_alien_invariant_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp163d_science_promotion_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp163d_susceptibility_regime_law": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp163d_unified_accel": {
+      "substrate_class": "nd_features",
+      "n_iters": 5,
+      "cap_kind_counts": {
+        "none": 5
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp168_org_design_discovery": {
+      "substrate_class": "audit",
+      "n_iters": 6,
+      "cap_kind_counts": {
+        "none": 6
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp169_consciousness_ascription_audit": {
+      "substrate_class": "audit",
+      "n_iters": 8,
+      "cap_kind_counts": {
+        "none": 8
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp210_consciousness_theory": {
+      "substrate_class": "proof_target",
+      "n_iters": 6,
+      "cap_kind_counts": {
+        "none": 6
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp211_paper8_lean_proofs": {
+      "substrate_class": "proof_target",
+      "n_iters": 3,
+      "cap_kind_counts": {
+        "none": 3
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp212_consciousness_omega_audit": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "gp230_cognitive_firm_absorption": {
+      "substrate_class": "audit",
+      "n_iters": 6,
+      "cap_kind_counts": {
+        "none": 6
+      },
+      "dominant_cap_kind": "none"
+    },
+    "human_ai_interaction_primitive": {
+      "substrate_class": "proof_target",
+      "n_iters": 9,
+      "cap_kind_counts": {
+        "none": 9
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_eviction_discriminator": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_alien_invariant_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_constructive": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_cycle_resupply_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 6,
+      "cap_kind_counts": {
+        "none": 6
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_finite_stencil_full_closure": {
+      "substrate_class": "audit",
+      "n_iters": 6,
+      "cap_kind_counts": {
+        "none": 6
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_fractional_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_frontier": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_gain_tax_tether": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_independent_multishell_cascade": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_leray_convexity_trackb": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_low_high_operator_norm_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 3,
+      "cap_kind_counts": {
+        "none": 3
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_residual_defect_packet_certificate": {
+      "substrate_class": "audit",
+      "n_iters": 3,
+      "cap_kind_counts": {
+        "none": 3
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_resupply_pincer": {
+      "substrate_class": "audit",
+      "n_iters": 3,
+      "cap_kind_counts": {
+        "none": 3
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_square_law_exhaust_bridge": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_proofsearch_stationary_euler_escape": {
+      "substrate_class": "audit",
+      "n_iters": 6,
+      "cap_kind_counts": {
+        "none": 6
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_spike_lifecycle_discriminator": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ns_trackb_closure_recursive_strategy": {
+      "substrate_class": "proof_target",
+      "n_iters": 5,
+      "cap_kind_counts": {
+        "none": 5
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ztare_on_ztare_v2_expanded_scope": {
+      "substrate_class": "audit",
+      "n_iters": 8,
+      "cap_kind_counts": {
+        "none": 8
+      },
+      "dominant_cap_kind": "none"
+    },
+    "ztare_on_ztare_v3_meta_recursive": {
+      "substrate_class": "audit",
+      "n_iters": 4,
+      "cap_kind_counts": {
+        "none": 4
+      },
+      "dominant_cap_kind": "none"
+    }
+  },
+  "all_cap_kinds": [
+    "none"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2075_heldout_changed_arm_replay_meso_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2075_heldout_changed_arm_replay_meso_gate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2075_heldout_changed_arm_replay_meso_gate",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2075_heldout_changed_arm_replay_meso_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2075_heldout_changed_arm_replay_meso_gate.json"
+  },
+  "baseline_action": "do not replay; continue source discovery",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2075_heldout_changed_arm_replay_meso_gate",
+  "cost_penalty": 0.06,
+  "counterfactual_action": "bounded one-row heldout changed-arm replay if meso EV permits",
+  "created_at": "2026-05-14T19:27:11Z",
+  "created_by": "codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1176,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "heldout_changed_arm_replay",
+    "score": 0.1667,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1176,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1081,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0385,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0385,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0345,
+        "score_rows": 140,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14",
+  "information_value": 1.0,
+  "layer": "meso",
+  "objective_resolver": "Resolve true iff v20.75 produces a meso gate artifact and, if EV/routing permits, the one-row replay is run with no training; strict/solver/harmful outcomes must be reported separately. Resolve false if the gate aborts replay for low EV or leakage/context risk.",
+  "question": "Should GP-225 run a bounded replay of the one v20.74 source-safe changed heldout arm for current_scale_0242/slope_of_Y_ne before any training?",
+  "risk_penalty": 0.35,
+  "success_threshold": "artifact-backed meso decision; no micro forecast; no training; replay only if justified by changed-arm evidence",
+  "task_type": "heldout_changed_arm_replay",
+  "value_if_success": 2.0,
+  "void_conditions": "starts training; replays unchanged rank-only arms; uses target proof body; scores as GNN readiness"
+}

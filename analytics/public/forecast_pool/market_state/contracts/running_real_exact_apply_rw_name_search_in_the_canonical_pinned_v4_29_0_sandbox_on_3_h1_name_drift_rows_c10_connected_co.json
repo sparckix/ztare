@@ -1,0 +1,203 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:39Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.1410334992234069,
+      "forecast_spread": 0.02,
+      "p_success": 0.590037221359341,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 0.2619
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 34.5,
+    "expected_value": 0.1410334992234069,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.11499999999999999,
+    "p_needs_new_lemma": 0.135,
+    "p_regression": 0.045,
+    "p_success": 0.590037221359341,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "grounded_search_validation_h1",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co/codex.json",
+        "forecasted_at": "2026-05-16T21:11:49Z",
+        "p_success": 0.58,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T21:10:26Z",
+        "p_success": 0.6,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "resolver_unavailable_or_exact_search_drift",
+        "p": 0.17
+      },
+      {
+        "mode": "row_specific_name_drift_requires_manual_trace",
+        "p": 0.13
+      },
+      {
+        "mode": "sandbox_or_tooling_drift",
+        "p": 0.12
+      },
+      {
+        "mode": "stale_or_missing_evidence",
+        "p": 0.08
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json",
+    "contract": "analytics/public/forecast_pool/contracts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json",
+    "score": "analytics/public/forecast_pool/scores/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T21:10:26Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "verify the 3 grounded proofs through canonical v4.29.0 + exact? adjudication",
+    "question": "Running REAL exact?/apply?/rw? + name-search in the canonical pinned v4.29.0 sandbox on 3 H1 name-drift rows (C10 connected->constant, C15 Basel, C06 chi4): will >=2/3 close genuine, confirming research-tier is grounding-bound and recoverable by grounded tool-exec (not a dead static-memory index)?",
+    "success_threshold": "0.5",
+    "task_type": "grounded_search_validation_h1"
+  },
+  "contract_id": "running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "grounded_search_validation_h1",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-16T21:11:49Z",
+        "p_success": 0.58,
+        "rationale_short": "The contract is narrowly grounded and the baseline forecast is favorable, but the main risks are resolver/tooling drift and whether all three H1 name-drift rows behave like the same recoverable grounding problem rather than three separate traces.",
+        "specific_failure_mode_ids": [
+          "resolver_unavailable_or_exact_search_drift",
+          "sandbox_or_tooling_drift",
+          "row_specific_name_drift_requires_manual_trace",
+          "stale_or_missing_evidence"
+        ]
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-16T21:10:26Z",
+        "p_success": 0.6,
+        "rationale_short": "Tick-G diagnosis: these are pure H1 name-drift (lemma exists, wrong name); real in-sandbox exact?/search should resolve names that imagined-exact? could not; >=2/3 favored but C06 chi4 chain may resist single-search",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 50.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T21:21:39Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.1410334992234069,
+      "forecast_spread": 0.02,
+      "p_success": 0.590037221359341,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 0.2619
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 34.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.590037221359341,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "resolver_unavailable_or_exact_search_drift",
+        "p": 0.17
+      },
+      {
+        "mode": "row_specific_name_drift_requires_manual_trace",
+        "p": 0.13
+      },
+      {
+        "mode": "sandbox_or_tooling_drift",
+        "p": 0.12
+      },
+      {
+        "mode": "stale_or_missing_evidence",
+        "p": 0.08
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.34819999999999995,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:39:22Z"
+  }
+}

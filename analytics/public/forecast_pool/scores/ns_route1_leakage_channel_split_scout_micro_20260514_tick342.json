@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_leakage_channel_split_scout_micro_20260514_tick342",
+  "mean_brier": 0.07539999999999998,
+  "mean_log_score": -0.31706192005524214,
+  "outcome": {
+    "actual_cost_agent_minutes": 38.0,
+    "artifact_hash": "c907c483f597c19401c33657ba1ac3f20ef44a252edb086642a30801433fc754",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/fresh_frequency_leakage_channel_split_scout_20260514.json",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_leakage_channel_split_scout_micro_20260514_tick342",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Built and ran fresh_frequency_leakage_channel_split_scout. Verdict LEAKAGE_NORMALIZER_GAP with sentinel_ok true, split_pass=64, normalizer_gap=32, channel_split_gap=32. Script py_compile passed. The scout changes next Lean action from direct shard-C instantiation to adding a normalizer compatibility guard/source before FreshFrequencyLeakageChargeBookkeeping consumption.",
+    "resolved_at": "2026-05-14T03:55:17Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:55:23Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 38.0,
+      "agent_id": "herschel_skeptic_tick342",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": -10.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 28.0,
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:53:12Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:53:33Z",
+        "resolved_at": "2026-05-14T03:55:17Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 38.0,
+      "agent_id": "hooke_forecast_tick342",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:53:12Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:53:33Z",
+        "resolved_at": "2026-05-14T03:55:17Z"
+      }
+    }
+  ]
+}

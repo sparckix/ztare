@@ -1,0 +1,199 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:02:19Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 51.5,
+    "expected_value": -11.695537418998377,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.16,
+    "p_needs_new_lemma": 0.12000000000000001,
+    "p_regression": 0.065,
+    "p_success": 0.3679584233351364,
+    "participants": [
+      {
+        "agent_id": "gp230_noether_gp225_v1963",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.31,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_turing_gp225_v1963",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.43,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "strict_label_threshold_too_high_for_current_generators",
+        "p": 0.27
+      },
+      {
+        "mode": "closure_conversion_does_not_follow_target_state",
+        "p": 0.21000000000000002
+      },
+      {
+        "mode": "other",
+        "p": 0.16
+      },
+      {
+        "mode": "candidate_generation_schema_not_ready",
+        "p": 0.15000000000000002
+      },
+      {
+        "mode": "row_distribution_shift",
+        "p": 0.12
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1963_bundled_typed_feedback_deterministic_scale.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1963_bundled_typed_feedback_deterministic_scale.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1963_bundled_typed_feedback_deterministic_scale.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1963_bundled_typed_feedback_deterministic_scale.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1963_bundled_typed_feedback_deterministic_scale.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:02:03Z",
+    "created_by": "codex_rd_gp225",
+    "horizon": "same session if execution packet and replay are feasible; otherwise next execution session from sealed v1963 packet",
+    "layer": "micro",
+    "objective_resolver": "Resolve from v1963 execution artifacts: candidate_rows>=40, new_unique_strict_target_state_rows>=4, target_state_to_full_closure_conversions>=1, harmful_mismatches==0, clean_source_policy true, train_gnn_now==false. Pull-forward labels are auxiliary and do not satisfy strict target-state threshold.",
+    "question": "Will bundled typed-feedback plus deterministic-template scale execution produce at least 4 new unique strict target-state rows and at least 1 target-state-to-full-closure conversion across at least 40 clean candidates, with harmful mismatches zero and GNN still blocked?",
+    "success_threshold": "candidate_rows>=40 AND new_unique_strict_target_state_rows>=4 AND target_state_to_full_closure_conversions>=1 AND harmful_mismatches==0 AND clean_source_policy true AND train_gnn_now==false",
+    "task_type": "bundled_label_source_scale_replay"
+  },
+  "contract_id": "gp225_v1963_bundled_typed_feedback_deterministic_scale",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_noether_gp225_v1963",
+        "raw_agent_ids": [
+          "gp230_noether_gp225_v1963"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_turing_gp225_v1963",
+        "raw_agent_ids": [
+          "gp230_turing_gp225_v1963"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_noether_gp225_v1963",
+      "gp230_turing_gp225_v1963"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_noether_gp225_v1963",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1963_bundled_typed_feedback_deterministic_scale/gp230_noether_gp225_v1963.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T03:02:15Z",
+        "p_success": 0.31,
+        "rationale_short": "v19.61 shows clean but sparse labels. The bundled route is correct directionally, but 4 fresh strict rows plus one closure conversion in a 40-candidate replay is an ambitious threshold for current generators.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_turing_gp225_v1963",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1963_bundled_typed_feedback_deterministic_scale/gp230_turing_gp225_v1963.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 48.0,
+        "forecasted_at": "2026-05-14T03:02:15Z",
+        "p_success": 0.43,
+        "rationale_short": "The route combines the best prior strict source with the new deterministic source and should improve over single-lane attempts, but closure conversion remains the hard part.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.12,
+      "p_success": 0.3679584233351364,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "strict_label_threshold_too_high_for_current_generators",
+        "p": 0.27
+      },
+      "voi_proxy": 1.2126
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 51.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.3679584233351364,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "strict_label_threshold_too_high_for_current_generators",
+        "p": 0.27
+      },
+      {
+        "mode": "closure_conversion_does_not_follow_target_state",
+        "p": 0.21000000000000002
+      },
+      {
+        "mode": "other",
+        "p": 0.16
+      },
+      {
+        "mode": "candidate_generation_schema_not_ready",
+        "p": 0.15000000000000002
+      },
+      {
+        "mode": "row_distribution_shift",
+        "p": 0.12
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

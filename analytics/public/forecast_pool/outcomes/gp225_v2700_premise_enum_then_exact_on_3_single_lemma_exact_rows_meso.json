@@ -1,0 +1,28 @@
+{
+  "actual_cost_agent_minutes": 45.0,
+  "artifact_hash": null,
+  "artifact_path": "analytics/public/leanmill/results/v27_02_audit.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": null,
+  "contract_id": "gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "v28 design \u2014 multi-step rw enumeration on the multi-step-rw row class (0021, 0180) where the gold tactic itself is multi-step. Or accept the finding and write up the boundary: 'type-aware retrieval at top-32 cannot close single-lemma-exact moat-surface rows when the unique closer is blind-excluded'. Or pivot to single-hint-simp class with custom audit that allows simp-with-1-hint as moat-grade if the hint is genuinely novel.",
+  "old_next_action": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "gold_lemma_is_THE_unique_closer_and_blind_excludes_it",
+    "premises_returns_simp_tagged_siblings_for_all_top_32"
+  ],
+  "resolution_note": "v27.01 ran on 3 single-lemma-exact rows but with broken goal scope (MeasurableSpace E synth failed); 55 exact-tests, 0 compiled. v27.02 re-ran with variable-block scope fixed: premise selector returned high-quality candidates (top-1 for 0163 is MeasureTheory.measurable_pdf \u2014 the gold lemma itself; for 0162 the top contains pdf_of_not_aemeasurable which is named in gold). After 4-way filter (exclude gold + @[simp]/@[fun_prop]/@[grind] in Mathlib v4.29.0): 0162 14/27 surviving, 0163 13/29, 0329 10/26. 185 exact-tests across 5 variants ('_ _ _ _', '_ _ _', '_ _', '_', ''), 0 compiled. **0 moat-grade closures across both v27.01 + v27.02 combined (240 exact-tests).** Forecasters: Claude 0.20, Noether 0.15, aggregate 0.175 \u2192 outcome=false. Brier on Claude ~0.04, Noether ~0.0225 \u2014 sharp calibration. **Honest finding**: the moat-surface single-lemma-exact rows have NO non-leaky one-step closer in the top-32 cloud-retrieved premise set. The unique closer in each case IS the gold lemma or a @[simp]/@[fun_prop]/@[grind]-tagged sibling; blind exclusion + automation-machinery audit removes them. This validates Noether's structural prediction 'P(top-32 contains non-gold non-leaky closer) ~0.10' as essentially zero on this row class.",
+  "resolved_at": "2026-05-15T03:32:51Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

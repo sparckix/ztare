@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json"
+  },
+  "baseline_action": "stop after tick430",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514",
+  "cost_penalty": 0.06,
+  "counterfactual_action": "attempt resolved mean-free share routing first",
+  "created_at": "2026-05-14T23:23:10Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.037,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "proof_frontier_tick",
+    "score": 0.037,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.037,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.037,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0333,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0333,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0312,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0286,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0286,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.027,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.027,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14T23:59:00-04:00",
+  "information_value": 2.0,
+  "layer": "micro",
+  "objective_resolver": "success iff Lean compiles after adding a source/guard that lowers resolved mean-free stress routing to the existing local-quadratic/tent-excess receipt path, with no sorry/admit and diff check clean",
+  "question": "Will the next pressure tick compile a non-tautological resolved-mean-free-to-local-quadratic receipt source or guard in ns_pressure_hessian_l2_bridge.lean, with Lean pass and no pressure-closure overclaim?",
+  "risk_penalty": 1.0,
+  "success_threshold": "true",
+  "task_type": "proof_frontier_tick",
+  "value_if_success": 4.0,
+  "void_conditions": "void if file already contains an equivalent resolved mean-free share source with the same downstream projection"
+}

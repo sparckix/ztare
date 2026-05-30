@@ -1,0 +1,48 @@
+{
+  "contract_family": "gp230_silent_flat_branch_closure_2026_05_14",
+  "session_date": "2026-05-14",
+  "ticks_in_scope": ["tick459", "tick460"],
+  "contracts": {
+    "M1_macro": {
+      "question": "Tick459+460 BOTH build clean (no sorry, no admit, no error iterations) AND each uses >=3 named Mathlib lemmas in main theorem proof",
+      "forecasters": {
+        "codex_rd": {"p": 0.42, "rationale": "tick459 structure composition over tick458 builds clean first/second pass; tick460 ENNReal/Measure machinery historically friction"},
+        "meta_darwin_proxy": {"p": 0.42, "rationale": "Prior ticks 450-453 baseline shows 1-3 error iterations modal; ENNReal.smul-on-Measure typeclass dance + geometric-sum-in-ENNReal bite on first build"}
+      },
+      "aggregate_p": 0.42,
+      "resolution": "PARTIAL_TRUE",
+      "resolution_detail": "tick459 needed 1 error iteration (opaque-types issue, removed); tick460 first-build green with 1 deprecation warning only. Both meet >=3 named-Mathlib-lemma bar. Strict 'zero error iterations' clause fails for tick459 but passes for tick460.",
+      "brier_score": 0.34
+    },
+    "M2_meso": {
+      "question": "Tick460 scaleFreshDefectChannel instance discharges freshRegion_subset_K, freshRegion_pairwise_disjoint, charge_inequality via real Mathlib computations (no Prop wrapper fields)",
+      "forecasters": {
+        "codex_rd": {"p": 0.38, "rationale": "singletons mechanically tractable; charge_inequality requires real Measure.dirac_apply_of_mem chain"},
+        "meta_darwin_proxy": {"p": 0.46, "rationale": "pairwise disjoint near-free over singletons; charge_inequality lands as simp-only near-tautology if unguarded"}
+      },
+      "aggregate_p": 0.42,
+      "resolution": "TRUE",
+      "resolution_detail": "All three fields discharged via real Mathlib: freshRegion_subset_K = Set.subset_univ; freshRegion_pairwise_disjoint = Set.disjoint_singleton.mpr; charge_inequality via Measure.smul_apply + Measure.count_singleton + mul_le_mul_left' + ENNReal.div_le_iff_le_mul chain in named lemma scaleFreshDefectMeasure_perNode. No Prop wrapper fields.",
+      "brier_score": 0.34
+    },
+    "M3_micro": {
+      "question": "Principal uses Measure.dirac, Finset.sum, Measure.smul (or ENNReal.tsum_geometric) in tick460 main proof",
+      "forecasters": {
+        "codex_rd": {"p": 0.55, "rationale": "Measure.dirac + Finset.sum near-forced; Measure.smul vs ENNReal.tsum_geometric is real branch"},
+        "meta_darwin_proxy": {"p": 0.32, "rationale": "simp-collapse risk absorbs named lemmas; no clean ENNReal.sum_geometric_two for Fin N partial sums"}
+      },
+      "aggregate_p": 0.44,
+      "resolution": "FALSE",
+      "resolution_detail": "Principal used the simpler c • Measure.count design instead of Dirac-sum; consequently Measure.dirac NOT invoked, ENNReal.tsum_geometric NOT invoked. Measure.smul_apply IS invoked. Counter-factual: with Dirac-sum design M3 would have likely resolved TRUE.",
+      "brier_score": 0.19
+    }
+  },
+  "aggregate_brier": 0.29,
+  "session_outcome_summary": "Both tick459 + tick460 shipped + built clean. M1 resolved partial (1 error iteration), M2 resolved TRUE, M3 resolved FALSE due to design choice (c•count instead of Dirac-sum). Forecasters slightly under-priced M1+M2 (Brier 0.34 each), nearly correctly priced M3 (Brier 0.19). Net: model slightly pessimistic for execution quality; correctly skeptical for specific named-lemma binding.",
+  "self_prediction_on_agent_effort": {
+    "claim": "local wins for tick459/460 Lean derivation; agents only useful for adversarial forecasting",
+    "result": "CONFIRMED. Two adversarial forecasters delivered well-calibrated probabilities in <30s each (~60s total agent time). Construction work done locally in ~40 min; would have taken ~80 min with agents per wrapper-mitigation report.",
+    "agent_time_allocated": "~60 seconds (forecasters only)",
+    "local_time_allocated": "~40 minutes (tick459 + tick460 + iteration)"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Run v2030 because corrected all-scope queue has 11 eligible rows and prior local ReProver generation worked; block replay and training until a separate GP-230 replay market.",
+  "agent_id": "gp230_parfit_gp225_v2030",
+  "contract_id": "gp225_v2030_corrected_scope_reprover_candidate_generation",
+  "contract_question": "Will corrected all-scope non-strict GP-225 queue generation produce a clean local ReProver context-enriched candidate packet?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 14.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [
+    "general_purpose_lean_harness",
+    "pre_gnn",
+    "public_repo_adapter",
+    "candidate_supply"
+  ],
+  "forecasted_at": "2026-05-14T14:46:49Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.82,
+  "rationale_short": "Corrected queue clears the row-count threshold, all rows have typed before-witness state, and v19.56/v19.57 establish cached local generation feasibility.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "queue_wiring_uses_literal_remaining_scope",
+    "source_cleanliness_reporting_incomplete",
+    "local_model_cache_or_dependency_regression",
+    "dedup_below_48",
+    "contaminated_row_readmission",
+    "schema_mismatch"
+  ]
+}

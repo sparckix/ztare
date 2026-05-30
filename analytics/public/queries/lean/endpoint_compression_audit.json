@@ -1,0 +1,30 @@
+{
+  "summary": {
+    "audit_timestamp_utc": "2026-05-07T06:44:31.551095+00:00",
+    "lookback_days": 2,
+    "events_scanned": 11,
+    "compression_candidates": 1,
+    "candidates_by_pattern": {
+      "X_of_Y": 1
+    },
+    "decision_threshold": "Layers 1+2 of GP-223 ship-ready when \u22653 candidates surface across \u22652 distinct substrates over a 28-day window.",
+    "next_step": "RD reviews each candidate; for cases where the carried-receipt structure is verifiably present, sketch the projection constructor manually as an experiment. Use those experiments to seed Layer 1's heuristic."
+  },
+  "candidates": [
+    {
+      "ts": "2026-05-06T04:01:12.506748+00:00",
+      "target": "TrackBProfileDecompositionObligation",
+      "field": "threshold_defect_of_family_no_arbitrage",
+      "category": "llm_refused",
+      "patch_class": "source_provenance_bridge",
+      "name_pattern": "X_of_Y",
+      "projection_core": "threshold_defect",
+      "projection_qualifier": "family_no_arbitrage",
+      "candidate_carried_receipts": [
+        "TrackBProfileDecompositionObligation"
+      ],
+      "explanation": "Endpoint name `threshold_defect_of_family_no_arbitrage` matches the X_of_Y projection shape. Per GP-223, check whether `threshold_defect` appears as a field accessor on any carried receipt object qualified by `family_no_arbitrage` (or its variants); if yes, close by projection rather than fresh patch.",
+      "confidence": "low"
+    }
+  ]
+}

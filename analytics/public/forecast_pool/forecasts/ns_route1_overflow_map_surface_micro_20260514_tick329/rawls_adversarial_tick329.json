@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_adversarial_tick329",
+  "contract_id": "ns_route1_overflow_map_surface_micro_20260514_tick329",
+  "contract_question": "Will the next NS route-1 Lean tick add a compiled overflow-map surface below FixedWindowOppositeConeCriticalProfileObstruction, separating overflow-to-strict-failure from overflow-to-zero-visibility without assuming strict subratio or carrier-level positivity?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 46.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dead_geometry_route_creep": 0.08,
+    "decomposition_restates_existing_obstruction": 0.3,
+    "lean_constructor_drift": 0.1,
+    "opaque_prop_guards": 0.14,
+    "primitive_shape_mismatch": 0.17,
+    "zero_visibility_map_not_distinct": 0.21
+  },
+  "forecasted_at": "2026-05-14T02:27:47Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.61,
+  "p_regression": 0.08,
+  "p_success": 0.57,
+  "rationale_short": "Plausible compile tick, but main risk is just renaming the existing obstruction instead of lowering the two maps.",
+  "read_only_attestation": true
+}

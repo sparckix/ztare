@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_local_energy_measure_split_singular_control_20260514_tick370",
+  "contract_question": "Can the GPT-5.5 measure-local split route be encoded as a non-tautological route-1 theorem surface: LocalEnergyPositiveBoundaryFluxMeasureSplitSource -> mu_A_perp <= mu_I, with scalar-only guard?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 36.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "abstract_surface_compiles": 0.2,
+    "guard_prevents_overclaim": 0.18,
+    "local_energy_split_not_sourced": 0.28,
+    "restates_domination": 0.1,
+    "signed_measure_api_block": 0.24
+  },
+  "forecasted_at": "2026-05-14T13:29:16Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.09,
+  "p_success": 0.54,
+  "rationale_short": "The singular restriction proof is real, but only after a strong Borel-local split; Lean may need an abstract surface rather than mathlib signed measures.",
+  "read_only_attestation": true
+}

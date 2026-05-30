@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Abort unless information-value threshold explicitly allows an audit replay; static packet is enough for now.",
+  "agent_id": "Popper",
+  "contract_id": "gp225_v2041_heldout_dual_head_delta_replay",
+  "contract_question": "If we replay the v20.40 heldout baseline and auxiliary-conditioned arms, will the auxiliary-conditioned arm beat baseline on separate strict/solver/auxiliary head deltas with harmful rows zero?",
+  "domain": "gp225_pre_gnn_replay_gate",
+  "expected_cost_agent_minutes": 36.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "auxiliary_conditioning_not_transferable": 0.23913043478260868,
+    "lean_timeout_or_unresolved_goals": 0.15217391304347827,
+    "no_arm_delta_same_candidate_set": 0.2608695652173913,
+    "zero_compile_like_v2031": 0.34782608695652173
+  },
+  "forecast_externality_tags": [
+    "abort_option",
+    "single_theorem_overfit_test",
+    "replay_budget_guard"
+  ],
+  "forecasted_at": "2026-05-14T17:12:09Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.06,
+  "p_success": 0.24,
+  "rationale_short": "The heldout rows are exactly the non-ofScalars rows that failed to compile under v20.37; rank reordering alone is unlikely to create a measured head delta.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "zero_compile_like_v2031",
+    "no_arm_delta_same_candidate_set"
+  ]
+}

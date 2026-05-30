@@ -1,0 +1,33 @@
+{
+  "query_id": "architecture_index_falsifier_2026_05_08",
+  "registered": "2026-05-08",
+  "owner": "principal + RD daemon",
+  "primitive_under_test": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
+  "novelty_piece_under_test": "impact_factor_first_class",
+  "claim": "ex-post impact factor (catch-ledger × score-delta × downstream-citation) is NOT a renaming of frequency-of-invocation",
+  "falsifier": {
+    "type": "spearman_rank_correlation",
+    "binary_check": "spearman_rho(impact_factor_expost_rank, frequency_of_invocation_30d_rank) > 0.9",
+    "frequency": "weekly",
+    "monitoring_period_iso": ["2026-05-08", "2026-06-05"],
+    "consecutive_weeks_required_to_demote": 4,
+    "on_fire_action": [
+      "demote novelty_piece impact_factor_first_class to WITHDRAWN",
+      "append catch_ledger row of kind false_novelty_claim referencing this query_id",
+      "amend org/reflexive_primitives/architecture_index_meta_graph.md verdict to C (cite-and-adopt only) for the impact-factor piece"
+    ]
+  },
+  "data_sources": {
+    "impact_rank": "analytics/public/index/architecture_index.jsonl field impact_factor_expost",
+    "frequency_rank": "TODO scripts/mining/architecture_index_frequency_rank.py — counts invocations per primitive_id from F-rows + tool-trace logs over rolling 30d window",
+    "catch_ledger": "analytics/public/ledgers/catch/catch_ledger.jsonl"
+  },
+  "weeks": {
+    "2026-W19": {"computed": null, "rho": null, "fired": null, "notes": "first measurement window 2026-05-08..2026-05-14"},
+    "2026-W20": {"computed": null, "rho": null, "fired": null},
+    "2026-W21": {"computed": null, "rho": null, "fired": null},
+    "2026-W22": {"computed": null, "rho": null, "fired": null}
+  },
+  "not_trivial": "On 2026-05-08 snapshot, impact-rank surfaces UNIVERSAL-RESEARCH-OPS / PDE-ESTIMATE-CRAFT-OPS at top (impact 4, last_used today, load-bearing tonight). Frequency-only rank surfaces gates that fire on every cage run regardless of catch yield. Initial rankings differ; falsifier tests CONVERGENCE.",
+  "anti_laundering": "If frequency_rank is missing or unreliable for a given week, mark fired=null (NOT fired=false). Silent-failure-as-pass is anti-pattern ANTI-PATTERN-005."
+}

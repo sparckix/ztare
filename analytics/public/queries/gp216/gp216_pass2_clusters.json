@@ -1,0 +1,401 @@
+{
+  "experiment": "gp216_pass2_cluster",
+  "n_moves_input": 161,
+  "n_clusters": 9,
+  "n_3plus_arc_clusters": 9,
+  "verdict": "PASS \u2014 9 clusters with \u22653-arc spread support a 6-12 op candidate vocabulary. Continue to Pass 3.",
+  "result": {
+    "clusters": [
+      {
+        "cluster_id": "tb_01",
+        "name": "Foundational Object Redefinition",
+        "structural_mechanism": "An existing class of core objects is replaced by a more general or abstract class, designed to absorb complexity or represent phenomena that were previously invisible or ad-hoc.",
+        "arc_spread": [
+          "grothendieck_schemes",
+          "lurie_htt",
+          "riemann_surfaces",
+          "scholze_perfectoid"
+        ],
+        "n_arcs": 4,
+        "n_moves": 13,
+        "example_moves": [
+          "M011",
+          "M044",
+          "M025",
+          "M099",
+          "M124"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not just 'generalization'; it is a specific replacement of a foundational object to solve a known representational deficit, absorbing prior anomalies into the new object's intrinsic structure."
+      },
+      {
+        "cluster_id": "tb_02",
+        "name": "Cross-Domain Unification",
+        "structural_mechanism": "A new formalism or object is constructed to demonstrate that two or more previously separate conceptual domains are instances of a single, underlying structure, enabling translation and transfer between them.",
+        "arc_spread": [
+          "wiles_flt",
+          "grothendieck_schemes",
+          "lurie_htt",
+          "scholze_perfectoid",
+          "riemann_surfaces",
+          "newton_calculus"
+        ],
+        "n_arcs": 6,
+        "n_moves": 18,
+        "example_moves": [
+          "M013",
+          "M039",
+          "M049",
+          "M136",
+          "M027"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not just finding an analogy; it is building a formal, operational bridge or a common super-structure that makes the analogy rigorous and computationally productive."
+      },
+      {
+        "cluster_id": "tb_03",
+        "name": "Surrogate Problem Substitution",
+        "structural_mechanism": "An intractable problem is solved by replacing it with a different, more tractable problem in a new domain, after establishing a formal implication that a solution to the surrogate problem guarantees a solution to the original.",
+        "arc_spread": [
+          "wiles_flt",
+          "riemann_surfaces",
+          "einstein_gr"
+        ],
+        "n_arcs": 3,
+        "n_moves": 8,
+        "example_moves": [
+          "M000",
+          "M087",
+          "M047",
+          "M062"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is distinct from simple reframing; it requires leveraging a pre-existing or newly forged, load-bearing implication chain (e.g., Frey-Ribet) to justify the strategic substitution."
+      },
+      {
+        "cluster_id": "tb_04",
+        "name": "Constraint-Driven Solution Forcing",
+        "structural_mechanism": "A solution is found not by direct construction, but by defining a set of fundamental principles or constraints so restrictive that they collectively determine a unique or very small set of possible solutions.",
+        "arc_spread": [
+          "grothendieck_schemes",
+          "lurie_htt",
+          "einstein_gr"
+        ],
+        "n_arcs": 3,
+        "n_moves": 12,
+        "example_moves": [
+          "M067",
+          "M015",
+          "M146",
+          "M026",
+          "M105"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not just 'testing a hypothesis'; it is using abstract principles a priori to carve out the solution space, often before a concrete candidate solution even exists."
+      },
+      {
+        "cluster_id": "tb_05",
+        "name": "External Formalism Importation",
+        "structural_mechanism": "Progress is enabled by importing a mature formal language, a specific theorem, or a computational toolkit from an external discipline, providing necessary structure or leverage that was unavailable internally.",
+        "arc_spread": [
+          "wiles_flt",
+          "einstein_gr",
+          "grothendieck_schemes"
+        ],
+        "n_arcs": 3,
+        "n_moves": 6,
+        "example_moves": [
+          "M064",
+          "M010",
+          "M096",
+          "M144"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not just 'collaboration'; it is the specific act of adopting a pre-packaged, powerful piece of formalism or a load-bearing result from another context to solve a specific blockage."
+      },
+      {
+        "cluster_id": "tb_06",
+        "name": "Tacit Pattern Formalization",
+        "structural_mechanism": "An informal, recurring, or empirically observed pattern of success is made explicit by codifying it into a systematic framework, a formal object, or a named heuristic, making it reliable and transmissible.",
+        "arc_spread": [
+          "scholze_perfectoid",
+          "polya_hadamard_meta",
+          "newton_calculus",
+          "lurie_htt"
+        ],
+        "n_arcs": 4,
+        "n_moves": 11,
+        "example_moves": [
+          "M032",
+          "M114",
+          "M075",
+          "M149",
+          "M052"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not just 'discovery'; it is the meta-level act of turning a pattern of discovery or of structure into a first-class object of study or a formal tool itself."
+      },
+      {
+        "cluster_id": "tb_07",
+        "name": "Scaffolding with Provisional Structures",
+        "structural_mechanism": "A theory is advanced by deliberately using concepts or frameworks that are known to be incomplete, non-rigorous, or flawed, treating them as temporary scaffolding to reach a more stable successor structure.",
+        "arc_spread": [
+          "wiles_flt",
+          "newton_calculus",
+          "einstein_gr"
+        ],
+        "n_arcs": 3,
+        "n_moves": 7,
+        "example_moves": [
+          "M055",
+          "M134",
+          "M065",
+          "M007"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not just 'trial and error'; it is the strategic deployment of a known-to-be-imperfect tool, where the nature of its failure provides crucial information for the next step."
+      },
+      {
+        "cluster_id": "tb_08",
+        "name": "Parameter Space Internalization",
+        "structural_mechanism": "A collection of related objects, previously studied individually, is re-conceptualized as a single object (a 'space' or 'family') within the theory, allowing the study of variation and deformation using the framework's own tools.",
+        "arc_spread": [
+          "wiles_flt",
+          "grothendieck_schemes",
+          "scholze_perfectoid"
+        ],
+        "n_arcs": 3,
+        "n_moves": 7,
+        "example_moves": [
+          "M006",
+          "M017",
+          "M101",
+          "M037"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not just creating a set; it is elevating a collection of objects to the status of a single, first-class object of the same kind as its elements, with its own geometric or categorical structure."
+      },
+      {
+        "cluster_id": "tb_09",
+        "name": "Systematic Vocabulary Lifting",
+        "structural_mechanism": "An entire apparatus of concepts and operations from an established theory is systematically reconstructed within a new, more general setting, preserving the relational structure of the original.",
+        "arc_spread": [
+          "lurie_htt",
+          "grothendieck_schemes",
+          "scholze_perfectoid"
+        ],
+        "n_arcs": 3,
+        "n_moves": 7,
+        "example_moves": [
+          "M024",
+          "M109",
+          "M110",
+          "M111",
+          "M102"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is not importing a single tool (tb_05), but a wholesale, systematic translation of an entire framework's vocabulary and machinery into a higher-level context."
+      }
+    ],
+    "outliers": [
+      {
+        "move_id": "M002",
+        "arc": "wiles_flt",
+        "reason_no_cluster": "Domain-specific tactic, not a generalizable cross-arc operation."
+      },
+      {
+        "move_id": "M004",
+        "arc": "wiles_flt",
+        "reason_no_cluster": "Part of a 'Residual-to-Global' pattern that lacks sufficient (>=3) cross-arc spread."
+      },
+      {
+        "move_id": "M005",
+        "arc": "wiles_flt",
+        "reason_no_cluster": "Sociological/process move, not a structural mechanism within the theory."
+      },
+      {
+        "move_id": "M008",
+        "arc": "wiles_flt",
+        "reason_no_cluster": "Process move related to debugging, not theory construction."
+      },
+      {
+        "move_id": "M009",
+        "arc": "wiles_flt",
+        "reason_no_cluster": "Sociological/process move."
+      },
+      {
+        "move_id": "M014",
+        "arc": "grothendieck_schemes",
+        "reason_no_cluster": "A foundational philosophy (category theory) rather than a discrete, repeatable move."
+      },
+      {
+        "move_id": "M016",
+        "arc": "grothendieck_schemes",
+        "reason_no_cluster": "Part of a 'Local-to-Global Assembly' pattern that lacks sufficient (>=3) cross-arc spread."
+      },
+      {
+        "move_id": "M018",
+        "arc": "grothendieck_schemes",
+        "reason_no_cluster": "A domain-specific application of a new object, not the move that created it."
+      },
+      {
+        "move_id": "M019",
+        "arc": "grothendieck_schemes",
+        "reason_no_cluster": "A domain-specific application of a new object, not the move that created it."
+      },
+      {
+        "move_id": "M020",
+        "arc": "grothendieck_schemes",
+        "reason_no_cluster": "Reclassified as a duplicate of moves now in the 'Systematic Vocabulary Lifting' cluster."
+      },
+      {
+        "move_id": "M021",
+        "arc": "grothendieck_schemes",
+        "reason_no_cluster": "Sociological/process move concerning the reception of a theory."
+      },
+      {
+        "move_id": "M022",
+        "arc": "lurie_htt",
+        "reason_no_cluster": "Process move concerning strategic choices, not the theory's internal structure."
+      },
+      {
+        "move_id": "M028",
+        "arc": "lurie_htt",
+        "reason_no_cluster": "Rhetorical or framing move, not a structural one."
+      },
+      {
+        "move_id": "M029",
+        "arc": "lurie_htt",
+        "reason_no_cluster": "Process move, essentially identical to M022."
+      },
+      {
+        "move_id": "M030",
+        "arc": "lurie_htt",
+        "reason_no_cluster": "Process move describing a validation strategy."
+      },
+      {
+        "move_id": "M031",
+        "arc": "lurie_htt",
+        "reason_no_cluster": "Describes the narrative structure of a theory's presentation, not its construction."
+      },
+      {
+        "move_id": "M035",
+        "arc": "scholze_perfectoid",
+        "reason_no_cluster": "A consequence or payoff of a unification, not the unification move itself."
+      },
+      {
+        "move_id": "M036",
+        "arc": "scholze_perfectoid",
+        "reason_no_cluster": "Process move related to validation."
+      },
+      {
+        "move_id": "M041",
+        "arc": "scholze_perfectoid",
+        "reason_no_cluster": "Process move describing an iterative development cycle."
+      },
+      {
+        "move_id": "M050",
+        "arc": "riemann_surfaces",
+        "reason_no_cluster": "A consequence or property of the new structure, not the move that built it."
+      },
+      {
+        "move_id": "M051",
+        "arc": "riemann_surfaces",
+        "reason_no_cluster": "A description of the goal/outcome of unification, not the mechanism."
+      },
+      {
+        "move_id": "M053",
+        "arc": "newton_calculus",
+        "reason_no_cluster": "A powerful discovery, but lacks cross-arc spread to be a general theory-building operation."
+      },
+      {
+        "move_id": "M057",
+        "arc": "newton_calculus",
+        "reason_no_cluster": "A desirable property of a finished theory, not a mechanism for building it."
+      },
+      {
+        "move_id": "M058",
+        "arc": "newton_calculus",
+        "reason_no_cluster": "Process move describing a feedback loop between domains."
+      },
+      {
+        "move_id": "M059",
+        "arc": "newton_calculus",
+        "reason_no_cluster": "A domain-specific technique (calculus of infinite series)."
+      },
+      {
+        "move_id": "M060",
+        "arc": "newton_calculus",
+        "reason_no_cluster": "A domain-specific physical insight, not a generalizable structural move."
+      },
+      {
+        "move_id": "M066",
+        "arc": "einstein_gr",
+        "reason_no_cluster": "Process move describing the character of the research effort."
+      },
+      {
+        "move_id": "M070",
+        "arc": "einstein_gr",
+        "reason_no_cluster": "A consequence or payoff of the theory (validation)."
+      },
+      {
+        "move_id": "M071",
+        "arc": "einstein_gr",
+        "reason_no_cluster": "A consequence or payoff of the theory (explanatory power)."
+      },
+      {
+        "move_id": "M072",
+        "arc": "einstein_gr",
+        "reason_no_cluster": "A consequence or payoff of the theory (predictive power)."
+      },
+      {
+        "move_id": "M076",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A specific problem-solving heuristic, not a general theory-building operation."
+      },
+      {
+        "move_id": "M077",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A specific problem-solving heuristic, not a general theory-building operation."
+      },
+      {
+        "move_id": "M078",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A specific problem-solving heuristic, not a general theory-building operation."
+      },
+      {
+        "move_id": "M079",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A specific problem-solving heuristic, not a general theory-building operation."
+      },
+      {
+        "move_id": "M080",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A methodological move for data collection about a process, not a move within the process."
+      },
+      {
+        "move_id": "M081",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "An observation about cognitive states, not a structural move within a theory."
+      },
+      {
+        "move_id": "M082",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "An observation about cognitive states, not a structural move within a theory."
+      },
+      {
+        "move_id": "M083",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A philosophical or methodological stance, not a structural move."
+      },
+      {
+        "move_id": "M084",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A specific problem-solving heuristic, not a general theory-building operation."
+      },
+      {
+        "move_id": "M085",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A specific problem-solving heuristic, not a general theory-building operation."
+      },
+      {
+        "move_id": "M086",
+        "arc": "polya_hadamard_meta",
+        "reason_no_cluster": "A statement of epistemic limits, not a structural move."
+      }
+    ],
+    "n_clusters_with_3plus_arc_spread": 9,
+    "auditor_notes": "The audit identified nine robust theory-building operations with spread across at least three distinct arcs. Clusters like 'Cross-Domain Unification' and 'Foundational Object Redefinition' are exceptionally strong, appearing in a majority of the arcs and representing core engines of conceptual progress. Others, like 'Scaffolding with Provisional Structures', are more about the research process but still represent a recurring structural dynamic in how theories are built under uncertainty. A significant number of moves were correctly identified as outliers. These fell into clear categories: sociological or process-based moves (e.g., 'Prolonged Covert Development'), consequences or 'payoffs' of a theory rather than constructive moves (e.g., 'Novel Domain Prediction'), and domain-specific habits. One notable pattern, 'Local-to-Global Assembly' (gluing), was clearly present in geometry-heavy arcs like Grothendieck's and Riemann's but failed the three-arc test, correctly flagging it as a powerful but domain-specific technique rather than a universal operation. The Polya/Hadamard arc was unique in that the act of codifying its heuristics belongs to a cluster ('Tacit Pattern Formalization'), while the heuristics themselves are largely outliers, being specific problem-solving tactics."
+  }
+}

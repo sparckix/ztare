@@ -1,0 +1,395 @@
+# Neural Hunt Basin Graph
+
+Status: `runtime_blocked_no_measurements`
+
+## Frontier
+
+- Next action: `action.h62_diversity_capped_schema_heldout_gate_min` — Run H62 alias-resolved heldout gate-minimum packet
+- Blockers: `blocker.oe_eval_missing`
+
+Sequence:
+1. Run H62 alias-resolved heldout gate-minimum sheet on x86_64 vLLM-capable GPU host.
+1. Run the packet-parameterized schema gate with --packet h62 before interpretation.
+1. If zero accepted rows, close/freeze as measurement-channel blocked.
+1. If heldout gate passes or exposes a concrete new state variable, optionally run the two late H62 official checkpoints as diagnostics.
+1. Run H59 after H62 if a sharper MMLU-heavy schema stress panel is still needed.
+1. Run H57 second if the broader H53/H55 frontier-family packet is still needed.
+1. If GPU is blocked or official rows are null, rotate to H59 early-anchor plus H57/H29/H30 source-axis queue.
+1. Keep H27/H29 as measurement plumbing, not H55-aware science packets.
+1. Avoid ARM GH200 HF fallback for full H22.
+
+## Law Promotion
+
+- Forbidden now: `true`
+- Old raw train-loss law paths are closed negative.
+- H22 task set was selected from public aggregate movement.
+- H23 currently has zero accepted primary-measurement jobs.
+- H24 is not applicable until H23 has accepted rows.
+- H29/H30 is a source-axis fork and cannot promote a law by itself.
+- H57 is schema-ready measurement design, not a completed measurement.
+- H59 is high-contrast packet design; H60 currently has zero accepted H59 measurement jobs.
+- H62 is diversity-capped packet design; H62 gate currently has zero accepted measurement jobs.
+- H66 resolves H62 aliases but no H62 measurement rows exist yet.
+- H20 has zero early/mid public rows for H62 selected families; public selector context cannot replace H62 GPU rows.
+- H65/H66 authorize bounded continuation only: H62 heldout gate-minimum acquisition, H62 gate, then freeze/close on stop-rule failure.
+- H35 rejects the scalar cross-size evaluator exchange-rate rescue on external aggregate rows.
+- Even an H24 pass validates leakage-aware targeting only, not a universal neural law.
+
+## Source Class Status
+
+- `raw_train_ce`: `closed_negative`
+- `same_packet_optimizer_or_eval_features`: `closed_negative_at_observability_floor`
+- `public_aggregate_olmes`: `observability_source_response_modes_weak_h53_projection_negative_panel_schema_conditioned_no_promotion`
+- `official_1b_checkpoint_eval`: `highest_ranked_gpu_source_class_h62_diversity_capped_schema`
+- `h29_early_training_anchor`: `source_axis_fallback_requires_h30`
+- `stage2_ingredient_branch_eval`: `defer_until_measurement_channel_validated`
+- `h27_h29_schema_readiness`: `not_ready_existing_packets_measurement_plumbing_only`
+- `h57_schema_balanced_packet`: `created_8_matched_families_jaccard_distance_1_from_h27_h29_no_measurements`
+- `h58_h57_schema_contrast`: `h57_balanced_but_low_contrast_deprioritized`
+- `h59_high_contrast_schema_packet`: `created_8_matched_families_all_clear_universe_median_jaccard_distance_0_769_from_h57_no_measurements`
+- `h60_h59_schema_gate`: `fail_closed_no_measurements_branch_specific_public_selector_guard`
+- `h61_h59_cluster_monoculture`: `h59_mmlu_cluster_concentrated_repair_available`
+- `h62_diversity_capped_schema_packet`: `created_8_matched_families_top_cluster_share_0_5_jaccard_distance_0_545_from_h59_no_measurements`
+- `h62_schema_gate`: `fail_closed_no_measurements_branch_specific_public_selector_guard`
+- `h63_h62_alias_preflight`: `created_dry_run_only_raw_and_olmes_qualified_candidates_no_runtime_receipt`
+- `h64_h62_public_heldout_contrast`: `public_h20_has_no_early_mid_rows_for_h62_selected_families`
+- `h65_substrate_decision`: `bounded_continue_one_tranche_not_closed_not_open_ended`
+- `h66_h62_alias_resolution`: `official_olmes_registry_resolved_all_16_h62_tasks_fastest_next_is_heldout_gate_minimum`
+- `datadecide_aggregate_transfer`: `mixed_source_axis_signal_not_olmo2_closure`
+- `datadecide_per_instance_coverage`: `sample_tree_only_not_h23_replacement`
+- `datadecide_cross_size_exchange`: `scalar_exchange_failed_against_baselines`
+- `datadecide_response_modes`: `positive_sample_efficient_size_diversity_required`
+- `datadecide_response_residual_void`: `size_axis_identified_as_next_state_variable`
+- `datadecide_post_size_pc2`: `boolq_caveated_cross_size_context_sensitive_second_coordinate_open`
+- `datadecide_single_size_boolq`: `mixed_not_promoted_on_expanded_grid`
+- `datadecide_fixed_size_residual`: `arc_hellaswag_task_family_map_survives_covariance_null_and_size_regime_transition`
+- `datadecide_size_grid`: `expanded_13_slope_eligible_size_grid_from_eval_results`
+- `explicit_restart_dataloader_state`: `partial_local_markers_exist_but_unpaired_with_eval_rows`
+- `sealed_checkpoint_eval`: `planned_packet_no_outputs`
+- `per_instance_logprob_rows`: `required_missing`
+- `restart_or_dataloader_state`: `future_source_axis_only`
+
+## Dirty Evidence Merge Policy
+
+- Keep curated current-state nodes separate from dirty-evidence nodes.
+- Dirty evidence may suggest hypotheses, failure modes, or provenance, but cannot override H22-H26 gate state without a new curated node.
+- Use file path, line number, project name, and artifact class as provenance on every dirty node.
+- Downweight old debate logs unless their claim is also present in E/F/INS ledgers or current neural_hunt artifacts.
+- Promote dirty evidence into the curated spine only through a new H-node, gate, or task artifact.
+
+## Dirty Evidence Sources
+
+- Related project summaries: `9`
+- Matching ledger rows sampled: `80`
+
+## Nodes
+
+- `claim.old_raw_train_loss_law` [claim] `closed_negative`: Old raw train-loss neural law candidate (projects/neural_hunt/thesis.md)
+- `source.public_aggregate_olmes` [source_class] `targeting_source_only`: Public aggregate OLMES movement (projects/neural_hunt/workspace/h21_signal_noise_observability_gate_2026_05_08.json)
+- `source.per_instance_logprob_rows` [source_class] `required_missing`: Per-instance prediction/logprob rows
+- `hypothesis.H22` [hypothesis] `packet_created_no_measurements`: H22 targeted checkpoint-eval packet (projects/neural_hunt/workspace/h22_targeted_checkpoint_eval_packet_2026_05_08.json)
+- `panel.H22_high_motion` [measurement_panel] `selected_from_public_late_stage`: H22 high-motion task panel (projects/neural_hunt/workspace/h22_targeted_task_selection_2026_05_08.csv)
+- `panel.H22_controls` [measurement_panel] `control_panel`: H22 matched controls (projects/neural_hunt/workspace/h22_targeted_task_selection_2026_05_08.csv)
+- `panel.H24_heldout_early_mid` [measurement_panel] `locked_pre_result`: H24 heldout early/mid stage-1 checkpoints (projects/neural_hunt/workspace/h25_h22_execution_preflight_2026_05_09.json)
+- `gate.H23` [gate] `not_applicable_no_measurements`: H23 accepted-output gate (projects/neural_hunt/workspace/h23_targeted_checkpoint_eval_gate_2026_05_08.json)
+- `gate.H24` [gate] `not_applicable_no_measurements`: H24 leakage-aware heldout gate (projects/neural_hunt/workspace/h24_leakage_aware_targeting_gate_2026_05_08.json)
+- `gate.H25` [gate] `runtime_blocked_locally_but_packet_preflight_passes`: H25 execution preflight (projects/neural_hunt/workspace/h25_h22_execution_preflight_2026_05_09.json)
+- `gate.H26` [gate] `pass`: H26 synthetic ingest fixture (projects/neural_hunt/workspace/h26_h23_synthetic_fixture_2026_05_09.json)
+- `gate.H30` [gate] `not_applicable_no_measurements`: H30 H29 early-training gate (projects/neural_hunt/workspace/h30_h29_early_training_gate_2026_05_10.json)
+- `hypothesis.H27` [hypothesis] `packet_created_no_measurements`: H27 cost-capped H22/H24 pilot (projects/neural_hunt/workspace/h27_cost_capped_checkpoint_eval_packet_2026_05_10.json)
+- `hypothesis.H29` [hypothesis] `packet_created_no_measurements`: H29 early-training dense checkpoint fork (projects/neural_hunt/workspace/h29_early_training_dense_packet_2026_05_10.json)
+- `plan.H28` [rotation_plan] `active_rotation`: H28 rotated avenue plan (projects/neural_hunt/workspace/h28_rotated_avenue_plan_2026_05_10.md)
+- `plan.H31` [source_acquisition_matrix] `source_acquisition_queue_created_no_measurements`: H31 source-state acquisition matrix (projects/neural_hunt/workspace/h31_source_state_acquisition_matrix_2026_05_10.json)
+- `audit.H32` [source_state_marker_audit] `local_state_markers_partial_unpaired_not_evidence`: H32 local state marker audit (projects/neural_hunt/workspace/h32_local_state_marker_audit_2026_05_10.json)
+- `audit.H33` [source_axis_empirical_audit] `datadecide_cross_seed_transfer_mixed_aggregate_signal`: H33 DataDecide aggregate transfer audit (projects/neural_hunt/workspace/h33_datadecide_transfer_audit_2026_05_10.json)
+- `audit.H34` [instance_coverage_audit] `sample_instance_tree_only_aggregate_branch_not_h23_replacement`: H34 DataDecide instance coverage audit (projects/neural_hunt/workspace/h34_datadecide_instance_coverage_audit_2026_05_10.json)
+- `audit.H35` [source_axis_empirical_audit] `datadecide_cross_size_exchange_scalar_failed`: H35 DataDecide cross-size exchange audit (projects/neural_hunt/workspace/h35_datadecide_cross_size_exchange_audit_2026_05_10.json)
+- `audit.H36` [source_axis_empirical_audit] `datadecide_response_modes_positive_aggregate_only`: H36 DataDecide response-mode audit (projects/neural_hunt/workspace/h36_datadecide_response_mode_audit_2026_05_10.json)
+- `audit.H37` [residual_void_audit] `datadecide_response_residual_void_identifies_next_axis`: H37 DataDecide response residual void (projects/neural_hunt/workspace/h37_datadecide_response_residual_void_2026_05_10.json)
+- `synthesis.H38` [pioneer_pattern_map] `mode_flow_spine_proposed`: H38 learning-mechanics pioneer pattern map (projects/neural_hunt/workspace/h38_learning_mechanics_pioneer_pattern_map_2026_05_10.md)
+- `audit.H39` [source_axis_empirical_audit] `datadecide_size_conditioned_pc1_flow_positive`: H39 DataDecide size-conditioned mode flow (projects/neural_hunt/workspace/h39_datadecide_size_conditioned_mode_flow_2026_05_10.json)
+- `audit.H40` [residual_axis_audit] `post_size_residual_axis_partial_task_semantics_only`: H40 DataDecide post-size residual axis (projects/neural_hunt/workspace/h40_datadecide_post_size_residual_axis_2026_05_10.json)
+- `audit.H41` [residual_axis_robustness_audit] `boolq_axis_robust_task_interface_candidate`: H41 DataDecide BoolQ axis robustness (projects/neural_hunt/workspace/h41_datadecide_boolq_axis_robustness_2026_05_10.json)
+- `audit.H42` [schema_artifact_audit] `boolq_axis_schema_artifact_not_ruled_out`: H42 DataDecide BoolQ schema artifact audit (projects/neural_hunt/workspace/h42_datadecide_boolq_schema_artifact_audit_2026_05_10.json)
+- `audit.H43` [cross_source_projection_audit] `ambiguous_false_negative_risk_high`: H43 OLMo public BoolQ projection (projects/neural_hunt/workspace/h43b_olmo_public_boolq_projection_sensitivity_2026_05_10.json)
+- `audit.H44` [cross_source_response_mode_audit] `olmo_public_response_modes_partial_not_predictive`: H44 OLMo public response-mode audit (projects/neural_hunt/workspace/h44_olmo_public_response_mode_audit_2026_05_11.json)
+- `audit.H45` [representation_sensitivity_audit] `level_rate_sensitivity_no_promotion`: H45 OLMo public level/rate sensitivity (projects/neural_hunt/workspace/h45_olmo_public_level_rate_sensitivity_2026_05_11.json)
+- `audit.H46` [measurement_regime_audit] `interval_geometry_weak_like_public_olmo`: H46 DataDecide interval geometry audit (projects/neural_hunt/workspace/h46_datadecide_interval_geometry_audit_2026_05_11.json)
+- `audit.H47` [sample_efficiency_audit] `sample_efficient_size_diversity_required`: H47 DataDecide slope-mode sample efficiency (projects/neural_hunt/workspace/h47_datadecide_slope_mode_sample_efficiency_2026_05_11.json)
+- `audit.H48` [fixed_size_residual_audit] `single_size_boolq_residual_not_supported`: H48 DataDecide single-size BoolQ residual (projects/neural_hunt/workspace/h48_datadecide_single_size_boolq_residual_2026_05_11.json)
+- `source_frontier.H49` [source_frontier_note] `missing_datadecide_size_grid_should_be_reconciled`: H49 DataDecide source frontier (projects/neural_hunt/workspace/h49_datadecide_source_frontier_2026_05_11.md)
+- `audit.H50` [expanded_grid_audit] `expanded_grid_preserves_response_mode_size_dependency_boolq_mixed_not_promoted`: H50 DataDecide expanded grid audit (projects/neural_hunt/workspace/h50_datadecide_expanded_grid_audit_2026_05_11.json)
+- `audit.H51` [fixed_size_residual_map] `fixed_size_residual_task_family_map_positive`: H51 DataDecide fixed-size residual map (projects/neural_hunt/workspace/h51_datadecide_fixed_size_residual_map_2026_05_11.json)
+- `audit.H52` [fixed_size_residual_null_audit] `fixed_size_residual_exceeds_covariance_null`: H52 DataDecide fixed-size residual null audit (projects/neural_hunt/workspace/h52_datadecide_fixed_size_residual_null_audit_2026_05_11.json)
+- `audit.H53` [fixed_size_transition_map] `fixed_size_residual_size_regime_transition_positive`: H53 DataDecide fixed-size transition map (projects/neural_hunt/workspace/h53_datadecide_fixed_size_transition_map_2026_05_11.json)
+- `audit.H54` [cross_source_projection_audit] `olmo_public_does_not_support_h53_late_signature`: H54 OLMo public H53 signature projection (projects/neural_hunt/workspace/h54_olmo_public_h53_signature_projection_2026_05_11.json)
+- `audit.H55` [panel_schema_residual_audit] `olmo_public_panel_schema_split_positive`: H55 OLMo public panel/schema split (projects/neural_hunt/workspace/h55_olmo_public_panel_schema_split_2026_05_11.json)
+- `audit.H56` [packet_schema_readiness_audit] `existing_h27_h29_schema_not_ready`: H56 OLMo packet schema readiness audit (projects/neural_hunt/workspace/h56_olmo_packet_schema_readiness_audit_2026_05_11.json)
+- `packet.H57` [schema_balanced_packet] `schema_balanced_but_low_contrast_second_priority`: H57 schema-balanced OLMo packet (projects/neural_hunt/workspace/h57_schema_balanced_olmo_packet_2026_05_11.json)
+- `audit.H58` [schema_contrast_packet_quality_audit] `h57_schema_contrast_priority_not_supported`: H58 H57 schema contrast audit (projects/neural_hunt/workspace/h58_h57_schema_contrast_audit_2026_05_11.json)
+- `packet.H59` [high_contrast_schema_packet] `high_contrast_schema_packet_created_no_measurements`: H59 high-contrast schema packet (projects/neural_hunt/workspace/h59_high_contrast_schema_packet_2026_05_11.json)
+- `gate.H60` [gate] `not_applicable_no_measurements`: H60 H59 heldout schema gate (projects/neural_hunt/workspace/h60_h59_checkpoint_schema_gate_2026_05_11.json)
+- `audit.H61` [cluster_monoculture_audit] `h59_cluster_monoculture_repair_available`: H61 H59 cluster monoculture audit (projects/neural_hunt/workspace/h61_h59_cluster_monoculture_audit_2026_05_11.json)
+- `packet.H62` [diversity_capped_schema_packet] `packet_created_no_measurements`: H62 diversity-capped schema packet (projects/neural_hunt/workspace/h62_diversity_capped_schema_packet_2026_05_11.json)
+- `gate.H62` [gate] `h62_heldout_schema_gate_passed`: H62 diversity-capped heldout schema gate (projects/neural_hunt/workspace/h62_diversity_capped_checkpoint_schema_gate_2026_05_11.json)
+- `gate.H63` [runtime_alias_preflight] `alias_preflight_sheet_created_no_runtime_receipt`: H63 H62 alias preflight (projects/neural_hunt/workspace/h63_h62_alias_preflight_2026_05_11.json)
+- `audit.H64` [public_selector_heldout_audit] `h62_public_h20_has_no_early_mid_rows`: H64 H62 public heldout contrast audit (projects/neural_hunt/workspace/h64_h62_public_heldout_contrast_audit_2026_05_11.json)
+- `audit.H65` [substrate_retirement_audit] `bounded_continue_one_tranche`: H65 Neural Hunt retirement audit (projects/neural_hunt/workspace/h65_neural_hunt_retirement_audit_2026_05_11.json)
+- `gate.H66` [runtime_alias_resolution] `registry_resolved_aliases_h62_run_ready_for_heldout_minimum`: H66 H62 registry alias resolution (projects/neural_hunt/workspace/h66_h62_registry_alias_resolution_2026_05_11.json)
+- `simulation.H28_eigenquestion` [eigenquestion_simulation] `no_charter_reframe_needed`: H28 simulated eigenquestion run (projects/neural_hunt/workspace/h28_simulated_eigenquestion_run_2026_05_10.md)
+- `blocker.oe_eval_missing` [runtime_blocker] `blocks_local_execution`: Local oe-eval missing
+- `blocker.alias_schema_risk` [runtime_blocker] `h62_aliases_registry_resolved_h66`: OLMES alias/schema risk
+- `action.gpu_smoke` [next_action] `superseded_by_cost_capped_pilot`: Run H25 two-command GPU smoke (projects/neural_hunt/workspace/h25_h22_gpu_smoke_dry_run_commands_2026_05_09.sh)
+- `action.h27_cost_capped_pilot` [next_action] `superseded_for_h55_schema_diagnostics`: Run H27 cost-capped pilot on x86_64 vLLM host (projects/neural_hunt/workspace/h27_olmes_cost_capped_filled_run_commands_2026_05_10.sh)
+- `action.h57_schema_balanced_official` [next_action] `second_after_h59_for_broader_frontier_family_panel`: Run H57 schema-balanced official packet (projects/neural_hunt/workspace/h57_schema_balanced_official_filled_run_commands_2026_05_11.sh)
+- `action.h57_schema_balanced_early_anchor` [next_action] `parallel_or_fallback_source_axis`: Run H57 schema-balanced early-anchor packet (projects/neural_hunt/workspace/h57_schema_balanced_early_anchor_filled_run_commands_2026_05_11.sh)
+- `action.h63_h62_alias_preflight` [next_action] `superseded_by_h66_registry_resolution_for_h62`: Run H63 H62 alias preflight dry-runs (projects/neural_hunt/workspace/h63_h62_alias_preflight_dry_run_commands_2026_05_11.sh)
+- `action.h62_diversity_capped_schema_heldout_gate_min` [next_action] `current_fastest_next_action`: Run H62 alias-resolved heldout gate-minimum packet (projects/neural_hunt/workspace/h62_diversity_capped_schema_official_alias_resolved_heldout_gate_min_commands_2026_05_11.sh)
+- `action.h62_diversity_capped_schema_official` [next_action] `after_h66_or_after_heldout_gate_if_late_diagnostics_needed`: Run H62 diversity-capped schema official packet (projects/neural_hunt/workspace/h62_diversity_capped_schema_official_alias_resolved_commands_2026_05_11.sh)
+- `action.h62_diversity_capped_schema_early_anchor` [next_action] `parallel_or_fallback_source_axis`: Run H62 diversity-capped schema early-anchor packet (projects/neural_hunt/workspace/h62_diversity_capped_schema_early_anchor_filled_run_commands_2026_05_11.sh)
+- `action.h59_high_contrast_schema_official` [next_action] `second_after_h62_unless_pure_schema_stress`: Run H59 high-contrast schema official packet (projects/neural_hunt/workspace/h59_high_contrast_schema_official_filled_run_commands_2026_05_11.sh)
+- `action.h59_high_contrast_schema_early_anchor` [next_action] `parallel_or_fallback_source_axis`: Run H59 high-contrast schema early-anchor packet (projects/neural_hunt/workspace/h59_high_contrast_schema_early_anchor_filled_run_commands_2026_05_11.sh)
+- `action.h29_dense_early_checkpoint_fork` [next_action] `packet_created_next_if_gpu_blocked_or_h27_null`: Run/prepare H29 early-training anchor pilot (projects/neural_hunt/workspace/h29_early_training_anchor_filled_run_commands_2026_05_10.sh)
+- `action.source_state_acquisition` [next_action] `matrix_created_search_only_until_new_logs_exist`: Acquire explicit lineage-state source packet (projects/neural_hunt/workspace/h31_source_state_acquisition_matrix_2026_05_10.md)
+- `action.no_gpu_gate_hardening` [next_action] `parallel_no_gpu`: H23/H24 no-GPU gate hardening (projects/neural_hunt/workspace/h28_rotated_avenue_plan_2026_05_10.md)
+- `action.full_h22_dry_run` [next_action] `after_gpu_smoke_passes`: Run full H22 dry-run sheet (projects/neural_hunt/workspace/h22_olmes_dry_run_commands_2026_05_08.sh)
+- `action.h23_then_h24` [next_action] `after_outputs_exist`: Run H23 then H24 after outputs exist
+- `dirty_project.gp154_d_int_measurement` [dirty_evidence_project] `informational_context`: gp154_d_int_measurement (projects/neural_hunt/related_projects/gp154_d_int_measurement)
+- `dirty_project.gp154_inversion_alpha_from_dimension` [dirty_evidence_project] `informational_context`: gp154_inversion_alpha_from_dimension (projects/neural_hunt/related_projects/gp154_inversion_alpha_from_dimension)
+- `dirty_project.gp154_phase_flow_law` [dirty_evidence_project] `informational_context`: gp154_phase_flow_law (projects/neural_hunt/related_projects/gp154_phase_flow_law)
+- `dirty_project.gp154_scaling_law_exponents` [dirty_evidence_project] `informational_context`: gp154_scaling_law_exponents (projects/neural_hunt/related_projects/gp154_scaling_law_exponents)
+- `dirty_project.gp154_scaling_law_normalized` [dirty_evidence_project] `informational_context`: gp154_scaling_law_normalized (projects/neural_hunt/related_projects/gp154_scaling_law_normalized)
+- `dirty_project.gp154_scaling_law_raw` [dirty_evidence_project] `informational_context`: gp154_scaling_law_raw (projects/neural_hunt/related_projects/gp154_scaling_law_raw)
+- `dirty_project.gp116_cot_exchange` [dirty_evidence_project] `informational_context`: gp116_cot_exchange (projects/gp116_cot_exchange)
+- `dirty_project.gp116b_transformer_successor` [dirty_evidence_project] `informational_context`: gp116b_transformer_successor (projects/gp116b_transformer_successor)
+- `dirty_project.gp116c_managerial_debt_successor_design` [dirty_evidence_project] `informational_context`: gp116c_managerial_debt_successor_design (projects/gp116c_managerial_debt_successor_design)
+- `ledger.E-GP154-RAWV22-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-RAWV22-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:146)
+- `ledger.F-GP154-RAWV22-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-RAWV22-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:163)
+- `ledger.E-TDO-MULTISEED-01` [dirty_evidence_ledger_row] `canonical_context`: E-TDO-MULTISEED-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:436)
+- `ledger.F-TDO-MULTISEED-01` [dirty_evidence_ledger_row] `canonical_context`: F-TDO-MULTISEED-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:437)
+- `ledger.E-GP154N-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154N-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:477)
+- `ledger.F-GP154N-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154N-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:478)
+- `ledger.F-GP191-COLD-SHOT-DECONTAM-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP191-COLD-SHOT-DECONTAM-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:479)
+- `ledger.F-GP154N-AXIS-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154N-AXIS-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:480)
+- `ledger.E-GP154N-AXISLIVE-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154N-AXISLIVE-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:481)
+- `ledger.F-GP154N-AXISLIVE-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154N-AXISLIVE-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:482)
+- `ledger.E-GP154N-LAWAUDIT-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154N-LAWAUDIT-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:483)
+- `ledger.F-GP154N-LAWAUDIT-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154N-LAWAUDIT-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:484)
+- `ledger.E-GP116B-REAUDIT-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP116B-REAUDIT-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:485)
+- `ledger.E-GP116B-SUCCESSOR-RD-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP116B-SUCCESSOR-RD-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:486)
+- `ledger.E-GP116B-KVRESID-GPT2-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP116B-KVRESID-GPT2-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:487)
+- `ledger.E-GP116B-KVRESID-GPT2M-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP116B-KVRESID-GPT2M-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:488)
+- `ledger.F-GP116B-REAUDIT-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP116B-REAUDIT-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:492)
+- `ledger.E-GP154-IGNITION-TRIM-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-IGNITION-TRIM-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:493)
+- `ledger.F-GP154-IGNITION-TRANSIENT-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-IGNITION-TRANSIENT-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:494)
+- `ledger.E-GP154-CLIP-TELEMETRY-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-CLIP-TELEMETRY-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:495)
+- `ledger.F-GP154-CLIP-LOCAL-TRANSIENT-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-CLIP-LOCAL-TRANSIENT-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:496)
+- `ledger.E-GP154-PENALTY-TRANSFER-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-PENALTY-TRANSFER-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:497)
+- `ledger.F-GP154-NO-UNIVERSAL-TURBULENT-PENALTY-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-NO-UNIVERSAL-TURBULENT-PENALTY-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:498)
+- `ledger.E-GP154-7B-SCHEDULE-SEQUENCE-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-7B-SCHEDULE-SEQUENCE-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:499)
+- `ledger.F-GP154-SETTLED-LAW-CANDIDATE-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-SETTLED-LAW-CANDIDATE-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:500)
+- `ledger.E-GP154-MLFOUNDATIONS-REPLICATION-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-MLFOUNDATIONS-REPLICATION-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:501)
+- `ledger.F-GP154-POWER-FAMILY-REPLICATION-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-POWER-FAMILY-REPLICATION-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:502)
+- `ledger.E-GP154-COEFF-UNIQUENESS-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-COEFF-UNIQUENESS-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:503)
+- `ledger.F-GP154-COEFF-DRIFT-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-COEFF-DRIFT-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:504)
+- `ledger.E-GP154-ALPHA-CONFIG-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-ALPHA-CONFIG-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:505)
+- `ledger.F-GP154-ALPHA-CONFIG-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-ALPHA-CONFIG-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:506)
+- `ledger.E-GP154-ALIASING-TRAP-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-ALIASING-TRAP-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:507)
+- `ledger.F-GP154-ALIASING-TRAP-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-ALIASING-TRAP-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:508)
+- `ledger.E-GP154-ORTHOGONAL-CONTRASTS-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-ORTHOGONAL-CONTRASTS-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:509)
+- `ledger.E-GP154-LOCAL-FLOW-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-LOCAL-FLOW-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:510)
+- `ledger.F-GP154-LOCAL-FLOW-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-LOCAL-FLOW-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:511)
+- `ledger.E-GP154-PHASE-FLOW-PACKET-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-PHASE-FLOW-PACKET-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:512)
+- `ledger.F-GP154-PHASE-FLOW-PACKET-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-PHASE-FLOW-PACKET-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:513)
+- `ledger.E-GP154-SCHEDULE-OOD-TOY-01` [dirty_evidence_ledger_row] `canonical_context`: E-GP154-SCHEDULE-OOD-TOY-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:514)
+- `ledger.F-GP154-SCHEDULE-OOD-TOY-01` [dirty_evidence_ledger_row] `canonical_context`: F-GP154-SCHEDULE-OOD-TOY-01 (research_areas/EXPERIMENT_TRACK_RECORD.md:515)
+
+## Edges
+
+- `claim.old_raw_train_loss_law` --`falsified_by`--> `hypothesis.H22` — H22 exists only after H05-H12 closed same-packet/raw-train paths.
+- `source.public_aggregate_olmes` --`selects_from`--> `panel.H22_high_motion` — H22 task set selected from H21 public aggregate movement.
+- `panel.H22_high_motion` --`leaks_if`--> `gate.H24` — Same public selector window can replay selected movement.
+- `hypothesis.H22` --`gated_by`--> `gate.H23` — H23 accepts only jobs with aggregate metrics plus per-instance logprob-like rows.
+- `gate.H23` --`gated_by`--> `gate.H24` — H24 decides heldout early/mid transfer outside public selector.
+- `gate.H25` --`blocked_by`--> `blocker.oe_eval_missing` — Local host lacks oe-eval.
+- `gate.H25` --`blocked_by`--> `blocker.alias_schema_risk` — Alias/schema must be checked with dry-run before full run.
+- `blocker.oe_eval_missing` --`requires`--> `action.gpu_smoke` — Use GPU host with oe-eval for two-command smoke.
+- `hypothesis.H27` --`derived_from`--> `hypothesis.H22` — H27 is a cost-capped fork after GH200 HF fallback proved too expensive.
+- `source.public_aggregate_olmes` --`selects_from`--> `hypothesis.H27` — H27 reuses H21/H22 public aggregate rankings but excludes expensive generation tasks.
+- `hypothesis.H27` --`gated_by`--> `gate.H23` — H27 outputs still need per-instance/logprob acceptance before interpretation.
+- `hypothesis.H27` --`gated_by`--> `gate.H24` — H27 can only guide spend if early/mid stage-1 heldout direction survives.
+- `hypothesis.H27` --`sequenced_by`--> `plan.H28` — H28 keeps H27 as first GPU action but adds non-GPU and alternate-source rotations.
+- `hypothesis.H29` --`derived_from`--> `plan.H28` — H28 named dense early checkpoints as the first alternate source-axis route if GPU is blocked or H27 is null.
+- `hypothesis.H29` --`gated_by`--> `gate.H30` — H29 needs a source-axis gate; H23/H24 semantics are H22/H27-specific.
+- `gate.H30` --`guards`--> `hypothesis.H29` — H30 rejects metrics-only/no-logprob outputs and writes flat rows only for accepted H29 jobs.
+- `simulation.H28_eigenquestion` --`supports`--> `plan.H28` — Simulated eigenquestion says current charter already points at evaluator-response transfer and source-axis rotation.
+- `plan.H31` --`derived_from`--> `plan.H28` — H31 concretizes H28's source-state acquisition branch into a ranked queue.
+- `plan.H31` --`ranks_first`--> `action.h27_cost_capped_pilot` — Official 1B checkpoint eval is the strongest production-style source class.
+- `plan.H31` --`ranks_second`--> `action.h29_dense_early_checkpoint_fork` — Early-training source-axis fork is useful if H27 is blocked/null, but cannot serve as official-run continuation evidence.
+- `plan.H31` --`guards`--> `action.source_state_acquisition` — Explicit restart/dataloader state remains search/acquisition only until state markers are paired with eval outcomes.
+- `audit.H32` --`refines`--> `plan.H31` — H32 verifies that explicit local state markers exist but remain unpaired with evaluator rows.
+- `audit.H32` --`guards`--> `action.source_state_acquisition` — load_path and restore_dataloader can define provenance strata, not predictive features.
+- `audit.H33` --`refines`--> `plan.H31` — H33 adds an adjacent source-axis aggregate measurement rather than more bookkeeping.
+- `audit.H33` --`supports`--> `gate.H24` — Mixed cross-seed transfer supports H24's demand for heldout source/window validation.
+- `audit.H34` --`bounds`--> `audit.H33` — H34 shows H33 cannot be upgraded to an H23 replacement without regenerated/acquired per-instance predictions.
+- `audit.H34` --`supports`--> `action.h27_cost_capped_pilot` — DataDecide instance coverage is too narrow to replace H27's OLMo per-instance measurement route.
+- `audit.H35` --`tests`--> `claim.old_raw_train_loss_law` — H35 tests the stronger cross-size evaluator exchange-rate rescue after H06 killed scalar local raw-loss exchange.
+- `audit.H35` --`bounds`--> `audit.H33` — DataDecide aggregate transfer exists in H33, but scalar cross-size rate conversion fails against baselines in H35.
+- `audit.H35` --`supports`--> `action.h27_cost_capped_pilot` — External aggregate exchange-rate failure keeps the primary route on sealed OLMo per-instance measurement rather than law promotion from aggregate rows.
+- `audit.H36` --`deanchors_from`--> `audit.H35` — After scalar exchange fails, H36 switches object from scalar rate conversion to response-rate vector modes.
+- `audit.H36` --`refines`--> `audit.H33` — H36 explains why aggregate transfer is nonempty: shared response modes predict masked task rates.
+- `audit.H37` --`mines_residual_void_of`--> `audit.H36` — H37 searches the part of the H36 mode model that remains unexplained.
+- `audit.H37` --`identifies_hidden_axis`--> `audit.H36` — Size drives PC1 (eta^2 0.869) and residual concentration (top/median 1.900).
+- `synthesis.H38` --`synthesizes`--> `audit.H35` — Field-pattern map uses scalar-exchange negative as de-anchoring input.
+- `synthesis.H38` --`synthesizes`--> `audit.H36` — Field-pattern map promotes response-mode dynamics as the candidate mechanics object.
+- `synthesis.H38` --`synthesizes`--> `audit.H37` — Field-pattern map converts residual void into next state-variable hypotheses.
+- `audit.H39` --`tests`--> `synthesis.H38` — H39 directly tests whether size-indexed response-mode flow predicts held-out source families.
+- `audit.H39` --`confirms_axis_from`--> `audit.H37` — Quadratic log-size model reduces PC1 held-out-family MAE by 58.2% versus baseline.
+- `audit.H39` --`opens_residual_axis`--> `action.source_state_acquisition` — PC2 and family residuals require data-mixture/task-semantics source variables before law promotion.
+- `audit.H39` --`guides_projection_of`--> `hypothesis.H27` — Future OLMo per-instance outputs should be projected into the H36-H39 response-mode frame.
+- `audit.H40` --`tests_residual_axis_from`--> `audit.H39` — H40 tests whether PC2 is source-mixture predictable after size-flow is removed.
+- `audit.H40` --`demotes`--> `action.source_state_acquisition` — Current DataDecide source-mixture tags improve PC2 prediction only 1.4% vs mean and 0.3% vs size-only.
+- `audit.H40` --`opens_task_interface_axis`--> `hypothesis.H27` — PC2 is semantically concentrated around BoolQ/reading-boolean behavior; future OLMo projection should report this as a separate residual check.
+- `audit.H41` --`robustifies`--> `audit.H40` — BoolQ is top PC2 loading in 5/6 metric variants and remains top after adding CSQA/MMLU.
+- `audit.H41` --`updates_projection_contract_for`--> `hypothesis.H27` — Future OLMo projection should report PC1 size-flow plus BoolQ/interface PC2 residual.
+- `audit.H42` --`audits_artifact_risk_for`--> `audit.H41` — BoolQ shares acc_raw/zero-acc_uncond schema with Winogrande and reaches only 1.407x schema-group median loading.
+- `audit.H42` --`caveats_projection_contract_for`--> `hypothesis.H27` — Future OLMo projection should keep the BoolQ/interface residual check but treat DataDecide schema artifact as unresolved.
+- `audit.H43` --`tests_cross_source_projection_of`--> `audit.H42` — H43 primary-score-rate base panel is a near miss at 1.461x versus the 1.5x bar.
+- `audit.H43` --`audits_falsifier_for`--> `audit.H43` — H43b finds BoolQ top-2 in 18/36 sensitivity panels and opposite-signed against Winogrande in 12/36, so a hard negative is unsafe.
+- `audit.H43` --`keeps_diagnostic_for`--> `hypothesis.H27` — Future OLMo outputs should report BoolQ/interface as a diagnostic only; the second response-mode coordinate remains open.
+- `audit.H44` --`tests_cross_source_projection_of`--> `audit.H36` — H44 tests whether DataDecide response-mode masked reconstruction transfers to public OLMo aggregate rows.
+- `audit.H44` --`weakens_cross_source_promotion_of`--> `audit.H39` — Best public OLMo response-rate row improves only 9.6% with top3 variance 0.518, below the 20%/0.55 bar.
+- `audit.H45` --`audits_falsifier_for`--> `audit.H44` — Level/two-step sensitivity has 0/108 success rows, so derivative noise alone does not rescue H44.
+- `audit.H45` --`keeps_required_gate`--> `gate.H23` — Aggregate public OLMo is weak; cross-source promotion still requires sealed per-instance/checkpoint rows.
+- `audit.H46` --`audits_measurement_regime_for`--> `audit.H44` — DataDecide interval geometry is weak too: pooled improvement -9.0%, per-context pass rate 0.4%.
+- `audit.H46` --`sharpens_object_from`--> `audit.H36` — H36's positive object is across-context slope geometry, not adjacent interval PCA.
+- `audit.H46` --`updates_projection_contract_for`--> `hypothesis.H27` — Future OLMo projection should estimate stable per-task slopes or multi-checkpoint mode scores after H23/H24 acceptance.
+- `audit.H47` --`audits_sample_efficiency_for`--> `audit.H36` — Random n=30 k=1 passes 100%; family-stratified n=30 passes 95%.
+- `audit.H47` --`requires_size_context_variation_for`--> `audit.H39` — Single-family n=60 passes 99.2%; single-size n=60 passes 0%.
+- `audit.H47` --`sharpens_projection_contract_for`--> `hypothesis.H27` — Single-size OLMo packets can diagnose within-size task/interface modes but cannot promote PC1 size-flow.
+- `audit.H48` --`tests_fixed_size_residual_from`--> `audit.H41` — BoolQ top2-any appears in only 2/9 primary fixed-size panels.
+- `audit.H48` --`narrows_projection_contract_for`--> `hypothesis.H27` — Single-size OLMo packets should be treated as measurement acquisition unless another independent diversity axis is added.
+- `audit.H48` --`sharpens_diversity_requirement_from`--> `audit.H47` — H47 killed single-size PC1 size-flow; H48 also kills current single-size BoolQ/interface residual promotion.
+- `source_frontier.H49` --`reopens_source_acquisition_for`--> `audit.H47` — Local DataDecide summary has 9 sizes, while public cards describe 14 sizes.
+- `source_frontier.H49` --`precedes_gpu_spend_on`--> `hypothesis.H27` — Cheapest next move is task-level aggregate expansion and rerun of H36/H39/H47/H48.
+- `audit.H50` --`executes_source_frontier_from`--> `source_frontier.H49` — Downloaded DataDecide-eval-results macro parquet and expanded to 13 slope-eligible sizes.
+- `audit.H50` --`strengthens`--> `audit.H36` — Expanded H36 k=1 improves 44.6% with top2 variance 0.799 over 975 contexts.
+- `audit.H50` --`strengthens`--> `audit.H39` — Expanded PC1 held-out-family size-flow improvement rises to 73.6%.
+- `audit.H50` --`confirms_size_context_requirement_from`--> `audit.H47` — Random/family n=30 pass 100%; single-size n=60 pass 0%.
+- `audit.H50` --`revises`--> `audit.H48` — Fixed-size BoolQ becomes mixed-not-promoted: primary top2-any 4/13, all-panel rate 0.415.
+- `audit.H51` --`maps_residual_after`--> `audit.H50` — ARC/HellaSwag task families dominate fixed-size top2-any rates.
+- `audit.H51` --`replaces_diagnostic_target_for`--> `hypothesis.H27` — Single-size diagnostics should report ARC/HellaSwag maps, not BoolQ-only language.
+- `audit.H52` --`audits_artifact_risk_for`--> `audit.H51` — Marginal-preserving null: arc_easy 54>p99 40, arc_challenge 51>p99 42.01, hellaswag 42>p99 41.01; BoolQ 27<p95 38.
+- `audit.H52` --`sharpens_projection_contract_for`--> `hypothesis.H27` — Single-size diagnostics should report ARC/HellaSwag residual plus null comparison; BoolQ-only diagnostic is demoted.
+- `audit.H53` --`maps_size_regime_transition_after`--> `audit.H52` — Science-QA rate is 1.000 in all bands; boolean early-minus-late 0.633>p95 0.250; continuation late-minus-early 0.367>p95 0.233.
+- `audit.H53` --`sharpens_projection_contract_for`--> `hypothesis.H27` — Single-size diagnostics should report ARC backbone plus early BoolQ/interface and late HellaSwag/continuation components.
+- `audit.H54` --`tests_cross_source_projection_of`--> `audit.H53` — Public OLMo aggregate late-signature rate is 6/36, below 40%; BoolQ 18/36 exceeds continuation 12/36.
+- `audit.H54` --`blocks_promotion_from`--> `source.public_aggregate_olmes` — Aggregate public OLMo can repeat science-QA salience but cannot promote H53's late-band transition.
+- `audit.H54` --`requires`--> `source.per_instance_logprob_rows` — H53 cross-source promotion now requires sealed OLMo/per-instance checkpoint rows or richer multi-size source data.
+- `audit.H55` --`mines_residual_void_of`--> `audit.H54` — Base panels carry late-signature 6/18 while mc8 carries 0/18; sign-flip p=0.014.
+- `audit.H55` --`identifies_hidden_axis`--> `source.public_aggregate_olmes` — Task interface/schema is a state variable for public aggregate projections.
+- `audit.H55` --`sharpens_projection_contract_for`--> `hypothesis.H27` — Future OLMo diagnostics should not mix base and :mc variants as interchangeable measurements.
+- `audit.H56` --`audits_execution_readiness_for`--> `hypothesis.H27` — H27 has only one matched base/suffixed family, below the four-family readiness rule.
+- `audit.H56` --`audits_execution_readiness_for`--> `action.h29_dense_early_checkpoint_fork` — H29 copies H27 task selection and inherits the same schema limitation.
+- `audit.H56` --`requires_successor_for`--> `audit.H55` — A schema-balanced successor packet is needed for H55-aware OLMo science claims.
+- `packet.H57` --`repairs`--> `audit.H56` — H57 selects 8 matched base/:mc families from 68 available public OLMo matched families.
+- `packet.H57` --`uses_coverage_distance_from`--> `hypothesis.H27` — Selected-vs-prior H27/H29 family Jaccard distance is 1.000; H57 avoids orbiting the old packet family set.
+- `packet.H57` --`makes_observable`--> `audit.H55` — Matched base/:mc task pairs preserve interface/schema as an explicit state variable.
+- `packet.H57` --`unlocks_if_run`--> `action.h23_then_h24` — After rows exist, H57 still needs accepted-output and leakage-aware analysis before interpretation.
+- `audit.H58` --`audits_packet_quality_for`--> `packet.H57` — H57 selected median schema-gap range 0.06925 is below public matched-family median 0.12773; only 3/8 selected families clear the median.
+- `audit.H58` --`requires_successor_for`--> `audit.H55` — Balanced coverage is not enough for first schema-calibration spend; select high-contrast schema pairs.
+- `packet.H59` --`repairs`--> `audit.H58` — H59 all 8 selected families clear the universe median, median gap range 0.23765, 3.43x H57.
+- `packet.H59` --`uses_coverage_distance_from`--> `packet.H57` — Selected-vs-H57 family Jaccard distance is 0.769.
+- `packet.H59` --`calibrates_schema_for`--> `audit.H55` — High public base/:mc contrast makes H59 the first schema-calibration packet.
+- `gate.H60` --`guards`--> `packet.H59` — H60 accepts H59 outputs only when aggregate metrics plus per-instance/logprob-like predictions exist.
+- `gate.H60` --`guards_public_selector_leakage_for`--> `packet.H59` — H59 was selected from public schema contrast; H60 scores heldout early/mid schema gaps separately.
+- `packet.H59` --`gated_by`--> `gate.H60` — H59 interpretation requires H60 before public high-contrast selection can be treated as calibration evidence.
+- `audit.H61` --`audits_packet_scope_for`--> `packet.H59` — H59 is 7/8 MMLU subject families, top-cluster share 0.875.
+- `audit.H61` --`requires_successor_for`--> `packet.H59` — A diversity-capped candidate keeps median contrast 0.237647 while reducing top-cluster share to 0.5.
+- `packet.H62` --`repairs`--> `audit.H61` — H62 emits the diversity-capped H61 repair as a runnable packet.
+- `packet.H62` --`uses_coverage_distance_from`--> `packet.H59` — H62-vs-H59 family Jaccard distance is 0.545.
+- `packet.H62` --`gated_by`--> `gate.H62` — H62 interpretation requires the packet-parameterized heldout schema gate.
+- `gate.H62` --`guards`--> `packet.H62` — H62 gate accepts only aggregate metrics plus per-instance/logprob-like predictions.
+- `gate.H63` --`superseded_by`--> `gate.H66` — H63 candidate sheet omitted canonical :rc::olmes base aliases; H66 resolves H62 aliases from official registry.
+- `gate.H66` --`guards_runtime_for`--> `packet.H62` — H66 maps all 16 H62 raw tasks to canonical OLMES runtime aliases.
+- `packet.H62` --`unblocked_by`--> `gate.H66` — H62 can run the alias-resolved heldout gate-minimum sheet without a separate GPU alias-discovery dry-run.
+- `audit.H64` --`blocks_shortcut_for`--> `packet.H62` — H20 has zero early/mid rows for all H62 selected families; public selector table cannot answer heldout schema survival.
+- `audit.H64` --`requires_new_rows_for`--> `packet.H62` — After H63 alias resolution, H62 official acquisition is the first heldout evidence route.
+- `audit.H65` --`authorizes_bounded_continue_for`--> `action.h62_diversity_capped_schema_heldout_gate_min` — H66 removes alias discovery from GPU path; H65 bounded continuation now starts with alias-resolved H62 heldout gate-minimum acquisition.
+- `audit.H65` --`stop_rule_for`--> `packet.H62` — Close/freeze if aliases fail, accepted rows are zero, or heldout schema gate fails without a new state variable.
+- `action.h62_diversity_capped_schema_heldout_gate_min` --`precedes`--> `action.h62_diversity_capped_schema_official` — Run eight heldout checkpoints first; run late diagnostics only if accepted rows keep the route live.
+- `action.h57_schema_balanced_official` --`runs_packet`--> `packet.H57`
+- `action.h57_schema_balanced_early_anchor` --`runs_packet`--> `packet.H57`
+- `action.h62_diversity_capped_schema_heldout_gate_min` --`runs_packet`--> `packet.H62`
+- `action.h62_diversity_capped_schema_official` --`runs_packet`--> `packet.H62`
+- `action.h62_diversity_capped_schema_early_anchor` --`runs_packet`--> `packet.H62`
+- `action.h62_diversity_capped_schema_heldout_gate_min` --`gated_by`--> `gate.H62` — Heldout gate-minimum outputs must pass H62 schema gate before interpretation.
+- `action.h62_diversity_capped_schema_official` --`gated_by`--> `gate.H62` — Official H62 outputs must pass H62 schema gate before interpretation.
+- `action.h62_diversity_capped_schema_early_anchor` --`gated_by`--> `gate.H62` — Early-anchor H62 outputs must pass H62 schema gate before source-axis interpretation.
+- `action.h59_high_contrast_schema_official` --`runs_packet`--> `packet.H59`
+- `action.h59_high_contrast_schema_early_anchor` --`runs_packet`--> `packet.H59`
+- `action.h59_high_contrast_schema_official` --`gated_by`--> `gate.H60` — Official H59 outputs must pass H60 before interpretation.
+- `action.h59_high_contrast_schema_early_anchor` --`gated_by`--> `gate.H60` — Early-anchor H59 outputs must pass H60 before source-axis interpretation.
+- `plan.H28` --`routes_to`--> `action.h27_cost_capped_pilot` — If x86_64 vLLM GPU is available, run H27 first.
+- `plan.H28` --`routes_to`--> `action.h57_schema_balanced_official` — After H55/H56, H57 supersedes H27 as the schema-aware GPU packet.
+- `plan.H28` --`routes_to`--> `action.h59_high_contrast_schema_official` — After H58/H59, H59 supersedes H57 as first schema-calibration GPU packet.
+- `plan.H28` --`routes_to`--> `action.h62_diversity_capped_schema_official` — After H61/H62, H62 supersedes H59 when broad scientific yield matters.
+- `plan.H28` --`routes_to`--> `action.h62_diversity_capped_schema_heldout_gate_min` — After H66, the fastest broad-yield route is H62 heldout gate-minimum acquisition.
+- `plan.H28` --`routes_to`--> `action.h29_dense_early_checkpoint_fork` — If GPU is blocked or H27 heldout is null, test denser early checkpoint source design.
+- `plan.H28` --`routes_to`--> `action.source_state_acquisition` — H10 says lineage-state source packet is the cleanest re-open condition.
+- `plan.H28` --`routes_to`--> `action.no_gpu_gate_hardening` — No-GPU work should harden gates and prevent runtime artifacts from becoming law language.
+- `blocker.oe_eval_missing` --`requires`--> `action.h27_cost_capped_pilot` — Run H27 on x86_64 vLLM host; avoid ARM GH200 HF fallback.
+- `action.gpu_smoke` --`unlocks_if_passes`--> `action.full_h22_dry_run`
+- `action.h27_cost_capped_pilot` --`unlocks_if_passes`--> `action.full_h22_dry_run`
+- `action.full_h22_dry_run` --`unlocks_if_outputs_exist`--> `action.h23_then_h24`
+- `action.h23_then_h24` --`promotes_only_to`--> `source.per_instance_logprob_rows` — Pass validates targeting/transfer, not neural law.
+- `gate.H26` --`guards`--> `gate.H23` — H26 prevents metrics-only/no-logprob jobs from leaking into flat scoring.
+- `dirty_project.gp154_d_int_measurement` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp154_inversion_alpha_from_dimension` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp154_phase_flow_law` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp154_scaling_law_exponents` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp154_scaling_law_normalized` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp154_scaling_law_raw` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp116_cot_exchange` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp116b_transformer_successor` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `dirty_project.gp116c_managerial_debt_successor_design` --`context_for`--> `claim.old_raw_train_loss_law` — Dirty project artifacts can explain how prior neural claims formed or failed, but do not override curated H22-H26 gates.
+- `ledger.E-GP154-RAWV22-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-RAWV22-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-TDO-MULTISEED-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-TDO-MULTISEED-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154N-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154N-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP191-COLD-SHOT-DECONTAM-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154N-AXIS-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154N-AXISLIVE-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154N-AXISLIVE-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154N-LAWAUDIT-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154N-LAWAUDIT-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP116B-REAUDIT-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP116B-SUCCESSOR-RD-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP116B-KVRESID-GPT2-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP116B-KVRESID-GPT2M-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP116B-REAUDIT-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-IGNITION-TRIM-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-IGNITION-TRANSIENT-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-CLIP-TELEMETRY-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-CLIP-LOCAL-TRANSIENT-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-PENALTY-TRANSFER-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-NO-UNIVERSAL-TURBULENT-PENALTY-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-7B-SCHEDULE-SEQUENCE-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-SETTLED-LAW-CANDIDATE-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-MLFOUNDATIONS-REPLICATION-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-POWER-FAMILY-REPLICATION-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-COEFF-UNIQUENESS-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-COEFF-DRIFT-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-ALPHA-CONFIG-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-ALPHA-CONFIG-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-ALIASING-TRAP-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-ALIASING-TRAP-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-ORTHOGONAL-CONTRASTS-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-LOCAL-FLOW-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-LOCAL-FLOW-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-PHASE-FLOW-PACKET-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-PHASE-FLOW-PACKET-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.E-GP154-SCHEDULE-OOD-TOY-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.
+- `ledger.F-GP154-SCHEDULE-OOD-TOY-01` --`context_for`--> `claim.old_raw_train_loss_law` — Ledger row matched neural/gp154/scaling terms; use as provenance, not as automatic current-state truth.

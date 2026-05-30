@@ -1,0 +1,41 @@
+{
+  "action_change_recommendation": "If successful, next action should construct targetEventIndex from incidence relation and eventToBadNode/eventData, not add another Fin-slot wrapper.",
+  "agent_family": "codex",
+  "agent_id": "codex:RD",
+  "b_mid": 0.19,
+  "b_width": 0.14,
+  "contract_id": "tick668_level500_bounded_event_index_selector_source",
+  "contract_question": "Can Level500 derive the Level499 targetSlot/equality-reflection source from a bounded injective natural event-index selector into the final-slot prefix?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_index_source_still_socket": 0.5849056603773585,
+    "lean_fin_ext_mismatch": 0.22641509433962262,
+    "workbench_receipt_too_weak": 0.18867924528301888
+  },
+  "forecast_externality_tags": [
+    "bounded_event_index_selector",
+    "collision_exclusion_before_cardinality"
+  ],
+  "forecasted_at": "2026-05-27T04:29:58Z",
+  "p_buy_yes_max": 0.65,
+  "p_dependency_issue": 0.17,
+  "p_needs_new_lemma": 0.4,
+  "p_regression": 0.1,
+  "p_sell_yes_min": 0.81,
+  "p_success": 0.72,
+  "predicted_brier_hi": 0.26,
+  "predicted_brier_lo": 0.12,
+  "predicted_self_error_ratio": 0.22,
+  "rationale_short": "Level499 already shows equality reflection is enough; deriving targetSlot from Nat index plus bound is a tractable compression and should compile.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "event_index_source_still_socket",
+    "lean_fin_ext_mismatch"
+  ],
+  "spread": -0.16,
+  "tail_downside_worry": 25.0,
+  "tail_upside_surprise": 20.0,
+  "verbalized_confidence": 0.72
+}

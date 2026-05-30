@@ -1,0 +1,2653 @@
+{
+  "experiment": "gp216_pathA_3_subfield_mining",
+  "subfields": [
+    "graph_theory",
+    "complexity_theory",
+    "geometric_flow_pde"
+  ],
+  "n_arcs": 24,
+  "total_moves": 451,
+  "arcs_meta": {
+    "graph_theory": [
+      {
+        "id": "wagner_theorem",
+        "title": "Wagner's theorem on planar graphs (1937)",
+        "description": "Wagner proved a graph is planar iff it contains neither K5 nor K3,3 as a minor. Refinement of Kuratowski's earlier subdivision-based theorem. Method: structural induction; case analysis on minor-closed properties; characterization via excluded minors. Established the excluded-minor framework that Robertson-Seymour later generalized."
+      },
+      {
+        "id": "hadwiger_conjecture",
+        "title": "Hadwiger's conjecture and partial results (1943-present)",
+        "description": "Conjecture: every graph with chromatic number k contains K_k as a minor. Partial results: k=4 by Wagner; k=5 by Robertson-Seymour-Thomas (1993, equivalent to 4CT). Higher k open. Methodology: structural decomposition; reduction to extremal cases; using minor-closed properties; flag bounds via probabilistic arguments and graph minor structure theorem."
+      },
+      {
+        "id": "tutte_4ct",
+        "title": "Tutte's reformulation and partial proof attempts on 4CT (1946-1976)",
+        "description": "Tutte studied 4-coloring via dual chromatic polynomial, edge-colorings of cubic graphs, and snark constructions (cubic graphs not 3-edge-colorable). Showed 4CT equivalent to Tait's conjecture: every cubic bridgeless planar graph is 3-edge-colorable. Methodology: dual reformulation; combinatorial counting; constructive case analysis; identifying obstructions (snarks)."
+      },
+      {
+        "id": "network_flow_max_flow_min_cut",
+        "title": "Max-flow min-cut theorem (Ford-Fulkerson, 1956)",
+        "description": "Ford-Fulkerson: maximum flow value equals minimum cut capacity in any flow network. Algorithm: augmenting paths; integer capacities yield integer max-flow; LP duality interpretation. Applications: bipartite matching (K\u00f6nig), edge connectivity (Menger), system of distinct representatives (Hall). Methodology: duality between primal and dual problems; iterative refinement via augmenting paths; structural characterization."
+      },
+      {
+        "id": "halin_grid_theorem",
+        "title": "Halin's grid theorem (1965)",
+        "description": "Every infinite locally-finite graph contains either an infinite ray or an infinite-degree vertex. Strengthening: every infinite graph with no two disjoint infinite paths has bounded tree-width. Methodology: extremal infinite combinatorics; tree decomposition; K\u00f6nig's lemma applications; structural characterization by exclusion of canonical objects."
+      },
+      {
+        "id": "erdos_ko_rado",
+        "title": "Erd\u0151s-Ko-Rado theorem (1961)",
+        "description": "Maximum size of a family of k-element subsets of {1..n} with pairwise non-empty intersection is C(n-1, k-1). Method: shifting / compression \u2014 replace family with a more structured equivalent; cyclic counting argument. Methodology: extremal set theory; compression operator (replace pair (i,j) with (i,i'))  with i' < j; structural reduction via canonical form."
+      },
+      {
+        "id": "karchmer_wigderson",
+        "title": "Karchmer-Wigderson theorem on circuit depth (1990)",
+        "description": "Communication complexity of relation R(f) equals depth of optimal Boolean circuit computing f. Reduces circuit lower bounds to communication complexity lower bounds. Method: bidirectional translation between circuit structure and protocol structure; protocol-tree-to-circuit construction and inverse. Methodology: cross-domain equivalence (circuits \u2194 protocols); structural correspondence; leveraging communication-complexity tools for circuit bounds."
+      },
+      {
+        "id": "menger_theorem",
+        "title": "Menger's theorem on graph connectivity (1927)",
+        "description": "In any graph, the maximum number of vertex-disjoint paths between u and v equals the minimum number of vertices whose removal separates u from v. Generalization: edge version (Ford-Fulkerson). Method: induction on graph size; augmenting path argument; LP duality interpretation. Methodology: max-min duality theorem; vertex/edge cut equivalence; structural characterization."
+      }
+    ],
+    "complexity_theory": [
+      {
+        "id": "karp_21",
+        "title": "Karp's 21 NP-complete problems (1972)",
+        "description": "Karp showed 21 natural combinatorial problems (knapsack, vertex cover, set cover, Hamiltonian cycle, graph coloring, etc.) are NP-complete via polynomial-time reductions from SAT. Founded the catalog of NP-complete problems. Method: explicit reduction from SAT or another known NPC problem; preserving solution structure; verifying reduction is polynomial-time. Methodology: chain of reductions starting from Cook-Levin; constructing problem-to-problem encodings."
+      },
+      {
+        "id": "razborov_lower_bound",
+        "title": "Razborov's monotone circuit lower bound (1985)",
+        "description": "Razborov proved cliques have super-polynomial monotone circuit complexity, breaking the long-standing barrier on non-trivial circuit lower bounds. Method: approximation by simpler functions; counting argument over approximations; structural decomposition into compatible modules. Methodology: replace function by a class of approximating functions, count how many monotone circuits could approximate, derive contradiction from counting."
+      },
+      {
+        "id": "yao_minimax",
+        "title": "Yao's minimax principle (1977)",
+        "description": "Yao showed expected complexity of best randomized algorithm against worst-case input equals worst-case complexity of best deterministic algorithm against worst-case input distribution. Application: lower bounds via choosing hard distribution. Method: minimax theorem from game theory applied to algorithm-vs-input games; LP duality. Methodology: game-theoretic framing; minimax theorem; reduction to deterministic lower bound under structured distribution."
+      },
+      {
+        "id": "ip_pspace",
+        "title": "IP = PSPACE (Lund-Fortnow-Karloff-Nisan + Shamir, 1990)",
+        "description": "Interactive proof systems with polynomial verifier and unbounded prover decide exactly PSPACE. Method: arithmetization of Boolean formulas (replace with low-degree polynomials over a field); sumcheck protocol; recursive interactive verification. Methodology: arithmetization technique (compute Boolean things via polynomial extension); recursive protocol construction; verifier-prover dance with polynomial check at each round."
+      },
+      {
+        "id": "pcp_theorem",
+        "title": "PCP theorem (Arora-Lund-Motwani-Sudan-Szegedy + Arora-Safra, 1992)",
+        "description": "NP problems have probabilistically-checkable proofs of polynomial length verifiable by reading O(1) bits. Implies hardness of approximation for many problems. Method: error-correcting codes as proof structure; recursive composition of low-degree-test verifiers; gap amplification via parallel repetition. Methodology: encode proofs in highly redundant form; verification via local tests; gap amplification through composition."
+      },
+      {
+        "id": "toda_theorem",
+        "title": "Toda's theorem (1989): PH \u2286 P^#P",
+        "description": "Toda proved the polynomial hierarchy is contained in P with #P oracle. Implies counting is at least as hard as the entire polynomial hierarchy. Method: probabilistic XOR-clauses; isolation lemma (Mulmuley-Vazirani); reduction from PH to #SAT-counting. Methodology: probabilistic technique to isolate solutions; counting reduction; structural decomposition of PH levels."
+      },
+      {
+        "id": "levin_universal_search",
+        "title": "Levin's universal search (1973)",
+        "description": "Levin defined universal search: enumerate all algorithms by description length and run them in parallel with time-budget proportional to 2^(-description-length). For any algorithm A solving a problem in time t(n), universal search solves it in time O(2^|A| \u00b7 t(n)). Method: dovetailing across algorithms; meta-level optimization; description-length-weighted scheduling. Methodology: enumerate-and-test at meta-level; optimal up-to-constant within search class."
+      },
+      {
+        "id": "valiant_holant",
+        "title": "Valiant's holographic algorithms (2002-2008)",
+        "description": "Valiant introduced holographic algorithms: solve combinatorial counting problems via Pfaffian/perfect-matching reductions and tensor manipulation. Method: encode problem as tensor contraction; find a basis change such that tensor becomes Pfaffian-evaluable; reduce to perfect-matching counting in planar graph. Methodology: tensor reformulation; basis change via change-of-coordinates in tensor space; reduction to known-tractable problem class."
+      }
+    ],
+    "geometric_flow_pde": [
+      {
+        "id": "hamilton_mean_curvature",
+        "title": "Hamilton's mean curvature flow (1982)",
+        "description": "Mean curvature flow: surface evolves by velocity equal to mean curvature vector. Hamilton showed for closed convex hypersurfaces, the flow contracts to a round point (preserving relative shape under rescaling). Methodology: PDE techniques on geometric quantities; Harnack inequalities; preserved geometric inequalities via maximum principle; barrier comparisons; ODE comparison for ODEs derived from PDE invariants."
+      },
+      {
+        "id": "yang_mills_heat_flow",
+        "title": "Yang-Mills heat flow (Donaldson, Atiyah-Bott)",
+        "description": "Heat flow on space of connections in a principal bundle; gradient flow of Yang-Mills functional. Donaldson used to study moduli space of self-dual connections on 4-manifolds, leading to Donaldson invariants distinguishing smooth structures on 4-manifolds. Method: gradient flow on infinite-dimensional manifold; convergence to critical points; analyzing limit configurations as moduli structure. Methodology: gradient-flow construction; bubbling/concentration analysis; moduli-space compactification."
+      },
+      {
+        "id": "harmonic_map_flow",
+        "title": "Harmonic map heat flow (Eells-Sampson, 1964)",
+        "description": "Harmonic map flow: gradient flow of energy functional on space of maps between Riemannian manifolds. Eells-Sampson: when target has non-positive curvature, flow converges to harmonic map. Method: parabolic PDE techniques; energy estimates; non-positive-curvature monotonicity. Methodology: gradient flow; energy functional monotonicity; structural assumption on target geometry; long-time existence + convergence."
+      },
+      {
+        "id": "schoen_yau_positive_mass",
+        "title": "Schoen-Yau positive mass theorem (1979)",
+        "description": "Schoen-Yau: in general relativity, the total mass of an isolated gravitational system is non-negative, and zero iff system is Minkowski. Method: spinors-free proof using minimal surface theory; analyzing area-minimizing surfaces in asymptotically-flat manifolds. Methodology: minimal surface analysis; structure of stable minimal surfaces; reduction to lower-dimensional case; combining geometric estimates."
+      },
+      {
+        "id": "brendle_lawson_3manifold",
+        "title": "Brendle's classification of 3-dim Type-I Ricci-flow singularities (2018)",
+        "description": "Brendle classified Type-I Ricci-flow singularity models in 3D under non-negative curvature. Method: tangent flow analysis; rigidity statements about ancient solutions; pinching estimates; reduction to model space comparison. Methodology: classify singularity types via blowup analysis; rigidity under symmetry assumption; structural classification of solitons."
+      },
+      {
+        "id": "calibrated_geometry_harvey_lawson",
+        "title": "Calibrated geometry (Harvey-Lawson, 1982)",
+        "description": "Harvey-Lawson introduced calibrations: closed forms whose pullback to any submanifold is at most the volume form, with equality on calibrated submanifolds. Calibrated submanifolds are automatically area-minimizing. Examples: K\u00e4hler, special Lagrangian, associative, Cayley. Method: differential-form construction; comparison principle; structure theorems on calibrated submanifolds. Methodology: identify a closed form satisfying comparison inequality; characterize equality case as canonical class."
+      },
+      {
+        "id": "de_giorgi_regularity",
+        "title": "De Giorgi's regularity theorem (1957)",
+        "description": "De Giorgi proved minimizers of elliptic functionals are H\u00f6lder continuous. Resolved Hilbert's 19th problem on regularity of variational solutions. Method: oscillation decay across nested balls; iterative integral inequality; Moser iteration. Methodology: prove uniform decay in finer scales; iterative L^\u221e to L^p estimate; structural reduction to scale-invariant inequality."
+      },
+      {
+        "id": "moser_harnack",
+        "title": "Moser's Harnack inequality (1961)",
+        "description": "Moser proved: positive solutions to elliptic divergence-form equations satisfy Harnack inequality (sup_K u \u2264 C \u00b7 inf_K u for any compact K). Generalizes classical Harnack from harmonic functions to a wide class of operators. Method: iterative L^p bounds; John-Nirenberg lemma; integration by parts; Caccioppoli inequalities. Methodology: chain of L^p estimates; iteration scheme converting L^p control to L^\u221e control; structural inequality at each scale."
+      }
+    ]
+  },
+  "results": {
+    "graph_theory": {
+      "sonnet": {
+        "wagner_theorem": {
+          "arc_id": "wagner_theorem",
+          "moves": [
+            {
+              "name": "Prior Work Reframe",
+              "signature": "An existing result is recast under a stricter or more general lens, repositioning it as a special case rather than the final word.",
+              "anchor": "Refinement of Kuratowski's earlier subdivision-based theorem"
+            },
+            {
+              "name": "Equivalence Substitution",
+              "signature": "One characterizing condition is swapped for a structurally weaker but logically equivalent one, broadening applicability.",
+              "anchor": "contains neither K5 nor K3,3 as a minor"
+            },
+            {
+              "name": "Bidirectional Proof Split",
+              "signature": "A claimed equivalence is decomposed into two separately argued directional implications.",
+              "anchor": "graph is planar iff it contains neither K5 nor K3,3"
+            },
+            {
+              "name": "Closure Property Leverage",
+              "signature": "A property that is preserved under a defined operation is identified and used as the backbone of the argument.",
+              "anchor": "case analysis on minor-closed properties"
+            },
+            {
+              "name": "Structural Induction Descent",
+              "signature": "A complex object is reduced to simpler instances of itself, with the property established at each reduction step.",
+              "anchor": "Method: structural induction"
+            },
+            {
+              "name": "Forbidden Object Encoding",
+              "signature": "A positive membership condition is replaced by the absence of specific disqualifying substructures.",
+              "anchor": "characterization via excluded minors"
+            },
+            {
+              "name": "Finite Obstruction Identification",
+              "signature": "An infinite class of objects is shown to be fully characterized by a finite list of blocking configurations.",
+              "anchor": "neither K5 nor K3,3 as a minor"
+            },
+            {
+              "name": "Relation Weakening",
+              "signature": "A strict structural relationship is relaxed to a coarser one that retains the essential discriminating power.",
+              "anchor": "subdivision-based theorem \u2026 minor"
+            },
+            {
+              "name": "Framework Seed Placement",
+              "signature": "A result is constructed in a form deliberately general enough to serve as the foundation for future, broader theories.",
+              "anchor": "Established the excluded-minor framework"
+            },
+            {
+              "name": "Generalization Invitation",
+              "signature": "The conclusion is framed so that its core mechanism visibly extends beyond the immediate domain, signaling a research trajectory.",
+              "anchor": "Robertson-Seymour later generalized"
+            }
+          ]
+        },
+        "hadwiger_conjecture": {
+          "arc_id": "hadwiger_conjecture",
+          "moves": [
+            {
+              "name": "Bold Universal Claim",
+              "signature": "A single sweeping assertion is posited that binds two independently measurable properties across all instances of a class.",
+              "anchor": "every graph with chromatic number k contains K_k as a minor"
+            },
+            {
+              "name": "Incremental Case Conquest",
+              "signature": "The full claim is bracketed by solving the lowest non-trivial instances first, establishing a ladder of confirmed steps.",
+              "anchor": "k=4 by Wagner; k=5 by Robertson-Seymour-Thomas"
+            },
+            {
+              "name": "Equivalence Bridging",
+              "signature": "A hard open problem is shown to be logically equivalent to an already-resolved problem in a different domain, importing its proof as partial credit.",
+              "anchor": "equivalent to 4CT"
+            },
+            {
+              "name": "Residual Openness Marking",
+              "signature": "The boundary between the known and unknown is explicitly demarcated, preserving the conjecture's open status for higher regimes.",
+              "anchor": "Higher k open"
+            },
+            {
+              "name": "Structural Decomposition",
+              "signature": "Complex objects are broken into simpler canonical pieces whose properties can be analyzed independently and then reassembled.",
+              "anchor": "structural decomposition"
+            },
+            {
+              "name": "Extremal Reduction",
+              "signature": "The general case is reduced to boundary or worst-case instances, where the structure is most constrained and tractable.",
+              "anchor": "reduction to extremal cases"
+            },
+            {
+              "name": "Hereditary Property Leverage",
+              "signature": "A property that is preserved under a specified operation is exploited so that results propagate automatically through an entire family.",
+              "anchor": "using minor-closed properties"
+            },
+            {
+              "name": "Probabilistic Bound Injection",
+              "signature": "Non-constructive probabilistic arguments are introduced to establish quantitative limits where deterministic methods stall.",
+              "anchor": "flag bounds via probabilistic arguments"
+            },
+            {
+              "name": "External Theorem Import",
+              "signature": "A deep pre-existing structural theorem from another line of work is recruited as scaffolding to constrain the problem's solution space.",
+              "anchor": "graph minor structure theorem"
+            },
+            {
+              "name": "Long Horizon Suspension",
+              "signature": "The conjecture is left deliberately unresolved over decades, framing incompleteness as an ongoing research programme rather than failure.",
+              "anchor": "1943-present"
+            }
+          ]
+        },
+        "tutte_4ct": {
+          "arc_id": "tutte_4ct",
+          "moves": [
+            {
+              "name": "Domain Translation",
+              "signature": "The protagonist reframes the central problem in a structurally equivalent but more tractable representational domain.",
+              "anchor": "studied 4-coloring via dual chromatic polynomial"
+            },
+            {
+              "name": "Equivalence Bridging",
+              "signature": "The protagonist establishes a formal correspondence that allows progress on one formulation to transfer directly to another.",
+              "anchor": "4CT equivalent to Tait's conjecture"
+            },
+            {
+              "name": "Obstruction Cataloguing",
+              "signature": "The protagonist systematically identifies and names the class of structures that block a desired property, bounding the problem space.",
+              "anchor": "identifying obstructions (snarks)"
+            },
+            {
+              "name": "Constructive Witness Building",
+              "signature": "The protagonist produces explicit examples that instantiate a structural category, making abstract definitions concrete and testable.",
+              "anchor": "snark constructions (cubic graphs not 3-edge-colorable)"
+            },
+            {
+              "name": "Constraint Tightening",
+              "signature": "The protagonist narrows the object class under study by adding structural restrictions that preserve the essential difficulty.",
+              "anchor": "cubic bridgeless planar graph"
+            },
+            {
+              "name": "Dual Reformulation",
+              "signature": "The protagonist maps the problem onto its combinatorial dual, exposing structure hidden in the original framing.",
+              "anchor": "dual reformulation"
+            },
+            {
+              "name": "Counting Instrumentation",
+              "signature": "The protagonist introduces a quantitative tool to measure structural properties, converting qualitative questions into algebraic ones.",
+              "anchor": "combinatorial counting"
+            },
+            {
+              "name": "Case Decomposition",
+              "signature": "The protagonist partitions the problem space into exhaustive sub-cases, each amenable to targeted local argument.",
+              "anchor": "constructive case analysis"
+            },
+            {
+              "name": "Negative Class Definition",
+              "signature": "The protagonist defines a category by what it lacks, using absence of a property as the organizing criterion.",
+              "anchor": "not 3-edge-colorable"
+            },
+            {
+              "name": "Partial Progress Staging",
+              "signature": "The protagonist accepts incomplete resolution as a structured intermediate result, preserving forward momentum without claiming full closure.",
+              "anchor": "partial proof attempts"
+            }
+          ]
+        },
+        "network_flow_max_flow_min_cut": {
+          "arc_id": "network_flow_max_flow_min_cut",
+          "moves": [
+            {
+              "name": "Dual Quantity Identification",
+              "signature": "Two seemingly independent quantities are recognized as measuring the same structural limit from opposite sides.",
+              "anchor": "maximum flow value equals minimum cut capacity"
+            },
+            {
+              "name": "Iterative Residual Refinement",
+              "signature": "A solution is improved incrementally by locating and exploiting remaining slack in the current configuration.",
+              "anchor": "iterative refinement via augmenting paths"
+            },
+            {
+              "name": "Integrality Inheritance",
+              "signature": "When inputs satisfy a discreteness constraint, the output is shown to inherit that same discreteness automatically.",
+              "anchor": "integer capacities yield integer max-flow"
+            },
+            {
+              "name": "Primal-Dual Reframing",
+              "signature": "A problem is recast as two complementary optimization perspectives whose extremes provably coincide.",
+              "anchor": "LP duality interpretation"
+            },
+            {
+              "name": "Structural Characterization",
+              "signature": "An algorithmic result is elevated into a declarative theorem describing what must always be true about the structure.",
+              "anchor": "structural characterization"
+            },
+            {
+              "name": "Cross-Domain Instantiation",
+              "signature": "A general theorem is applied to a distinct domain by mapping that domain's objects onto the theorem's abstract components.",
+              "anchor": "bipartite matching (K\u00f6nig)"
+            },
+            {
+              "name": "Equivalence Cascade",
+              "signature": "A single core result is shown to imply multiple previously separate theorems, unifying them under one mechanism.",
+              "anchor": "Applications: bipartite matching (K\u00f6nig), edge connectivity (Menger), system of distinct representatives (Hall)"
+            },
+            {
+              "name": "Bottleneck Localization",
+              "signature": "The limiting constraint on a global quantity is identified as a specific local separator within the structure.",
+              "anchor": "minimum cut capacity"
+            },
+            {
+              "name": "Path-Based Search",
+              "signature": "Progress toward a goal is made by tracing routes through a structured space and acting on each discovered route.",
+              "anchor": "augmenting paths"
+            },
+            {
+              "name": "Termination Guarantee",
+              "signature": "An iterative process is shown to halt in finite steps by linking each iteration to a strictly decreasing or bounded measure.",
+              "anchor": "integer capacities yield integer max-flow"
+            }
+          ]
+        },
+        "halin_grid_theorem": {
+          "arc_id": "halin_grid_theorem",
+          "moves": [
+            {
+              "name": "Scope Boundary Setting",
+              "signature": "The protagonist defines the precise class of objects under study, excluding edge cases that would trivialize or derail the inquiry.",
+              "anchor": "every infinite locally-finite graph"
+            },
+            {
+              "name": "Canonical Obstacle Naming",
+              "signature": "The protagonist identifies a small set of irreducible obstructions whose presence or absence governs the entire structural landscape.",
+              "anchor": "infinite ray or an infinite-degree vertex"
+            },
+            {
+              "name": "Dichotomy Framing",
+              "signature": "The protagonist casts the problem as an exhaustive either/or partition, ensuring every instance falls into exactly one of two structurally distinct regimes.",
+              "anchor": "contains either an infinite ray or an infinite-degree vertex"
+            },
+            {
+              "name": "Exclusion-to-Structure Bridge",
+              "signature": "The protagonist shows that ruling out a canonical object forces the remaining instances into a tightly constrained structural form.",
+              "anchor": "no two disjoint infinite paths has bounded tree-width"
+            },
+            {
+              "name": "Complexity Measure Introduction",
+              "signature": "The protagonist imports a quantitative parameter that compresses structural complexity into a single comparable value.",
+              "anchor": "bounded tree-width"
+            },
+            {
+              "name": "Strengthening Reframe",
+              "signature": "The protagonist replaces an existence claim with a richer structural consequence, elevating the result from mere detection to full characterization.",
+              "anchor": "Strengthening: every infinite graph"
+            },
+            {
+              "name": "Extremal Witness Construction",
+              "signature": "The protagonist builds or invokes an extreme-case object that saturates the boundary conditions and thereby reveals the underlying structure.",
+              "anchor": "extremal infinite combinatorics"
+            },
+            {
+              "name": "Decomposition Scaffolding",
+              "signature": "The protagonist imposes a hierarchical organizing structure on the object, making hidden dependencies and separations explicit and manipulable.",
+              "anchor": "tree decomposition"
+            },
+            {
+              "name": "Compactness Leverage",
+              "signature": "The protagonist applies a principle that converts local or finite observations into global or infinite conclusions.",
+              "anchor": "K\u00f6nig's lemma applications"
+            },
+            {
+              "name": "Characterization by Exclusion",
+              "signature": "The protagonist defines a class not by what it contains but by what it forbids, yielding a clean boundary between the class and its complement.",
+              "anchor": "structural characterization by exclusion of canonical objects"
+            },
+            {
+              "name": "Locality Constraint Imposition",
+              "signature": "The protagonist restricts the degree of local interaction among elements, enabling finiteness arguments to propagate through an otherwise infinite structure.",
+              "anchor": "locally-finite graph"
+            },
+            {
+              "name": "Disjointness as Separator",
+              "signature": "The protagonist uses the existence or non-existence of mutually independent sub-objects as the decisive structural dividing criterion.",
+              "anchor": "no two disjoint infinite paths"
+            }
+          ]
+        },
+        "erdos_ko_rado": {
+          "arc_id": "erdos_ko_rado",
+          "moves": [
+            {
+              "name": "Bound Conjecture Framing",
+              "signature": "The protagonist fixes a precise numerical ceiling on a quantity, converting an open question into a target to hit or refute.",
+              "anchor": "Maximum size of a family of k-element subsets with pairwise non-empty intersection is C(n-1, k-1)"
+            },
+            {
+              "name": "Constraint Crystallization",
+              "signature": "A diffuse relational condition is sharpened into a single, uniformly applicable rule that every member of the collection must satisfy.",
+              "anchor": "pairwise non-empty intersection"
+            },
+            {
+              "name": "Canonical Form Reduction",
+              "signature": "The protagonist replaces an arbitrary instance with a structurally equivalent but more regular representative, preserving the property under study.",
+              "anchor": "replace family with a more structured equivalent"
+            },
+            {
+              "name": "Compression Operator Application",
+              "signature": "A local substitution rule is applied repeatedly to push objects toward a simpler configuration without changing the relevant global property.",
+              "anchor": "compression operator \u2014 replace pair (i,j) with (i,i') with i' < j"
+            },
+            {
+              "name": "Order-Exploiting Substitution",
+              "signature": "The protagonist leverages an ordering on elements to direct substitutions toward smaller or earlier indices, creating monotone progress.",
+              "anchor": "i' < j"
+            },
+            {
+              "name": "Structural Equivalence Preservation",
+              "signature": "Each transformation step is validated by confirming the defining property is inherited by the new, simpler object.",
+              "anchor": "replace family with a more structured equivalent"
+            },
+            {
+              "name": "Cyclic Symmetry Invocation",
+              "signature": "The protagonist embeds the problem in a cyclic arrangement so that symmetric counting arguments distribute weight evenly across all positions.",
+              "anchor": "cyclic counting argument"
+            },
+            {
+              "name": "Counting Argument Pivot",
+              "signature": "Instead of direct construction, the protagonist counts configurations from two perspectives to force an inequality or equality.",
+              "anchor": "cyclic counting argument"
+            },
+            {
+              "name": "Extremal Object Characterization",
+              "signature": "After establishing the bound, the protagonist identifies which configurations actually achieve it, turning a bound into a classification.",
+              "anchor": "Maximum size of a family"
+            },
+            {
+              "name": "Domain Abstraction Framing",
+              "signature": "The problem is situated within a general theoretical field whose existing tools and vocabulary are then mobilized for the solution.",
+              "anchor": "extremal set theory"
+            }
+          ]
+        },
+        "karchmer_wigderson": {
+          "arc_id": "karchmer_wigderson",
+          "moves": [
+            {
+              "name": "Cross-Domain Bridge",
+              "signature": "Two superficially unrelated structures are declared formally equivalent, making tools from one domain immediately applicable to the other.",
+              "anchor": "Communication complexity of relation R(f) equals depth of optimal Boolean circuit computing f"
+            },
+            {
+              "name": "Metric Alignment",
+              "signature": "A complexity measure in one domain is shown to correspond exactly to a complexity measure in another, so bounding one automatically bounds the other.",
+              "anchor": "circuit depth \u2026 communication complexity"
+            },
+            {
+              "name": "Bidirectional Translation",
+              "signature": "A correspondence is made fully reversible by constructing explicit mappings in both directions, preventing one-sided or lossy reduction.",
+              "anchor": "bidirectional translation between circuit structure and protocol structure"
+            },
+            {
+              "name": "Object-to-Object Mapping",
+              "signature": "Individual structural objects in one domain are mapped one-to-one onto individual structural objects in the other, preserving relevant properties.",
+              "anchor": "protocol-tree-to-circuit construction and inverse"
+            },
+            {
+              "name": "Inverse Construction",
+              "signature": "The reverse direction of a mapping is explicitly built, confirming the equivalence is not merely an embedding but a true isomorphism.",
+              "anchor": "inverse"
+            },
+            {
+              "name": "Hardness Redirection",
+              "signature": "A problem that is difficult to attack directly is redirected to an equivalent problem in a domain where existing techniques are more powerful.",
+              "anchor": "Reduces circuit lower bounds to communication complexity lower bounds"
+            },
+            {
+              "name": "Structural Correspondence",
+              "signature": "The proof proceeds by identifying a shared skeleton between two formalisms so that structural facts about one transfer automatically to the other.",
+              "anchor": "structural correspondence"
+            },
+            {
+              "name": "Tool Importation",
+              "signature": "Established methods developed for one field are imported wholesale into a new field by exploiting the established equivalence.",
+              "anchor": "leveraging communication-complexity tools for circuit bounds"
+            },
+            {
+              "name": "Relation Reframing",
+              "signature": "A computational function is recast as a combinatorial relation, opening it to analysis techniques suited to relational rather than functional objects.",
+              "anchor": "relation R(f)"
+            },
+            {
+              "name": "Optimality Preservation",
+              "signature": "The equivalence is stated at the level of optimal objects, ensuring that bounds transferred are tight rather than merely approximate.",
+              "anchor": "depth of optimal Boolean circuit"
+            }
+          ]
+        },
+        "menger_theorem": {
+          "arc_id": "menger_theorem",
+          "moves": [
+            {
+              "name": "Dual Quantity Pairing",
+              "signature": "Two seemingly different quantities are identified as equal, making each a measure of the other.",
+              "anchor": "maximum number of vertex-disjoint paths equals the minimum number of vertices whose removal separates"
+            },
+            {
+              "name": "Existence Claim Symmetry",
+              "signature": "A maximization result and a minimization result are shown to be two faces of the same structural fact.",
+              "anchor": "max-min duality theorem"
+            },
+            {
+              "name": "Inductive Size Reduction",
+              "signature": "The problem is reduced to a smaller instance of itself, with the solution reconstructed from the base case upward.",
+              "anchor": "induction on graph size"
+            },
+            {
+              "name": "Path Augmentation Step",
+              "signature": "An existing partial solution is extended by finding an incremental improvement that increases the count toward the optimum.",
+              "anchor": "augmenting path argument"
+            },
+            {
+              "name": "Obstruction Characterization",
+              "signature": "The limit on one quantity is explained structurally by identifying what physically blocks further increase.",
+              "anchor": "minimum number of vertices whose removal separates"
+            },
+            {
+              "name": "Algebraic Reinterpretation",
+              "signature": "A combinatorial result is re-expressed in a formal optimization framework, revealing deeper structural reasons for its truth.",
+              "anchor": "LP duality interpretation"
+            },
+            {
+              "name": "Object Type Generalization",
+              "signature": "A theorem proved for one class of objects is extended to an analogous class, preserving the structural relationship.",
+              "anchor": "edge version (Ford-Fulkerson)"
+            },
+            {
+              "name": "Cut-Flow Equivalence",
+              "signature": "A separation structure and a flow structure are shown to be dual witnesses of the same bound.",
+              "anchor": "vertex/edge cut equivalence"
+            },
+            {
+              "name": "Structural Certificate Provision",
+              "signature": "Both sides of an equality are given explicit constructive witnesses, so the claim is verified by exhibition rather than mere counting.",
+              "anchor": "structural characterization"
+            },
+            {
+              "name": "Scope Boundary Setting",
+              "signature": "The domain of the claim is precisely delimited so that the result applies to any instance within that domain.",
+              "anchor": "in any graph"
+            }
+          ]
+        }
+      },
+      "gemini": {
+        "wagner_theorem": {
+          "arc_id": "wagner_theorem",
+          "moves": [
+            {
+              "name": "Define Equivalence Condition",
+              "signature": "Establish a necessary and sufficient condition for a property to hold.",
+              "anchor": "iff"
+            },
+            {
+              "name": "Characterize By Prohibition",
+              "signature": "Define a class of objects by specifying which substructures they must not contain.",
+              "anchor": "contains neither K5 nor K3,3"
+            },
+            {
+              "name": "Generalize A Precedent",
+              "signature": "Adapt an existing result or method to a broader or more abstract context.",
+              "anchor": "Refinement of Kuratowski's earlier subdivision-based theorem."
+            },
+            {
+              "name": "Apply Recursive Argument",
+              "signature": "Prove a property by showing it holds for base elements and is preserved under composition.",
+              "anchor": "structural induction"
+            },
+            {
+              "name": "Partition The Problem Space",
+              "signature": "Divide a complex problem into a set of exhaustive, mutually exclusive cases and solve each one individually.",
+              "anchor": "case analysis"
+            },
+            {
+              "name": "Isolate A Hereditary Property",
+              "signature": "Identify a property that is inherited by all substructures or components of an object that possesses it.",
+              "anchor": "minor-closed properties"
+            },
+            {
+              "name": "Identify Minimal Obstructions",
+              "signature": "Pinpoint a finite set of fundamental components whose presence prevents a system from having a desired property.",
+              "anchor": "excluded minors"
+            },
+            {
+              "name": "Introduce A Reusable Framework",
+              "signature": "Formulate a general method that can be applied to a class of related problems.",
+              "anchor": "Established the excluded-minor framework"
+            },
+            {
+              "name": "Enable Future Generalization",
+              "signature": "Create a result whose structure allows for significant extension and abstraction by others.",
+              "anchor": "Robertson-Seymour later generalized"
+            },
+            {
+              "name": "Bridge Conceptual Domains",
+              "signature": "Establish a formal equivalence between a property defined in one conceptual domain and a property in another.",
+              "anchor": "planar iff it contains neither... as a minor"
+            }
+          ]
+        },
+        "hadwiger_conjecture": {
+          "arc_id": "hadwiger_conjecture",
+          "moves": [
+            {
+              "name": "State Unifying Principle",
+              "signature": "Posit a fundamental, general relationship between two distinct properties of a system.",
+              "anchor": "Conjecture: every graph with chromatic number k contains K_k as a minor."
+            },
+            {
+              "name": "Solve Initial Cases",
+              "signature": "Establish the truth of the main proposition for the simplest or initial instances of a key parameter.",
+              "anchor": "k=4 by Wagner"
+            },
+            {
+              "name": "Establish External Equivalence",
+              "signature": "Demonstrate that a specific instance of the current problem is logically equivalent to a major, solved problem.",
+              "anchor": "k=5 by Robertson-Seymour-Thomas (1993, equivalent to 4CT)"
+            },
+            {
+              "name": "Decompose Into Primitives",
+              "signature": "Break down a complex object into a set of fundamental components whose interactions define the whole.",
+              "anchor": "structural decomposition"
+            },
+            {
+              "name": "Reduce to Extreme Configurations",
+              "signature": "Prove a general property by showing it holds for the most constrained or boundary-condition examples of the system.",
+              "anchor": "reduction to extremal cases"
+            },
+            {
+              "name": "Leverage Inherited Properties",
+              "signature": "Utilize a characteristic that is guaranteed to be passed down to all substructures derived from a parent structure.",
+              "anchor": "using minor-closed properties"
+            },
+            {
+              "name": "Apply Probabilistic Constraints",
+              "signature": "Use statistical or probabilistic reasoning to establish limits on a system's possible properties or behaviors.",
+              "anchor": "flag bounds via probabilistic arguments"
+            },
+            {
+              "name": "Invoke Deep Structure Theorem",
+              "signature": "Apply a powerful, externally-proven theorem that provides a complete characterization of systems lacking a certain feature.",
+              "anchor": "graph minor structure theorem"
+            }
+          ]
+        },
+        "tutte_4ct": {
+          "arc_id": "tutte_4ct",
+          "moves": [
+            {
+              "name": "Problem Isomorphism",
+              "signature": "Re-expressing a problem in an alternative, structurally equivalent domain.",
+              "anchor": "dual reformulation"
+            },
+            {
+              "name": "Establishing Proxy Validity",
+              "signature": "Formally demonstrating that solving a substitute problem resolves the original one.",
+              "anchor": "Showed 4CT equivalent to Tait's conjecture"
+            },
+            {
+              "name": "Focusing on Core Class",
+              "signature": "Restricting the problem to a simpler, representative subclass of cases that retains the core difficulty.",
+              "anchor": "cubic bridgeless planar graph"
+            },
+            {
+              "name": "Characterizing Obstructions",
+              "signature": "Defining and studying the specific instances that violate a desired property or solution.",
+              "anchor": "identifying obstructions (snarks)"
+            },
+            {
+              "name": "Applying Formal Calculus",
+              "signature": "Using a systematic, symbolic method of calculation or reasoning to analyze the problem space.",
+              "anchor": "dual chromatic polynomial"
+            },
+            {
+              "name": "Enumerative Analysis",
+              "signature": "Quantifying the number of possible configurations or solutions to understand the problem's structure.",
+              "anchor": "combinatorial counting"
+            },
+            {
+              "name": "Bridging Formalisms",
+              "signature": "Linking the problem's native representation to a different formal system to gain new insights.",
+              "anchor": "4-coloring via... edge-colorings"
+            },
+            {
+              "name": "Constructive Exploration",
+              "signature": "Systematically building examples or counterexamples to explore the problem's properties.",
+              "anchor": "snark constructions"
+            },
+            {
+              "name": "Partitioning The Problem",
+              "signature": "Decomposing a general problem into a set of exhaustive, mutually exclusive sub-cases.",
+              "anchor": "constructive case analysis"
+            }
+          ]
+        },
+        "network_flow_max_flow_min_cut": {
+          "arc_id": "network_flow_max_flow_min_cut",
+          "moves": [
+            {
+              "name": "Asserting Structural Equivalence",
+              "signature": "Positing that two seemingly different measures or concepts within a system are fundamentally equal.",
+              "anchor": "maximum flow value equals minimum cut capacity"
+            },
+            {
+              "name": "Iterative Improvement Protocol",
+              "signature": "Defining a repeatable procedure that incrementally moves a system state closer to an optimal or desired state.",
+              "anchor": "Algorithm: augmenting paths"
+            },
+            {
+              "name": "Framing Through Duality",
+              "signature": "Reinterpreting a problem by constructing a corresponding 'dual' problem whose solution provides insight into the original.",
+              "anchor": "duality between primal and dual problems"
+            },
+            {
+              "name": "Demonstrating Property Preservation",
+              "signature": "Showing that an operation or transformation maintains a specific intrinsic property of the system's components.",
+              "anchor": "integer capacities yield integer max-flow"
+            },
+            {
+              "name": "Applying General Principle",
+              "signature": "Demonstrating the utility of a general framework by showing it solves or explains multiple specific, seemingly unrelated problems.",
+              "anchor": "Applications: bipartite matching (K\u00f6nig), edge connectivity (Menger), system of distinct representatives (Hall)"
+            },
+            {
+              "name": "Proving by Construction",
+              "signature": "Establishing the existence and properties of a solution by providing a concrete algorithm that produces it.",
+              "anchor": "Algorithm: augmenting paths"
+            },
+            {
+              "name": "Incremental Refinement Loop",
+              "signature": "Employing a cyclic process of finding and applying small, targeted improvements to a solution until no further improvements are possible.",
+              "anchor": "iterative refinement via augmenting paths"
+            },
+            {
+              "name": "Connecting Disparate Fields",
+              "signature": "Revealing a deep connection between a problem and a seemingly different mathematical or conceptual field.",
+              "anchor": "LP duality interpretation"
+            },
+            {
+              "name": "Defining Structural Invariants",
+              "signature": "Identifying fundamental properties or relationships that define the system's core nature, independent of specific states.",
+              "anchor": "structural characterization"
+            }
+          ]
+        },
+        "halin_grid_theorem": {
+          "arc_id": "halin_grid_theorem",
+          "moves": [
+            {
+              "name": "Forced Structural Dichotomy",
+              "signature": "Asserting that any system in a given class must exhibit one of two mutually exclusive structural properties.",
+              "anchor": "contains either an infinite ray or an infinite-degree vertex"
+            },
+            {
+              "name": "Defining by Forbidden Structure",
+              "signature": "Characterizing a class of systems by what substructures they are forbidden to contain.",
+              "anchor": "exclusion of canonical objects"
+            },
+            {
+              "name": "Bounding Structural Complexity",
+              "signature": "Demonstrating that the absence of a specific complex feature forces a system's overall structure to be simple according to some metric.",
+              "anchor": "bounded tree-width"
+            },
+            {
+              "name": "Mapping to Simpler Topology",
+              "signature": "Decomposing a complex system into a simpler, hierarchical structure to make its properties tractable.",
+              "anchor": "tree decomposition"
+            },
+            {
+              "name": "Assembling from Local Constraints",
+              "signature": "Constructing a global, coherent structure by iteratively extending from an infinite set of locally consistent conditions.",
+              "anchor": "K\u00f6nig's lemma applications"
+            },
+            {
+              "name": "Analyzing Extreme Cases",
+              "signature": "Deriving general properties of a system by investigating instances that maximize or minimize a particular parameter.",
+              "anchor": "extremal infinite combinatorics"
+            },
+            {
+              "name": "Refining the Conclusion",
+              "signature": "Replacing an initial conclusion with a more precise or powerful structural implication under modified premises.",
+              "anchor": "Strengthening"
+            },
+            {
+              "name": "Generalizing the Premise",
+              "signature": "Broadening the initial conditions under which a conclusion holds, thereby expanding the theorem's applicability.",
+              "anchor": "no two disjoint infinite paths"
+            },
+            {
+              "name": "Seeking Structural Equivalence",
+              "signature": "Establishing a deep connection between a property defined by exclusion and a constructive property.",
+              "anchor": "structural characterization"
+            }
+          ]
+        },
+        "erdos_ko_rado": {
+          "arc_id": "erdos_ko_rado",
+          "moves": [
+            {
+              "name": "Frame an Extremal Problem",
+              "signature": "Pose the core question as finding the maximum or minimum possible size of a collection under a specific constraint.",
+              "anchor": "Maximum size of a family"
+            },
+            {
+              "name": "Define Simplifying Transformation",
+              "signature": "Introduce an operation that systematically alters a configuration to reduce its complexity or increase its regularity.",
+              "anchor": "shifting / compression"
+            },
+            {
+              "name": "Preserve a Core Invariant",
+              "signature": "Design the transformation to ensure a critical property of the configuration remains unchanged throughout the process.",
+              "anchor": "pairwise non-empty intersection"
+            },
+            {
+              "name": "Specify a Directional Operator",
+              "signature": "Define the transformation rule as a directed change, moving elements towards a canonical ordering or state.",
+              "anchor": "replace pair (i,j) with (i,i')"
+            },
+            {
+              "name": "Induce a Regular Structure",
+              "signature": "Apply the transformation repeatedly to convert an arbitrary configuration into one with a more ordered or predictable pattern.",
+              "anchor": "more structured equivalent"
+            },
+            {
+              "name": "Converge to Canonical Form",
+              "signature": "Show that the iterative transformation process must terminate in a fixed, standardized state that can no longer be altered.",
+              "anchor": "structural reduction via canonical form"
+            },
+            {
+              "name": "Analyze the Simplified State",
+              "signature": "Shift the focus of the analysis from the general case to the properties of the simplified, canonical endpoint.",
+              "anchor": "prove the bound on the canonical form"
+            },
+            {
+              "name": "Employ an Alternate Metric",
+              "signature": "Introduce a novel counting technique or perspective that makes the properties of the simplified structure apparent.",
+              "anchor": "cyclic counting argument"
+            },
+            {
+              "name": "Generalize from the Bound",
+              "signature": "Argue that the result derived for the simple case applies to all original configurations because the transformation preserved the relevant properties.",
+              "anchor": "is C(n-1, k-1)"
+            }
+          ]
+        },
+        "karchmer_wigderson": {
+          "arc_id": "karchmer_wigderson",
+          "moves": [
+            {
+              "name": "Cross-Domain Equivalence",
+              "signature": "Establish a formal equivalence between the core properties of two seemingly unrelated domains.",
+              "anchor": "cross-domain equivalence (circuits \u2194 protocols)"
+            },
+            {
+              "name": "Metric Isomorphism",
+              "signature": "Demonstrate that a key quantitative measure in one system is identical to a key quantitative measure in another.",
+              "anchor": "Communication complexity of relation R(f) equals depth of optimal Boolean circuit"
+            },
+            {
+              "name": "Problem Domain Translation",
+              "signature": "Re-cast a problem from its native domain into a different one to unlock new analytical approaches.",
+              "anchor": "Reduces circuit lower bounds to communication complexity lower bounds."
+            },
+            {
+              "name": "Bidirectional Translation",
+              "signature": "Establish a two-way, structure-preserving transformation between objects in different domains.",
+              "anchor": "bidirectional translation between circuit structure and protocol structure"
+            },
+            {
+              "name": "Inter-Domain Bridge",
+              "signature": "Define a specific entity or relation that formally connects two distinct conceptual domains.",
+              "anchor": "relation R(f)"
+            },
+            {
+              "name": "Forward Constructive Mapping",
+              "signature": "Provide an explicit algorithm to transform an object from a source domain into a corresponding object in a target domain.",
+              "anchor": "protocol-tree-to-circuit construction"
+            },
+            {
+              "name": "Reverse Constructive Mapping",
+              "signature": "Provide an explicit algorithm to transform an object from a target domain back into a corresponding object in a source domain.",
+              "anchor": "and inverse"
+            },
+            {
+              "name": "Deep Structure Analogy",
+              "signature": "Identify and formalize a fundamental structural parallel between two different systems.",
+              "anchor": "structural correspondence"
+            },
+            {
+              "name": "Toolset Importation",
+              "signature": "Solve a problem in one domain by applying the established methods and results from another.",
+              "anchor": "leveraging communication-complexity tools for circuit bounds"
+            }
+          ]
+        },
+        "menger_theorem": {
+          "arc_id": "menger_theorem",
+          "moves": [
+            {
+              "name": "Equate Maximum and Minimum",
+              "signature": "Formulate a principle where the maximum quantity of one element equals the minimum quantity of a corresponding, obstructive element.",
+              "anchor": "max-min duality theorem"
+            },
+            {
+              "name": "Define by Structural Invariant",
+              "signature": "Characterize a system's nature by revealing a fundamental, unchanging relationship between two of its core properties.",
+              "anchor": "structural characterization"
+            },
+            {
+              "name": "Link Paths and Separators",
+              "signature": "Establish a fundamental equivalence between the measure of connectivity and the measure of separation within a structure.",
+              "anchor": "vertex/edge cut equivalence"
+            },
+            {
+              "name": "Adapt to New Elements",
+              "signature": "Generalize a core principle by applying it to a different but analogous type of component within the system.",
+              "anchor": "edge version"
+            },
+            {
+              "name": "Build from Base Case",
+              "signature": "Establish a statement for a simple case, then prove that if it holds for a given size, it must also hold for the next.",
+              "anchor": "induction on graph size"
+            },
+            {
+              "name": "Find and Augment",
+              "signature": "Repeatedly identify a path for improvement and incorporate it to incrementally build towards an optimal solution.",
+              "anchor": "augmenting path argument"
+            },
+            {
+              "name": "Reframe in Another System",
+              "signature": "Translate the problem into a different formal language or mathematical framework to leverage its unique tools and insights.",
+              "anchor": "LP duality interpretation"
+            },
+            {
+              "name": "Relate Flow and Capacity",
+              "signature": "Equate the maximum possible flow through a system with the minimum capacity of a bottleneck that constrains it.",
+              "anchor": "maximum number of vertex-disjoint paths ... equals the minimum number of vertices whose removal separates"
+            }
+          ]
+        }
+      }
+    },
+    "complexity_theory": {
+      "sonnet": {
+        "karp_21": {
+          "arc_id": "karp_21",
+          "moves": [
+            {
+              "name": "Seed Problem Selection",
+              "signature": "One already-established result is chosen as the universal starting point from which all subsequent derivations will flow.",
+              "anchor": "chain of reductions starting from Cook-Levin"
+            },
+            {
+              "name": "Canonical Form Adoption",
+              "signature": "A single representational format is imposed so that disparate instances can be compared and connected under one framework.",
+              "anchor": "polynomial-time reductions from SAT"
+            },
+            {
+              "name": "Membership Boundary Drawing",
+              "signature": "A class is defined by a shared property, and candidate members are tested for inclusion against that property.",
+              "anchor": "21 natural combinatorial problems are NP-complete"
+            },
+            {
+              "name": "Structure-Preserving Encoding",
+              "signature": "A transformation maps one problem into another while guaranteeing that solutions in the target correspond exactly to solutions in the source.",
+              "anchor": "constructing problem-to-problem encodings; preserving solution structure"
+            },
+            {
+              "name": "Cost-Bound Constraint",
+              "signature": "The transformation itself is required to operate within a specified resource limit, ensuring the overhead does not invalidate the comparison.",
+              "anchor": "verifying reduction is polynomial-time"
+            },
+            {
+              "name": "Transitive Chain Building",
+              "signature": "Each new link is attached to an already-validated link rather than back to the origin, extending reach without repeating prior work.",
+              "anchor": "chain of reductions starting from Cook-Levin or another known NPC problem"
+            },
+            {
+              "name": "Catalog Instantiation",
+              "signature": "Individual results are aggregated into a referenceable collection that future work can consult as a shared authority.",
+              "anchor": "founded the catalog of NP-complete problems"
+            },
+            {
+              "name": "Natural Instance Prioritization",
+              "signature": "Problems are selected because they arise organically in practice, lending the catalog immediate relevance beyond the theoretical exercise.",
+              "anchor": "21 natural combinatorial problems (knapsack, vertex cover, set cover, Hamiltonian cycle, graph coloring)"
+            },
+            {
+              "name": "Hardness Inheritance Transfer",
+              "signature": "A property possessed by the source problem is shown to pass automatically to the target through the structure-preserving mapping.",
+              "anchor": "preserving solution structure"
+            },
+            {
+              "name": "Reduction Direction Fixing",
+              "signature": "The mapping is oriented consistently\u2014always from a known-hard problem toward the candidate\u2014so that the logical implication flows correctly.",
+              "anchor": "explicit reduction from SAT or another known NPC problem"
+            },
+            {
+              "name": "Equivalence Class Collapse",
+              "signature": "Multiple superficially different objects are shown to belong to one equivalence class, replacing a scattered landscape with a unified category.",
+              "anchor": "21 \u2026 problems are NP-complete"
+            },
+            {
+              "name": "Reusable Template Extraction",
+              "signature": "The method used for one derivation is abstracted into a repeatable procedure that others can apply to new candidates.",
+              "anchor": "method: explicit reduction \u2026 preserving solution structure; verifying reduction is polynomial-time"
+            }
+          ]
+        },
+        "razborov_lower_bound": {
+          "arc_id": "razborov_lower_bound",
+          "moves": [
+            {
+              "name": "Proxy Class Substitution",
+              "signature": "Replace the target object with a tractable surrogate class that preserves enough structure for the argument to proceed.",
+              "anchor": "replace function by a class of approximating functions"
+            },
+            {
+              "name": "Complexity Ceiling Imposition",
+              "signature": "Establish an upper bound on how many objects of a given kind can exist, creating a finite resource that can be exhausted.",
+              "anchor": "count how many monotone circuits could approximate"
+            },
+            {
+              "name": "Modular Decomposition",
+              "signature": "Break a complex structure into self-consistent sub-units whose interactions are constrained by compatibility rules.",
+              "anchor": "structural decomposition into compatible modules"
+            },
+            {
+              "name": "Approximation Gap Framing",
+              "signature": "Recast an exact impossibility question as a question about how closely any candidate can approach a target, shifting the proof burden.",
+              "anchor": "approximation by simpler functions"
+            },
+            {
+              "name": "Resource Exhaustion Contradiction",
+              "signature": "Show that the number of required distinct objects exceeds the supply permitted by the imposed ceiling, forcing a contradiction.",
+              "anchor": "derive contradiction from counting"
+            },
+            {
+              "name": "Compatibility Constraint Encoding",
+              "signature": "Impose local consistency conditions on modules so that globally valid assemblies are severely restricted in number.",
+              "anchor": "compatible modules"
+            },
+            {
+              "name": "Counting Argument Deployment",
+              "signature": "Use a cardinality mismatch between two sets\u2014one too large, one too small\u2014as the engine of the impossibility proof.",
+              "anchor": "counting argument over approximations"
+            },
+            {
+              "name": "Barrier Identification",
+              "signature": "Name an existing boundary that prior work could not cross, framing the contribution as a deliberate crossing of that boundary.",
+              "anchor": "breaking the long-standing barrier on non-trivial circuit lower bounds"
+            },
+            {
+              "name": "Structural Invariant Preservation",
+              "signature": "Ensure the surrogate class retains a key property of the original so that conclusions about surrogates transfer back.",
+              "anchor": "replace function by a class of approximating functions"
+            },
+            {
+              "name": "Super-Polynomial Separation",
+              "signature": "Demonstrate that the gap between two complexity measures grows faster than any polynomial, establishing qualitative separation.",
+              "anchor": "super-polynomial monotone circuit complexity"
+            }
+          ]
+        },
+        "yao_minimax": {
+          "arc_id": "yao_minimax",
+          "moves": [
+            {
+              "name": "Dual Lens Import",
+              "signature": "A framework from an unrelated domain is imported wholesale to reframe the problem in structurally equivalent terms.",
+              "anchor": "minimax theorem from game theory applied to algorithm-vs-input games"
+            },
+            {
+              "name": "Adversarial Cast",
+              "signature": "Two parties with opposing objectives are identified and their interaction is formalized as a competitive game.",
+              "anchor": "algorithm-vs-input games"
+            },
+            {
+              "name": "Quantity Inversion",
+              "signature": "The order of quantifiers or optimization directions is swapped to expose a hidden equivalence.",
+              "anchor": "expected complexity of best randomized algorithm against worst-case input equals worst-case complexity of best deterministic algorithm"
+            },
+            {
+              "name": "Symmetry Equation",
+              "signature": "Two apparently asymmetric quantities are shown to be equal by exploiting an underlying structural symmetry.",
+              "anchor": "equals worst-case complexity of best deterministic algorithm against worst-case input distribution"
+            },
+            {
+              "name": "Duality Bridge",
+              "signature": "A known duality result is invoked to transfer a statement from one optimization side to its dual.",
+              "anchor": "LP duality"
+            },
+            {
+              "name": "Hard Instance Seeding",
+              "signature": "A specific structured input distribution is chosen deliberately to make the problem maximally difficult for any solver.",
+              "anchor": "lower bounds via choosing hard distribution"
+            },
+            {
+              "name": "Complexity Class Reduction",
+              "signature": "A bound on a harder object class is derived by reducing it to a bound on a simpler, more tractable object class.",
+              "anchor": "reduction to deterministic lower bound under structured distribution"
+            },
+            {
+              "name": "Randomness Elimination",
+              "signature": "A statement about randomized or probabilistic entities is converted into an equivalent statement about deterministic ones.",
+              "anchor": "worst-case complexity of best deterministic algorithm against worst-case input distribution"
+            },
+            {
+              "name": "Bound Direction Flip",
+              "signature": "The proof strategy shifts from establishing an upper bound to establishing a lower bound by exploiting the derived equivalence.",
+              "anchor": "Application: lower bounds via choosing hard distribution"
+            },
+            {
+              "name": "Structural Reuse Declaration",
+              "signature": "The derived equivalence is explicitly packaged as a reusable method applicable beyond the immediate instance.",
+              "anchor": "Methodology: game-theoretic framing; minimax theorem"
+            }
+          ]
+        },
+        "ip_pspace": {
+          "arc_id": "ip_pspace",
+          "moves": [
+            {
+              "name": "Domain Translation Layer",
+              "signature": "Recast the original problem into an equivalent representation in a more tractable domain, preserving all structural relationships.",
+              "anchor": "arithmetization of Boolean formulas (replace with low-degree polynomials over a field)"
+            },
+            {
+              "name": "Extension Field Embedding",
+              "signature": "Lift a discrete finite structure into a continuous or algebraic space where richer manipulation is possible.",
+              "anchor": "polynomial extension"
+            },
+            {
+              "name": "Recursive Decomposition",
+              "signature": "Break a global claim into a sequence of local sub-claims, each of which feeds the next as input.",
+              "anchor": "recursive interactive verification"
+            },
+            {
+              "name": "Staged Commitment Exchange",
+              "signature": "Structure interaction as alternating rounds of commitment and response, where each party's move constrains the next.",
+              "anchor": "verifier-prover dance"
+            },
+            {
+              "name": "Partial Evaluation Reduction",
+              "signature": "At each recursive step, fix one variable and reduce the problem dimensionality by one, preserving the invariant.",
+              "anchor": "sumcheck protocol"
+            },
+            {
+              "name": "Spot-Check Sampling",
+              "signature": "Rather than exhaustive checking, evaluate at a randomly chosen point to detect deviation with high probability.",
+              "anchor": "polynomial check at each round"
+            },
+            {
+              "name": "Complexity Class Containment Proof",
+              "signature": "Demonstrate that every problem in a target class can be decided by the constructed mechanism, establishing an upper bound.",
+              "anchor": "decide exactly PSPACE"
+            },
+            {
+              "name": "Protocol Composition",
+              "signature": "Assemble a complex interactive procedure from independently verified sub-protocols that chain together coherently.",
+              "anchor": "recursive protocol construction"
+            },
+            {
+              "name": "Prover Unbounding",
+              "signature": "Deliberately relax resource constraints on one participant to isolate the question of what the interaction itself can certify.",
+              "anchor": "unbounded prover"
+            },
+            {
+              "name": "Soundness via Degree Bound",
+              "signature": "Exploit the low-degree property of the representation to ensure that any cheating attempt is detectable with overwhelming probability.",
+              "anchor": "low-degree polynomials over a field"
+            },
+            {
+              "name": "Equivalence Collapse",
+              "signature": "Show two independently defined complexity classes are identical, collapsing a suspected gap into a single boundary.",
+              "anchor": "IP = PSPACE"
+            }
+          ]
+        },
+        "pcp_theorem": {
+          "arc_id": "pcp_theorem",
+          "moves": [
+            {
+              "name": "Redundant Encoding Shift",
+              "signature": "The protagonist re-represents the core object in a highly redundant form so that local sampling becomes globally informative.",
+              "anchor": "encode proofs in highly redundant form"
+            },
+            {
+              "name": "Local-to-Global Bridge",
+              "signature": "A property of the whole structure is certified by reading only a tiny, randomly chosen fragment, transferring global guarantees to local checks.",
+              "anchor": "verifiable by reading O(1) bits"
+            },
+            {
+              "name": "Error-Tolerant Scaffolding",
+              "signature": "The protagonist embeds the object inside an error-correcting framework so that deviations are detectable even under partial observation.",
+              "anchor": "error-correcting codes as proof structure"
+            },
+            {
+              "name": "Recursive Self-Application",
+              "signature": "A verifier or procedure is applied to its own components iteratively, compressing complexity at each level through self-similar nesting.",
+              "anchor": "recursive composition of low-degree-test verifiers"
+            },
+            {
+              "name": "Gap Injection",
+              "signature": "The protagonist engineers a separation between the acceptable and unacceptable cases so that distinguishing them becomes tractable.",
+              "anchor": "gap amplification via parallel repetition"
+            },
+            {
+              "name": "Parallel Repetition Amplification",
+              "signature": "Independent simultaneous trials are aggregated so that the probability of error shrinks exponentially with repetition count.",
+              "anchor": "gap amplification through composition"
+            },
+            {
+              "name": "Consequence Harvesting",
+              "signature": "Once a structural result is established, the protagonist extracts a cascade of corollaries in adjacent domains without additional core work.",
+              "anchor": "implies hardness of approximation for many problems"
+            },
+            {
+              "name": "Polynomial Length Constraint",
+              "signature": "The protagonist bounds the size of the constructed object within a tractable complexity class, ensuring the construction remains feasible.",
+              "anchor": "probabilistically-checkable proofs of polynomial length"
+            },
+            {
+              "name": "Low-Degree Test Deployment",
+              "signature": "A structured algebraic test is used as a primitive building block whose soundness properties propagate upward through the construction.",
+              "anchor": "low-degree-test verifiers"
+            },
+            {
+              "name": "Randomness as Leverage",
+              "signature": "Randomized sampling replaces exhaustive inspection, converting an intractable global check into a probabilistically reliable local one.",
+              "anchor": "probabilistically-checkable proofs"
+            }
+          ]
+        },
+        "toda_theorem": {
+          "arc_id": "toda_theorem",
+          "moves": [
+            {
+              "name": "Containment Claim Setup",
+              "signature": "A hierarchy or collection of objects is proposed to fit inside a single, more powerful enclosing structure.",
+              "anchor": "polynomial hierarchy is contained in P with #P oracle"
+            },
+            {
+              "name": "Hardness Inversion",
+              "signature": "A resource shown to solve a hard class is reframed as evidence that the resource itself is at least as powerful as that class.",
+              "anchor": "counting is at least as hard as the entire polynomial hierarchy"
+            },
+            {
+              "name": "Probabilistic Lens Adoption",
+              "signature": "A deterministic problem is recast through a randomized framework to expose structure that was previously hidden.",
+              "anchor": "probabilistic technique to isolate solutions"
+            },
+            {
+              "name": "Solution Space Thinning",
+              "signature": "Random constraints are introduced to reduce a large solution set to a manageable, distinguishable subset.",
+              "anchor": "isolation lemma"
+            },
+            {
+              "name": "Cross-Domain Reduction",
+              "signature": "A problem from one structural domain is mapped onto a problem in a different domain, transferring hardness or membership.",
+              "anchor": "reduction from PH to #SAT-counting"
+            },
+            {
+              "name": "Oracle Wrapping",
+              "signature": "A weaker computational model is augmented with access to a powerful subroutine, extending its reach without changing its base class.",
+              "anchor": "P with #P oracle"
+            },
+            {
+              "name": "Hierarchy Flattening",
+              "signature": "A multi-level structure with many distinct strata is collapsed into a single-level characterization.",
+              "anchor": "structural decomposition of PH levels"
+            },
+            {
+              "name": "Counting Lift",
+              "signature": "A decision or search problem is elevated to a counting problem, gaining expressive power over the original formulation.",
+              "anchor": "counting reduction"
+            },
+            {
+              "name": "Parity Encoding",
+              "signature": "XOR or parity constraints are used to encode membership or separation properties in a probabilistically checkable form.",
+              "anchor": "probabilistic XOR-clauses"
+            },
+            {
+              "name": "Layered Decomposition",
+              "signature": "A complex object is broken into ordered strata, each handled separately before results are recombined.",
+              "anchor": "structural decomposition of PH levels"
+            }
+          ]
+        },
+        "levin_universal_search": {
+          "arc_id": "levin_universal_search",
+          "moves": [
+            {
+              "name": "Class Enumeration",
+              "signature": "All candidate solutions within a defined class are systematically listed by a computable ordering criterion.",
+              "anchor": "enumerate all algorithms by description length"
+            },
+            {
+              "name": "Complexity-Weighted Prioritization",
+              "signature": "Resources are allocated to candidates in inverse proportion to their descriptive or structural complexity, favoring simpler candidates.",
+              "anchor": "time-budget proportional to 2^(-description-length)"
+            },
+            {
+              "name": "Parallel Interleaving",
+              "signature": "Multiple independent processes are run concurrently by interleaving their execution steps so none is permanently blocked.",
+              "anchor": "run them in parallel"
+            },
+            {
+              "name": "Meta-Level Optimization",
+              "signature": "The optimization target is shifted from object-level solutions to the strategy for selecting among solution-generating procedures.",
+              "anchor": "meta-level optimization"
+            },
+            {
+              "name": "Overhead Absorption",
+              "signature": "A fixed multiplicative penalty incurred by generality is accepted because it does not grow with problem scale.",
+              "anchor": "O(2^|A| \u00b7 t(n))"
+            },
+            {
+              "name": "Constant-Factor Optimality",
+              "signature": "A method is declared optimal within its class by showing it matches any competitor up to a constant independent of input.",
+              "anchor": "optimal up-to-constant within search class"
+            },
+            {
+              "name": "Description-Length Encoding",
+              "signature": "Candidates are ranked and scheduled using the length of their formal description as a proxy for prior probability or complexity.",
+              "anchor": "description-length-weighted scheduling"
+            },
+            {
+              "name": "Enumerate-Then-Test Loop",
+              "signature": "Candidate procedures are generated and immediately evaluated against the target criterion in a unified iterative loop.",
+              "anchor": "enumerate-and-test at meta-level"
+            },
+            {
+              "name": "Worst-Case Guarantee Framing",
+              "signature": "Performance is bounded relative to any specific known solution, ensuring the general method cannot be arbitrarily worse than a specialist.",
+              "anchor": "For any algorithm A solving a problem in time t(n), universal search solves it"
+            }
+          ]
+        },
+        "valiant_holant": {
+          "arc_id": "valiant_holant",
+          "moves": [
+            {
+              "name": "Domain Recast",
+              "signature": "Translate the original problem into a structurally different representational language that exposes hidden algebraic properties.",
+              "anchor": "encode problem as tensor contraction"
+            },
+            {
+              "name": "Coordinate Frame Shift",
+              "signature": "Apply a change of basis or coordinate system to transform an intractable structure into one amenable to known methods.",
+              "anchor": "basis change via change-of-coordinates in tensor space"
+            },
+            {
+              "name": "Tractable Class Targeting",
+              "signature": "Identify a pre-existing class of efficiently solvable problems and orient all transformations toward membership in that class.",
+              "anchor": "reduce to known-tractable problem class"
+            },
+            {
+              "name": "Structural Signature Matching",
+              "signature": "Reshape the transformed problem until its formal signature matches the input requirements of a target solver.",
+              "anchor": "tensor becomes Pfaffian-evaluable"
+            },
+            {
+              "name": "Reduction Bridge",
+              "signature": "Construct an explicit mapping that converts instances of one problem into instances of another, preserving solution equivalence.",
+              "anchor": "Pfaffian/perfect-matching reductions"
+            },
+            {
+              "name": "Planarity Constraint Exploitation",
+              "signature": "Impose or reveal a geometric constraint on the problem structure that unlocks a more efficient computational pathway.",
+              "anchor": "perfect-matching counting in planar graph"
+            },
+            {
+              "name": "Algebraic Invariant Leverage",
+              "signature": "Identify an algebraic quantity preserved across transformations and use it as the computational backbone of the solution.",
+              "anchor": "tensor manipulation"
+            },
+            {
+              "name": "Multi-Stage Pipeline",
+              "signature": "Chain distinct transformation steps sequentially so that each stage prepares the structure for the next operation.",
+              "anchor": "tensor reformulation; basis change; reduction"
+            },
+            {
+              "name": "Hardness Boundary Probe",
+              "signature": "Demonstrate that a class of problems previously assumed uniformly hard contains tractable instances reachable by structural transformation.",
+              "anchor": "solve combinatorial counting problems"
+            },
+            {
+              "name": "Representational Compression",
+              "signature": "Collapse a complex combinatorial object into a compact algebraic form that retains all information needed for evaluation.",
+              "anchor": "encode problem as tensor contraction"
+            }
+          ]
+        }
+      },
+      "gemini": {
+        "karp_21": {
+          "arc_id": "karp_21",
+          "moves": [
+            {
+              "name": "Leverage Foundational Proof",
+              "signature": "Establish a new line of inquiry by building upon a single, recently proven, and powerful result.",
+              "anchor": "chain of reductions starting from Cook-Levin"
+            },
+            {
+              "name": "Problem Equivalence Mapping",
+              "signature": "Demonstrate that solving an instance of a target problem is equivalent to solving a transformed instance of a source problem.",
+              "anchor": "explicit reduction from SAT or another known NPC problem"
+            },
+            {
+              "name": "Transitive Propagation",
+              "signature": "Use a newly established property of one element to confer the same property onto another, creating a chain of inheritance.",
+              "anchor": "chain of reductions"
+            },
+            {
+              "name": "Bounded Transformation Cost",
+              "signature": "Impose a strict efficiency constraint on the method used to translate between problem domains.",
+              "anchor": "verifying reduction is polynomial-time"
+            },
+            {
+              "name": "Solution Structure Preservation",
+              "signature": "Ensure the core logical structure of a solution is maintained across a transformation between different representations.",
+              "anchor": "preserving solution structure"
+            },
+            {
+              "name": "Populate a Class",
+              "signature": "Demonstrate the breadth and significance of a newly defined category by identifying multiple, diverse members.",
+              "anchor": "Founded the catalog of NP-complete problems"
+            },
+            {
+              "name": "Concrete Representational Shift",
+              "signature": "Devise a specific, constructive method for translating the components of one system into the components of another.",
+              "anchor": "constructing problem-to-problem encodings"
+            },
+            {
+              "name": "Target Established Exemplars",
+              "signature": "Apply a new framework to a set of well-known, pre-existing examples to demonstrate its relevance and power.",
+              "anchor": "21 natural combinatorial problems"
+            }
+          ]
+        },
+        "razborov_lower_bound": {
+          "arc_id": "razborov_lower_bound",
+          "moves": [
+            {
+              "name": "Constrain The Model",
+              "signature": "Simplify a general problem by imposing significant constraints on the class of allowed solutions or mechanisms.",
+              "anchor": "monotone circuit"
+            },
+            {
+              "name": "Assume and Contradict",
+              "signature": "Posit the truth of the proposition to be refuted and logically derive a statement that is known to be false.",
+              "anchor": "derive contradiction"
+            },
+            {
+              "name": "Map to Tractable Domain",
+              "signature": "Create a mapping from a complex system to a simpler, more structured domain where analysis is easier.",
+              "anchor": "replace function by a class of approximating functions"
+            },
+            {
+              "name": "Quantify Approximation Error",
+              "signature": "Introduce a formal measure to quantify the difference between an object and its simplified representation.",
+              "anchor": "approximation by simpler functions"
+            },
+            {
+              "name": "Propagate Local Changes",
+              "signature": "Analyze a complex system by showing how a property defined for its basic components propagates through the system's structure.",
+              "anchor": "structural decomposition into compatible modules"
+            },
+            {
+              "name": "Bound Local Complexity Growth",
+              "signature": "Prove that applying a single operator or step in the system does not increase a chosen complexity measure by too much.",
+              "anchor": "structural decomposition into compatible modules"
+            },
+            {
+              "name": "Compare Set Cardinalities",
+              "signature": "Establish a quantitative relationship between the size of the solution space and the size of the problem space to reveal a fundamental constraint.",
+              "anchor": "counting argument over approximations"
+            },
+            {
+              "name": "Contradiction via Scarcity",
+              "signature": "Demonstrate that the number of available resources or configurations is insufficient to satisfy all requirements, leading to a contradiction.",
+              "anchor": "derive contradiction from counting"
+            }
+          ]
+        },
+        "yao_minimax": {
+          "arc_id": "yao_minimax",
+          "moves": [
+            {
+              "name": "Adversarial Re-framing",
+              "signature": "Casting a problem as a strategic game between two opposing entities.",
+              "anchor": "algorithm-vs-input games"
+            },
+            {
+              "name": "Importing a Formalism",
+              "signature": "Applying a powerful theorem or framework from one domain to solve a problem in another.",
+              "anchor": "minimax theorem from game theory"
+            },
+            {
+              "name": "Forging an Equivalence",
+              "signature": "Demonstrating that two different measures of performance or value are fundamentally equal.",
+              "anchor": "expected complexity...equals worst-case complexity"
+            },
+            {
+              "name": "Strategic Burden Inversion",
+              "signature": "Transforming a problem of finding an optimal strategy into the simpler problem of finding a single, difficult scenario.",
+              "anchor": "lower bounds via choosing hard distribution"
+            },
+            {
+              "name": "Mapping to an Alternate Formalism",
+              "signature": "Translating the core problem into a different mathematical system where powerful tools are available.",
+              "anchor": "LP duality"
+            },
+            {
+              "name": "Simplification via Distribution",
+              "signature": "Reducing the analysis of a complex, probabilistic system to that of a simpler, deterministic system against a chosen probability distribution.",
+              "anchor": "reduction to deterministic lower bound under structured distribution"
+            },
+            {
+              "name": "Worst-Case Perspective Shift",
+              "signature": "Switching focus from the worst-case instance for one type of agent to the worst-case distribution for another.",
+              "anchor": "randomized algorithm against worst-case input equals...deterministic algorithm against worst-case input distribution"
+            },
+            {
+              "name": "Bounding via a Hard Instance",
+              "signature": "Establishing a general performance limit by constructing and analyzing a single, maximally difficult case.",
+              "anchor": "choosing hard distribution"
+            }
+          ]
+        },
+        "ip_pspace": {
+          "arc_id": "ip_pspace",
+          "moves": [
+            {
+              "name": "Representational Shift",
+              "signature": "Re-express a problem from its native domain into a different formal system where new tools or properties become available.",
+              "anchor": "arithmetization of Boolean formulas"
+            },
+            {
+              "name": "Bounded Complexity Mapping",
+              "signature": "Ensure the new problem representation has a structural property, like low degree, that makes it amenable to efficient checks.",
+              "anchor": "replace with low-degree polynomials"
+            },
+            {
+              "name": "Logic-to-Algebra Conversion",
+              "signature": "Replace logical operators and quantifiers with corresponding algebraic operators like multiplication, addition, and summation.",
+              "anchor": "compute Boolean things via polynomial extension"
+            },
+            {
+              "name": "Stepwise Aggregate Audit",
+              "signature": "Verify a large aggregate claim by having a prover provide intermediate claims that can be checked efficiently and probabilistically.",
+              "anchor": "sumcheck protocol"
+            },
+            {
+              "name": "Recursive Problem Reduction",
+              "signature": "Solve a problem by defining a protocol that reduces an instance to a smaller instance of the same problem, repeating until a trivial base case is reached.",
+              "anchor": "recursive interactive verification"
+            },
+            {
+              "name": "Shifting Computational Burden",
+              "signature": "Design an interaction where a powerful but untrusted party performs the computationally expensive steps, while a weaker party performs only efficient verification steps.",
+              "anchor": "polynomial verifier and unbounded prover"
+            },
+            {
+              "name": "Probabilistic Spot-Check",
+              "signature": "Instead of a full deterministic check, use randomized challenges to verify a prover's claims with high confidence at a fraction of the cost.",
+              "anchor": "polynomial check at each round"
+            },
+            {
+              "name": "Nested Protocol Design",
+              "signature": "Construct a complex protocol by composing simpler protocols, where one protocol operates as a subroutine within each step of another.",
+              "anchor": "recursive protocol construction"
+            },
+            {
+              "name": "Interactive Claim Refinement",
+              "signature": "Reduce a complex claim to a simpler one through a structured dialogue between a prover and a verifier.",
+              "anchor": "verifier-prover dance"
+            }
+          ]
+        },
+        "pcp_theorem": {
+          "arc_id": "pcp_theorem",
+          "moves": [
+            {
+              "name": "Impose Redundant Structure",
+              "signature": "Embed an object into a larger, more constrained space to make its properties locally testable.",
+              "anchor": "encode proofs in highly redundant form"
+            },
+            {
+              "name": "Sample Local Properties",
+              "signature": "Infer a global property of a structured object by examining a small, random subset of its components.",
+              "anchor": "verification via local tests"
+            },
+            {
+              "name": "Amplify Through Composition",
+              "signature": "Recursively apply a transformation to its own output to strengthen a desired property.",
+              "anchor": "recursive composition of low-degree-test verifiers"
+            },
+            {
+              "name": "Engineer a Verifiability Gap",
+              "signature": "Design a system where valid inputs are accepted with high probability and invalid inputs are rejected with a distinctly lower, non-trivial probability.",
+              "anchor": "gap amplification"
+            },
+            {
+              "name": "Structure Claims as Code",
+              "signature": "Represent a logical assertion as a codeword within a structured algebraic system to enforce robustness.",
+              "anchor": "error-correcting codes as proof structure"
+            },
+            {
+              "name": "Link Verification to Approximation",
+              "signature": "Frame a decision problem's verification process as an optimization problem, linking their computational complexities.",
+              "anchor": "Implies hardness of approximation"
+            },
+            {
+              "name": "Define Probabilistic Check",
+              "signature": "Establish a verification protocol that uses randomness and samples a limited portion of the evidence.",
+              "anchor": "probabilistically-checkable proofs"
+            },
+            {
+              "name": "Parallelize Scrutiny",
+              "signature": "Execute multiple independent checks simultaneously to rapidly increase confidence in a conclusion.",
+              "anchor": "parallel repetition"
+            },
+            {
+              "name": "Limit Information Access",
+              "signature": "Constrain a verifier to access only a small, constant amount of information from the object being checked.",
+              "anchor": "reading O(1) bits"
+            }
+          ]
+        },
+        "toda_theorem": {
+          "arc_id": "toda_theorem",
+          "moves": [
+            {
+              "name": "Bounding a Complex Class",
+              "signature": "Demonstrating that a system with seemingly vast capabilities is contained within the power of another system.",
+              "anchor": "PH \u2286 P^#P"
+            },
+            {
+              "name": "Decomposing a Hierarchy",
+              "signature": "Addressing a layered structure by showing how to collapse each level into a simpler, uniform problem.",
+              "anchor": "structural decomposition of PH levels"
+            },
+            {
+              "name": "Probabilistic Simplification",
+              "signature": "Introducing randomized elements to a problem to change its structure into a more manageable form.",
+              "anchor": "probabilistic XOR-clauses"
+            },
+            {
+              "name": "Isolating a Target State",
+              "signature": "Using a probabilistic technique to ensure that, out of many potential solutions, only one is likely to exist.",
+              "anchor": "isolation lemma"
+            },
+            {
+              "name": "Translating to Enumeration",
+              "signature": "Converting a problem about existence or logic into an equivalent problem about counting.",
+              "anchor": "reduction from PH to #SAT-counting"
+            },
+            {
+              "name": "Leveraging an Abstract Oracle",
+              "signature": "Solving a problem by assuming access to a subroutine that can instantly answer questions of a specific, difficult type.",
+              "anchor": "P with #P oracle"
+            },
+            {
+              "name": "Inverting the Containment",
+              "signature": "Reinterpreting a proof that A is contained in B to establish a minimum level of power or difficulty for B.",
+              "anchor": "counting is at least as hard as the entire polynomial hierarchy"
+            },
+            {
+              "name": "Unifying Disparate Models",
+              "signature": "Revealing a deep connection between a logical, layered system and a numerical, counting-based one.",
+              "anchor": "Toda proved the polynomial hierarchy is contained in P with #P oracle"
+            }
+          ]
+        },
+        "levin_universal_search": {
+          "arc_id": "levin_universal_search",
+          "moves": [
+            {
+              "name": "Systematic Space Traversal",
+              "signature": "Exhaustively generate all potential candidates within a formally defined solution space.",
+              "anchor": "enumerate all algorithms"
+            },
+            {
+              "name": "Complexity-Based Prioritization",
+              "signature": "Order the exploration of candidates based on a measure of their intrinsic descriptive complexity.",
+              "anchor": "by description length"
+            },
+            {
+              "name": "Concurrent Process Interleaving",
+              "signature": "Execute multiple independent processes in an alternating, time-sliced fashion to ensure progress across all.",
+              "anchor": "run them in parallel"
+            },
+            {
+              "name": "Exponential Resource Scheduling",
+              "signature": "Allocate resources to candidates in a manner that changes exponentially based on their rank.",
+              "anchor": "proportional to 2^(-description-length)"
+            },
+            {
+              "name": "Bounded Performance Guarantee",
+              "signature": "Establish a formal relationship that bounds a general method's performance relative to the best specific method it encompasses.",
+              "anchor": "solves it in time O(2^|A| \u00b7 t(n))"
+            },
+            {
+              "name": "Elevating The Search Level",
+              "signature": "Shift the problem from finding a solution to finding the best process for generating solutions.",
+              "anchor": "meta-level optimization"
+            },
+            {
+              "name": "Resource-Sharing Across Candidates",
+              "signature": "Distribute finite execution time among a set of competing processes instead of running them sequentially.",
+              "anchor": "dovetailing across algorithms"
+            },
+            {
+              "name": "Meta-Level Generate and Test",
+              "signature": "Apply a generate-and-test strategy not to solutions, but to the solution-generating processes themselves.",
+              "anchor": "enumerate-and-test at meta-level"
+            },
+            {
+              "name": "Asymptotic Optimality Claim",
+              "signature": "Assert that a method is the most efficient possible within its category, disregarding constant multiplicative factors.",
+              "anchor": "optimal up-to-constant"
+            }
+          ]
+        },
+        "valiant_holant": {
+          "arc_id": "valiant_holant",
+          "moves": [
+            {
+              "name": "Proposing Novel Framework",
+              "signature": "Introduce a new conceptual system or methodology for addressing a class of problems.",
+              "anchor": "Valiant introduced holographic algorithms"
+            },
+            {
+              "name": "Defining Application Domain",
+              "signature": "Specify the category or class of problems the new approach is intended to address.",
+              "anchor": "solve combinatorial counting problems"
+            },
+            {
+              "name": "Recasting Problem Representation",
+              "signature": "Translate a problem from its native domain into a different formal or symbolic language.",
+              "anchor": "encode problem as tensor contraction"
+            },
+            {
+              "name": "Leveraging Core Mechanisms",
+              "signature": "Employ a specific set of powerful formal tools or techniques as the central engine of the solution.",
+              "anchor": "Pfaffian/perfect-matching reductions and tensor manipulation"
+            },
+            {
+              "name": "Seeking Simplifying Transformation",
+              "signature": "Search for a change in the representation's basis or coordinates to reveal a simpler, more tractable structure.",
+              "anchor": "find a basis change"
+            },
+            {
+              "name": "Shifting to Abstract Space",
+              "signature": "Move the problem from its original context into an abstract space where powerful manipulations are possible.",
+              "anchor": "change-of-coordinates in tensor space"
+            },
+            {
+              "name": "Establishing Solvability Target",
+              "signature": "Define a specific property or state that, if achieved through transformation, makes the problem solvable.",
+              "anchor": "tensor becomes Pfaffian-evaluable"
+            },
+            {
+              "name": "Mapping to Tractable Subclass",
+              "signature": "Transform a general problem into a specific, well-understood subclass known to have efficient solutions.",
+              "anchor": "reduction to known-tractable problem class"
+            },
+            {
+              "name": "Articulating a Methodology",
+              "signature": "Decompose a complex process into a clear, repeatable sequence of high-level stages.",
+              "anchor": "Methodology: tensor reformulation; basis change...; reduction"
+            }
+          ]
+        }
+      }
+    },
+    "geometric_flow_pde": {
+      "sonnet": {
+        "hamilton_mean_curvature": {
+          "arc_id": "hamilton_mean_curvature",
+          "moves": [
+            {
+              "name": "Canonical Evolution Rule",
+              "signature": "Define the system's rate of change as a function of an intrinsic property of the current state, making the dynamics self-referential.",
+              "anchor": "surface evolves by velocity equal to mean curvature vector"
+            },
+            {
+              "name": "Class Restriction",
+              "signature": "Narrow the domain of inquiry to a structured subclass where behavior is tractable and conclusions are sharp.",
+              "anchor": "closed convex hypersurfaces"
+            },
+            {
+              "name": "Invariant Quantity Tracking",
+              "signature": "Identify a measurable property that is preserved or monotone under the dynamics, providing a stable reference throughout evolution.",
+              "anchor": "preserving relative shape under rescaling"
+            },
+            {
+              "name": "Rescaled Frame Shift",
+              "signature": "Introduce a normalized coordinate system that factors out global change, revealing the intrinsic shape of the evolving object.",
+              "anchor": "under rescaling"
+            },
+            {
+              "name": "Differential Inequality Propagation",
+              "signature": "Derive inequalities on key quantities from the governing equations and show these inequalities persist forward in time.",
+              "anchor": "preserved geometric inequalities via maximum principle"
+            },
+            {
+              "name": "Extremum Principle Application",
+              "signature": "Use the fact that a quantity attaining an extremum satisfies additional constraints to propagate bounds globally across the domain.",
+              "anchor": "maximum principle"
+            },
+            {
+              "name": "Comparison Barrier Construction",
+              "signature": "Bracket the evolving object between known simpler solutions to bound its behavior without solving the full problem.",
+              "anchor": "barrier comparisons"
+            },
+            {
+              "name": "Dimension Reduction",
+              "signature": "Project the governing infinite-dimensional system onto a finite-dimensional surrogate that captures the essential dynamics.",
+              "anchor": "ODEs derived from PDE invariants"
+            },
+            {
+              "name": "Surrogate System Comparison",
+              "signature": "Solve or analyze the reduced surrogate and transfer its conclusions back to the original system via a comparison argument.",
+              "anchor": "ODE comparison for ODEs derived from PDE invariants"
+            },
+            {
+              "name": "Gradient Bound Establishment",
+              "signature": "Prove that the rate of change of key quantities is controlled, preventing blow-up of derivatives and ensuring regularity.",
+              "anchor": "Harnack inequalities"
+            },
+            {
+              "name": "Limiting Shape Identification",
+              "signature": "Show that as the process runs to completion, the object converges to a unique canonical form up to symmetry.",
+              "anchor": "contracts to a round point"
+            },
+            {
+              "name": "Singularity Timing Control",
+              "signature": "Characterize when and how the process terminates, distinguishing finite-time collapse from indefinite continuation.",
+              "anchor": "contracts to a round point"
+            }
+          ]
+        },
+        "yang_mills_heat_flow": {
+          "arc_id": "yang_mills_heat_flow",
+          "moves": [
+            {
+              "name": "Functional Landscape Setup",
+              "signature": "A scalar measure of deviation from a target state is defined over the entire configuration space, converting a geometric problem into an optimization problem.",
+              "anchor": "gradient flow of Yang-Mills functional"
+            },
+            {
+              "name": "Infinite-Dimensional Embedding",
+              "signature": "The search space is treated as a manifold of unbounded dimension, allowing differential-geometric tools to operate on objects that are themselves functions or fields.",
+              "anchor": "gradient flow on infinite-dimensional manifold"
+            },
+            {
+              "name": "Flow Line Construction",
+              "signature": "A continuous deformation process is defined whose direction at every point is determined by the local slope of the governing functional, producing trajectories that descend toward extrema.",
+              "anchor": "heat flow on space of connections"
+            },
+            {
+              "name": "Critical Point Targeting",
+              "signature": "The deformation process is designed so that its natural resting states coincide exactly with the objects of interest, making convergence equivalent to discovery.",
+              "anchor": "convergence to critical points"
+            },
+            {
+              "name": "Limit Configuration Extraction",
+              "signature": "The asymptotic endpoint of a deformation trajectory is isolated and studied as a standalone object, separating the process from its product.",
+              "anchor": "analyzing limit configurations"
+            },
+            {
+              "name": "Concentration Singularity Identification",
+              "signature": "Regions where a quantity accumulates into a point-like spike are catalogued as a distinct failure mode that must be accounted for separately from smooth convergence.",
+              "anchor": "bubbling/concentration analysis"
+            },
+            {
+              "name": "Boundary Regime Annexation",
+              "signature": "Degenerate or singular limit objects are formally adjoined to the original space, extending its boundary so that previously missing endpoints become legitimate members.",
+              "anchor": "moduli-space compactification"
+            },
+            {
+              "name": "Moduli Space Assembly",
+              "signature": "All objects satisfying a given structural condition are collected into a single parameter space whose own geometry encodes global information about the original problem.",
+              "anchor": "moduli space of self-dual connections"
+            },
+            {
+              "name": "Invariant Extraction",
+              "signature": "Numerical or algebraic quantities are read off from the assembled parameter space in a way that remains unchanged under the equivalences one wishes to quotient out.",
+              "anchor": "Donaldson invariants"
+            },
+            {
+              "name": "Structural Discrimination",
+              "signature": "Two objects previously indistinguishable by coarser measures are separated by showing they yield different values of the extracted invariant.",
+              "anchor": "distinguishing smooth structures on 4-manifolds"
+            }
+          ]
+        },
+        "harmonic_map_flow": {
+          "arc_id": "harmonic_map_flow",
+          "moves": [
+            {
+              "name": "Energy Landscape Definition",
+              "signature": "Protagonist identifies a scalar functional whose minimizers are the desired objects, converting a geometric problem into an optimization problem.",
+              "anchor": "gradient flow of energy functional on space of maps"
+            },
+            {
+              "name": "Continuous Deformation Initiation",
+              "signature": "Protagonist introduces a time-parameterized process that continuously transforms an initial configuration toward a target state.",
+              "anchor": "harmonic map flow"
+            },
+            {
+              "name": "Descent Direction Selection",
+              "signature": "Protagonist chooses the steepest-descent direction of the functional as the driving force, ensuring the functional decreases along trajectories.",
+              "anchor": "gradient flow"
+            },
+            {
+              "name": "Parabolic Regularization",
+              "signature": "Protagonist reframes a static existence problem as a parabolic evolution equation, gaining smoothing and compactness properties.",
+              "anchor": "parabolic PDE techniques"
+            },
+            {
+              "name": "Monotonicity Extraction",
+              "signature": "Protagonist derives a quantity that changes in only one direction along the flow, providing global control over the process.",
+              "anchor": "energy functional monotonicity"
+            },
+            {
+              "name": "Structural Assumption Import",
+              "signature": "Protagonist imposes a geometric or algebraic condition on the ambient setting that blocks obstruction and enables the argument to close.",
+              "anchor": "structural assumption on target geometry"
+            },
+            {
+              "name": "Curvature Sign Exploitation",
+              "signature": "Protagonist leverages a sign condition on curvature to convert a potentially divergent term into a favorable or vanishing contribution.",
+              "anchor": "non-positive curvature monotonicity"
+            },
+            {
+              "name": "Long-Time Existence Establishment",
+              "signature": "Protagonist proves the evolving object remains well-defined for all time, ruling out finite-time breakdown.",
+              "anchor": "long-time existence"
+            },
+            {
+              "name": "Limit Object Identification",
+              "signature": "Protagonist extracts a limiting configuration from the infinite-time trajectory and identifies it as the sought solution.",
+              "anchor": "flow converges to harmonic map"
+            },
+            {
+              "name": "Existence via Convergence",
+              "signature": "Protagonist proves existence of a static solution indirectly by showing a dynamic process stabilizes, rather than constructing the solution directly.",
+              "anchor": "Eells-Sampson: when target has non-positive curvature, flow converges to harmonic map"
+            }
+          ]
+        },
+        "schoen_yau_positive_mass": {
+          "arc_id": "schoen_yau_positive_mass",
+          "moves": [
+            {
+              "name": "Claim Boundary Sharpening",
+              "signature": "The protagonist tightens a broad conjecture into a precise threshold statement with an exact equality condition.",
+              "anchor": "non-negative, and zero iff system is Minkowski"
+            },
+            {
+              "name": "Tool Substitution",
+              "signature": "The protagonist replaces the conventional technical apparatus with an alternative framework that sidesteps known obstacles.",
+              "anchor": "spinors-free proof using minimal surface theory"
+            },
+            {
+              "name": "Domain Translation",
+              "signature": "The protagonist reframes a problem from its native domain into a structurally equivalent problem in a different mathematical or conceptual domain.",
+              "anchor": "analyzing area-minimizing surfaces in asymptotically-flat manifolds"
+            },
+            {
+              "name": "Extremal Object Selection",
+              "signature": "The protagonist focuses analysis on objects that satisfy an optimality condition, using that condition as a lever to extract global information.",
+              "anchor": "minimal surface analysis; structure of stable minimal surfaces"
+            },
+            {
+              "name": "Stability as Constraint",
+              "signature": "The protagonist exploits a stability or equilibrium condition to derive inequalities that would be unavailable for generic objects.",
+              "anchor": "structure of stable minimal surfaces"
+            },
+            {
+              "name": "Dimensional Reduction",
+              "signature": "The protagonist reduces a problem in dimension n to a structurally analogous but more tractable problem in dimension n\u22121.",
+              "anchor": "reduction to lower-dimensional case"
+            },
+            {
+              "name": "Asymptotic Regime Exploitation",
+              "signature": "The protagonist extracts global invariants by examining the behavior of the system at its boundary or at infinity.",
+              "anchor": "asymptotically-flat manifolds"
+            },
+            {
+              "name": "Geometric Estimate Combination",
+              "signature": "The protagonist assembles several independent geometric inequalities whose conjunction yields the desired conclusion.",
+              "anchor": "combining geometric estimates"
+            },
+            {
+              "name": "Rigidity Identification",
+              "signature": "The protagonist identifies the unique configuration that saturates an inequality, converting an analytic bound into a geometric classification.",
+              "anchor": "zero iff system is Minkowski"
+            },
+            {
+              "name": "Isolation Idealization",
+              "signature": "The protagonist restricts the problem to an idealized isolated system to eliminate boundary interference and make global quantities well-defined.",
+              "anchor": "total mass of an isolated gravitational system"
+            }
+          ]
+        },
+        "brendle_lawson_3manifold": {
+          "arc_id": "brendle_lawson_3manifold",
+          "moves": [
+            {
+              "name": "Regime Isolation",
+              "signature": "The protagonist restricts the problem to a specific parameter regime to make the structure tractable.",
+              "anchor": "Type-I Ricci-flow singularities in 3D under non-negative curvature"
+            },
+            {
+              "name": "Limit Object Extraction",
+              "signature": "The protagonist passes to a limiting or idealized object that encodes the essential behavior of the original system.",
+              "anchor": "tangent flow analysis"
+            },
+            {
+              "name": "Ancient Solution Reduction",
+              "signature": "The protagonist replaces a finite-time problem with an eternal or pre-history object that carries the same structural fingerprint.",
+              "anchor": "rigidity statements about ancient solutions"
+            },
+            {
+              "name": "Symmetry Rigidity Lock",
+              "signature": "The protagonist shows that imposing a symmetry assumption forces the object into a unique or highly constrained form.",
+              "anchor": "rigidity under symmetry assumption"
+            },
+            {
+              "name": "Curvature Pinching",
+              "signature": "The protagonist establishes quantitative bounds that compress the range of admissible geometric states.",
+              "anchor": "pinching estimates"
+            },
+            {
+              "name": "Model Space Comparison",
+              "signature": "The protagonist benchmarks the object against a known reference structure to identify or rule out configurations.",
+              "anchor": "reduction to model space comparison"
+            },
+            {
+              "name": "Blowup Rescaling",
+              "signature": "The protagonist rescales the system near a critical point to reveal the local structure at arbitrarily fine resolution.",
+              "anchor": "classify singularity types via blowup analysis"
+            },
+            {
+              "name": "Soliton Structural Inventory",
+              "signature": "The protagonist enumerates the self-similar or stationary solutions that can appear, forming a complete list of candidates.",
+              "anchor": "structural classification of solitons"
+            },
+            {
+              "name": "Exhaustive Case Closure",
+              "signature": "The protagonist systematically eliminates all candidate configurations except those that survive every constraint, yielding a complete classification.",
+              "anchor": "classified Type-I Ricci-flow singularity models"
+            }
+          ]
+        },
+        "calibrated_geometry_harvey_lawson": {
+          "arc_id": "calibrated_geometry_harvey_lawson",
+          "moves": [
+            {
+              "name": "Ambient Object Introduction",
+              "signature": "A global structure is defined on the containing space before any subobject is examined.",
+              "anchor": "Harvey-Lawson introduced calibrations: closed forms"
+            },
+            {
+              "name": "Universal Bound Imposition",
+              "signature": "A inequality is declared that constrains all candidates in the domain simultaneously.",
+              "anchor": "pullback to any submanifold is at most the volume form"
+            },
+            {
+              "name": "Equality Case Designation",
+              "signature": "Within a universal inequality, the subset achieving exact equality is singled out as the privileged class.",
+              "anchor": "with equality on calibrated submanifolds"
+            },
+            {
+              "name": "Automatic Consequence Extraction",
+              "signature": "Membership in the privileged class is shown to entail a strong global property without additional argument.",
+              "anchor": "Calibrated submanifolds are automatically area-minimizing"
+            },
+            {
+              "name": "Closure Condition Leverage",
+              "signature": "A topological or differential closure property of the ambient object is used to transfer local comparisons into global conclusions.",
+              "anchor": "closed forms whose pullback"
+            },
+            {
+              "name": "Canonical Example Enumeration",
+              "signature": "Concrete instances are listed to demonstrate that the abstract class is non-empty and geometrically rich.",
+              "anchor": "Examples: K\u00e4hler, special Lagrangian, associative, Cayley"
+            },
+            {
+              "name": "Comparison Principle Deployment",
+              "signature": "A pre-established inequality between two quantities is invoked as the engine of the main result.",
+              "anchor": "comparison principle"
+            },
+            {
+              "name": "Structural Characterization Pursuit",
+              "signature": "The investigation shifts from existence to a complete description of what the privileged class looks like.",
+              "anchor": "structure theorems on calibrated submanifolds"
+            },
+            {
+              "name": "Constructive Method Specification",
+              "signature": "The mechanism for producing instances of the privileged class is made explicit as a reusable procedure.",
+              "anchor": "differential-form construction"
+            },
+            {
+              "name": "Inequality-to-Class Reduction",
+              "signature": "The problem of identifying optimal objects is reduced to finding those that satisfy an equality condition in a known inequality.",
+              "anchor": "identify a closed form satisfying comparison inequality; characterize equality case as canonical class"
+            }
+          ]
+        },
+        "de_giorgi_regularity": {
+          "arc_id": "de_giorgi_regularity",
+          "moves": [
+            {
+              "name": "Problem Reframing",
+              "signature": "Recast an intractable global question as a local, scale-bounded one to make it tractable.",
+              "anchor": "oscillation decay across nested balls"
+            },
+            {
+              "name": "Scale Descent",
+              "signature": "Establish that a quantity shrinks predictably as the domain of observation is refined, creating a convergence ladder.",
+              "anchor": "prove uniform decay in finer scales"
+            },
+            {
+              "name": "Iterative Inequality Chain",
+              "signature": "Link successive estimates so each step's output feeds the next as input, compounding improvement across iterations.",
+              "anchor": "iterative integral inequality"
+            },
+            {
+              "name": "Norm Translation",
+              "signature": "Convert a bound expressed in one measurement norm into a bound in a stronger norm, elevating the quality of control.",
+              "anchor": "iterative L^\u221e to L^p estimate"
+            },
+            {
+              "name": "Structural Invariant Isolation",
+              "signature": "Identify a relationship that holds unchanged under rescaling, then exploit it as a fixed backbone for all subsequent reasoning.",
+              "anchor": "structural reduction to scale-invariant inequality"
+            },
+            {
+              "name": "Nested Domain Restriction",
+              "signature": "Confine analysis to a shrinking sequence of regions, using containment to enforce tighter and tighter constraints.",
+              "anchor": "nested balls"
+            },
+            {
+              "name": "Regularity Bootstrapping",
+              "signature": "Use a weak initial regularity result as the seed from which progressively stronger regularity is derived.",
+              "anchor": "minimizers of elliptic functionals are H\u00f6lder continuous"
+            },
+            {
+              "name": "Long-Standing Problem Resolution",
+              "signature": "Demonstrate that a canonical open problem is a corollary of the newly constructed framework, validating its scope.",
+              "anchor": "Resolved Hilbert's 19th problem"
+            }
+          ]
+        },
+        "moser_harnack": {
+          "arc_id": "moser_harnack",
+          "moves": [
+            {
+              "name": "Scope Expansion",
+              "signature": "The protagonist identifies a narrow classical result and deliberately widens the class of objects to which it applies.",
+              "anchor": "Generalizes classical Harnack from harmonic functions to a wide class of operators"
+            },
+            {
+              "name": "Norm Ladder Construction",
+              "signature": "A sequence of intermediate measurement scales is assembled so that control at one level feeds the next.",
+              "anchor": "chain of L^p estimates"
+            },
+            {
+              "name": "Iterative Bootstrapping",
+              "signature": "Weak quantitative control is repeatedly refined through a self-reinforcing loop until a stronger bound is reached.",
+              "anchor": "iteration scheme converting L^p control to L^\u221e control"
+            },
+            {
+              "name": "Scale-Local Inequality",
+              "signature": "A structural inequality is established that holds independently at each resolution level, enabling uniform treatment across scales.",
+              "anchor": "structural inequality at each scale"
+            },
+            {
+              "name": "Energy Absorption",
+              "signature": "Boundary or derivative terms are folded back into the interior estimate via integration by parts, eliminating unwanted remainders.",
+              "anchor": "integration by parts"
+            },
+            {
+              "name": "Gradient Energy Bound",
+              "signature": "A localized energy inequality is derived that controls gradient norms by the solution's own magnitude over a slightly larger region.",
+              "anchor": "Caccioppoli inequalities"
+            },
+            {
+              "name": "Oscillation Compression",
+              "signature": "The ratio between the supremum and infimum of a quantity over a domain is bounded by a universal constant, collapsing its range.",
+              "anchor": "sup_K u \u2264 C \u00b7 inf_K u for any compact K"
+            },
+            {
+              "name": "Exponential Integrability Leverage",
+              "signature": "A lemma guaranteeing that functions with bounded mean oscillation are exponentially integrable is invoked to upgrade a weak regularity statement.",
+              "anchor": "John-Nirenberg lemma"
+            },
+            {
+              "name": "Divergence Structure Exploitation",
+              "signature": "The specific algebraic form of the operator is used to convert a differential condition into an integral one amenable to estimation.",
+              "anchor": "elliptic divergence-form equations"
+            },
+            {
+              "name": "Positivity Constraint Use",
+              "signature": "A sign restriction on the object under study is treated as an active resource that makes logarithmic or ratio-based arguments valid.",
+              "anchor": "positive solutions"
+            },
+            {
+              "name": "Universal Constant Extraction",
+              "signature": "The argument is arranged so that the bounding constant depends only on structural parameters, not on the particular solution.",
+              "anchor": "sup_K u \u2264 C \u00b7 inf_K u"
+            }
+          ]
+        }
+      },
+      "gemini": {
+        "hamilton_mean_curvature": {
+          "arc_id": "hamilton_mean_curvature",
+          "moves": [
+            {
+              "name": "Define Intrinsic Evolution",
+              "signature": "Postulate a rule where an object's change is governed by its own local properties.",
+              "anchor": "surface evolves by velocity equal to mean curvature vector"
+            },
+            {
+              "name": "Derive Property Dynamics",
+              "signature": "Formulate equations that govern how key abstract quantities of the system change over time.",
+              "anchor": "PDE techniques on geometric quantities"
+            },
+            {
+              "name": "Identify Invariant Conditions",
+              "signature": "Show that if a system starts with a certain property, it maintains that property throughout its evolution.",
+              "anchor": "preserved geometric inequalities via maximum principle"
+            },
+            {
+              "name": "Establish Local Regularity",
+              "signature": "Prove that the state of the system at one point constrains the state at nearby points in a controlled way.",
+              "anchor": "Harnack inequalities"
+            },
+            {
+              "name": "Constrain with Knowns",
+              "signature": "Bound the behavior of a complex system by comparing it to simpler, known systems that act as upper or lower limits.",
+              "anchor": "barrier comparisons"
+            },
+            {
+              "name": "Reduce to Simpler Dynamics",
+              "signature": "Extract a simpler, lower-dimensional dynamic system from the full system's invariants to analyze its behavior.",
+              "anchor": "ODE comparison for ODEs derived from PDE invariants"
+            },
+            {
+              "name": "Normalize for Invariance",
+              "signature": "Rescale the evolving system to factor out trivial changes and reveal the evolution of its essential properties.",
+              "anchor": "preserving relative shape under rescaling"
+            },
+            {
+              "name": "Converge to Canonical Form",
+              "signature": "Demonstrate that a dynamic process drives any initial state within a class towards a single, simple, universal final state.",
+              "anchor": "contracts to a round point"
+            }
+          ]
+        },
+        "yang_mills_heat_flow": {
+          "arc_id": "yang_mills_heat_flow",
+          "moves": [
+            {
+              "name": "Frame as Optimization",
+              "signature": "Define a quantitative measure of 'energy' for objects in a space, allowing problems to be solved by finding minima.",
+              "anchor": "...gradient flow of Yang-Mills functional."
+            },
+            {
+              "name": "Evolve Toward Simplicity",
+              "signature": "Introduce a process that continuously deforms objects in a space to minimize a complexity or energy functional.",
+              "anchor": "Heat flow on space of connections..."
+            },
+            {
+              "name": "Extend to Infinite Domain",
+              "signature": "Apply a method, typically used in finite-dimensional settings, to an infinite-dimensional space of possibilities.",
+              "anchor": "...gradient flow on infinite-dimensional manifold..."
+            },
+            {
+              "name": "Characterize Terminal States",
+              "signature": "Focus analysis on the fixed points or equilibrium states of a dynamic process, treating them as canonical representatives.",
+              "anchor": "...convergence to critical points..."
+            },
+            {
+              "name": "Map Process to Structure",
+              "signature": "Establish a correspondence between the limiting configurations of a process and the points of a significant abstract space.",
+              "anchor": "...analyzing limit configurations as moduli structure."
+            },
+            {
+              "name": "Model Singular Behavior",
+              "signature": "Investigate how a system behaves when it fails to converge smoothly, identifying characteristic patterns of collapse or concentration.",
+              "anchor": "...bubbling/concentration analysis..."
+            },
+            {
+              "name": "Augment with Limit Points",
+              "signature": "Formally add the outcomes of degenerate behaviors as new boundary points to a space, making it topologically complete.",
+              "anchor": "...moduli-space compactification."
+            },
+            {
+              "name": "Derive Invariants from Structure",
+              "signature": "Extract numerical or algebraic quantities from the properties of a constructed space to classify objects in a different domain.",
+              "anchor": "...leading to Donaldson invariants distinguishing smooth structures..."
+            }
+          ]
+        },
+        "harmonic_map_flow": {
+          "arc_id": "harmonic_map_flow",
+          "moves": [
+            {
+              "name": "Reframe as Dynamic Process",
+              "signature": "Recast a search for a static optimal state as an evolutionary process designed to converge to it.",
+              "anchor": "Harmonic map flow"
+            },
+            {
+              "name": "Define a Potential Function",
+              "signature": "Establish a scalar quantity that measures the desirability or fitness of any given state in the system.",
+              "anchor": "energy functional"
+            },
+            {
+              "name": "Follow Steepest Descent",
+              "signature": "Define the system's evolution as a path that locally minimizes a chosen potential function at every step.",
+              "anchor": "gradient flow"
+            },
+            {
+              "name": "Impose Environmental Constraint",
+              "signature": "Introduce a structural assumption on the target space or environment that makes the problem tractable.",
+              "anchor": "when target has non-positive curvature"
+            },
+            {
+              "name": "Leverage Constraint for Monotonicity",
+              "signature": "Show how the imposed environmental constraint guarantees that the potential function will consistently decrease.",
+              "anchor": "non-positive-curvature monotonicity"
+            },
+            {
+              "name": "Select Analytic Framework",
+              "signature": "Choose a formal language or set of mathematical tools appropriate for analyzing the system's dynamics.",
+              "anchor": "parabolic PDE techniques"
+            },
+            {
+              "name": "Establish Bounding Metric",
+              "signature": "Use analytic tools to prove that a key quantity governing the system's state remains within finite limits.",
+              "anchor": "energy estimates"
+            },
+            {
+              "name": "Prove Stability and Arrival",
+              "signature": "Demonstrate that the process can continue indefinitely without catastrophic failure and that it ultimately reaches the desired end-state.",
+              "anchor": "long-time existence + convergence"
+            }
+          ]
+        },
+        "schoen_yau_positive_mass": {
+          "arc_id": "schoen_yau_positive_mass",
+          "moves": [
+            {
+              "name": "Framework Transposition",
+              "signature": "Reframing a problem from one domain into the language and machinery of another, seemingly unrelated domain.",
+              "anchor": "minimal surface theory"
+            },
+            {
+              "name": "Alternative Pathfinding",
+              "signature": "Developing a new method to reach a known conclusion, deliberately avoiding a previously established toolset.",
+              "anchor": "spinors-free proof"
+            },
+            {
+              "name": "Defining Operational Boundaries",
+              "signature": "Specifying the precise conditions or environment under which the analysis holds, often mirroring the problem's physical or logical constraints.",
+              "anchor": "asymptotically-flat manifolds"
+            },
+            {
+              "name": "Isolating a Key Object",
+              "signature": "Identifying a central object within a framework whose properties are sufficient to resolve the larger question.",
+              "anchor": "area-minimizing surfaces"
+            },
+            {
+              "name": "Sub-Class Property Exploitation",
+              "signature": "Focusing the analysis on a specific, well-behaved subset of a key object to leverage its unique properties.",
+              "anchor": "stable minimal surfaces"
+            },
+            {
+              "name": "Dimensionality Reduction",
+              "signature": "Solving a problem by first addressing an analogous, simpler version in a lower-dimensional space.",
+              "anchor": "reduction to lower-dimensional case"
+            },
+            {
+              "name": "Convergent Evidence Synthesis",
+              "signature": "Aggregating multiple independent constraints or estimates to collectively force a single conclusion.",
+              "anchor": "combining geometric estimates"
+            },
+            {
+              "name": "Establishing a Lower Bound",
+              "signature": "Demonstrating that a key quantity cannot fall below a specific, critical threshold.",
+              "anchor": "mass... is non-negative"
+            },
+            {
+              "name": "Characterizing the Extremal Case",
+              "signature": "Defining the unique conditions under which a system achieves a previously established bound or limit.",
+              "anchor": "zero iff system is Minkowski"
+            }
+          ]
+        },
+        "brendle_lawson_3manifold": {
+          "arc_id": "brendle_lawson_3manifold",
+          "moves": [
+            {
+              "name": "Defining a Tractable Subdomain",
+              "signature": "Restrict the problem to a specific regime defined by a simplifying initial condition, enabling an otherwise intractable analysis.",
+              "anchor": "under non-negative curvature"
+            },
+            {
+              "name": "Asymptotic Local Analysis",
+              "signature": "Characterize a system's behavior at a critical point by analyzing the simplified model that emerges at an infinitesimal scale.",
+              "anchor": "tangent flow analysis"
+            },
+            {
+              "name": "Imposing Canonical Form",
+              "signature": "Demonstrate that any object meeting a specific set of criteria must be identical to one of a small number of known canonical forms.",
+              "anchor": "rigidity statements"
+            },
+            {
+              "name": "Cataloging Invariant Forms",
+              "signature": "Identify and exhaustively categorize all special solutions that maintain their essential form under the system's evolution.",
+              "anchor": "structural classification of solitons"
+            },
+            {
+              "name": "Parameter Range Contraction",
+              "signature": "Constrain the possible configurations of a system by proving that a key variable must lie within a narrow quantitative range.",
+              "anchor": "pinching estimates"
+            },
+            {
+              "name": "Reduction to Archetype",
+              "signature": "Simplify a complex problem by demonstrating that any unknown case is sufficiently close to an element from a pre-defined library of simple models.",
+              "anchor": "reduction to model space comparison"
+            },
+            {
+              "name": "Systematic Categorization",
+              "signature": "Decompose a complex domain into a complete set of mutually exclusive categories defined by core properties.",
+              "anchor": "classify singularity types"
+            },
+            {
+              "name": "Imposing Idealized Structure",
+              "signature": "Solve a tractable version of the problem by assuming an ideal property, then use that result to inform the general case.",
+              "anchor": "rigidity under symmetry assumption"
+            }
+          ]
+        },
+        "calibrated_geometry_harvey_lawson": {
+          "arc_id": "calibrated_geometry_harvey_lawson",
+          "moves": [
+            {
+              "name": "Introducing a Bounding Object",
+              "signature": "Define a new entity whose primary function is to establish an upper or lower limit on a property for a class of objects.",
+              "anchor": "introduced calibrations: closed forms whose pullback... is at most the volume form"
+            },
+            {
+              "name": "Defining by Relational Constraint",
+              "signature": "Characterize a new concept not by its intrinsic properties, but by its interaction with other existing objects.",
+              "anchor": "pullback to any submanifold is at most the volume form"
+            },
+            {
+              "name": "Elevating the Equality Case",
+              "signature": "Single out the specific scenario where a general inequality becomes an equality, giving it a special name and status.",
+              "anchor": "with equality on calibrated submanifolds"
+            },
+            {
+              "name": "Claiming an Automatic Consequence",
+              "signature": "Assert that any object meeting a specific set of criteria necessarily and directly possesses another important, often sought-after, property.",
+              "anchor": "Calibrated submanifolds are automatically area-minimizing"
+            },
+            {
+              "name": "Grounding with Concrete Exemplars",
+              "signature": "Validate a new abstract framework by showing that several known, important examples from the field are special instances of it.",
+              "anchor": "Examples: K\u00e4hler, special Lagrangian, associative, Cayley"
+            },
+            {
+              "name": "Specifying a Constructive Method",
+              "signature": "Outline a procedure for creating instances of the newly defined object or tool.",
+              "anchor": "differential-form construction"
+            },
+            {
+              "name": "Articulating the Core Mechanism",
+              "signature": "Explicitly state the fundamental principle or inequality that governs the behavior of the system being introduced.",
+              "anchor": "comparison principle"
+            },
+            {
+              "name": "Delineating a Solution Class",
+              "signature": "Formally describe the shared properties and nature of all objects that satisfy the ideal condition of the framework.",
+              "anchor": "structure theorems on calibrated submanifolds"
+            },
+            {
+              "name": "Establishing a Search Protocol",
+              "signature": "Define a clear procedure for finding objects that satisfy the core defining constraint of the new framework.",
+              "anchor": "identify a closed form satisfying comparison inequality"
+            },
+            {
+              "name": "Canonizing the Ideal State",
+              "signature": "Frame the special case where the defining constraint is met with equality as a canonical or fundamental class of objects.",
+              "anchor": "characterize equality case as canonical class"
+            }
+          ]
+        },
+        "de_giorgi_regularity": {
+          "arc_id": "de_giorgi_regularity",
+          "moves": [
+            {
+              "name": "Leverage Optimality Principle",
+              "signature": "Using the fact that a solution minimizes a certain quantity to derive constraints on its local behavior.",
+              "anchor": "minimizers of elliptic functionals"
+            },
+            {
+              "name": "Reveal Latent Regularity",
+              "signature": "Demonstrating that a solution, defined under weak assumptions, inherently possesses stronger, more well-behaved properties.",
+              "anchor": "regularity of variational solutions"
+            },
+            {
+              "name": "Hierarchical Localization",
+              "signature": "Analyzing a system's properties within a sequence of progressively smaller, nested domains.",
+              "anchor": "nested balls"
+            },
+            {
+              "name": "Establish Geometric Decay",
+              "signature": "Proving that a measure of irregularity decreases by a constant factor at each successive level of refinement.",
+              "anchor": "oscillation decay"
+            },
+            {
+              "name": "Isolate Scale-Free Dynamics",
+              "signature": "Reducing a complex, scale-dependent problem to a simpler, scale-invariant one that captures the essential dynamics.",
+              "anchor": "reduction to scale-invariant inequality"
+            },
+            {
+              "name": "Recursive Bounding",
+              "signature": "Applying an inequality repeatedly to itself to progressively tighten a bound on a quantity of interest.",
+              "anchor": "iterative integral inequality"
+            },
+            {
+              "name": "Property Bootstrapping",
+              "signature": "Using an iterative process to leverage a weaker, known property to establish a progressively stronger, desired one.",
+              "anchor": "Moser iteration"
+            },
+            {
+              "name": "Bridge Disparate Measures",
+              "signature": "Creating an iterative link between different formal measures of a system's magnitude to transfer properties from one to another.",
+              "anchor": "L^\u221e to L^p estimate"
+            },
+            {
+              "name": "Prove Uniform Refinement",
+              "signature": "Demonstrating that a key property improves predictably and consistently as the scale of observation becomes finer, regardless of location.",
+              "anchor": "uniform decay in finer scales"
+            }
+          ]
+        },
+        "moser_harnack": {
+          "arc_id": "moser_harnack",
+          "moves": [
+            {
+              "name": "Expanding the Known Domain",
+              "signature": "Demonstrating that a known principle holds true for a broader, more complex set of conditions than previously established.",
+              "anchor": "Generalizes classical Harnack from harmonic functions to a wide class of operators."
+            },
+            {
+              "name": "Escalating Control via Iteration",
+              "signature": "Repeatedly applying a process to transform a weaker, aggregate measure into a stronger, pointwise guarantee.",
+              "anchor": "iteration scheme converting L^p control to L^\u221e control"
+            },
+            {
+              "name": "Applying a Scale-Invariant Lemma",
+              "signature": "Using a single core relationship repeatedly across different scales or levels of analysis.",
+              "anchor": "structural inequality at each scale"
+            },
+            {
+              "name": "Forging a Chain of Estimates",
+              "signature": "Establishing a series of progressively tighter constraints, where each step builds upon the previous one.",
+              "anchor": "chain of L^p estimates"
+            },
+            {
+              "name": "Bounding Change by State",
+              "signature": "Deriving a constraint on a system's rate of change from a constraint on the system's state.",
+              "anchor": "Caccioppoli inequalities"
+            },
+            {
+              "name": "Bridging Disparate Formalisms",
+              "signature": "Importing a result from a different conceptual framework to connect two previously unrelated properties within the current problem.",
+              "anchor": "John-Nirenberg lemma"
+            },
+            {
+              "name": "Transforming via Duality",
+              "signature": "Recasting an expression into a different form by leveraging a fundamental inverse relationship between operators.",
+              "anchor": "integration by parts"
+            },
+            {
+              "name": "Establishing a Uniformity Principle",
+              "signature": "Proving that the ratio between the maximum and minimum values within any given region is bounded by a universal constant.",
+              "anchor": "satisfy Harnack inequality"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

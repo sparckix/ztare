@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+  "contract_id": "ns_route1_clay_adjacency_macro_20260513_tick294",
+  "contract_question": "Within <=10 RD ticks, produce a materially Clay-proof-adjacent PDE estimate station in Lean: a compiled source object/theorem reducing route-1 strictness to at most one named non-scalar PDE estimate, rather than multiple wrapper/provenance fields.",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 420.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_regression_or_import_issue": 0.1,
+    "mean_free_poincare_requires_new_localization_lemma": 0.18,
+    "multiple_unpaid_wrapper_fields_remain": 0.38,
+    "same_carrier_or_fanout_receipts_do_not_pay_numeric_bound": 0.14,
+    "transport_flux_visibility_not_sufficiently_typed": 0.2
+  },
+  "forecasted_at": "2026-05-13T21:55:09Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.22,
+  "p_success": 0.18,
+  "rationale_short": "Well-factored and compiling, but several independent unpaid PDE fields remain; ten ticks only works if shard B absorbs most wrapper fields and shard C becomes a named residual.",
+  "read_only_attestation": true
+}

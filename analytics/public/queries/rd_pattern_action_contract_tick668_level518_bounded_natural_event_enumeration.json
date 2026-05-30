@@ -1,0 +1,31 @@
+{
+  "tick_id": "tick668",
+  "level": 518,
+  "contract_id": "tick668_level518_bounded_natural_event_enumeration_source",
+  "selected_pattern_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second",
+    "GP-219 estimate-craft"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018",
+    "no assumed Fin enumeration",
+    "no unbounded Nat index",
+    "no bare Prop choice",
+    "no endpoint-capacity substitute",
+    "no shell-only enumeration",
+    "no post-payoff selector"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level517 assumes a Fin-valued selected-bad-node event-prefix enumeration",
+    "check": "G-BOUNDED-NATURAL-EVENT-ENUMERATION plus Lean conversion from bounded Nat witness to Fin witness",
+    "positive_construction": "construct L3AEventPrefixEnumerationTypedCoveragePacketSource from bounded natural event enumeration"
+  },
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level518_bounded_natural_event_enumeration_receipt.json"
+  ],
+  "nearest_universal_op": "pec_b: convert bounded event enumeration into structural packet data",
+  "nearest_confuser": "Level517 assumed Fin-valued enumeration",
+  "remaining_live_vector": "derive selectedBadNodeNaturalEventEnumeration from event generation and finite prefix coverage geometry"
+}

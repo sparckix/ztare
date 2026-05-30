@@ -1,0 +1,44 @@
+{
+  "actual_cost_agent_minutes": 21.0,
+  "artifact_hash": "4ada5bd5586ca915f3c99c210a9795b6e844b656e60adbb5dc7023b8c9deab9e",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "meta_darwin_proxy",
+    "banach_gpt55_xhigh"
+  ],
+  "compile_status": "lean_passed_no_sorry",
+  "contract_id": "ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426",
+  "counterfactual_value_bucket": "conditional_surface_with_negative_audit",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_n8_beta",
+    "audit_eligibility",
+    "same_ledger_facts",
+    "gpt55_xhigh_negative",
+    "gp233_positive_with_nogo"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "eligibility_not_sourced",
+    "pressure_flat_branches_still_open",
+    "four_object_source_false"
+  ],
+  "new_next_action": "Prove the narrower analytic eligibility theorem: residual fresh nodes are audit-eligible nonflat/non-inherited/non-flat nodes, or route to flat-radius, pressure visibility, or beta incidence residuals.",
+  "old_next_action": "Prove ResidualFreshExcessSameLedgerAuditEventSource directly from residual fresh excess and audit/coherence.",
+  "preconditioner_effect": "Kept the tick as conditional eligibility data and avoided claiming residual fresh excess alone constructs the audit/ledger stack.",
+  "preconditioner_source": "Banach GPT-5.5 xhigh negative audit + local dependent theorem compile",
+  "realized_failure_mode_ids": [
+    "analytic_selection_still_open",
+    "eligibility_conditional_not_sourced",
+    "banach_negative_on_four_object_source",
+    "same_ledger_facts_derived"
+  ],
+  "resolution_note": "Added ResidualFreshExcessAuditEligibilityData plus residualFreshAuditEventIndex and theorems deriving bad-node, ledger weight, and ledger gain matches from FreshPacketAuditSameEventStreamCoherence. The patch lowers residualBranchCreatesAuditSelection to per-node eligibility data; it does not source eligibility from residual fresh excess alone. Banach xhigh returned a negative verdict on sourcing from only the four existing objects, and that limitation is recorded in the guard.",
+  "resolved_at": "2026-05-14T22:43:45Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

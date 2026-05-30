@@ -1,0 +1,26 @@
+{
+  "_renamed_from": "claude",
+  "action_change_recommendation": "Run with Franklin/Noether anchors; shade slightly conservative given v23.02 0/108 anchor on heldout-unsolved and v23.06 0/90 on train-row cross-theorem transfer \u2014 both show zero positives historically on this row class.",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+  "contract_question": "Will pure-tactic decision-procedure cascade (simp/aesop/omega/linarith/ring/norm_num/decide/field_simp/rfl/tauto/polyrith/nlinarith) close (target_equivalent_closure under GPT-5.5 review contract) AT LEAST 1 of the 15 canonical train rows where positives demonstrably exist (a non-zero deterministic floor)? Threshold: at least 1 row \u00d7 1 distinct witness signature, 0 false positives.",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_15_rows_need_specific_mathlib_lemma_application_pure_tactic_dead": 0.06,
+    "all_pure_tactics_fail_zero_positives": 0.36,
+    "false_positive_via_compile_but_wrong_target": 0.03,
+    "indirect_simp_set_leakage_audit_required_post_hoc": 0.17,
+    "simp_or_aesop_closes_at_least_one_simple_train_row": 0.38
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T01:47:32Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.4,
+  "p_regression": 0.05,
+  "p_success": 0.55,
+  "rationale_short": "RD aggregate Franklin 0.62 + Noether 0.62 shaded down by historical zero-positive priors on this row population. The probability that ANY pure tactic closes ANY train row is plausibly 0.55-0.65; shading toward 0.55 because the same row population just gave 0/90 under a different blind generator (v23.06).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,200 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:40:08Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 19.0,
+    "expected_value": 0.26838773474051547,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.07,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.030000000000000002,
+    "p_success": 0.735757196685567,
+    "participants": [
+      {
+        "agent_id": "Hopper",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2048_charfun_dual_source_contract_correction/hopper.json",
+        "forecasted_at": "2026-05-14T17:40:04Z",
+        "p_success": 0.71,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Shannon",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2048_charfun_dual_source_contract_correction/shannon.json",
+        "forecasted_at": "2026-05-14T17:40:04Z",
+        "p_success": 0.76,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "corrected_template_still_semantic_not_compile",
+        "p": 0.31999999999999995
+      },
+      {
+        "mode": "historic_names_not_source_safe",
+        "p": 0.30500000000000005
+      },
+      {
+        "mode": "contract_too_narrow",
+        "p": 0.195
+      },
+      {
+        "mode": "old_candidate_not_fully_quarantined",
+        "p": 0.18
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2048_charfun_dual_source_contract_correction.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2048_charfun_dual_source_contract_correction.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2048_charfun_dual_source_contract_correction.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2048_charfun_dual_source_contract_correction.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2048_charfun_dual_source_contract_correction.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 22.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:39:50Z",
+    "created_by": "Codex",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Artifact analytics/public/leanmill/results/v2048_charfun_dual_source_contract_correction.json has status passed, corrected theorem family charFunDual, target variable L, at least two corrected candidate templates, old charFun_map_eq/t candidate forbidden, replay_run=false, training_now=false, gnn_blocked=true.",
+    "question": "Will v20.48 produce a source-safe charFunDual/L correction packet for current_scale_0329 after the v20.47 historic target-shape audit, with no replay/training and the old charFun_map_eq/t canary forbidden?",
+    "success_threshold": "corrected charFunDual source contract and candidates emitted with old canary forbidden",
+    "task_type": "pre_gnn_source_contract_correction"
+  },
+  "contract_id": "gp225_v2048_charfun_dual_source_contract_correction",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Hopper",
+        "raw_agent_ids": [
+          "Hopper"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Shannon",
+        "raw_agent_ids": [
+          "Shannon"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Hopper",
+      "Shannon"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Emit corrected source contract and mark all output static-only; canary replay needs a new GP-230 gate.",
+        "agent_id": "Hopper",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2048_charfun_dual_source_contract_correction/hopper.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T17:40:04Z",
+        "p_success": 0.71,
+        "rationale_short": "The correction is likely because the historic trace names dual support lemmas, but replay readiness remains unproven.",
+        "specific_failure_mode_ids": [
+          "corrected_template_still_semantic_not_compile",
+          "contract_too_narrow"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed with static correction only; do not replay until corrected contract is separately priced.",
+        "agent_id": "Shannon",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2048_charfun_dual_source_contract_correction/shannon.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T17:40:04Z",
+        "p_success": 0.76,
+        "rationale_short": "v20.47 gives enough historic evidence to correct theorem family and variable shape without running Lean replay.",
+        "specific_failure_mode_ids": [
+          "historic_names_not_source_safe",
+          "corrected_template_still_semantic_not_compile"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "Shannon",
+      "Hopper"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:41:21Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.26838773474051547,
+      "forecast_spread": 0.05,
+      "p_success": 0.735757196685567,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.4244
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 19.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.735757196685567,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "corrected_template_still_semantic_not_compile",
+        "p": 0.31999999999999995
+      },
+      {
+        "mode": "historic_names_not_source_safe",
+        "p": 0.30500000000000005
+      },
+      {
+        "mode": "contract_too_narrow",
+        "p": 0.195
+      },
+      {
+        "mode": "old_candidate_not_fully_quarantined",
+        "p": 0.18
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.07085000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:41:26Z"
+  }
+}

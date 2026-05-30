@@ -1,0 +1,68 @@
+{
+  "contract_id": "tick626-c3-cz-offdiagonal-pair",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.0144,
+  "mean_log_score": -0.12783337150988489,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": false,
+    "compile_status": null,
+    "contract_id": "tick626-c3-cz-offdiagonal-pair",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": "Killed by amnesia cross-reference to already-adversary-survived tick591 (alias #8 shared-support) + tick596 (strengthened to entire \u03bd-injection class); a fresh codex adversary on a settled prior = the GAP-G dispatch-economy anti-pattern",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "LEMMA FAILED (honest, not laundered): the CZ-off-diagonal complementary-scaling pair for C3 is tick591/596 shared-support alias #8 \u2014 the separator mass certifying capacity IS the CZ-source mass \u21d2 supports coincide \u21d2 off-diagonal/Schur gain provably unobtainable; multi-shell case B never triggers (single-shell forced). Real amnesia precheck prevented fabricating the 8th recurrence as a novel lemma. Genuinely-untried C3 door surfaced = construction/falsification of the obstruction (tick627).",
+    "resolved_at": "2026-05-17T02:05:40Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:51Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "claude:RD",
+      "brier": 0.0144,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.12783337150988489,
+      "p_success": 0.12,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T02:04:51Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T02:05:40Z",
+        "resolved_at": "2026-05-17T02:05:40Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 72.0,
+  "artifact_hash": "d9ff332a7233f2047ba95b2af5be21d71e0d9f3b2484c9bac1dc3170dacb5def",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "pass",
+  "contract_id": "tick668_level505_cover_selection_target_event_candidate_source",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_trackb",
+    "level505",
+    "cover_selection"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [],
+  "new_next_action": "prove targetCover totality and cover-to-final-slot/incidence laws from same-tree eventData, prefix domination, and bad-center incidence geometry",
+  "old_next_action": "construct targetEventCandidate with horizon and incidence proofs from same-tree eventData/prefix domination/horizon geometry",
+  "ordering_override_no_codex": "No live independent forecast channel emitted for this local meso continuation; RD forecast was registered before edits and outcome records the ordering override.",
+  "ordering_override_no_independent_forecaster": "No live independent forecast channel emitted for this local meso continuation; RD forecast was registered before edits and outcome records the ordering override.",
+  "preconditioner_effect": "prevented cover/eventData label-only laundering and sharpened the next theorem to target-cover totality plus cover-to-horizon/incidence",
+  "preconditioner_source": "G-TARGET-EVENT-CANDIDATE-COVER-SELECTION plus pattern action contract",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Level505 compiled: selectedEventIndex from targetCover now derives the Level504 targetEventCandidate horizon and incidence fields; strict gate, PDE workbench, targeted Lake build, and workbench tests passed.",
+  "resolved_at": "2026-05-27T05:23:11Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

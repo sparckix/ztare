@@ -1,0 +1,28 @@
+# Recursive-Gain Candidates
+
+_Generated 2026-05-16T21:37:33.341411+00:00_  
+_Total:_ 18
+
+Aggregated across all mining surfaces (cross-audit, structural-analogy, closure-pattern, reference-graph, process-catalog). Each row is a recursive-gain bet: a concrete move the operator could promote to compound apparatus capability.
+
+| Confidence | Cost | Mechanism | Entity | Source | Rationale |
+|---|---|---|---|---|---|
+| `high` | `day` | `retire_or_widen_can_handle` | `R10` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R10 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `day` | `retire_or_widen_can_handle` | `R11` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R11 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `day` | `retire_or_widen_can_handle` | `R13` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R13 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `day` | `retire_or_widen_can_handle` | `R14` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R14 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `day` | `retire_or_widen_can_handle` | `R15` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R15 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `day` | `retire_or_widen_can_handle` | `R16` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R16 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `day` | `retire_or_widen_can_handle` | `R22` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R22 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `day` | `retire_or_widen_can_handle` | `R23` | `cross_audit` | Cross-audit (2 independent scorecards) flagged R23 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost). |
+| `high` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/protocol/GP-075_rubric_for_unkn` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md (one-shot) is structurally analogous to research_areas/private/seams/protocol/GP-189_ns_continuation_ |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/engine/mutator/GP-030_determini` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md (one-shot) is structurally analogous to research_areas/private/seams/protocol/GP-189_ns_ |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/charters/GP-154_T14_v4_external` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md (one-shot) is structurally analogous to research_areas/private/seams/reflexive/cross_audit_ |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/protocol/GP-075_rubric_for_unkn` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md (one-shot) is structurally analogous to research_areas/private/seams/reflexive/cross_audit_convergent |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/charters/GP-154_T14_v4_external` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md (one-shot) is structurally analogous to research_areas/private/seams/apparatus/cage/GP-157_ |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/engine/mutator/GP-030_determini` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md (one-shot) is structurally analogous to research_areas/private/seams/reflexive/cross_aud |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/protocol/GP-075_rubric_for_unkn` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md (one-shot) is structurally analogous to research_areas/private/seams/apparatus/cage/GP-157_cage_orche |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/engine/mutator/GP-030_determini` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md (one-shot) is structurally analogous to research_areas/private/seams/apparatus/cage/GP-1 |
+| `medium` | `week` | `wire_one_shot_as_loop` | `research_areas/private/seams/charters/GP-154_T14_v4_external` | `structural_analogies` | Structural-analogy miner: research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md (one-shot) is structurally analogous to research_areas/private/seams/protocol/GP-189_ns_con |
+| `high` | `month` | `strange_loop_ZTARE_substrate` | `ZTARE-on-ZTARE-with-external-evidence` | `synthesis` | The Research Director agents (Codex on NS, Claude on gravity, etc.) generate substrate-level findings OUTSIDE the ZTARE evaluation loop. Those findings sit in projects/*/workspace/, papers/*, and the  |
+

@@ -1,0 +1,39 @@
+{
+  "contract_id": "rd-pattern-action-contract-tick668-level550-canonical-last-hit-to-filtered-range",
+  "tick_id": "TICK668",
+  "level": 550,
+  "selected_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "GP-219:pde_estimate_craft_ops",
+    "typed_coverage_packet_appearance",
+    "finite_support_extraction",
+    "finite_image_support",
+    "provenance_edge_direction",
+    "provenance_acyclic_edge"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "filtered-range final-prefix support was sourced from no-late-repeat data",
+      "check": "derive no-late-repeat data internally from canonical last-hit source"
+    },
+    {
+      "residual": "finite fiber could be a downstream target restatement",
+      "check": "finite support/image support receipts fix the domain as Finset.range (supportLength - 1)"
+    },
+    {
+      "residual": "source contraction could form a cycle",
+      "check": "provenance acyclicity receipt forbids Level549/548/547 as Level550 sources"
+    }
+  ],
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level550_canonical_last_hit_to_filtered_range_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level550_finite_support_extraction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level550_finite_image_support_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level550_provenance_edge_direction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level550_provenance_acyclic_edge_receipt.json"
+  ],
+  "positive_forecast": "Canonical last-hit data should construct the filtered-range source through the existing no-late-repeat bridge without importing a downstream filtered-range family.",
+  "nearest_confuser": "no-late-repeat appearance-index data used directly as source",
+  "confuser_distinction": "Level550 consumes canonical last-hit data and constructs no-late-repeat data before filtered-range support is available"
+}

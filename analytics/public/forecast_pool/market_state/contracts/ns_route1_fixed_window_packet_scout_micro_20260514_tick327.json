@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T01:42:07Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 46.5,
+    "expected_value": -36.839999999999996,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.09,
+    "p_needs_new_lemma": 0.15,
+    "p_regression": 0.04,
+    "p_success": 0.74,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick327",
+        "domain": "ns_route1_pde",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_forecast_tick327",
+        "domain": "ns_route1_pde",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "artifact_is_toy_linear_algebra_but_not_same_window_geometry",
+        "p": 0.125
+      },
+      {
+        "mode": "script_finds_only_tautological_scalar_cancellation_not_trace_free_tensor_geometry",
+        "p": 0.12
+      },
+      {
+        "mode": "amplitude_tuning_proves_cancellation_only_by_free_rescaling",
+        "p": 0.11
+      },
+      {
+        "mode": "artifact_not_clear_enough_to_drive_cone_mass_branch",
+        "p": 0.105
+      },
+      {
+        "mode": "orientation_parameterization_has_degenerate_or_zero_tensor_cases",
+        "p": 0.085
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_fixed_window_packet_scout_micro_20260514_tick327.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_fixed_window_packet_scout_micro_20260514_tick327.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_fixed_window_packet_scout_micro_20260514_tick327.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_fixed_window_packet_scout_micro_20260514_tick327.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_fixed_window_packet_scout_micro_20260514_tick327.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 49.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T01:40:23Z",
+    "created_by": "codex_rd",
+    "horizon": "same-session",
+    "layer": "micro",
+    "objective_resolver": "Success iff a local deterministic script runs offline, emits JSON/Markdown under projects/ns_millennium_hunt/workspace/queries, and shows that nonzero symmetric trace-free projected tensors admit positive/negative orientations with exact amplitude-tuned core/sheath cancellation, without mutating the pre-GNN harness.",
+    "question": "Will a deterministic fixed-window trace-free tensor packet scout produce a clear geometry-only same-window cancellation/overflow obstruction artifact for the cone-mass branch?",
+    "success_threshold": "true",
+    "task_type": "numerical_falsifier_scout"
+  },
+  "contract_id": "ns_route1_fixed_window_packet_scout_micro_20260514_tick327",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick327",
+        "raw_agent_ids": [
+          "hooke_forecast_tick327"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_forecast_tick327",
+        "raw_agent_ids": [
+          "rawls_forecast_tick327"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick327",
+      "rawls_forecast_tick327"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick327",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fixed_window_packet_scout_micro_20260514_tick327/hooke_forecast_tick327.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T01:41:50Z",
+        "p_success": 0.74,
+        "rationale_short": "High execution odds because this is an offline deterministic scout; main risk is interpretive usefulness for the cone-mass branch.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_forecast_tick327",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fixed_window_packet_scout_micro_20260514_tick327/rawls_forecast_tick327.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 38.0,
+        "forecasted_at": "2026-05-14T01:41:59Z",
+        "p_success": 0.74,
+        "rationale_short": "Offline deterministic scout likely runs; main risk is that exact STF orientation cancellation is too algebraic to guide the same-window cone branch.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T01:42:17Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 46.5,
+      "expected_value": -36.839999999999996,
+      "p_success": 0.74,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 6.1924
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 46.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.74,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "artifact_is_toy_linear_algebra_but_not_same_window_geometry",
+        "p": 0.125
+      },
+      {
+        "mode": "script_finds_only_tautological_scalar_cancellation_not_trace_free_tensor_geometry",
+        "p": 0.12
+      },
+      {
+        "mode": "amplitude_tuning_proves_cancellation_only_by_free_rescaling",
+        "p": 0.11
+      },
+      {
+        "mode": "artifact_not_clear_enough_to_drive_cone_mass_branch",
+        "p": 0.105
+      },
+      {
+        "mode": "orientation_parameterization_has_degenerate_or_zero_tensor_cases",
+        "p": 0.085
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.06760000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T01:42:22Z"
+  }
+}

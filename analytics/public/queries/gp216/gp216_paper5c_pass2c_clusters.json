@@ -1,0 +1,433 @@
+{
+  "experiment": "gp216_paper5c_pass2c_cluster",
+  "n_moves_input": 152,
+  "n_clusters": 6,
+  "n_3plus_arc_clusters": 6,
+  "verdict": "PASS \u2014 6 clusters with \u22653-arc spread",
+  "result": {
+    "clusters": [
+      {
+        "cluster_id": "ps_01",
+        "name": "Structural Partitioning",
+        "structural_mechanism": "An arbitrary object is decomposed into a canonical set of well-behaved (e.g., structured) and chaotic (e.g., pseudorandom) components to isolate complexity.",
+        "arc_spread": [
+          "erdos_discrepancy",
+          "hales_jewett_polymath",
+          "szemeredi_regularity",
+          "roth_3ap",
+          "furstenberg_ergodic_szemeredi"
+        ],
+        "n_arcs": 5,
+        "n_moves": 16,
+        "example_moves": [
+          "M006",
+          "M030",
+          "M039",
+          "M060",
+          "M106"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is a real structural class because it describes the specific act of splitting an object into structurally distinct regimes (like uniform vs. fluctuating), not just any decomposition."
+      },
+      {
+        "cluster_id": "ps_02",
+        "name": "Governed Iterative Refinement",
+        "structural_mechanism": "An iterative process is proven to terminate by defining a scalar potential function that is guaranteed to improve monotonically at each step and is bounded by a fixed ceiling.",
+        "arc_spread": [
+          "erdos_discrepancy",
+          "hales_jewett_polymath",
+          "szemeredi_regularity",
+          "roth_3ap"
+        ],
+        "n_arcs": 4,
+        "n_moves": 17,
+        "example_moves": [
+          "M004",
+          "M022",
+          "M033",
+          "M045",
+          "M123"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is a real structural class because it requires the explicit presence of a bounded, monotonic scalar quantity that governs the iteration, distinguishing it from simple recursion."
+      },
+      {
+        "cluster_id": "ps_03",
+        "name": "Formal Equivalence Transfer",
+        "structural_mechanism": "A problem is translated into an equivalent form in a different mathematical domain, allowing the application of that domain's native tools and structures.",
+        "arc_spread": [
+          "erdos_discrepancy",
+          "roth_3ap",
+          "behrend_construction",
+          "furstenberg_ergodic_szemeredi",
+          "ramsey_erdos_szekeres",
+          "hales_jewett_polymath"
+        ],
+        "n_arcs": 6,
+        "n_moves": 22,
+        "example_moves": [
+          "M002",
+          "M058",
+          "M071",
+          "M116",
+          "M134"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is a real structural class because it involves a wholesale re-representation of the problem's core objects and relations, not merely the import of a single lemma from another field."
+      },
+      {
+        "cluster_id": "ps_04",
+        "name": "Black-Box Theorem Application",
+        "structural_mechanism": "A major theorem is treated as a self-contained module, and the primary work becomes proving that a new problem setting satisfies the theorem's preconditions.",
+        "arc_spread": [
+          "green_tao",
+          "hales_jewett_polymath",
+          "szemeredi_regularity"
+        ],
+        "n_arcs": 3,
+        "n_moves": 11,
+        "example_moves": [
+          "M015",
+          "M035",
+          "M089",
+          "M094",
+          "M112"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is a real structural class because the core intellectual work is not proving the theorem, but engineering a new context to fit its API, making it a 'transference principle'."
+      },
+      {
+        "cluster_id": "ps_05",
+        "name": "Induction on Structural Rank",
+        "structural_mechanism": "A proof proceeds by induction or recursion on a complexity measure that is derived from a structural decomposition of the objects under study.",
+        "arc_spread": [
+          "roth_3ap",
+          "furstenberg_ergodic_szemeredi",
+          "ramsey_erdos_szekeres"
+        ],
+        "n_arcs": 3,
+        "n_moves": 7,
+        "example_moves": [
+          "M048",
+          "M062",
+          "M073",
+          "M122",
+          "M141"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is a real structural class because the induction is not on a simple integer parameter but on a hierarchical level within a pre-established structural decomposition."
+      },
+      {
+        "cluster_id": "ps_06",
+        "name": "Proof by Estimate Chaining",
+        "structural_mechanism": "A conclusion is reached not by introducing new conceptual objects, but by establishing a chain of precise quantitative bounds on existing structures.",
+        "arc_spread": [
+          "erdos_discrepancy",
+          "hales_jewett_polymath",
+          "szemeredi_regularity",
+          "green_tao",
+          "ramsey_erdos_szekeres"
+        ],
+        "n_arcs": 5,
+        "n_moves": 16,
+        "example_moves": [
+          "M009",
+          "M028",
+          "M036",
+          "M096",
+          "M105"
+        ],
+        "what_distinguishes_this_from_a_paraphrase": "This is a real structural class because it describes a methodological choice to rely on accumulating quantitative estimates over conceptual innovation, often replacing a structural proof."
+      }
+    ],
+    "outliers": [
+      {
+        "move_id": "M000",
+        "arc": "erdos_discrepancy",
+        "reason_no_cluster": "Meta-level move about the sociology of research, not a mathematical mechanism."
+      },
+      {
+        "move_id": "M012",
+        "arc": "green_tao",
+        "reason_no_cluster": "Domain-specific habit: The 'pseudorandom envelope' is a technique specific to the Green-Tao context."
+      },
+      {
+        "move_id": "M013",
+        "arc": "green_tao",
+        "reason_no_cluster": "Domain-specific habit: Formalizing pseudorandomness conditions is part of the setup for the Green-Tao proof."
+      },
+      {
+        "move_id": "M014",
+        "arc": "green_tao",
+        "reason_no_cluster": "Domain-specific habit: Use of a majorant function is a specific analytic tool in this context."
+      },
+      {
+        "move_id": "M016",
+        "arc": "green_tao",
+        "reason_no_cluster": "Domain-specific habit: Sifting is a standard technique in analytic number theory."
+      },
+      {
+        "move_id": "M017",
+        "arc": "green_tao",
+        "reason_no_cluster": "Meta-level move about proof strategy, not a structural mechanism."
+      },
+      {
+        "move_id": "M019",
+        "arc": "green_tao",
+        "reason_no_cluster": "Domain-specific habit: The 'W-trick' is a highly specialized tool for handling local obstructions in number theory."
+      },
+      {
+        "move_id": "M020",
+        "arc": "hales_jewett_polymath",
+        "reason_no_cluster": "Meta-level move describing the replacement of one proof paradigm with another."
+      },
+      {
+        "move_id": "M021",
+        "arc": "hales_jewett_polymath",
+        "reason_no_cluster": "Meta-level move about the collaborative process of research (Polymath project)."
+      },
+      {
+        "move_id": "M026",
+        "arc": "hales_jewett_polymath",
+        "reason_no_cluster": "Domain-specific habit: This form of 'combinatorial gluing' is specific to the Hales-Jewett context."
+      },
+      {
+        "move_id": "M029",
+        "arc": "hales_jewett_polymath",
+        "reason_no_cluster": "Meta-level move describing a trade-off in proof complexity, not a mechanism."
+      },
+      {
+        "move_id": "M041",
+        "arc": "roth_3ap",
+        "reason_no_cluster": "Domain-specific habit: The logic of forcing a large Fourier coefficient from the absence of 3-APs is central to Roth's proof but not a general operation."
+      },
+      {
+        "move_id": "M042",
+        "arc": "roth_3ap",
+        "reason_no_cluster": "Domain-specific habit: Part of the specific chain of reasoning in the Fourier-analytic method for Roth's theorem."
+      },
+      {
+        "move_id": "M043",
+        "arc": "roth_3ap",
+        "reason_no_cluster": "Domain-specific habit: The interpretation of a large Fourier coefficient as concentration on an AP is key to Roth's proof but not found elsewhere."
+      },
+      {
+        "move_id": "M047",
+        "arc": "roth_3ap",
+        "reason_no_cluster": "Too generic: Contrapositive framing is a general logical technique, not a specific structural operation."
+      },
+      {
+        "move_id": "M049",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Meta-level move about identifying a research gap."
+      },
+      {
+        "move_id": "M050",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: The dimensional lift to a high-dimensional integer lattice is the core, unique idea of Behrend's construction."
+      },
+      {
+        "move_id": "M051",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Using a sphere as the AP-free set is specific to Behrend's geometric method."
+      },
+      {
+        "move_id": "M052",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Part of the verification of Behrend's specific construction."
+      },
+      {
+        "move_id": "M053",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Using base-d expansion as the embedding mechanism is specific to Behrend's construction."
+      },
+      {
+        "move_id": "M054",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Optimizing the dimension parameter is part of Behrend's specific calculation."
+      },
+      {
+        "move_id": "M055",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Too generic: Existence-via-construction is a general proof strategy, not a specific structural mechanism."
+      },
+      {
+        "move_id": "M056",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Demonstrating a barrier for Roth's theorem is the specific application of Behrend's construction."
+      },
+      {
+        "move_id": "M064",
+        "arc": "furstenberg_ergodic_szemeredi",
+        "reason_no_cluster": "Domain-specific habit: The specific lim inf expression for multiple recurrence is the target quantity in Furstenberg's proof, not a general mechanism."
+      },
+      {
+        "move_id": "M066",
+        "arc": "furstenberg_ergodic_szemeredi",
+        "reason_no_cluster": "Too generic: 'Generalization before proof' is a common technique for strengthening an inductive hypothesis, not a structural operation."
+      },
+      {
+        "move_id": "M067",
+        "arc": "furstenberg_ergodic_szemeredi",
+        "reason_no_cluster": "Ancillary step: Verifying a correspondence is part of the due diligence of a domain transfer, not the transfer itself."
+      },
+      {
+        "move_id": "M068",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-defining principle: The assertion of a threshold for structure is the core claim of Ramsey theory, not a transferable mechanism."
+      },
+      {
+        "move_id": "M069",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-defining principle: The pigeonhole principle at scale is the fundamental tool of basic Ramsey theory."
+      },
+      {
+        "move_id": "M070",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-defining principle: A general statement of the Ramsey-type argument."
+      },
+      {
+        "move_id": "M072",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Meta-level move about problem branding ('happy ending problem')."
+      },
+      {
+        "move_id": "M074",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-specific habit: The focus on upper and lower bounds for Ramsey numbers is specific to that field."
+      },
+      {
+        "move_id": "M075",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-specific habit: The probabilistic method is a major technique, but in this dataset, it is confined to the Ramsey theory arc."
+      },
+      {
+        "move_id": "M076",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-specific habit: Constructing extremal examples is a common goal in combinatorics, but the methods are highly specific."
+      },
+      {
+        "move_id": "M078",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-specific habit: A specific counting technique used in combinatorial proofs for Ramsey-type problems."
+      },
+      {
+        "move_id": "M079",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Meta-level move about the sociology of research."
+      },
+      {
+        "move_id": "M093",
+        "arc": "green_tao",
+        "reason_no_cluster": "Domain-specific habit: The synthesis of the W-trick and von Mangoldt function is specific to the Green-Tao proof."
+      },
+      {
+        "move_id": "M095",
+        "arc": "green_tao",
+        "reason_no_cluster": "Domain-specific habit: Sifting is a standard technique in analytic number theory."
+      },
+      {
+        "move_id": "M098",
+        "arc": "hales_jewett_polymath",
+        "reason_no_cluster": "Meta-level move about the collaborative process of research (Polymath project)."
+      },
+      {
+        "move_id": "M099",
+        "arc": "hales_jewett_polymath",
+        "reason_no_cluster": "Meta-level move about the collaborative process of research (Polymath project)."
+      },
+      {
+        "move_id": "M104",
+        "arc": "hales_jewett_polymath",
+        "reason_no_cluster": "Domain-specific habit: This form of 'combinatorial gluing' is specific to the Hales-Jewett context."
+      },
+      {
+        "move_id": "M108",
+        "arc": "szemeredi_regularity",
+        "reason_no_cluster": "A specific result (Triangle Removal Lemma), not a general mechanism."
+      },
+      {
+        "move_id": "M111",
+        "arc": "szemeredi_regularity",
+        "reason_no_cluster": "A consequence of a method (tower bounds), not the method itself."
+      },
+      {
+        "move_id": "M115",
+        "arc": "roth_3ap",
+        "reason_no_cluster": "A specific result (the density bound for Roth's theorem), not a mechanism."
+      },
+      {
+        "move_id": "M119",
+        "arc": "roth_3ap",
+        "reason_no_cluster": "Too generic: Argument from assumed absence is a general logical technique (proof by contradiction)."
+      },
+      {
+        "move_id": "M120",
+        "arc": "roth_3ap",
+        "reason_no_cluster": "Domain-specific habit: The specific dichotomy forced by the Fourier-analytic method in Roth's proof."
+      },
+      {
+        "move_id": "M126",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Part of Behrend's specific geometric construction."
+      },
+      {
+        "move_id": "M127",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Part of Behrend's specific geometric construction."
+      },
+      {
+        "move_id": "M128",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Part of Behrend's specific geometric construction."
+      },
+      {
+        "move_id": "M129",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Part of Behrend's specific geometric construction."
+      },
+      {
+        "move_id": "M130",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Part of Behrend's specific geometric construction."
+      },
+      {
+        "move_id": "M131",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "Domain-specific habit: Part of Behrend's specific calculation."
+      },
+      {
+        "move_id": "M133",
+        "arc": "behrend_construction",
+        "reason_no_cluster": "A specific result of the construction, not the mechanism."
+      },
+      {
+        "move_id": "M137",
+        "arc": "furstenberg_ergodic_szemeredi",
+        "reason_no_cluster": "Domain-specific habit: The specific lim inf expression for multiple recurrence is the target quantity in Furstenberg's proof, not a general mechanism."
+      },
+      {
+        "move_id": "M143",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-defining principle: The assertion of inevitable structure is the core claim of Ramsey theory."
+      },
+      {
+        "move_id": "M146",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Meta-level move about problem branding ('happy ending problem')."
+      },
+      {
+        "move_id": "M148",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-specific habit: The probabilistic method is a major technique, but in this dataset, it is confined to the Ramsey theory arc."
+      },
+      {
+        "move_id": "M149",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Domain-specific habit: The focus on upper and lower bounds for Ramsey numbers is specific to that field."
+      },
+      {
+        "move_id": "M151",
+        "arc": "ramsey_erdos_szekeres",
+        "reason_no_cluster": "Meta-level move about the sociology of research."
+      }
+    ],
+    "n_clusters_with_3plus_arc_spread": 6,
+    "auditor_notes": "The analysis revealed six robust structural operations with spread across three or more research arcs. 'Formal Equivalence Transfer' and 'Structural Partitioning' are the most confident and widespread clusters, appearing in the majority of the arcs and representing fundamental strategies in modern combinatorics. 'Governed Iterative Refinement' is also very strong, capturing the 'density increment' paradigm. The weakest clusters, though still meeting the 3-arc criterion, are 'Induction on Structural Rank' and 'Black-Box Theorem Application', which feel slightly more specialized but are clearly distinct operations. A significant number of moves were correctly identified as outliers, representing either domain-specific habits (e.g., Behrend's entire geometric construction, Green-Tao's number-theoretic toolkit) or non-structural meta-moves about the research process. This refusal to force-cluster is crucial; it highlights that while deep structural patterns exist, many powerful mathematical ideas are, at least within this sample, highly localized."
+  }
+}

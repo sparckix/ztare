@@ -1,0 +1,134 @@
+{
+  "contract_id": "ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue with generic RadiusComponentPaysRadiusScale",
+      "counterfactual_action": "Record no-go and sharpen radius branch to flat scale reserve",
+      "externality_hypotheses": {
+        "negative": [
+          "negative_result_no_closure",
+          "new_flat_reserve_primitive_unproved"
+        ],
+        "positive": [
+          "kills_false_radius_component",
+          "sharpens_n8_frontier"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "negative-theorem",
+        "radius-frontier-sharpening",
+        "flat-scale-reserve"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "radius-not-closed",
+        "new-flat-reserve-primitive-unproved"
+      ],
+      "new_next_action": "Attack FlatRadiusReuseConsumesScaleReserve, PressureConeFailure, or BetaIncidenceFailure as independent remaining branches",
+      "old_next_action": "Attack generic radius component bound",
+      "preconditioner_effect": "Killed generic RadiusComponentPaysRadiusScale and sharpened the upstream frontier",
+      "preconditioner_source": "GPT-5.5 flat multiscale radius reuse audit",
+      "realized_failure_mode_ids": [
+        "new_flat_reserve_primitive_unproved",
+        "negative_result_no_closure"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.10485,
+  "mean_log_score": -0.3843665837582702,
+  "outcome": {
+    "actual_cost_agent_minutes": 21.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passed",
+    "contract_id": "ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "negative-theorem",
+      "radius-frontier-sharpening",
+      "flat-scale-reserve"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "radius-not-closed",
+      "new-flat-reserve-primitive-unproved"
+    ],
+    "new_next_action": "Attack FlatRadiusReuseConsumesScaleReserve, PressureConeFailure, or BetaIncidenceFailure as independent remaining branches",
+    "old_next_action": "Attack generic radius component bound",
+    "preconditioner_effect": "Killed generic RadiusComponentPaysRadiusScale and sharpened the upstream frontier",
+    "preconditioner_source": "GPT-5.5 flat multiscale radius reuse audit",
+    "realized_failure_mode_ids": [
+      "new_flat_reserve_primitive_unproved",
+      "negative_result_no_closure"
+    ],
+    "resolution_note": "Added compiling radius-audit surfaces: FlatMultiscaleRadiusReuseCountermodel, FlatRadiusScaleReserveFailure, FlatRadiusReuseConsumesScaleReserve, RadiusComponentAuditSharpensToFlatScaleReserve, CriticalIncrementReducedAfterRadiusAudit, and theorem reducedFailure_of_radiusAudit. The result is negative: current tri-carrier data does not source radius scale; the surviving radius branch is flat inherited scale-reserve failure.",
+    "resolved_at": "2026-05-14T20:50:38Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T20:50:43Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 21.0,
+      "agent_id": "codex-meta-darwin-proxy",
+      "brier": 0.1521,
+      "cost_error_agent_minutes": 11.0,
+      "domain": "ns-proof-falsification",
+      "expected_cost_agent_minutes": 32.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.4942963218147801,
+      "p_success": 0.61,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:48:13Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:48:31Z",
+        "resolved_at": "2026-05-14T20:50:38Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 21.0,
+      "agent_id": "codex-rd-main",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "ns-n8-radius-component",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:48:13Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:48:31Z",
+        "resolved_at": "2026-05-14T20:50:38Z"
+      }
+    }
+  ]
+}

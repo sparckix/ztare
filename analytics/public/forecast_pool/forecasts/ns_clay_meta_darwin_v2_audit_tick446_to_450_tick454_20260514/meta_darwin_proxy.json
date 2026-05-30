@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "do not let principal pull-forward language inflate tick446 'real Lean constructor' beyond 'typed bridge with definitional M^3 choice'; demand a Hölder/Tonelli step in Lean before tick446 is sold as a scaling derivation",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514",
+  "contract_question": "Will the tick454 Meta-Darwin v2 audit of the tick446-tick450 Lean additions (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) identify whether tick450 is honest combinatorial substance or a wrapper in disguise, (c) confirm or refute tick446's r*M^3 scaling identity as carrier-forced vs definitional fiat, (d) confirm or refute tick449's Sum.elim as a real 2->1 reduction vs renaming, and (e) leave Lean files unmodified?",
+  "domain": "meta_darwin_lean_audit",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": ["anti_laundering_discipline", "wrapper_inflation_risk_round_2", "definitional_fiat_naming_pattern"],
+  "forecasted_at": "2026-05-15T02:30:45Z",
+  "p_dependency_issue": 0.02,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.76,
+  "rationale_short": "Adversarial second pass. The session principal acknowledged 11/13 wrappers in tick448 and shipped tick450 as 'concrete dyadic instance' — this is the right kind of response, BUT three new wrappers (tick446, tick447, tick449) shipped in the same window, so the wrapper-inflation pattern is not fully arrested. Specific risks: (i) tick446's r*M^3 carrier has no inequality field forcing the cube structure — the M^3 is the constructor's definitional choice, and the _scaling_identity / _coeff_identity rfl theorems audit the naming, not an analytic derivation; this is the exact 'tautological field-projection theorem' pattern the audit memory warns about; (ii) tick449's UnifiedClayChargePrimitive is renaming + sourceTag enumeration — the two source structures already shared the Real shape, so the 'compression' is type-theoretic refactor not frontier reduction; (iii) tick450 is genuine but uses a clone structure and zero charge fields, so the analytic part of flatDepthReserve_drop is not exercised. Expected verdict distribution: 1 HONEST (tick450 combinatorial with two caveats), 3 WRAPPER, 0 LAUNDERED, 0 PURE_NAMING — but tick446 has the closest call on LAUNDERED via the M^3 narrative gap. Main risk for audit failure: underweighting the M^3 definitional-fiat finding and accepting tick446 as a 'scaling theorem' at face value.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

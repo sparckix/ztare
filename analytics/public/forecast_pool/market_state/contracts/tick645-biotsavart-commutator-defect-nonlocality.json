@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick645-biotsavart-commutator-defect-nonlocality.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick645-biotsavart-commutator-defect-nonlocality.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick645-biotsavart-commutator-defect-nonlocality.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick645-biotsavart-commutator-defect-nonlocality.json",
+    "score": "analytics/public/forecast_pool/scores/tick645-biotsavart-commutator-defect-nonlocality.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_projected_cross_defect_observable_liminf_source",
+    "created_at": "2026-05-19T03:17:50Z",
+    "created_by": "claude:RD",
+    "horizon": "this_tick",
+    "layer": "micro",
+    "objective_resolver": "codex_cold_adversary+MetaDarwin: TRUE iff a dimensionally-valid non-vacuous positive-cone nesting-multiplicative commutator-defect lower bound supplying a log-active-scale term controlling limsup norm-omega-Linf is exhibited and survives one independent cold adversary as NOT a coboundary / signed-disjoint relabel / excluded-class recast; else FALSE (sharp impossibility characterization)",
+    "question": "Characterize the impossibility of, or exhibit, a positive-cone nesting-multiplicative LOWER bound on the Biot-Savart commutator defect integral-of-norm [R-tensor-R, omega-dot-grad]omega that supplies a strictly-positive log-active-scale term controlling limsup_t norm-omega-Linf for 3D NSE, NOT a coboundary under parabolic rescaling and NOT factoring through a signed/disjoint form \u2014 the surviving nonlocality next-lever outside the EXCLUDED local-polynomial and Lagrangian-cocycle classes.",
+    "success_threshold": "binary: nonlocal_commutator_logactivescale_lowerbound_surviving_cold_adversary=1; coboundary/signed-form/recast/recurrence=0",
+    "task_type": "ns_trackb"
+  },
+  "contract_id": "tick645-biotsavart-commutator-defect-nonlocality",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "forecast_backfill_or_void_no_score"
+    ],
+    "next_action": "resolved_without_forecasts",
+    "state": "resolved_without_forecasts"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-19T03:31:44Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "resolved_without_forecasts",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

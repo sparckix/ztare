@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_fixed_cutoff_signed_identity_source_20260514_tick372",
+  "contract_question": "Can we pull the route-1 local-energy measure source one layer lower by encoding a fixed-cutoff signed-measure identity source with actual signed pieces and a constructor into LocalEnergySignedMeasurePositiveVariationSource, without adding new sorry/admit?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructor_duplicates_existing_source": 0.18,
+    "identity_source_still_too_prop_like": 0.44,
+    "positive_variation_theorem_not_sourced": 0.28,
+    "success_clean_source_ladder": 0.1
+  },
+  "forecasted_at": "2026-05-14T13:52:46Z",
+  "p_dependency_issue": 0.29,
+  "p_needs_new_lemma": 0.68,
+  "p_regression": 0.11,
+  "p_success": 0.58,
+  "rationale_short": "This can compile, but may not reduce PDE content unless the signed identity and positive-variation domination are exposed as independently sourceable fields rather than labels.",
+  "read_only_attestation": true
+}

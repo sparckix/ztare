@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Do a capped local MVP/spec first; do not deploy VPS warm agents until smoke and role isolation pass.",
+  "agent_id": "codex_market_architect",
+  "contract_id": "gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+  "contract_question": "Should RD detour now to specify and implement an MVP warm role-bound forecast-agent/pubsub mechanism for GP-230, so forecasters can maintain calibration memory and update odds over evidence instead of one-off forecasts?",
+  "domain": "gp230_forecast_pool_infrastructure",
+  "expected_cost_agent_minutes": 75.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "implementation_smoke_fails": 0.12,
+    "mvp_succeeds": 0.2,
+    "ns_delay_cost": 0.14,
+    "queue_without_learning_loop": 0.18,
+    "role_mandate_too_vague": 0.16,
+    "scope_creep_to_full_vps_deploy": 0.2
+  },
+  "forecast_externality_tags": [
+    "warm_forecaster_memory",
+    "role_bound_pubsub",
+    "externality_analysis"
+  ],
+  "forecasted_at": "2026-05-14T17:14:20Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.09,
+  "p_success": 0.74,
+  "rationale_short": "Existing daemon and forecast-pool status pieces make a local MVP plausible; the main risk is overbuilding beyond a queue/status/belief-update layer.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "scope_creep_to_full_vps_deploy",
+    "queue_without_learning_loop"
+  ]
+}

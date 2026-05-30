@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel.json",
+    "score": "analytics/public/forecast_pool/scores/tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T22:22:20Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_tick609_void_mining_transport_cross_term_negative_20260516",
+    "score": 0.1,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 10,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0169,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0909,
+        "score_rows": 2,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 140,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 7,
+        "token_jaccard": 0.0833
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0714,
+        "score_rows": 4,
+        "token_jaccard": 0.0714
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "negative_result_object_discovery_chain_adversary_survived_dogfood_claused",
+  "question": "tick609: the void-mining gate BLOCKED a positive carrier-recast of the C7-upper transport-cross-term Sigma r_n^-1 int_shell |u||omega|^2 (tick608 adversary already gave the decisive r^-1-per-scale computation = the scale-critical atom relocated to shells). Required move = negative_result_object_discovery chain [A] invariant across all recurrences [B] structurally-absent move [C] eigenquestion targeting an out-of-space move not a re-vocab. Success = a DERIVED negative verdict (transport-cross-term = 17th recurrence; route-1 route-invariant-terminal WITHIN the explored {carrier,admissible-cut,nu-capacity,scale-transfer,porosity,Gevrey,paired-dichotomy} space; the only escape = the out-of-program move tick607 derived) that SURVIVES an adversarial-survival run whose brief carries the dogfood clause (must-catch: is this laundering of a missable lever / is the block wrong; must-not: declaring NS impossible). Fail = pessimism without derivation, OR a missed in-space lever the adversary surfaces, OR laundering.",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_tick609_void_mining_transport_cross_term_negative_20260516",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

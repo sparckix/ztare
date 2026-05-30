@@ -1,0 +1,24 @@
+{
+  "agent_id": "peirce_readonly_forecaster",
+  "contract_id": "gp225_v1933_codex_blind_repair_sandbox",
+  "contract_question": "Will a Codex-blind repair sandbox over uncontaminated v19.16 repair-canary rows produce at least two Lean-verified strict-target or pull-forward repair rows with zero harmful compiled mismatches?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 16.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_compile_rate_too_low": 0.11,
+    "candidate_tactics_compile_but_do_not_match_gold_state_or_close": 0.21,
+    "contamination_or_gold_visibility_dispute": 0.04,
+    "harmful_compiled_mismatch_rows_nonzero": 0.06,
+    "hydration_or_lean_toolchain_issue": 0.05,
+    "strict_or_pull_forward_rows_below_2": 0.36,
+    "visible_context_missing_gold_specific_rewrite_or_extensionality_lemma": 0.17
+  },
+  "forecasted_at": "2026-05-13T23:25:18Z",
+  "p_dependency_issue": 0.11,
+  "p_needs_new_lemma": 0.42,
+  "p_regression": 0.07,
+  "p_success": 0.46,
+  "rationale_short": "v19.32 makes the lane credible because 2/9 rows become strict-or-pull-forward with zero harmful mismatches after split, but v19.33 removes the known pull-forward row and relies on blind tactics over harder uncontaminated rows.",
+  "read_only_attestation": true
+}

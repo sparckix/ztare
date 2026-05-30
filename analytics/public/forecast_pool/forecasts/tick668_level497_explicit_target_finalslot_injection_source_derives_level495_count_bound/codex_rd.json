@@ -1,0 +1,44 @@
+{
+  "action_change_recommendation": "Proceed: a positive explicit-injection source is a narrow useful split after Level496, but immediately continue to incidence construction afterward.",
+  "agent_family": "codex",
+  "agent_id": "codex:RD",
+  "b_mid": 0.205,
+  "b_width": 0.13,
+  "contract_id": "tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound",
+  "contract_question": "TICK668 Level497: construct an explicit target-prefix to final-slot injection source that derives the Level495 target-count final-slot bound and composes to the canonical eventData assignment",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 80.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructive_bridge_compiles": 0.22,
+    "downstream_composition_gap": 0.12,
+    "gate_schema_missing_injection_field": 0.14,
+    "lean_universe_or_field_collision": 0.18,
+    "socket_only_no_incidence_progress": 0.34
+  },
+  "forecast_externality_tags": [
+    "ns_trackb",
+    "level497",
+    "target_finalslot_injection"
+  ],
+  "forecasted_at": "2026-05-27T03:02:36Z",
+  "p_buy_yes_max": 0.68,
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.36,
+  "p_regression": 0.09,
+  "p_sell_yes_min": 0.82,
+  "p_success": 0.74,
+  "predicted_brier_hi": 0.27,
+  "predicted_brier_lo": 0.14,
+  "predicted_self_error_ratio": 0.22,
+  "rationale_short": "After Level496, Fintype.card_le_of_injective should cheaply derive the count bound from an explicit Fin target -> Fin finalSlot injection; risk is that this is only a sharper socket unless followed by incidence construction.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "socket_only_no_incidence_progress",
+    "lean_universe_or_field_collision"
+  ],
+  "spread": -0.14,
+  "tail_downside_worry": 28.0,
+  "tail_upside_surprise": 18.0,
+  "verbalized_confidence": 0.74
+}

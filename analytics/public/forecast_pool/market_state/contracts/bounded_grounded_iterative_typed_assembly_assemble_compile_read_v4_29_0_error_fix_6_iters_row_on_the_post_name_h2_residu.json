@@ -1,0 +1,206 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:23Z",
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.03862567640561093,
+      "forecast_spread": 0.06,
+      "p_success": 0.6706951960062344,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.2809
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 50.0,
+    "expected_value": 0.03862567640561093,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.08499999999999999,
+    "p_needs_new_lemma": 0.11499999999999999,
+    "p_regression": 0.065,
+    "p_success": 0.6706951960062344,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "grounded_iterative_loop_h2_residual",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu/codex.json",
+        "forecasted_at": "2026-05-16T21:25:56Z",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T21:24:27Z",
+        "p_success": 0.7,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "checker_brittleness",
+        "p": 0.17
+      },
+      {
+        "mode": "c15_reindex_gap",
+        "p": 0.12
+      },
+      {
+        "mode": "c06_iff_split_gap",
+        "p": 0.1
+      },
+      {
+        "mode": "canonical_sandbox_mismatch",
+        "p": 0.06
+      },
+      {
+        "mode": "name_resolution_regression",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json",
+    "contract": "analytics/public/forecast_pool/contracts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json",
+    "score": "analytics/public/forecast_pool/scores/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T21:24:27Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "verify final C15/C06 proofs through canonical v4.29.0 + exact? adjudication",
+    "question": "Bounded grounded-ITERATIVE typed-assembly (assemble->compile->read v4.29.0 error->fix, <=6 iters/row) on the post-name H2 residual C15(Basel reindex) + C06(legendreSym chi4 iff), correct names already harvested: will >=1/2 close GENUINE in the canonical pinned v4.29.0 sandbox \u2014 validating the lever as grounded-iterative (not just name-resolution)?",
+    "success_threshold": "0.5",
+    "task_type": "grounded_iterative_loop_h2_residual"
+  },
+  "contract_id": "bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "grounded_iterative_loop_h2_residual",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-16T21:25:56Z",
+        "p_success": 0.64,
+        "rationale_short": "Names are already harvested, so the lever is mostly mechanical typed-assembly; main uncertainty is exact? checker coupling plus residual proof gaps in C15/C06, with bounded iterations reducing but not removing brittleness.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 60.0,
+        "forecasted_at": "2026-05-16T21:24:27Z",
+        "p_success": 0.7,
+        "rationale_short": "names harvested + 0 reasoning ceiling (Tick-G) => residual is mechanical typed-assembly (reindex/iff-split); bounded iteration vs the real checker should close >=1/2; C15 reindex is std (tsum shift), C06 iff is a 2-case omega \u2014 favored",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 55.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T21:30:53Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.03862567640561093,
+      "forecast_spread": 0.06,
+      "p_success": 0.6706951960062344,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.2809
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 50.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6706951960062344,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "checker_brittleness",
+        "p": 0.17
+      },
+      {
+        "mode": "c15_reindex_gap",
+        "p": 0.12
+      },
+      {
+        "mode": "c06_iff_split_gap",
+        "p": 0.1
+      },
+      {
+        "mode": "canonical_sandbox_mismatch",
+        "p": 0.06
+      },
+      {
+        "mode": "name_resolution_regression",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10980000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:39:12Z"
+  }
+}

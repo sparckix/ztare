@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level517_event_prefix_enumeration_packet_source",
+  "contract_question": "Can Level517 construct the typed coverage packet from an explicit finite event-prefix enumeration theorem over selected bad nodes?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "coverage_forwarding_mismatch": 0.2,
+    "enumeration_theorem_still_assumed": 0.42,
+    "lean_packet_constructor_mismatch": 0.2,
+    "workbench_gate_gap": 0.18
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T07:35:29Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.05,
+  "p_success": 0.67,
+  "rationale_short": "The Lean bridge should compile because finite enumeration has the same dependent type as typed appearance; the mathematical debt moves to proving that enumeration theorem from event geometry.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

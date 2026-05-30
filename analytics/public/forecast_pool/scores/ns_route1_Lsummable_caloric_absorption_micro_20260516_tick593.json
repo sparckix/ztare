@@ -1,0 +1,66 @@
+{
+  "contract_id": "ns_route1_Lsummable_caloric_absorption_micro_20260516_tick593",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.0036,
+  "mean_log_score": -0.06187540371808753,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "compile_status": "no_lean_generative_analysis_tick",
+    "contract_id": "ns_route1_Lsummable_caloric_absorption_micro_20260516_tick593",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "FAIL (reduced to perennial atom, 10th recurrence) \u2014 RD pre-tick forecast p_success=0.06 WELL-CALIBRATED (predicted reduce, outcome=reduced). Generative+adversarial-kill (agent a8e8cf731): the parabolic Carleson/Kato norm of the positive same-carrier no-reuse flux is conformally SCALE-INVARIANT \u03ba_r(\u03bc)=O(r^0) (exact borderline); no-reuse telescoping is exponent-blind (Cotlar-Stein multiplicity-orthogonality, not Lebesgue gain); Fefferman-Phong form-bound + Feynman-Kac Khasminskii series sit AT criticality (\u2016q\u2016_Kato=O(1)=\u03ba*), not below. The ONE un-killed transverse is the strict-margin sub-scaling atom in Carleson vocabulary.",
+    "resolved_at": "2026-05-16T15:47:47Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:15Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "claude_rd",
+      "brier": 0.0036,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 35.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.06187540371808753,
+      "p_success": 0.06,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T15:45:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T15:45:30Z",
+        "resolved_at": "2026-05-16T15:47:47Z"
+      }
+    }
+  ]
+}

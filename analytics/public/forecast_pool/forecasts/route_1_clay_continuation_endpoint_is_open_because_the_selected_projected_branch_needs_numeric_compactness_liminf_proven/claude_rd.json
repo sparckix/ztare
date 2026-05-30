@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven",
+  "contract_question": "Route-1 clay_continuation_endpoint is OPEN because the selected projected branch needs numeric compactness/liminf provenance from a SINGLE FIXED approximation family (no family-switching credit launder). Can a mechanized independent numeric/CAS verification (PATTERN-009) exhibit a fixed Galerkin-family compactness/liminf certificate that supplies selected_projected_compactness_measure_valued_source WITHOUT the banned forget_numeric_provenance_after_source_credit pattern?",
+  "domain": "ns_pde_measure_valued_compactness",
+  "expected_cost_agent_minutes": 50.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-18T03:34:30Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.8,
+  "p_regression": 0.05,
+  "p_success": 0.12,
+  "rationale_short": "Honest low odds: selected_projected_compactness_measure_valued_source = a genuine measure-valued/Young-measure defect compactness-liminf from a SINGLE fixed Galerkin family with no family-switch credit-launder is Clay-adjacent open. In-loop primitive numeric/CAS (PATTERN-009) can VERIFY an identity / CHARACTERIZE the obstruction, unlikely to close it (p_needs_new_lemma 0.8). Likely honest outcome = characterization/partial-negative; GP-233 records the negative.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

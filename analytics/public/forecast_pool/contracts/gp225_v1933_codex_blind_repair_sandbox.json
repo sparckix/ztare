@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1933_codex_blind_repair_sandbox.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1933_codex_blind_repair_sandbox.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1933_codex_blind_repair_sandbox",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1933_codex_blind_repair_sandbox.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1933_codex_blind_repair_sandbox.json"
+  },
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1933_codex_blind_repair_sandbox",
+  "cost_penalty": 0.25,
+  "created_at": "2026-05-13T23:22:42Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 21.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "GP-225",
+    "score": 1.0,
+    "selected_domain": "GP-225",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 4,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2727,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2727,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.2308,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.2308,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.2143,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1875,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1875,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same-session bounded repair sandbox",
+  "information_value": 1.2,
+  "layer": "micro",
+  "objective_resolver": "Resolve from v1933_codex_blind_repair_sandbox artifact metrics.",
+  "question": "Will a Codex-blind repair sandbox over uncontaminated v19.16 repair-canary rows produce at least two Lean-verified strict-target or pull-forward repair rows with zero harmful compiled mismatches?",
+  "risk_penalty": 0.45,
+  "success_threshold": "attempted_rows>=4 AND strict_or_pull_forward_rows>=2 AND harmful_compiled_mismatch_rows=0 AND gold_tactic_used_for_candidate_generation=false AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_codex_blind_repair_sandbox",
+  "value_if_success": 1.7,
+  "void_conditions": "User redirects, artifact unavailable, or prior gold contamination reaches candidate generation"
+}

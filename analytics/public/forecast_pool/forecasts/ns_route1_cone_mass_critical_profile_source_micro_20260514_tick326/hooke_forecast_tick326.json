@@ -1,0 +1,23 @@
+{
+  "agent_id": "hooke_forecast_tick326",
+  "contract_id": "ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326",
+  "contract_question": "Will the next NS route-1 tick connect the existing no-invisible-critical-profile primitive to the fixed-window cone-mass branch and derive FixedWindowStressConeMassSubordination from critical-profile overflow obstruction?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "critical_profile_obstruction_too_abstract_to_bind_to_fixed_window_cone_mass": 0.28,
+    "duplicate_profile_primitive_creates_parallel_wrapper_not_real_lowering": 0.13,
+    "import_or_namespace_dependency_breaks_downstream_adapter": 0.13,
+    "no_sorry_or_build_check_regression": 0.1,
+    "opposite_cone_overflow_does_not_produce_zero_visibility_in_existing_types": 0.14,
+    "source_restates_cone_mass_subordination_via_contradiction_shell": 0.22
+  },
+  "forecasted_at": "2026-05-14T01:37:10Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.57,
+  "p_regression": 0.09,
+  "p_success": 0.46,
+  "rationale_short": "Existing no-invisible-critical-profile primitive helps, but binding it to fixed-window cone mass without target restatement is the risk.",
+  "read_only_attestation": true
+}

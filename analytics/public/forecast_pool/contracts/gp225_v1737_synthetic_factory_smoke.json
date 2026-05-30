@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1737_synthetic_factory_smoke.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1737_synthetic_factory_smoke.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1737_synthetic_factory_smoke",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1737_synthetic_factory_smoke.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1737_synthetic_factory_smoke.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "contract_id": "gp225_v1737_synthetic_factory_smoke",
+  "cost_penalty": 0.015,
+  "created_at": "2026-05-12T18:38:01Z",
+  "created_by": "codex:RD_2026_05_12",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "next local GP-225 synthetic factory tick",
+  "information_value": 0.8,
+  "layer": "meso",
+  "objective_resolver": "success_bool true iff v17.37 JSON/MD artifact exists and reports rows>=20, domains>=3, mutation_families>=5, row_schema_complete=true, wrong_accepts=0, training_now=false",
+  "question": "Will v17.37 produce a useful 20-row synthetic residual factory smoke packet with at least 3 domains, at least 5 mutation families, row-schema-complete records, zero wrong accepts, and explicit generator-family holdout metadata, while still not authorizing GNN training?",
+  "risk_penalty": 1.5,
+  "success_threshold": "rows>=20 and domains>=3 and mutation_families>=5 and wrong_accepts=0 and training_now=false",
+  "task_type": "gnn_synthetic_data_factory",
+  "value_if_success": 2.0,
+  "void_conditions": "forecast pool void only if v17.36 contract artifact missing or local filesystem unavailable"
+}

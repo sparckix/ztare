@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke",
+  "contract_id": "ns_route1_cutoff_cz_commutator_micro_20260513_tick308",
+  "contract_question": "Can a cutoff/CZ pressure commutator leakage source object compile, splitting cutoff pressure error into endpoint commutator and tent-boundary charges without double counting?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_mismatch": 0.18,
+    "lean_plumbing": 0.12,
+    "regression": 0.1,
+    "split_unclean": 0.26,
+    "tautological_source": 0.34
+  },
+  "forecasted_at": "2026-05-13T23:14:30Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.1,
+  "p_success": 0.47,
+  "rationale_short": "Micro source likely compiles but valuable only if endpoint defect and boundary truncation are split before final scalar inequality.",
+  "read_only_attestation": true
+}

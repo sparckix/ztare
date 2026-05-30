@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T13:27:13Z",
+    "created_by": "claude_rd",
+    "horizon": "14d",
+    "layer": "meso",
+    "objective_resolver": "Read ns_trackb_FINAL_THEOREM.lean: confirm (a) it encodes route-1 closure modulo 5 Clay-equivalent residual axioms incl CF_global_extension (Constantin-Fefferman direction-Lipschitz); (b) the non-tangential s_z>=c regime (tick575) maps to the CF criterion; (c) the Birkhoff arc thus rediscovered existing structure (amnesia), no new open problem created. success iff the atom provably \u2261 the pre-existing CF Clay-equivalent axiom (route-invariant convergence into FINAL_THEOREM void); 0.5 if it maps to the void but not specifically CF; fail iff the Birkhoff arc genuinely created a NEW reduction not in FINAL_THEOREM.",
+    "question": "Scientific-amnesia + convergence: does the perennial atom (and the whole 570-575 Birkhoff arc, post-tick575 relocation to non-tangential s_z>=c) reduce INTO the pre-existing FINAL_THEOREM.lean residual void \u2014 specifically the Constantin-Fefferman vorticity-direction-Lipschitz Clay-equivalent residual axiom (1 of 5 already enumerated: BKM/PSL/ESS/BdV/CF) \u2014 rather than being a new open problem? I.e. is route-1 closure route-invariantly \u2261 'discharge one of the 5 already-encoded Clay-equivalent criteria on the inherited bad cascade', with CF the natural one for the s_z>=c regime?",
+    "success_threshold": "success iff atom \u2261 pre-existing CF Clay-equivalent residual axiom in FINAL_THEOREM (amnesia/convergence confirmed); 0.5 if maps to void generally; fail iff genuinely new reduction",
+    "task_type": "ns_clay_atom_converges_to_existing_residual_void_20260516"
+  },
+  "contract_id": "ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "forecast_backfill_or_void_no_score"
+    ],
+    "next_action": "resolved_without_forecasts",
+    "state": "resolved_without_forecasts"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T13:27:13Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "resolved_without_forecasts",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

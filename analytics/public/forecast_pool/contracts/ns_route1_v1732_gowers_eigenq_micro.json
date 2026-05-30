@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_v1732_gowers_eigenq_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_v1732_gowers_eigenq_micro.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_v1732_gowers_eigenq_micro",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_v1732_gowers_eigenq_micro.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_v1732_gowers_eigenq_micro.json"
+  },
+  "budget_agent_minutes": 8.0,
+  "contract_id": "ns_route1_v1732_gowers_eigenq_micro",
+  "cost_penalty": 0.2,
+  "created_at": "2026-05-13T18:31:48Z",
+  "created_by": "codex:RD",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "1h",
+  "information_value": 1.5,
+  "layer": "micro",
+  "objective_resolver": "Resolve success if the rewritten eigenquestion exists, avoids direct strict-source-budget restatement as the main ask, asks for a replacement object or obstruction, and is grounded in v17.30/v17.31 evidence.",
+  "question": "Will a Gowers-style rewrite of the GPT-5.5 NS route-1 eigenquestion make the next external prover query materially more actionable by naming the known construction, the inefficient oracle, and the desired replacement object or obstruction?",
+  "risk_penalty": 0.2,
+  "success_threshold": "0.70",
+  "task_type": "prompt_refinement",
+  "value_if_success": 2.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

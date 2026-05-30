@@ -1,0 +1,468 @@
+{
+  "generated": "2026-05-09",
+  "total_records": 2608,
+  "min_n_per_cell": 10,
+  "judge_families_analyzed": [
+    "gpt-4.1",
+    "gemini-2.5-flash",
+    "o3",
+    "claude-sonnet"
+  ],
+  "judge_record_counts": {
+    "gpt-4.1": 1695,
+    "gemini-2.5-flash": 288,
+    "o3": 278,
+    "claude-sonnet": 63
+  },
+  "oracle_illusion_warning": "Patterns that do NOT replicate across judge families are judge-specific aesthetic, NOT structural. Only cross-judge-replicated patterns should be promoted to kernel-default interventions.",
+  "per_judge": {
+    "gpt-4.1": {
+      "n_records": 1695,
+      "n_scored": 1641,
+      "score_summary": {
+        "n_scored": 1641,
+        "mean": 42.61,
+        "median": 50,
+        "p25": 0,
+        "p75": 75,
+        "pct_high_85": 14.7
+      },
+      "top_mutator_pairs": [
+        [
+          "gpt-4.1",
+          981
+        ],
+        [
+          "gemini-3.1-pro-preview",
+          267
+        ],
+        [
+          "gpt",
+          238
+        ],
+        [
+          "o3",
+          106
+        ],
+        [
+          "gemini-2.5-flash",
+          54
+        ]
+      ],
+      "B3_lift_by_class": {
+        "Circularity / Tautology / Self-Reference": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Harness / Test-Suite Defect": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "overclaimed_scope": {
+          "high_freq": 0.074,
+          "mid_freq": 0.107,
+          "low_freq": 0.09,
+          "lift_high_over_low": 0.83,
+          "insufficient": false
+        },
+        "missing_mechanism": {
+          "high_freq": 0.037,
+          "mid_freq": 0.052,
+          "low_freq": 0.078,
+          "lift_high_over_low": 0.48,
+          "insufficient": false
+        },
+        "missing_counterfactual": {
+          "high_freq": 0.058,
+          "mid_freq": 0.07,
+          "low_freq": 0.043,
+          "lift_high_over_low": 1.34,
+          "insufficient": false
+        },
+        "Tail / Extrapolation / Far-Field Generalization Failure": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Unverified Bound / Unproven Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Catastrophic / Load-Bearing Assumption": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "parameter_sensitivity": {
+          "high_freq": 0.025,
+          "mid_freq": 0.028,
+          "low_freq": 0.051,
+          "lift_high_over_low": 0.49,
+          "insufficient": false
+        },
+        "Exhaustiveness / Completeness Over-Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "unfalsifiable_claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.007,
+          "low_freq": 0.025,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        }
+      },
+      "bucket_counts": {
+        "low": 999,
+        "mid": 400,
+        "high": 242
+      }
+    },
+    "gemini-2.5-flash": {
+      "n_records": 288,
+      "n_scored": 253,
+      "score_summary": {
+        "n_scored": 253,
+        "mean": 20.41,
+        "median": 0,
+        "p25": 0,
+        "p75": 50,
+        "pct_high_85": 8.7
+      },
+      "top_mutator_pairs": [
+        [
+          "gemini-2.5-flash",
+          222
+        ],
+        [
+          "gemini-3.1-pro-preview",
+          66
+        ]
+      ],
+      "B3_lift_by_class": {
+        "Circularity / Tautology / Self-Reference": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Harness / Test-Suite Defect": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "overclaimed_scope": {
+          "high_freq": 0.045,
+          "mid_freq": 0.048,
+          "low_freq": 0.0,
+          "lift_high_over_low": "inf",
+          "insufficient": false
+        },
+        "missing_mechanism": {
+          "high_freq": 0.045,
+          "mid_freq": 0.048,
+          "low_freq": 0.048,
+          "lift_high_over_low": 0.95,
+          "insufficient": false
+        },
+        "missing_counterfactual": {
+          "high_freq": 0.0,
+          "mid_freq": 0.048,
+          "low_freq": 0.014,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Tail / Extrapolation / Far-Field Generalization Failure": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Unverified Bound / Unproven Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Catastrophic / Load-Bearing Assumption": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "parameter_sensitivity": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.005,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Exhaustiveness / Completeness Over-Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "unfalsifiable_claim": {
+          "high_freq": 0.045,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": "inf",
+          "insufficient": false
+        }
+      },
+      "bucket_counts": {
+        "low": 210,
+        "high": 22,
+        "mid": 21
+      }
+    },
+    "o3": {
+      "n_records": 278,
+      "n_scored": 265,
+      "score_summary": {
+        "n_scored": 265,
+        "mean": 44.06,
+        "median": 42,
+        "p25": 25,
+        "p75": 63,
+        "pct_high_85": 7.5
+      },
+      "top_mutator_pairs": [
+        [
+          "o3",
+          226
+        ],
+        [
+          "gemini-3.1-pro-preview",
+          41
+        ],
+        [
+          "gpt",
+          8
+        ],
+        [
+          "gpt-4.1",
+          3
+        ]
+      ],
+      "B3_lift_by_class": {
+        "Circularity / Tautology / Self-Reference": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Harness / Test-Suite Defect": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "overclaimed_scope": {
+          "high_freq": 0.0,
+          "mid_freq": 0.017,
+          "low_freq": 0.032,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "missing_mechanism": {
+          "high_freq": 0.05,
+          "mid_freq": 0.0,
+          "low_freq": 0.032,
+          "lift_high_over_low": 1.56,
+          "insufficient": false
+        },
+        "missing_counterfactual": {
+          "high_freq": 0.05,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": "inf",
+          "insufficient": false
+        },
+        "Tail / Extrapolation / Far-Field Generalization Failure": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Unverified Bound / Unproven Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Catastrophic / Load-Bearing Assumption": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "parameter_sensitivity": {
+          "high_freq": 0.0,
+          "mid_freq": 0.052,
+          "low_freq": 0.011,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "Exhaustiveness / Completeness Over-Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        },
+        "unfalsifiable_claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": false
+        }
+      },
+      "bucket_counts": {
+        "low": 187,
+        "mid": 58,
+        "high": 20
+      }
+    },
+    "claude-sonnet": {
+      "n_records": 63,
+      "n_scored": 55,
+      "score_summary": {
+        "n_scored": 55,
+        "mean": 30.8,
+        "median": 18,
+        "p25": 0,
+        "p75": 52,
+        "pct_high_85": 12.7
+      },
+      "top_mutator_pairs": [
+        [
+          "claude-sonnet",
+          23
+        ],
+        [
+          "o3",
+          23
+        ],
+        [
+          "gpt-4.1",
+          17
+        ]
+      ],
+      "B3_lift_by_class": {
+        "Circularity / Tautology / Self-Reference": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "Harness / Test-Suite Defect": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "overclaimed_scope": {
+          "high_freq": 0.286,
+          "mid_freq": 0.0,
+          "low_freq": 0.048,
+          "lift_high_over_low": 6.0,
+          "insufficient": true
+        },
+        "missing_mechanism": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.095,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "missing_counterfactual": {
+          "high_freq": 0.0,
+          "mid_freq": 0.167,
+          "low_freq": 0.048,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "Tail / Extrapolation / Far-Field Generalization Failure": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "Unverified Bound / Unproven Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "Catastrophic / Load-Bearing Assumption": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "parameter_sensitivity": {
+          "high_freq": 0.286,
+          "mid_freq": 0.0,
+          "low_freq": 0.048,
+          "lift_high_over_low": 6.0,
+          "insufficient": true
+        },
+        "Exhaustiveness / Completeness Over-Claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.0,
+          "low_freq": 0.0,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        },
+        "unfalsifiable_claim": {
+          "high_freq": 0.0,
+          "mid_freq": 0.167,
+          "low_freq": 0.048,
+          "lift_high_over_low": 0.0,
+          "insufficient": true
+        }
+      },
+      "bucket_counts": {
+        "low": 42,
+        "mid": 6,
+        "high": 7
+      }
+    }
+  }
+}

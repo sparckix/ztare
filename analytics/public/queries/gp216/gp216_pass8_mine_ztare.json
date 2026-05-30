@@ -1,0 +1,333 @@
+{
+  "experiment": "gp216_pass8_mine_ztare",
+  "n_cycles": 40,
+  "n_theory_building": 7,
+  "n_not_theory_building": 33,
+  "result": {
+    "mappings": [
+      {
+        "cycle_idx": 1,
+        "cycle_id": "C01",
+        "substrate": "ns",
+        "best_match": "tb_06",
+        "confidence": "low",
+        "reason": "Lifting an implicit SOS receipt into a named abstract spectral-diseconomy structure codifies a tacit proof-routing practice, but the move is borderline formalization-of-existing-plan rather than genuine theory-building; confidence too low to call."
+      },
+      {
+        "cycle_idx": 2,
+        "cycle_id": "C02",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Decomposing a vague narrative into named obligation skeletons across Lean files is verification scaffolding, not a theory-building move."
+      },
+      {
+        "cycle_idx": 3,
+        "cycle_id": "C03",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Splitting an obstruction package into definitional vs. PDE-derived obligations is proof-organization iteration, not theory-building."
+      },
+      {
+        "cycle_idx": 4,
+        "cycle_id": "C04",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Shifting the proof hinge from pressure-capacity to exhaust-horizon recurrence is a local proof-strategy substitution within the fixed substrate."
+      },
+      {
+        "cycle_idx": 5,
+        "cycle_id": "C05",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Lifting an inequality and preconditions into a Lean definition skeleton is verification scaffolding work."
+      },
+      {
+        "cycle_idx": 6,
+        "cycle_id": "C06",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Replacing a shortcut with a decomposed pincer obligation is proof-gap management, not a theory-building operation."
+      },
+      {
+        "cycle_idx": 7,
+        "cycle_id": "C07",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Isolating a null-profile branch-killer obligation with a Lean routing skeleton is verification iteration."
+      },
+      {
+        "cycle_idx": 8,
+        "cycle_id": "C08",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Introducing a three-file obligation skeleton separating proof concerns is modular proof organization, not theory-building."
+      },
+      {
+        "cycle_idx": 9,
+        "cycle_id": "C09",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Decomposing a monolithic obligation into four named Lean skeletons is verification decomposition work."
+      },
+      {
+        "cycle_idx": 10,
+        "cycle_id": "C10",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Instantiating an abstract profile obligation into a dyadic-shell pricing stream is a specialization within the fixed proof substrate."
+      },
+      {
+        "cycle_idx": 11,
+        "cycle_id": "C11",
+        "substrate": "ns",
+        "best_match": "tb_06",
+        "confidence": "medium",
+        "reason": "Introducing a typed inductive partition of interaction classes with an abstract coverage lemma codifies an implicit case-analysis practice into a formal Lean apparatus, fitting tacit-pattern formalization."
+      },
+      {
+        "cycle_idx": 12,
+        "cycle_id": "C12",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Encoding the Clay-closure gap as a conditional Lean theorem with named hypotheses converts narrative to formal statement but is gap-tracking, not theory-building."
+      },
+      {
+        "cycle_idx": 13,
+        "cycle_id": "C13",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Lifting an obligation into a Lean adapter equating payoff/price fields with leakage certificates is interface-plumbing within the fixed substrate."
+      },
+      {
+        "cycle_idx": 14,
+        "cycle_id": "C14",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Lifting a continuation-summability obligation into a typed adapter naming a three-step pricing chain is verification scaffolding."
+      },
+      {
+        "cycle_idx": 15,
+        "cycle_id": "C15",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Converting an informal 'self-tax' narrative into a typed Lean adapter is formalization of an existing informal argument, not a structural theory-building move."
+      },
+      {
+        "cycle_idx": 16,
+        "cycle_id": "C16",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Mirroring an adapter structure for a new interaction class is mechanical structural replication, not theory-building."
+      },
+      {
+        "cycle_idx": 17,
+        "cycle_id": "C17",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Composing two interface obligations into a combined structure is proof-engineering, not a theory-building operation."
+      },
+      {
+        "cycle_idx": 18,
+        "cycle_id": "C18",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Introducing a dedicated adapter gating same-shell/remainder pricing on a pre-declared profile is verification interface work."
+      },
+      {
+        "cycle_idx": 19,
+        "cycle_id": "C19",
+        "substrate": "ns",
+        "best_match": "tb_NEW_POLYA",
+        "confidence": "medium",
+        "reason": "Splitting the low-high branch via a flat-torus Killing-mode falsifier theorem targets a structural barrier (rotator/stretcher dichotomy) as a load-bearing special case that the overall proof routes through."
+      },
+      {
+        "cycle_idx": 20,
+        "cycle_id": "C20",
+        "substrate": "ns",
+        "best_match": "tb_04",
+        "confidence": "medium",
+        "reason": "Encoding a mandatory four-charge gate as a Lean predicate that must be simultaneously satisfied narrows the admissible solution class through a list of structural constraints, fitting constraint-driven solution forcing."
+      },
+      {
+        "cycle_idx": 21,
+        "cycle_id": "C21",
+        "substrate": "ns",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Introducing a certificate skeleton decomposing a global obligation into charged branches is verification decomposition, not theory-building."
+      },
+      {
+        "cycle_idx": 22,
+        "cycle_id": "C22",
+        "substrate": "ns",
+        "best_match": "tb_06",
+        "confidence": "medium",
+        "reason": "Installing a typed verifier interface (SOSThresholdReceipt + UniversalStatePricingSOSReceipt) that gates acceptance of any pricing-kernel claim codifies an implicit acceptance criterion into a formal apparatus."
+      },
+      {
+        "cycle_idx": 23,
+        "cycle_id": "C23",
+        "substrate": "aqual",
+        "best_match": "tb_06",
+        "confidence": "medium",
+        "reason": "Elevating an implicit cross-class acceleration provenance assumption to an explicit named gate codifies a tacit verification practice into a formal obligation apparatus."
+      },
+      {
+        "cycle_idx": 24,
+        "cycle_id": "C24",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Adding a dimensional closure audit obligation as a charter constraint is verification-gap management, not theory-building."
+      },
+      {
+        "cycle_idx": 25,
+        "cycle_id": "C25",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Demoting a physical law claim to 'operational schema fit' with a provenance-contingency hedge is an epistemic downgrade within the fixed substrate, not theory-building."
+      },
+      {
+        "cycle_idx": 26,
+        "cycle_id": "C26",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Converting an unprovable assumption into a declared veto gate is verification-regime adjustment, not a theory-building move."
+      },
+      {
+        "cycle_idx": 27,
+        "cycle_id": "C27",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Installing a blind SI-closure veto apparatus to replace an unresolved dependency is verification infrastructure, not theory-building."
+      },
+      {
+        "cycle_idx": 28,
+        "cycle_id": "C28",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Elevating an implicit SI-closure assumption to an explicit obligation gate is formalization of an existing gap, not theory-building."
+      },
+      {
+        "cycle_idx": 29,
+        "cycle_id": "C29",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Replacing an unresolved assumption with a null-result publication gate formally records a disproof but does not construct new theory."
+      },
+      {
+        "cycle_idx": 30,
+        "cycle_id": "C30",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Adding a conditional pass gate that flags an unresolved SI-closure obligation is gap-tracking iteration."
+      },
+      {
+        "cycle_idx": 31,
+        "cycle_id": "C31",
+        "substrate": "aqual",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Collapsing the thesis by emptying primitives list is a terminal null result in the verification substrate, not a theory-building operation."
+      },
+      {
+        "cycle_idx": 32,
+        "cycle_id": "C32",
+        "substrate": "neural",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Replacing an unverified box with a two-stage data-driven coefficient bounding apparatus is a verification-method improvement within the fixed substrate."
+      },
+      {
+        "cycle_idx": 33,
+        "cycle_id": "C33",
+        "substrate": "neural",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Replacing exhaustive enumeration with a branch-and-bound MILP formulation is an algorithmic improvement for certification, not a theory-building move."
+      },
+      {
+        "cycle_idx": 34,
+        "cycle_id": "C34",
+        "substrate": "neural",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Collapsing the thesis to empty by removing all specific filter claims is a null-result outcome, not theory-building."
+      },
+      {
+        "cycle_idx": 35,
+        "cycle_id": "C35",
+        "substrate": "neural",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Demoting a hard certification gate to a soft prior with a finite-sample-compatible replacement is a verification-regime adjustment, not theory-building."
+      },
+      {
+        "cycle_idx": 36,
+        "cycle_id": "C36",
+        "substrate": "neural",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Replacing a fixed assignment rule with a logarithmic sweep apparatus is an algorithmic search strategy change within the fixed substrate."
+      },
+      {
+        "cycle_idx": 37,
+        "cycle_id": "C37",
+        "substrate": "neural",
+        "best_match": "not_theory_building",
+        "confidence": "high",
+        "reason": "Replacing a fixed triplet with an adaptive multi-scale radius schedule derived from the empirical Lyapunov spectrum is a search-procedure refinement, not theory-building."
+      },
+      {
+        "cycle_idx": 38,
+        "cycle_id": "C38",
+        "substrate": "neural",
+        "best_match": "tb_06",
+        "confidence": "low",
+        "reason": "Replacing a single-sided tweak with a formally paired primitive skeleton naming both selection mechanisms is borderline codification of an implicit pairing practice, but confidence is too low to call theory-building."
+      },
+      {
+        "cycle_idx": 39,
+        "cycle_id": "C39",
+        "substrate": "neural",
+        "best_match": "tb_04",
+        "confidence": "medium",
+        "reason": "Adding a coercivity lower-Lipschitz bound as an explicit apparatus gate that the completeness certificate must pass installs a structural constraint progressively narrowing admissible solutions."
+      },
+      {
+        "cycle_idx": 40,
+        "cycle_id": "C40",
+        "substrate": "neural",
+        "best_match": "tb_06",
+        "confidence": "medium",
+        "reason": "Replacing a minterm-count filter with a paired-primitive specification requiring orthogonal physical/structural primitives codifies an implicit decomposition requirement into an explicit formal apparatus gate."
+      }
+    ],
+    "n_theory_building": 7,
+    "n_not_theory_building": 33,
+    "summary": "Out of 40 ZTARE cycles, the vast majority (33) are straightforwardly not theory-building: they are verification-iteration moves \u2014 decomposing obligations, installing gate apparatus, collapsing null results, or refining algorithmic search strategies within a fixed adversarial-verification substrate. Only 7 cycles meet at least the medium-confidence threshold for a genuine theory-building operation, and even those are marginal: C11 and C22 (ns) codify tacit practices into formal apparatus (tb_06); C19 (ns) targets a structural barrier via a Killing-mode falsifier (tb_NEW_POLYA); C20 (ns) installs a constraint list that forces unique form (tb_04); C23 (aqual) codifies an implicit provenance audit (tb_06); C39 and C40 (neural) add constraint gates and paired-primitive specifications (tb_04, tb_06 respectively). The ns substrate shows the highest density of borderline theory-building moves, likely because it is constructing a Lean proof architecture where formalizing implicit proof-routing practices is structurally necessary; the aqual and neural substrates are predominantly engaged in epistemic-downgrade and search-procedure iteration with almost no theory-building signal."
+  }
+}

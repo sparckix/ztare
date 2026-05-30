@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 24.0,
+  "artifact_hash": "f060388bb9463bd3c48c62a3e91647fb0f33f343de117b32190eb07a66726829",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_n8_three_carrier_compression_surface_20260514_tick411",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "n8-compression",
+    "tri-carrier-target",
+    "anti-tautology-guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "drop-unproved",
+    "new-pde-gmt-lemma-needed",
+    "compression-not-closure"
+  ],
+  "new_next_action": "Attack TriCarrierCriticalIncrementDrop, while separately testing whether unfresh/reuse truly reduce to CKN/pressure/beta",
+  "old_next_action": "Attack all N8 branches separately",
+  "preconditioner_effect": "Kept compression separate from proof; added anti-tautology fields for fixed carriers and no target-defined drop slack",
+  "preconditioner_source": "GPT-5.5 N8 compression packet plus operator tautology warning",
+  "realized_failure_mode_ids": [
+    "tri_carrier_drop_too_broad",
+    "tri_carrier_drop_overclaims"
+  ],
+  "resolution_note": "Added compiling N8ThreeCarrierCompression, TriCarrierCriticalIncrementDrop, CriticalIncrementClosedFromTriCarrierDrop, and TriCarrierDropIsNewLemmaNotClosure. The surface records the reduced CKN/pressure/beta target and anti-tautology constraints; it does not prove the drop.",
+  "resolved_at": "2026-05-14T20:19:16Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,27 @@
+{
+  "actual_cost_agent_minutes": 75.0,
+  "artifact_hash": null,
+  "artifact_path": "analytics/public/leanmill/results/v26_01_consolidated_audit.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": null,
+  "contract_id": "gp225_v2600_leanhammer_baseline_on_12_open_rows_meso",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "v26 harness experiments targeting the 9 moat-surface rows. Pre-flight: classify the 9 by row class (single-lemma-exact: 0162, 0163, 0329; single-hint-simp: 0025, 0126, 0182(TAUT)/0279; multi-hint-simp: 0021, 0121; multi-step-rw: 0180, 0329). Then design v27 experiment targeting most-tractable subclass first.",
+  "old_next_action": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "tautological_closure_confound_on_v4.29.0_mathlib"
+  ],
+  "resolution_note": "v26 LeanHammer baseline run COMPLETED. Toolchain v4.29.0 stack built clean. Cloud premise selector reachable. 12 OPEN rows \u00d7 hammer = 3 literal closures + 9 OPEN. v26.01 consolidated audit (with tautology + automation-machinery indirect-leakage detector): 0017 + 0182 TAUTOLOGICAL (hammer applied original Mathlib theorem in scope: Ordinal.isInitial_one and betaPDF_eq_zero_of_one_le respectively). 0008 INDIRECT_LEAKAGE (suggestion uses simp_all only + duper). 0 genuinely moat-grade. **MOAT SURFACE = 9 of 12 rows: 0021 (interior_sInter), 0025 (lineMap_apply_one), 0121 (weightedVSubOfPoint_vadd), 0126 (bayesRisk_lt_top), 0162 (aemeasurable_of_pdf_ne_zero), 0163 (measurable_pdf), 0180 (comp_right_injective), 0279 (mclosure_iUnion_range_of), 0329 (charFunDual_map_eq).** Any v26+ harness experiment that closes ANY of these 9 rows in a non-leaky way is moat-grade by construction. This is the operationalized moat surface for GP-225.",
+  "resolved_at": "2026-05-15T03:14:44Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

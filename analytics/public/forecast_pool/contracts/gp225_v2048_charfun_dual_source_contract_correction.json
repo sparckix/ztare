@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2048_charfun_dual_source_contract_correction.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2048_charfun_dual_source_contract_correction.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2048_charfun_dual_source_contract_correction",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2048_charfun_dual_source_contract_correction.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2048_charfun_dual_source_contract_correction.json"
+  },
+  "baseline_action": "Proceed from v20.46 canary split.",
+  "budget_agent_minutes": 22.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2048_charfun_dual_source_contract_correction",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Correct charFunDual source contract before replay pricing.",
+  "created_at": "2026-05-14T17:39:50Z",
+  "created_by": "Codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0833,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_source_contract_correction",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0833,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.186,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.15,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.15,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.1053,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0652,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 3,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "still no compile evidence"
+    ],
+    "positive": [
+      "prevents target-shape Goodharting",
+      "restores source-contract alignment"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.18,
+  "layer": "micro",
+  "objective_resolver": "Artifact analytics/public/leanmill/results/v2048_charfun_dual_source_contract_correction.json has status passed, corrected theorem family charFunDual, target variable L, at least two corrected candidate templates, old charFun_map_eq/t candidate forbidden, replay_run=false, training_now=false, gnn_blocked=true.",
+  "question": "Will v20.48 produce a source-safe charFunDual/L correction packet for current_scale_0329 after the v20.47 historic target-shape audit, with no replay/training and the old charFun_map_eq/t canary forbidden?",
+  "risk_penalty": 0.04,
+  "success_threshold": "corrected charFunDual source contract and candidates emitted with old canary forbidden",
+  "task_type": "pre_gnn_source_contract_correction",
+  "value_if_success": 0.38,
+  "void_conditions": "Void if v20.47 historic audit is inconclusive."
+}

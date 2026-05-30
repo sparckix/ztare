@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "run_or_continue",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_pincer_bottom_up_top_down_20260514_tick409",
+  "contract_question": "Can this tick build a route-1 pincer work packet and compile a Lean surface that links bottom-up N1/N2/N3 schedule closure to top-down branch-dominance obligations, without claiming full upstream Clay closure?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "critical_increment_exhaustion_not_available": 0.31,
+    "finite_mass_harmlessness_gap": 0.19,
+    "n2_n3_consumers_compile_but_do_not_source": 0.22,
+    "nonroute_branches_too_many": 0.18,
+    "scope_creep": 0.1
+  },
+  "forecast_externality_tags": [
+    "gp-233:negative:upstream-open-risk",
+    "gowers-first-dag"
+  ],
+  "forecasted_at": "2026-05-14T19:37:29Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.56,
+  "p_regression": 0.05,
+  "p_success": 0.52,
+  "rationale_short": "Bottom-up is likely compileable; top-down is valuable mostly as a branch map unless critical-increment exhaustion already exists in nearby files.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "critical_increment_exhaustion_not_available",
+    "finite_mass_harmlessness_gap"
+  ]
+}

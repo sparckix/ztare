@@ -1,0 +1,23 @@
+{
+  "agent_id": "Franklin",
+  "agent_name": "Codex GP-225 Forecaster",
+  "contract_id": "gp225_v2089_heldout_hard_negative_replay_meso_gate",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 24,
+  "forecasted_at": "2026-05-14T20:51:16Z",
+  "p_dependency": 0.12,
+  "p_new_lemma": 0.02,
+  "p_regression": 0.07,
+  "p_success": 0.74,
+  "rationale": "The bounded replay is more likely to succeed than a positive strict replay because success only requires at least one clean non-strict/failed contrast label on an already replay-active row. v20.88 is source-safe by construction and no training/GNN is in scope. Main risk is label hygiene: the replay must distinguish useful hard-negative failure from binder/context noise, accidental positive closure, or harmful mismatch.",
+  "routing_hint": "run_or_continue",
+  "top_failure_modes": {
+    "artifact_schema_or_gate_accounting_error": 0.04,
+    "contrast_candidate_accidentally_compiles_or_closes_target_like_positive": 0.18,
+    "hard_negative_is_too_syntactic_not_semantic_enough_for_discriminating_label": 0.13,
+    "harmful_compiled_mismatch_detected": 0.06,
+    "leakage_guard_or_source_safety_metadata_incomplete": 0.05,
+    "map_direction_context_or_binder_mismatch_blocks_all_replay_labels": 0.15,
+    "replay_bridge_cannot_classify_non_strict_failed_contrast_cleanly": 0.17
+  }
+}

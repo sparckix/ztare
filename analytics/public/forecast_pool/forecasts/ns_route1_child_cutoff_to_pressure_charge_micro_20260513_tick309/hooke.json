@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke",
+  "contract_id": "ns_route1_child_cutoff_to_pressure_charge_micro_20260513_tick309",
+  "contract_question": "Can child-collar and cutoff/CZ lower source objects be composed into FreshFrequencyPressureRemainderChargeSource, leaving harmonic reserve as the explicit remaining open source?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "child_cutoff_objects_misaligned": 0.23,
+    "harmonic_reserve_remains_raw": 0.25,
+    "lean_param_friction": 0.18,
+    "other": 0.14,
+    "proof_only_forwards_raw_ineqs": 0.2
+  },
+  "forecasted_at": "2026-05-13T23:21:40Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.08,
+  "p_success": 0.72,
+  "rationale_short": "Micro target should consume child/cutoff lower sources and leave at most harmonic as explicit unlowered branch.",
+  "read_only_attestation": true
+}

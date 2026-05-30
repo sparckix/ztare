@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Audit normalizers before replay; if clean, open a separate replay contract.",
+  "agent_id": "Noether2",
+  "contract_id": "gp225_v2053_charfun_dual_normalization_source_safety_audit",
+  "contract_question": "Will v20.53 verify the charFunDual normalization lemmas as source-safe non-target inputs for a future one-row replay, without copying the target proof line or running training?",
+  "domain": "gp225_pre_gnn_source_audit",
+  "expected_cost_agent_minutes": 16.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_schema_mismatch": 0.27,
+    "function_comp_def_not_declaration_scoped": 0.18,
+    "normalizer_import_path_incomplete": 0.24,
+    "target_copy_detector_too_weak": 0.31
+  },
+  "forecast_externality_tags": [
+    "anti_leakage",
+    "source_safety",
+    "replay_gate"
+  ],
+  "forecasted_at": "2026-05-14T17:58:38Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.81,
+  "rationale_short": "v20.52 separated source hinge from normalizers; rg already found integral_map, variance_map, and integral_complex_ofReal in imported Mathlib paths, so static audit is likely.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "target_copy_detector_too_weak",
+    "normalizer_import_path_incomplete"
+  ]
+}

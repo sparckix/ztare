@@ -1,0 +1,34 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_FlatDepthReserve_NS_construction_tick451_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_FlatDepthReserve_NS_construction_tick451_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_FlatDepthReserve_NS_construction_tick451_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_FlatDepthReserve_NS_construction_tick451_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_FlatDepthReserve_NS_construction_tick451_20260514.json"
+  },
+  "baseline_action": "Construct FlatDepthReserveLike (CKNBadCylinder) from a Leray-Hopf weak solution + UniformFlatInheritanceDepth hypothesis + honest local-energy charges, in a new file ns_flat_depth_reserve_ns_construction.lean. Charges as Real fields supplied by hypothesis, not zero. Discharge verification by real computation. Universe-free Type.",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_FlatDepthReserve_NS_construction_tick451_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Stop at tick450 toy dyadic instance; chain hangs on tick441 per tick448 audit; 11/13 primitives remain wrappers.",
+  "created_at": "2026-05-15T02:20:00Z",
+  "created_by": "claude_principal",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14 EOD",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "lean_compile_plus_sorry_admit_scan_clean_plus_charges_nonzero_via_hypothesis",
+  "question": "Can FlatDepthReserveLike be constructed on BadNode := CKNBadCylinder from Leray-Hopf weak-solution + UniformFlatInheritanceDepth hypotheses, with route/pressure/beta/residual charges as Real fields supplied by hypothesis (non-zero, carrying analytic content), verification discharged by real computation, in a new file, sorry/admit clean, without colliding with tick450/tick441/sibling agent files?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_clay_real_construction",
+  "value_if_success": 1.0,
+  "void_conditions": "Toolchain timeout > 35 min; sibling agent file collision"
+}

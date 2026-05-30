@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": "Focus next runs on hard-slice consequence/allocation and MM revision-quality; do not rerun naturalistic family-mapping or transparent check-shop endpoints.",
+  "agent_id": "codex:RD",
+  "contract_id": "eg_v51_v52_hard_discriminators_meso_20260520",
+  "contract_question": "Will the next two non-duplicative primitive experiments, focused on hard-slice consequence/allocation and MM revision-quality endpoints, produce useful scientific signal beyond the already-known naturalistic family-mapping ceilings?",
+  "domain": "epistemic-generation",
+  "expected_cost_agent_minutes": 100.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "case_bank_too_constructed": 0.2,
+    "generic_ceiling": 0.35,
+    "judge_or_gold_artifact": 0.2,
+    "model_noise_or_parse_failure": 0.1,
+    "true_null": 0.15
+  },
+  "forecast_externality_tags": [
+    "reduces_duplicate_experiment_spend",
+    "clarifies_agent_operator_boundary"
+  ],
+  "forecasted_at": "2026-05-20T22:43:45Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.1,
+  "p_success": 0.72,
+  "rationale_short": "Naturalistic family-mapping/check-shop tests ceilinged; V44 and V50 restored headroom on hard close-confusion cases; MM-V3 showed revision-quality lift while MM-V4 mapping ceilinged.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "confucius",
+  "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
+  "contract_question": "Will a bounded LeanHammer smoke benchmark over v19.22 mapped rows run in the external LeanHammer clone without mutating the main project and produce per-row pass/fail/suggestion artifacts?",
+  "domain": "gp225_external_baseline_smoke",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_records_per_row_missing_suggestion_or_failure_detail": 0.14285714285714285,
+    "builder_overreaches_into_heavy_search_training_or_gnn_language": 0.03571428571428571,
+    "leanhammer_invocation_interface_not_scriptable_enough_for_three_rows": 0.3214285714285714,
+    "mapped_rows_medium_confidence_only_causes_import_or_name_resolution_failures": 0.25,
+    "smoke_accidentally_touches_main_lean_project_or_wrong_cwd": 0.07142857142857142,
+    "timeout_or_lake_environment_drift_in_external_clone": 0.17857142857142858
+  },
+  "forecasted_at": "2026-05-13T22:32:00Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.07,
+  "p_success": 0.76,
+  "rationale_short": "LeanHammer is already cloned, built, and smoke-tested; v19.22 supplies mapped rows. Main risk is interface/schema friction from medium-confidence mappings. Success only requires bounded invocations and per-row records, not proving rows.",
+  "read_only_attestation": true
+}

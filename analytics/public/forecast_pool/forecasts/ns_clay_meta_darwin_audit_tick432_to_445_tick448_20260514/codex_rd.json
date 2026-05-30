@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "demote tick444 to documentation; flag tick443 defect_supported_on_skeleton as separate obligation",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514",
+  "contract_question": "Will the tick448 Meta-Darwin audit of the tick432-tick445 Lean primitive chain (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE-NAMING verdicts using the 6-point checklist, (b) identify at least one PURE-NAMING or LAUNDERED structure if any exists, (c) confirm or retract the in-artifact scope guards, and (d) leave Lean files unmodified?",
+  "domain": "meta_darwin_lean_audit",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": ["self_meta_darwin_load_bearing"],
+  "forecasted_at": "2026-05-15T01:00:00Z",
+  "p_dependency_issue": 0.02,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.80,
+  "rationale_short": "Read-only audit task with a clear checklist and a small finite set of named primitives. Expected primary findings: tick441 flatDepthReserve_drop is HONEST (real linarith proof with Finset.sum_le_sum + Finset.mul_sum), tick444 TwoRouteComposition is PURE_NAMING (all Prop fields), tick442 5-branch dichotomy elimination is generic rcases (WRAPPER). The audit should also catch that tick445 r-linear theorems are field projections, not derivations. Lean files easily left unmodified. Main risk is missing a substantive structural laundering hidden inside the NoConcentrationLemmaAxiom support-localization clause.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,15 @@
+{
+  "target": "GP216BridgeCompositionReceipt",
+  "field": "branch_matches_profile_lipschitz_generated_block",
+  "patch_class": "source_provenance_bridge",
+  "k": 2,
+  "estimate": {
+    "model_name": "claude-sonnet-4-6",
+    "input_tokens_est": 4240,
+    "max_output_tokens": 12000,
+    "estimated_cost_usd": 0.19272
+  },
+  "max_total_cost_usd": 0.5,
+  "allow_paid": true,
+  "session_id": "batched-candidate-20260506T202413Z"
+}

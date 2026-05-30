@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": "Codex external view: P(>=1) lower than claude_rd (0.42 vs 0.85). Lean API/name friction is the main blocker.",
+  "agent_id": "codex_rd",
+  "contract_id": "gp225_v30a_route_c_4_natural_b0_b1_open_rows_micro",
+  "contract_question": "Will Route C (LLM-mediated proof composition) close \u22651 of 4 B0+B1-open natural rows (D02 triangle inequality, D03 n.choose 2 identity, D04 2*inner \u2264 norm^2+norm^2, E05 Finset sum_add_distrib) under strict v30 contract: no oracle proof lines, replay from scratch, 0 manual edits, machinery-OK per relaxed audit?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "generated_proof_needs_manual_repair": 0.2727272727272727,
+    "missing_library_lemma_or_name": 0.3409090909090909,
+    "strict_audit_rejects_solution_path": 0.18181818181818182,
+    "typeclass_or_cast_mismatch": 0.20454545454545453
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T15:33:52Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.05,
+  "p_success": 0.42,
+  "rationale_short": "Codex_rd (gpt-5.5): hammer+basic failures + zero manual edits make Lean API friction main blocker. Natural rows yield to compositional simp/calc only sometimes.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

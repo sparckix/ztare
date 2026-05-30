@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547",
+  "contract_question": "Given tick547's virial/mean-stress channel-shift (trace-free Reynolds-stress monopole = outer transport-momentum-flux moment minus r'-gaining inner virial term), does the relocated obstruction (outer transport boundary-flux moment) become tractable via the EXISTING transport-channel radius-receipt/no-reuse machinery (tick458 SilentFlatResidualMeasurePaysRadius / tick491-492 FlatKineticLoadNoReuse Cauchy-Schwarz), or does the outer transport-momentum-flux moment carry its own equally-hard same-window obstruction (transport analogue of F-314/F-437)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T22:54:48Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.05,
+  "p_success": 0.34,
+  "rationale_short": "Virial isomorphism genuinely breaks the pressure F-314/F-437 loop (pressure never used; inner term r'-gains via Leray-Hopf E*D). But MD-kill #4: outer transport-momentum-flux moment at scale r has NO gain; likely carries a transport analogue of same-window angular-nonnullness. Existing tick458/491/492 handle SUMMABILITY given a per-node charge, not the same-window MOMENT cancellation \u2014 so probably needs one new transport-side moment lemma. p_success 0.34, p_needs_new_lemma 0.70.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

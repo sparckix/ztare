@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines.json",
+    "contract": "analytics/public/forecast_pool/contracts/rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines",
+    "outcome": "analytics/public/forecast_pool/outcomes/rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines.json",
+    "score": "analytics/public/forecast_pool/scores/rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines.json"
+  },
+  "baseline_action": "no cost accounting; rerank-after-full-matrix (oracle-contaminated)",
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": null,
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Rung-1 killed cheaply; governance-only product",
+  "created_at": "2026-05-17T19:28:39Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pathA_wedge",
+    "score": 0.0,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-19",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "probe_matrix.json (verified) -> offline_policy_replay.json + md; metrics: median/mean failed probes before first closure_or_exact_gap (PRIMARY), closed_or_exact_gap@3/5/10, false_ratify, wrong_kind; kernel policy STRICTLY no-peek (only probes it paid for); ALL scoring probes counted",
+  "question": "OFFLINE policy replay over VERIFIED per-row probe matrices (batch_probe+governance verified primitives): does a NO-PEEK cost-accounted kernel-FEEDBACK-sequential policy (selects next (cand,action) using only outcomes of probes it has ALREADY spent budget on) beat random/BM25/source-rank/action-sweep on median failed-probes-before-closure_or_exact_gap by >=2x OR closed_or_exact_gap@5 by >=20pp, with 0 false-ratify, 0 wrong-target-kind, all closures pinned-replay, no hand edits? (oracle policy = upper-bound only, never the claim)",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "pathA_wedge",
+  "value_if_success": 0.85,
+  "void_conditions": "<3 rows with verified full probe matrices; in-grid closures=0 across all matrix rows (cannot test ordering); batch_probe/governance regression"
+}

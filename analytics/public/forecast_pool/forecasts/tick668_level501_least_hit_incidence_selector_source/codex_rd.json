@@ -1,0 +1,43 @@
+{
+  "action_change_recommendation": "Use least-hit bounded incidence source if Lean accepts; otherwise keep Level500 event-index socket and isolate decidability/collision-free gap.",
+  "agent_family": "codex",
+  "agent_id": "codex:RD",
+  "b_mid": 0.13,
+  "b_width": 0.1,
+  "contract_id": "tick668_level501_least_hit_incidence_selector_source",
+  "contract_question": "Can Level501 compile a least-hit bounded incidence selector that constructs the Level500 bounded event-index injection source from bounded incident existence plus collision-free incidence?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "incidence_collision_free_too_weak_to_prove_injective": 0.380952380952381,
+    "lineage_packaging_regression": 0.1904761904761905,
+    "nat_find_decidability_or_classical_issue": 0.42857142857142855
+  },
+  "forecast_externality_tags": [
+    "least_hit_selector",
+    "bounded_incidence",
+    "collision_free_before_cardinality"
+  ],
+  "forecasted_at": "2026-05-27T04:41:54Z",
+  "p_buy_yes_max": 0.68,
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.08,
+  "p_sell_yes_min": 0.84,
+  "p_success": 0.76,
+  "predicted_brier_hi": 0.18,
+  "predicted_brier_lo": 0.08,
+  "predicted_self_error_ratio": 0.18,
+  "rationale_short": "Positive path: bounded existence plus collision-free incidence should be sufficient for a least-hit event-index map; main risk is Lean decidability/classical plumbing or collision-free statement strength.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "nat_find_decidability_or_classical_issue",
+    "incidence_collision_free_too_weak_to_prove_injective",
+    "lineage_packaging_regression"
+  ],
+  "spread": -0.16,
+  "tail_downside_worry": 18.0,
+  "tail_upside_surprise": 12.0,
+  "verbalized_confidence": 0.76
+}

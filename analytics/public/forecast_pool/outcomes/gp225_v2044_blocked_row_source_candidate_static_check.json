@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 29.0,
+  "artifact_hash": "05c1329317d9ec3713542e90a884f75f5635bcca691d3ab49f01e95023e6db0b",
+  "artifact_path": "analytics/public/leanmill/results/v2044_blocked_row_source_candidate_packet_static_check.json",
+  "changed_by_forecast_ids": [
+    "Knuth",
+    "Noether2"
+  ],
+  "compile_status": "passed_static_check",
+  "contract_id": "gp225_v2044_blocked_row_source_candidate_static_check",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "candidate_content_bottleneck",
+    "static_hygiene",
+    "replay_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "static_candidates_not_replay_evidence"
+  ],
+  "new_next_action": "GP-230-price bounded replay of static-passed source candidates",
+  "old_next_action": "source contracts only",
+  "preconditioner_effect": "converted source contracts into candidate content and caught one static source-hinge mismatch before replay",
+  "preconditioner_source": "analytics/public/leanmill/results/v2043_blocked_row_content_source_discovery_packet.json",
+  "realized_failure_mode_ids": [
+    "source_hinge_missing"
+  ],
+  "resolution_note": "v20.44 generated 10 candidate actions across 5 blocked rows from v20.43 contracts; initial static check caught one source-hinge mismatch, repaired it, and final static checks passed all 10. No replay/training; GNN blocked=true.",
+  "resolved_at": "2026-05-14T17:27:29Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

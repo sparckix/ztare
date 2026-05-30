@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 42.0,
+  "artifact_hash": "0cb478d1de8b5a99bec694d4ef89f7f6d930a637131a295d40d82ca3529d4e94",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/normalized_leakage_closure_bundle_discriminator_20260514.json",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352",
+  "error_type": null,
+  "goal_delta": 6,
+  "resolution_note": "Built and ran PATTERN-022 normalized leakage closure bundle discriminator. py_compile passed. Artifact emitted sentinel_ok true, 8 estimate gates, ranked bottleneck list, and top PDE action transport_route_flux_lower_payment. Added PDE estimate brief route1_transport_flux_lower_payment_estimate_20260514.md.",
+  "resolved_at": "2026-05-14T11:54:37Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

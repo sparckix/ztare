@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T15:18:29Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 1.6,
+    "expected_value": 1.085147699771781,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.14500000000000002,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.09,
+    "p_success": 0.637147699771781,
+    "participants": [
+      {
+        "agent_id": "codex_rd_local",
+        "domain": "gp225_inventory_gate",
+        "p_success": 0.52,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_readonly_gp230",
+        "domain": "gp225_inventory_gate",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "false_accept_quarantine_interpretation",
+        "p": 0.17
+      },
+      {
+        "mode": "unsaturated_count_below_20",
+        "p": 0.15
+      },
+      {
+        "mode": "replayability_definition_too_strict",
+        "p": 0.14
+      },
+      {
+        "mode": "rows_replayable_but_not_closure_labeled",
+        "p": 0.12
+      },
+      {
+        "mode": "schema_drift",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1844_micro_inventory_pass.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1844_micro_inventory_pass.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1844_micro_inventory_pass.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1844_micro_inventory_pass.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1844_micro_inventory_pass.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 5.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T15:15:52Z",
+    "created_by": "codex_rd",
+    "horizon": "single v18.44 saved-artifact script run",
+    "layer": "micro",
+    "objective_resolver": "Resolve from analytics/public/leanmill/results/v1844_proof_delta_label_source_inventory.json metrics.",
+    "question": "Will v18.44, using saved artifacts only, pass the proof-delta label source inventory gate: >=50 natural/replayable before-action-after or prefix-state rows, >=20 rows not saturated by deterministic/BM25/action-sweep baselines, and zero unquarantined false accepts?",
+    "success_threshold": "natural_or_replayable_rows>=50 AND before_action_after_or_prefix_rows>=50 AND unsaturated_or_not_deterministically_absorbed_rows>=20 AND unquarantined_false_accepts=0 AND training_now=false AND gnn_blocked=true",
+    "task_type": "gp225_proof_delta_inventory_gate"
+  },
+  "contract_id": "gp225_v1844_micro_inventory_pass",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd_local"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230",
+        "raw_agent_ids": [
+          "codex_readonly_gp230"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_local",
+      "codex_readonly_gp230"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_local",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1844_micro_inventory_pass/codex_rd_local.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes": 2.0,
+        "forecasted_at": "2026-05-13T15:16:25Z",
+        "p_success": 0.52,
+        "rationale_short": "Saved artifacts likely clear raw replayable row count via v1739 and v1644, but the gate can fail on unsaturated closure-value labels if BM25/action-family baselines absorb too much or if public traces lack target equivalence.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1844_micro_inventory_pass/codex_readonly_gp230.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes": 1.2,
+        "forecasted_at": "2026-05-13T15:18:11Z",
+        "p_success": 0.74,
+        "rationale_short": "Likely pass if trace candidates count and v18.00 false accept is quarantined. v17.39 has 120 before/after/tactic rows, v17.99 has 60 clean and 30 action-residual rows, v18.39 has 75 non-BM25 rows; main risk is false-accept aggregation semantics.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 0.2,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T15:19:35Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.22,
+      "p_success": 0.637147699771781,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "false_accept_quarantine_interpretation",
+        "p": 0.17
+      },
+      "voi_proxy": 0.9512
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 1.6,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.637147699771781,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "false_accept_quarantine_interpretation",
+        "p": 0.17
+      },
+      {
+        "mode": "unsaturated_count_below_20",
+        "p": 0.15
+      },
+      {
+        "mode": "replayability_definition_too_strict",
+        "p": 0.14
+      },
+      {
+        "mode": "rows_replayable_but_not_closure_labeled",
+        "p": 0.12
+      },
+      {
+        "mode": "schema_drift",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.149,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T15:19:35Z"
+  }
+}

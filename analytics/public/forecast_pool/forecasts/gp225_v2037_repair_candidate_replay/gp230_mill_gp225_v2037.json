@@ -1,0 +1,29 @@
+{
+  "action_change_recommendation": "Run v20.37 as bounded replay/audit gate, not as training or promotion; failure would falsify this deterministic repair style.",
+  "agent_id": "gp230_mill_gp225_v2037",
+  "contract_id": "gp225_v2037_repair_candidate_replay",
+  "contract_question": "Will replay of the v20.35 source-aligned repaired candidates add at least one compile-backed same-target strict row without harmful mismatches?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [
+    "general_purpose_lean_harness",
+    "public_adapter_repair_replay",
+    "strict_compile_invariant",
+    "pre_gnn"
+  ],
+  "forecasted_at": "2026-05-14T15:31:28Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.42,
+  "rationale_short": "v20.35/v20.36 improved repair supply and static hygiene, but only replay answers compile-backed strict yield.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "no_compile_despite_static_pass",
+    "compiled_but_not_strict_same_target",
+    "adapter_shape_risk",
+    "harmful_or_leakage_metadata_regression"
+  ]
+}

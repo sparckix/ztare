@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-06T14:57:25.843327+00:00",
+  "target": "MacroscopicFlatTorusClockSource",
+  "field": "capacity_of_macroscopic_clock_sources",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched AUXILIARY evidence in the target/field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

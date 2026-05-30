@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Run only if EV clears; otherwise statically verify helper source-safety before replay.",
+  "agent_id": "Russell",
+  "contract_id": "gp225_v2049_corrected_charfun_dual_canary_replay",
+  "contract_question": "If we replay the two corrected v20.48 charFunDual/L candidate templates for current_scale_0329, will at least one compile into strict, solver-closure, or auxiliary progress with harmful mismatches zero?",
+  "domain": "gp225_pre_gnn_replay_gate",
+  "expected_cost_agent_minutes": 26.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "aemeasurable_or_instance_mismatch": 0.27,
+    "corrected_template_closes_wrong_side": 0.18,
+    "helper_source_safety_or_name_missing": 0.34,
+    "historic_gold_shape_parser_issue": 0.21
+  },
+  "forecast_externality_tags": [
+    "corrected_canary_replay",
+    "compile_evidence_gate"
+  ],
+  "forecasted_at": "2026-05-14T17:43:12Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.06,
+  "p_success": 0.38,
+  "rationale_short": "Corrected target shape helps, but historic feedback already showed field/name failures around charFunDual helpers.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "helper_source_safety_or_name_missing",
+    "aemeasurable_or_instance_mismatch"
+  ]
+}

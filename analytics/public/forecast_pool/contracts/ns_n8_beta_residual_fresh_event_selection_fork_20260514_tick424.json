@@ -1,0 +1,104 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json"
+  },
+  "baseline_action": "Attempt analytic event-selection proof immediately from residual fresh excess.",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424",
+  "cost_penalty": 1.0,
+  "counterfactual_action": "Wait for sidecar agents before formalizing another fork.",
+  "created_at": "2026-05-14T22:28:13Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0645,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_proof_frontier_lean_surface",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0645,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.3333,
+        "score_rows": 2,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 10,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 3,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 140,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0455,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "risk of adding one more adapter instead of an analytic estimate"
+    ],
+    "positive": [
+      "compresses the next beta obstruction into a crisp fork"
+    ],
+    "process": [
+      "uses swarm/Darwin pressure before next formalization"
+    ]
+  },
+  "horizon": "same RD tick 2026-05-14",
+  "information_value": 9.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff the tick adds a compiling no-sorry Lean surface below CoherentFreshPacketAuditResidualRoutingSource that states a residual-fresh-excess same-ledger event-selection fork with explicit N8 residual alternatives and a no-closure guard; false if Lean fails, the surface defines the event post-hoc from beta-radius accounting, or it claims the analytic selection theorem.",
+  "question": "Will tick424 add a compiling Lean fork surface for residual fresh excess creating a same-ledger audit event, or routing the obstruction to flat/inherited scale reserve, pressure visibility, or beta incidence residuals, without claiming analytic event selection?",
+  "risk_penalty": 7.0,
+  "success_threshold": "Lean compiles; no sorry/admit; git diff check clean; event-selection fork is compatible with existing audit/coherence structures; next theorem is explicit.",
+  "task_type": "ns_proof_frontier_lean_surface",
+  "value_if_success": 14.0,
+  "void_conditions": "Void if it merely repeats tick423, hides pressure visibility inside residual fresh excess, or turns inherited/flat scale reuse into route schedule without a reserve primitive."
+}

@@ -1,0 +1,28 @@
+{
+  "agent_id": "Franklin",
+  "belief_allow_gpu_or_full_gnn_training": false,
+  "belief_allow_tiny_cpu_model_fit_gate": true,
+  "contract_id": "gp225_v2086_union_training_readiness_after_two_heldout_strict_rows",
+  "domain": "lean_gnn_harness",
+  "expected_cost_agent_minutes": 20.0,
+  "failure_mode_distribution": {
+    "CPU_gate_scope_too_broad": 0.07,
+    "anti_overfit_split_not_updated_correctly": 0.15,
+    "artifact_schema_or_readback_error": 0.05,
+    "baseline_delta_vs_model_fit_conflated": 0.11,
+    "leakage_or_quarantine_checks_omitted": 0.09,
+    "other": 0.02,
+    "overclaims_gpu_from_two_heldout_rows": 0.24,
+    "strict_rows_or_manifest_pointer_misread": 0.11,
+    "underclaims_cpu_gate_despite_second_eval_win": 0.16
+  },
+  "forecasted_at": "2026-05-14T20:24:10Z",
+  "p_dependency_issue": 0.04,
+  "p_needs_new_lemma": 0.0,
+  "p_regression": 0.07,
+  "p_success": 0.88,
+  "question": "After v20.85, should GP-225 allow a tiny CPU-only model-fit gate while blocking GPU/full GNN training?",
+  "rationale": "Two clean heldout strict wins support a tightly scoped CPU gate for model-delta measurement, not GPU/full training.",
+  "routing_hint": "run_read_only_gate",
+  "weight": 1.0
+}

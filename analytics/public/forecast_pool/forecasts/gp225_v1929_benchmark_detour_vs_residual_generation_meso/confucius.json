@@ -1,0 +1,23 @@
+{
+  "agent_id": "confucius",
+  "contract_id": "gp225_v1929_benchmark_detour_vs_residual_generation_meso",
+  "contract_question": "Over the next 30 agent-minutes, is the higher-yield GP-225 pre-GNN route to continue benchmark integration through v19.28/v19.29 LeanDojo trace/state extraction rather than returning immediately to residual generation/replay?",
+  "domain": "gp225_pre_gnn_route_selection",
+  "expected_cost_agent_minutes": 21.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_training_or_gnn_unblock_language": 0.03448275862068966,
+    "agent_prematurely_returns_to_residual_generation_without_closing_benchmark_detour": 0.10344827586206896,
+    "artifact_only_reports_packaging_progress_without_trace_or_decisive_route_change": 0.1724137931034483,
+    "leandojo_trace_fails_on_traceable_sorry_project_for_non_skip_reason": 0.3103448275862069,
+    "state_trace_extraction_requires_more_than_30_minutes_of_api_surface_debugging": 0.24137931034482762,
+    "toolchain_or_lake_cache_drift_reappears": 0.13793103448275865
+  },
+  "forecasted_at": "2026-05-13T22:59:21Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.06,
+  "p_success": 0.78,
+  "rationale_short": "Benchmark integration is currently higher-yield than immediate residual generation because v19.26 proved minimal LeanDojo construction works and v19.27 reached lake build; v19.28 removes the known skip-goal confound. Likely outcome is trace/state progress or decisive blocker.",
+  "read_only_attestation": true
+}

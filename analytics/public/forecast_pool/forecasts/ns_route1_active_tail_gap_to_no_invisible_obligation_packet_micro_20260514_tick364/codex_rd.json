@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+  "contract_question": "Can this tick produce a concrete math-first work packet mapping active all-channel-invisible route-1 tail failure to the existing no-invisible compactness obligation, with falsifiers and next discriminator?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_only_low_yield": 0.3,
+    "carrier_ambiguity": 0.25,
+    "overclaims_unconditional_closure": 0.12,
+    "wrapper_not_map": 0.33
+  },
+  "forecasted_at": "2026-05-14T12:50:18Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.08,
+  "p_success": 0.76,
+  "rationale_short": "Nearest Lean primitives already expose no-invisible obligation; risk is accidentally writing another conditional wrapper instead of the active-gap maps.",
+  "read_only_attestation": true
+}

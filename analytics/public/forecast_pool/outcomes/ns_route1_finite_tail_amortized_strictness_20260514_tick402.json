@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "8c98550d05a89a7151ff73e554dcdc05982f264129024ac8b17fc19de5f0cda3",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd_tick402"
+  ],
+  "compile_status": "pass",
+  "contract_id": "ns_route1_finite_tail_amortized_strictness_20260514_tick402",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_route1",
+    "lean_positive",
+    "amortized_strictness",
+    "same_carrier_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "Use finite-tail amortized strictness plus failure-forces-nonsummable-route-mass interface",
+  "old_next_action": "Require failure to force divergent activeTail",
+  "preconditioner_effect": "Encoded same-carrier tail control and no-upstream-closure boundary before proving large-prefix strictness",
+  "preconditioner_source": "GPT-5.5 finite-tail closure proposal plus GP-230 forecast risks",
+  "realized_failure_mode_ids": [
+    "missing_same_carrier_tail_control",
+    "finite_budget_to_strictness_smuggling"
+  ],
+  "resolution_note": "Compiled Route1FiniteTailAmortizedStrictness, route1_tailPrefix_le_activeTailBudget, route1_prefix_strict_of_large_mass, and Route1GlobalClosureFromFiniteTailAmortizedStrictness interface. Same-carrier X_tail control is explicit; full branch exhaustion remains separate.",
+  "resolved_at": "2026-05-14T18:48:57Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick631-energy-to-critical-is-scaling-supercriticality-wall",
+  "contract_question": "tick631: is the energy\u2192critical gap (CKN P^1(S)=0 from finite energy-dissipation, vs ESS critical L^inf_t L^3) NOT bridgeable by interpolation because it IS exactly 3D-NS scaling-supercriticality \u2014 the energy norm scales as a POSITIVE power of lambda (supercritical) while L^3/Hdot^{1/2} is scale-invariant (critical), and no interpolation/Sobolev embedding raises a supercritical a-priori bound to a scale-invariant one without genuinely new critical input?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T03:26:23Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.3,
+  "rationale_short": "conceding: my scaling sub-claim (raw dissipation scale-invariant) was WRONG (codex-corrected: supercritical l^-1; scale-inv object is local r^-1\u222b\u222b_Qr|\u2207u|\u00b2); AND amnesia manifest:182/tick601 \u2014 this is the known route-invariant scaling-supercriticality terminus RE-PLACED at CKN\u2194ESS, not new progress. Threshold required correct scaling \u2014 failed",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

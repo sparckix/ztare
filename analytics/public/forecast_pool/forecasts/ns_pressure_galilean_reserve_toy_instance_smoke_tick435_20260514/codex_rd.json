@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship; flag as smoke test.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_galilean_reserve_toy_instance_smoke_tick435_20260514",
+  "contract_question": "Can a toy instance of FixedWindowGalileanQuotientReserveIdentity be constructed in Lean (with trivial values demonstrating structure-instantiability), the touched file compiling and no new sorries/admits, while honestly flagging that toy \u2260 PDE construction?",
+  "domain": "ns_clay_pressure",
+  "expected_cost_agent_minutes": 15.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:53:20Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.8,
+  "rationale_short": "Trivial values (galileanMeanWeightedStress := 0, pressureReserveReceipt := 1) satisfy the inequality 0 \u2264 1; Prop fields fill with True. Risk only on Real-coercion / structure-field shape.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

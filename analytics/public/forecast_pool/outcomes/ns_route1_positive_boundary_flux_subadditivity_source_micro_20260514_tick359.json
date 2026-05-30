@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 24.0,
+  "artifact_hash": "dc3909fcdadadbcee28518dad81ab144941ff98a1bc02f849aefaec489244fa3",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359",
+  "error_type": null,
+  "goal_delta": 2,
+  "resolution_note": "Added LocalEnergyPositiveBoundaryFluxSubadditivitySource and theorem normalizedTransport_le_transport_plus_alternateCharges_of_boundaryFluxSubadditivity. This replaces exact split equality with positive-boundary-flux subadditivity; lake env lean and downstream build passed; touched file has no sorry/admit.",
+  "resolved_at": "2026-05-14T12:31:46Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

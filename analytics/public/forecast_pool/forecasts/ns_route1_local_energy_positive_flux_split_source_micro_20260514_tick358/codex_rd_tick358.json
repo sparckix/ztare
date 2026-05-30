@@ -1,0 +1,23 @@
+{
+  "agent_id": "codex_rd_tick358",
+  "contract_id": "ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358",
+  "contract_question": "Can we add a Lean-checked local-energy positive cutoff-flux visible/invisible split source feeding the route-level transport closure, without defining invisible leakage from the target bound or substituting DR/pressure carriers?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "agent_no_go_identifies_smuggling": 0.18,
+    "downstream_build_surprise": 0.1,
+    "invisible_residual_not_independently_sourced": 0.24,
+    "lean_scalar_algebra_issue": 0.12,
+    "other": 0.08,
+    "source_interface_too_wrapper_like": 0.28
+  },
+  "forecasted_at": "2026-05-14T12:25:52Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.45,
+  "p_regression": 0.05,
+  "p_success": 0.68,
+  "rationale_short": "Scalar constructor should compile; value depends on explicit fields keeping residuals independent of the final target bound.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "peirce_readonly_forecaster",
+  "contract_id": "gp225_v1943_scope_clean_pde_holdout_replay",
+  "contract_question": "Will v19.43 execute scope-clean signature repair on the v19.42 PDE-functional holdout shard and reach at least 4 strict-or-pull-forward closures with zero harmful compiled mismatches, using no post-target declarations, target proof lines, or teacher/oracle primary candidates?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "diverse_holdout_reduces_overfit_but_lower_closure_rate": 0.2,
+    "exact_apply_rows_undercovered": 0.14,
+    "generic_templates_need_elaborator_feedback": 0.2,
+    "other": 0.2,
+    "scope_clean_names_have_enough_simp_rw_signal_on_some_pde_rows": 0.18,
+    "toolchain_or_namespace_noise": 0.08
+  },
+  "forecasted_at": "2026-05-14T00:14:24Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.46,
+  "p_regression": 0.08,
+  "p_success": 0.26,
+  "rationale_short": "v19.42 supplies 74 usable pre-target names across 15 files, so some replay closures should occur. But v19.41 success involved curated actions; a generic holdout replay probably lands below the 4-row gate unless templates exploit theorem/action families well.",
+  "read_only_attestation": true
+}

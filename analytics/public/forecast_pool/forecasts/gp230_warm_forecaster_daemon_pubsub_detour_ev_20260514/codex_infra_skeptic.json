@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Only detour if capped to spec plus local smoke; avoid VPS deployment and LLM spawning during active NS proof work.",
+  "agent_id": "codex_infra_skeptic",
+  "contract_id": "gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+  "contract_question": "Should RD detour now to specify and implement an MVP warm role-bound forecast-agent/pubsub mechanism for GP-230, so forecasters can maintain calibration memory and update odds over evidence instead of one-off forecasts?",
+  "domain": "gp230_forecast_pool_infrastructure",
+  "expected_cost_agent_minutes": 140.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "mvp_succeeds": 0.08,
+    "ns_delay_cost": 0.18,
+    "role_mandate_too_vague": 0.18,
+    "scope_creep_to_full_vps_deploy": 0.26,
+    "smoke_only_low_value": 0.12,
+    "warm_agent_bias_or_anchoring": 0.18
+  },
+  "forecast_externality_tags": [
+    "infra_skeptic",
+    "ns_delay_cost",
+    "warm_agent_bias"
+  ],
+  "forecasted_at": "2026-05-14T17:14:29Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.18,
+  "p_success": 0.42,
+  "rationale_short": "The idea is strategically good, but the near-term EV drops sharply if it becomes deployment work rather than a small local contract/queue layer.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "scope_creep_to_full_vps_deploy",
+    "ns_delay_cost"
+  ]
+}

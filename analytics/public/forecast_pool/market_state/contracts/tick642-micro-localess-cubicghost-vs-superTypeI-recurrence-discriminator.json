@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json",
+    "score": "analytics/public/forecast_pool/scores/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": "selected_projected_compactness_measure_valued_source",
+    "created_at": "2026-05-18T20:51:14Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-20T00:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "claude:RD depth-n + swarm (programs B/C drafts + cubic-ghost) aggregated + ONE cold Codex CLI ChatGPT-subscription adversarial kill of workspace/tick642_localess_aggregate.md; LIVE iff the bounded-ancient-L3-profile extraction is shown structurally distinct from manifest:44 super-Type-I/G2 + tick602 Case-2 (adversary-survived); RECURRENCE if it reduces to them",
+    "question": "CONSUMES selected_projected_compactness_measure_valued_source (the cubic ghost mu3=w*-lim|u_n|^3 IS a compactness measure-valued defect). DISCRIMINATOR (not a proof claim): Is LocalESSCubicGhostExclusion \u2014 critical-L3 cubic concentration with vanishing L2/stress/pressure/route/beta/alphaI channels cannot arise in suitable-weak NS \u2014 structurally DISTINCT from the already-logged super-Type-I asymptotic cascade / G2 budget pincer (ns_residual_manifest.md:44; tick602 Case-2 M-unbounded routing), i.e. the concentration-compactness/local-ESS extraction yields a BOUNDED critical-L3 ancient profile so ESS-rigidity applies = genuine progress (LIVE) \u2014 OR does the extraction give UNBOUNDED local L3 = exactly the ESS-hard branch = the Nth recurrence of the super-Type-I/G2 atom in concentration-compactness vocabulary (RECURRENCE)? Resolve LIVE iff the boundedness of the extracted ancient profile is established as structurally NEW (not assumed); RECURRENCE if it reduces to the existing super-Type-I pincer / G2 budget gap.",
+    "success_threshold": "0.5",
+    "task_type": "ns_recurrence_vs_live_discriminator"
+  },
+  "contract_id": "tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "forecast_backfill_or_void_no_score"
+    ],
+    "next_action": "resolved_without_forecasts",
+    "state": "resolved_without_forecasts"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-18T21:52:01Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "resolved_without_forecasts",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

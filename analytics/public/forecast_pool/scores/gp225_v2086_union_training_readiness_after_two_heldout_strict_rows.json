@@ -1,0 +1,69 @@
+{
+  "contract_id": "gp225_v2086_union_training_readiness_after_two_heldout_strict_rows",
+  "forecast_history_count": 2,
+  "mean_brier": 0.011249999999999996,
+  "mean_log_score": -0.11107202549056308,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "82e45b677bae3dfd41cefbcdf5675268ba7c64d98842c709e990f35ea5dfbda9",
+    "artifact_path": "analytics/public/leanmill/results/v2086_union_training_readiness_after_two_heldout_strict_rows.json",
+    "compile_status": "gate_passed",
+    "contract_id": "gp225_v2086_union_training_readiness_after_two_heldout_strict_rows",
+    "decision_changed_bool": true,
+    "externality_tags": [
+      "meso_only_forecast",
+      "cpu_gate_allowed",
+      "gpu_blocked",
+      "anti_goodhart"
+    ],
+    "goal_delta": 1,
+    "new_next_action": "v2087_tiny_cpu_model_fit_gate_on_two_heldout_strict_rows",
+    "realized_failure_mode_ids": [
+      "gpu_blocked_cpu_gate_allowed"
+    ],
+    "resolution_note": "v20.86 passed: two heldout strict rows allow a tiny CPU-only model-fit gate, while GPU/full GNN training and model-delta claims remain blocked.",
+    "resolved_at": "2026-05-14T20:26:02Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T20:26:02Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Franklin",
+      "brier": 0.0144,
+      "cost_error_agent_minutes": -2.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 20.0,
+      "log_score": -0.12783337150988489,
+      "p_success": 0.88,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:23:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:24:10Z",
+        "resolved_at": "2026-05-14T20:26:02Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Noether",
+      "brier": 0.008099999999999994,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 16.0,
+      "log_score": -0.09431067947124129,
+      "p_success": 0.91,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:23:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:24:24Z",
+        "resolved_at": "2026-05-14T20:26:02Z"
+      }
+    }
+  ]
+}

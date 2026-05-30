@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "a6bd7c0015d98473130f96243a61b3a6ecbb11a9b2c6574963f9e973cffe3608",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/xhigh_active_tail_carrier_domination_feynman_verdict_20260514.md",
+  "compile_status": "not_applicable_sidecar",
+  "contract_id": "ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "Feynman identified a lower missing lemma: ActiveTailSingularPartControlledByProfileResidual via Lebesgue decomposition mu_A = f dnu_vis + mu_A_perp; same-tree locks help visible density but do not control singular part.",
+  "resolved_at": "2026-05-14T13:02:41Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

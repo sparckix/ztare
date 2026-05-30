@@ -1,0 +1,26 @@
+{
+  "agent_id": "Noether",
+  "agent_name": "Codex GP-230 Meso Forecaster",
+  "contract_id": "gp225_v2089_heldout_hard_negative_replay_meso_gate",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 24,
+  "forecasted_at": "2026-05-14T20:51:16Z",
+  "p_dependency": 0.09,
+  "p_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.68,
+  "rationale": "The contract is a narrow label-production replay, not a training launch. v20.88 already supplies four source-safe hard-negative contrast candidates for the same heldout row, and success only needs one informative non-strict/failed contrast label with zero harmful compiled mismatches and preserved leakage constraints. Main risk is adjudication semantics: a Lean failure must become a useful contrast label rather than an unclassified harness failure, and non-strict contrast must not be conflated with harmful compiled mismatch.",
+  "routing_hint": "run_bounded_replay",
+  "top_failure_modes": {
+    "anti_leakage_metadata_incomplete": 0.05,
+    "contrast_candidate_unexpectedly_compiles_as_strict_or_equivalent": 0.18,
+    "failed_contrast_not_adjudicated_as_replay_label": 0.16,
+    "harmful_compiled_mismatch": 0.03,
+    "local_context_or_implicit_argument_mismatch_blocks_informative_failure": 0.15,
+    "negative_label_semantics_confused_with_harmful_mismatch": 0.12,
+    "replay_harness_cannot_preserve_no_training_no_gnn_scope": 0.06,
+    "source_signature_not_imported_or_namespace_mismatch": 0.1,
+    "target_or_gold_state_leakage_detected": 0.02,
+    "timeout_or_unclassified_lean_error": 0.04
+  }
+}

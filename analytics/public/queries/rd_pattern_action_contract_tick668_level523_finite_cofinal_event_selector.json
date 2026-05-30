@@ -1,0 +1,32 @@
+{
+  "tick_id": "tick668",
+  "contract_id": "tick668_level523_finite_cofinal_event_selector_source",
+  "surface": "NS Track-B L3A finite cofinal event selector in final event-prefix codomain",
+  "selected_patterns": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second"
+  ],
+  "anti_patterns_guarded": [
+    "tool_underuse_formal_satisficing",
+    "bare_prop_choice",
+    "classical_choice_witness_only",
+    "nat_selector_with_separate_bound_only",
+    "endpoint_capacity_as_bound",
+    "shell_only_enumeration"
+  ],
+  "carrier_schema_receipts": {
+    "residual_to_check_edge": {
+      "residual": "Level522 carries a Nat selector plus a separate strict final-prefix bound.",
+      "check": "Require the selector to be valued in Fin (supportLength - 1), deriving the strict bound from Fin.isLt.",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level523_finite_cofinal_event_selector_receipt.json"
+    },
+    "surplus_projection_artifact": {
+      "surplus": "The final-prefix bound is exactly codomain membership for a finite selector.",
+      "projection": "Move the bound into the selector type and project to Nat only after the finite selector is available.",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    }
+  },
+  "nearest_universal_op": "GP-219 estimate-craft codomain-bound internalization",
+  "nearest_confuser": "Level522 Nat selector plus separate final-prefix bound"
+}

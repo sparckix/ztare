@@ -1,0 +1,198 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:35Z",
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.026516100836121652,
+      "forecast_spread": 0.01,
+      "p_success": 0.6950230011944596,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.222
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 40.0,
+    "expected_value": 0.026516100836121652,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.065,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.060000000000000005,
+    "p_success": 0.6950230011944596,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c/codex.json",
+        "forecasted_at": "2026-05-16T20:00:52Z",
+        "p_success": 0.69,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T19:59:22Z",
+        "p_success": 0.7,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "routing_drift",
+        "p": 0.225
+      },
+      {
+        "mode": "sandbox_pin_mismatch",
+        "p": 0.125
+      },
+      {
+        "mode": "hidden_provenance_coupling",
+        "p": 0.1
+      },
+      {
+        "mode": "false_ratification_leak",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json",
+    "contract": "analytics/public/forecast_pool/contracts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json",
+    "score": "analytics/public/forecast_pool/scores/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 40.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T19:59:14Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "gp233_adversary_yield_decomp.py --result /tmp/adv_verify_A2/result.txt vs prior 5/4/3",
+    "question": "Re-verifying the 12-row A-corpus VERBATIM through the canonical pinned v4.29.0 carleson sandbox: will the genuine-novel-closure count be within +/-2 of the original (5) AND false_ratifications=0 (i.e. provenance defect was routing-only, original yield structurally reproduces)?",
+    "success_threshold": "0.5",
+    "task_type": "a_corpus_canonical_reverify"
+  },
+  "contract_id": "re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-16T20:00:52Z",
+        "p_success": 0.69,
+        "rationale_short": "Verbatim corpus plus canonical pinned sandbox makes structural reproduction likely; main residuals are routing drift, pin mismatch, and any hidden provenance coupling that would surface as false ratifications.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-16T19:59:22Z",
+        "p_success": 0.7,
+        "rationale_short": "proofs verbatim-preserved; only change = canonical sandbox + notation port; math yield should structurally reproduce within +/-2 of 5 with 0 false-ratify if defect was routing-only",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 35.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T20:12:21Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.026516100836121652,
+      "forecast_spread": 0.01,
+      "p_success": 0.6950230011944596,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.222
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 40.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6950230011944596,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "routing_drift",
+        "p": 0.225
+      },
+      {
+        "mode": "sandbox_pin_mismatch",
+        "p": 0.125
+      },
+      {
+        "mode": "hidden_provenance_coupling",
+        "p": 0.1
+      },
+      {
+        "mode": "false_ratification_leak",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09305000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:39:19Z"
+  }
+}

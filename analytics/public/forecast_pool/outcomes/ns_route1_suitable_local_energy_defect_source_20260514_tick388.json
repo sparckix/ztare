@@ -1,0 +1,34 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "647c50d0f8f0e1ba7738e684201853cd8c778a799a67999c0dcab847565d521b",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd_executor_prior",
+    "codex_skeptic_prior"
+  ],
+  "compile_status": "passed",
+  "contract_id": "ns_route1_suitable_local_energy_defect_source_20260514_tick388",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioning",
+    "anti_tautology",
+    "ns_source_ladder"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [],
+  "new_next_action": "Add lower suitable-local-energy defect/residual source plus anti-slack guard before consuming signed identity.",
+  "old_next_action": "Directly assert fixed signed identity source fields.",
+  "preconditioner_effect": "Added defectGeneratedBeforePositiveVariation, defectIsLocalEnergyResidual, noPostHocResidualChoice, noFinalBudgetSlackDefinition, and a final-route-slack no-go guard.",
+  "preconditioner_source": "codex_rd_executor_prior,codex_skeptic_prior",
+  "realized_failure_mode_ids": [
+    "alphaI_final_slack_smuggling"
+  ],
+  "resolution_note": "Added SuitableLocalEnergyDefectMeasureSource plus constructor into FixedCutoffLocalEnergySignedMeasureIdentitySource and guard FinalRouteSlackDoesNotSourceSuitableLocalEnergyDefect. lake env lean passed and no new sorry/admit. Forecast preconditioner changed execution by forcing explicit no-final-route-slack/provenance fields and no full route-closure claim.",
+  "resolved_at": "2026-05-14T14:43:59Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

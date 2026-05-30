@@ -1,0 +1,22 @@
+{
+  "agent_id": "Herschel",
+  "contract_id": "ns_route1_angular_carrier_estimate_station_micro_20260513_tick315",
+  "contract_question": "Will this tick add a build-passed route-independent angular/carrier PDE estimate station and constructor into the existing pressure-tail visibility certificate without new sorry?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructor_field_mismatch": 0.22,
+    "namespace_drift": 0.14,
+    "over_splitting": 0.28,
+    "route_scale_naming_conflict": 0.18,
+    "tautology_risk": 0.18
+  },
+  "forecasted_at": "2026-05-14T00:00:44Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.06,
+  "p_success": 0.78,
+  "rationale_short": "Most terms are field movement and existing scalar theorem reuse; risk is semantic drift if the station remains receipt-dependent.",
+  "read_only_attestation": true
+}

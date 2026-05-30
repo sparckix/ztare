@@ -1,0 +1,22 @@
+{
+  "agent_id": "Rawls",
+  "contract_id": "ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319",
+  "contract_question": "Can this tick lower Route1ProjectedRieszAngularMomentStation into a fixed projected-Riesz kernel/angular-moment formula source, without merely restating the l2 carrier equality?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "anti_tautology_guards_too_weak_for_gp233": 0.28,
+    "equality_orientation_or_rewrite_friction": 0.22,
+    "gp233_row_does_not_change_next_lever": 0.18,
+    "import_or_namespace_mismatch": 0.08,
+    "new_source_is_only_certificate_reshuffling": 0.24
+  },
+  "forecasted_at": "2026-05-14T00:39:52Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.32,
+  "p_regression": 0.08,
+  "p_success": 0.71,
+  "rationale_short": "favorable micro: split opaque equality into carrier value, projected kernel moment, and angular total equality; main risk is semantic not Lean.",
+  "read_only_attestation": true
+}

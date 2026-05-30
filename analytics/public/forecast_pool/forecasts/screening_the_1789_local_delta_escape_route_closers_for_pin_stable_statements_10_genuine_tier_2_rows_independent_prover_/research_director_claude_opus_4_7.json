@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_",
+  "contract_question": "Screening the 1789 local-delta escape-route closers for pin-stable statements -> >=10 genuine Tier-2 rows -> independent prover -> bundle_run through canonical v4.29.0: does it hit the Tier-2 gate (>=2 clean non-control closures OR >=5 exact-gaps/falsifiers, 0 false-ratify, 0 wrong-kind)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 130.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T02:17:05Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.55,
+  "rationale_short": "1789 closers >> enough; main attrition = added lemmas whose STATEMENT needs post-pin vocab (HARNESS-FAIL) \u2014 but a 60-sample of 1789 should yield >=10 pin-stable; gaps-route to gate plausible, genuine-closure uncertain (grounded-iterative not automated); 0-false-ratify caveated (CE hand-judged)",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

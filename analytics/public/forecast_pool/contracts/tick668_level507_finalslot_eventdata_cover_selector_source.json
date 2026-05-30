@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level507_finalslot_eventdata_cover_selector_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level507_finalslot_eventdata_cover_selector_source.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick668_level507_finalslot_eventdata_cover_selector_source",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level507_finalslot_eventdata_cover_selector_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level507_finalslot_eventdata_cover_selector_source.json"
+  },
+  "baseline_action": "leave coverEventSelector as a supplied Nat-valued target selector",
+  "budget_agent_minutes": 180.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_branch_projected_audited_output_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_branch_projected_audited_output_source' is an EXACT match of surfaced id 'selected_branch_projected_audited_output_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick668_level507_finalslot_eventdata_cover_selector_source",
+  "cost_penalty": 3.0,
+  "counterfactual_action": "derive coverEventSelector from a final-slot indexed eventData assignment and displayed incidence laws",
+  "created_at": "2026-05-27T05:42:20Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_proof_bridge",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-27",
+  "information_value": 10.0,
+  "layer": "meso",
+  "objective_resolver": "success iff ns_material_window_channel_decrement_bridge.lean compiles with L3ACoverEventSelectorFromFinalSlotEventDataAssignmentSource, a strict receipt gate passes, and the PDE workbench pack records the final-slot eventData assignment route into Level506",
+  "question": "Will Level507 compile a Lean source deriving the Level506 coverEventSelector from a final-slot indexed eventData assignment with displayed incidence, and validate it through a strict gate, PDE workbench, and targeted lake build?",
+  "risk_penalty": 4.0,
+  "success_threshold": "Lean source, strict gate, PDE workbench pack, and targeted Lake build all pass",
+  "task_type": "ns_proof_bridge",
+  "value_if_success": 9.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

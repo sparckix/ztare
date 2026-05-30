@@ -1,0 +1,200 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:55:01Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 21.5,
+    "expected_value": 0.32401772195891043,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.09,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.030000000000000002,
+    "p_success": 0.7156619207477302,
+    "participants": [
+      {
+        "agent_id": "Hilbert2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_candidate_synthesis_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate/hilbert2.json",
+        "forecasted_at": "2026-05-14T17:54:55Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Nash",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_candidate_synthesis_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate/nash.json",
+        "forecasted_at": "2026-05-14T17:54:55Z",
+        "p_success": 0.69,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "normalization_obligation_not_separated",
+        "p": 0.32
+      },
+      {
+        "mode": "target_proof_copy_leakage",
+        "p": 0.29500000000000004
+      },
+      {
+        "mode": "no_replay_ready_templates",
+        "p": 0.25
+      },
+      {
+        "mode": "candidate_format_mismatch",
+        "p": 0.135
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 24.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:54:41Z",
+    "created_by": "Codex",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Artifact analytics/public/leanmill/results/v2052_nonself_charfun_dual_candidate_synthesis_gate.json has status passed, forbidden target-proof copy checks true, candidate_generation_run true, replay_run false, training_now false, gnn_blocked true, and decision separates replay-ready templates from normalization-obligation-only templates.",
+    "question": "Will v20.52 synthesize a source-safe charFunDual candidate gate from v20.51 that avoids copying target proof lines and correctly decides replay-ready vs normalization-obligation-only?",
+    "success_threshold": "source-safe synthesis gate passes without leakage and without replay",
+    "task_type": "pre_gnn_candidate_synthesis_gate"
+  },
+  "contract_id": "gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Hilbert2",
+        "raw_agent_ids": [
+          "Hilbert2"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Nash",
+        "raw_agent_ids": [
+          "Nash"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Hilbert2",
+      "Nash"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed as static gate; do not replay if only normalization-obligation templates exist.",
+        "agent_id": "Hilbert2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate/hilbert2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_candidate_synthesis_gate",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T17:54:55Z",
+        "p_success": 0.74,
+        "rationale_short": "The nonself source is real, but exact proof likely needs map/integral/variance normalization; gate should split that before replay.",
+        "specific_failure_mode_ids": [
+          "normalization_obligation_not_separated",
+          "target_proof_copy_leakage"
+        ]
+      },
+      {
+        "action_change_recommendation": "If exact candidate requires the rw list from target theorem, emit normalization-obligation gate instead of replay packet.",
+        "agent_id": "Nash",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate/nash.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_candidate_synthesis_gate",
+        "expected_cost_agent_minutes": 23.0,
+        "forecasted_at": "2026-05-14T17:54:55Z",
+        "p_success": 0.69,
+        "rationale_short": "A safe synthesis gate is likely; a safe replay-ready candidate is less likely.",
+        "specific_failure_mode_ids": [
+          "target_proof_copy_leakage",
+          "no_replay_ready_templates"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "changed_by_forecast_ids": [
+      "Hilbert2",
+      "Nash"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:57:56Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.32401772195891043,
+      "forecast_spread": 0.05,
+      "p_success": 0.7156619207477302,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.4935
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 21.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7156619207477302,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "normalization_obligation_not_separated",
+        "p": 0.32
+      },
+      {
+        "mode": "target_proof_copy_leakage",
+        "p": 0.29500000000000004
+      },
+      {
+        "mode": "no_replay_ready_templates",
+        "p": 0.25
+      },
+      {
+        "mode": "candidate_format_mismatch",
+        "p": 0.135
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.08185000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:58:02Z"
+  }
+}

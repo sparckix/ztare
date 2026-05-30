@@ -1,0 +1,72 @@
+{
+  "contract_id": "gp225_v2096_blind_hydrated_new_heldout_replay_meso_gate",
+  "forecast_history_count": 2,
+  "mean_brier": 0.26825,
+  "mean_log_score": -0.7300781048591729,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "ace885fb7b3a3ddc48b2151b1971021529d2430b520c29d29ffc299aaaf9129a",
+    "artifact_path": "analytics/public/leanmill/results/v2096_blind_hydrated_new_heldout_replay.json",
+    "compile_status": "replay_failed_clean",
+    "contract_id": "gp225_v2096_blind_hydrated_new_heldout_replay_meso_gate",
+    "decision_changed_bool": true,
+    "externality_tags": [
+      "meso_only_forecast",
+      "blind_hydrated_replay_failed",
+      "context_hydration_needed",
+      "no_training"
+    ],
+    "goal_delta": 0,
+    "new_next_action": "v2097_non_target_source_name_audit_before_more_new_heldout_replay",
+    "realized_failure_mode_ids": [
+      "context_or_binder_hydration_still_wrong_after_blind_patch",
+      "isoSpec_hom_naturality_orientation_or_f_argument_mismatch",
+      "withDensity_pdf_le_map_shape_not_matching_setLIntegral_target",
+      "all_candidates_fail_without_useful_contrast_signal"
+    ],
+    "resolution_note": "v20.96 bounded replay of the blind/hydrated packet compiled 0/8, added no strict row and no useful contrast label, with zero harmful mismatches and no leakage/training. The reducer is now specific: isoSpec needs IsAffine/local morphism orientation hydration, while density needs a non-target source for applying measure inequality to a set integral.",
+    "resolved_at": "2026-05-14T21:30:38Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T21:30:38Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Franklin",
+      "brier": 0.2116,
+      "cost_error_agent_minutes": -12.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 36,
+      "log_score": -0.616186139423817,
+      "p_success": 0.46,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:28:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:28:38Z",
+        "resolved_at": "2026-05-14T21:30:38Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Noether",
+      "brier": 0.32489999999999997,
+      "cost_error_agent_minutes": -10.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 34,
+      "log_score": -0.8439700702945289,
+      "p_success": 0.57,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:28:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:28:38Z",
+        "resolved_at": "2026-05-14T21:30:38Z"
+      }
+    }
+  ]
+}

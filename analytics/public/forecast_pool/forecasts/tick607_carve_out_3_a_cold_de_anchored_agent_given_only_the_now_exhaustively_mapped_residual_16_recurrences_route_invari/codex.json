@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+  "contract_question": "tick607 carve-out-3: a COLD de-anchored agent given ONLY the now-exhaustively-mapped residual (16 recurrences, route-invariant supercritical-enstrophy atom, killed set enumerated, the everything-dimensionless-or-secretly-TypeI invariant, the generating-function insight) plus the open ask: is there ANY structurally-absent move outside the killed set, OR is route-1 provably terminal \u2014 and if terminal give the cleanest NEW route-invariance argument not a re-vocabularization. Success = the cold agent yields either a genuinely structurally-distinct candidate worth a disciplined tick, OR a NEW derived route-invariance argument; result then adversary-checked; no laundering, no pessimistic hand-wave. Fail = vacuous, OR a disguised recast of a killed move, OR pessimism without a new derivation.",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adversary_check_slips_provenance": 0.14,
+    "no_structurally_distinct_candidate_found": 0.24,
+    "recast_of_killed_move_as_new_route": 0.29,
+    "vacuous_or_pessimistic_without_derivation": 0.33
+  },
+  "forecast_externality_tags": [
+    "circularity-risk",
+    "route-invariance",
+    "provenance-audit"
+  ],
+  "forecasted_at": "2026-05-16T21:23:45Z",
+  "p_dependency_issue": 0.23,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.04,
+  "p_success": 0.24,
+  "rationale_short": "The residual is already exhaustively mapped, so the main risk is circular recasting of killed moves rather than raw search. I price a modest chance of a genuinely new structural candidate or derived route-invariance argument, with high lemma demand and nontrivial dependency risk.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "vacuous_or_pessimistic_without_derivation",
+    "recast_of_killed_move_as_new_route",
+    "no_structurally_distinct_candidate_found",
+    "adversary_check_slips_provenance"
+  ]
+}

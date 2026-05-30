@@ -1,0 +1,31 @@
+{
+  "tick_id": "TICK668",
+  "level": 530,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "TypedBadCenterEventPrefixCoversSelectedBadTree is still assumed as the Level529 primitive",
+      "check": "introduce BadCenterEventPrefixTypedAppearanceSource and construct the typed primitive from it"
+    },
+    {
+      "residual": "ordinary coverage appearance is Prop-only",
+      "check": "require an explicit Fin-valued selected-bad-node appearance witness tied to eventToBadNode"
+    }
+  ],
+  "surplus_projection_artifact": {
+    "source": "NSL3MultiscaleYM.BadCenterEventPrefixTypedAppearanceSource",
+    "projection": "Forward ordinary coverage plus typedSelectedBadNodeAppearance into TypedBadCenterEventPrefixCoversSelectedBadTree, then package the L3A Level529 source.",
+    "target": "NSL3MultiscaleYM.TypedBadCenterEventPrefixCoversSelectedBadTree"
+  },
+  "claim_boundary": {
+    "broad": "This does not prove the typed appearance source from raw event geometry.",
+    "narrow": "This lowers the Level529 primitive to ordinary coverage plus an explicit typed final-prefix appearance witness, with downstream enumeration sources forbidden."
+  },
+  "nearest_confuser": "everySelectedBadNodeAppearsInSomePrefix : Prop used as if it produced a witness",
+  "next_lever": "prove BadCenterEventPrefixTypedAppearanceSource from finite-prefix exhaustion, event ordering, same-tree incidence, and nonadaptive event-to-bad-node geometry"
+}

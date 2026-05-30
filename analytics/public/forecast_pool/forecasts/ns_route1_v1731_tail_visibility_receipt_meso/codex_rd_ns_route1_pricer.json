@@ -1,0 +1,23 @@
+{
+  "agent_id": "codex_rd_ns_route1_pricer",
+  "contract_id": "ns_route1_v1731_tail_visibility_receipt_meso",
+  "contract_question": "Will a saved-artifact route-1 tail-visibility receipt audit identify either a non-tautological CriticalTailVisibilityReserve candidate or a precise no-local-producer verdict that changes the next NS move?",
+  "domain": "ns_live_scalar_hinge",
+  "expected_cost_agent_minutes": 8.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "branch_choice_unchanged": 0.16,
+    "candidate_receipt_tautological": 0.24,
+    "local_receipts_all_context_only": 0.34,
+    "other": 0.08,
+    "scanner_misses_semantic_receipt": 0.14,
+    "script_bug": 0.04
+  },
+  "forecasted_at": "2026-05-13T18:27:39Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.02,
+  "p_success": 0.72,
+  "rationale_short": "Local evidence v17.25/v17.28/v17.30 says adapters exist but no producer. A saved scan should still decide the next branch: either name a non-tautological receipt candidate or prove the current local graph lacks one. Effort prior overridden because this is saved-artifact scan, not older Lean-heavy ns_live_scalar_hinge.",
+  "read_only_attestation": true
+}

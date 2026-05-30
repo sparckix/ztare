@@ -1,0 +1,104 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_coherent_event_selection_surface_20260514_tick423.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_coherent_event_selection_surface_20260514_tick423.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_beta_coherent_event_selection_surface_20260514_tick423",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_coherent_event_selection_surface_20260514_tick423.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_coherent_event_selection_surface_20260514_tick423.json"
+  },
+  "baseline_action": "Continue informal N8 beta audit without editing Lean.",
+  "budget_agent_minutes": 40.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_beta_coherent_event_selection_surface_20260514_tick423",
+  "cost_penalty": 1.0,
+  "counterfactual_action": "Formalize a smaller anti-tautology guard only.",
+  "created_at": "2026-05-14T22:24:49Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0645,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_proof_frontier_lean_surface",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0645,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.3333,
+        "score_rows": 2,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 10,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 3,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 140,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0455,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may add another adapter if residual-routing fields are not tied to existing source objects"
+    ],
+    "positive": [
+      "narrows beta branch to coherent event-selection theorem"
+    ],
+    "process": [
+      "tests structural catalog Gowers-first/Formalize-second discipline"
+    ]
+  },
+  "horizon": "same RD tick 2026-05-14",
+  "information_value": 8.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff the tick adds a compiling no-sorry Lean source/guard surface below BetaNonflatFreshPacketCoherentSourceSplit that exposes residual-fresh-excess routing, inherited/flat skeleton routing, pressure same-carrier locking, and no-posthoc event selection without claiming closure; false if Lean fails, the patch overclaims selection, or no GP-233/E-row closure is recorded.",
+  "question": "Will tick423 add a compiling Lean surface reducing coherent fresh event selection to residual-fresh-excess, inherited-or-flat routing, and pressure/same-carrier inputs, while recording that the actual coherent event-selection theorem remains open?",
+  "risk_penalty": 6.0,
+  "success_threshold": "Lean compiles; no sorry/admit in target file; git diff check clean; new surface projects to existing coherent source split or explicitly guards why it does not; logs identify the next hard theorem.",
+  "task_type": "ns_proof_frontier_lean_surface",
+  "value_if_success": 12.0,
+  "void_conditions": "Void if it merely renames existing coherence without adding residual-routing obligations, defines carriers from the target beta-radius endpoint, or conflates pressure visibility with event-stream selection."
+}

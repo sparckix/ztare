@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 9.0,
+  "artifact_hash": "88115aeeb17dc248d32a0af580f151e3ddb5addba2124bcdf5ccd1c061914c04",
+  "artifact_path": "analytics/public/leanmill/results/v2028_remaining_scope_queue_market_gate.json",
+  "changed_by_forecast_ids": [
+    "gp230_galileo_gp225_v2028",
+    "gp230_aquinas_gp225_v2028"
+  ],
+  "compile_status": "no_generation_market_gated_queue_too_small",
+  "contract_id": "gp225_v2028_fresh_remaining_scope_reprover_candidates",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "avoided_doomed_inference",
+    "queue_definition_corrected",
+    "label_integrity_preserved"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "do not run literal remaining_scope_holdout; build broader corrected non-strict queue or choose another external adapter",
+  "old_next_action": "run remaining_scope_holdout candidate generation with >=8-row success threshold",
+  "preconditioner_effect": "Prevented doomed local model inference and forced corrected queue audit before public-adapter candidate generation.",
+  "preconditioner_source": "gp230_galileo_gp225_v2028 and gp230_aquinas_gp225_v2028 forecasts",
+  "realized_failure_mode_ids": [
+    "remaining_scope_queue_too_small_after_v2027",
+    "success_predicate_structurally_impossible",
+    "v2027_contamination_filter_needed"
+  ],
+  "resolution_note": "Voided/no generation: two forecasts identified literal remaining_scope_holdout row-count failure. Audit found 4 literal remaining rows and only 1 corrected row after v20.27 primary/contaminated filters, below registered >=8 row threshold; no model inference, replay, or training run.",
+  "resolved_at": "2026-05-14T14:42:31Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": true
+}

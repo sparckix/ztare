@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_pressure_ckn_to_split_receipt_gap_tick430_20260514",
+  "contract_question": "Will tick430 add a compiling Lean source-split showing that CKN/tent compatibility only yields the split receipt source after explicit receipt-share routing, without using final-carrier visibility?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:18:51Z",
+  "p_dependency_issue": 0.45,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.18,
+  "p_success": 0.57,
+  "rationale_short": "This is likely useful only if it blocks the false inference CKNTentCompatibility -> split receipts. Risk is interface churn without PDE progress.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

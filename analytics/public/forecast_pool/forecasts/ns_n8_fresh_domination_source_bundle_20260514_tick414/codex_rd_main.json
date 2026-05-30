@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "proceed_once",
+  "agent_id": "codex-rd-main",
+  "contract_id": "ns_n8_fresh_domination_source_bundle_20260514_tick414",
+  "contract_question": "Will the component-estimate source-bundle tick add a compiling Lean surface that names the required sources for TriCarrierFreshDomination without adding a closure claim?",
+  "domain": "ns-n8-component-sources",
+  "expected_cost_agent_minutes": 16.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "does_not_change_next_action": 0.3,
+    "lean_compile_issue": 0.18,
+    "source_bundle_duplicate": 0.22,
+    "too_abstract": 0.3
+  },
+  "forecast_externality_tags": [
+    "anti-tautology",
+    "component-source-bundle"
+  ],
+  "forecasted_at": "2026-05-14T20:27:29Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.38,
+  "p_regression": 0.06,
+  "p_success": 0.82,
+  "rationale_short": "A small source-bundle surface should compile and prevent local fresh domination from being used as an opaque theorem. It remains guard work.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "lean_compile_issue",
+    "source_bundle_duplicate",
+    "too_abstract",
+    "does_not_change_next_action"
+  ]
+}

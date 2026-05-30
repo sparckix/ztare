@@ -1,0 +1,55 @@
+{
+  "contract_id": "gp225_v1859_recovered_unsat_incremental_replay",
+  "mean_brier": 0.4509666666666667,
+  "mean_log_score": -1.1180028329532326,
+  "outcome": {
+    "actual_cost_agent_minutes": 0.86,
+    "artifact_hash": "f6f719c4a36b0e86658ac40d342c5cbb9032e26b29d1d7640e941e0e5e7c1681",
+    "artifact_path": "analytics/public/leanmill/results/v1859_recovered_unsat_incremental_replay_verifier.json",
+    "compile_status": "partial_gold_3_of_5_clean_0_of_5",
+    "contract_id": "gp225_v1859_recovered_unsat_incremental_replay",
+    "error_type": "clean_residual_gate_failed_normalizer_or_nonatomic",
+    "goal_delta": 0,
+    "resolution_note": "v18.59 attempted 5 recovered baseline-unsaturated rows; 3 gold transitions compiled, but 0 clean residual/closure labels counted because one compile was non-atomic line_contains and two closure rows had normalizer decoy compiles; audited true false accepts stayed 0; GNN/training blocked.",
+    "resolved_at": "2026-05-13T16:33:48Z",
+    "sorry_delta": 0,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T16:33:53Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 0.86,
+      "agent_id": "codex_rd_local",
+      "brier": 0.3721,
+      "cost_error_agent_minutes": 3.14,
+      "domain": "lean_replay_verification",
+      "expected_cost_agent_minutes": 4.0,
+      "log_score": -0.941608539858445,
+      "p_success": 0.61,
+      "success_bool": false
+    },
+    {
+      "actual_cost_agent_minutes": 0.86,
+      "agent_id": "faraday_readonly_forecaster",
+      "brier": 0.4624000000000001,
+      "cost_error_agent_minutes": 34.14,
+      "domain": "lean_replay_verification",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -1.139434283188365,
+      "p_success": 0.68,
+      "success_bool": false
+    },
+    {
+      "actual_cost_agent_minutes": 0.86,
+      "agent_id": "hume_readonly_forecaster",
+      "brier": 0.5184,
+      "cost_error_agent_minutes": 34.14,
+      "domain": "lean_replay_verification",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -1.2729656758128873,
+      "p_success": 0.72,
+      "success_bool": false
+    }
+  ]
+}

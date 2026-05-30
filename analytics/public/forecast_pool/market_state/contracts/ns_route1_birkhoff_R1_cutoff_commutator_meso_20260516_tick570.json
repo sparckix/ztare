@@ -1,0 +1,173 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:28Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.68,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 6.2176
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 24.0,
+    "expected_value": -1.254999999999999,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.11,
+    "p_needs_new_lemma": 0.24,
+    "p_regression": 0.03,
+    "p_success": 0.68,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570/codex.json",
+        "forecasted_at": "2026-05-16T12:51:27Z",
+        "p_success": 0.68,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "extra_cutoff_integrability_hypothesis_needed",
+        "p": 0.46
+      },
+      {
+        "mode": "hidden_boundary_or_domain_term_survives",
+        "p": 0.24
+      },
+      {
+        "mode": "citation_or_definition_mismatch_in_local_pressure_decomposition",
+        "p": 0.18
+      },
+      {
+        "mode": "commutator_not_cleanly_absorbed_into_local_pressure_piece",
+        "p": 0.12
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 40.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T12:49:39Z",
+    "created_by": "claude_rd",
+    "horizon": "14d",
+    "layer": "meso",
+    "objective_resolver": "Harmonic analysis check against the published local pressure decomposition (Wolf, J. Math. Fluid Mech. 2015; Seregin Lecture Notes 2014): p_loc=Delta^-1 div div(chi~ u tensor u) is CZ-bounded in L^3/2(Q_n) by ||u||^2_L3(2Q_n); p_har=p-p_loc is harmonic in Q_n by construction. success iff the commutator is genuinely absorbed in the cited CZ-bounded p_loc and p_har is exactly harmonic (mean-cancellation exact, no remainder); 0.5 if one extra standard integrability hypothesis on the cutoff is needed; fail iff a non-CZ non-harmonic O(1) remainder genuinely survives in the harmonic-tail pressure-work term.",
+    "question": "R1 of the Birkhoff near-2D route: in the suitable-weak local-energy pressure-work term INT p (u.grad phi), does the pressure localization commutator [chi, Delta^-1] land entirely in the Calderon-Zygmund-controlled local part p_loc (cited Wolf 2015 / Seregin local pressure decomposition), so that p_har := p - p_loc is EXACTLY harmonic in Q_n and the incompressibility (div u=0) mean-cancellation INT (mean p_har)(u.grad phi)=0 is exact with NO uncontrolled O(1) commutator remainder in the harmonic-tail term? Success => R1 discharged, harmonic-tail pressure-work = oscillation-only <= C Lambda^-1 M ||u.grad phi||_1.",
+    "success_threshold": "success iff commutator absorbed in cited CZ p_loc AND p_har exactly harmonic AND mean-cancellation exact; 0.5 if extra cutoff integrability hypothesis; fail iff surviving non-CZ O(1) remainder",
+    "task_type": "ns_clay_birkhoff_R1_commutator_discharge_20260516"
+  },
+  "contract_id": "ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-16T12:51:27Z",
+        "p_success": 0.68,
+        "rationale_short": "Wolf/Seregin local-pressure decompositions normally make the harmonic tail exact by construction; the remaining risk is a cutoff-regularity or formulation mismatch, not an O(1) commutator remainder. No DAG or separate boundary/domain witness was supplied, so I keep a residual on the exact hypotheses needed to justify the split.",
+        "specific_failure_mode_ids": [
+          "extra_cutoff_integrability_hypothesis_needed",
+          "hidden_boundary_or_domain_term_survives",
+          "citation_or_definition_mismatch_in_local_pressure_decomposition",
+          "commutator_not_cleanly_absorbed_into_local_pressure_piece"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T13:01:07Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.68,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 6.2176
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 24.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.68,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "extra_cutoff_integrability_hypothesis_needed",
+        "p": 0.46
+      },
+      {
+        "mode": "hidden_boundary_or_domain_term_survives",
+        "p": 0.24
+      },
+      {
+        "mode": "citation_or_definition_mismatch_in_local_pressure_decomposition",
+        "p": 0.18
+      },
+      {
+        "mode": "commutator_not_cleanly_absorbed_into_local_pressure_piece",
+        "p": 0.12
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10239999999999996,
+    "score_rows": 1,
+    "scored_at": "2026-05-19T16:39:16Z"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "proceed_as_surface_then_stop",
+  "agent_id": "codex-rd-main",
+  "contract_id": "ns_n8_corona_fresh_domination_surface_20260514_tick413",
+  "contract_question": "Will the corrected N8 corona tick add compiling Lean surfaces for TriCarrierCoronaPotential and TriCarrierFreshDomination, preserving the distinction between telescoping measure closure and the unproved local component estimates?",
+  "domain": "ns-n8-proof-frontier",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "component_estimates_unsourced": 0.28,
+    "corona_overlap_too_abstract": 0.2,
+    "duplicate_surface": 0.15,
+    "fresh_domination_tautological": 0.22,
+    "lean_compile_issue": 0.15
+  },
+  "forecast_externality_tags": [
+    "corona-telescoping",
+    "component-estimate-isolation",
+    "anti-tautology"
+  ],
+  "forecasted_at": "2026-05-14T20:23:12Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.1,
+  "p_success": 0.73,
+  "rationale_short": "The corrected corona potential is the right surface to encode. The main risk is that local fresh domination becomes a name for the conclusion unless component bounds are fixed and predeclared.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "fresh_domination_tautological",
+    "component_estimates_unsourced",
+    "lean_compile_issue",
+    "corona_overlap_too_abstract",
+    "duplicate_surface"
+  ]
+}

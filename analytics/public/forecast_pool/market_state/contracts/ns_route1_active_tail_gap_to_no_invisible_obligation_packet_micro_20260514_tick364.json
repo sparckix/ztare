@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:50:23Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 21.0,
+    "expected_value": 0.7064984937633934,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.18,
+    "p_needs_new_lemma": 0.7,
+    "p_regression": 0.11000000000000001,
+    "p_success": 0.6764984937633933,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.76,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "map_still_missing_pde_content",
+        "p": 0.225
+      },
+      {
+        "mode": "wrapper_not_map",
+        "p": 0.165
+      },
+      {
+        "mode": "artifact_only_low_yield",
+        "p": 0.15
+      },
+      {
+        "mode": "carrier_ambiguity",
+        "p": 0.125
+      },
+      {
+        "mode": "zero_visibility_tautology",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 20.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:50:05Z",
+    "created_by": "codex:RD",
+    "horizon": "same tick",
+    "layer": "micro",
+    "objective_resolver": "success iff projects/ns_millennium_hunt/workspace/route1_active_tail_zero_visibility_profile_work_packet_20260514.md exists and names strict-failure map, zero-visibility map, falsifiers, and next theorem; not resolved by final route closure",
+    "question": "Can this tick produce a concrete math-first work packet mapping active all-channel-invisible route-1 tail failure to the existing no-invisible compactness obligation, with falsifiers and next discriminator?",
+    "success_threshold": "packet contains two maps plus anti-tautology and falsifier audit",
+    "task_type": "math_first_proof_surface"
+  },
+  "contract_id": "ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T12:50:18Z",
+        "p_success": 0.76,
+        "rationale_short": "Nearest Lean primitives already expose no-invisible obligation; risk is accidentally writing another conditional wrapper instead of the active-gap maps.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T12:50:18Z",
+        "p_success": 0.58,
+        "rationale_short": "The packet is feasible, but the actual mathematical map may remain only a named obligation unless active carrier and visibility topology are pinned tightly.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:51:39Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.7064984937633934,
+      "forecast_spread": 0.18,
+      "p_success": 0.6764984937633933,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.7488
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 21.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6764984937633933,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "map_still_missing_pde_content",
+        "p": 0.225
+      },
+      {
+        "mode": "wrapper_not_map",
+        "p": 0.165
+      },
+      {
+        "mode": "artifact_only_low_yield",
+        "p": 0.15
+      },
+      {
+        "mode": "carrier_ambiguity",
+        "p": 0.125
+      },
+      {
+        "mode": "zero_visibility_tautology",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11700000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T12:51:47Z"
+  }
+}

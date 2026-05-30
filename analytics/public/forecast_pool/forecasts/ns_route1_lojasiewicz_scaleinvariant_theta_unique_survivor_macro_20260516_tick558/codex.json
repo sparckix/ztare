@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558",
+  "contract_question": "Per META-PATTERN-024 the transverse-escape ledger is down to ONE survivor: does the route-1 localized NS enstrophy functional admit a Lojasiewicz-Simon gradient inequality with a SCALE-INVARIANT exponent theta<1 (=> strict scale-invariant per-reversal enstrophy toll gamma>0 => tick552 geometric series => tick551 freshness => Clay route-1 closure), OR does theta degenerate to the critical endpoint theta=1 at high frequency (= the NS-scaling-criticality fixed point AGAIN, in Lojasiewicz vocabulary => atom invariant under ALL enumerated transverse channels)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "hidden_normalization_or_scale_invariance_gap": 0.1,
+    "theta_degenerates_to_1_at_high_frequency": 0.72,
+    "wrapper_heavy_chain_does_not_supply_new_pde_content": 0.18
+  },
+  "forecast_externality_tags": [
+    "wrapper-heavy-chain",
+    "scale-invariant-lemma-risk",
+    "route1-macro-residual"
+  ],
+  "forecasted_at": "2026-05-16T00:05:18Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.84,
+  "p_regression": 0.03,
+  "p_success": 0.13,
+  "rationale_short": "GP-233 says the chain remains wrapper-heavy: tick455 confirms only one honest UFID half, two honest-looking combinatorial witnesses, and 16/20 primitives wrappers across tick432-tick453; no new PDE content since tick441. That makes theta=1 degeneration the priced baseline, with success requiring a genuinely new scale-invariant Lojasiewicz bridge rather than more typed carriers.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

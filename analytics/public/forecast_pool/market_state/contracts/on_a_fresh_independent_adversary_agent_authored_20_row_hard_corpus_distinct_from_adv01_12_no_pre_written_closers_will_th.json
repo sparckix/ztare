@@ -1,0 +1,206 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:34Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 90.0,
+      "expected_value": -0.5980194885443981,
+      "p_success": 0.43997563931950234,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.2664
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 90.0,
+    "expected_value": -0.5980194885443981,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.065,
+    "p_needs_new_lemma": 0.13,
+    "p_regression": 0.05,
+    "p_success": 0.43997563931950234,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th/codex.json",
+        "forecasted_at": "2026-05-16T16:34:21Z",
+        "p_success": 0.43,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T16:32:40Z",
+        "p_success": 0.45,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "adversarial_corpus_shift_or_coverage_gap",
+        "p": 0.155
+      },
+      {
+        "mode": "exact_governance_filters_out_suspect_closures",
+        "p": 0.135
+      },
+      {
+        "mode": "remaining_rows_need_one_more_adapter_lemma",
+        "p": 0.105
+      },
+      {
+        "mode": "corpus_distinctness_breaks_transfer_from_adv01_12",
+        "p": 0.055
+      },
+      {
+        "mode": "resolver_or_artifact_drift",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json",
+    "contract": "analytics/public/forecast_pool/contracts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json",
+    "score": "analytics/public/forecast_pool/scores/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T16:32:14Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "gp233_adversary_yield_decomp.py on the 20-row result file",
+    "question": "On a fresh INDEPENDENT adversary-agent-authored 20-row hard corpus (distinct from ADV01-12, no pre-written closers), will the frozen clean-prover + pinned-v4.29.0+exact? governance yield >=8 genuine novel closures (compile + exact? cannot single-close) with 0 false ratifications?",
+    "success_threshold": "0.5",
+    "task_type": "adversary_corpus_scale_solver_yield"
+  },
+  "contract_id": "on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-16T16:34:21Z",
+        "p_success": 0.43,
+        "rationale_short": "Fresh independent corpus is still near the 5/10 genuine baseline, but the 20-row threshold only needs 8 genuine closures and the exact? governance should keep false ratifications near zero. Main downside is a corpus-shift/adapter-lemma miss, not a calibration-only wobble.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-16T16:32:40Z",
+        "p_success": 0.45,
+        "rationale_short": "ADV01-12=5/10 genuine(50%); harder+larger independent corpus likely lowers genuine-rate; >=8/20=40% plausible not favored",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 55.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T16:40:01Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 90.0,
+      "expected_value": -0.5980194885443981,
+      "p_success": 0.43997563931950234,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.2664
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 90.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.43997563931950234,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "adversarial_corpus_shift_or_coverage_gap",
+        "p": 0.155
+      },
+      {
+        "mode": "exact_governance_filters_out_suspect_closures",
+        "p": 0.135
+      },
+      {
+        "mode": "remaining_rows_need_one_more_adapter_lemma",
+        "p": 0.105
+      },
+      {
+        "mode": "corpus_distinctness_breaks_transfer_from_adv01_12",
+        "p": 0.055
+      },
+      {
+        "mode": "resolver_or_artifact_drift",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

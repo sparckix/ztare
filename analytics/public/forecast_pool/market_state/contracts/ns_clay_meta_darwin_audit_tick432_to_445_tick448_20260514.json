@@ -1,0 +1,167 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:26Z",
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.9013820414894621,
+      "forecast_spread": 0.06,
+      "p_success": 0.7713820414894621,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.6364
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 25.0,
+    "expected_value": 0.9013820414894621,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.02,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.02,
+    "p_success": 0.7713820414894621,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "meta_darwin_lean_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-15T01:00:00Z",
+        "p_success": 0.8,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "meta_darwin_lean_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-15T01:00:00Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T01:00:00Z",
+    "created_by": "claude_principal",
+    "horizon": "2026-05-14T23:59:59Z",
+    "layer": "micro",
+    "objective_resolver": "(1) analytics/public/audits/meta_darwin_tick448_audit_tick432_to_445.md exists and applies the 6-point checklist to every named primitive in tick432-tick445; (2) each named primitive receives a verdict in {HONEST, WRAPPER, LAUNDERED, PURE_NAMING, UNCLEAR}; (3) audit explicitly inspects flatDepthReserve_drop, noSilentFlatDefectProfile_of_dichotomy_and_killers, radiusCharge_le_L3DefectMeasure, radiusCharge_le_decoherenceMeasure, NoConcentrationLemmaAxiom, and TwoRouteCompositionRoute1AndNoConcentration; (4) NO Lean files modified during audit; (5) GP-233 ledger entry + E-row + F-row + handover updated with retraction or demotion recommendations if warranted.",
+    "question": "Will the tick448 Meta-Darwin audit of the tick432-tick445 Lean primitive chain (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE-NAMING verdicts using the 6-point checklist, (b) identify at least one PURE-NAMING or LAUNDERED structure if any exists, (c) confirm or retract the in-artifact scope guards, and (d) leave Lean files unmodified?",
+    "success_threshold": "0.5",
+    "task_type": "meta_darwin_lean_audit"
+  },
+  "contract_id": "ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "demote tick444 to documentation; flag tick443 defect_supported_on_skeleton as separate obligation",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "meta_darwin_lean_audit",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-15T01:00:00Z",
+        "p_success": 0.8,
+        "rationale_short": "Read-only audit task with a clear checklist and a small finite set of named primitives. Expected primary findings: tick441 flatDepthReserve_drop is HONEST (real linarith proof with Finset.sum_le_sum + Finset.mul_sum), tick444 TwoRouteComposition is PURE_NAMING (all Prop fields), tick442 5-branch dichotomy elimination is generic rcases (WRAPPER). The audit should also catch that tick445 r-linear theorems are field projections, not derivations. Lean files easily left unmodified. Main risk is missing a substantive structural laundering hidden inside the NoConcentrationLemmaAxiom support-localization clause.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "flag pure-naming structures and field-projection theorems explicitly; do not let future summaries inflate WRAPPER count into HONEST count",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "meta_darwin_lean_audit",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-15T01:00:00Z",
+        "p_success": 0.74,
+        "rationale_short": "Adversarial pass: chain shipped 13+ named structures in one session, the floor-satisfiable smoke_ofDirectBound pattern is exactly the laundering shape the 2026-05-14 GP-225 memory warns about. Expected verdict distribution: 1 HONEST (flatDepthReserve_drop), 11 WRAPPER, 1 PURE_NAMING (TwoRouteComposition), 0 LAUNDERED with one mild support-localization flag inside NoConcentrationLemmaAxiom bundle. Main risk for audit failure: missing the support-localization obligation as separately-named, or under-flagging tick445 field-projection inequalities as 'r-linear theorems' in any summary.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.9013820414894621,
+      "forecast_spread": 0.06,
+      "p_success": 0.7713820414894621,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.6364
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 25.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.7713820414894621,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

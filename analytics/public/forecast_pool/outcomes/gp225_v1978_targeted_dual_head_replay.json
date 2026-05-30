@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 8.0,
+  "artifact_hash": "ca563e5c0c39806f4d829ee6076678543b936142501b701dce0b5d6ae9068255",
+  "artifact_path": "analytics/public/leanmill/results/v1978_targeted_dual_head_replay.json",
+  "compile_status": "replay_completed_no_dual_head_wins",
+  "contract_id": "gp225_v1978_targeted_dual_head_replay",
+  "error_type": null,
+  "goal_delta": 0,
+  "resolution_note": "Replay attempted 12 candidates across 7 v19.77 rows. compiled_candidate_actions=0, fresh strict-step rows=0, fresh solver-closure rows=0, harmful mismatches=0, source-policy flags clean, training_now=false, gnn_blocked=true. The material gate resolved false; useful progress-only witness deltas remain for reducer analysis.",
+  "resolved_at": "2026-05-14T04:07:36Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

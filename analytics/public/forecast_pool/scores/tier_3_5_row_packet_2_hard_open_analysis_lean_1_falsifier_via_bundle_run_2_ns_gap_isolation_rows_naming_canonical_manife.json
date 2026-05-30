@@ -1,0 +1,96 @@
+{
+  "contract_id": "tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "Tier-3 gate passes on gaps/falsifier/cited-next-levers with 0 closures => REFRAME: strong governance harness that honestly isolates Tier-3 residuals, NOT a Tier-3 solver. Tier-2 PAUSE (0/12 cold-sourceable; needs external version-delta mining). Solver-alpha NOT reached; do NOT scale to 50-target (no Tier-3 closures, Tier-2 unsourceable). Real next: external Tier-2 corpus mining (operator/infra) OR automated grounded-iterative loop build pending cold-GPT-5.5 review.",
+      "old_next_action": "test whether the frozen bundle solves Tier-3"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.1537,
+  "mean_log_score": -0.49645091712299777,
+  "outcome": {
+    "actual_cost_agent_minutes": 70.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "Tier-3 gate passes on gaps/falsifier/cited-next-levers with 0 closures => REFRAME: strong governance harness that honestly isolates Tier-3 residuals, NOT a Tier-3 solver. Tier-2 PAUSE (0/12 cold-sourceable; needs external version-delta mining). Solver-alpha NOT reached; do NOT scale to 50-target (no Tier-3 closures, Tier-2 unsourceable). Real next: external Tier-2 corpus mining (operator/infra) OR automated grounded-iterative loop build pending cold-GPT-5.5 review.",
+    "old_next_action": "test whether the frozen bundle solves Tier-3",
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Tier-3 gate PASS (gate-as-written): 5/5 rows are closure|exact-gap|valid-falsifier \u2014 4 exact-gaps (T3A1 compile-FAIL honest attempt, T3A2 prover-gap, T3N1 C3 manifest-cited next-lever, T3N2 C7-upper manifest-cited next-lever) + 1 valid_falsifier (T3F1 false stmt NOT proved, counterexample n=40); 0 false-ratify; 0 wrong-target-kind; >=1 NS formalizable next-lever (2: tick602 porosity 3-open-hyps; nu-bearing off-critical companion). LOAD-BEARING CAVEAT (AP-013): 0 CLOSURES \u2014 pass is entirely gaps+falsifier+manifest-cited next-levers; harness honestly isolates/refuses, does NOT solve Tier-3. This is the document's predicted 'strong governance harness, not Tier-3 solver' outcome. RD0.65/codex-bet-present resolve-guard satisfied. NS rows cited manifest canonical nodes, NOT re-derived (anti-amnesia, forbidden-atom respected).",
+    "resolved_at": "2026-05-16T23:05:52Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:24Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 70.0,
+      "agent_id": "codex",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 76.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T23:01:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T23:03:18Z",
+        "resolved_at": "2026-05-16T23:05:52Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 70.0,
+      "agent_id": "research_director_claude_opus_4_7",
+      "brier": 0.12249999999999998,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 80.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4307829160924542,
+      "p_success": 0.65,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T23:01:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T23:01:20Z",
+        "resolved_at": "2026-05-16T23:05:52Z"
+      }
+    }
+  ]
+}

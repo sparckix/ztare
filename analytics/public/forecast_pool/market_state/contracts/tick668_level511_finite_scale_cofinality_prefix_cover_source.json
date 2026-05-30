@@ -1,0 +1,164 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T06:39:32Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.58,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2436
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 84.0,
+    "expected_value": -155.57000000000002,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.07,
+    "p_needs_new_lemma": 0.36,
+    "p_regression": 0.07,
+    "p_success": 0.58,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_trackb_formal_bridge",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level511_finite_scale_cofinality_prefix_cover_source/codex_rd.json",
+        "forecasted_at": "2026-05-27T06:31:40Z",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "graph_relation_too_tautological",
+        "p": 0.5
+      },
+      {
+        "mode": "primitive_fields_too_prop_level",
+        "p": 0.2857142857142857
+      },
+      {
+        "mode": "incidence_transport_rewrite_issue",
+        "p": 0.21428571428571427
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level511_finite_scale_cofinality_prefix_cover_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level511_finite_scale_cofinality_prefix_cover_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level511_finite_scale_cofinality_prefix_cover_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level511_finite_scale_cofinality_prefix_cover_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level511_finite_scale_cofinality_prefix_cover_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T06:31:26Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-27T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve TRUE iff Lean compiles a Level511 finite-scale/cofinality prefix-cover source into Level510, strict receipt/workbench checks pass, active-chain gate audit is high-severity clean, and targeted tests pass.",
+    "question": "Can Level511 define the Level510 targetEventDataIndexCover as the graph of a selected eventData index guarded by finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix?",
+    "success_threshold": "A finite-scale/cofinality source constructs the Level510 cover relation, selected-index cover membership, and cover-to-incidence transport from the same SameTreePrefixDominationPrimitive fields, without arbitrary cover relation, endpoint-capacity-only, or post-payoff selection substitutes.",
+    "task_type": "ns_trackb_formal_bridge"
+  },
+  "contract_id": "tick668_level511_finite_scale_cofinality_prefix_cover_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Force the cover relation to mention finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix directly, then name the next residual as selected-index production from event-prefix enumeration.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level511_finite_scale_cofinality_prefix_cover_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_trackb_formal_bridge",
+        "expected_cost_agent_minutes": 84.0,
+        "forecasted_at": "2026-05-27T06:31:40Z",
+        "p_success": 0.58,
+        "rationale_short": "Lean should package a graph relation guarded by prefix primitive fields into Level510. This is positive progress if it makes the cover relation non-arbitrary, but it may still leave selectedEventDataIndex as the real residual.",
+        "specific_failure_mode_ids": [
+          "graph_relation_too_tautological",
+          "incidence_transport_rewrite_issue",
+          "primitive_fields_too_prop_level"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T06:40:06Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 38.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T06:39:51Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.58,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2436
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 84.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.58,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "graph_relation_too_tautological",
+        "p": 0.5
+      },
+      {
+        "mode": "primitive_fields_too_prop_level",
+        "p": 0.2857142857142857
+      },
+      {
+        "mode": "incidence_transport_rewrite_issue",
+        "p": 0.21428571428571427
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.17640000000000003,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T06:40:00Z"
+  }
+}

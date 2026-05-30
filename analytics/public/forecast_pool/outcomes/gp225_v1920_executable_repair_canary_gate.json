@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 12.0,
+  "artifact_hash": "96fa3d425f0dbf20318d1eeb963491c230e13542da63ad627e43b7bbb6689f70",
+  "artifact_path": "analytics/public/leanmill/results/v1931_executable_repair_canary.json",
+  "compile_status": "repair_canary_ran_strict_gate_failed",
+  "contract_id": "gp225_v1920_executable_repair_canary_gate",
+  "error_type": "strict_false_accept_guard_failed_with_overclosure_signal",
+  "goal_delta": null,
+  "resolution_note": "v19.31 attempted 9 hydrated canary rows with gold hidden for primary generation. Candidate compile rate was 2/9 and same-target-state rate was 1/9, but strict false_accepts=2 caused contract failure. The apparent false accepts include over-closure candidates, so a saved audit should separate strict target-state mismatch from verified pull-forward closure before deciding whether to use Codex/LLM repair.",
+  "resolved_at": "2026-05-13T23:18:41Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

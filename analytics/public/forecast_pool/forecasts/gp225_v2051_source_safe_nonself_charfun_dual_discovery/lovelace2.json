@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Continue if artifact separates source discovery from candidate generation and forbids target proof line copying.",
+  "agent_id": "Lovelace2",
+  "contract_id": "gp225_v2051_source_safe_nonself_charfun_dual_discovery",
+  "contract_question": "Will v20.51 decide whether current_scale_0329 has a before-target non-self charFunDual source after v20.50, and route either to a source-safe contract or row drop without replay/training?",
+  "domain": "gp225_pre_gnn_source_discovery",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "drop_decision_underjustified": 0.14,
+    "import_chain_not_verified": 0.24,
+    "nonself_source_too_low_level": 0.28,
+    "source_contract_copies_target_proof": 0.34
+  },
+  "forecast_externality_tags": [
+    "anti_leakage",
+    "source_discovery"
+  ],
+  "forecasted_at": "2026-05-14T17:48:56Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.03,
+  "p_success": 0.76,
+  "rationale_short": "Finding a non-self source is likely, but the artifact must not launder the target proof as a candidate.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "source_contract_copies_target_proof",
+    "nonself_source_too_low_level"
+  ]
+}

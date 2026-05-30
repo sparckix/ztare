@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "proceed_minimal",
+  "agent_id": "codex-rd-main",
+  "contract_id": "ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417",
+  "contract_question": "Will the pressure/beta sharpening tick add compiling Lean structures and a theorem reducing CriticalIncrementFailure to FlatRadiusScaleReserveFailure or sharpened pressure/beta source failures, without claiming pressure, beta, or upstream closure?",
+  "domain": "ns-n8-pressure-beta",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "duplicate_surface_not_sharpening": 0.25,
+    "lean_compile_issue": 0.15,
+    "overclaims_closure": 0.12,
+    "sidecar_changes_direction": 0.2,
+    "theorem_too_abstract": 0.28
+  },
+  "forecast_externality_tags": [
+    "branch-sharpening",
+    "anti-tautology"
+  ],
+  "forecasted_at": "2026-05-14T21:19:47Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.05,
+  "p_success": 0.78,
+  "rationale_short": "A reduced-frontier theorem should be straightforward if it only sharpens failure primitives and avoids closure claims.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "lean_compile_issue",
+    "duplicate_surface_not_sharpening",
+    "overclaims_closure",
+    "theorem_too_abstract",
+    "sidecar_changes_direction"
+  ]
+}

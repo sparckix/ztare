@@ -1,0 +1,71 @@
+{
+  "contract_id": "rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "no cost accounting; rerank-after-full-matrix (oracle-contaminated)",
+      "counterfactual_action": "Rung-1 killed cheaply; governance-only product"
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.12249999999999998,
+  "mean_log_score": -0.4307829160924542,
+  "outcome": {
+    "actual_cost_agent_minutes": 45.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": false,
+    "compile_status": null,
+    "contract_id": "rung1_cost_accounted_offline_replay_kernel_seq_beats_baselines",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": "fair adjudicated negative; codex not on cadence; not fabricating adversary",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "FAIR ADJUDICATED NEGATIVE on the kernel-RERANK sub-wedge (not void, not pessimist): richer pin-clean pool seeded by the actual certifying primitives + 2-step templates \u2192 base-rate>0 (T2P_80: 2 governance-genuine closures) so the test is PROBATIVE. Result: P4 kernel-grounded sequential rerank does NOT beat baselines \u2014 soeg@5 P4=0.167 == BM25=0.167 == action_sweep=0.167, medians tied at budget; cost-accounted, non-strawman baselines, governance-authoritative, tier-separated, 0 false-ratify. VERDICT=rung1_killed for the narrow reranking sub-thesis (exactly what the cheapest falsifier is for). Tier-separated (no aggregate): T2P_80 genuine Tier-2; T2P_42/51/57/93 unclosed Tier-2 (need multi-lemma/multi-step composition); T2P_81 reclassified Tier-0/1 single-lemma. Canonical bridge routed all rows constructively (T2P_80\u2192ratify_closure two-scoreboard; rest\u2192restate_target\u2192composition; no retired_impossible \u2014 structurally impossible). Per cold-roadmap PRE-GIVEN decision rule: rung1_killed \u2192 pivot Path-A to governed agentic proof-composition (Rung-2, contract pre-registered). Path-B governance demonstrated+sound (2 genuine, rest correctly rejected, tier-correct, 0 false-ratify). NOT a thesis kill \u2014 the reranking sub-wedge is killed cleanly; Path-A's real lane is Rung-2.",
+    "resolved_at": "2026-05-17T21:30:07Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:20Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 45.0,
+      "agent_id": "research_director_claude_opus_4_7",
+      "brier": 0.12249999999999998,
+      "cost_error_agent_minutes": 15.0,
+      "domain": "pathA_wedge",
+      "expected_cost_agent_minutes": 60.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4307829160924542,
+      "p_success": 0.35,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T19:28:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T19:28:39Z",
+        "resolved_at": "2026-05-17T21:30:07Z"
+      }
+    }
+  ]
+}

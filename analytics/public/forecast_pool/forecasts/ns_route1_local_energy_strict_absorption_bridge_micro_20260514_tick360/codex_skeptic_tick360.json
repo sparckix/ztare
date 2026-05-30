@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_skeptic_tick360",
+  "contract_id": "ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360",
+  "contract_question": "Can we add a compiled, non-tautological bridge from LocalEnergyPositiveBoundaryFluxSubadditivitySource plus independently visible routed charges into Route1ChannelVisibilityProducer / strict subratio, while also recording that allocation-only saturation is not strictness?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "allocation_not_strictness": 0.3,
+    "lean_refactor_cost": 0.15,
+    "success": 0.15,
+    "tautological_strict_absorption": 0.4
+  },
+  "forecasted_at": "2026-05-14T12:34:57Z",
+  "p_dependency_issue": 0.37,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.08,
+  "p_success": 0.49,
+  "rationale_short": "Allocation closure is not strictness. Success requires explicitly separating routed-charge payment from visibility loss and adding a no-strictness guard; otherwise this is just another conditional wrapper.",
+  "read_only_attestation": true
+}

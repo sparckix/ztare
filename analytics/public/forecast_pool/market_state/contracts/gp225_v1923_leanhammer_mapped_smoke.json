@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T22:32:10Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 18.0,
+    "expected_value": -1.8739021087312493,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.3,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.060000000000000005,
+    "p_success": 0.6764984937633933,
+    "participants": [
+      {
+        "agent_id": "confucius",
+        "domain": "gp225_external_baseline_smoke",
+        "p_success": 0.76,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "helmholtz",
+        "domain": "gp225_external_baseline_smoke",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "leanhammer_invocation_interface_not_scriptable_enough_for_three_rows",
+        "p": 0.1607142857142857
+      },
+      {
+        "mode": "mapped_rows_medium_confidence_only_causes_import_or_name_resolution_failures",
+        "p": 0.125
+      },
+      {
+        "mode": "mapped_rows_are_medium_or_low_confidence_and_do_not_resolve_to_leanhammer_inputs",
+        "p": 0.12
+      },
+      {
+        "mode": "external_clone_invocation_path_or_environment_friction",
+        "p": 0.1
+      },
+      {
+        "mode": "timeout_or_lake_environment_drift_in_external_clone",
+        "p": 0.08928571428571429
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1923_leanhammer_mapped_smoke.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1923_leanhammer_mapped_smoke.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1923_leanhammer_mapped_smoke.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1923_leanhammer_mapped_smoke.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1923_leanhammer_mapped_smoke.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 20.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T22:29:16Z",
+    "created_by": "codex_rd",
+    "horizon": "same-session v19.23 smoke",
+    "layer": "meso",
+    "objective_resolver": "Resolve from v19.23 LeanHammer mapped-smoke artifact metrics.",
+    "question": "Will a bounded LeanHammer smoke benchmark over v19.22 mapped rows run in the external LeanHammer clone without mutating the main project and produce per-row pass/fail/suggestion artifacts?",
+    "success_threshold": "mapped_rows_attempted>=3 AND leanhammer_invocations>=3 AND artifact_records_per_row=true AND main_project_mutated=false AND heavy_training_launched=false AND training_now=false AND gnn_blocked=true",
+    "task_type": "gp225_external_baseline_smoke"
+  },
+  "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:confucius",
+        "raw_agent_ids": [
+          "confucius"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:helmholtz",
+        "raw_agent_ids": [
+          "helmholtz"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "confucius",
+      "helmholtz"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "confucius",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1923_leanhammer_mapped_smoke/confucius.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-13T22:32:00Z",
+        "p_success": 0.76,
+        "rationale_short": "LeanHammer is already cloned, built, and smoke-tested; v19.22 supplies mapped rows. Main risk is interface/schema friction from medium-confidence mappings. Success only requires bounded invocations and per-row records, not proving rows.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "helmholtz",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1923_leanhammer_mapped_smoke/helmholtz.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-13T22:32:07Z",
+        "p_success": 0.58,
+        "rationale_short": "Bounded run is plausible because LeanHammer is built, but v19.22 has zero high-confidence mappings. The primary risk is converting medium/low mapping candidates into valid LeanHammer inputs and usable artifacts.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 9.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T22:39:17Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 18.0,
+      "expected_value": -1.8739021087312493,
+      "p_success": 0.6764984937633933,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.1988
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 18.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6764984937633933,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "leanhammer_invocation_interface_not_scriptable_enough_for_three_rows",
+        "p": 0.1607142857142857
+      },
+      {
+        "mode": "mapped_rows_medium_confidence_only_causes_import_or_name_resolution_failures",
+        "p": 0.125
+      },
+      {
+        "mode": "mapped_rows_are_medium_or_low_confidence_and_do_not_resolve_to_leanhammer_inputs",
+        "p": 0.12
+      },
+      {
+        "mode": "external_clone_invocation_path_or_environment_friction",
+        "p": 0.1
+      },
+      {
+        "mode": "timeout_or_lake_environment_drift_in_external_clone",
+        "p": 0.08928571428571429
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11700000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T22:39:20Z"
+  }
+}

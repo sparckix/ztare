@@ -1,0 +1,32 @@
+{
+  "contract_id": "rd_pattern_action_contract_tick668_level508_least_hit_targetslot_assignment",
+  "tick_id": "tick668",
+  "level": 508,
+  "selected_patterns": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018",
+    "GP-219:pde_estimate_craft_ops"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level507 targetSlot is a supplied final-slot assignment",
+      "check": "G-TARGET-SLOT-BOUNDED-INCIDENCE-LEAST-HIT strict receipt",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level508_least_hit_targetslot_assignment_receipt.json"
+    },
+    {
+      "residual": "endpoint capacity could be mistaken for an actual slot assignment",
+      "check": "targetSlot is Nat.find from boundedIncidentEventExists with bound and incidence projected from Nat.find_spec",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    }
+  ],
+  "carrier_schema_receipts": [
+    {
+      "schema": "target_slot_bounded_incidence_least_hit",
+      "receipt": "projects/ns_millennium_hunt/workspace/queries/tick668_level508_least_hit_targetslot_assignment_receipt.json",
+      "expected_gate": "G-TARGET-SLOT-BOUNDED-INCIDENCE-LEAST-HIT"
+    }
+  ],
+  "next_positive_lever": "derive boundedIncidentEventExists from same-tree eventData, prefix domination, and no-reuse geometry"
+}

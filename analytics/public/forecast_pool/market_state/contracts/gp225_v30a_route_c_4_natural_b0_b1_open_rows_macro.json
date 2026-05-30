@@ -1,0 +1,199 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T15:33:52Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 57.5,
+    "expected_value": -0.34830322453262513,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.125,
+    "p_needs_new_lemma": 0.4,
+    "p_regression": 0.05,
+    "p_success": 0.2766967754673749,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro/claude_rd.json",
+        "forecasted_at": "2026-05-15T15:33:08Z",
+        "p_success": 0.4,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro/codex_rd.json",
+        "forecasted_at": "2026-05-15T15:33:52Z",
+        "p_success": 0.18,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "D03_n_choose_2_unfolding_fails",
+        "p": 0.20588235294117646
+      },
+      {
+        "mode": "lean_api_mismatch",
+        "p": 0.19047619047619047
+      },
+      {
+        "mode": "leakage_kills_more_than_2_proofs",
+        "p": 0.17647058823529413
+      },
+      {
+        "mode": "llm_proof_gap",
+        "p": 0.16666666666666666
+      },
+      {
+        "mode": "strict_audit_replay_fail",
+        "p": 0.14285714285714285
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T15:32:25Z",
+    "created_by": "codex:RD",
+    "horizon": "1 tick",
+    "layer": "macro",
+    "objective_resolver": "Each row: Lean compile via lake env lean + replay-from-scratch verify + grep no-gold-name + DAG fingerprint distinct from gold + 0 human edits. Count closures across 4 rows; check threshold.",
+    "question": "Will Route C (LLM-mediated proof composition) close \u22653 of 4 B0+B1-open natural rows (D02 triangle inequality, D03 n.choose 2 identity, D04 2*inner \u2264 norm^2+norm^2, E05 Finset sum_add_distrib) under strict v30 contract: no oracle proof lines, replay from scratch, 0 manual edits, machinery-OK per relaxed audit?",
+    "success_threshold": "at-least-3-of-4-natural-closes",
+    "task_type": "route_c_calibration_on_natural_slice"
+  },
+  "contract_id": "gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "If macro hits, strong reason to scale per operator. Run with full DAG fingerprint + leakage audit.",
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-15T15:33:08Z",
+        "p_success": 0.4,
+        "rationale_short": "3-of-4 is the strong-scale gate. D03 Nat.choose 2 unfolding most likely to fail; without it, 3/4 needs the harder rows D04+E05 both to land moat-clean.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "P(>=3)=0.18 per codex_rd. Strict no-edit replay is the main wall.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-15T15:33:52Z",
+        "p_success": 0.18,
+        "rationale_short": "Codex_rd: 3/4 is a high bar after v28-v29 false-positive collapse. Lean API mismatch + LLM proof gap dominate.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 15.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T15:37:46Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 57.5,
+      "expected_value": -0.34830322453262513,
+      "p_success": 0.2766967754673749,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.4201
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 57.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.2766967754673749,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "D03_n_choose_2_unfolding_fails",
+        "p": 0.20588235294117646
+      },
+      {
+        "mode": "lean_api_mismatch",
+        "p": 0.19047619047619047
+      },
+      {
+        "mode": "leakage_kills_more_than_2_proofs",
+        "p": 0.17647058823529413
+      },
+      {
+        "mode": "llm_proof_gap",
+        "p": 0.16666666666666666
+      },
+      {
+        "mode": "strict_audit_replay_fail",
+        "p": 0.14285714285714285
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

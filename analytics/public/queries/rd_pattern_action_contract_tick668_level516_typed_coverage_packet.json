@@ -1,0 +1,29 @@
+{
+  "tick_id": "tick668",
+  "level": 516,
+  "contract_id": "tick668_level516_typed_coverage_packet_source",
+  "selected_pattern_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second",
+    "GP-219 estimate-craft"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018",
+    "no external typed witness",
+    "no bare Prop choice",
+    "no endpoint-capacity substitute",
+    "no post-payoff selector"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level515 carries typedSelectedBadNodeAppearance beside the coverage packet",
+    "check": "G-TYPED-COVERAGE-PACKET-APPEARANCE plus Lean packet forwarding into Level515",
+    "positive_construction": "bundle typedSelectedBadNodeAppearance into L3ATypedBadCenterEventPrefixCoveragePacket"
+  },
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level516_typed_coverage_packet_receipt.json"
+  ],
+  "nearest_universal_op": "pec_b: make finite witness production part of the structural packet",
+  "nearest_confuser": "Level515 standalone typedSelectedBadNodeAppearance",
+  "remaining_live_vector": "derive L3ATypedBadCenterEventPrefixCoveragePacket from finite event-prefix enumeration and same-tree bad-center geometry"
+}

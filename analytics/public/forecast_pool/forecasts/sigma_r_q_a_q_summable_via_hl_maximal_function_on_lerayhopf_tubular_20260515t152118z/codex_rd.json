@@ -1,0 +1,29 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z",
+  "contract_question": "Sigma_r_Q_A_Q_summable_via_HL_maximal_function_on_LerayHopf_tubular",
+  "domain": "clay_dual_load_macro_codex_20260515",
+  "expected_cost_agent_minutes": 48.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lerayhopf_assumption_mismatch": 0.18,
+    "maximal_function_bridge_insufficient": 0.36,
+    "new_lemma_required": 0.18,
+    "tubular_localization_gap": 0.28
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T15:22:49Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.86,
+  "p_regression": 0.08,
+  "p_success": 0.41,
+  "rationale_short": "No prior codex_rd row and no DAG. The contract reads like a nontrivial PDE-derivation check where the HL maximal-function route and LerayHopf tubular localization both need to line up; the main risks are hidden assumption mismatch and a missing bridge lemma.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "maximal_function_bridge_insufficient",
+    "tubular_localization_gap",
+    "lerayhopf_assumption_mismatch",
+    "new_lemma_required"
+  ]
+}

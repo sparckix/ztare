@@ -1,0 +1,19 @@
+{
+  "agent_id": "gp230_tarski_gp225_v2004",
+  "contract_id": "gp225_v2004_high_yield_top3_replay",
+  "domain": "gp225_repair_micro",
+  "forecasted_at": "2026-05-14T12:24:30Z",
+  "p_success": 0.22,
+  "expected_cost_agent_minutes": 20.0,
+  "p_regression": 0.05,
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.20,
+  "failure_mode_distribution": {
+    "generic_candidates_do_not_compile": 0.30,
+    "progress_only_no_strict": 0.24,
+    "fresh_strict_success": 0.18,
+    "source_policy_or_schema_issue": 0.06,
+    "other": 0.22
+  },
+  "rationale": "High-yield selection improves denominator quality, but generic candidate generation is likely the limiting factor."
+}

@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T03:31:00Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 24.5,
+    "expected_value": 0.8133,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.02,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.02,
+    "p_success": 0.8217,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "meta_darwin_lean_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-15T03:30:30Z",
+        "p_success": 0.84,
+        "weight": 1.1667
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "meta_darwin_lean_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-15T03:30:45Z",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T03:30:00Z",
+    "created_by": "claude_principal",
+    "horizon": "2026-05-15T23:59:59Z",
+    "layer": "micro",
+    "objective_resolver": "(1) analytics/public/audits/meta_darwin_tick455_audit_tick451_to_453.md exists and applies the 6-point checklist to every named primitive in tick451, tick452, tick453; (2) each primitive receives a verdict in {HONEST, WRAPPER, LAUNDERED, PURE_NAMING, UNCLEAR}; (3) audit explicitly confirms-or-refutes each agent's self-report (tick451 self-flag 'structurally indistinguishable from tick450 if carriers not inhabited'; tick452 self-flag 'only typing half closed; Dirac witness; trivial sigma-algebra'; tick453 self-flag 'omega-discharged depth_child_le; List-induction radius packing; upstream half is Prop carrier only'); (4) audit adjudicates whether tick452 cube_measure_toReal_le_rM3 is genuinely derived (via ENNReal.toReal_mono + ENNReal.ofReal_ne_top + ENNReal.toReal_ofReal chain) or tautological under field hypotheses; (5) audit adjudicates whether tick453 induction is substantive or directly projectable; (6) NO Lean files modified during audit; (7) GP-233 ledger entry + E-row + F-row + handover updated with session-level 20-primitive tally (tick432 through tick453).",
+    "question": "Will the tick455 Meta-Darwin v3 audit of the tick451-tick453 Lean files (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) confirm or refute tick451's self-report that it is structurally indistinguishable from tick450 without carrier inhabitation, (c) confirm or refute tick452's self-report that only the typing half is closed and that cube_measure_toReal_le_rM3 is a derived (not tautological) Mathlib step, (d) confirm or refute tick453's self-report that the omega + List-induction are substantive (not directly projectable) and that the upstream half is Prop-only, (e) produce a session-level 20-primitive tally across tick432-tick453, and (f) leave Lean files unmodified?",
+    "success_threshold": "0.5",
+    "task_type": "meta_darwin_lean_audit"
+  },
+  "contract_id": "ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "tick451 'NS-data construction' framing should be demoted to 'typed bridge from three carriers'; tick452 should keep TypingHalfClosed_AnalyticHalfOpen permanent label; tick453 is the third HONEST primitive in the chain but at restricted scope (zero charges, upstream is Prop-only).",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "meta_darwin_lean_audit",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-15T03:30:30Z",
+        "p_success": 0.84,
+        "rationale_short": "Read-only audit on three small parallel-shipped files with explicit in-artifact self-reports. The agents already classified themselves correctly in scope guards. Expected: tick451 = WRAPPER (verbatim carrier projection \u2014 depth_child_le and flat_children_radius_sum_le are 'exact carrier.field' lines; 4 *_charge_supports_positivity theorems are := h; 4 *_identity theorems are rfl); tick452 = WRAPPER with honest Mathlib-derived corollary (cube_measure_toReal_le_rM3 routes through ENNReal.toReal_mono + ENNReal.ofReal_ne_top, NOT tautological, but the substantive Carleson bound is carrier-asserted); tick453 = HONEST small (omega-discharged depth_child_le genuinely uses both strict depthOf_lt_depthBudget AND flat_children_depthOf_succ; List induction is substantive linarith composition). Self-reports all CONFIRMED. Session tally: 3 HONEST + 16 WRAPPER + 0 LAUNDERED + 1 PURE_NAMING across 20 primitives.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Three demotions: (1) tick451 is the same wrapper pattern as tick446/447 with 3 carriers instead of 1 \u2014 do not call it 'NS-data construction'; (2) tick452 closes typing half only \u2014 Carleson bound is hypothesis-asserted via cube_measure_le_rM3 field; (3) tick453 is HONEST but at the same restricted scope as tick450 \u2014 zero charges, upstream half deferred. The post-tick441 chain has shipped two combinatorial witnesses (tick450 + tick453) on the depth+radius skeleton with no charge content and five typed bridges around the same open PDE obligations.",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "meta_darwin_lean_audit",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-15T03:30:45Z",
+        "p_success": 0.78,
+        "rationale_short": "Adversarial second pass on parallel-shipped tick451/452/453. Risk: agents' self-reports are unusually candid, which is good evidence but also could anchor the auditor. Specific load-bearing checks: (i) tick451's NS-construction claim is the riskiest framing \u2014 the file literally projects three carrier fields and the *_charge_supports_positivity theorems are := h (the hypothesis IS the conclusion); this is the same wrapper pattern as tick446 but with 3 carriers instead of 1; (ii) tick452's cube_measure_toReal_le_rM3 chain MUST go through ENNReal.toReal_mono with the \u2260\u22a4 side condition, otherwise the step would be vacuous \u2014 the audit should verify this is a real Mathlib invocation, not tautological; the substance is corollary-extraction from a carrier-asserted Carleson bound, so even with a real Mathlib lemma, the file is a WRAPPER with one honest derived inequality; (iii) tick453's omega step genuinely uses strict depthOf_lt_depthBudget \u2014 without strictness, Nat subtraction truncates and the bound fails; List induction is real linarith composition of per-step bound + chain.length bound \u2014 this IS substantive enough to be HONEST in the tick450 sense. Expected verdict: 1 HONEST (tick453) + 2 WRAPPER (tick451, tick452). Session tally: 3 HONEST + 16 WRAPPER + 0 LAUNDERED + 1 PURE_NAMING. Wrapper inflation continues \u2014 16/20 = 80%. Risk of audit failure: missing the distinction between tick452's derived corollary (real Mathlib) and tick451's pure carrier projection (just :=).",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 26.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-15T03:56:00Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.8133,
+      "forecast_spread": 0.06,
+      "p_success": 0.8217,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.6065
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 24.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8217,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0494,
+    "score_rows": 2,
+    "scored_at": "2026-05-15T03:57:00Z"
+  }
+}

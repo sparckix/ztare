@@ -1,0 +1,34 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514.json"
+  },
+  "baseline_action": "Ship a tick455 read-only adversarial Meta-Darwin v3 audit applying the 6-point checklist (null, distinct-outcome, class-balance, LOO, floor-satisfiable, source-leakage) to every named primitive in tick451 (cknBadCylinderFlatDepthReserve from three named hypothesis carriers + 4 *_charge_supports_positivity theorems + 4 *_identity rfl theorems), tick452 (L3CarlesonMeasureFromESS + L3DefectMeasureValue_eq_toReal_measure + cube_measure_toReal_le_rM3 + canonical_smul_dirac + 2 smoke theorems), and tick453 (UniformFlatInheritanceDepth + FailureOfUFIDExtractsSilentFlatDefectProfile + UFIDIndexingData + FlatDepthReserveLike.ofUFID + radiusSum_finite_of_UFID_and_finiteRootReserve + 3 rfl identity theorems). Confirm or refute each agent's self-report. Closes the tick454 deferral.",
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Skip the audit; accept the in-artifact scope guards on tick451/452/453 + their in-file Meta-Darwin-self-audit Prop records as the only kill-test. Risk: tick454 v2 audit deferred these three files because they landed during its write phase; without an outsider second pass, the wrapper-inflation pattern (tick448 found 11/13 wrappers; tick454 found 3 of 4 new additions wrappers) extends through tick451/452/453 without external verification. Specific load-bearing risks: (a) tick451's 'NS-data construction' framing may overclaim relative to what is actually three carrier-projection steps; (b) tick452's cube_measure_toReal_le_rM3 must be confirmed as genuinely derived (not tautological under field hypotheses); (c) tick453's induction must be confirmed substantive (not directly projectable from carrier fields).",
+  "created_at": "2026-05-15T03:30:00Z",
+  "created_by": "claude_principal",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-15T23:59:59Z",
+  "information_value": 0.4,
+  "layer": "micro",
+  "objective_resolver": "(1) analytics/public/audits/meta_darwin_tick455_audit_tick451_to_453.md exists and applies the 6-point checklist to every named primitive in tick451, tick452, tick453; (2) each primitive receives a verdict in {HONEST, WRAPPER, LAUNDERED, PURE_NAMING, UNCLEAR}; (3) audit explicitly confirms-or-refutes each agent's self-report (tick451 self-flag 'structurally indistinguishable from tick450 if carriers not inhabited'; tick452 self-flag 'only typing half closed; Dirac witness; trivial sigma-algebra'; tick453 self-flag 'omega-discharged depth_child_le; List-induction radius packing; upstream half is Prop carrier only'); (4) audit adjudicates whether tick452 cube_measure_toReal_le_rM3 is genuinely derived (via ENNReal.toReal_mono + ENNReal.ofReal_ne_top + ENNReal.toReal_ofReal chain) or tautological under field hypotheses; (5) audit adjudicates whether tick453 induction is substantive or directly projectable; (6) NO Lean files modified during audit; (7) GP-233 ledger entry + E-row + F-row + handover updated with session-level 20-primitive tally (tick432 through tick453).",
+  "question": "Will the tick455 Meta-Darwin v3 audit of the tick451-tick453 Lean files (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) confirm or refute tick451's self-report that it is structurally indistinguishable from tick450 without carrier inhabitation, (c) confirm or refute tick452's self-report that only the typing half is closed and that cube_measure_toReal_le_rM3 is a derived (not tautological) Mathlib step, (d) confirm or refute tick453's self-report that the omega + List-induction are substantive (not directly projectable) and that the upstream half is Prop-only, (e) produce a session-level 20-primitive tally across tick432-tick453, and (f) leave Lean files unmodified?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "meta_darwin_lean_audit",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or audit file missing"
+}

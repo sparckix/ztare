@@ -1,0 +1,135 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level500_bounded_event_index_selector_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level500_bounded_event_index_selector_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level500_bounded_event_index_selector_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level500_bounded_event_index_selector_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level500_bounded_event_index_selector_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T04:29:43Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-27T07:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "TRUE iff Lean adds a compiled bounded event-index selector source that constructs TargetSlotFromFiniteIncidenceExtractionSource, plus obstruction/gate/workbench/ledger evidence passes.",
+    "question": "Can Level500 derive the Level499 targetSlot/equality-reflection source from a bounded injective natural event-index selector into the final-slot prefix?",
+    "success_threshold": "lake build passes; strict incidence and target-indexed receipts pass; workbench surfaces incidence-derived finite injection check; next lever names analytic event-index selector construction",
+    "task_type": "ns_formal_frontier"
+  },
+  "contract_id": "tick668_level500_bounded_event_index_selector_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex:RD",
+        "raw_agent_ids": [
+          "codex:RD"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "codex:RD"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level500_bounded_event_index_selector_source/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_formal_frontier",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-27T04:35:02Z",
+        "p_success": 0.8,
+        "rationale_short": "Read-only price: the Lean file already contains the bounded selector structure and the finite-incidence packaging, so the remaining question is whether the current artifact set can be closed through build/gate/receipt passes rather than needing a new analytic selector lemma. I keep success above coin-flip but below certainty because the contract still depends on unpriced observables: the actual build state, hidden coupling between the bounded selector and receipt schema, and whether the workbench exposes the incidence-derived finite injection check without another lemma.",
+        "specific_failure_mode_ids": [
+          "analytic_selector_not_derived_from_current_incidence",
+          "lean_surface_or_instance_gap",
+          "gate_or_receipt_schema_mismatch",
+          "workbench_or_ledger_churn"
+        ]
+      },
+      {
+        "action_change_recommendation": "If successful, next action should construct targetEventIndex from incidence relation and eventToBadNode/eventData, not add another Fin-slot wrapper.",
+        "agent_id": "codex:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level500_bounded_event_index_selector_source/codex_rd.json",
+        "canonical_agent_id": null,
+        "domain": "ns_millennium_hunt",
+        "expected_cost_agent_minutes": 60.0,
+        "forecasted_at": "2026-05-27T04:29:58Z",
+        "p_success": 0.72,
+        "rationale_short": "Level499 already shows equality reflection is enough; deriving targetSlot from Nat index plus bound is a tractable compression and should compile.",
+        "specific_failure_mode_ids": [
+          "event_index_source_still_socket",
+          "lean_fin_ext_mismatch"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "aggregate_ready"
+    ],
+    "next_action": "aggregate_when_rd_releases",
+    "state": "forecast_fulfilled"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "codex:RD",
+      "codex"
+    ],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-27T04:35:22Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "aggregate_when_rd_releases",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.059199999999999996,
+    "score_rows": 2,
+    "scored_at": "2026-05-27T04:35:29Z"
+  }
+}

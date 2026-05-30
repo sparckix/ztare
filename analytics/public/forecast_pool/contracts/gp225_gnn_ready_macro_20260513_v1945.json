@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_gnn_ready_macro_20260513_v1945.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_gnn_ready_macro_20260513_v1945.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_gnn_ready_macro_20260513_v1945",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_gnn_ready_macro_20260513_v1945.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_gnn_ready_macro_20260513_v1945.json"
+  },
+  "budget_agent_minutes": 240.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_gnn_ready_macro_20260513_v1945",
+  "cost_penalty": 0.015,
+  "created_at": "2026-05-14T00:27:30Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.125,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_label_gate",
+    "score": 0.2857,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2857,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.125,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.0741,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.125,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0303,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 3,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.1,
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "next_10_gp225_ticks",
+  "information_value": 2.0,
+  "layer": "macro",
+  "objective_resolver": "Resolve true only if an artifact records train_cross_encoder_or_gnn_now=true or equivalent GNN-ready gate with heldout labels and baseline/model-delta evidence; resolve false otherwise at 10 ticks or explicit blocked verdict.",
+  "question": "GP-225 reaches a GNN-training-ready label gate within the next 10 GP-225 ticks",
+  "risk_penalty": 2.0,
+  "success_threshold": "GNN-ready gate true within next 10 GP-225 ticks",
+  "task_type": "pre_gnn_label_gate",
+  "value_if_success": 10.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

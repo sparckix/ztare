@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_typed_feedback_meso_20260513_v1945.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_typed_feedback_meso_20260513_v1945.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_typed_feedback_meso_20260513_v1945",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_typed_feedback_meso_20260513_v1945.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_typed_feedback_meso_20260513_v1945.json"
+  },
+  "budget_agent_minutes": 80.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_typed_feedback_meso_20260513_v1945",
+  "cost_penalty": 0.02,
+  "created_at": "2026-05-14T00:27:30Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1579,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "typed_feedback_route",
+    "score": 0.1579,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1579,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1579,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0833,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.1364,
+        "score_rows": 34,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0556,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.0556,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "next_2_executable_gp225_ticks",
+  "information_value": 2.0,
+  "layer": "meso",
+  "objective_resolver": "Resolve true if a v19.45-or-v19.46 executable artifact records compiled_candidate_rows>=2 and harmful_compiled_mismatch_rows=0 under no teacher/oracle primary inputs; false after two executable ticks or explicit route kill.",
+  "question": "Typed elaborator feedback produces at least 2 compiled candidates with zero harmful compiled mismatches within the next 2 executable GP-225 ticks",
+  "risk_penalty": 1.5,
+  "success_threshold": "compiled_candidate_rows>=2 and harmful_compiled_mismatch_rows=0",
+  "task_type": "typed_feedback_route",
+  "value_if_success": 5.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

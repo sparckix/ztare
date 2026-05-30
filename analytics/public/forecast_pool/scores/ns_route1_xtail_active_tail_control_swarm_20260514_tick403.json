@@ -1,0 +1,137 @@
+{
+  "contract_id": "ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue scalar route work without attacking same-carrier tail control",
+      "counterfactual_action": "dispatch proof/no-go swarm on X_tail <= C_A activeTail",
+      "externality_hypotheses": {
+        "failure_mode_preconditioner": "agents may catch carrier mismatch, activeTail underdefinition, or tautological tail-control surface before implementation"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd_tick403",
+        "peirce",
+        "lovelace",
+        "arendt"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "ns_route1",
+        "swarm_dispatch",
+        "same_carrier_guard",
+        "darwin_no_go"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Prove/source same-carrier X_tail control and upstream finite-residual route1 dominance separately",
+      "old_next_action": "Treat finite-tail amortized strictness as enough for route closure",
+      "preconditioner_effect": "Added same-carrier source and branch-dominance guard instead of claiming unconditional upstream closure",
+      "preconditioner_source": "3-agent proof/interface/Darwin swarm plus GP-230 forecast",
+      "realized_failure_mode_ids": [
+        "same_carrier_definition_missing",
+        "activeTail_too_narrow_for_Xtail",
+        "tautological_tail_control"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.2106,
+  "mean_log_score": -0.6114079460637079,
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "artifact_hash": "549c8857a39204d7534ab13fd5a4780c6f7c61b1bb035b678c6b45127d216cc1",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd_tick403",
+      "peirce",
+      "lovelace",
+      "arendt"
+    ],
+    "compile_status": "pass",
+    "contract_id": "ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "ns_route1",
+      "swarm_dispatch",
+      "same_carrier_guard",
+      "darwin_no_go"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "negative_externality_tags": [],
+    "new_next_action": "Prove/source same-carrier X_tail control and upstream finite-residual route1 dominance separately",
+    "old_next_action": "Treat finite-tail amortized strictness as enough for route closure",
+    "preconditioner_effect": "Added same-carrier source and branch-dominance guard instead of claiming unconditional upstream closure",
+    "preconditioner_source": "3-agent proof/interface/Darwin swarm plus GP-230 forecast",
+    "realized_failure_mode_ids": [
+      "same_carrier_definition_missing",
+      "activeTail_too_narrow_for_Xtail",
+      "tautological_tail_control"
+    ],
+    "resolution_note": "Swarm produced mixed but usable result: proof/interface agents identified same-carrier tail prefix control as missing source; Darwin killed only the stronger pointwise/channel-loss shortcut. Lean now compiles SameCarrierRouteTailActiveTailControlSource, constructor into Route1FiniteTailAmortizedStrictness, SameCarrierTailControlGap, and CriticalIncrementFiniteResidualRoute1Dominance with non-route branch guard.",
+    "resolved_at": "2026-05-14T18:58:07Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:58:12Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 13.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.58,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:53:13Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:55:10Z",
+        "resolved_at": "2026-05-14T18:58:07Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "codex_rd_tick403",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 33.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 75.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.66,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:53:13Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:53:23Z",
+        "resolved_at": "2026-05-14T18:58:07Z"
+      }
+    }
+  ]
+}

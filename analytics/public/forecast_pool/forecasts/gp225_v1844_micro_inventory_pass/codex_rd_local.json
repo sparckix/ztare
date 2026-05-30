@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd_local",
+  "contract_id": "gp225_v1844_micro_inventory_pass",
+  "contract_question": "Will v18.44, using saved artifacts only, pass the proof-delta label source inventory gate: >=50 natural/replayable before-action-after or prefix-state rows, >=20 rows not saturated by deterministic/BM25/action-sweep baselines, and zero unquarantined false accepts?",
+  "domain": "gp225_inventory_gate",
+  "expected_cost_agent_minutes": 2.0,
+  "failure_mode_distribution": {
+    "false_accept_quarantine_reduces_target_state_rows": 0.12,
+    "other": 0.12,
+    "rows_replayable_but_not_closure_labeled": 0.24,
+    "schema_drift": 0.22,
+    "unsaturated_count_below_20": 0.3
+  },
+  "forecasted_at": "2026-05-13T15:16:25Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.52,
+  "rationale_short": "Saved artifacts likely clear raw replayable row count via v1739 and v1644, but the gate can fail on unsaturated closure-value labels if BM25/action-family baselines absorb too much or if public traces lack target equivalence.",
+  "read_only_attestation": true
+}

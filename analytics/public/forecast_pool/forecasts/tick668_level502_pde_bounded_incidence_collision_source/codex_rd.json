@@ -1,0 +1,43 @@
+{
+  "action_change_recommendation": "Build L3A source only if it preserves displayed sameTreeLock/prefix/fanout provenance and composes through Level501; otherwise isolate the missing PDE theorem field.",
+  "agent_family": "codex",
+  "agent_id": "codex:RD",
+  "b_mid": 0.14,
+  "b_width": 0.12,
+  "contract_id": "tick668_level502_pde_bounded_incidence_collision_source",
+  "contract_question": "Can Level502 compile an L3A bounded-incidence/collision-free source that packages displayed same-tree, prefix-domination, and fanout provenance into the Level501 least-hit selector?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "implicit_argument_unification_failure": 0.42424242424242425,
+    "lake_build_regression": 0.21212121212121213,
+    "provenance_fields_too_weak_for_gate": 0.3636363636363636
+  },
+  "forecast_externality_tags": [
+    "bounded_incidence_existence",
+    "collision_free_incidence",
+    "same_tree_fanout_provenance"
+  ],
+  "forecasted_at": "2026-05-27T04:48:45Z",
+  "p_buy_yes_max": 0.66,
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.09,
+  "p_sell_yes_min": 0.83,
+  "p_success": 0.74,
+  "predicted_brier_hi": 0.2,
+  "predicted_brier_lo": 0.08,
+  "predicted_self_error_ratio": 0.19,
+  "rationale_short": "Positive path: Level501 already compiles; Level502 is mostly dependent-record packaging. Main risk is tying all L3A implicit parameters and receipt semantics cleanly.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "implicit_argument_unification_failure",
+    "provenance_fields_too_weak_for_gate",
+    "lake_build_regression"
+  ],
+  "spread": -0.17,
+  "tail_downside_worry": 20.0,
+  "tail_upside_surprise": 12.0,
+  "verbalized_confidence": 0.74
+}

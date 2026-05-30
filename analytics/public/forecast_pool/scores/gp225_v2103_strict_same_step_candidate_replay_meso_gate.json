@@ -1,0 +1,184 @@
+{
+  "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "skip replay and ship typed-label CPU diagnostic plan using auxiliary bucket only",
+      "counterfactual_action": "discard v21.02 truncated candidates and continue with auxiliary bucket only",
+      "externality_hypotheses": {
+        "anti_laundering_failure": "if bridge classifies as overclosure or auxiliary again, v20.99 contract score and v21.01 strict table remain frozen",
+        "candidate_rank_baseline_saturation_break": "any new strict heldout positive that the rank baseline does not auto-top1 is direct gnn-readiness progress",
+        "strict_same_step_acquisition_on_density_row": "if replay compiles \u22651 truncated candidate matching gold intermediate open state, strict training table can grow from 15 to \u226516 examples and the canonical heldout discriminating set may expand"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 4,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "useful_negative_apparatus_finding",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "meso_only_forecast",
+        "non_closing_step_candidate_packet",
+        "bridge_strictness_gap_identified",
+        "no_training",
+        "gnn_blocked"
+      ],
+      "negative_externality_tags": [
+        "forecast_loss_for_noether_p082",
+        "candidate_structural_correctness_unrecognized_by_bridge",
+        "strict_same_step_label_acquisition_blocked_on_non_closing_steps"
+      ],
+      "new_next_action": "v2105_bridge_strictness_audit_or_closing_step_row_pivot",
+      "old_next_action": "v2105_typed_label_union_readiness_after_strict_step_replay",
+      "realized_failure_mode_ids": [
+        "bridge_predicate_requires_full_compile_not_state_match",
+        "truncated_candidate_leaves_correct_open_state_but_classified_as_compile_failed",
+        "non_closing_step_index_incompatible_with_current_bridge",
+        "noether_structural_argument_correct_but_misaligned_with_bridge_predicate"
+      ]
+    }
+  },
+  "forecast_history_count": 6,
+  "mean_brier": 0.5092,
+  "mean_log_score": -1.2725820157513759,
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "artifact_hash": "4ea1b9951a3072ef44fbb3cf1fc2fc67bf39816f2a8165f0d471f42e998eda7f",
+    "artifact_path": "analytics/public/leanmill/results/v2104_strict_same_step_bounded_replay.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": "all_4_candidates_failed_compile_with_unsolved_goals_matching_gold_intermediate_signature",
+    "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+    "counterfactual_value_bucket": "useful_negative_apparatus_finding",
+    "decision_changed_bool": true,
+    "error_type": "unsolved_goals_bridge_strictness_gap",
+    "externality_tags": [
+      "meso_only_forecast",
+      "non_closing_step_candidate_packet",
+      "bridge_strictness_gap_identified",
+      "no_training",
+      "gnn_blocked"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [
+      "forecast_loss_for_noether_p082",
+      "candidate_structural_correctness_unrecognized_by_bridge",
+      "strict_same_step_label_acquisition_blocked_on_non_closing_steps"
+    ],
+    "new_next_action": "v2105_bridge_strictness_audit_or_closing_step_row_pivot",
+    "old_next_action": "v2105_typed_label_union_readiness_after_strict_step_replay",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "bridge_predicate_requires_full_compile_not_state_match",
+      "truncated_candidate_leaves_correct_open_state_but_classified_as_compile_failed",
+      "non_closing_step_index_incompatible_with_current_bridge",
+      "noether_structural_argument_correct_but_misaligned_with_bridge_predicate"
+    ],
+    "resolution_note": "v21.04 bounded replay attempted 4 truncated strict-step candidates. All 4 produced unsolved-goals errors with goal signature exactly equal to the gold intermediate (\u03bc.withDensity (pdf X \u2119 \u03bc)) s \u2264 (map X \u2119) s \u2014 structurally correct strict same-step witnesses \u2014 but the v1953 bridge's compile predicate requires the file to close ALL goals. step_idx=2 on setLIntegral_pdf_le_map is a non-closing step, so the bridge cannot certify any strict same-step positive even when the candidate matches gold exactly. Contract floor was new_strict_same_target_rows>=1 measured by the bridge; bridge measured 0; contract resolves false. Brier penalty is correct per the bridge predicate. NO ex-post relabeling: typed-label union readiness must remain at 15 strict positives until either the bridge gains a non-closing-step mode OR a closing-step row is targeted. Decision changes next action to v21.05 audit + bridge-gap finding.",
+    "resolved_at": "2026-05-14T22:27:01Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T22:27:01Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "Claude",
+      "brier": 0.48999999999999994,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -1.203972804325936,
+      "p_success": 0.7,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:19:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:23:38Z",
+        "resolved_at": "2026-05-14T22:27:01Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "ClaudeRD",
+      "brier": 0.48999999999999994,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -1.203972804325936,
+      "p_success": 0.7,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:19:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "resolved_at": "2026-05-14T22:27:01Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "Franklin",
+      "brier": 0.3844,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.9675840262617056,
+      "p_success": 0.62,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:19:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "resolved_at": "2026-05-14T22:27:01Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "Noether",
+      "brier": 0.6723999999999999,
+      "cost_error_agent_minutes": -4.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -1.7147984280919264,
+      "p_success": 0.82,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:19:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:22:05Z",
+        "resolved_at": "2026-05-14T22:27:01Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "tarski_replay_skeptic",
+  "contract_id": "gp225_v2017_repair_lane_replay",
+  "contract_question": "Will v20.17 repair-lane replay produce at least one new strict same-target row from the three v20.16 reduced holdout failures, with zero harmful compiled mismatches and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 16.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "betaPDFReal_not_imported_or_wrong_unfold": 0.22,
+    "candidate_schema_compiles_zero": 0.12,
+    "other": 0.18,
+    "placeholder_local_hypothesis_h_absent": 0.28,
+    "smul_rewrite_set_not_resolving": 0.2
+  },
+  "forecasted_at": "2026-05-14T13:14:14Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.05,
+  "p_success": 0.24,
+  "rationale_short": "The packet may be source-safe but includes local-hypothesis placeholders and guessed normalizer names; one closure is possible but odds are below prior high-yield bundles.",
+  "read_only_attestation": true
+}

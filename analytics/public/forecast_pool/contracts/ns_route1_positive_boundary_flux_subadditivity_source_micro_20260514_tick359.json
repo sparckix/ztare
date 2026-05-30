@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-14T12:28:47Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 56.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 56.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 120,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1034,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-14T18:00:00Z",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "success iff Lean has a compiled source/theorem using positiveBoundaryFlux <= visible+pressure+commutator+invisible, not equality, to prove normalizedTransport <= transportReceipt + localQuadratic + commutator + noInvisible; lake env lean and downstream lake build pass; touched file has no sorry/admit",
+  "question": "Can we add a Lean-checked positive boundary-flux subadditivity source replacing exact split equality with a PDE-native inequality, while still paying normalized transport by transport plus local/commutator/no-invisible charges?",
+  "risk_penalty": 1.0,
+  "success_threshold": "all resolver clauses true",
+  "task_type": "ns_route1_pde_gowers_first_then_lean",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

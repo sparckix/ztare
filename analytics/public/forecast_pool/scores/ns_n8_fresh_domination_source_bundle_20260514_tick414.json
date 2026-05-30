@@ -1,0 +1,131 @@
+{
+  "contract_id": "ns_n8_fresh_domination_source_bundle_20260514_tick414",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Proceed from generic TriCarrierFreshDomination",
+      "counterfactual_action": "Add explicit source bundle for component estimates",
+      "externality_hypotheses": {
+        "negative": [
+          "another_guard_surface_no_pde_progress"
+        ],
+        "positive": [
+          "prevents_fresh_domination_tautology",
+          "routes_next_to_radius_component"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "low",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "anti-tautology",
+        "component-source-bundle",
+        "radius-next"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "names-not-sources",
+        "n8-not-closed"
+      ],
+      "new_next_action": "Attack RadiusComponentPaysRadiusScale or prove radius branch remains independent",
+      "old_next_action": "Use generic TriCarrierFreshDomination",
+      "preconditioner_effect": "Kept local fresh domination from becoming an opaque theorem; next action forced to radius component bound",
+      "preconditioner_source": "Constructive/adversarial sidecar component-estimate reports",
+      "realized_failure_mode_ids": [
+        "bundle_is_names_not_sources"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.074,
+  "mean_log_score": -0.30698319134275204,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passed",
+    "contract_id": "ns_n8_fresh_domination_source_bundle_20260514_tick414",
+    "counterfactual_value_bucket": "low",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "anti-tautology",
+      "component-source-bundle",
+      "radius-next"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "names-not-sources",
+      "n8-not-closed"
+    ],
+    "new_next_action": "Attack RadiusComponentPaysRadiusScale or prove radius branch remains independent",
+    "old_next_action": "Use generic TriCarrierFreshDomination",
+    "preconditioner_effect": "Kept local fresh domination from becoming an opaque theorem; next action forced to radius component bound",
+    "preconditioner_source": "Constructive/adversarial sidecar component-estimate reports",
+    "realized_failure_mode_ids": [
+      "bundle_is_names_not_sources"
+    ],
+    "resolution_note": "Added compiling TriCarrierFreshDominationSource bundle with RadiusComponentPaysRadiusScale, PressureRieszPreSummedLocalLSCVisibility, BadCenterEventIncidenceCofinalComparable, TriCarrierNoDoubleCounting, and NonadaptiveCoronaFreshOverlap. This names source theorems only; it does not prove component bounds.",
+    "resolved_at": "2026-05-14T20:28:41Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T20:29:01Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "codex-meta-darwin-proxy",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "ns-proof-falsification",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.35,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:27:14Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:27:29Z",
+        "resolved_at": "2026-05-14T20:28:41Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "codex-rd-main",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "ns-n8-component-sources",
+      "expected_cost_agent_minutes": 16.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:27:14Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:27:29Z",
+        "resolved_at": "2026-05-14T20:28:41Z"
+      }
+    }
+  ]
+}

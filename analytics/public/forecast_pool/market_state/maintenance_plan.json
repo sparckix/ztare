@@ -1,0 +1,226 @@
+{
+  "aggregate_debt": [
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+      "contract_id": "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+      "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level500_bounded_event_index_selector_source",
+      "contract_id": "tick668_level500_bounded_event_index_selector_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level501_least_hit_incidence_selector_source",
+      "contract_id": "tick668_level501_least_hit_incidence_selector_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level502_pde_bounded_incidence_collision_source",
+      "contract_id": "tick668_level502_pde_bounded_incidence_collision_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level503_no_reuse_collision_free_incidence_source",
+      "contract_id": "tick668_level503_no_reuse_collision_free_incidence_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level504_eventdata_horizon_bounded_incident_existence_source",
+      "contract_id": "tick668_level504_eventdata_horizon_bounded_incident_existence_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level505_cover_selection_target_event_candidate_source",
+      "contract_id": "tick668_level505_cover_selection_target_event_candidate_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level506_eventdata_incidence_cover_source",
+      "contract_id": "tick668_level506_eventdata_incidence_cover_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level507_finalslot_eventdata_cover_selector_source",
+      "contract_id": "tick668_level507_finalslot_eventdata_cover_selector_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level508_least_hit_targetslot_assignment_source",
+      "contract_id": "tick668_level508_least_hit_targetslot_assignment_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level509_sametree_eventdata_index_bounded_existence_source",
+      "contract_id": "tick668_level509_sametree_eventdata_index_bounded_existence_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level519_unbounded_event_witness_prefix_bound_source",
+      "contract_id": "tick668_level519_unbounded_event_witness_prefix_bound_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level520_cofinal_incidence_witness_bound_source",
+      "contract_id": "tick668_level520_cofinal_incidence_witness_bound_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level521_explicit_cofinal_event_witness_bound_source",
+      "contract_id": "tick668_level521_explicit_cofinal_event_witness_bound_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level522_cofinal_event_selector_final_prefix_bound_source",
+      "contract_id": "tick668_level522_cofinal_event_selector_final_prefix_bound_source"
+    },
+    {
+      "command": "forecast_pool.py aggregate --contract-id tick668_level523_finite_cofinal_event_selector_source",
+      "contract_id": "tick668_level523_finite_cofinal_event_selector_source"
+    }
+  ],
+  "counts": {
+    "aggregate_debt": 17,
+    "decision_use_rows": 2,
+    "resolved_without_forecasts": 15,
+    "score_debt": 1
+  },
+  "decision_use": {
+    "decision_changed_rows": 2,
+    "ignored_without_reason": 0,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "recent": [
+      {
+        "aggregate_present": false,
+        "aggregate_summary": {
+          "excluded_from_calibration": false,
+          "exists": false,
+          "scratch_contract": true
+        },
+        "artifact_paths": {
+          "aggregate": "analytics/public/forecast_pool/aggregates/scratch_9e7572ea8cc99cba.json",
+          "contract": "analytics/analytics/public/forecast_pool/scratch/20260520t124656_codex_rd_gp225_factory_pathc_residual_lane_meso_20260520.json",
+          "decision_use_ledger": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
+        },
+        "contract_id": "scratch_9e7572ea8cc99cba",
+        "contract_question": null,
+        "decision_changed_bool": true,
+        "decision_stage": "manual",
+        "decision_use_id": "du_e10552fcf492",
+        "failure_modes_adopted": [
+          "path_a_template_underpowered",
+          "residual_classes_too_sparse_for_policy",
+          "source_packet_quality_ceiling"
+        ],
+        "forecast_delta": null,
+        "ignored_forecast_reason": null,
+        "new_action": "prioritize Path-C residual planner plus typed repair-family lanes; increase B workers only when to_govern queue is nonempty",
+        "notes": "Decision row for GP225 A/B/C path forward after factory scoreboard: conveyor works, new lanes yielded 5/5 Path-C residuals, bottleneck is repair-template generation rather than B governance capacity.",
+        "old_action": "scale workers and keep draining lanes equally",
+        "owner": "codex:RD",
+        "recorded_at": "2026-05-20T12:48:13Z",
+        "tick_id": "gp225_factory_pathc_20260520",
+        "used_for": "split"
+      },
+      {
+        "aggregate_present": false,
+        "aggregate_summary": {
+          "excluded_from_calibration": true,
+          "exists": false,
+          "scratch_contract": true
+        },
+        "artifact_paths": {
+          "aggregate": "analytics/public/forecast_pool/aggregates/scratch_9e7572ea8cc99cba.json",
+          "contract": "analytics/public/forecast_pool/scratch/20260520t124656_codex_rd_gp225_factory_pathc_residual_lane_meso_20260520.json",
+          "decision_use_ledger": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
+        },
+        "contract_id": "scratch_9e7572ea8cc99cba",
+        "contract_question": "Will the GP225 A/B/C LeanSearch factory path produce at least two additional ratified proof closures or exact-gap/falsifier packets from the current MCB intake/residual buffer by the next factory decision review, without false ratification or source-order leakage?",
+        "decision_changed_bool": true,
+        "decision_stage": "manual",
+        "decision_use_id": "du_7c7881d2ad27",
+        "failure_modes_adopted": [
+          "path_a_template_underpowered",
+          "residual_classes_too_sparse_for_policy",
+          "source_packet_quality_ceiling"
+        ],
+        "forecast_delta": null,
+        "ignored_forecast_reason": null,
+        "new_action": "prioritize Path-C residual planner plus typed repair-family lanes; increase B workers only when to_govern queue is nonempty",
+        "notes": "Corrected scratch decision-use row after enabling scratch contract support; prior du_e10552fcf492 had a malformed artifact path because scratch contracts were not accepted by record-decision-use.",
+        "old_action": "scale workers and keep draining lanes equally",
+        "owner": "codex:RD",
+        "recorded_at": "2026-05-20T12:49:38Z",
+        "tick_id": "gp225_factory_pathc_20260520",
+        "used_for": "split"
+      }
+    ],
+    "rows": 2,
+    "stage_counts": {
+      "manual": 2
+    },
+    "used_for_counts": {
+      "split": 2
+    }
+  },
+  "generated_at": "2026-05-27T08:40:51Z",
+  "purpose": "Generated maintenance queue for forecast-market hygiene.",
+  "resolved_without_forecasts": [
+    {
+      "contract_id": "ns_route1_C7_surplus_cf_depletion_reduction_meso_20260516_tick582",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_birkhoff_R3_slaving_bypass_quantKRZ_meso_20260516_tick572",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "test-fix52-1779140589",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "tick641-micro-dyadic-beta-rg-transport-discriminator",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "tick643-omega-sup-coercive-entropy-atom",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "tick644-lagrangian-vortexline-history-observable",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    },
+    {
+      "contract_id": "tick645-biotsavart-commutator-defect-nonlocality",
+      "note": "Resolved without usable pre-resolution forecasts; void, document ordering override, or backfill under policy."
+    }
+  ],
+  "score_debt": [
+    {
+      "command": "forecast_pool.py score --contract-id ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+      "contract_id": "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575"
+    }
+  ]
+}

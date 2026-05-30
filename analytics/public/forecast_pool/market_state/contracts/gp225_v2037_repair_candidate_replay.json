@@ -1,0 +1,166 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T15:31:35Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 30.0,
+    "expected_value": -0.7409334992234069,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.10500000000000001,
+    "p_needs_new_lemma": 0.135,
+    "p_regression": 0.055,
+    "p_success": 0.40996277864065894,
+    "participants": [
+      {
+        "agent_id": "gp230_chandrasekhar_gp225_v2037",
+        "domain": "general",
+        "p_success": 0.4,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_mill_gp225_v2037",
+        "domain": "general",
+        "p_success": 0.42,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2037_repair_candidate_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2037_repair_candidate_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2037_repair_candidate_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2037_repair_candidate_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2037_repair_candidate_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 41.12,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T15:28:35Z",
+    "created_by": "codex_RD_2026_05_14",
+    "horizon": "one adapter plus local Lean replay over 20 v20.35 repaired candidates",
+    "layer": "micro",
+    "objective_resolver": "Success iff a v20.37 replay artifact exists and reports attempted_candidate_rows >= 20, compiled_candidate_actions >= 1, new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions == 0, source-policy flags clean, train_gnn_now=false, and gnn_blocked=true. A replay-compatible adapter from v20.35 may be built, but labels count only from Lean replay.",
+    "question": "Will replay of the v20.35 source-aligned repaired candidates add at least one compile-backed same-target strict row without harmful mismatches?",
+    "success_threshold": "attempted_candidate_rows>=20,compiled_candidate_actions>=1,new_strict_same_target_rows>=1,harmful_mismatches=0,no_forbidden_context,no_training,gnn_blocked_true",
+    "task_type": "gp225_public_adapter_repair_candidate_replay_micro"
+  },
+  "contract_id": "gp225_v2037_repair_candidate_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_chandrasekhar_gp225_v2037",
+        "raw_agent_ids": [
+          "gp230_chandrasekhar_gp225_v2037"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_mill_gp225_v2037",
+        "raw_agent_ids": [
+          "gp230_mill_gp225_v2037"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_chandrasekhar_gp225_v2037",
+      "gp230_mill_gp225_v2037"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run bounded v20.37 adapter plus replay over all 20 repaired candidates; no more static filtering first; keep training false and GNN blocked.",
+        "agent_id": "gp230_chandrasekhar_gp225_v2037",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2037_repair_candidate_replay/gp230_chandrasekhar_gp225_v2037.json",
+        "canonical_agent_id": null,
+        "domain": "general",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T15:31:28Z",
+        "p_success": 0.4,
+        "rationale_short": "v20.36 exhausted cheap static filtering; real question is Lean elaboration plus strict same-target behavior.",
+        "specific_failure_mode_ids": [
+          "no_candidate_compiles_after_hydration",
+          "compiled_but_not_strict_same_target",
+          "adapter_schema_hydration_issue",
+          "import_namespace_runtime_regression",
+          "source_policy_metadata_blocks_resolution",
+          "harmful_compiled_mismatch"
+        ]
+      },
+      {
+        "action_change_recommendation": "Run v20.37 as bounded replay/audit gate, not as training or promotion; failure would falsify this deterministic repair style.",
+        "agent_id": "gp230_mill_gp225_v2037",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2037_repair_candidate_replay/gp230_mill_gp225_v2037.json",
+        "canonical_agent_id": null,
+        "domain": "general",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T15:31:28Z",
+        "p_success": 0.42,
+        "rationale_short": "v20.35/v20.36 improved repair supply and static hygiene, but only replay answers compile-backed strict yield.",
+        "specific_failure_mode_ids": [
+          "no_compile_despite_static_pass",
+          "compiled_but_not_strict_same_target",
+          "adapter_shape_risk",
+          "harmful_or_leakage_metadata_regression"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "changed_by_forecast_ids": [
+      "gp230_chandrasekhar_gp225_v2037",
+      "gp230_mill_gp225_v2037"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:34:23Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.02,
+      "p_success": 0.40996277864065894,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": null,
+      "voi_proxy": 0.9619
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 30.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.40996277864065894,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.16820000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:34:30Z"
+  }
+}

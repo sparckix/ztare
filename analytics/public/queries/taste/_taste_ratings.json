@@ -1,0 +1,62 @@
+{
+  "audit_timestamp_utc": "2026-05-17T02:33:46.071928+00:00",
+  "n_rated": 14,
+  "ratings": {
+    "SAMPLE_001": {
+      "score": 3,
+      "rationale": "Anti-tautology cascade intake harness; all-zero profit backtest cleanly falsifies the iter-1 cascade thesis"
+    },
+    "SAMPLE_009": {
+      "score": 4,
+      "rationale": "Read/write asymmetry not pruning: corrected replay shows middle-stack writes are task-conditional; blocks naive arch claim"
+    },
+    "SAMPLE_025": {
+      "score": 2,
+      "rationale": "Routine adversarial-debate record; offset_score asymmetric-bias critique is code-anchored but a known scoring-Goodhart class"
+    },
+    "SAMPLE_027": {
+      "score": 3,
+      "rationale": "Sharp pre-registered eigenquestion isolating selection-error vs no-utility-frontier; useful framing, not yet a result"
+    },
+    "SAMPLE_045": {
+      "score": 4,
+      "rationale": "Names load-bearing failure: documentary-absence\u2192structural-necessity inference; correctly rescopes \"structurally blind\""
+    },
+    "SAMPLE_047": {
+      "score": 4,
+      "rationale": "Caught own vacuous \u2200\u03b8\u03b7/CKN-floor Lean encoding before external response; isolates genuine asymptotic residual to two gaps"
+    },
+    "SAMPLE_050": {
+      "score": 2,
+      "rationale": "Feature-delta table; residual_effective_rank_mean dominates consistently \u2014 useful consolidation, no reframe"
+    },
+    "SAMPLE_051": {
+      "score": 3,
+      "rationale": "Stand-alone agentic-engineering catalogue; orchestration-layer-deterministic / LLM-as-oracle is a sharp reusable abstraction"
+    },
+    "SAMPLE_052": {
+      "score": 3,
+      "rationale": "Distributed two-core churn stall-law: positive budget without identity-stable stretching winner \u2014 non-obvious NS read"
+    },
+    "SAMPLE_057": {
+      "score": 3,
+      "rationale": "Lebesgue-decomposition singular-part control lemma cleanly names the missing theorem and its failure consequence"
+    },
+    "SAMPLE_060": {
+      "score": 3,
+      "rationale": "Top-down inversion enumerating 7 non-route branches; CKN r^2-budget vs r-budget scaling gap is a sharp obstruction"
+    },
+    "SAMPLE_064": {
+      "score": 2,
+      "rationale": "Divide-and-conquer lane decomposition of GP216 liminf source; structured but standard decomposable-certificate framing"
+    },
+    "SAMPLE_071": {
+      "score": 2,
+      "rationale": "Failure-mode audit; optimizer/tube-recovery gap vs negative-block certificate distinction \u2014 useful but expected"
+    },
+    "SAMPLE_076": {
+      "score": 3,
+      "rationale": "Thorough 2024-26 lit scan; verdict \"depth-3 isomorphic to C1 Prodi-Serrin polar-slice barrier\" sharply localizes obstruction"
+    }
+  }
+}

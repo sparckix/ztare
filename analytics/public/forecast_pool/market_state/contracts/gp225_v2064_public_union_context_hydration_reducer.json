@@ -1,0 +1,208 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:43:24Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 18.0,
+    "expected_value": 0.33149880004994914,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.11,
+    "p_needs_new_lemma": 0.08499999999999999,
+    "p_regression": 0.055,
+    "p_success": 0.7512077420160469,
+    "participants": [
+      {
+        "agent_id": "Church3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_context_hydration_reducer",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2064_public_union_context_hydration_reducer/church3.json",
+        "forecasted_at": "2026-05-14T18:43:21Z",
+        "p_success": 0.78,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Curry4",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_context_hydration_reducer",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2064_public_union_context_hydration_reducer/curry4.json",
+        "forecasted_at": "2026-05-14T18:43:21Z",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "historic_target_context_sparse",
+        "p": 0.28500000000000003
+      },
+      {
+        "mode": "row_obligations_too_abstract",
+        "p": 0.265
+      },
+      {
+        "mode": "elliptic_orientation_underclassified",
+        "p": 0.155
+      },
+      {
+        "mode": "bayes_bound_witness_not_named",
+        "p": 0.15
+      },
+      {
+        "mode": "source_name_normalization_not_resolved",
+        "p": 0.145
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2064_public_union_context_hydration_reducer.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2064_public_union_context_hydration_reducer.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2064_public_union_context_hydration_reducer.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2064_public_union_context_hydration_reducer.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2064_public_union_context_hydration_reducer.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:43:05Z",
+    "created_by": "codex:RD",
+    "horizon": "same session 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff v2064 consumes v20.63, v20.62, typed feedback, and historic replay/error artifacts; emits row-level hydration obligations for all four unsolved rows; identifies at least one concrete replay blocker per row; separates source-name normalization, binder names, proof orientation, and gold/target-shape risks; records no replay/training and GNN blocked; and names a smaller next artifact.",
+    "question": "Will v20.64 reduce the v20.63 replay abort into row-level binder/context hydration obligations that can reopen replay pricing without running Lean replay or training?",
+    "success_threshold": "four rows classified; >=4 concrete hydration obligations; no replay/training; next artifact named",
+    "task_type": "context_hydration_reducer"
+  },
+  "contract_id": "gp225_v2064_public_union_context_hydration_reducer",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Church3",
+        "raw_agent_ids": [
+          "Church3"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Curry4",
+        "raw_agent_ids": [
+          "Curry4"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Church3",
+      "Curry4"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Classify obligations even if not fully solved; do not claim replay readiness until each row has a concrete hydration patch.",
+        "agent_id": "Church3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2064_public_union_context_hydration_reducer/church3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_context_hydration_reducer",
+        "expected_cost_agent_minutes": 17.0,
+        "forecasted_at": "2026-05-14T18:43:21Z",
+        "p_success": 0.78,
+        "rationale_short": "The artifacts already expose enough failure text and candidate blockers to make a useful reducer, but not enough for replay readiness.",
+        "specific_failure_mode_ids": [
+          "historic_target_context_sparse",
+          "row_obligations_too_abstract"
+        ]
+      },
+      {
+        "action_change_recommendation": "Emit a reducer that names exact missing binders/source spellings and chooses one row for the next hydration patch.",
+        "agent_id": "Curry4",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2064_public_union_context_hydration_reducer/curry4.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_context_hydration_reducer",
+        "expected_cost_agent_minutes": 19.0,
+        "forecasted_at": "2026-05-14T18:43:21Z",
+        "p_success": 0.72,
+        "rationale_short": "Static reduction is likely; the risk is producing prose that does not constrain the next candidate patch enough.",
+        "specific_failure_mode_ids": [
+          "row_obligations_too_abstract",
+          "historic_target_context_sparse"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "Church3",
+      "Curry4"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:44:49Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.33149880004994914,
+      "forecast_spread": 0.06,
+      "p_success": 0.7512077420160469,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.4669
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 18.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7512077420160469,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "historic_target_context_sparse",
+        "p": 0.28500000000000003
+      },
+      {
+        "mode": "row_obligations_too_abstract",
+        "p": 0.265
+      },
+      {
+        "mode": "elliptic_orientation_underclassified",
+        "p": 0.155
+      },
+      {
+        "mode": "bayes_bound_witness_not_named",
+        "p": 0.15
+      },
+      {
+        "mode": "source_name_normalization_not_resolved",
+        "p": 0.145
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0634,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:44:52Z"
+  }
+}

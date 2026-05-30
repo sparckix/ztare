@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "3ac4078cae6852c5d232018fb2a8e32f95b30fe54942d02e0d464b170c74e8c2",
+  "artifact_path": "analytics/public/leanmill/results/v2063_public_union_source_candidate_replay_market_gate.json",
+  "changed_by_forecast_ids": [
+    "Turing3",
+    "Lovelace3"
+  ],
+  "compile_status": "market_gate_no_run_abort",
+  "contract_id": "gp225_v2063_public_union_source_candidate_replay_market_gate",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "no_run_market_abort",
+  "externality_tags": [
+    "market_abort",
+    "anti_goodhart",
+    "context_hydration"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "replay_deferred",
+    "compile_signal_delayed"
+  ],
+  "new_next_action": "abort replay and hydrate binder/context obligations first",
+  "old_next_action": "run bounded canary replay immediately",
+  "preconditioner_effect": "Replay blockers and static-only status prevented direct execution.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2062_public_union_source_candidate_packet_static_check.json",
+  "realized_failure_mode_ids": [
+    "binder_context_underhydrated"
+  ],
+  "resolution_note": "v20.63 passed as market gate: partitioned 5 unblocked vs 3 replay-blocked candidates, aggregate p_success 0.3145, EV 0.0055, routing audit_or_explore_only, so no canary replay; next is context hydration reducer.",
+  "resolved_at": "2026-05-14T18:41:16Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

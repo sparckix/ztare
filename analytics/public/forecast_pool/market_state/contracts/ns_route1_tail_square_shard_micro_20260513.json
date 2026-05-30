@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T21:00:39Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 82.5,
+    "expected_value": -7.146229049064392,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.315,
+    "p_needs_new_lemma": 0.5,
+    "p_regression": 0.14,
+    "p_success": 0.5104168475932437,
+    "participants": [
+      {
+        "agent_id": "bernoulli_independent_forecaster",
+        "domain": "NS_route1",
+        "p_success": 0.41,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "ohm_independent_forecaster",
+        "domain": "NS_route1",
+        "p_success": 0.61,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "definitional_laundering",
+        "p": 0.21839080459770116
+      },
+      {
+        "mode": "no_fixed_carrier_equality",
+        "p": 0.2125
+      },
+      {
+        "mode": "prop_only_l3_receipts",
+        "p": 0.1781609195402299
+      },
+      {
+        "mode": "new_numeric_tail_definition_needed",
+        "p": 0.16875
+      },
+      {
+        "mode": "graph_path_not_theorem_dependency",
+        "p": 0.11875
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_tail_square_shard_micro_20260513.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_tail_square_shard_micro_20260513.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_tail_square_shard_micro_20260513.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_tail_square_shard_micro_20260513.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_tail_square_shard_micro_20260513.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T21:00:18Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-13",
+    "layer": "micro",
+    "objective_resolver": "TRUE iff a Lean object below Adapter derives X_tail = tailSquareFunction without taking Route1LocalizedCoercivityPoincareDecomposition as input, and module typechecks/builds.",
+    "question": "Will attacking shard A, tail-square identification, produce a non-tautological typechecked Lean bridge below the fresh-frequency adapter in this bounded tick?",
+    "success_threshold": "typechecked_lower_tail_square_identity",
+    "task_type": "ns_route1_quantitative_shard_choice"
+  },
+  "contract_id": "ns_route1_tail_square_shard_micro_20260513",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:bernoulli_independent_forecaster",
+        "raw_agent_ids": [
+          "bernoulli_independent_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:ohm_independent_forecaster",
+        "raw_agent_ids": [
+          "ohm_independent_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "bernoulli_independent_forecaster",
+      "ohm_independent_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "bernoulli_independent_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_tail_square_shard_micro_20260513/bernoulli_independent_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 75.0,
+        "forecasted_at": "2026-05-13T21:00:29Z",
+        "p_success": 0.41,
+        "rationale_short": "A is narrow and most likely, but risk remains that X_tail equals tailSquareFunction only by naming rather than fixed-carrier derivation.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "ohm_independent_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_tail_square_shard_micro_20260513/ohm_independent_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-13T21:00:35Z",
+        "p_success": 0.61,
+        "rationale_short": "A is the best first attack if X_tail and tailSquareFunction are fixed before the theorem and strictness/source margin are absent.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T21:00:45Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.2,
+      "p_success": 0.5104168475932437,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "definitional_laundering",
+        "p": 0.21839080459770116
+      },
+      "voi_proxy": 1.2499
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 82.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5104168475932437,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "definitional_laundering",
+        "p": 0.21839080459770116
+      },
+      {
+        "mode": "no_fixed_carrier_equality",
+        "p": 0.2125
+      },
+      {
+        "mode": "prop_only_l3_receipts",
+        "p": 0.1781609195402299
+      },
+      {
+        "mode": "new_numeric_tail_definition_needed",
+        "p": 0.16875
+      },
+      {
+        "mode": "graph_path_not_theorem_dependency",
+        "p": 0.11875
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.25010000000000004,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T21:00:49Z"
+  }
+}

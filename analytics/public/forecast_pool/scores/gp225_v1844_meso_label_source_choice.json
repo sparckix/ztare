@@ -1,0 +1,44 @@
+{
+  "contract_id": "gp225_v1844_meso_label_source_choice",
+  "mean_brier": 0.13,
+  "mean_log_score": -0.4467756224523328,
+  "outcome": {
+    "actual_cost_agent_minutes": 0.2,
+    "artifact_hash": "2154765506fa7650fed2288a769486aafb232a1ae50952ebccfc41eb84bf6966",
+    "artifact_path": "analytics/public/leanmill/results/v1844_proof_delta_label_source_inventory.json",
+    "compile_status": "pass",
+    "contract_id": "gp225_v1844_meso_label_source_choice",
+    "error_type": "none",
+    "goal_delta": 0,
+    "resolution_note": "v18.44 selected public_trace_v1739 as best bulk state/action source; natural replay and target-state witness rows are supplements; same-factory hard-decoy lane remains paused.",
+    "resolved_at": "2026-05-13T15:19:35Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T15:19:35Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 0.2,
+      "agent_id": "codex_gpt5_readonly_2026_05_13",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 11.8,
+      "domain": "gp225_label_source",
+      "expected_cost_agent_minutes": 12.0,
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 0.2,
+      "agent_id": "codex_rd_local",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 9.8,
+      "domain": "gp225_label_source",
+      "expected_cost_agent_minutes": 10.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "contract_id": "ns_route1_pressure_or_commutator_lower_bound_meso",
+  "mean_brier": 0.14830000000000002,
+  "mean_log_score": -0.485223387686069,
+  "outcome": {
+    "actual_cost_agent_minutes": 32.0,
+    "artifact_hash": "not_computed",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "route1_and_pressure_compiled",
+    "contract_id": "ns_route1_pressure_or_commutator_lower_bound_meso",
+    "error_type": "none",
+    "goal_delta": 1,
+    "resolution_note": "Independent forecast_count=3 aggregated at p_success=0.617. Majority selected pressure reserve/no-escape lower-bound. Execution added compiled Route1PressureVisibilityLowerBoundProducer and concrete no-escape-only counterexample, proving no-escape alone cannot force positive pressure visibility. Route1 still compiles; no GNN/harness artifact emitted.",
+    "resolved_at": "2026-05-13T19:17:52Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T19:17:56Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 32.0,
+      "agent_id": "carver_independent_forecaster",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 12.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 44.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 32.0,
+      "agent_id": "lagrange_independent_forecaster",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 20.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 52.0,
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 32.0,
+      "agent_id": "maxwell_independent_forecaster",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 32.0,
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true
+    }
+  ]
+}

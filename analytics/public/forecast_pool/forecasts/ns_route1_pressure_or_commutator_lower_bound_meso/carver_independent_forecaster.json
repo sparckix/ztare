@@ -1,0 +1,24 @@
+{
+  "agent_id": "carver_independent_forecaster",
+  "contract_id": "ns_route1_pressure_or_commutator_lower_bound_meso",
+  "contract_question": "Which next NS route1 PDE leg is likely to yield the best compiled non-tautological progress: pressure reserve/no-escape lower-bound, commutator endpoint lower-semicontinuity, or profile module build repair?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 44.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compiled_wrapper_but_no_new_pde_content": 0.24,
+    "endpoint_lsc_requires_stronger_compactness_topology": 0.22,
+    "forecast_pool_count_or_aggregation_misses_threshold": 0.06,
+    "lean_import_or_stale_build_noise": 0.08,
+    "other": 0.09,
+    "pressure_leg_too_broad_for_same_session_lower_bound": 0.14,
+    "profile_module_build_debt_blocks_route_integration": 0.17
+  },
+  "forecasted_at": "2026-05-13T19:15:15Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.67,
+  "p_regression": 0.07,
+  "p_success": 0.62,
+  "rationale_short": "Recommends commutator endpoint lower-semicontinuity: current endpoint/no-escape/strong-tail surfaces are concrete enough to yield compiled linkage or topology blocker.",
+  "read_only_attestation": true
+}

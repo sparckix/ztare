@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd_pre",
+  "contract_id": "ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356",
+  "contract_question": "Can we add a Lean-checked transport visible/invisible route-level closure theorem from the Gowers-first informal proof, without substituting DR/pressure carriers or adding sorry/admit?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "downstream_build_surprise": 0.15,
+    "lean_algebra_or_import_issue": 0.25,
+    "naming_collision": 0.1,
+    "other": 0.15,
+    "theorem_too_wrapper_like": 0.35
+  },
+  "forecasted_at": "2026-05-14T12:15:56Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.04,
+  "p_success": 0.78,
+  "rationale_short": "Gowers-first proof is scalar transitivity after the right observable split; main risk is whether the theorem surface is useful enough and compiles cleanly.",
+  "read_only_attestation": true
+}

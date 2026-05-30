@@ -1,0 +1,241 @@
+{
+  "experiment": "gp216_folk_knowledge_proper",
+  "per_subfield_op_counts": {
+    "theory_building": {
+      "core_01": 3,
+      "core_03": 4,
+      "core_06": 12,
+      "broad_07": 6,
+      "core_02": 17,
+      "broad_08": 6,
+      "core_04": 2,
+      "spec_04": 1,
+      "core_05": 7,
+      "spec_02": 1,
+      "broad_04": 1,
+      "spec_03": 1,
+      "broad_01": 1
+    },
+    "additive_combinatorics": {
+      "core_01": 16,
+      "core_06": 11,
+      "core_03": 7,
+      "broad_01": 9,
+      "broad_08": 3,
+      "core_02": 2,
+      "broad_07": 3,
+      "spec_03": 1,
+      "core_04": 3,
+      "broad_05": 6,
+      "broad_02": 4,
+      "core_05": 2,
+      "broad_06": 1
+    },
+    "graph_theory": {
+      "core_02": 7,
+      "core_01": 6,
+      "core_03": 4,
+      "core_05": 6,
+      "broad_02": 2,
+      "spec_01": 6,
+      "core_06": 14,
+      "broad_05": 5,
+      "broad_06": 1,
+      "broad_03": 7,
+      "broad_01": 5,
+      "broad_08": 5,
+      "core_04": 1
+    },
+    "complexity_theory": {
+      "core_05": 6,
+      "broad_08": 10,
+      "core_01": 14,
+      "core_04": 3,
+      "core_02": 5,
+      "core_03": 2,
+      "core_06": 8,
+      "broad_03": 5,
+      "broad_06": 7,
+      "broad_07": 3,
+      "broad_02": 2,
+      "broad_05": 2
+    },
+    "geometric_flow_pde": {
+      "broad_08": 15,
+      "core_05": 12,
+      "broad_05": 4,
+      "core_01": 12,
+      "broad_07": 2,
+      "broad_01": 6,
+      "broad_04": 8,
+      "core_03": 2,
+      "core_02": 2,
+      "core_04": 2,
+      "core_06": 6
+    },
+    "logic_set_theory": {
+      "core_05": 8,
+      "core_02": 7,
+      "spec_02": 7,
+      "broad_08": 16,
+      "broad_01": 3,
+      "spec_03": 7,
+      "broad_03": 2,
+      "spec_04": 7,
+      "broad_04": 2,
+      "core_01": 2,
+      "core_04": 2,
+      "core_06": 4,
+      "core_03": 1,
+      "broad_07": 1,
+      "broad_05": 3
+    },
+    "algebraic_topology": {
+      "broad_03": 2,
+      "core_06": 22,
+      "core_05": 11,
+      "core_02": 7,
+      "core_03": 6,
+      "core_01": 10,
+      "broad_05": 1,
+      "broad_08": 8,
+      "broad_02": 1,
+      "broad_04": 3,
+      "broad_07": 4,
+      "spec_04": 1,
+      "spec_03": 1
+    },
+    "applied_math": {
+      "core_01": 12,
+      "broad_02": 7,
+      "core_03": 8,
+      "core_05": 2,
+      "broad_08": 4,
+      "broad_01": 5,
+      "broad_03": 6,
+      "core_06": 3,
+      "broad_06": 10,
+      "spec_03": 1,
+      "core_04": 3,
+      "broad_04": 3,
+      "broad_07": 1
+    }
+  },
+  "folk_tests": [
+    {
+      "claim_id": "C1",
+      "subfield": "theory_building",
+      "folk_claim": "Generalization & Abstraction",
+      "source": "Gowers",
+      "actual_top_3": [
+        [
+          "Generalization & Abstraction",
+          17
+        ],
+        [
+          "Cross-Domain Translation",
+          12
+        ],
+        [
+          "Canonical Form & Invariance",
+          7
+        ]
+      ],
+      "match": true,
+      "folk_in_top3": true,
+      "verdict": "FOLK CONFIRMED"
+    },
+    {
+      "claim_id": "C2",
+      "subfield": "additive_combinatorics",
+      "folk_claim": "Iterative Refinement",
+      "source": "Tao/Erd\u0151s",
+      "actual_top_3": [
+        [
+          "Problem Reformulation & Reduction",
+          16
+        ],
+        [
+          "Cross-Domain Translation",
+          11
+        ],
+        [
+          "Iterative Refinement",
+          9
+        ]
+      ],
+      "match": false,
+      "folk_in_top3": true,
+      "verdict": "PARTIAL \u2014 folk in top 3, not dominant"
+    },
+    {
+      "claim_id": "C3",
+      "subfield": "logic_set_theory",
+      "folk_claim": "Internalization & Self-Reference",
+      "source": "Hofstadter / G\u00f6del",
+      "actual_top_3": [
+        [
+          "Constraint Imposition & Propagation",
+          16
+        ],
+        [
+          "Canonical Form & Invariance",
+          8
+        ],
+        [
+          "Generalization & Abstraction",
+          7
+        ]
+      ],
+      "match": false,
+      "folk_in_top3": false,
+      "verdict": "FOLK CONTRADICTED"
+    },
+    {
+      "claim_id": "C4",
+      "subfield": "geometric_flow_pde",
+      "folk_claim": "Local-to-Global Assembly",
+      "source": "Analyst folk wisdom",
+      "actual_top_3": [
+        [
+          "Constraint Imposition & Propagation",
+          15
+        ],
+        [
+          "Canonical Form & Invariance",
+          12
+        ],
+        [
+          "Problem Reformulation & Reduction",
+          12
+        ]
+      ],
+      "match": false,
+      "folk_in_top3": false,
+      "verdict": "FOLK CONTRADICTED"
+    },
+    {
+      "claim_id": "C5",
+      "subfield": "algebraic_topology",
+      "folk_claim": "Decomposition & Recomposition",
+      "source": "Homotopy-theory wisdom",
+      "actual_top_3": [
+        [
+          "Cross-Domain Translation",
+          22
+        ],
+        [
+          "Canonical Form & Invariance",
+          11
+        ],
+        [
+          "Problem Reformulation & Reduction",
+          10
+        ]
+      ],
+      "match": false,
+      "folk_in_top3": false,
+      "verdict": "FOLK CONTRADICTED"
+    }
+  ]
+}

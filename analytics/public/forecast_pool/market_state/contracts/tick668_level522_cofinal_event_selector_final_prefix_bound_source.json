@@ -1,0 +1,105 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level522_cofinal_event_selector_final_prefix_bound_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level522_cofinal_event_selector_final_prefix_bound_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level522_cofinal_event_selector_final_prefix_bound_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level522_cofinal_event_selector_final_prefix_bound_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level522_cofinal_event_selector_final_prefix_bound_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-27T08:30:43Z",
+    "created_by": "codex-rd",
+    "horizon": "2h",
+    "layer": "meso",
+    "objective_resolver": "TRUE iff Lean compiles L3ACofinalEventSelectorFinalPrefixBoundSource.toExplicitCofinalEventWitnessPrefixBoundSource, strict selector-bound gate passes, provenance edge direction gate passes, PDE workbench surfaces one passing selector-bound check, active gate audit is clean, and focused tests pass.",
+    "question": "Will Level522 construct the Level521 explicit cofinal event witness source from a named cofinal event selector plus selector equality and same-selector final-prefix bound, with Lean/workbench/gate/tests passing?",
+    "success_threshold": "all listed checks pass",
+    "task_type": "formal_bridge"
+  },
+  "contract_id": "tick668_level522_cofinal_event_selector_final_prefix_bound_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex-rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level522_cofinal_event_selector_final_prefix_bound_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 82.0,
+        "forecasted_at": "2026-05-27T08:30:52Z",
+        "p_success": 0.7,
+        "rationale_short": "Level521 already fixed the subtype target shape; residual risks are dependent projection mismatch, workbench wiring, and the new provenance direction gate.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T08:31:07Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "aggregate_ready"
+    ],
+    "next_action": "aggregate_when_rd_releases",
+    "state": "forecast_fulfilled"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 82.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T08:31:01Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "aggregate_when_rd_releases",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09000000000000002,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T08:31:07Z"
+  }
+}

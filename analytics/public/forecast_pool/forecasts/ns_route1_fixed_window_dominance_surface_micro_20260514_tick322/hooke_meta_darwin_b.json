@@ -1,0 +1,23 @@
+{
+  "agent_id": "hooke_meta_darwin_B",
+  "contract_id": "ns_route1_fixed_window_dominance_surface_micro_20260514_tick322",
+  "contract_question": "Will the next local NS proof tick add a build-passed fixed-window angular-dominance source or same-window cancellation countermodel surface below the pressure/Riesz formula source, without adding a wrapper that assumes the target carrier lower bound?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.05,
+    "countermodel_or_dominance_source_wrapper_only": 0.31,
+    "existing_cancellation_no_go_saturates_easy_surface": 0.09,
+    "same_window_constraints_do_not_align_with_formula_source": 0.24,
+    "target_carrier_lower_bound_smuggled_through_dominance_floor": 0.18,
+    "type_plumbing_exceeds_tick": 0.13
+  },
+  "forecasted_at": "2026-05-14T01:01:39Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.34,
+  "p_regression": 0.06,
+  "p_success": 0.66,
+  "rationale_short": "Close if it binds to the same formula-source window and avoids deriving carrier lower bound by definition.",
+  "read_only_attestation": true
+}

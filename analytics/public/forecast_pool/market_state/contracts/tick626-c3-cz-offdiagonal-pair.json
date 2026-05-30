@@ -1,0 +1,128 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T02:05:40Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": -0.2975,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.12,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick626-c3-cz-offdiagonal-pair/claude_rd.json",
+        "forecasted_at": "2026-05-17T02:05:40Z",
+        "p_success": 0.12,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick626-c3-cz-offdiagonal-pair.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick626-c3-cz-offdiagonal-pair.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick626-c3-cz-offdiagonal-pair.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick626-c3-cz-offdiagonal-pair.json",
+    "score": "analytics/public/forecast_pool/scores/tick626-c3-cz-offdiagonal-pair.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T02:04:51Z",
+    "created_by": "claude:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "manual_rd",
+    "question": "tick626 LEMMA: a complementary-scaling-carrier dichotomy for C3 sourced from CZ-kernel H\u00f6rmander OFF-DIAGONAL regularity (structural margin s=1, NOT viscosity) \u2014 single-shell\u21d2scale-invariant principal (A) vs multi-shell\u21d2off-diagonal 2^{-|j-j'|} structural decay (B). Does this evade tick595's C3-non-transfer (which only treated DIAGONAL same-scale carriers, \u03b1=\u03b2=0), or does the C3 separator provably self-similarly single-shell-concentrate so B never triggers (degeneracy returns = atom)?",
+    "success_threshold": "the lemma direction is GENUINELY OUTSIDE tick595 scope (off-diagonal \u2260 diagonal) AND the single-shell-forced failure mode is the precise honest open hard step (not a hidden recast); success = a real PDE lemma + its sharp failure point, surviving codex adversarial-kill of the ESTIMATE",
+    "task_type": "ns_closure_pde_lemma"
+  },
+  "contract_id": "tick626-c3-cz-offdiagonal-pair",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick626-c3-cz-offdiagonal-pair/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T02:05:40Z",
+        "p_success": 0.12,
+        "rationale_short": "amnesia gate: CZ off-diagonal pair = tick591 shared-support (bad mass IS the CZ-source mass \u21d2 supports coincide \u21d2 no Schur gain) = alias #8, strengthened by tick596 to entire \u03bd-injection class; NOT novel, a hidden recast \u2014 honest failure",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T02:05:40Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.12,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.1056
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.12,
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0144,
+    "score_rows": 1,
+    "scored_at": "2026-05-19T16:36:51Z"
+  }
+}

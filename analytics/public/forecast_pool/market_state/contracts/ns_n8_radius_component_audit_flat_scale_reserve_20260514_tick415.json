@@ -1,0 +1,211 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T20:48:36Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 28.0,
+    "expected_value": -0.9183126737306435,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.54,
+    "p_needs_new_lemma": 0.7,
+    "p_regression": 0.095,
+    "p_success": 0.6899735963944927,
+    "participants": [
+      {
+        "agent_id": "codex-meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns-proof-falsification",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415/codex_meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T20:48:31Z",
+        "p_success": 0.61,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex-rd-main",
+        "belief_update": false,
+        "domain": "ns-n8-radius-component",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415/codex_rd_main.json",
+        "forecasted_at": "2026-05-14T20:48:31Z",
+        "p_success": 0.76,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.15
+      },
+      {
+        "mode": "radius_branch_still_broader_than_flat_reuse",
+        "p": 0.15
+      },
+      {
+        "mode": "flat_reserve_primitive_tautological",
+        "p": 0.125
+      },
+      {
+        "mode": "surface_compiles_but_no_new_math",
+        "p": 0.125
+      },
+      {
+        "mode": "duplicate_existing_ckn_guard",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 25.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T20:48:13Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-14",
+    "layer": "meso",
+    "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles, no sorry/admit is introduced, and the added surface records flat multiscale reuse/radius-scale reserve as the surviving radius obstruction without claiming closure.",
+    "question": "Will the radius component audit add a compiling Lean surface showing RadiusComponentPaysRadiusScale is not sourced by current tri-carrier data and sharpening CKNRadiusFailure to FlatRadiusScaleReserveFailure?",
+    "success_threshold": "Lean compile plus flat radius scale reserve obstruction surface",
+    "task_type": "ns-proof-frontier-negative-theorem"
+  },
+  "contract_id": "ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd-main"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex-meta-darwin-proxy",
+        "raw_agent_ids": [
+          "codex-meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-meta-darwin-proxy",
+      "codex-rd-main"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "proceed_but_do_not_close_radius",
+        "agent_id": "codex-meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415/codex_meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns-proof-falsification",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T20:48:31Z",
+        "p_success": 0.61,
+        "rationale_short": "Good to kill the false radius component, but the sharpened reserve primitive is itself hard and may not cover all radius failures.",
+        "specific_failure_mode_ids": [
+          "radius_branch_still_broader_than_flat_reuse",
+          "flat_reserve_primitive_tautological",
+          "lean_compile_issue",
+          "pressure_beta_coupling_ignored",
+          "negative_result_overlogged"
+        ]
+      },
+      {
+        "action_change_recommendation": "proceed_as_negative_theorem",
+        "agent_id": "codex-rd-main",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415/codex_rd_main.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns-n8-radius-component",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T20:48:31Z",
+        "p_success": 0.76,
+        "rationale_short": "The flat multiscale reuse model is the right no-go for current radius component data. Main risk is only restating an existing CKN guard.",
+        "specific_failure_mode_ids": [
+          "surface_compiles_but_no_new_math",
+          "flat_model_too_abstract",
+          "lean_compile_issue",
+          "overstates_radius_independence",
+          "duplicate_existing_ckn_guard"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 21.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T20:50:38Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 28.0,
+      "expected_value": -0.9183126737306435,
+      "p_success": 0.6899735963944927,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.8039
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 28.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6899735963944927,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.15
+      },
+      {
+        "mode": "radius_branch_still_broader_than_flat_reuse",
+        "p": 0.15
+      },
+      {
+        "mode": "flat_reserve_primitive_tautological",
+        "p": 0.125
+      },
+      {
+        "mode": "surface_compiles_but_no_new_math",
+        "p": 0.125
+      },
+      {
+        "mode": "duplicate_existing_ckn_guard",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10485,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T20:50:43Z"
+  }
+}

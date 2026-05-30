@@ -1,0 +1,23 @@
+{
+  "agent_id": "faraday_readonly",
+  "contract_id": "gp225_v1866_current_toolchain_witness_backfill_pilot",
+  "contract_question": "Will v18.66 backfill closure/target witnesses for at least 3 of 6 selected current-toolchain hard-residual packet rows with zero audited false accepts?",
+  "domain": "gp225_witness_backfill",
+  "expected_cost_agent_minutes": 55.0,
+  "failure_mode_distribution": {
+    "audited_true_false_accept_detected": 0.06,
+    "other_unexpected_failure": 0.06,
+    "selected_rows_need_nontrivial_new_lemma_or_context": 0.18,
+    "toolchain_or_script_integration_issue": 0.12,
+    "training_or_gnn_gate_violation": 0.04,
+    "valid_closure_or_target_witness_count_below_3": 0.24,
+    "witness_driver_compile_count_below_4": 0.3
+  },
+  "forecasted_at": "2026-05-13T16:56:05Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.14,
+  "p_success": 0.54,
+  "rationale_short": "Current-toolchain alignment helps, but a 3-witness emission threshold is harder than mere compile replay.",
+  "read_only_attestation": true
+}

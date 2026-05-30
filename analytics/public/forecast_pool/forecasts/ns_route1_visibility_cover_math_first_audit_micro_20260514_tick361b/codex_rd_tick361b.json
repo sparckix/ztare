@@ -1,0 +1,20 @@
+{
+  "agent_id": "codex_rd_tick361b",
+  "contract_id": "ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b",
+  "contract_question": "Can a math-first Gowers-style audit of the route-1 critical-tail visibility cover identify whether it is a proof route, no-go, or missing-hypothesis surface, and define the next non-tautological PDE theorem without new Lean?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "no_new_discriminator": 0.2,
+    "success": 0.55,
+    "vague_math_note": 0.25
+  },
+  "forecasted_at": "2026-05-14T12:40:15Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.65,
+  "p_regression": 0.02,
+  "p_success": 0.78,
+  "rationale_short": "Gowers prompt already surfaced the key split: conditional closure vs active-tail visibility. A bounded note should sharpen the next theorem and no-go without formalizing wrappers.",
+  "read_only_attestation": true
+}

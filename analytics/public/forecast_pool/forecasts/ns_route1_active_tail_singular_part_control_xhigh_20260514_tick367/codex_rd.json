@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367",
+  "contract_question": "Can xhigh pull forward ActiveTailSingularPartControlledByProfileResidual by proving control of mu_A_perp by mu_I, producing a valid V_A_perp countermodel, or mapping mu_I to existing profile residual primitives?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "V_A_perp_required": 0.25,
+    "fresh_frequency_not_enough": 0.12,
+    "mu_I_underdefined": 0.3,
+    "profile_residual_mapping_found": 0.15,
+    "restates_decomposition": 0.18
+  },
+  "forecasted_at": "2026-05-14T13:05:18Z",
+  "p_dependency_issue": 0.43,
+  "p_needs_new_lemma": 0.91,
+  "p_regression": 0.06,
+  "p_success": 0.41,
+  "rationale_short": "The prior sidecar produced a strong split. Next success likely maps mu_I to existing profile residual machinery or exposes V_A_perp.",
+  "read_only_attestation": true
+}

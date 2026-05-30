@@ -1,0 +1,22 @@
+{
+  "agent_id": "herschel_skeptic_tick348",
+  "contract_id": "ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348",
+  "contract_question": "Can we add a compile-checked boundary-specific lower-payment source/guard tying normalizedBoundaryLeakagePart to FreshFrequencyTentBoundaryTruncationReceipt.boundaryLeakageCharge, without confusing boundaryCharge \u2264 tentBoundaryError with lower payment?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_noise": 0.1,
+    "only_adds_wrapper_not_estimate": 0.34,
+    "other": 0.18,
+    "receipt_matching_not_enough": 0.19,
+    "undercharge_guard_redundant": 0.19
+  },
+  "forecasted_at": "2026-05-14T04:19:52Z",
+  "p_dependency_issue": 0.33,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.08,
+  "p_success": 0.65,
+  "rationale_short": "Likely to compile as a source/guard; PDE value depends on whether the boundary lower-payment field becomes the next actual estimate rather than another wrapper.",
+  "read_only_attestation": true
+}

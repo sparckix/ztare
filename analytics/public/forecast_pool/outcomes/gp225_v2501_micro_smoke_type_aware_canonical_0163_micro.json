@@ -1,0 +1,28 @@
+{
+  "actual_cost_agent_minutes": 12.0,
+  "artifact_hash": null,
+  "artifact_path": "analytics/public/leanmill/results/v25_01_micro_smoke_type_aware_canonical_0163_audit.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": null,
+  "contract_id": "gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "Per converging negative signal (v24: 0/15 moat-grade, v25 meso defer, v25.01 micro 0/8 moat-grade), the type-aware retrieval lane on canonical-train rows is structurally captured by Mathlib's own automation (@[simp]/@[fun_prop]/@[grind=]). Next productive move requires either: (B) operator-authorized LeanHammer baseline run on the 12 OPEN rows to measure ACTUAL moat surface, OR (C) row-class switch to Carleson-OOD or project-specific Lean where @[simp]/@[fun_prop] baseline cannot subsume the harness. Recommend (B) \u2014 single GPU/Hetzner LeanHammer run quantifies the moat surface that ALL subsequent v25-vNN claims must beat.",
+  "old_next_action": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "only_fun_prop_or_measurability_close_via_indirect_leakage",
+    "literal_close_but_indirect_leakage_via_simp_or_fun_prop_set"
+  ],
+  "resolution_note": "1 literal close out of 8 candidates: composed tactic 'rw [pdf_def]; fun_prop' closed the goal. Bare fun_prop and measurability did NOT close (interesting structural finding \u2014 fun_prop's @[fun_prop] graph couldn't unfold pdf via rfl-def without explicit rw). The lone literal positive FAILS the pre-registered moat audit: Measure.measurable_rnDeriv is @[fun_prop] tagged at Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean:99, so the rw+fun_prop path is structurally redundant with the gold tactic via the @[fun_prop] graph. Forecasters Claude (0.05) and Noether (0.04) correctly anchored on this exact failure mode. 0 moat-grade closures.",
+  "resolved_at": "2026-05-15T02:37:00Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

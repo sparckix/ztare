@@ -1,0 +1,416 @@
+{
+  "experiment": "gp216_pass4_cross_llm",
+  "n_total_moves": 36,
+  "full_agreement_pct": 41.66666666666667,
+  "majority_agreement_pct": 77.77777777777779,
+  "per_arc": [
+    {
+      "arc": "russell_zf",
+      "n": 10,
+      "full_agree": 3,
+      "majority": 6,
+      "full_agree_pct": 30.0,
+      "majority_pct": 60.0
+    },
+    {
+      "arc": "cohen_forcing",
+      "n": 9,
+      "full_agree": 2,
+      "majority": 7,
+      "full_agree_pct": 22.22222222222222,
+      "majority_pct": 77.77777777777779
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "n": 8,
+      "full_agree": 6,
+      "majority": 8,
+      "full_agree_pct": 75.0,
+      "majority_pct": 100.0
+    },
+    {
+      "arc": "connes_ncg",
+      "n": 9,
+      "full_agree": 4,
+      "majority": 7,
+      "full_agree_pct": 44.44444444444444,
+      "majority_pct": 77.77777777777779
+    }
+  ],
+  "per_move": [
+    {
+      "arc": "russell_zf",
+      "move_idx": 1,
+      "move_name": "Stating the Core Principle",
+      "sonnet": "unmapped",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": true
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 2,
+      "move_name": "Constructing a Counterexample",
+      "sonnet": "unmapped",
+      "gemini": "tb_10",
+      "gpt": "tb_11",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 3,
+      "move_name": "Articulating the Paradox",
+      "sonnet": "tb_11",
+      "gemini": "tb_11",
+      "gpt": "unmapped",
+      "majority_op": "tb_11",
+      "fully_agree": false
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 4,
+      "move_name": "Shifting to Formalism",
+      "sonnet": "tb_06",
+      "gemini": "tb_12",
+      "gpt": "tb_05",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 5,
+      "move_name": "Replacing General Principle",
+      "sonnet": "tb_04",
+      "gemini": "tb_01",
+      "gpt": "tb_04",
+      "majority_op": "tb_04",
+      "fully_agree": false
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 6,
+      "move_name": "Bounding New Creation",
+      "sonnet": "unmapped",
+      "gemini": "tb_04",
+      "gpt": "tb_12",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 7,
+      "move_name": "Forbidding Recursive Structures",
+      "sonnet": "unmapped",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": true
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 8,
+      "move_name": "Achieving System Stability",
+      "sonnet": "unmapped",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": true
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 9,
+      "move_name": "Preserving Useful Structure",
+      "sonnet": "unmapped",
+      "gemini": "tb_09",
+      "gpt": "tb_06",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "russell_zf",
+      "move_idx": 10,
+      "move_name": "Establishing New Foundation",
+      "sonnet": "tb_01",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": false
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 1,
+      "move_name": "Establish One Boundary",
+      "sonnet": "tb_12",
+      "gemini": "tb_12",
+      "gpt": "unmapped",
+      "majority_op": "tb_12",
+      "fully_agree": false
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 2,
+      "move_name": "Isolate The Converse Problem",
+      "sonnet": "unmapped",
+      "gemini": "unmapped",
+      "gpt": "tb_12",
+      "majority_op": "unmapped",
+      "fully_agree": false
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 3,
+      "move_name": "Introduce Novel Construction Method",
+      "sonnet": "tb_06",
+      "gemini": "unmapped",
+      "gpt": "tb_07",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 4,
+      "move_name": "Augment A Base Model",
+      "sonnet": "tb_07",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": false
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 5,
+      "move_name": "Engineer A Specific Outcome",
+      "sonnet": "tb_04",
+      "gemini": "tb_04",
+      "gpt": "tb_04",
+      "majority_op": "tb_04",
+      "fully_agree": true
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 6,
+      "move_name": "Construct The Counter-Model",
+      "sonnet": "tb_03",
+      "gemini": "unmapped",
+      "gpt": "tb_03",
+      "majority_op": "tb_03",
+      "fully_agree": false
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 7,
+      "move_name": "Synthesize Opposing Instances",
+      "sonnet": "tb_11",
+      "gemini": "tb_11",
+      "gpt": "tb_11",
+      "majority_op": "tb_11",
+      "fully_agree": true
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 8,
+      "move_name": "Generalize The Technique",
+      "sonnet": "tb_01",
+      "gemini": "unmapped",
+      "gpt": "tb_06",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "cohen_forcing",
+      "move_idx": 9,
+      "move_name": "Expand Application Domain",
+      "sonnet": "tb_09",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": false
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 1,
+      "move_name": "Identify A Descriptive Gap",
+      "sonnet": "unmapped",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": true
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 2,
+      "move_name": "Generalize A Metric",
+      "sonnet": "tb_01",
+      "gemini": "tb_01",
+      "gpt": "tb_01",
+      "majority_op": "tb_01",
+      "fully_agree": true
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 3,
+      "move_name": "Characterize The Irregular",
+      "sonnet": "tb_06",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": false
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 4,
+      "move_name": "Isolate A Core Principle",
+      "sonnet": "tb_06",
+      "gemini": "tb_06",
+      "gpt": "tb_06",
+      "majority_op": "tb_06",
+      "fully_agree": true
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 5,
+      "move_name": "Propose A Canonical Form",
+      "sonnet": "unmapped",
+      "gemini": "tb_08",
+      "gpt": "tb_08",
+      "majority_op": "tb_08",
+      "fully_agree": false
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 6,
+      "move_name": "Unify Disparate Phenomena",
+      "sonnet": "tb_02",
+      "gemini": "tb_02",
+      "gpt": "tb_02",
+      "majority_op": "tb_02",
+      "fully_agree": true
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 7,
+      "move_name": "Repurpose An Existing Tool",
+      "sonnet": "tb_05",
+      "gemini": "tb_05",
+      "gpt": "tb_05",
+      "majority_op": "tb_05",
+      "fully_agree": true
+    },
+    {
+      "arc": "mandelbrot_fractals",
+      "move_idx": 8,
+      "move_name": "Enable Cross-Domain Application",
+      "sonnet": "unmapped",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": true
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 1,
+      "move_name": "Establish Foundational Duality",
+      "sonnet": "tb_02",
+      "gemini": "unmapped",
+      "gpt": "tb_02",
+      "majority_op": "tb_02",
+      "fully_agree": false
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 2,
+      "move_name": "Isolate a Limiting Assumption",
+      "sonnet": "unmapped",
+      "gemini": "unmapped",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": true
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 3,
+      "move_name": "Generalize by Abstraction",
+      "sonnet": "tb_01",
+      "gemini": "tb_01",
+      "gpt": "tb_01",
+      "majority_op": "tb_01",
+      "fully_agree": true
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 4,
+      "move_name": "Construct an Analogous Tool",
+      "sonnet": "tb_09",
+      "gemini": "tb_09",
+      "gpt": "tb_09",
+      "majority_op": "tb_09",
+      "fully_agree": true
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 5,
+      "move_name": "Define a General Object",
+      "sonnet": "tb_06",
+      "gemini": "tb_01",
+      "gpt": "tb_05",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 6,
+      "move_name": "Apply to External Domain",
+      "sonnet": "unmapped",
+      "gemini": "tb_02",
+      "gpt": "unmapped",
+      "majority_op": "unmapped",
+      "fully_agree": false
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 7,
+      "move_name": "Derive Known Structure",
+      "sonnet": "tb_04",
+      "gemini": "tb_04",
+      "gpt": "tb_04",
+      "majority_op": "tb_04",
+      "fully_agree": true
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 8,
+      "move_name": "Subsume the Predecessor",
+      "sonnet": "tb_08",
+      "gemini": "tb_02",
+      "gpt": "unmapped",
+      "majority_op": "no_majority",
+      "fully_agree": false
+    },
+    {
+      "arc": "connes_ncg",
+      "move_idx": 9,
+      "move_name": "Unify Disparate Fields",
+      "sonnet": "tb_02",
+      "gemini": "tb_02",
+      "gpt": "unmapped",
+      "majority_op": "tb_02",
+      "fully_agree": false
+    }
+  ],
+  "op_majority_counts": {
+    "unmapped": 12,
+    "tb_11": 2,
+    "tb_04": 3,
+    "tb_12": 1,
+    "tb_03": 1,
+    "tb_01": 2,
+    "tb_06": 1,
+    "tb_08": 1,
+    "tb_02": 3,
+    "tb_05": 1,
+    "tb_09": 1
+  },
+  "verdict": "STRONG PASS \u2014 78% of moves achieve \u22652/3 LLM agreement. Vocabulary is stable across families."
+}

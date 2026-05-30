@@ -1,0 +1,127 @@
+{
+  "generated_utc": "2026-05-19T23:55:54.071404+00:00",
+  "target": "ResidualFreshPressureComplementDualTestLocalization",
+  "field": null,
+  "tool_scope": "RD caller over existing ZTARE primitives; not a second autoresearch loop or replacement workbench",
+  "target_context": {
+    "found": false,
+    "target": "ResidualFreshPressureComplementDualTestLocalization",
+    "field": null,
+    "reason": "target not found in workmap"
+  },
+  "gap_classification": {
+    "gap_type": "UNKNOWN",
+    "confidence": "low",
+    "rationale": "No field supplied.",
+    "classifier": "pde_estimate_workbench"
+  },
+  "mathlib_lemmas": [],
+  "auxiliary_families": [
+    {
+      "family": "exponential_majorant",
+      "mathematical_form": "B(x) = C\u2081 exp(C\u2082 \u03c6(x))  for some convex \u03c6",
+      "gap_types": [
+        "PROPAGATION",
+        "SOBOLEV",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Brendle",
+        "Hamilton",
+        "Schoen-Yau"
+      ],
+      "typical_use_pattern": "When the unknown u satisfies a parabolic inequality, construct B with B(t,x) \u2265 u(t,x) on the parabolic boundary; by maximum principle, B \u2265 u everywhere.",
+      "ns_track_b_relevance": "For NS L^\u221e control: build B as exp(c\u2016\u2207u\u2016\u00b2) and show (\u2202_t - \u03bd \u0394) B \u2265 |nonlinear advection|."
+    },
+    {
+      "family": "conformal_weight",
+      "mathematical_form": "w(x) = (1 + |x|\u00b2)^\u03b1  for some \u03b1 tuned to scaling",
+      "gap_types": [
+        "INTERPOLATION",
+        "EMBEDDING",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Caffarelli-Kohn-Nirenberg",
+        "Brezis"
+      ],
+      "typical_use_pattern": "Multiply the natural energy by w(x) and integrate; the weight decays/grows just enough to make the integration converge.",
+      "ns_track_b_relevance": "For NS partial regularity (CKN type): weight by (1+|x|\u00b2)^\u03b1 to trade off decay at infinity vs. local concentration."
+    },
+    {
+      "family": "cutoff_partition",
+      "mathematical_form": "\u03c8 \u2208 C_c^\u221e(\u211d^d), 0 \u2264 \u03c8 \u2264 1, \u03c8 = 1 on K, supp(\u03c8) \u2282 K'",
+      "gap_types": [
+        "SOBOLEV",
+        "PROPAGATION",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Caffarelli",
+        "Kohn-Nirenberg",
+        "Lin"
+      ],
+      "typical_use_pattern": "Multiply equation by \u03c8\u00b2u and integrate; the boundary terms vanish, the bulk gives the local energy estimate, and the cutoff error is controlled by \u2016\u2207\u03c8\u2016_\u221e.",
+      "ns_track_b_relevance": "For NS local energy: cut off near a point of suspected blowup; the cutoff error contributes a bounded perturbation."
+    },
+    {
+      "family": "test_function_oscillating",
+      "mathematical_form": "\u03c6_n(x) = \u03b1_n cos(\u03bb_n x) \u03c7_n(x)  (disjointly supported)",
+      "gap_types": [
+        "INTERPOLATION",
+        "COERCIVITY",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Bourgain",
+        "Tao",
+        "Erd\u0151s"
+      ],
+      "typical_use_pattern": "Pair the unknown against an oscillating test function tuned to isolate a frequency; the oscillation cancels everything except the target mode.",
+      "ns_track_b_relevance": "For NS spectral arguments: pair u with a Littlewood-Paley shell \u03c8_N to isolate behavior at frequency 2^N."
+    },
+    {
+      "family": "sign_changing_periodic",
+      "mathematical_form": "\u03c8_per(x) = \u03a3_k a_k \u03c7_{[k\u03c0, (k+1)\u03c0]}(x)  with \u03a3a_k = 0",
+      "gap_types": [
+        "COERCIVITY",
+        "AUXILIARY",
+        "EMBEDDING"
+      ],
+      "source_mathematician": [
+        "Bahri-Coron",
+        "Brezis-Nirenberg"
+      ],
+      "typical_use_pattern": "Choose \u03c8 with cancellation, show that \u27e8u, \u03c8\u27e9 = 0 forces u to lie in a small subspace; then use the small subspace's rigidity.",
+      "ns_track_b_relevance": "For NS profile decomposition: orthogonal-projection-like constructs that isolate the Leray profile."
+    }
+  ],
+  "inequality_checks": [
+    {
+      "name": "G-PDE-INEQ-DIM",
+      "passed": true,
+      "lhs": "PressureCollarPairing_Q",
+      "op": "<=",
+      "rhs": "C * (HarmonicReserve_Q + ChildCollarReserve_Q + InheritedPressureReserve_Q + MomentCancellationDefect_Q)",
+      "violations": [],
+      "dim_check": {
+        "consistent": true,
+        "warning": "no dimensional categories detected",
+        "lhs_cats": [],
+        "rhs_cats": [
+          "constant"
+        ]
+      },
+      "endpoint_check": {
+        "all_bound": true,
+        "unbound": []
+      },
+      "hard_fail": false,
+      "severity": "advisory",
+      "source": "pde_inequality_dimensional_gate",
+      "RELIABILITY_NOTE": "Advisory v0.1. Catches dimensional + endpoint-exposure violations on LLM-proposed inequalities. Does NOT verify mathematical correctness \u2014 passes inequalities that are well-typed but mathematically false. Use as a CHEAP PRE-FILTER before lake build."
+    }
+  ],
+  "curriculum_variants": [],
+  "next_step_rule": "Codex chooses a patch/falsifier route. Feed only verified snippets or summarized failure categories back into ZTARE briefing memory."
+}

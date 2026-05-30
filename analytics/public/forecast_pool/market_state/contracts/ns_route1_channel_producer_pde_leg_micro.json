@@ -1,0 +1,167 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T19:10:34Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 25.0,
+    "expected_value": 0.8639999999999999,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.22,
+    "p_needs_new_lemma": 0.35,
+    "p_regression": 0.08,
+    "p_success": 0.72,
+    "participants": [
+      {
+        "agent_id": "codex_rd_ns_route1_channel_producer",
+        "domain": "ns_route1_pde",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.3
+      },
+      {
+        "mode": "wrapper_without_pde_content",
+        "p": 0.22
+      },
+      {
+        "mode": "overfitting_to_scalar_algebra",
+        "p": 0.18
+      },
+      {
+        "mode": "profile_module_build_debt_blocks_integration",
+        "p": 0.18
+      },
+      {
+        "mode": "lean_import_staleness_or_build_cache",
+        "p": 0.12
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_channel_producer_pde_leg_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_channel_producer_pde_leg_micro.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_channel_producer_pde_leg_micro.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_channel_producer_pde_leg_micro.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_channel_producer_pde_leg_micro.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T19:10:23Z",
+    "created_by": "codex:RD_2026_05_13_ns_route1",
+    "horizon": "same-session",
+    "layer": "micro",
+    "objective_resolver": "Resolve success if route1 plus at least one PDE leg compile/check, the change adds an independently named channel linkage or no-escape receipt, no visibility is defined as rho*X-S, and no new GNN/harness version artifact is emitted.",
+    "question": "Will the next NS route1 PDE-leg tightening produce a compiled channel-producer linkage that reduces scalar-smuggling surface without adding a new GNN/harness artifact?",
+    "success_threshold": "compiled route1 or PDE leg plus anti-smuggling linkage theorem; no new GNN artifact",
+    "task_type": "ns_route1_pde_leg_tightening"
+  },
+  "contract_id": "ns_route1_channel_producer_pde_leg_micro",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_ns_route1_channel_producer",
+        "raw_agent_ids": [
+          "codex_rd_ns_route1_channel_producer"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_ns_route1_channel_producer"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_ns_route1_channel_producer",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_channel_producer_pde_leg_micro/codex_rd_ns_route1_channel_producer.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-13T19:10:31Z",
+        "p_success": 0.72,
+        "rationale_short": "Pressure and commutator legs already compiled independently; main risk is producing only wrappers rather than a channel linkage that reduces scalar-smuggling surface.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 0.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T19:19:30Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.72,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.9016
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 25.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": 0.72,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.3
+      },
+      {
+        "mode": "wrapper_without_pde_content",
+        "p": 0.22
+      },
+      {
+        "mode": "overfitting_to_scalar_algebra",
+        "p": 0.18
+      },
+      {
+        "mode": "profile_module_build_debt_blocks_integration",
+        "p": 0.18
+      },
+      {
+        "mode": "lean_import_staleness_or_build_cache",
+        "p": 0.12
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

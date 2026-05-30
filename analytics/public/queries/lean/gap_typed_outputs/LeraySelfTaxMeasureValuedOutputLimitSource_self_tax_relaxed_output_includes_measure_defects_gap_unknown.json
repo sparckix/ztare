@@ -1,0 +1,11 @@
+{
+  "ts": "2026-05-06T12:43:28.726071+00:00",
+  "target": "LeraySelfTaxMeasureValuedOutputLimitSource",
+  "field": "self_tax_relaxed_output_includes_measure_defects",
+  "classification": {
+    "gap_type": "UNKNOWN",
+    "rationale": "target not in workmap",
+    "confidence": "high"
+  },
+  "gap_specific_lemmas": []
+}

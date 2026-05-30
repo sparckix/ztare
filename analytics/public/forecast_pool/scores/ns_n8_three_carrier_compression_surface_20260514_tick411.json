@@ -1,0 +1,136 @@
+{
+  "contract_id": "ns_n8_three_carrier_compression_surface_20260514_tick411",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Wait for N8 proof attempt without mechanizing",
+      "counterfactual_action": "Formalize N8 three-carrier compression and tri-carrier drop target",
+      "externality_hypotheses": {
+        "negative": [
+          "may_hide_unfresh_reuse_as_three_carrier",
+          "tri_carrier_drop_may_be_too_abstract"
+        ],
+        "positive": [
+          "compresses_n8_branch_space",
+          "names_next_pde_gmt_drop_lemma"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "n8-compression",
+        "tri-carrier-target",
+        "anti-tautology-guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "drop-unproved",
+        "new-pde-gmt-lemma-needed",
+        "compression-not-closure"
+      ],
+      "new_next_action": "Attack TriCarrierCriticalIncrementDrop, while separately testing whether unfresh/reuse truly reduce to CKN/pressure/beta",
+      "old_next_action": "Attack all N8 branches separately",
+      "preconditioner_effect": "Kept compression separate from proof; added anti-tautology fields for fixed carriers and no target-defined drop slack",
+      "preconditioner_source": "GPT-5.5 N8 compression packet plus operator tautology warning",
+      "realized_failure_mode_ids": [
+        "tri_carrier_drop_too_broad",
+        "tri_carrier_drop_overclaims"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.1585,
+  "mean_log_score": -0.5029709769134008,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "f060388bb9463bd3c48c62a3e91647fb0f33f343de117b32190eb07a66726829",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passed",
+    "contract_id": "ns_n8_three_carrier_compression_surface_20260514_tick411",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "n8-compression",
+      "tri-carrier-target",
+      "anti-tautology-guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "drop-unproved",
+      "new-pde-gmt-lemma-needed",
+      "compression-not-closure"
+    ],
+    "new_next_action": "Attack TriCarrierCriticalIncrementDrop, while separately testing whether unfresh/reuse truly reduce to CKN/pressure/beta",
+    "old_next_action": "Attack all N8 branches separately",
+    "preconditioner_effect": "Kept compression separate from proof; added anti-tautology fields for fixed carriers and no target-defined drop slack",
+    "preconditioner_source": "GPT-5.5 N8 compression packet plus operator tautology warning",
+    "realized_failure_mode_ids": [
+      "tri_carrier_drop_too_broad",
+      "tri_carrier_drop_overclaims"
+    ],
+    "resolution_note": "Added compiling N8ThreeCarrierCompression, TriCarrierCriticalIncrementDrop, CriticalIncrementClosedFromTriCarrierDrop, and TriCarrierDropIsNewLemmaNotClosure. The surface records the reduced CKN/pressure/beta target and anti-tautology constraints; it does not prove the drop.",
+    "resolved_at": "2026-05-14T20:19:16Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T20:19:21Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex-meta-darwin-proxy",
+      "brier": 0.22089999999999999,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns-proof-falsification",
+      "expected_cost_agent_minutes": 40.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.3,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.6348782724359695,
+      "p_success": 0.53,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:15:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:15:47Z",
+        "resolved_at": "2026-05-14T20:19:16Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex-rd-main",
+      "brier": 0.09610000000000003,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "ns-n8-proof-frontier",
+      "expected_cost_agent_minutes": 32.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.25,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.37106368139083207,
+      "p_success": 0.69,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:15:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:15:47Z",
+        "resolved_at": "2026-05-14T20:19:16Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "contract_id": "tick668_level501_least_hit_incidence_selector_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "carry targetEventIndex as a supplied bounded injective Nat map",
+      "counterfactual_action": "derive targetEventIndex as the least bounded incident event for each target node and prove injectivity from collision-free incidence",
+      "externality_hypotheses": {
+        "negative": "still requires analytic bounded existence and collision-free incidence; Nat.find is a selector surface, not the PDE proof itself",
+        "positive": "turns the selector socket into bounded incidence existence plus collision-free incidence, aligning the source law with the actual BadCenterEventIncidenceGeometry relation"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex:RD"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.04839999999999999,
+  "mean_log_score": -0.2484613592984996,
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "artifact_hash": "2c346ef6d5dee2dd9c35ef510e9d813f527350ebd2d5be2c96eed80cabb535fd",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level501_least_hit_incidence_pencil.md",
+    "changed_by_forecast_ids": [
+      "codex:RD"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "lake_build_pass",
+    "contract_id": "tick668_level501_least_hit_incidence_selector_source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": "warm forecaster publishing produced zero channel events after contract overwrite; RD refreshed forecast before this resolution and strict gate/workbench/Lake evidence decides the positive source result",
+    "ordering_override_no_independent_forecaster": "warm forecaster publishing produced zero channel events after contract overwrite; RD refreshed forecast before this resolution and strict gate/workbench/Lake evidence decides the positive source result",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Positive Level501 result: least-hit bounded incidence selector formalized; Nat.find constructs targetEventIndex, bound and injectivity are derived, strict least-hit gate, workbench, and lake build passed.",
+    "resolved_at": "2026-05-27T04:45:54Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T04:46:00Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "codex:RD",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 25.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_buy_yes_max": 0.7,
+      "p_dependency_issue": 0.1,
+      "p_needs_new_lemma": 0.2,
+      "p_regression": 0.06,
+      "p_sell_yes_min": 0.86,
+      "p_success": 0.78,
+      "predicted_brier_hi": 0.16,
+      "predicted_brier_lo": 0.06,
+      "predicted_self_error_ratio": 0.16,
+      "success_bool": true,
+      "tail_downside_worry": 14.0,
+      "tail_upside_surprise": 10.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T04:42:12Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T04:45:36Z",
+        "resolved_at": "2026-05-27T04:45:54Z"
+      },
+      "verbalized_confidence": 0.78
+    }
+  ]
+}

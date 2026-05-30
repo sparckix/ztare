@@ -1,0 +1,34 @@
+{
+  "actual_cost_agent_minutes": 14.0,
+  "artifact_hash": null,
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_n8_fresh_domination_source_bundle_20260514_tick414",
+  "counterfactual_value_bucket": "low",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "anti-tautology",
+    "component-source-bundle",
+    "radius-next"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "names-not-sources",
+    "n8-not-closed"
+  ],
+  "new_next_action": "Attack RadiusComponentPaysRadiusScale or prove radius branch remains independent",
+  "old_next_action": "Use generic TriCarrierFreshDomination",
+  "preconditioner_effect": "Kept local fresh domination from becoming an opaque theorem; next action forced to radius component bound",
+  "preconditioner_source": "Constructive/adversarial sidecar component-estimate reports",
+  "realized_failure_mode_ids": [
+    "bundle_is_names_not_sources"
+  ],
+  "resolution_note": "Added compiling TriCarrierFreshDominationSource bundle with RadiusComponentPaysRadiusScale, PressureRieszPreSummedLocalLSCVisibility, BadCenterEventIncidenceCofinalComparable, TriCarrierNoDoubleCounting, and NonadaptiveCoronaFreshOverlap. This names source theorems only; it does not prove component bounds.",
+  "resolved_at": "2026-05-14T20:28:41Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

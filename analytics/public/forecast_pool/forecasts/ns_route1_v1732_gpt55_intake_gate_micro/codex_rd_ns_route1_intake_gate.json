@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd_ns_route1_intake_gate",
+  "contract_id": "ns_route1_v1732_gpt55_intake_gate_micro",
+  "contract_question": "Will building a local GPT-5.5 response intake gate improve NS route-1 progress by making the returned answer immediately triageable for non-tautological PDE content?",
+  "domain": "ns_live_scalar_hinge",
+  "expected_cost_agent_minutes": 8.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_not_used": 0.15,
+    "criteria_too_permissive": 0.25,
+    "heuristic_gate_too_lexical": 0.35,
+    "response_format_unexpected": 0.25
+  },
+  "forecasted_at": "2026-05-13T18:33:13Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.65,
+  "p_regression": 0.06,
+  "p_success": 0.88,
+  "rationale_short": "The external answer is already in flight; a deterministic intake gate converts waiting time into immediate triage capacity and reduces tautology risk.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,33 @@
+{
+  "actual_cost_agent_minutes": 8.0,
+  "artifact_hash": "a2d462698ea21f813d18b6c958a9d87dbe217c7987c5e45d9c7337da4524cafc",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd_tick400"
+  ],
+  "compile_status": "pass",
+  "contract_id": "ns_route1_recharge_event_ledger_source_20260514_tick400",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_route1",
+    "lean_positive",
+    "recharge_budget_source",
+    "no_overclaim_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "Connect recharge/cutoff budget source to finite-active-tail budget and audit route-1 failure-divergence",
+  "old_next_action": "Broaden reservoir theorem",
+  "preconditioner_effect": "Kept the tick to recharge/cutoff budget source and avoided claiming full route closure",
+  "preconditioner_source": "GP-230 top-risk forecast plus tick399 source ladder",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Compiled DuhamelRechargeEventLedgerAndCutoffBudgetSource, projection theorems for rechargePaidByEventLedger/eventLedgerBudgetFinite/cutoffErrorsSummable, and explicit guard for missing recharge price or cutoff-prefix budget.",
+  "resolved_at": "2026-05-14T18:35:44Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

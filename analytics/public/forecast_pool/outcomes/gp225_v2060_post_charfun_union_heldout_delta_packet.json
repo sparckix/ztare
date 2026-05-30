@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 15.0,
+  "artifact_hash": "e9449470bd04153dac3df593433c97ab22ea0f6e0df08eccdce3eabafe19e1ee",
+  "artifact_path": "analytics/public/leanmill/results/v2060_post_charfun_union_heldout_delta_packet.json",
+  "changed_by_forecast_ids": [
+    "Kolmogorov2",
+    "VonNeumann2"
+  ],
+  "compile_status": "static_delta_packet_passed_no_replayable_arm",
+  "contract_id": "gp225_v2060_post_charfun_union_heldout_delta_packet",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "anti_goodhart",
+    "heldout_delta",
+    "policy_gate"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no_replayable_arm",
+    "training_deferred"
+  ],
+  "new_next_action": "source additional rows that create candidate-content delta",
+  "old_next_action": "assume charFun strict repair implies heldout policy improvement",
+  "preconditioner_effect": "Forced explicit heldout transfer audit before replay/training.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2059_union_training_readiness_gate_after_charfun_strict.json",
+  "realized_failure_mode_ids": [
+    "no_replayable_policy_delta"
+  ],
+  "resolution_note": "v20.60 passed: it bound the five v20.40 heldout rows, preserved the repaired charFun strict row and no-leakage status, found zero replayable changed policy arms from the charFun repair, ran no replay/training, and routed next work to new source-safe candidate-content discovery rather than forced heldout replay.",
+  "resolved_at": "2026-05-14T18:28:42Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,32 @@
+{
+  "tick_id": "tick668",
+  "contract_id": "tick668_level526_typed_coverage_appearance_witness_source",
+  "surface": "NS Track-B L3A typed coverage appearance witness source",
+  "selected_patterns": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second"
+  ],
+  "anti_patterns_guarded": [
+    "tool_underuse_formal_satisficing",
+    "downstream_source_laundering",
+    "typed_packet_self-source",
+    "bare_prop_choice",
+    "endpoint_capacity_as_bound",
+    "shell_only_enumeration"
+  ],
+  "carrier_schema_receipts": {
+    "residual_to_check_edge": {
+      "residual": "Level525 requires a typed sigma witness, while ordinary coverage only exposes appearance as a Prop.",
+      "check": "Require a typed coverage-appearance witness and a provenance edge showing it pays the ordinary appearance Prop without downstream packets.",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level526_provenance_acyclic_edge_receipt.json"
+    },
+    "surplus_projection_artifact": {
+      "surplus": "The typed witness is stronger than the ordinary appearance Prop and can be projected into Level525 directly.",
+      "projection": "Forward typedCoverageAppearanceWitness as finalPrefixCofinalWitness while retaining coverage.everySelectedBadNodeAppearsInSomePrefix as provenance.",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    }
+  },
+  "nearest_universal_op": "GP-219 estimate-craft typed-witness strengthening and provenance acyclicity",
+  "nearest_confuser": "BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix as bare Prop"
+}

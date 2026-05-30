@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "ece757cfb8e2b8af988bde4abbcc3a4bb394e379b57e1f08561c2fb5e1bb84a4",
+  "artifact_path": "analytics/public/leanmill/results/v2048_charfun_dual_source_contract_correction.json",
+  "changed_by_forecast_ids": [
+    "Shannon",
+    "Hopper"
+  ],
+  "compile_status": "static_source_contract_correction_passed",
+  "contract_id": "gp225_v2048_charfun_dual_source_contract_correction",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "target_shape_alignment",
+    "anti_goodhart",
+    "source_contract_correction"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "still_no_compile_evidence"
+  ],
+  "new_next_action": "price corrected charFunDual/L canary replay or verify helper source-safety",
+  "old_next_action": "price v20.46 charFun_map_eq/t canary replay",
+  "preconditioner_effect": "Prevented replay pricing against the stale non-dual canary and forced target-shape correction first.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2047_historic_target_shape_audit_for_charfun_canary.json",
+  "realized_failure_mode_ids": [
+    "corrected_template_still_semantic_not_compile",
+    "historic_names_not_source_safe"
+  ],
+  "resolution_note": "v20.48 corrected the charFun target family to charFunDual/L, emitted two static-only corrected templates, forbade the old charFun_map_eq/t pattern, and kept replay/training blocked.",
+  "resolved_at": "2026-05-14T17:41:21Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

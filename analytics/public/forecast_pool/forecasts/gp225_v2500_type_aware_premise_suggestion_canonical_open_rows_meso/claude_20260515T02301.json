@@ -1,0 +1,29 @@
+{
+  "_renamed_from": "noether",
+  "action_change_recommendation": "Prioritize single-lemma-exact-class rows (0017, 0162, 0163). PRE-COMMIT to moat-audit variant that accepts sibling-lemma closure (suggested != gold AND not in @[simp] default set AND not definitional unfold) as moat-grade. Without pre-commitment contract is near-certain fail. Run dry-run leakage audit on graph BEFORE suggestion pass.",
+  "agent_id": "claude",
+  "contract_id": "gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso",
+  "contract_question": "Will type-aware Mathlib-dep-graph-grounded premise suggestion (top-k by type-similarity over the 122867-decl graph) on 2-3 canonical-train OPEN rows surface at least 1 moat-grade closure (NOT direct gold-name match, NOT indirect-simp-set leakage, NOT definitional triviality)?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_closures_hit_indirect_simp_set_leakage": 0.10465116279069768,
+    "blind_retrieval_excludes_unique_closer": 0.12790697674418605,
+    "cascade_chain_fails_multi_hint": 0.1627906976744186,
+    "cascade_chain_fails_multi_step_rw": 0.19767441860465115,
+    "closures_concentrate_on_definitional_triviality": 0.05813953488372093,
+    "moat_audit_kills_otherwise_valid_closure": 0.13953488372093023,
+    "suggested_lemma_is_simp_tagged_so_indirect": 0.11627906976744186,
+    "type_similarity_retrieves_wrong_namespace_sibling": 0.0930232558139535
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T02:30:15Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.2,
+  "p_regression": 0.05,
+  "p_success": 0.11,
+  "rationale_short": "Per-class p_close \u00d7 p_passes_moat: single-lemma-exact 0.45\u00d70.15=0.067 each; single-hint-simp 0.30\u00d70.10=0.03; multi-hint-simp 0.15\u00d70.08=0.012; multi-step-rw 0.08\u00d70.10=0.008. P(>=1 moat-grade) ~ 0.29, discounted by P(harness wires correctly) 0.65 \u00d7 P(auditor accepts sibling) 0.55 \u2192 0.10. Multi-step-rw class structurally near-zero.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574",
+  "contract_question": "Does the LOCALIZED Raugel-Sell coupled bootstrap close at R1/(iii) order? q=\u2016Nu\u00b7W\u2016 obeys d/ds q\u00b2 \u2264 \u2212(\u03bd\u03bb\u2081\u2212O(s_n))q\u00b2 + (back-reaction from 2D-avg p\u0304) + C\u039b\u207b\u00b9M; p\u0304 is 2D-NSE (Ladyzhenskaya global) forced by Reynolds R[q]\u2272q\u00b2; 2D enstrophy d/ds\u2016\u2207p\u0304\u2016\u00b2 \u2264 (Cq\u00b2\u2212\u03bd)\u2016\u0394p\u0304\u2016\u00b2 \u22640 for q<q*=\u221a(\u03bd/C) \u21d2 bounded; asymptotic tangentiality s_n\u21920 \u21d2 q_n eventually <q* (pec_c threshold dichotomy) \u21d2 contraction persists \u21d2 \u03a3 s_n<\u221e. Cutoff-commutator: q-eq at R1 order (tick570 mechanism), p\u0304-eq at 2D-enstrophy order (Ladyzhenskaya-bounded). Closes given only cited inputs (Ladyzhenskaya, tick570 R1, tick573 \u03bb\u2081=\u03c0\u00b2) \u2014 no new atom \u2014 OR is q_n<q* circular w/ the asymptotic-tangentiality hypothesis?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "back_reaction_not_absorbable_at_stated_order": 0.17,
+    "circular_threshold_crossing_from_asymptotic_tangentiality": 0.39,
+    "cutoff_commutator_order_escape": 0.2,
+    "extra_standard_hypothesis_needed_for_uniform_2d_enstrophy": 0.24
+  },
+  "forecast_externality_tags": [
+    "route1-meso-residual",
+    "circularity-risk",
+    "no-dag-supplied"
+  ],
+  "forecasted_at": "2026-05-16T13:09:17Z",
+  "p_dependency_issue": 0.27,
+  "p_needs_new_lemma": 0.52,
+  "p_regression": 0.04,
+  "p_success": 0.41,
+  "rationale_short": "The local sign algebra looks plausible, but the priced failure is the threshold-crossing step: q_n<q* depends on asymptotic tangentiality as a selection property, and that coupling is not independently witnessed in the package. I count the R1/Ladyzhenskaya commutator orders as supportive, yet the absence of a DAG leaves the residual coupling between tangentiality, cascade selection, and cutoff closure unpriced.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "circular_threshold_crossing_from_asymptotic_tangentiality",
+    "extra_standard_hypothesis_needed_for_uniform_2d_enstrophy",
+    "cutoff_commutator_order_escape",
+    "back_reaction_not_absorbable_at_stated_order"
+  ]
+}

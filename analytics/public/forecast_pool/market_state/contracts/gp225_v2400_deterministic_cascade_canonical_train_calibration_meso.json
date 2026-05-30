@@ -1,0 +1,206 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T01:47:32Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 24.0,
+    "expected_value": 0.6932397201172765,
+    "forecast_count": 3,
+    "forecast_history_count": 3,
+    "p_dependency_issue": 0.08,
+    "p_needs_new_lemma": 0.37666666666666665,
+    "p_regression": 0.05000000000000001,
+    "p_success": 0.597066200195461,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso/claude.json",
+        "forecasted_at": "2026-05-15T01:47:32Z",
+        "p_success": 0.55,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso/franklin.json",
+        "forecasted_at": "2026-05-15T01:47:32Z",
+        "p_success": 0.62,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso/noether.json",
+        "forecasted_at": "2026-05-15T01:47:32Z",
+        "p_success": 0.62,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "simp_or_aesop_closes_at_least_one_simple_train_row",
+        "p": 0.4166666666666667
+      },
+      {
+        "mode": "all_pure_tactics_fail_zero_positives",
+        "p": 0.32
+      },
+      {
+        "mode": "indirect_simp_set_leakage_audit_required_post_hoc",
+        "p": 0.16
+      },
+      {
+        "mode": "all_15_rows_need_specific_mathlib_lemma_application_pure_tactic_dead",
+        "p": 0.07333333333333333
+      },
+      {
+        "mode": "false_positive_via_compile_but_wrong_target",
+        "p": 0.03
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 25.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T01:42:59Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-15T05:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "analytics/public/leanmill/results/v24_00_deterministic_cascade_canonical_train_audit.json:metrics.target_equivalent_closures_total >= 1 AND metrics.false_positives_total == 0",
+    "question": "Will pure-tactic decision-procedure cascade (simp/aesop/omega/linarith/ring/norm_num/decide/field_simp/rfl/tauto/polyrith/nlinarith) close (target_equivalent_closure under GPT-5.5 review contract) AT LEAST 1 of the 15 canonical train rows where positives demonstrably exist (a non-zero deterministic floor)? Threshold: at least 1 row \u00d7 1 distinct witness signature, 0 false positives.",
+    "success_threshold": "metrics.target_equivalent_closures_total >= 1 AND metrics.false_positives_total == 0",
+    "task_type": "pure_decision_procedure_cascade_calibration_on_known_positive_rows"
+  },
+  "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude",
+          "claude_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude",
+      "claude_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run cascade with explicit per-row indirect-leakage audit. Top candidate rows: 0025 (lineMap_apply, p~0.20), 0279 (mclosure_iUnion, p~0.15), 0295 (coe_range, p~0.12), 0008 (forall_and, p~0.10), 0021 (interior_sInter, p~0.10).",
+        "agent_id": "claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso/claude_20260515T01473.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-15T01:47:32Z",
+        "p_success": 0.62,
+        "rationale_short": "Per-row structural breakdown: 4 exact-family (p~0.02-0.05), 5 rw-family (p~0.04-0.12), 6 simp-family (p~0.05-0.20). Joint P(>=1) ~ 1 - product(1 - p_i) ~ 0.62. 0-FP gate structurally safe because pure tactics are sound. CI80: 0.40-0.78.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Run with Franklin/Noether anchors; shade slightly conservative given v23.02 0/108 anchor on heldout-unsolved and v23.06 0/90 on train-row cross-theorem transfer \u2014 both show zero positives historically on this row class.",
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-15T01:47:32Z",
+        "p_success": 0.55,
+        "rationale_short": "RD aggregate Franklin 0.62 + Noether 0.62 shaded down by historical zero-positive priors on this row population. The probability that ANY pure tactic closes ANY train row is plausibly 0.55-0.65; shading toward 0.55 because the same row population just gave 0/90 under a different blind generator (v23.06).",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T02:00:02Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.07,
+      "p_success": 0.597066200195461,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "simp_or_aesop_closes_at_least_one_simple_train_row",
+        "p": 0.4166666666666667
+      },
+      "voi_proxy": 0.9106
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 24.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.597066200195461,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "simp_or_aesop_closes_at_least_one_simple_train_row",
+        "p": 0.4166666666666667
+      },
+      {
+        "mode": "all_pure_tactics_fail_zero_positives",
+        "p": 0.32
+      },
+      {
+        "mode": "indirect_simp_set_leakage_audit_required_post_hoc",
+        "p": 0.16
+      },
+      {
+        "mode": "all_15_rows_need_specific_mathlib_lemma_application_pure_tactic_dead",
+        "p": 0.07333333333333333
+      },
+      {
+        "mode": "false_positive_via_compile_but_wrong_target",
+        "p": 0.03
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.17345,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:43Z"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "agent_id": "copernicus_readonly_forecaster",
+  "contract_id": "gp225_v1908_parallel_replay_bundle",
+  "contract_question": "Will the next GP-225 parallel replay bundle over the v19.07 PDE+functional shard and v19.06 non-PDE variety shard complete cleanly, keep false accepts at zero, and produce at least one validated high-density holdout shard while keeping GNN blocked?",
+  "domain": "gp225_parallel_replay",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "breadth_or_lane_metric_resolver_mismatch": 0.07,
+    "one_or_both_lanes_clean_replay_rows_below_90": 0.22,
+    "other": 0.05,
+    "parallel_replay_runtime_or_completion_failure": 0.14,
+    "pde_functional_density_below_0_50": 0.3,
+    "selected_or_post_quarantine_false_accept_nonzero": 0.12,
+    "static_design_hidden_selection_bias_from_broadened_functional_terms": 0.1
+  },
+  "forecasted_at": "2026-05-13T20:57:59Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.11,
+  "p_success": 0.31,
+  "rationale_short": "Static readiness is real, but success lives or dies on replay: prior PDE just cleared density and broadening to LinearAlgebra may dilute it; both lanes also need >=90 clean rows and zero false accepts over 240 attempted rows.",
+  "read_only_attestation": true
+}

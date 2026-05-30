@@ -1,0 +1,81 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick-bkm-faithful-encoding-judge-validate-20260518.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick-bkm-faithful-encoding-judge-validate-20260518.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick-bkm-faithful-encoding-judge-validate-20260518.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick-bkm-faithful-encoding-judge-validate-20260518.json",
+    "score": "analytics/public/forecast_pool/scores/tick-bkm-faithful-encoding-judge-validate-20260518.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_projected_same_family_approximation_binding_source",
+    "created_at": "2026-05-18T23:34:08Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-20T00:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "ztare_judge verdict on ns_trackb_bkm_smoothness_criterion.lean via judge_close.py judge:auto witnesses; PASS iff faithful+non-vacuous+strictly-conditional+no-closure",
+    "question": "Judge-validate the Stage-4..6 converged BKM_global_extension faithful encoding (finite-window same-family approximation bound to the global solution): Ico interval + ContDiffAt-top antecedent = exactly BKM 1984; bkm_1984_window_continuation + global_from_windowed_smoothness honestly-cited deep axioms (neither mislabeled); FiniteWindowSmoothSolution sol-bound (no vacuity); strictly conditional on the OPEN GlobalBKMIntegralFiniteFaithful. Genuinely faithful/non-vacuous/non-circular/NOT-a-closure per the out-of-loop judge?",
+    "success_threshold": "0.5",
+    "task_type": "ns_bkm_faithful_encoding_judge_validation"
+  },
+  "contract_id": "tick-bkm-faithful-encoding-judge-validate-20260518",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-19T01:25:51Z",
+    "success_bool": null,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 14.0,
+  "artifact_hash": "b43243d2fd4a1ce02604a3c00627f6635be59569e2846968f027b712a92e44ce",
+  "artifact_path": "analytics/public/leanmill/results/v2065_public_union_hydrated_top_row_patch.json",
+  "changed_by_forecast_ids": [
+    "Babbage3",
+    "Shannon3"
+  ],
+  "compile_status": "static_hydrated_top_row_patch_passed",
+  "contract_id": "gp225_v2065_public_union_hydrated_top_row_patch",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "hydrated_patch",
+    "replay_preconditioner",
+    "anti_goodhart"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "static_only",
+    "replay_deferred"
+  ],
+  "new_next_action": "price one-row hydrated bayesRisk canary replay",
+  "old_next_action": "reprice synthetic bayesRisk candidates",
+  "preconditioner_effect": "Converted bayesRisk hydration obligations into a one-row static patch.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2064_public_union_context_hydration_reducer.json",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "v20.65 passed: generated two hydrated bayesRisk candidates, removed synthetic pi/hLC/hP_bound tokens, preserved P.bound_lt_top finite-bound simplification, no replay/training, GNN blocked.",
+  "resolved_at": "2026-05-14T18:48:19Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

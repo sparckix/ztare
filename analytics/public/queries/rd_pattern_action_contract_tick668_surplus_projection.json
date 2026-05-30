@@ -1,0 +1,92 @@
+{
+  "generated_at": "2026-05-21T12:44:56.189265+00:00",
+  "scope": "ns",
+  "goal_excerpt": "hard mathematical residual use ambient lift entropy surplus over quotient loss then project back with bounded multiplicity for selected high-high source square",
+  "problem_surfaces": [
+    "hard_mathematical_residual",
+    "pde_estimate_or_carrier_residual",
+    "surplus_loss_projection_certificate"
+  ],
+  "pattern_chain": [
+    "PATTERN-025:gowers_first_formalize_second",
+    "GP-219:pde_estimate_craft_ops",
+    "META-PATTERN-022:gowers_first_with_content_layer_composition",
+    "PATTERN-011:swarm_dispatch",
+    "PATTERN-028:recursive_tool_depth_loop",
+    "PATTERN-002:darwin_idea_killer",
+    "core_06:external_framework_importation",
+    "broad_07:dimensional_lifting",
+    "core_05:canonical_form_and_invariance"
+  ],
+  "anti_patterns": [
+    "ANTI-PATTERN-018:tool_underuse_formal_satisficing",
+    "ANTI-PATTERN-012:vocabulary_chain_laundering",
+    "ANTI-PATTERN-005:narrative_inflation",
+    "ANTI-PATTERN-013:lean_closure_laundering"
+  ],
+  "route_tests": [
+    "Does this action force a concrete next check, artifact, gate, or breaker?",
+    "Does this action mutate the question when the current question is poorly posed?",
+    "Does this action defer or kill the branch when the visible state only renames a known gap?",
+    "Does this action avoid treating visible context as proof of the hidden outcome?",
+    "Which <=3 operator candidates were considered, which one was selected, and which nearest confuser was rejected?",
+    "Which receipt slots distinguish the selected operator from the nearest polished wrong-path artifact?",
+    "If a receipt fails, what exact repair or stop rule follows before more research is allowed?",
+    "What ambient surplus is created, what fixed loss is paid, and what projection returns it to the target claim?",
+    "Are constants and selection rules fixed before the limiting process, or chosen after seeing the payoff?",
+    "What target-size, packing, denominator, or multiplicity bound converts the ambient surplus into the target-domain exponent or decision gain?"
+  ],
+  "evidence_carriers": [
+    {
+      "name": "routed_operator_receipt_gate",
+      "required": true,
+      "artifact_slot": "operator_receipt_gate_artifact",
+      "acceptance_check": "route <=3 candidate operators, select one, name the nearest confuser, fill operator-specific receipt slots, and state reject/repair behavior for failed receipts"
+    },
+    {
+      "name": "orientation",
+      "required": true,
+      "artifact_slot": "orientation_artifact",
+      "acceptance_check": "pencil artifact names eigenquestion, candidate theorem/obstruction, kill condition, and ops/checks"
+    },
+    {
+      "name": "tool_or_primitive_pass",
+      "required": true,
+      "artifact_slot": "stress_test_artifact",
+      "acceptance_check": "class-matched workbench/graph/gate/primitives run, or each skipped tool has why_not"
+    },
+    {
+      "name": "artifact_edit",
+      "required": true,
+      "artifact_slot": "artifact_ref",
+      "acceptance_check": "formal/code/graph/falsifier artifact changed the residual surface or cleanly killed it"
+    },
+    {
+      "name": "post_edit_stress",
+      "required": true,
+      "artifact_slot": "verification_artifact",
+      "acceptance_check": "patched artifact was rerun through compile/check/tool and adversarial critique when applicable"
+    },
+    {
+      "name": "pde_workbench_or_dimensional_gate",
+      "required": true,
+      "artifact_slot": "tool_pass_artifact",
+      "acceptance_check": "PDE estimate/workbench, dimensional/endpoint, single-spend, or pi/Buckingham check run as applicable"
+    },
+    {
+      "name": "estimate_attempt_or_sharp_witness",
+      "required": true,
+      "artifact_slot": "estimate_attempt_artifact",
+      "acceptance_check": "after the workbench/tool pass, attempt the actual PDE estimate route or construct a sharp hostile witness; artifact must state theorem/counterexample, proof attempt layers, and exact kill condition"
+    },
+    {
+      "name": "surplus_loss_projection_certificate",
+      "required": true,
+      "artifact_slot": "surplus_projection_artifact",
+      "acceptance_check": "artifact names the ambient lift, surplus lower bound, loss/quotient budget, projection map, injectivity or finite-multiplicity receipt, target-size/packing bound, constants-before-limit rule, and target-domain falsifier"
+    }
+  ],
+  "stop_rule": "Do not close on pattern mention, primitive vocabulary, or broad meta-language alone. Close only after the selected operator's receipt slots separate it from the nearest confuser, or a decisive kill/repair is recorded with the missing receipt named.",
+  "decision_rule": "If the selected operator cannot reject a polished wrong-path confuser, choose one: sharpen the receipt schema, promote the missing discriminator with structured IO and a small test, or reject the move.",
+  "evidence_basis": "workingpapers/epistemic-generation/research_log.md V54/MM-V7/V55/MM-V8: passive labels and large menus were weak; target primitive/mm receipt gates rejected polished near-misses, and receipt-guided repair outperformed generic repair. Use small routed operator sets, nearest-confuser checks, required receipts, and stop/repair rules. Unit-distance-proof.pdf adds a provisional naturalistic stress case for a surplus/loss/projection certificate: lift to an auxiliary arithmetic world, keep split-prime surplus ahead of class-number/denominator/window losses, then project back only after injectivity and target-size bounds are paid. Treat as an experimental action surface, not a catalog promotion."
+}

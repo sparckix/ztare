@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "30ca1af6d199a2104def7d73ffbb418c1d5e941c5bd6a55a0c531dfd753632b5",
+  "artifact_path": "analytics/public/leanmill/results/v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+  "changed_by_forecast_ids": [
+    "Pearl3",
+    "Neyman3"
+  ],
+  "compile_status": "union_training_gate_passed_gnn_blocked",
+  "contract_id": "gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "training_gate",
+    "anti_goodhart",
+    "distance_to_gnn"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "training_deferred",
+    "heldout_delta_missing"
+  ],
+  "new_next_action": "hold GNN blocked and generate post-bayesRisk heldout delta packet",
+  "old_next_action": "treat 15 strict rows as enough to start training",
+  "preconditioner_effect": "Converted one new strict row into training-readiness decision boundary.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2069_manifest_after_bayesRisk_strict_replay.json",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "v20.70 passed: manifest strict rows 15, bayesRisk counted, prior no-policy-delta preserved, no replay/training, GNN blocked. Missing evidence is heldout/union candidate-policy delta, not a fixed row-count threshold.",
+  "resolved_at": "2026-05-14T19:08:30Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

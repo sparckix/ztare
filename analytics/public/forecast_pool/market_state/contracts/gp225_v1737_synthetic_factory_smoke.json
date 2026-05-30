@@ -1,0 +1,218 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-12T18:41:47Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 28.666666666666668,
+    "expected_value": 1.803324524344871,
+    "forecast_count": 3,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.19333333333333333,
+    "p_needs_new_lemma": 0.023333333333333334,
+    "p_regression": 0.049999999999999996,
+    "p_success": 0.7541622621724354,
+    "participants": [
+      {
+        "agent_id": "codex_RD",
+        "domain": "gnn_synthetic_data_factory",
+        "p_success": 0.78,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "readonly_euler",
+        "domain": "gnn_synthetic_data_factory",
+        "p_success": 0.76,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "readonly_pasteur",
+        "domain": "gnn_synthetic_data_factory",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "row_schema_completeness_gap",
+        "p": 0.10666666666666667
+      },
+      {
+        "mode": "row_schema_scope_creep",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "row_schema_complete_ceremonial_or_scope_creep",
+        "p": 0.09333333333333334
+      },
+      {
+        "mode": "public_source_adapter_friction",
+        "p": 0.08333333333333333
+      },
+      {
+        "mode": "synthetic_overfit_control_too_shallow",
+        "p": 0.08333333333333333
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1737_synthetic_factory_smoke.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1737_synthetic_factory_smoke.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1737_synthetic_factory_smoke.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1737_synthetic_factory_smoke.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1737_synthetic_factory_smoke.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-12T18:38:01Z",
+    "created_by": "codex:RD_2026_05_12",
+    "horizon": "next local GP-225 synthetic factory tick",
+    "layer": "meso",
+    "objective_resolver": "success_bool true iff v17.37 JSON/MD artifact exists and reports rows>=20, domains>=3, mutation_families>=5, row_schema_complete=true, wrong_accepts=0, training_now=false",
+    "question": "Will v17.37 produce a useful 20-row synthetic residual factory smoke packet with at least 3 domains, at least 5 mutation families, row-schema-complete records, zero wrong accepts, and explicit generator-family holdout metadata, while still not authorizing GNN training?",
+    "success_threshold": "rows>=20 and domains>=3 and mutation_families>=5 and wrong_accepts=0 and training_now=false",
+    "task_type": "gnn_synthetic_data_factory"
+  },
+  "contract_id": "gp225_v1737_synthetic_factory_smoke",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_RD"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:readonly_euler",
+        "raw_agent_ids": [
+          "readonly_euler"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:readonly_pasteur",
+        "raw_agent_ids": [
+          "readonly_pasteur"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_RD",
+      "readonly_euler",
+      "readonly_pasteur"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1737_synthetic_factory_smoke/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-12T18:38:15Z",
+        "p_success": 0.78,
+        "rationale_short": "v17.36 already fixed the contract and v17.33/v17.34 supply seed rows/public source map; a 20-row smoke packet is feasible, but likely schema/provenance rather than full replay training data.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "readonly_euler",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1737_synthetic_factory_smoke/readonly_euler.json",
+        "canonical_agent_id": null,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-12T18:41:33Z",
+        "p_success": 0.76,
+        "rationale_short": "v17.36 specifies the smoke gate and schema, so the packet is mostly packaging plus fixture generation. Main risk is satisfying row-schema-complete and generator-family holdout metadata without overclaiming replay/public-baseline readiness.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "readonly_pasteur",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1737_synthetic_factory_smoke/readonly_pasteur.json",
+        "canonical_agent_id": null,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-12T18:41:33Z",
+        "p_success": 0.72,
+        "rationale_short": "The smoke target is mechanically reachable, but value quality is the risk: only 3 runtime-complete rows exist and the packet can pass by schema construction without real Lean replay or strong anti-overfit validation.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 7.13,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-12T18:42:07Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 1.803324524344871,
+      "forecast_spread": 0.06,
+      "p_success": 0.7541622621724354,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 1.0454
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 28.666666666666668,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7541622621724354,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "row_schema_completeness_gap",
+        "p": 0.10666666666666667
+      },
+      {
+        "mode": "row_schema_scope_creep",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "row_schema_complete_ceremonial_or_scope_creep",
+        "p": 0.09333333333333334
+      },
+      {
+        "mode": "public_source_adapter_friction",
+        "p": 0.08333333333333333
+      },
+      {
+        "mode": "synthetic_overfit_control_too_shallow",
+        "p": 0.08333333333333333
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.06146666666666667,
+    "score_rows": 3,
+    "scored_at": "2026-05-12T18:42:07Z"
+  }
+}

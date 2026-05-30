@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "ed8df63628f0ff84baef65a545cd1686d239b0697b0f9b39a8ca7d19a018154d",
+  "artifact_path": "analytics/public/leanmill/results/v1969_candidate_backed_top2_replay_audit.json",
+  "compile_status": "bounded_top2_replay_completed",
+  "contract_id": "gp225_v1968_candidate_backed_bundled_replay",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Bounded top-2 audit followed audit_or_explore_only routing. Metrics: attempted_candidate_rows=54, new_unique_strict_target_state_rows=1, target_state_to_full_closure_conversions=0, harmful_compiled_mismatch_actions=0, gnn_blocked=true. It did not meet the sealed full contract threshold of >=4 strict rows plus >=1 closure conversion.",
+  "resolved_at": "2026-05-14T03:31:10Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

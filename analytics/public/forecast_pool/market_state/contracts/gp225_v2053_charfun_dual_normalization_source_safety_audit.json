@@ -1,0 +1,200 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:58:41Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 17.0,
+    "expected_value": -1.267114026884688,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.07500000000000001,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.025,
+    "p_success": 0.7907017693005671,
+    "participants": [
+      {
+        "agent_id": "Noether2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2053_charfun_dual_normalization_source_safety_audit/noether2.json",
+        "forecasted_at": "2026-05-14T17:58:38Z",
+        "p_success": 0.81,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Turing2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2053_charfun_dual_normalization_source_safety_audit/turing2.json",
+        "forecasted_at": "2026-05-14T17:58:38Z",
+        "p_success": 0.77,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "target_copy_detector_too_weak",
+        "p": 0.325
+      },
+      {
+        "mode": "artifact_schema_mismatch",
+        "p": 0.255
+      },
+      {
+        "mode": "normalizer_import_path_incomplete",
+        "p": 0.22999999999999998
+      },
+      {
+        "mode": "function_comp_def_not_declaration_scoped",
+        "p": 0.19
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2053_charfun_dual_normalization_source_safety_audit.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2053_charfun_dual_normalization_source_safety_audit.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2053_charfun_dual_normalization_source_safety_audit.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2053_charfun_dual_normalization_source_safety_audit.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2053_charfun_dual_normalization_source_safety_audit.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:58:24Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2053_charfun_dual_normalization_source_safety_audit.json has status passed, verifies integral_map, variance_map, integral_complex_ofReal, Function.comp_def as imported/non-target normalizers, records target proof copy blocked, replay_run=false, training_now=false, gnn_blocked=true.",
+    "question": "Will v20.53 verify the charFunDual normalization lemmas as source-safe non-target inputs for a future one-row replay, without copying the target proof line or running training?",
+    "success_threshold": "1.0",
+    "task_type": "pre_gnn_source_audit"
+  },
+  "contract_id": "gp225_v2053_charfun_dual_normalization_source_safety_audit",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Noether2",
+        "raw_agent_ids": [
+          "Noether2"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Turing2",
+        "raw_agent_ids": [
+          "Turing2"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Noether2",
+      "Turing2"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Audit normalizers before replay; if clean, open a separate replay contract.",
+        "agent_id": "Noether2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2053_charfun_dual_normalization_source_safety_audit/noether2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_audit",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T17:58:38Z",
+        "p_success": 0.81,
+        "rationale_short": "v20.52 separated source hinge from normalizers; rg already found integral_map, variance_map, and integral_complex_ofReal in imported Mathlib paths, so static audit is likely.",
+        "specific_failure_mode_ids": [
+          "target_copy_detector_too_weak",
+          "normalizer_import_path_incomplete"
+        ]
+      },
+      {
+        "action_change_recommendation": "Do the normalizer source audit now; do not score replay or training from static source safety.",
+        "agent_id": "Turing2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2053_charfun_dual_normalization_source_safety_audit/turing2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_audit",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T17:58:38Z",
+        "p_success": 0.77,
+        "rationale_short": "The normalizer names are visible in imported global files, but Function.comp_def is definitional and the audit must avoid treating the target proof line itself as evidence.",
+        "specific_failure_mode_ids": [
+          "target_copy_detector_too_weak",
+          "function_comp_def_not_declaration_scoped"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 17.0,
+    "changed_by_forecast_ids": [
+      "Noether2",
+      "Turing2"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:00:22Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 17.0,
+      "expected_value": -1.267114026884688,
+      "p_success": 0.7907017693005671,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.5455
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 17.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7907017693005671,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "target_copy_detector_too_weak",
+        "p": 0.325
+      },
+      {
+        "mode": "artifact_schema_mismatch",
+        "p": 0.255
+      },
+      {
+        "mode": "normalizer_import_path_incomplete",
+        "p": 0.22999999999999998
+      },
+      {
+        "mode": "function_comp_def_not_declaration_scoped",
+        "p": 0.19
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.044499999999999984,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:00:22Z"
+  }
+}

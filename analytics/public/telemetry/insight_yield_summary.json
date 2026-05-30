@@ -1,0 +1,71 @@
+{
+  "computed_at": "2026-05-09",
+  "n_resolved": 5,
+  "n_telemetry_inflated_warnings": 5,
+  "bits_total": 6.849,
+  "wall_clock_min_total": 86.4,
+  "weighted_yield_bits_per_min": 0.0793,
+  "per_row_mean_yield": 0.1135,
+  "rows": [
+    {
+      "prediction_id": "PL-003",
+      "question_short": "Concurring-agent ratification of 12 proposed catches (G01-G12)",
+      "p_realized": 0.45,
+      "info_bits": 1.152,
+      "wall_clock_min": 5.4,
+      "wall_min_source": "agent_self_report (TELEMETRY MISS)",
+      "insight_per_min": 0.2133,
+      "telemetry_inflated_warning": true,
+      "predictor": "research_director_claude_opus_4_7",
+      "substrate": "gravity / PMOND v5_locked / catch ledger"
+    },
+    {
+      "prediction_id": "PL-029",
+      "question_short": "Will the RP-001 falsifier-measurement script ship + extract per-primitive struct",
+      "p_realized": 0.35,
+      "info_bits": 1.515,
+      "wall_clock_min": 12,
+      "wall_min_source": "agent_self_report (TELEMETRY MISS)",
+      "insight_per_min": 0.1262,
+      "telemetry_inflated_warning": true,
+      "predictor": "claude_opus_4_7_apparatus_self_audit_agent",
+      "substrate": "apparatus / RP-001 architecture-index meta-graph falsifier wire-up"
+    },
+    {
+      "prediction_id": "PL-047",
+      "question_short": "Will the orchestrator chain (PATTERN-010 business_framing -> PATTERN-001 frictio",
+      "p_realized": 0.35,
+      "info_bits": 1.515,
+      "wall_clock_min": 12,
+      "wall_min_source": "agent_self_report (TELEMETRY MISS)",
+      "insight_per_min": 0.1262,
+      "telemetry_inflated_warning": true,
+      "predictor": "claude_opus_4_7_metric_design_debate_agent",
+      "substrate": "apparatus / insight-yield-per-wall-clock-min metric design (operator concern: too atomic, doesn't capture grunt-work scaffolding)"
+    },
+    {
+      "prediction_id": "PL-016",
+      "question_short": "Of the 3 pending catches (C-37 atom 8c PATTERN-007 vocabulary laundering, C-38 a",
+      "p_realized": 0.35,
+      "info_bits": 1.515,
+      "wall_clock_min": 22,
+      "wall_min_source": "agent_self_report (TELEMETRY MISS)",
+      "insight_per_min": 0.0688,
+      "telemetry_inflated_warning": true,
+      "predictor": "research_director_claude_opus_4_7_concurring_gate_round2_agent",
+      "substrate": "Concurring-Agent Gate Round 2 \u2014 re-derivation of catches C-2026-05-09-37 / 38 / 39"
+    },
+    {
+      "prediction_id": "PL-008",
+      "question_short": "Does atom 8c (Reynolds-stress L^3(L^3) bound on rough Galerkin) close to a sorry",
+      "p_realized": 0.45,
+      "info_bits": 1.152,
+      "wall_clock_min": 35,
+      "wall_min_source": "agent_self_report (TELEMETRY MISS)",
+      "insight_per_min": 0.0329,
+      "telemetry_inflated_warning": true,
+      "predictor": "research_director_claude_opus_4_7_atom8c_agent",
+      "substrate": "NS Track B / atom 8 typed-companion bridge / atom 8c Reynolds-stress L^3(L^3) on rough Galerkin"
+    }
+  ]
+}

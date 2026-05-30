@@ -1,0 +1,101 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2030_corrected_scope_reprover_candidate_generation.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2030_corrected_scope_reprover_candidate_generation.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2030_corrected_scope_reprover_candidate_generation",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2030_corrected_scope_reprover_candidate_generation.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2030_corrected_scope_reprover_candidate_generation.json"
+  },
+  "baseline_action": "do not generate corrected public candidates; continue internal source-safe holdout only",
+  "budget_agent_minutes": 14.0,
+  "budget_agent_minutes_source": "domain_effort_prior:exact",
+  "contract_id": "gp225_v2030_corrected_scope_reprover_candidate_generation",
+  "cost_penalty": 0.06,
+  "counterfactual_action": "generate corrected all-scope public candidates locally, then price replay separately if clean",
+  "created_at": "2026-05-14T14:43:30Z",
+  "created_by": "codex_RD_2026_05_14",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 14.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_repair_micro",
+    "score": 1.0,
+    "selected_domain": "gp225_repair_micro",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 14.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 43,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 3,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.2143,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "Failure routes away from ReProver cached local generation toward other public adapters or internal holdout"
+    ],
+    "positive": [
+      "Corrected queue may restore public/union bridge after label cleanup"
+    ]
+  },
+  "horizon": "one local cached candidate generation over v20.29 corrected queue",
+  "information_value": 0.55,
+  "layer": "micro",
+  "objective_resolver": "Success iff analytics/public/leanmill/results/v2030_corrected_scope_reprover_candidates.json exists and reports candidate_rows >= 8, total_candidates >= 48, model_load_or_generation_failed=false, model_inference_run=true, local_files_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, replay_run=false, training_now=false, gnn_blocked=true, and excluded_contaminated_row_ids includes current_scale_0256/current_scale_0298.",
+  "question": "Will corrected all-scope non-strict GP-225 queue generation produce a clean local ReProver context-enriched candidate packet?",
+  "risk_penalty": 0.1,
+  "success_threshold": "candidate_json_exists,candidate_rows>=8,total_candidates>=48,local_generation_succeeds,source_policy_clean,no_replay,no_training,gnn_blocked_true,contaminated_rows_excluded",
+  "task_type": "gp225_public_adapter_candidate_supply_micro",
+  "value_if_success": 0.45,
+  "void_conditions": "model cache unavailable, v2029 queue audit missing, generator cannot consume corrected queue, or source policy cannot exclude contaminated rows"
+}

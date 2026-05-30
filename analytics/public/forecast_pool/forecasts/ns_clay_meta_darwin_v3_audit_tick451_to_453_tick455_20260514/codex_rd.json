@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "tick451 'NS-data construction' framing should be demoted to 'typed bridge from three carriers'; tick452 should keep TypingHalfClosed_AnalyticHalfOpen permanent label; tick453 is the third HONEST primitive in the chain but at restricted scope (zero charges, upstream is Prop-only).",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514",
+  "contract_question": "Will the tick455 Meta-Darwin v3 audit of the tick451-tick453 Lean files (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) confirm or refute tick451's self-report that it is structurally indistinguishable from tick450 without carrier inhabitation, (c) confirm or refute tick452's self-report that only the typing half is closed and that cube_measure_toReal_le_rM3 is a derived (not tautological) Mathlib step, (d) confirm or refute tick453's self-report that the omega + List-induction are substantive (not directly projectable) and that the upstream half is Prop-only, (e) produce a session-level 20-primitive tally across tick432-tick453, and (f) leave Lean files unmodified?",
+  "domain": "meta_darwin_lean_audit",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": ["self_meta_darwin_load_bearing", "deferred_audit_closure", "wrapper_inflation_round_3"],
+  "forecasted_at": "2026-05-15T03:30:30Z",
+  "p_dependency_issue": 0.02,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.84,
+  "rationale_short": "Read-only audit on three small parallel-shipped files with explicit in-artifact self-reports. The agents already classified themselves correctly in scope guards. Expected: tick451 = WRAPPER (verbatim carrier projection — depth_child_le and flat_children_radius_sum_le are 'exact carrier.field' lines; 4 *_charge_supports_positivity theorems are := h; 4 *_identity theorems are rfl); tick452 = WRAPPER with honest Mathlib-derived corollary (cube_measure_toReal_le_rM3 routes through ENNReal.toReal_mono + ENNReal.ofReal_ne_top, NOT tautological, but the substantive Carleson bound is carrier-asserted); tick453 = HONEST small (omega-discharged depth_child_le genuinely uses both strict depthOf_lt_depthBudget AND flat_children_depthOf_succ; List induction is substantive linarith composition). Self-reports all CONFIRMED. Session tally: 3 HONEST + 16 WRAPPER + 0 LAUNDERED + 1 PURE_NAMING across 20 primitives.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

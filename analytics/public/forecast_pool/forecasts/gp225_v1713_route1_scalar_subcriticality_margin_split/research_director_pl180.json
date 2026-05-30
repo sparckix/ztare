@@ -1,0 +1,19 @@
+{
+  "agent_id": "research_director_pl180",
+  "contract_id": "gp225_v1713_route1_scalar_subcriticality_margin_split",
+  "contract_question": "Will v17.13 reduce the route-1 scalar subcriticality hinge to a smaller Lean-checkable strict-margin guard without closing/laundering the analytic source obligation?",
+  "domain": "ns_live_scalar_hinge",
+  "expected_cost_agent_minutes": 45.0,
+  "failure_mode_distribution": {
+    "direct_adapter_unsafe": 0.43750000000000006,
+    "gap_only": 0.375,
+    "refactor_needed": 0.1875
+  },
+  "forecasted_at": "2026-05-12T15:25:53Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.24,
+  "p_regression": 0.12,
+  "p_success": 0.36,
+  "rationale_short": "Director prior from PL-180: smaller strict-margin guard likely but direct adapter unsafe; source closure should remain zero.",
+  "read_only_attestation": true
+}

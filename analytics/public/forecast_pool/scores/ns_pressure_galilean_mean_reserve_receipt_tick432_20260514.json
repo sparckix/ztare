@@ -1,0 +1,97 @@
+{
+  "contract_id": "ns_pressure_galilean_mean_reserve_receipt_tick432_20260514",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Attempt the tick431-style lowering theorem.",
+      "counterfactual_action": "Record gap + name missing Galilean-quotient/reserve primitive (no-source negative)."
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "Treat Galilean-quotient/reserve identity as a separate missing primitive. Next ticks: (a) frequency leakage \u2192 child/tent charge same-question audit; (b) propose construction of FixedWindowGalileanQuotientReserveIdentity via Galilean compensator / window-quotient bound.",
+      "old_next_action": "Attempt to source Galilean \u2192 pressure-reserve receipt from CKN/tent compatibility (tick431 transfer)."
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.023399999999999997,
+  "mean_log_score": -0.16314215511686153,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "da71b11d2104e0c5d4b9e0e9c5fb1608cb616f4b417e2b978cc6d6e74d47b456",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passing",
+    "contract_id": "ns_pressure_galilean_mean_reserve_receipt_tick432_20260514",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "Treat Galilean-quotient/reserve identity as a separate missing primitive. Next ticks: (a) frequency leakage \u2192 child/tent charge same-question audit; (b) propose construction of FixedWindowGalileanQuotientReserveIdentity via Galilean compensator / window-quotient bound.",
+    "old_next_action": "Attempt to source Galilean \u2192 pressure-reserve receipt from CKN/tent compatibility (tick431 transfer).",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Negative as predicted: CKN/tent compatibility alone cannot route Galilean mean weighted-stress to pressureReserveReceipt. Tick431 pattern needs localQuadraticReceipt_identifies_tent_excess; no analogous identity exists for pressure reserve (independent decomposition observable). Added gap structure FixedWindowGalileanMeanCKNTentReserveGap + no-go theorem no_galileanMeanCKNTent_pressureReserveReceipt_of_gap + named missing primitive FixedWindowGalileanQuotientReserveIdentity + routing FixedWindowCKNTentGalileanMeanRoutesToPressureReserveReceipt.ofCKNTentCompatibilityAndReserveIdentity. Lean passes. No new sorries/admits. Not pressure closure.",
+    "resolved_at": "2026-05-14T23:33:16Z",
+    "sorry_delta": 0,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T23:33:16Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_rd",
+      "brier": 0.0144,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "ns_clay_pressure",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.12783337150988489,
+      "p_success": 0.12,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:30:25Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:30:35Z",
+        "resolved_at": "2026-05-14T23:33:16Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.0324,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_clay_pressure",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383818,
+      "p_success": 0.18,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:30:25Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:30:35Z",
+        "resolved_at": "2026-05-14T23:33:16Z"
+      }
+    }
+  ]
+}

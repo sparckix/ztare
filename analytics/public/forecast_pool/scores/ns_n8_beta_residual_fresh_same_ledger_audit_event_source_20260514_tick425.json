@@ -1,0 +1,146 @@
+{
+  "contract_id": "ns_n8_beta_residual_fresh_same_ledger_audit_event_source_20260514_tick425",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Proceed directly to analytic ResidualFreshExcessCreatesAuditSelection.",
+      "counterfactual_action": "Keep tick424 fork as final surface and wait for more sidecar feedback.",
+      "externality_hypotheses": {
+        "negative": [
+          "may be redundant with tick423 if not scoped tightly"
+        ],
+        "positive": [
+          "lowers the positive branch to the smallest audit-event source"
+        ],
+        "process": [
+          "uses sidecar explorer feedback before formalization"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd",
+        "meta_darwin_proxy"
+      ],
+      "counterfactual_value_bucket": "small_corrective_source",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "ns_n8_beta",
+        "audit_event_source",
+        "sidecar_feedback",
+        "gp233_positive"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "analytic_selection_still_open",
+        "full_beta_split_still_requires_locks"
+      ],
+      "new_next_action": "Prove ResidualFreshExcessSameLedgerAuditEventSource first: residual fresh excess plus audit/coherence yields same-ledger audit event without full beta payment fields.",
+      "old_next_action": "Use CoherentFreshPacketAuditResidualRoutingSource as the positive branch target directly.",
+      "preconditioner_effect": "Prevented the positive branch from overclaiming full beta source split; lowered the target to same-ledger audit-event source.",
+      "preconditioner_source": "Arendt sidecar feedback after tick424",
+      "realized_failure_mode_ids": [
+        "analytic_selection_still_open",
+        "small_source_not_full_split",
+        "pressure_fanout_square_budget_omitted_by_design"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.10600000000000001,
+  "mean_log_score": -0.3895704468634607,
+  "outcome": {
+    "actual_cost_agent_minutes": 13.0,
+    "artifact_hash": "9d8ecf641e76d91874f212f0aacca8449dfaac77303fae4cd0e616ce2e5f473c",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ],
+    "compile_status": "lean_passed_no_sorry",
+    "contract_id": "ns_n8_beta_residual_fresh_same_ledger_audit_event_source_20260514_tick425",
+    "counterfactual_value_bucket": "small_corrective_source",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "ns_n8_beta",
+      "audit_event_source",
+      "sidecar_feedback",
+      "gp233_positive"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "analytic_selection_still_open",
+      "full_beta_split_still_requires_locks"
+    ],
+    "new_next_action": "Prove ResidualFreshExcessSameLedgerAuditEventSource first: residual fresh excess plus audit/coherence yields same-ledger audit event without full beta payment fields.",
+    "old_next_action": "Use CoherentFreshPacketAuditResidualRoutingSource as the positive branch target directly.",
+    "preconditioner_effect": "Prevented the positive branch from overclaiming full beta source split; lowered the target to same-ledger audit-event source.",
+    "preconditioner_source": "Arendt sidecar feedback after tick424",
+    "realized_failure_mode_ids": [
+      "analytic_selection_still_open",
+      "small_source_not_full_split",
+      "pressure_fanout_square_budget_omitted_by_design"
+    ],
+    "resolution_note": "Added ResidualFreshExcessSameLedgerAuditEventSource, a downward projection from CoherentFreshPacketAuditResidualRoutingSource, and a no-closure guard. The small source omits square-budget, fanout, full pressure payment, and inherited-skeleton closure fields; it only captures residual fresh excess plus audit and same-ledger coherence.",
+    "resolved_at": "2026-05-14T22:37:52Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T22:37:56Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 13.0,
+      "agent_id": "codex_rd",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 9.0,
+      "domain": "ns_proof_frontier",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:35:54Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:36:10Z",
+        "resolved_at": "2026-05-14T22:37:52Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 13.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "ns_proof_frontier",
+      "expected_cost_agent_minutes": 30.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:35:54Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:36:10Z",
+        "resolved_at": "2026-05-14T22:37:52Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_adversarial_tick337",
+  "contract_id": "ns_route1_pressure_cone_tent_operator_norm_source_micro_20260514_tick337",
+  "contract_question": "Will we lower pressureRieszConeCharge \u2264 tentExcess into fixed-kernel operator norm plus CKN/tent stress-mass domination and compile the bridge?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 78.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.15,
+    "conditional_layer_too_weak": 0.25,
+    "constant_normalization_unclear": 0.2,
+    "tent_excess_dominates_stress_mass_is_actual_pde_gap": 0.4
+  },
+  "forecasted_at": "2026-05-14T03:16:37Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.22,
+  "p_success": 0.56,
+  "rationale_short": "Operator norm bound is easy, but CKN/tent excess dominating pre-summed stress mass may be the real PDE estimate and should remain explicit rather than silently closed.",
+  "read_only_attestation": true
+}

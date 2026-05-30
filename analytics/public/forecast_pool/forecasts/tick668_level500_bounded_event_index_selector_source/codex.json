@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex",
+  "contract_id": "tick668_level500_bounded_event_index_selector_source",
+  "contract_question": "Can Level500 derive the Level499 targetSlot/equality-reflection source from a bounded injective natural event-index selector into the final-slot prefix?",
+  "domain": "ns_formal_frontier",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "analytic_selector_not_derived_from_current_incidence": 0.4,
+    "gate_or_receipt_schema_mismatch": 0.22,
+    "lean_surface_or_instance_gap": 0.18,
+    "workbench_or_ledger_churn": 0.2
+  },
+  "forecast_externality_tags": [
+    "missing_observables",
+    "hidden_coupling",
+    "stale_evidence",
+    "missing_negative_case"
+  ],
+  "forecasted_at": "2026-05-27T04:35:02Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.04,
+  "p_success": 0.8,
+  "rationale_short": "Read-only price: the Lean file already contains the bounded selector structure and the finite-incidence packaging, so the remaining question is whether the current artifact set can be closed through build/gate/receipt passes rather than needing a new analytic selector lemma. I keep success above coin-flip but below certainty because the contract still depends on unpriced observables: the actual build state, hidden coupling between the bounded selector and receipt schema, and whether the workbench exposes the incidence-derived finite injection check without another lemma.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "analytic_selector_not_derived_from_current_incidence",
+    "lean_surface_or_instance_gap",
+    "gate_or_receipt_schema_mismatch",
+    "workbench_or_ledger_churn"
+  ],
+  "tail_insurance_premium": 0.24
+}

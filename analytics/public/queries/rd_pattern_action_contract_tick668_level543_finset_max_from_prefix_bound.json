@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 543,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level542 carries canonical support membership and domination as fields",
+    "check": "define canonical last hit as Finset.max' and derive membership/domination from max'_mem/le_max'"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level543_finset_max_from_prefix_bound_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level543_provenance_edge_direction_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level543_finset_max_from_prefix_bound"
+  },
+  "anti_pattern_guards": [
+    "no arbitrary canonicalLastSelectedBadNodeEventIndex",
+    "no carried support-domination law",
+    "no endpoint-capacity-only final-prefix bound",
+    "no post-payoff nonempty support choice"
+  ],
+  "positive_forecast": "If the event-preimage fiber is nonempty and every member lies below the final prefix, Finset.max' supplies the canonical last-hit membership, domination, and strict bound."
+}

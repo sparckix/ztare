@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun",
+  "contract_question": "A DETERMINISTIC automated grounded-iterative scaffold (auto #check/exact?/apply?/hammer name-harvest + compile + error-read + bounded retry, NO human iteration, LLM-assembly held fixed) re-run on the n=3 ground truth C10/C15/C06: does it reproduce >=2/3 genuine closures \u2014 i.e. is the automatable-deterministic part the lever, or is the LLM-assembly step load-bearing?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 75.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "assembly_dependency": 0.45,
+    "bounded_retry_insufficient": 0.1,
+    "compile_or_error_read_noise": 0.25,
+    "name_harvest_or_exact_apply_gap": 0.2
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T23:14:12Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.08,
+  "p_success": 0.4,
+  "rationale_short": "Deterministic exact/apply/check steps should recover C10 more readily than C15/C06, but the fixed assembly still looks necessary for the harder composition and reindex/iff-chain cases; I price the contract below 50% because the remaining failures are more likely to be assembly gaps than runtime noise.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

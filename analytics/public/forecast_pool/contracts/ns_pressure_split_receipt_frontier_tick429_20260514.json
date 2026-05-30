@@ -1,0 +1,104 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_pressure_split_receipt_frontier_tick429_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_pressure_split_receipt_frontier_tick429_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_pressure_split_receipt_frontier_tick429_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_pressure_split_receipt_frontier_tick429_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_pressure_split_receipt_frontier_tick429_20260514.json"
+  },
+  "baseline_action": "Stop after tick428 two-carrier compression.",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_pressure_split_receipt_frontier_tick429_20260514",
+  "cost_penalty": 0.4,
+  "counterfactual_action": "Attack flat-radius reserve first.",
+  "created_at": "2026-05-14T23:05:40Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0556,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "lean_pressure_frontier",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0556,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 3,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.08,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0811,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 4,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0682,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0682,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0513,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.0513,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may be wrapper-only if it repeats existing split receipt constructors"
+    ],
+    "positive": [
+      "turns pressure priority into exact Lean source path"
+    ],
+    "process": [
+      "uses existing pressure/Riesz surfaces before inventing new N8 vocabulary"
+    ]
+  },
+  "horizon": "same session 2026-05-14",
+  "information_value": 7.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff Lean compiles and the patch adds a pressure-specific frontier or bridge that consumes existing FixedWindowPreSummedStressMassSplitReceiptSource / receipt bridge surfaces, explicitly rejects final-carrier shortcuts, and keeps no-invisible/coherence as source obligations.",
+  "question": "Will tick429 add a compiling Lean pressure-frontier theorem that identifies split pre-summed stress receipts as the actionable pressure/coherence source path, without claiming pressure branch closure?",
+  "risk_penalty": 4.0,
+  "success_threshold": "lake env lean succeeds for touched file; theorem is not a generic wrapper; no sorry/admit; records pressure priority without closing flat radius or beta.",
+  "task_type": "lean_pressure_frontier",
+  "value_if_success": 10.0,
+  "void_conditions": "Void if inspection shows this bridge already exists verbatim."
+}

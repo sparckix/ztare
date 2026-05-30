@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "proceed_but_do_not_close_radius",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415",
+  "contract_question": "Will the radius component audit add a compiling Lean surface showing RadiusComponentPaysRadiusScale is not sourced by current tri-carrier data and sharpening CKNRadiusFailure to FlatRadiusScaleReserveFailure?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "flat_reserve_primitive_tautological": 0.25,
+    "lean_compile_issue": 0.15,
+    "negative_result_overlogged": 0.15,
+    "pressure_beta_coupling_ignored": 0.15,
+    "radius_branch_still_broader_than_flat_reuse": 0.3
+  },
+  "forecast_externality_tags": [
+    "darwin-pressure",
+    "radius-not-closed",
+    "new-lemma-risk"
+  ],
+  "forecasted_at": "2026-05-14T20:48:31Z",
+  "p_dependency_issue": 0.62,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.11,
+  "p_success": 0.61,
+  "rationale_short": "Good to kill the false radius component, but the sharpened reserve primitive is itself hard and may not cover all radius failures.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "radius_branch_still_broader_than_flat_reuse",
+    "flat_reserve_primitive_tautological",
+    "lean_compile_issue",
+    "pressure_beta_coupling_ignored",
+    "negative_result_overlogged"
+  ]
+}

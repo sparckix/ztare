@@ -1,0 +1,602 @@
+{
+  "generated_utc": "2026-05-25T18:06:13.758007+00:00",
+  "target": "TraceFreeOutputIdentity",
+  "field": "VelocityFieldNS",
+  "tool_scope": "RD caller over existing ZTARE primitives; not a second autoresearch loop or replacement workbench",
+  "target_context": {
+    "found": false,
+    "target": "TraceFreeOutputIdentity",
+    "field": "VelocityFieldNS",
+    "reason": "target not found in workmap"
+  },
+  "gap_classification": {
+    "gap_type": "UNKNOWN",
+    "confidence": "low",
+    "rationale": "No strong local lexical evidence for a supported gap type. Target was not present in the workmap.",
+    "classifier": "local_heuristic"
+  },
+  "mathlib_lemmas": [],
+  "mathlib_semantic_fallback": {
+    "enabled": true,
+    "fired": true,
+    "query": "TraceFreeOutputIdentity VelocityFieldNS UNKNOWN No strong local lexical evidence for a supported gap type. Target was not present in the workmap.",
+    "threshold": 0.55,
+    "top_k": 8,
+    "untagged_only": true,
+    "corpus_size": 46006,
+    "filtered_size": 28177,
+    "skip_reason": null,
+    "hits": [
+      {
+        "name": "ofTop_apply",
+        "kind": "lemma",
+        "file": "Analysis/Normed/Affine/Isometry.lean",
+        "cosine": 0.6628,
+        "preview": "lemma ofTop_apply (h : s\u2081 = \u22a4) (x : s\u2081) : (ofTop s\u2081 h x : P) = x :=   rfl  @[simp]",
+        "shapes": []
+      },
+      {
+        "name": "isUnramifiedIn_comap",
+        "kind": "lemma",
+        "file": "NumberTheory/NumberField/InfinitePlace/Ramification.lean",
+        "cosine": 0.6586,
+        "preview": "lemma isUnramifiedIn_comap [IsGalois k K] {w : InfinitePlace K} :     (w.comap (algebraMap k K)).IsUnramifiedIn K \u2194 w.IsUnramified k := by   refine \u27e8fun H \u21a6 H _ rfl, fun H v hv \u21a6 ?_\u27e9   obtain \u27e8\u03c3, rfl\u27e9 := exists_smul_eq_of_comap_eq hv   rwa [isUnramified_smul_iff] at H",
+        "shapes": []
+      },
+      {
+        "name": "toContinuousAffineMap_id",
+        "kind": "theorem",
+        "file": "Analysis/Normed/Affine/Isometry.lean",
+        "cosine": 0.6573,
+        "preview": "theorem toContinuousAffineMap_id : id.toContinuousAffineMap = ContinuousAffineMap.id \ud835\udd5c P :=   rfl  instance : Inhabited (P \u2192\u1d43\u2071[\ud835\udd5c] P) :=   \u27e8id\u27e9   def comp (g : P\u2082 \u2192\u1d43\u2071[\ud835\udd5c] P\u2083) (f : P \u2192\u1d43\u2071[\ud835\udd5c] P\u2082) : P \u2192\u1d43\u2071[\ud835\udd5c] P\u2083 :=   \u27e8g.toAffineMap.comp f.toAffineMap, fun _ => (g.norm_map _).trans (f.norm_map _)\u27e9  @[simp]",
+        "shapes": []
+      },
+      {
+        "name": "discreteTopology_of_bddAbove_range_norm",
+        "kind": "lemma",
+        "file": "Analysis/Normed/Field/Lemmas.lean",
+        "cosine": 0.6551,
+        "preview": "lemma discreteTopology_of_bddAbove_range_norm {\ud835\udd5c : Type*} [NormedField \ud835\udd5c]     (h : BddAbove (Set.range fun k : \ud835\udd5c \u21a6 \u2016k\u2016)) :     DiscreteTopology \ud835\udd5c := by   refine (NormedField.discreteTopology_or_nontriviallyNormedField _).resolve_right ?_   rintro \u27e8_, rfl\u27e9   obtain \u27e8x, h\u27e9 := h   obtain \u27e8k, hk\u27e9 := Nor",
+        "shapes": []
+      },
+      {
+        "name": "isClopen_preimage_val",
+        "kind": "lemma",
+        "file": "Topology/Connected/Clopen.lean",
+        "cosine": 0.6545,
+        "preview": "lemma isClopen_preimage_val {X : Type*} [TopologicalSpace X] {u v : Set X}     (hu : IsOpen u) (huv : Disjoint (frontier u) v) : IsClopen (v \u2193\u2229 u) := by   refine \u27e8?_, isOpen_induced hu (f := Subtype.val)\u27e9   refine isClosed_induced_iff.mpr \u27e8closure u, isClosed_closure, ?_\u27e9   apply image_val_injective",
+        "shapes": []
+      },
+      {
+        "name": "mapRange_id",
+        "kind": "theorem",
+        "file": "MeasureTheory/VectorMeasure/Basic.lean",
+        "cosine": 0.6528,
+        "preview": "theorem mapRange_id : v.mapRange (AddMonoidHom.id M) continuous_id = v := by   ext   rfl  @[simp]",
+        "shapes": []
+      },
+      {
+        "name": "id_toContinuousLinearMap",
+        "kind": "theorem",
+        "file": "Analysis/Normed/Operator/LinearIsometry.lean",
+        "cosine": 0.6524,
+        "preview": "theorem id_toContinuousLinearMap : id.toContinuousLinearMap = ContinuousLinearMap.id R E :=   rfl  instance instInhabited : Inhabited (E \u2192\u2097\u1d62[R] E) := \u27e8id\u27e9   def comp (g : E\u2082 \u2192\u209b\u2097\u1d62[\u03c3\u2082\u2083] E\u2083) (f : E \u2192\u209b\u2097\u1d62[\u03c3\u2081\u2082] E\u2082) : E \u2192\u209b\u2097\u1d62[\u03c3\u2081\u2083] E\u2083 :=   \u27e8g.toLinearMap.comp f.toLinearMap, fun _ => (norm_map g _).trans (nor",
+        "shapes": []
+      },
+      {
+        "name": "mkD_of_not_continuous",
+        "kind": "lemma",
+        "file": "Topology/ContinuousMap/ContinuousMapZero.lean",
+        "cosine": 0.652,
+        "preview": "lemma mkD_of_not_continuous [Zero X] {f : X \u2192 R} {g : C(X, R)\u2080} (hf : \u00ac Continuous f) :     mkD f g = g := by   simp only [mkD, not_and_of_not_left _ hf, \u2193reduceDIte]",
+        "shapes": []
+      }
+    ],
+    "note": "Additive fallback (shape-tagged shelf was empty for this gap_type). Treat as candidate lemmas to verify, NOT as a typed shelf \u2014 the 0-hit on the main shelf still carries information."
+  },
+  "auxiliary_families": [
+    {
+      "family": "exponential_majorant",
+      "mathematical_form": "B(x) = C\u2081 exp(C\u2082 \u03c6(x))  for some convex \u03c6",
+      "gap_types": [
+        "PROPAGATION",
+        "SOBOLEV",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Brendle",
+        "Hamilton",
+        "Schoen-Yau"
+      ],
+      "typical_use_pattern": "When the unknown u satisfies a parabolic inequality, construct B with B(t,x) \u2265 u(t,x) on the parabolic boundary; by maximum principle, B \u2265 u everywhere.",
+      "ns_track_b_relevance": "For NS L^\u221e control: build B as exp(c\u2016\u2207u\u2016\u00b2) and show (\u2202_t - \u03bd \u0394) B \u2265 |nonlinear advection|."
+    },
+    {
+      "family": "conformal_weight",
+      "mathematical_form": "w(x) = (1 + |x|\u00b2)^\u03b1  for some \u03b1 tuned to scaling",
+      "gap_types": [
+        "INTERPOLATION",
+        "EMBEDDING",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Caffarelli-Kohn-Nirenberg",
+        "Brezis"
+      ],
+      "typical_use_pattern": "Multiply the natural energy by w(x) and integrate; the weight decays/grows just enough to make the integration converge.",
+      "ns_track_b_relevance": "For NS partial regularity (CKN type): weight by (1+|x|\u00b2)^\u03b1 to trade off decay at infinity vs. local concentration."
+    },
+    {
+      "family": "cutoff_partition",
+      "mathematical_form": "\u03c8 \u2208 C_c^\u221e(\u211d^d), 0 \u2264 \u03c8 \u2264 1, \u03c8 = 1 on K, supp(\u03c8) \u2282 K'",
+      "gap_types": [
+        "SOBOLEV",
+        "PROPAGATION",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Caffarelli",
+        "Kohn-Nirenberg",
+        "Lin"
+      ],
+      "typical_use_pattern": "Multiply equation by \u03c8\u00b2u and integrate; the boundary terms vanish, the bulk gives the local energy estimate, and the cutoff error is controlled by \u2016\u2207\u03c8\u2016_\u221e.",
+      "ns_track_b_relevance": "For NS local energy: cut off near a point of suspected blowup; the cutoff error contributes a bounded perturbation."
+    },
+    {
+      "family": "test_function_oscillating",
+      "mathematical_form": "\u03c6_n(x) = \u03b1_n cos(\u03bb_n x) \u03c7_n(x)  (disjointly supported)",
+      "gap_types": [
+        "INTERPOLATION",
+        "COERCIVITY",
+        "AUXILIARY"
+      ],
+      "source_mathematician": [
+        "Bourgain",
+        "Tao",
+        "Erd\u0151s"
+      ],
+      "typical_use_pattern": "Pair the unknown against an oscillating test function tuned to isolate a frequency; the oscillation cancels everything except the target mode.",
+      "ns_track_b_relevance": "For NS spectral arguments: pair u with a Littlewood-Paley shell \u03c8_N to isolate behavior at frequency 2^N."
+    },
+    {
+      "family": "sign_changing_periodic",
+      "mathematical_form": "\u03c8_per(x) = \u03a3_k a_k \u03c7_{[k\u03c0, (k+1)\u03c0]}(x)  with \u03a3a_k = 0",
+      "gap_types": [
+        "COERCIVITY",
+        "AUXILIARY",
+        "EMBEDDING"
+      ],
+      "source_mathematician": [
+        "Bahri-Coron",
+        "Brezis-Nirenberg"
+      ],
+      "typical_use_pattern": "Choose \u03c8 with cancellation, show that \u27e8u, \u03c8\u27e9 = 0 forces u to lie in a small subspace; then use the small subspace's rigidity.",
+      "ns_track_b_relevance": "For NS profile decomposition: orthogonal-projection-like constructs that isolate the Leray profile."
+    }
+  ],
+  "pde_craft_ops": [
+    {
+      "op_id": "pec_a",
+      "name": "Auxiliary Comparison Object Construction",
+      "tier": "proto",
+      "rationale": "construct the missing carrier/test object explicitly before proving estimates",
+      "gate_mechanization": "src/ztare/gates/auxiliary_object_declaration_gate.py",
+      "boundary_collapse_risk": "overlap with pec_e (sharpness witness IS an auxiliary object)"
+    },
+    {
+      "op_id": "pec_e",
+      "name": "Sharpness / Failure-Witness Construction",
+      "tier": "proto",
+      "rationale": "build the hostile witness or sharpness model before accepting the route",
+      "gate_mechanization": null,
+      "boundary_collapse_risk": "overlap with pec_a (witness IS an auxiliary object; distinction is purpose)"
+    },
+    {
+      "op_id": "pec_l",
+      "name": "Symbol / Cancellation Coercivity Audit",
+      "tier": "proto",
+      "rationale": "audit that the claimed signed/symbol cancellation pays the positive target quantity",
+      "gate_mechanization": null,
+      "boundary_collapse_risk": "overlaps with cand_g when a representation change exposes the symbol; keep pec_l for the audit that the cancellation actually pays the positive/coercive target"
+    }
+  ],
+  "pde_execution_contract": null,
+  "estimate_skeletons": [],
+  "residual_normal_form": {
+    "schema_version": "2026-05-20.v1",
+    "profile_name": "ns_millennium_hunt_residual_normal_forms",
+    "classification": "NEW",
+    "best_match": {
+      "canonical_name": "ScaleFreshCriticalDebit",
+      "score": 0.0,
+      "alias_hits": [],
+      "matched_features": [],
+      "missing_features": [
+        "freshness",
+        "local_same_carrier",
+        "positive_carrier",
+        "target_radius_sum"
+      ],
+      "extra_features": [],
+      "normal_form": {
+        "canonical_name": "ScaleFreshCriticalDebit",
+        "aliases": [
+          "C7 positive surplus",
+          "L_summable positive carrier",
+          "Schur-Carleson envelope",
+          "q>4/3 flat reverse Holder",
+          "vorticity capacity",
+          "no-reuse reservoir",
+          "scale fresh critical debit"
+        ],
+        "feature_signature": [
+          "target_radius_sum",
+          "positive_carrier",
+          "freshness",
+          "local_same_carrier"
+        ],
+        "currency": {
+          "target": "radius_sum",
+          "target_unit": "r_Q",
+          "gap": "one full power",
+          "available_classical_currency": "r_Q^2"
+        },
+        "carrier": {
+          "signed_or_positive": "positive",
+          "local_or_global": "local_same_carrier",
+          "final_or_pre_summed": "pre_summed",
+          "fresh_or_reused": "requires_freshness"
+        },
+        "proof_shape": {
+          "lower_payment": "bad Q -> c r_Q <= carrier(Q)",
+          "upper_budget": "sum carrier(Q) <= finite",
+          "telescoping": "required",
+          "no_reuse": "required"
+        },
+        "killed_routes": [
+          "signed flux",
+          "final pressure magnitude",
+          "diagonal CKN mass",
+          "direction-only CF",
+          "endpoint Coifman-Rochberg",
+          "pressure Hessian without anti-lamellar input"
+        ],
+        "falsifiers": [
+          "Dini flat cascade",
+          "nested Dirac reuse",
+          "same-window pressure cancellation",
+          "tangential div-div-null stress",
+          "sparse cubic ghost"
+        ],
+        "required_new_signal": "supply a same-carrier fresh no-reuse theorem or a new packet family that defeats nested reuse"
+      }
+    },
+    "top_matches": [
+      {
+        "canonical_name": "ScaleFreshCriticalDebit",
+        "score": 0.0,
+        "alias_hits": [],
+        "matched_features": [],
+        "missing_features": [
+          "freshness",
+          "local_same_carrier",
+          "positive_carrier",
+          "target_radius_sum"
+        ],
+        "extra_features": [],
+        "normal_form": {
+          "canonical_name": "ScaleFreshCriticalDebit",
+          "aliases": [
+            "C7 positive surplus",
+            "L_summable positive carrier",
+            "Schur-Carleson envelope",
+            "q>4/3 flat reverse Holder",
+            "vorticity capacity",
+            "no-reuse reservoir",
+            "scale fresh critical debit"
+          ],
+          "feature_signature": [
+            "target_radius_sum",
+            "positive_carrier",
+            "freshness",
+            "local_same_carrier"
+          ],
+          "currency": {
+            "target": "radius_sum",
+            "target_unit": "r_Q",
+            "gap": "one full power",
+            "available_classical_currency": "r_Q^2"
+          },
+          "carrier": {
+            "signed_or_positive": "positive",
+            "local_or_global": "local_same_carrier",
+            "final_or_pre_summed": "pre_summed",
+            "fresh_or_reused": "requires_freshness"
+          },
+          "proof_shape": {
+            "lower_payment": "bad Q -> c r_Q <= carrier(Q)",
+            "upper_budget": "sum carrier(Q) <= finite",
+            "telescoping": "required",
+            "no_reuse": "required"
+          },
+          "killed_routes": [
+            "signed flux",
+            "final pressure magnitude",
+            "diagonal CKN mass",
+            "direction-only CF",
+            "endpoint Coifman-Rochberg",
+            "pressure Hessian without anti-lamellar input"
+          ],
+          "falsifiers": [
+            "Dini flat cascade",
+            "nested Dirac reuse",
+            "same-window pressure cancellation",
+            "tangential div-div-null stress",
+            "sparse cubic ghost"
+          ],
+          "required_new_signal": "supply a same-carrier fresh no-reuse theorem or a new packet family that defeats nested reuse"
+        }
+      },
+      {
+        "canonical_name": "DuhamelPositiveTailUpgrade",
+        "score": 0.0,
+        "alias_hits": [],
+        "matched_features": [],
+        "missing_features": [
+          "duhamel_positive_source",
+          "local_tail_upgrade",
+          "positive_carrier",
+          "pre_payoff_selection",
+          "q_above_endpoint"
+        ],
+        "extra_features": [],
+        "normal_form": {
+          "canonical_name": "DuhamelPositiveTailUpgrade",
+          "aliases": [
+            "positive-part Duhamel production gain",
+            "unshadowed positive Duhamel source",
+            "ProductionReverseHolderAboveThreshold",
+            "weak-Lq positive source tail",
+            "local distribution estimate for S_Q+"
+          ],
+          "feature_signature": [
+            "duhamel_positive_source",
+            "positive_carrier",
+            "pre_payoff_selection",
+            "local_tail_upgrade",
+            "q_above_endpoint"
+          ],
+          "currency": {
+            "target": "positive De Giorgi production exponent",
+            "target_unit": "beta > 0",
+            "gap": "endpoint concentration",
+            "available_classical_currency": "signed average or quadratic reserve"
+          },
+          "carrier": {
+            "signed_or_positive": "positive",
+            "local_or_global": "unshadowed local crown",
+            "final_or_pre_summed": "pre_payoff",
+            "fresh_or_reused": "requires fresh unshadowed source"
+          },
+          "proof_shape": {
+            "lower_payment": "S_Q^+ tail/reverse Holder with q > 5/2",
+            "upper_budget": "De Giorgi production term gains Y^(1+beta)",
+            "telescoping": "not enough alone; separate same-tree invoice needed",
+            "no_reuse": "required outside this local estimate"
+          },
+          "killed_routes": [
+            "quadratic reserve only",
+            "signed-average anti-twist",
+            "endpoint q = 5/2",
+            "energy/CZ interpolation only",
+            "post-hoc positive-part selection"
+          ],
+          "falsifiers": [
+            "two-packet positive spike with cancelling background",
+            "quadratic reserve cubic spike"
+          ],
+          "required_new_signal": "prove local weak-Lq/reverse Holder tail for S_Q^+ with q > 5/2, or show why the two-packet concentration model is inadmissible"
+        }
+      },
+      {
+        "canonical_name": "OneComponentApplicability",
+        "score": 0.0,
+        "alias_hits": [],
+        "matched_features": [],
+        "missing_features": [
+          "one_component",
+          "uniform_ckn_upper_bound"
+        ],
+        "extra_features": [],
+        "normal_form": {
+          "canonical_name": "OneComponentApplicability",
+          "aliases": [
+            "KRZ one-component criterion",
+            "near-2D local criterion",
+            "one-component regularity",
+            "asymptotically tangential cascade"
+          ],
+          "feature_signature": [
+            "one_component",
+            "uniform_ckn_upper_bound"
+          ],
+          "currency": {
+            "target": "published local regularity criterion",
+            "target_unit": "theorem hypotheses inhabited",
+            "gap": "exact hypothesis matching",
+            "available_classical_currency": "component ratio or qualitative tangentiality"
+          },
+          "carrier": {
+            "signed_or_positive": "neither",
+            "local_or_global": "local cylinder theorem",
+            "final_or_pre_summed": "hypothesis checklist",
+            "fresh_or_reused": "not applicable"
+          },
+          "proof_shape": {
+            "lower_payment": "route supplies every theorem hypothesis",
+            "upper_budget": "published criterion applies",
+            "telescoping": "not relevant",
+            "no_reuse": "not relevant"
+          },
+          "killed_routes": [
+            "amplitude ratio as theorem norm",
+            "local lower badness without uniform upper bound",
+            "pressure decomposition without harmonic tail control"
+          ],
+          "falsifiers": [
+            "component-small but missing CKN upper bound"
+          ],
+          "required_new_signal": "machine-check the theorem applicability fields before treating near-2D as a solved leaf"
+        }
+      },
+      {
+        "canonical_name": "AngularPressureSheathCancellation",
+        "score": 0.0,
+        "alias_hits": [],
+        "matched_features": [],
+        "missing_features": [
+          "final_angular_carrier",
+          "pre_summed",
+          "pressure_angular_tomography",
+          "same_window_sheath_cancellation",
+          "selected_same_source_c7_frame",
+          "trace_free_tensor_morphology"
+        ],
+        "extra_features": [],
+        "normal_form": {
+          "canonical_name": "AngularPressureSheathCancellation",
+          "aliases": [
+            "angular pressure tomography",
+            "trace-free pressure tensor morphology",
+            "same-source C7 angular frame",
+            "same-window sheath cancellation"
+          ],
+          "feature_signature": [
+            "pressure_angular_tomography",
+            "trace_free_tensor_morphology",
+            "pre_summed",
+            "final_angular_carrier",
+            "same_window_sheath_cancellation",
+            "selected_same_source_c7_frame"
+          ],
+          "currency": {
+            "target": "pre-summed trace-free pressure Hessian morphology",
+            "target_unit": "same-source angular frame packet morphology",
+            "gap": "same-window core/sheath cancellation before final angular samples",
+            "available_classical_currency": "final pressure/angular sample norm"
+          },
+          "carrier": {
+            "signed_or_positive": "signed trace-free tensor morphology",
+            "local_or_global": "selected same-source C7 frame",
+            "final_or_pre_summed": "pre_summed required; final samples are insufficient",
+            "fresh_or_reused": "requires same-source packet ownership before projection"
+          },
+          "proof_shape": {
+            "lower_payment": "selected C7 packet -> visible pre-summed trace-free angular morphology",
+            "upper_budget": "same-source angular packet owner pays once",
+            "telescoping": "not enough; final projection can cancel",
+            "no_reuse": "required before pressure projection"
+          },
+          "killed_routes": [
+            "final angular sample norm as morphology carrier",
+            "pressure L=2 label without same-window sheath exclusion",
+            "Duhamel positive tail routing for angular pressure atoms"
+          ],
+          "falsifiers": [
+            "same-window pressure cancellation",
+            "opposite trace-free core/sheath cancellation"
+          ],
+          "required_new_signal": "prove same-source opposite trace-free sheath inadmissibility before payoff, or supply a pre-summed angular pressure owner carrier"
+        }
+      },
+      {
+        "canonical_name": "CubicGhostExclusion",
+        "score": 0.0,
+        "alias_hits": [],
+        "matched_features": [],
+        "missing_features": [
+          "cubic_ghost_exclusion",
+          "l2_energy",
+          "l3_cubic",
+          "stress_variation"
+        ],
+        "extra_features": [],
+        "normal_form": {
+          "canonical_name": "CubicGhostExclusion",
+          "aliases": [
+            "sparse cubic ghost",
+            "L3 concentration with invisible L2 stress pressure channels",
+            "no simultaneous invisibility"
+          ],
+          "feature_signature": [
+            "l3_cubic",
+            "l2_energy",
+            "stress_variation",
+            "cubic_ghost_exclusion"
+          ],
+          "currency": {
+            "target": "critical cubic concentration visibility",
+            "target_unit": "L^3 carrier",
+            "gap": "quadratic/stress/pressure invisibility",
+            "available_classical_currency": "L^2 or projected stress"
+          },
+          "carrier": {
+            "signed_or_positive": "positive or unsigned cubic",
+            "local_or_global": "localized profile",
+            "final_or_pre_summed": "pre_summed",
+            "fresh_or_reused": "profile-dependent"
+          },
+          "proof_shape": {
+            "lower_payment": "cubic concentration forces one visible route channel",
+            "upper_budget": "classical compactness excludes invisible ghost",
+            "telescoping": "later",
+            "no_reuse": "later"
+          },
+          "killed_routes": [
+            "L2 energy defect as cubic control",
+            "stress projection as full cubic visibility"
+          ],
+          "falsifiers": [
+            "sparse cubic ghost"
+          ],
+          "required_new_signal": "exclude sparse cubic ghosts in suitable weak NS or route them to a visible carrier"
+        }
+      }
+    ],
+    "feature_hits": [],
+    "packet_hits": [],
+    "currency_mismatches": [],
+    "required_next_move": "supply a same-carrier fresh no-reuse theorem or a new packet family that defeats nested reuse",
+    "anti_laundering_note": "Routing output only. A NEW/STRONGER label still needs a crisp estimate, packet falsifier survival, and formal/proof artifact."
+  },
+  "limit_passage_gate": null,
+  "moment_ratio_surplus_checks": [],
+  "bounded_ratio_support_checks": [],
+  "finite_prefix_selection_checks": [],
+  "event_family_binding_checks": [],
+  "positive_variation_bridge_checks": [],
+  "positive_variation_quotient_wash_checks": [],
+  "quotient_minimal_carrier_payment_checks": [],
+  "quadratic_quotient_descent_checks": [],
+  "nonadaptive_source_selection_checks": [],
+  "no_rebilling_freshness_checks": [],
+  "same_carrier_packing_checks": [],
+  "metric_covering_selection_checks": [],
+  "pi_group_checks": [],
+  "dimensionless_exponent_source_checks": [],
+  "persistence_budget_exponent_checks": [],
+  "linear_observable_coercivity_checks": [],
+  "single_spend_audit": null,
+  "single_spend_source": "manual",
+  "receipt_strength_audit": null,
+  "owner_preimage_prefix_gate": null,
+  "scaled_transfer_numeric_receipt_gate": null,
+  "owner_geometry_core_receipt_gate": null,
+  "fresh_annular_anti_laundering_gate": null,
+  "fresh_annular_non_disguise_gate": null,
+  "fresh_annular_innovation_gate": null,
+  "section_fixed_unsigned_variation_gate": null,
+  "inequality_checks": [],
+  "curriculum_variants": [],
+  "next_step_rule": "Codex chooses a patch/falsifier route. Feed only verified snippets or summarized failure categories back into ZTARE briefing memory."
+}

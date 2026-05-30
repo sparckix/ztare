@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:53:38Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 41.5,
+    "expected_value": -32.88517414659432,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.43,
+    "p_regression": 0.05,
+    "p_success": 0.7329651706811341,
+    "participants": [
+      {
+        "agent_id": "herschel_skeptic_tick342",
+        "domain": "ns_route1_pde",
+        "p_success": 0.68,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "hooke_forecast_tick342",
+        "domain": "ns_route1_pde",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "normalization_depends_on_final_pressure_cone_or_carrier_magnitude",
+        "p": 0.135
+      },
+      {
+        "mode": "scout_outputs_numbers_but_no_decisive_PASS_or_GAP_for_next_Lean_action",
+        "p": 0.125
+      },
+      {
+        "mode": "same_window_same_cutoff_alignment_missing_between_pressure_cone_stress_and_shardC_leakage",
+        "p": 0.11
+      },
+      {
+        "mode": "leakage_or_charge_definitions_accidentally_depend_on_final_carrier_magnitude",
+        "p": 0.1
+      },
+      {
+        "mode": "scout_finds_only_vocab_mismatch_not_actionable_estimate_gap",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_leakage_channel_split_scout_micro_20260514_tick342.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_leakage_channel_split_scout_micro_20260514_tick342.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_leakage_channel_split_scout_micro_20260514_tick342.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_leakage_channel_split_scout_micro_20260514_tick342.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_leakage_channel_split_scout_micro_20260514_tick342.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 80.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:53:12Z",
+    "created_by": "codex_rd",
+    "horizon": "same tick",
+    "layer": "micro",
+    "objective_resolver": "Success iff JSON and MD artifacts are written, include per-row weighted stress, normalizer, fresh-frequency leakage, pressure/transport/commutator/boundary charges, normalizer and channel split slacks, explicit no-final-carrier sentinels, and the verdict changes the next Lean action; no Navier-Stokes proof required.",
+    "question": "Will a deterministic fresh-frequency leakage-channel split scout produce a useful PASS/GAP artifact for routing pressure/Riesz frequencyLeakageWeightedStress through a normalizer into FreshFrequencyLeakageChargeBookkeeping and shard-C charges without final-carrier magnitude?",
+    "success_threshold": "artifact exists and verdict in {LEAKAGE_CHANNEL_SPLIT_PASS, LEAKAGE_NORMALIZER_GAP, CHANNEL_SPLIT_GAP} with nonempty next_action",
+    "task_type": "ns_route1_pde_scout"
+  },
+  "contract_id": "ns_route1_leakage_channel_split_scout_micro_20260514_tick342",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:herschel_skeptic_tick342",
+        "raw_agent_ids": [
+          "herschel_skeptic_tick342"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick342",
+        "raw_agent_ids": [
+          "hooke_forecast_tick342"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "herschel_skeptic_tick342",
+      "hooke_forecast_tick342"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "herschel_skeptic_tick342",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_leakage_channel_split_scout_micro_20260514_tick342/herschel_skeptic_tick342.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T03:53:33Z",
+        "p_success": 0.68,
+        "rationale_short": "Narrow falsifiable seam; likely useful if it either maps pressure-cone leakage to fresh-frequency leakage with fixed same-gauge constants or exposes a missing comparison lemma.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick342",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_leakage_channel_split_scout_micro_20260514_tick342/hooke_forecast_tick342.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T03:53:33Z",
+        "p_success": 0.78,
+        "rationale_short": "Offline deterministic scout with concrete schema; main risk is descriptive arithmetic that does not discriminate next Lean branch or violates no-final-carrier sentinel.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 38.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:55:17Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 41.5,
+      "expected_value": -32.88517414659432,
+      "p_success": 0.7329651706811341,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 5.2957
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 41.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7329651706811341,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "normalization_depends_on_final_pressure_cone_or_carrier_magnitude",
+        "p": 0.135
+      },
+      {
+        "mode": "scout_outputs_numbers_but_no_decisive_PASS_or_GAP_for_next_Lean_action",
+        "p": 0.125
+      },
+      {
+        "mode": "same_window_same_cutoff_alignment_missing_between_pressure_cone_stress_and_shardC_leakage",
+        "p": 0.11
+      },
+      {
+        "mode": "leakage_or_charge_definitions_accidentally_depend_on_final_carrier_magnitude",
+        "p": 0.1
+      },
+      {
+        "mode": "scout_finds_only_vocab_mismatch_not_actionable_estimate_gap",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.07539999999999998,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:55:23Z"
+  }
+}

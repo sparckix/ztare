@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2017_repair_lane_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2017_repair_lane_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2017_repair_lane_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2017_repair_lane_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2017_repair_lane_replay.json"
+  },
+  "budget_agent_minutes": 15.75,
+  "budget_agent_minutes_source": "domain_effort_prior:exact",
+  "contract_id": "gp225_v2017_repair_lane_replay",
+  "cost_penalty": 0.05,
+  "created_at": "2026-05-14T13:14:00Z",
+  "created_by": "codex_RD_2026_05_14",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 15.75,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_repair_micro",
+    "score": 1.0,
+    "selected_domain": "gp225_repair_micro",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 38,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 3,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.2143,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "one bounded replay",
+  "information_value": 0.55,
+  "layer": "micro",
+  "objective_resolver": "Run v1953 replay bridge on v2017_repair_lane_candidate_packet with strict witness metrics; success iff new_strict_same_target_rows >= 1 and harmful_compiled_mismatch_actions = 0 and training=false and gnn_blocked=true.",
+  "question": "Will v20.17 repair-lane replay produce at least one new strict same-target row from the three v20.16 reduced holdout failures, with zero harmful compiled mismatches and GNN still blocked?",
+  "risk_penalty": 0.2,
+  "success_threshold": "new_strict_same_target_rows>=1,harmful_compiled_mismatch_actions=0,training=false,gnn_blocked=true",
+  "task_type": "gp225_repair_micro",
+  "value_if_success": 0.8,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

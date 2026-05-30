@@ -1,0 +1,242 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:16:28Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 50.0,
+    "expected_value": -0.0064415244663976745,
+    "forecast_count": 4,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.1975,
+    "p_needs_new_lemma": 0.4625,
+    "p_regression": 0.0675,
+    "p_success": 0.5610584755336023,
+    "participants": [
+      {
+        "agent_id": "codex_rd_pre",
+        "domain": "ns_route1_pde",
+        "p_success": 0.78,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic_pre",
+        "domain": "ns_route1_pde",
+        "p_success": 0.62,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "hooke_pde_tick356",
+        "domain": "ns_route1_pde",
+        "p_success": 0.37,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_skeptic_tick356",
+        "domain": "ns_route1_pde",
+        "p_success": 0.44,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "route_level_charge_not_integrated_with_shardC",
+        "p": 0.0875
+      },
+      {
+        "mode": "theorem_too_wrapper_like",
+        "p": 0.0875
+      },
+      {
+        "mode": "visible_invisible_split_restates_target_without_independent_positive_flux_source",
+        "p": 0.08
+      },
+      {
+        "mode": "visible_invisible_split_restates_desired_bound",
+        "p": 0.07
+      },
+      {
+        "mode": "lean_algebra_or_import_issue",
+        "p": 0.0625
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:14:31Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T15:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean file has a compiled closure theorem bounding normalized transport leakage by transport receipt plus commutator/local/no-invisible charges from a positive-flux visible/invisible split, lake env lean and downstream lake build pass, and touched file has no sorry/admit",
+    "question": "Can we add a Lean-checked transport visible/invisible route-level closure theorem from the Gowers-first informal proof, without substituting DR/pressure carriers or adding sorry/admit?",
+    "success_threshold": "all resolver clauses true",
+    "task_type": "ns_route1_pde_lean_after_gowers_first"
+  },
+  "contract_id": "ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 4,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_pre",
+        "raw_agent_ids": [
+          "codex_rd_pre"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic_pre",
+        "raw_agent_ids": [
+          "codex_skeptic_pre"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:hooke_pde_tick356",
+        "raw_agent_ids": [
+          "hooke_pde_tick356"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_skeptic_tick356",
+        "raw_agent_ids": [
+          "rawls_skeptic_tick356"
+        ]
+      }
+    ],
+    "latest_forecast_count": 4,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_pre",
+      "codex_skeptic_pre",
+      "hooke_pde_tick356",
+      "rawls_skeptic_tick356"
+    ]
+  },
+  "forecasts": {
+    "history_count": 4,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_pre",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356/codex_rd_pre.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T12:15:56Z",
+        "p_success": 0.78,
+        "rationale_short": "Gowers-first proof is scalar transitivity after the right observable split; main risk is whether the theorem surface is useful enough and compiles cleanly.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic_pre",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356/codex_skeptic_pre.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-14T12:15:56Z",
+        "p_success": 0.62,
+        "rationale_short": "The scalar closure should compile, but it may only be useful if it exposes a real alternate-charge path rather than renaming unpaid transport.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_pde_tick356",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356/hooke_pde_tick356.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T12:16:28Z",
+        "p_success": 0.37,
+        "rationale_short": "Right only if positive-flux split is independent; otherwise it renames leakage and hides coercivity in bookkeeping.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_skeptic_tick356",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356/rawls_skeptic_tick356.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 68.0,
+        "forecasted_at": "2026-05-14T12:16:28Z",
+        "p_success": 0.44,
+        "rationale_short": "Compiles if consuming explicit split, but high smuggling risk unless invisible remainder is paid by independently named charges.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 4
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:17:53Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.41,
+      "p_success": 0.5610584755336023,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 0.6563
+    },
+    "effective_n": 4,
+    "expected_cost_agent_minutes": 50.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5610584755336023,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "route_level_charge_not_integrated_with_shardC",
+        "p": 0.0875
+      },
+      {
+        "mode": "theorem_too_wrapper_like",
+        "p": 0.0875
+      },
+      {
+        "mode": "visible_invisible_split_restates_target_without_independent_positive_flux_source",
+        "p": 0.08
+      },
+      {
+        "mode": "visible_invisible_split_restates_desired_bound",
+        "p": 0.07
+      },
+      {
+        "mode": "lean_algebra_or_import_issue",
+        "p": 0.0625
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.22582500000000003,
+    "score_rows": 4,
+    "scored_at": "2026-05-14T12:17:53Z"
+  }
+}

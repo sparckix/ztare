@@ -1,0 +1,176 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:38Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.55,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.2475
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 90.0,
+    "expected_value": -0.4825,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.1,
+    "p_needs_new_lemma": 0.2,
+    "p_regression": 0.05,
+    "p_success": 0.55,
+    "participants": [
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "pathA_wedge",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-17T21:28:09Z",
+        "p_success": 0.55,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "multi_lemma_simp_rows_need_more_than_one_primitive_template",
+        "p": 0.28
+      },
+      {
+        "mode": "in_thread_AI_not_unattended_must_scope_label",
+        "p": 0.22
+      },
+      {
+        "mode": "governance_rejects_as_single_lemma_or_axiom",
+        "p": 0.2
+      },
+      {
+        "mode": "only_~single_primitive_rows_convert",
+        "p": 0.15
+      },
+      {
+        "mode": "tier_mixing_if_not_separated",
+        "p": 0.15
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json",
+    "contract": "analytics/public/forecast_pool/contracts/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json",
+    "score": "analytics/public/forecast_pool/scores/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T21:28:08Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-20",
+    "layer": "micro",
+    "objective_resolver": "residual_to_lever --probe-matrix routes rows; agent composes per row; probe_matrix+governance verify; offline tier-separated report; genuine = #print-axioms-clean + exact?-cannot-single-close + target-kind-correct, ratified",
+    "question": "On the rows the canonical residual_to_lever bridge routes to agent-composition (governed verdict != genuine; named-gap / certified-primitive available), does an agent proof-composer \u2014 given goal + local context + the IN-POOL pinned certifying primitives + target_kind + known anti-patterns, with STRICT author!=prover!=verifier, pinned verbatim replay + #print-axioms-clean + exact?-not-single-lemma + target-kind adjudicated, NO agent self-credit (CLOSED counts ONLY after governance ratification, two-scoreboard) \u2014 produce >=3 governance-genuine closures across the routed rows, TIER-SEPARATED (no cross-tier aggregate), with 0 false-ratify and 0 wrong-target-kind, beating the deterministic-probe Rung-1 baseline (which produced 0 genuine in-grid)?",
+    "success_threshold": "0.5",
+    "task_type": "pathA_wedge"
+  },
+  "contract_id": "rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "pathA_wedge",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-17T21:28:09Z",
+        "p_success": 0.55,
+        "rationale_short": "In-thread AI already produced 6/9 audited certified multi-step proofs on these exact rows \u2014 that IS the agent-composer working inside the governed loop. Rung-2 = run it as a GOVERNED PROTOCOL (author!=prover!=verifier, ratified, tier-separated, no self-credit) on the bridge-routed rows. Honest p~0.55: the ~single-primitive rows (T2P_80/42/166) likely reproduce genuine closures; multi-lemma-simp rows (T2P_51/57/117) may need richer templates. CRITICAL scoping: this validates the governed-loop-with-agent-composer, NOT an unattended automated solver (prior human-in-loop mislabel must not recur).",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T21:36:08Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.55,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.2475
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 90.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.55,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "multi_lemma_simp_rows_need_more_than_one_primitive_template",
+        "p": 0.28
+      },
+      {
+        "mode": "in_thread_AI_not_unattended_must_scope_label",
+        "p": 0.22
+      },
+      {
+        "mode": "governance_rejects_as_single_lemma_or_axiom",
+        "p": 0.2
+      },
+      {
+        "mode": "only_~single_primitive_rows_convert",
+        "p": 0.15
+      },
+      {
+        "mode": "tier_mixing_if_not_separated",
+        "p": 0.15
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.20249999999999996,
+    "score_rows": 1,
+    "scored_at": "2026-05-19T16:39:20Z"
+  }
+}

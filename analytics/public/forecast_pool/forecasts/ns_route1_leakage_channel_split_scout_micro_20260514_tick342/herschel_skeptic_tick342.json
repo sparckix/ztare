@@ -1,0 +1,23 @@
+{
+  "agent_id": "herschel_skeptic_tick342",
+  "contract_id": "ns_route1_leakage_channel_split_scout_micro_20260514_tick342",
+  "contract_question": "Will a deterministic fresh-frequency leakage-channel split scout produce a useful PASS/GAP artifact for routing pressure/Riesz frequencyLeakageWeightedStress through a normalizer into FreshFrequencyLeakageChargeBookkeeping and shard-C charges without final-carrier magnitude?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "deterministic_scout_too_weak_to_distinguish_GAP_from_no_go": 0.12,
+    "double_counting_with_pressure_receipt_or_child_charge_path_detected_but_not_localized": 0.13,
+    "existing_bookkeeping_already_sufficient_and_scout_adds_little": 0.08,
+    "normalization_depends_on_final_pressure_cone_or_carrier_magnitude": 0.27,
+    "same_window_same_cutoff_alignment_missing_between_pressure_cone_stress_and_shardC_leakage": 0.22,
+    "scout_finds_only_vocab_mismatch_not_actionable_estimate_gap": 0.18
+  },
+  "forecasted_at": "2026-05-14T03:53:33Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.05,
+  "p_success": 0.68,
+  "rationale_short": "Narrow falsifiable seam; likely useful if it either maps pressure-cone leakage to fresh-frequency leakage with fixed same-gauge constants or exposes a missing comparison lemma.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "de688b854998cb728771bdffb3f829193209b636d333a878c05ef50c90dd4c97",
+  "artifact_path": "analytics/public/leanmill/results/v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+  "changed_by_forecast_ids": [
+    "Ada2",
+    "Knuth2"
+  ],
+  "compile_status": "static_packet_passed",
+  "contract_id": "gp225_v2054_source_safe_charfun_dual_one_row_replay_packet",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "anti_leakage",
+    "candidate_packet",
+    "replay_gate"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no_compile_evidence",
+    "candidate_may_fail_replay"
+  ],
+  "new_next_action": "price a separate one-row replay bridge run",
+  "old_next_action": "delay packet generation for another audit",
+  "preconditioner_effect": "Allowed packet generation only after normalizer source-safety audit and target-copy guard.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2053_charfun_dual_normalization_source_safety_audit.json",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "v20.54 passed: emitted one-row source-safe charFunDual packet with two non-identical proof-shape candidates, zero forbidden helper hits, no full target rw-list, no replay/training, and GNN blocked.",
+  "resolved_at": "2026-05-14T18:04:33Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

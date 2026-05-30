@@ -1,0 +1,24 @@
+{
+  "agent_id": "gp230_erdos_gp225_v1949",
+  "contract_id": "gp225_v1949_replay_backed_bridge_test",
+  "contract_question": "Will GP-225 v19.49 produce at least one new strict same-target row beyond v19.45's two strict rows on the v19.42/v19.45 PDE holdout, with harmful_compiled_mismatch_rows=0 and no teacher/oracle primary inputs?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "clean_source_filter_blocks_high_signal_candidate": 0.12,
+    "harmful_or_ambiguous_compiled_mismatch": 0.06,
+    "lean_replay_or_adapter_dependency_issue": 0.08,
+    "no_new_strict_same_target_row": 0.34,
+    "public_static_support_not_actionable_on_remaining_rows": 0.18,
+    "row_join_or_witness_harness_bug": 0.06,
+    "typed_feedback_expansion_repeats_v1945_failed_schemas": 0.16
+  },
+  "forecasted_at": "2026-05-14T00:52:42Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.37,
+  "p_regression": 0.11,
+  "p_success": 0.42,
+  "rationale_short": "v19.45 proved typed-feedback replay but v19.49 must find a new strict row among prior failures; public static support was weak in v19.48, while several remaining rows still look locally repairable.",
+  "read_only_attestation": true
+}

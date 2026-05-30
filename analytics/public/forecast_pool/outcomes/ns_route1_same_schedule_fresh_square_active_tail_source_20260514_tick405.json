@@ -1,0 +1,39 @@
+{
+  "actual_cost_agent_minutes": 22.0,
+  "artifact_hash": "94f31f5a57fa2d58fa095762edaf06e72b231bc13896fd89236411c14a3c77c5",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/route1_active_or_passive_lineage_schedule_audit_20260514.md",
+  "changed_by_forecast_ids": [
+    "rd_codex",
+    "codex_forecaster"
+  ],
+  "compile_status": "lean_pass",
+  "contract_id": "ns_route1_same_schedule_fresh_square_active_tail_source_20260514_tick405",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "gp-233:positive:active-passive-lineage-schedule",
+    "gowers-first",
+    "same-carrier-guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "persistence-unproved",
+    "upstream-branch-still-open"
+  ],
+  "new_next_action": "prove FreshFrequencyTailSquarePersistenceSource and finite lineageTailSchedule prefix budget, then feed schedule into finite-tail strictness",
+  "old_next_action": "try to prove freshFrequencySquareBudget prefix <= C_A activeTail prefix directly",
+  "preconditioner_effect": "Prevented forcing passive fresh-frequency square mass through active leakage; switched next target to persistence plus finite lineage schedule.",
+  "preconditioner_source": "GPT-5.5 user-side audit + GP-230 forecast modes + math-first audit",
+  "realized_failure_mode_ids": [
+    "active_only_bridge_false",
+    "lineage_schedule_wrapper_only",
+    "prefix_budget_missing"
+  ],
+  "resolution_note": "Produced math-first verdict: active-only fresh-square-to-activeTail bridge is no-go; corrected proof route is an active-or-passive lineage schedule with passive caloric persistence, Duhamel recharge, and cutoff/commutator residual. Added Lean sources SameCarrierRouteTailLineageScheduleControlSource, FreshFrequencyTailSquareLineageScheduleSource, FreshFrequencyTailSquarePersistenceSource, constructor into existing same-carrier control, and guard ActiveTailOnlyDoesNotControlTailSquare. Lean file compiles; no new sorry/admit.",
+  "resolved_at": "2026-05-14T19:10:27Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

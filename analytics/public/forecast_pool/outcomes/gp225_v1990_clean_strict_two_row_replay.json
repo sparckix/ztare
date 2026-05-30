@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 7.0,
+  "artifact_hash": "4ac78754e010b7793173f9d2c496d18d2f81f9f688733af8fcfc72895dc18340",
+  "artifact_path": "analytics/public/leanmill/results/v1990_clean_strict_two_row_replay.json",
+  "compile_status": "replay_completed_no_clean_strict_wins",
+  "contract_id": "gp225_v1990_clean_strict_two_row_replay",
+  "error_type": null,
+  "goal_delta": 0,
+  "resolution_note": "Replay attempted 6 candidates across 2 clean primary strict rows. compiled_candidate_actions=0, fresh primary strict rows=0, auxiliary pull-forward actions=0, harmful mismatches=0, source-policy flags clean, training_now=false, gnn_blocked=true. Contract resolved false; progress-only residues remain for candidate-synthesis reducer.",
+  "resolved_at": "2026-05-14T08:52:00Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

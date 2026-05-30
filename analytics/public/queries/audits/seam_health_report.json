@@ -1,0 +1,11 @@
+{
+  "audit_timestamp_utc": "2026-05-09T23:24:56.407458+00:00",
+  "seams_scanned": 0,
+  "by_verdict": {},
+  "by_status": {},
+  "re_seam_pairs": [],
+  "stale_candidates": [],
+  "orphan_candidates": [],
+  "implemented_unmarked": [],
+  "all_seams": []
+}

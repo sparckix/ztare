@@ -1,0 +1,42 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "9820347205c2ce1a6450f3461cf713ebfae314f94ae4168302b5b31feea7fb54",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "meta_darwin_proxy"
+  ],
+  "compile_status": "lean_passed_no_sorry",
+  "contract_id": "ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424",
+  "counterfactual_value_bucket": "high_info_fork_surface",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_n8_beta",
+    "residual_fresh_event_selection",
+    "prop_type_guard",
+    "gp233_positive"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "analytic_selection_still_open",
+    "flat_radius_reserve_open",
+    "pressure_rigidity_open"
+  ],
+  "new_next_action": "Prove ResidualFreshExcessCreatesAuditSelection as the positive branch of the fork; if it fails, route explicitly to flat radius scale reserve, pressure cone visibility/rigidity, or beta incidence residual.",
+  "old_next_action": "Prove residual fresh excess creates coherent audit selection directly.",
+  "preconditioner_effect": "Forced the fork to state source existence propositionally and isolate Classical.choice, preventing proof-only residual closures from constructing data silently.",
+  "preconditioner_source": "tick423 residual-routing source + Lean Prop/Type elimination failure + external GPT-5.5 compression note",
+  "realized_failure_mode_ids": [
+    "self_referential_event_selection_guarded",
+    "pressure_visibility_smuggling_guarded",
+    "flat_radius_scale_reuse_explicit",
+    "analytic_selection_still_open"
+  ],
+  "resolution_note": "Added ResidualFreshExcessSameLedgerEventSelectionFork plus a propositional Nonempty projection and an isolated noncomputable choice form. Lean initially rejected eliminating Prop residual disjunctions into Type-valued source data, which forced the correct fork shape. The surface compresses beta to residual fresh-excess event selection or the three reduced N8 branches: flat radius scale reserve, pressure cone visibility, beta event incidence.",
+  "resolved_at": "2026-05-14T22:34:07Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

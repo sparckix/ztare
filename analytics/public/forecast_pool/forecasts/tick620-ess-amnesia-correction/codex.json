@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick620-ess-amnesia-correction",
+  "contract_question": "tick620: does executing the REAL amnesia precheck correct the tick619 ESS-rigidity handoff \u2014 i.e. is ESS/backward-uniqueness/quantitative-unique-continuation amnesia-caught (already tick592, reduces to Type-I/Type-II scale-critical atom #9) rather than a fresh non-scale-margin complement?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T01:41:39Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.63,
+  "rationale_short": "independent codex bet: ESS unique-continuation largely reduces to Type-I for supercritical 3D NS; verdict likely correct",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

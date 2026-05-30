@@ -1,0 +1,44 @@
+{
+  "contract_id": "gp225_v1937_source_indexed_repair_execution",
+  "mean_brier": 0.18924999999999997,
+  "mean_log_score": -0.5709687067032416,
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "artifact_hash": "1382061901ca5c705570a85081d159f84d179a276b8c102c17fdd242bb74938b",
+    "artifact_path": "analytics/public/leanmill/results/v1937_source_indexed_repair_execution.json",
+    "compile_status": "partial_compiled_candidates",
+    "contract_id": "gp225_v1937_source_indexed_repair_execution",
+    "error_type": "source_names_insufficient_without_tactic_synthesis_or_teacher_schema",
+    "goal_delta": 0,
+    "resolution_note": "v19.37 attempted 5 source-indexed primary rows with 15 candidate templates. Metrics: strict_or_pull_forward_rows=1, harmful_compiled_mismatch_rows=0, target_proof_lines_used_for_candidate_generation=false, teacher_oracle_candidates_excluded_from_primary=true, training_now=false, gnn_blocked=true. It shifted the successful pull-forward from row 0308 to row 0151, but still failed the scale threshold.",
+    "resolved_at": "2026-05-13T23:45:30Z",
+    "sorry_delta": 0,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:45:33Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 8.0,
+      "agent_id": "pascal_adversarial_forecaster",
+      "brier": 0.18489999999999998,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 22.0,
+      "log_score": -0.5621189181535411,
+      "p_success": 0.43,
+      "success_bool": false
+    },
+    {
+      "actual_cost_agent_minutes": 8.0,
+      "agent_id": "peirce_readonly_forecaster",
+      "brier": 0.1936,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 22.0,
+      "log_score": -0.579818495252942,
+      "p_success": 0.44,
+      "success_bool": false
+    }
+  ]
+}

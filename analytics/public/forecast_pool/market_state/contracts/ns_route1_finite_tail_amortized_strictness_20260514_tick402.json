@@ -1,0 +1,213 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:48:47Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 33.0,
+    "expected_value": -2.784240702422185,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.27,
+    "p_needs_new_lemma": 0.63,
+    "p_regression": 0.09,
+    "p_success": 0.6375103306420165,
+    "participants": [
+      {
+        "agent_id": "codex_forecaster",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_finite_tail_amortized_strictness_20260514_tick402/codex_forecaster.json",
+        "forecasted_at": "2026-05-14T18:48:06Z",
+        "p_success": 0.57,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_tick402",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_finite_tail_amortized_strictness_20260514_tick402/codex_rd_tick402.json",
+        "forecasted_at": "2026-05-14T18:46:47Z",
+        "p_success": 0.7,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "missing_same_carrier_tail_control",
+        "p": 0.15
+      },
+      {
+        "mode": "missing_same_carrier_tail_bridge",
+        "p": 0.13
+      },
+      {
+        "mode": "finite_budget_to_strictness_smuggling",
+        "p": 0.12
+      },
+      {
+        "mode": "large_prefix_telescoping_friction",
+        "p": 0.09
+      },
+      {
+        "mode": "scalar_large_prefix_algebra_friction",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_finite_tail_amortized_strictness_20260514_tick402.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_finite_tail_amortized_strictness_20260514_tick402.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_finite_tail_amortized_strictness_20260514_tick402.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_finite_tail_amortized_strictness_20260514_tick402.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_finite_tail_amortized_strictness_20260514_tick402.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 40.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:46:29Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Lean compiles ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean; new declarations prove prefix/block strictness from finite active-tail budget and same-carrier tail control; no full Clay/upstream closure claim; no sorry/admit in touched file.",
+    "question": "Will the next NS tick compile Route1FiniteTailAmortizedStrictness and a large-prefix strictness theorem from finite active-tail budget plus X_tail <= C activeTail?",
+    "success_threshold": "compile_pass_and_no_sorry",
+    "task_type": "ns_route1_lean_proof_tick"
+  },
+  "contract_id": "ns_route1_finite_tail_amortized_strictness_20260514_tick402",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_tick402",
+        "raw_agent_ids": [
+          "codex_rd_tick402"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_forecaster",
+      "codex_rd_tick402"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Keep the finite-budget theorem and the amortized strictness theorem separate; add an explicit same-carrier scalar bridge only if the large-prefix strictness theorem is introduced.",
+        "agent_id": "codex_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_finite_tail_amortized_strictness_20260514_tick402/codex_forecaster.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T18:48:06Z",
+        "p_success": 0.57,
+        "rationale_short": "The finite-budget ladder is real, but the exact amortized-strictness theorem is not declared in the file and the adapter still blocks strict-subratio smuggling; success looks more like an explicit bridge plus wrapper than a pure reuse of existing lemmas.",
+        "specific_failure_mode_ids": [
+          "missing_same_carrier_tail_bridge",
+          "finite_budget_to_strictness_smuggling",
+          "large_prefix_telescoping_friction"
+        ]
+      },
+      {
+        "action_change_recommendation": "Install finite-tail amortized strictness only if X_tail <= C activeTail is explicit; keep upstream branch exhaustion separate.",
+        "agent_id": "codex_rd_tick402",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_finite_tail_amortized_strictness_20260514_tick402/codex_rd_tick402.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T18:46:47Z",
+        "p_success": 0.7,
+        "rationale_short": "The scalar adapter is plausible and useful, but it must not replace the same-carrier tail control or branch-exhaustion theorem.",
+        "specific_failure_mode_ids": [
+          "missing_same_carrier_tail_control",
+          "strictness_overclaim",
+          "route_failure_semantics_not_sourced"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd_tick402"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:48:57Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.13,
+      "p_success": 0.6375103306420165,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "missing_same_carrier_tail_control",
+        "p": 0.15
+      },
+      "voi_proxy": 0.9811
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 33.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6375103306420165,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "missing_same_carrier_tail_control",
+        "p": 0.15
+      },
+      {
+        "mode": "missing_same_carrier_tail_bridge",
+        "p": 0.13
+      },
+      {
+        "mode": "finite_budget_to_strictness_smuggling",
+        "p": 0.12
+      },
+      {
+        "mode": "large_prefix_telescoping_friction",
+        "p": 0.09
+      },
+      {
+        "mode": "scalar_large_prefix_algebra_friction",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.13745000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:49:01Z"
+  }
+}

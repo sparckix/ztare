@@ -1,0 +1,24 @@
+{
+  "agent_id": "gp230_tarski_gp225_v1994",
+  "contract_id": "gp225_v1994_bundled_clean_strict_repair_replay",
+  "contract_question": "Conditional on v1992 and v1993 candidate packets existing, will v19.94 bundled clean strict repair replay add at least one fresh primary strict row, with harm zero, source-policy clean, no training, and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_packets_missing_or_not_replay_ready": 0.12,
+    "candidate_templates_underfit_primary_strict_target_state": 0.2,
+    "fresh_primary_row_closes": 0.34,
+    "known_or_auxiliary_row_misclassified_as_fresh": 0.1,
+    "lean_elaboration_or_namespace_regression": 0.1,
+    "source_policy_or_harm_gate_blocks_result": 0.06,
+    "other": 0.08
+  },
+  "forecasted_at": "2026-05-14T09:21:00Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.06,
+  "p_success": 0.43,
+  "rationale_short": "A bundled repair replay only needs one fresh primary strict row, so two packets should give enough variance if they are real repair packets rather than static audits. I still discount for packet availability and strict/fresh classification loss.",
+  "read_only_attestation": true
+}

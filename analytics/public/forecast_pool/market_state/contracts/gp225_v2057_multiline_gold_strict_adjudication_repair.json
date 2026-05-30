@@ -1,0 +1,200 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:10:20Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 15.0,
+    "expected_value": -0.8668464705078605,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.09,
+    "p_needs_new_lemma": 0.035,
+    "p_regression": 0.055,
+    "p_success": 0.7109228235937116,
+    "participants": [
+      {
+        "agent_id": "Gauss2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_strict_adjudication_repair",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2057_multiline_gold_strict_adjudication_repair/gauss2.json",
+        "forecasted_at": "2026-05-14T18:10:19Z",
+        "p_success": 0.68,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Hopper2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_strict_adjudication_repair",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2057_multiline_gold_strict_adjudication_repair/hopper2.json",
+        "forecasted_at": "2026-05-14T18:10:19Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "gold_patch_not_consumed_by_bridge",
+        "p": 0.32
+      },
+      {
+        "mode": "candidate_and_gold_closed_but_signature_policy_not_strict",
+        "p": 0.265
+      },
+      {
+        "mode": "target_proof_generation_leak_flag_missing",
+        "p": 0.21500000000000002
+      },
+      {
+        "mode": "patched_gold_does_not_compile",
+        "p": 0.2
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2057_multiline_gold_strict_adjudication_repair.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2057_multiline_gold_strict_adjudication_repair.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2057_multiline_gold_strict_adjudication_repair.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2057_multiline_gold_strict_adjudication_repair.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2057_multiline_gold_strict_adjudication_repair.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:10:04Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff v2057 replay artifact has replay_run=true, attempted_candidate_rows>=1, compiled_candidate_actions>=1, new_strict_same_target_rows>=1, harmful_compiled_mismatch_actions=0, target proof lines used for candidate generation false, gold_adjudication_only true, training_now=false, gnn_blocked=true.",
+    "question": "Will v20.57 repair the charFunDual multiline gold adjudication and reclassify at least one v20.55 compiled candidate as strict same-target with zero harmful mismatches?",
+    "success_threshold": "1.0",
+    "task_type": "pre_gnn_strict_adjudication_repair"
+  },
+  "contract_id": "gp225_v2057_multiline_gold_strict_adjudication_repair",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Gauss2",
+        "raw_agent_ids": [
+          "Gauss2"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Hopper2",
+        "raw_agent_ids": [
+          "Hopper2"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Gauss2",
+      "Hopper2"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run adjudication repair but keep target proof lines explicitly adjudication-only.",
+        "agent_id": "Gauss2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2057_multiline_gold_strict_adjudication_repair/gauss2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_strict_adjudication_repair",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T18:10:19Z",
+        "p_success": 0.68,
+        "rationale_short": "The candidate closures are strong evidence, but the patch path must hit the exact replay row field used by v1953.",
+        "specific_failure_mode_ids": [
+          "gold_patch_not_consumed_by_bridge",
+          "candidate_and_gold_closed_but_signature_policy_not_strict"
+        ]
+      },
+      {
+        "action_change_recommendation": "Repair gold as adjudication-only and re-run the same candidates; do not generate new candidates.",
+        "agent_id": "Hopper2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2057_multiline_gold_strict_adjudication_repair/hopper2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_strict_adjudication_repair",
+        "expected_cost_agent_minutes": 14.0,
+        "forecasted_at": "2026-05-14T18:10:19Z",
+        "p_success": 0.74,
+        "rationale_short": "v20.55 candidates already compile closed; if full gold proof is used only for adjudication, strict comparison should likely pass unless the bridge ignores the patched gold.",
+        "specific_failure_mode_ids": [
+          "gold_patch_not_consumed_by_bridge",
+          "target_proof_generation_leak_flag_missing"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 15.0,
+    "changed_by_forecast_ids": [
+      "Hopper2",
+      "Gauss2"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:12:40Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 15.0,
+      "expected_value": -0.8668464705078605,
+      "p_success": 0.7109228235937116,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.7655
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 15.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7109228235937116,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "gold_patch_not_consumed_by_bridge",
+        "p": 0.32
+      },
+      {
+        "mode": "candidate_and_gold_closed_but_signature_policy_not_strict",
+        "p": 0.265
+      },
+      {
+        "mode": "target_proof_generation_leak_flag_missing",
+        "p": 0.21500000000000002
+      },
+      {
+        "mode": "patched_gold_does_not_compile",
+        "p": 0.2
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.08499999999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:13:01Z"
+  }
+}

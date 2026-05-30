@@ -1,0 +1,97 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json"
+  },
+  "baseline_action": "continue local N1 persistence work only",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+  "cost_penalty": 3.0,
+  "counterfactual_action": "parallel DAG swarm on N1/N2/N7 plus Darwin pressure and local integration",
+  "created_at": "2026-05-14T19:18:02Z",
+  "created_by": "rd_codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.4286,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_dag_swarm",
+    "score": 0.5,
+    "selected_domain": "NS_route1",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.4286,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.5,
+        "score_rows": 10,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.3529,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 140,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.1622,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 16,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "darwin_pressure": "may prevent persistence/schedule wrappers from being mistaken for proof",
+    "parallel_dag": "may expose upstream branch gap sooner than sequential Lean work"
+  },
+  "horizon": "2026-05-15T03:00:00Z",
+  "information_value": 8.0,
+  "layer": "meso",
+  "objective_resolver": "success iff sidecar/local outputs identify a concrete proof-route/no-go/missing-hypothesis and at least one resulting Lean-facing surface or work packet is saved; no claim of full upstream closure unless branch dominance is resolved",
+  "question": "Will the route-1 DAG swarm produce at least one usable next proof node or no-go across N1 persistence, N2 lineage schedule budget, and N7 branch dominance, with Lean-facing surfaces and no overclaim?",
+  "risk_penalty": 3.0,
+  "success_threshold": "saved work packet or compiled Lean surface plus GP-233 row",
+  "task_type": "ns_route1_dag_swarm",
+  "value_if_success": 12.0,
+  "void_conditions": "void if only wrapper surfaces are produced, if full Clay/upstream closure is claimed without branch dominance, or if GPT-5.5/pro is launched without explicit approval"
+}

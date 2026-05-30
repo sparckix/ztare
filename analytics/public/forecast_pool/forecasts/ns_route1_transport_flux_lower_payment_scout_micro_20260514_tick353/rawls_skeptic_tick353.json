@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_skeptic_tick353",
+  "contract_id": "ns_route1_transport_flux_lower_payment_scout_micro_20260514_tick353",
+  "contract_question": "Can a transport-only route-flux scout distinguish positive local flux lower-payment from signed/global cancellation underpay for normalized transport leakage under same event tent/cutoff?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 68.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lower_payment_needs_real_DR_formula": 0.24,
+    "other": 0.18,
+    "scout_restates_tick347": 0.26,
+    "signed_cancellation_model_obvious_but_not_pde": 0.32
+  },
+  "forecasted_at": "2026-05-14T11:57:14Z",
+  "p_dependency_issue": 0.39,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.06,
+  "p_success": 0.58,
+  "rationale_short": "Scout likely runs, but useful success requires more than replaying tick347; it must identify the charge redefinition or no-go mechanism.",
+  "read_only_attestation": true
+}

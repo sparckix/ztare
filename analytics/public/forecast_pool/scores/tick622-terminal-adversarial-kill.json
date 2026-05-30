@@ -1,0 +1,92 @@
+{
+  "contract_id": "tick622-terminal-adversarial-kill",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.0634,
+  "mean_log_score": -0.28848271313526785,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick622-terminal-adversarial-kill",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Composed-in-thread trichotomy reduction (sharper than the codex adversary: DGNM & CF derived INTO class (1) via decay-exponent-is-the-scale-margin / geometric-surplus-is-the-atom). Every known 3D-NS regularity mechanism \u2208 (1)scale-margin \u222a (2)ESS-Liouville-rigidity; (3)topological non-coercive (tick621). Strong negative SURVIVES independent adversarial kill (codex p=0.72 concordant). REAL rd_tick_brief \u00a78 + amnesia + full post_tick executed.",
+    "resolved_at": "2026-05-17T01:49:06Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:49Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "claude:RD",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T01:47:27Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T01:49:06Z",
+        "resolved_at": "2026-05-17T01:49:06Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "codex",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T01:47:27Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T01:49:06Z",
+        "resolved_at": "2026-05-17T01:49:06Z"
+      }
+    }
+  ]
+}

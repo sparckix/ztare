@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579",
+  "cost_penalty": 0.4,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T13:41:05Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_formalized_negative_extends_6th_20260516",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0185,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 4,
+        "token_jaccard": 0.0833
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "14d",
+  "information_value": 7.0,
+  "layer": "meso",
+  "objective_resolver": "Lean: any_direction_geometry_criterion_underdetermined + both named instances PROVED, builds clean, used existing antitwist file not re-derived. success iff genuine extension PROVED + Tier-3 clean; 0.5 if weak; fail iff overclaim or trivial-wrap.",
+  "question": "Does tick578's formalized negative EXTEND to the 6th Beyond-Classical (anti-twist\u21d2Vasseur) criterion of the EXISTING UnifiedSmoothnessCriterionExt? Claim: any \u03c9-direction-geometry-dependent criterion (CF 5th AND anti-twist/Vasseur 6th) is not a function of arc_data (s_z,Type-I,R1); the 6th is NOT an independent escape. No overclaim anti-twist\u2261CF \u2014 only shared underdetermined \u03c9-direction discriminator.",
+  "risk_penalty": 0.4,
+  "success_threshold": "success iff extension PROVED both instances + Tier-3 clean; 0.5 weak; fail overclaim",
+  "task_type": "ns_clay_formalized_negative_extends_6th_20260516",
+  "value_if_success": 6.5,
+  "void_conditions": "tick578 or antitwist file refactored"
+}

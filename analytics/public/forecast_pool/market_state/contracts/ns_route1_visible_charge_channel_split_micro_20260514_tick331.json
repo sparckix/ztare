@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T02:38:42Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 75.5,
+    "expected_value": -64.06491227188491,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.21500000000000002,
+    "p_needs_new_lemma": 0.605,
+    "p_regression": 0.1,
+    "p_success": 0.5050125325878698,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick331",
+        "domain": "ns_route1_pde",
+        "p_success": 0.48,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_adversarial_tick331",
+        "domain": "ns_route1_pde",
+        "p_success": 0.53,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "renamed_visibleOverflowCharge_prop",
+        "p": 0.15
+      },
+      {
+        "mode": "restates_visible_charge_as_disjunction",
+        "p": 0.145
+      },
+      {
+        "mode": "carrier_or_subratio_smuggling",
+        "p": 0.105
+      },
+      {
+        "mode": "props_without_numeric_charge_content",
+        "p": 0.105
+      },
+      {
+        "mode": "channel_charges_do_not_route_cleanly",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_visible_charge_channel_split_micro_20260514_tick331.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_visible_charge_channel_split_micro_20260514_tick331.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_visible_charge_channel_split_micro_20260514_tick331.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_visible_charge_channel_split_micro_20260514_tick331.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_visible_charge_channel_split_micro_20260514_tick331.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 49.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T02:38:03Z",
+    "created_by": "codex_rd",
+    "horizon": "same-session",
+    "layer": "micro",
+    "objective_resolver": "Success iff ns_pressure_hessian_l2_bridge.lean adds a named channel-split structure below FixedWindowOverflowVisibleOrInvisibleProfile with pressure/Riesz, local quadratic, transport, and commutator/Reynolds alternatives, includes a theorem/constructor producing visibleOverflowCharge or FixedWindowOverflowVisibleOrInvisibleProfile from a channel receipt, avoids final-carrier or strict-subratio assumptions, and both lake env lean ZtareProofs/ns_pressure_hessian_l2_bridge.lean plus lake build ZtareProofs.ns_route1_fresh_frequency_coercivity_adapter pass.",
+    "question": "Will the current NS route-1 tick add a compiled channel-level surface lowering visibleOverflowCharge into pressure/Riesz, local quadratic, transport, or commutator/Reynolds visibility alternatives?",
+    "success_threshold": "true",
+    "task_type": "lean_pde_channel_decomposition"
+  },
+  "contract_id": "ns_route1_visible_charge_channel_split_micro_20260514_tick331",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick331",
+        "raw_agent_ids": [
+          "hooke_forecast_tick331"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_adversarial_tick331",
+        "raw_agent_ids": [
+          "rawls_adversarial_tick331"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick331",
+      "rawls_adversarial_tick331"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick331",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_visible_charge_channel_split_micro_20260514_tick331/hooke_forecast_tick331.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 95.0,
+        "forecasted_at": "2026-05-14T02:38:34Z",
+        "p_success": 0.48,
+        "rationale_short": "Compile likely enough, but non-tautology requires concrete numeric same-window channel charges, not a renamed visibleOverflowCharge disjunction.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_adversarial_tick331",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_visible_charge_channel_split_micro_20260514_tick331/rawls_adversarial_tick331.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 56.0,
+        "forecasted_at": "2026-05-14T02:38:34Z",
+        "p_success": 0.53,
+        "rationale_short": "Useful if it lowers the branch flag into channel-specific charge sources; risky if it only restates the visible branch.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 33.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T02:41:27Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.05,
+      "p_success": 0.5050125325878698,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "renamed_visibleOverflowCharge_prop",
+        "p": 0.15
+      },
+      "voi_proxy": 8.3
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 75.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5050125325878698,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "renamed_visibleOverflowCharge_prop",
+        "p": 0.15
+      },
+      {
+        "mode": "restates_visible_charge_as_disjunction",
+        "p": 0.145
+      },
+      {
+        "mode": "carrier_or_subratio_smuggling",
+        "p": 0.105
+      },
+      {
+        "mode": "props_without_numeric_charge_content",
+        "p": 0.105
+      },
+      {
+        "mode": "channel_charges_do_not_route_cleanly",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.24565,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T02:41:34Z"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "ts": "2026-05-06T20:24:47.018351+00:00",
+  "target": "GP216BridgeCompositionReceipt",
+  "field": "branch_matches_profile_lipschitz_generated_block",
+  "patch_class": "source_provenance_bridge",
+  "k": 2,
+  "n_blocks": 2,
+  "n_verified": 2,
+  "results": [
+    {
+      "idx": 0,
+      "slug": "batched_gp216bridgecompositionrec_branch_matches__source_pro_0",
+      "compiled": true,
+      "exit_code": 0,
+      "duration_s": 22.071980833890848,
+      "stderr_tail": "",
+      "lean_path": "/ztare_proofs/ZtareProofs/batched_gp216bridgecompositionrec_branch_matches__source_pro_0_iter.lean",
+      "lean_src": "import ZtareProofs.ns_gp216_bridge_composition_receipt\n\nnamespace ZtareProofs.NS\n\ntheorem branch_matches_profile_lipschitz_generated_block_le_continuationSource_handoff\n    (R : GP216BridgeCompositionReceipt) :\n    R.branchBlock = (trackBGeneratedLowFrequencyLipschitzLedger\n      R.continuationSource.handoff.profile_lipschitz\n      R.continuationSource.handoff.initialData).block\n      R.profileLipschitzBranchIndex := by\n  exact R.branch_matches_profile_lipschitz_generated_block\n\nend ZtareProofs.NS"
+    },
+    {
+      "idx": 1,
+      "slug": "batched_gp216bridgecompositionrec_branch_matches__source_pro_1",
+      "compiled": true,
+      "exit_code": 0,
+      "duration_s": 22.08155095798429,
+      "stderr_tail": "",
+      "lean_path": "/ztare_proofs/ZtareProofs/batched_gp216bridgecompositionrec_branch_matches__source_pro_1_iter.lean",
+      "lean_src": "import ZtareProofs.ns_gp216_bridge_composition_receipt\n\nnamespace ZtareProofs.NS\n\ntheorem branch_matches_profile_lipschitz_generated_block_eq_handoff_block\n    (R : GP216BridgeCompositionReceipt) :\n    (trackBGeneratedLowFrequencyLipschitzLedger\n      R.continuationSource.handoff.profile_lipschitz\n      R.continuationSource.handoff.initialData).block\n      R.profileLipschitzBranchIndex = R.branchBlock := by\n  exact R.branch_matches_profile_lipschitz_generated_block.symm\n\nend ZtareProofs.NS"
+    }
+  ]
+}

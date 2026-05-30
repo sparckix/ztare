@@ -1,0 +1,22 @@
+{
+  "agent_id": "Gibbs",
+  "contract_id": "ns_route1_angular_carrier_identification_split_micro_20260514_tick316",
+  "contract_question": "Will this tick add a build-passed route-independent carrier-identification station below Route1PressureAngularCarrierEstimate, splitting l2Carrier_identifies_totalAngularMoment into projected Riesz kernel match, recovered pressure-Hessian tail-window projection, and normalization/anti-tautology fields, plus constructor into Route1PressureAngularCarrierEstimate, with no new sorry/admit?",
+  "domain": "ns_lean_micro",
+  "expected_cost_agent_minutes": 16.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "arithmetic_normalization_needs_extra_lemma": 0.12,
+    "constructor_churn": 0.18,
+    "identification_lacks_equality": 0.32,
+    "route_independent_wording_fragile": 0.15,
+    "tautological_rename": 0.23
+  },
+  "forecasted_at": "2026-05-14T00:12:14Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.05,
+  "p_success": 0.8,
+  "rationale_short": "Good micro tick if identification carries the final equality while separately naming projection, Riesz/angular match, normalization, and anti-tautology guards.",
+  "read_only_attestation": true
+}

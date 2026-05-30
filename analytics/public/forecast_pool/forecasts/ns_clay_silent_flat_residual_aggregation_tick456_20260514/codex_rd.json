@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship as the anti-wrapper exemplar.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_silent_flat_residual_aggregation_tick456_20260514",
+  "contract_question": "Can the aggregation step of SilentFlatResidualRadiusCharge \u2014 \u03a3 c\u00b7radius Q \u2264 \u03bc K \u2014 be proved via real Mathlib measure-theory lemmas (Finset.sum_le_sum, measure_biUnion_finset, measure_mono) with zero wrapper-style projection bodies and zero rfl identity theorems, satisfying all 5 anti-wrapper rules?",
+  "domain": "ns_clay_mathlib_aggregation",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T02:57:35Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.85,
+  "rationale_short": "Mathlib has measure_biUnion_finset for disjoint Finset measure additivity; Finset.sum_le_sum is standard; ENNReal.le_div_iff_mul_le standard. Anti-wrapper discipline is procedurally enforceable by grep/count. Risk only in unicode/notation parsing.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

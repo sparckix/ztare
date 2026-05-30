@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 34.0,
+  "artifact_hash": "9732e8f0ccaab9b9183c1dd291ae4554c95425ce6a4fc6f09c3d3fe5ed539713",
+  "artifact_path": "scripts/public/control/forecast/pool.py",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "codex_skeptic"
+  ],
+  "compile_status": "passed",
+  "contract_id": "gp230_externality_fields_schema_impl_20260514",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "structured_externality_fields",
+    "failure_mode_preconditioner",
+    "audit_coverage"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "capture structured externality fields and audit coverage/hit rates",
+  "old_next_action": "leave externality value in prose-only GP-233/resolution notes",
+  "preconditioner_effect": "kept fields optional, separated externality credit from Brier, and reran smoke plus real audit",
+  "preconditioner_source": "codex_rd,codex_skeptic",
+  "realized_failure_mode_ids": [
+    "docs_overstate_enforcement",
+    "audit_script_misses_new_fields"
+  ],
+  "resolution_note": "Implemented optional structured externality fields on contracts, forecasts, outcomes, score payloads, smoke test, audit script, GP-230 seam, and active spec. Preserved backward compatibility for legacy artifacts.",
+  "resolved_at": "2026-05-14T14:30:29Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

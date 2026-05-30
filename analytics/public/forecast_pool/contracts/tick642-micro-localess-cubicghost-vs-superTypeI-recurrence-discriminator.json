@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json",
+    "score": "analytics/public/forecast_pool/scores/tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator.json"
+  },
+  "baseline_action": "treat cubic ghost as new live object without amnesia-adjudicating vs manifest:44 super-Type-I/G2",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_compactness_measure_valued_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_compactness_measure_valued_source' is an EXACT match of surfaced id 'selected_projected_compactness_measure_valued_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "amnesia-adjudicate LIVE-vs-RECURRENCE via depth-n + swarm + cold adversary (this tick)",
+  "created_at": "2026-05-18T20:51:14Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0732,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_recurrence_vs_live_discriminator",
+    "score": 0.2857,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2857,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0732,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 7,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.0294,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 10,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.027,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 140,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0175,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 4,
+        "token_jaccard": 0.1
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-20T00:00:00Z",
+  "information_value": 0.85,
+  "layer": "micro",
+  "objective_resolver": "claude:RD depth-n + swarm (programs B/C drafts + cubic-ghost) aggregated + ONE cold Codex CLI ChatGPT-subscription adversarial kill of workspace/tick642_localess_aggregate.md; LIVE iff the bounded-ancient-L3-profile extraction is shown structurally distinct from manifest:44 super-Type-I/G2 + tick602 Case-2 (adversary-survived); RECURRENCE if it reduces to them",
+  "question": "CONSUMES selected_projected_compactness_measure_valued_source (the cubic ghost mu3=w*-lim|u_n|^3 IS a compactness measure-valued defect). DISCRIMINATOR (not a proof claim): Is LocalESSCubicGhostExclusion \u2014 critical-L3 cubic concentration with vanishing L2/stress/pressure/route/beta/alphaI channels cannot arise in suitable-weak NS \u2014 structurally DISTINCT from the already-logged super-Type-I asymptotic cascade / G2 budget pincer (ns_residual_manifest.md:44; tick602 Case-2 M-unbounded routing), i.e. the concentration-compactness/local-ESS extraction yields a BOUNDED critical-L3 ancient profile so ESS-rigidity applies = genuine progress (LIVE) \u2014 OR does the extraction give UNBOUNDED local L3 = exactly the ESS-hard branch = the Nth recurrence of the super-Type-I/G2 atom in concentration-compactness vocabulary (RECURRENCE)? Resolve LIVE iff the boundedness of the extracted ancient profile is established as structurally NEW (not assumed); RECURRENCE if it reduces to the existing super-Type-I pincer / G2 budget gap.",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_recurrence_vs_live_discriminator",
+  "value_if_success": 0.75,
+  "void_conditions": "codex unavailable; resolver cannot adjudicate distinct-vs-reduces"
+}

@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T02:52:54Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 20.0,
+    "expected_value": -2.482884393915195,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.11,
+    "p_needs_new_lemma": 0.09,
+    "p_regression": 0.045,
+    "p_success": 0.41879951961561557,
+    "participants": [
+      {
+        "agent_id": "gp230_babbage_gp225_v1960",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.48,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_lovelace_gp225_v1960",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.36,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "scope_name_templates_still_not_target_aligned",
+        "p": 0.27
+      },
+      {
+        "mode": "funext_or_ext_template_type_mismatch",
+        "p": 0.22
+      },
+      {
+        "mode": "progress_only_no_strict_or_pull_forward",
+        "p": 0.19
+      },
+      {
+        "mode": "candidate_packet_too_small",
+        "p": 0.13
+      },
+      {
+        "mode": "other",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1960_deterministic_scope_template_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1960_deterministic_scope_template_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1960_deterministic_scope_template_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1960_deterministic_scope_template_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1960_deterministic_scope_template_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 24.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T02:50:36Z",
+    "created_by": "codex_rd_gp225",
+    "horizon": "same session after deterministic candidate packet and replay",
+    "layer": "micro",
+    "objective_resolver": "Resolve from v1960 candidate and replay artifacts: strict_same_target_rows + verified_overclosure_pull_forward_actions >= 1, harmful_compiled_mismatch_actions==0, forbidden generation fields absent, train_gnn_now==false. Candidate generation must use v1958 progress traces plus v1942 pre-target scope names, not gold tactic text.",
+    "question": "Will deterministic scope-template candidates generated from v19.59 replay into at least one strict or pull-forward label, with harmful mismatches zero and clean source policy?",
+    "success_threshold": "strict_same_target_rows + verified_overclosure_pull_forward_actions >= 1 AND harmful_compiled_mismatch_actions == 0 AND clean source policy true",
+    "task_type": "deterministic_scope_template_replay"
+  },
+  "contract_id": "gp225_v1960_deterministic_scope_template_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_babbage_gp225_v1960",
+        "raw_agent_ids": [
+          "gp230_babbage_gp225_v1960"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_lovelace_gp225_v1960",
+        "raw_agent_ids": [
+          "gp230_lovelace_gp225_v1960"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_babbage_gp225_v1960",
+      "gp230_lovelace_gp225_v1960"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_babbage_gp225_v1960",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1960_deterministic_scope_template_replay/gp230_babbage_gp225_v1960.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T02:52:49Z",
+        "p_success": 0.48,
+        "rationale_short": "Hydration is clean after v19.58 and v19.59 found two deterministic template rows, so a small strict-or-pull-forward hit is under even odds but not remote. The main upside is high information value even if it fails.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_lovelace_gp225_v1960",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1960_deterministic_scope_template_replay/gp230_lovelace_gp225_v1960.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T02:52:49Z",
+        "p_success": 0.36,
+        "rationale_short": "Static progress traces expose target-adjacent scope names, but v19.43 and v19.57 both warn that generic templates often produce progress without target alignment. Success is plausible only if the deterministic templates land on an ext/funext shape already supported by the local context.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T02:53:46Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.12,
+      "p_success": 0.41879951961561557,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "scope_name_templates_still_not_target_aligned",
+        "p": 0.27
+      },
+      "voi_proxy": 1.1434
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 20.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.41879951961561557,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "scope_name_templates_still_not_target_aligned",
+        "p": 0.27
+      },
+      {
+        "mode": "funext_or_ext_template_type_mismatch",
+        "p": 0.22
+      },
+      {
+        "mode": "progress_only_no_strict_or_pull_forward",
+        "p": 0.19
+      },
+      {
+        "mode": "candidate_packet_too_small",
+        "p": 0.13
+      },
+      {
+        "mode": "other",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.34,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T02:53:52Z"
+  }
+}

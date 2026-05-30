@@ -1,0 +1,23 @@
+{
+  "agent_id": "codex_local_rd_v1874",
+  "contract_id": "gp225_v1874_remaining_8_witness_backfill",
+  "contract_question": "Will v18.74 over the remaining 8 actionable GP-225 rows attempt all rows, harvest at least 5 clean closure/target witnesses, have at most 2 true false accepts, and keep GNN blocked pending baseline audit?",
+  "domain": "gp225_lean_witness_backfill",
+  "expected_cost_agent_minutes": 1.89,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {
+    "calibration_prior_underestimates_tail_runtime": 0.08,
+    "clean_labels_below_5": 0.22,
+    "other": 0.3,
+    "remaining_rows_homogeneous_computability_rw": 0.16,
+    "source_context_hydration_edge_case": 0.08,
+    "true_false_accepts_above_2": 0.16
+  },
+  "forecasted_at": "2026-05-13T17:38:12Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.06,
+  "p_success": 0.58,
+  "rationale_short": "Using calibrated domain effort prior from GP-230: bounded GP-225 Lean witness backfill has expected_cost_agent_minutes_prior=1.89 from 3 scored rows. Success risk is higher than v18.72 because remaining rows are more homogeneous and rw-heavy.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "Proceed only if concrete index/match theorems are derived; otherwise stop.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426",
+  "contract_question": "Will tick426 add a compiling Lean surface that lowers residualBranchCreatesAuditSelection to per-node residual-fresh audit eligibility data and derives the same-ledger event index plus bad-node/weight/gain matches?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dependent_type_failure": 0.22,
+    "no_new_information": 0.16,
+    "overclaim": 0.12,
+    "pressure_flat_branch_hidden": 0.2,
+    "tautological_eligibility": 0.3
+  },
+  "forecast_externality_tags": [
+    "darwin",
+    "eligibility_no_smuggling",
+    "ns_n8_beta"
+  ],
+  "forecasted_at": "2026-05-14T22:41:10Z",
+  "p_dependency_issue": 0.55,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.24,
+  "p_success": 0.55,
+  "rationale_short": "Eligibility can still be a name for the thing we need. It earns value only if it connects residual nodes to existing audit/coherence fields and keeps pressure/flat alternatives out.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "tautological_eligibility",
+    "dependent_type_failure",
+    "pressure_flat_branch_hidden",
+    "no_new_information",
+    "overclaim"
+  ]
+}

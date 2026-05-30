@@ -1,0 +1,160 @@
+{
+  "contract_id": "gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "do not run replay; ship moat-audit-only controls (v22.04) on the existing 8 labels first",
+      "counterfactual_action": "discard v22.05 and accept that artisanal moat scaling is the only path, then defer to operator authorization",
+      "externality_hypotheses": {
+        "gold_lemma_name_use_is_source_safe_not_proof_body_use": "candidates use commodity Mathlib lemma names visible in public signatures, not target-proof-body lines; should NOT trigger a leakage flag",
+        "row_0000_remains_hard": "Scheme machinery with typeclass synthesis is known-hard; prior v20.93/v20.96/v20.99 all 0-compile on 0000; expected mostly hard negatives on this row",
+        "row_0079_easier_than_0000": "0079 is a pure rw chain at step_idx=0; one of the alt-tactic variants likely produces the gold compound state, giving a witness-equality positive even if it does not full-compile"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 3,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "useful_positive_moat_yield_with_anti_laundering_pending",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "meso_only_forecast",
+        "artisanal_moat_extension",
+        "witness_equality_sub_bucket_grew_from_4_to_10",
+        "two_new_theorems_now_have_moat_labels",
+        "no_training",
+        "gnn_still_blocked"
+      ],
+      "negative_externality_tags": [
+        "v22_04_adjudication_controls_still_outstanding",
+        "n_2_canonical_heldout_resolution_unchanged"
+      ],
+      "new_next_action": "v22_08_record_yield_and_run_adjudication_controls_v22_04_before_more_batches",
+      "old_next_action": "v22_06_artisanal_moat_extension_bounded_replay",
+      "realized_failure_mode_ids": [
+        "row_0000_rank1_verbatim_gold_prefix_strict_match",
+        "row_0079_split_rw_strict_match_at_least_one_of_three",
+        "row_0079_simp_only_normalization_divergence_predicted_hard_negative",
+        "row_0000_rank4_speculative_identity_rewrite_type_mismatch_hard_negative"
+      ]
+    }
+  },
+  "forecast_history_count": 3,
+  "mean_brier": 0.09839999999999999,
+  "mean_log_score": -0.3707198803511613,
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "artifact_hash": "014bd5d0b7477aa34d32f369a24bbc1927ee139705c7a9bbda392018032ca6e1",
+    "artifact_path": "analytics/public/leanmill/results/v22_06_artisanal_moat_extension_bounded_replay.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": "8_candidates_replayed_0_compile_6_witness_equality_strict_positives_2_hard_negatives_0_harmful",
+    "contract_id": "gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate",
+    "counterfactual_value_bucket": "useful_positive_moat_yield_with_anti_laundering_pending",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "meso_only_forecast",
+      "artisanal_moat_extension",
+      "witness_equality_sub_bucket_grew_from_4_to_10",
+      "two_new_theorems_now_have_moat_labels",
+      "no_training",
+      "gnn_still_blocked"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [
+      "v22_04_adjudication_controls_still_outstanding",
+      "n_2_canonical_heldout_resolution_unchanged"
+    ],
+    "new_next_action": "v22_08_record_yield_and_run_adjudication_controls_v22_04_before_more_batches",
+    "old_next_action": "v22_06_artisanal_moat_extension_bounded_replay",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "row_0000_rank1_verbatim_gold_prefix_strict_match",
+      "row_0079_split_rw_strict_match_at_least_one_of_three",
+      "row_0079_simp_only_normalization_divergence_predicted_hard_negative",
+      "row_0000_rank4_speculative_identity_rewrite_type_mismatch_hard_negative"
+    ],
+    "resolution_note": "v22.06 ran 8 candidates \u00d7 2 rows (current_scale_0079/dist_map_map_zero_lt, current_scale_0000/isoSpec_hom_apply) via the v1953 bridge in 38 seconds elapsed; bridge reported 0/8 compiled because of unsolved_goals at non-closing step_idx. v22.07 audited each: 6 candidates produced candidate_witness signatures EXACTLY equal to gold_witness on a non-closing step (qualifies as strict_same_step_positive_via_witness_equality_on_non_closing_step per the v21.06 typed-label sub-bucket); 2 produced witnesses not equal to gold (hard negatives \u2014 one simp_only normalization divergence on 0079, one type_mismatch on a speculative prepended-identity rewrite on 0000); 0 harmful mismatches; 0 pull-forwards. Contract floor was metrics.new_strict_or_witness_equality_labels >= 1 AND harmful_compiled_mismatch_actions == 0. Audit count = 6 \u2265 1 with harmful = 0. Contract resolves TRUE. Noether's structural prediction (row_0000 rank-1 verbatim-prefix MUST match gold-truncated state by construction) was correct. Anti-laundering caveat: these are witness-equality matches on non-closing steps, still NOT promoted into the canonical compile-backed strict same-step training table; the v22.04 adjudication controls (leave-one-row-out, random-label, class-weight) on the prior 8-label moat are STILL OUTSTANDING and should be run before any claim that the moat generalises in a model-delta sense.",
+    "resolved_at": "2026-05-14T23:28:59Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T23:28:59Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "Claude",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 5.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.66,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:24:24Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "resolved_at": "2026-05-14T23:28:59Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "Franklin",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": -0.5,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 4.5,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:24:24Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "resolved_at": "2026-05-14T23:28:59Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "Noether",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 4.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.75,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:24:24Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:26:28Z",
+        "resolved_at": "2026-05-14T23:28:59Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2059_union_training_readiness_gate_after_charfun_strict",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json"
+  },
+  "baseline_action": "Treat the new strict row as training readiness.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2059_union_training_readiness_gate_after_charfun_strict",
+  "cost_penalty": 0.1,
+  "counterfactual_action": "Run a union readiness gate before training.",
+  "created_at": "2026-05-14T18:25:21Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1765,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_union_training_gate",
+    "score": 0.4286,
+    "selected_domain": "gp225_pre_gnn_replay_gate",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4286,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1765,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.4286,
+        "score_rows": 2,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.0976,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1579,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1282,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0976,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may defer model training again"
+    ],
+    "positive": [
+      "prevents single-row training Goodhart",
+      "converts manifest change into concrete next experiment"
+    ]
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.35,
+  "layer": "meso",
+  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2059_union_training_readiness_gate_after_charfun_strict.json has status passed, strict rows=14, repaired charFunDual counted, older quarantines preserved, training_now=false, gnn_blocked=true, and next action is heldout/broader union accounting rather than immediate model training.",
+  "question": "Will v20.59 produce a union training-readiness gate after the repaired charFunDual strict row that preserves the 14-row manifest update but keeps GNN/cross-encoder training blocked with a concrete next gate?",
+  "risk_penalty": 0.08,
+  "success_threshold": "1.0",
+  "task_type": "pre_gnn_union_training_gate",
+  "value_if_success": 0.65,
+  "void_conditions": "Void only if v20.58 latest manifest is missing."
+}

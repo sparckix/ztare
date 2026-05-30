@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+  "contract_question": "tick607 carve-out-3: a COLD de-anchored agent given ONLY the now-exhaustively-mapped residual (16 recurrences, route-invariant supercritical-enstrophy atom, killed set enumerated, the everything-dimensionless-or-secretly-TypeI invariant, the generating-function insight) plus the open ask: is there ANY structurally-absent move outside the killed set, OR is route-1 provably terminal \u2014 and if terminal give the cleanest NEW route-invariance argument not a re-vocabularization. Success = the cold agent yields either a genuinely structurally-distinct candidate worth a disciplined tick, OR a NEW derived route-invariance argument; result then adversary-checked; no laundering, no pessimistic hand-wave. Fail = vacuous, OR a disguised recast of a killed move, OR pessimism without a new derivation.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T21:21:40Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.55,
+  "rationale_short": "Cold-outside-view has twice this session produced GPT-5.5-comparable structural reframes from the residual doc (scale-transfer operator; porosity). The residual is now far sharper/more-constrained, so P(genuinely-new structurally-distinct candidate) is lower than before but P(a NEW clean derived route-invariance argument) is high; either is contract-success. 0.55 = P(non-vacuous non-laundered non-pessimistic cold output adversary-checked).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

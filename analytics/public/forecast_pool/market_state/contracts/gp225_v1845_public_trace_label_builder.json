@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T15:25:18Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 2.5,
+    "expected_value": 1.1500980093191169,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.17,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.025,
+    "p_success": 0.4896650077659307,
+    "participants": [
+      {
+        "agent_id": "codex_rd_local",
+        "domain": "gp225_public_trace_labels",
+        "p_success": 0.4,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_readonly_gp230",
+        "domain": "gp225_public_trace_labels",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.18000000000000002
+      },
+      {
+        "mode": "tactics_mostly_local_hyp_or_structural",
+        "p": 0.12
+      },
+      {
+        "mode": "target_refs_not_independent_of_tactic_text",
+        "p": 0.12
+      },
+      {
+        "mode": "state_delta_not_closure_value",
+        "p": 0.11
+      },
+      {
+        "mode": "candidate_pool_oracle_from_tactic_string",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1845_public_trace_label_builder.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1845_public_trace_label_builder.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1845_public_trace_label_builder.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1845_public_trace_label_builder.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1845_public_trace_label_builder.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 5.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T15:22:24Z",
+    "created_by": "codex_rd",
+    "horizon": "single v18.45 saved-artifact script run",
+    "layer": "micro",
+    "objective_resolver": "Resolve from analytics/public/leanmill/results/v1845_public_trace_candidate_pool_and_target_label_builder.json metrics.",
+    "question": "Will v18.45 convert v17.39 public before/action/after traces into at least 50 candidate-pool target-label rows, with at least 20 baseline-unsaturated rows and zero unquarantined false accepts, while keeping GNN/cross-encoder training blocked?",
+    "success_threshold": "rows=120 AND extractable_target_ref_rows>=55 AND candidate_pool_rows>=50 AND baseline_unsaturated_rows>=20 AND unquarantined_false_accepts=0 AND training_now=false AND gnn_blocked=true",
+    "task_type": "gp225_public_trace_label_builder"
+  },
+  "contract_id": "gp225_v1845_public_trace_label_builder",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd_local"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230",
+        "raw_agent_ids": [
+          "codex_readonly_gp230"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_local",
+      "codex_readonly_gp230"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_local",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1845_public_trace_label_builder/codex_rd_local.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes": 2.0,
+        "forecasted_at": "2026-05-13T15:22:32Z",
+        "p_success": 0.4,
+        "rationale_short": "Public traces likely yield many state-delta labels but fewer true target refs. The discriminator is whether enough non-oracle candidate-pool rows survive action-family/local-name baselines to justify replay verification.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1845_public_trace_label_builder/codex_readonly_gp230.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes": 3.0,
+        "forecasted_at": "2026-05-13T15:24:59Z",
+        "p_success": 0.58,
+        "rationale_short": "Forecast agent was dispatched before v18.45 execution but recorded after completion notification; use as pre-dispatch-agent-inclusive price, not strict timestamp-sealed price. Positive prior from v17.39/v17.40/v17.78; main risk is tactic-string target refs not independent target-equivalence labels.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 0.3,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T15:25:34Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.4896650077659307,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "other",
+        "p": 0.18000000000000002
+      },
+      "voi_proxy": 1.0299
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 2.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.4896650077659307,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.18000000000000002
+      },
+      {
+        "mode": "tactics_mostly_local_hyp_or_structural",
+        "p": 0.12
+      },
+      {
+        "mode": "target_refs_not_independent_of_tactic_text",
+        "p": 0.12
+      },
+      {
+        "mode": "state_delta_not_closure_value",
+        "p": 0.11
+      },
+      {
+        "mode": "candidate_pool_oracle_from_tactic_string",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.2682,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T15:25:48Z"
+  }
+}

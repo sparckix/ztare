@@ -1,0 +1,44 @@
+{
+  "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
+  "mean_brier": 0.11700000000000002,
+  "mean_log_score": -0.4095820105717162,
+  "outcome": {
+    "actual_cost_agent_minutes": 9.0,
+    "artifact_hash": "2ec2c3793e32567f8cd2bdd7b689ebacd0c1dfc99efe2162266c28e9f344e32c",
+    "artifact_path": "analytics/public/leanmill/results/v1924_leanhammer_local_decl_smoke.json",
+    "compile_status": "incompatible_toolchain_headers",
+    "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
+    "error_type": "leanhammer_mathlib_toolchain_mismatch",
+    "goal_delta": null,
+    "resolution_note": "Contract threshold passed at interface level: three LeanHammer invocations and per-row artifacts in external clone, no main project mutation, no heavy training, GNN blocked. Scientific benchmark score remains unavailable because all three rows hit incompatible Mathlib olean headers from Lean 4.29 LeanHammer versus GP-225 Lean 4.30-rc2 Mathlib build.",
+    "resolved_at": "2026-05-13T22:39:17Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T22:39:20Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 9.0,
+      "agent_id": "confucius",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 9.0,
+      "domain": "gp225_external_baseline_smoke",
+      "expected_cost_agent_minutes": 18.0,
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 9.0,
+      "agent_id": "helmholtz",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 9.0,
+      "domain": "gp225_external_baseline_smoke",
+      "expected_cost_agent_minutes": 18.0,
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true
+    }
+  ]
+}

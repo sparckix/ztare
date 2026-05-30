@@ -1,0 +1,97 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_suitable_local_energy_defect_source_20260514_tick388",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json"
+  },
+  "baseline_action": "Directly assert FixedCutoffLocalEnergySignedMeasureIdentitySource fields.",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_suitable_local_energy_defect_source_20260514_tick388",
+  "cost_penalty": 0.18,
+  "counterfactual_action": "Add a lower suitable-local-energy defect/residual source and constructor into the signed identity.",
+  "created_at": "2026-05-14T14:41:26Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2069,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_local_energy_measure_split",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2069,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 10,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.1875,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 56.0,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 126,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.125,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 12,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0233,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 7,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "decision_change": "if source stays scalar/prefix-only, stop and add a no-go guard instead",
+    "failure_mode_preconditioning": "alphaI may be final-route slack renamed as a defect"
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.64,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles and the diff adds a lower source tying alphaI to a fixed local-energy defect/residual before positive variation, with guards against final route slack.",
+  "question": "Can this tick add a compiled non-tautological suitable-local-energy defect source below FixedCutoffLocalEnergySignedMeasureIdentitySource?",
+  "risk_penalty": 0.25,
+  "success_threshold": "lake env lean ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean passes; no new sorry/admit in touched region; source is below signed identity rather than another scalar route wrapper",
+  "task_type": "ns_route1_lean_frontier",
+  "value_if_success": 0.72,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

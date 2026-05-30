@@ -1,0 +1,107 @@
+{
+  "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "skip; route to next deterministic primitive (typed-template synthesis)",
+      "counterfactual_action": "skip and accept that pure tactics cannot replicate canonical positives without Mathlib-lemma application",
+      "externality_hypotheses": {
+        "if_at_least_one_then_partial_deterministic_floor": "any non-zero close gives a deterministic baseline above zero that future model-delta tests must exceed",
+        "if_zero_deterministic_floor_then_lemma_application_required": "if pure decision procedures close zero canonical train rows, the harness requires specific Mathlib lemma machinery; pure-tactic baseline is dead",
+        "simp_at_least_partially_solves_some_simple_rows": "current_scale_0025 lineMap_apply_one gold is `simp [lineMap_apply]` \u2014 bare simp may close it via the global simp set, but this is borderline indirect leakage"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "new_next_action": "Run v24.01 indirect-leakage audit on 0076 aesop closure + v24.02 broadened-metadata-scan on 5 missing rows.",
+      "realized_failure_mode_ids": [
+        "simp_or_aesop_closes_at_least_one_simple_train_row",
+        "indirect_simp_set_leakage_audit_required_post_hoc"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.17345,
+  "mean_log_score": -0.5379364008493102,
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "artifact_hash": null,
+    "artifact_path": "analytics/public/leanmill/results/v24_00_deterministic_cascade_canonical_train_audit.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": null,
+    "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "Run v24.01 indirect-leakage audit on 0076 aesop closure + v24.02 broadened-metadata-scan on 5 missing rows.",
+    "old_next_action": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "simp_or_aesop_closes_at_least_one_simple_train_row",
+      "indirect_simp_set_leakage_audit_required_post_hoc"
+    ],
+    "resolution_note": "10/15 rows ran (5 missing metadata in v2*.json scan; will recover in v24.01). aesop closed current_scale_0076 (image_symm_eq_preimage). 0 false positives. SINGLE positive in aesop family \u2014 INDIRECT LEAKAGE SUSPECT: aesop global @[simp] set likely includes Equiv.symm_symm + image_eq_preimage_symm (the gold tactic's named lemmas). Threshold met literally; promotion to canonical PENDING indirect-leakage audit v24.01. Forecasters Franklin/Noether (0.62) + Claude (0.55) correctly anchored on the simp/aesop-closes-simple-row failure mode.",
+    "resolved_at": "2026-05-15T02:00:02Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:43Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "claude",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": -5.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 25.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.58,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T01:42:59Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T01:47:32Z",
+        "resolved_at": "2026-05-15T02:00:02Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "claude_rd",
+      "brier": 0.20249999999999996,
+      "cost_error_agent_minutes": -8.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.55,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5978370007556204,
+      "p_success": 0.55,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T01:42:59Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T01:47:32Z",
+        "resolved_at": "2026-05-15T02:00:02Z"
+      }
+    }
+  ]
+}

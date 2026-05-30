@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-05-19T19:26:27Z",
+  "ledger_path": "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl",
+  "recent_action_impact_rows": [],
+  "schema_version": 1,
+  "state_paths": {
+    "action_intelligence": "analytics/public/action_intelligence/state/action_intelligence.json",
+    "shadow_recommendations": "analytics/public/action_intelligence/state/shadow_recommendations.json",
+    "source_health": "analytics/public/action_intelligence/state/source_health.json"
+  },
+  "summary": {
+    "action_impact_rows": 0,
+    "blocking_source_health_issues": 1,
+    "consumed_surfacing_events": 0,
+    "forecast_ops_rows": 0,
+    "shadow_recommendations": 26,
+    "surfacing_event_rows": 0,
+    "trajectory_surfacing_rows": 0
+  }
+}

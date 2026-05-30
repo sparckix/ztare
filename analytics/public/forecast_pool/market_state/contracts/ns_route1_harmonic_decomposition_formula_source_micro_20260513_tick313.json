@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:39:57Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 73.66599053414471,
+    "expected_value": 1.0633289648531759,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.24000000000000002,
+    "p_needs_new_lemma": 0.4696146044624747,
+    "p_regression": 0.09012846517917514,
+    "p_success": 0.445058667686899,
+    "participants": [
+      {
+        "agent_id": "Hooke",
+        "domain": "ns_route1_pde",
+        "p_success": 0.44,
+        "weight": 1.022
+      },
+      {
+        "agent_id": "McClintock",
+        "domain": "ns_route1_pde",
+        "p_success": 0.45,
+        "weight": 1.0486
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "identity_collapses_to_receipt_projection",
+        "p": 0.17218390804597702
+      },
+      {
+        "mode": "identity_wrapper_only",
+        "p": 0.167816091954023
+      },
+      {
+        "mode": "decomposition_reserve_definition_not_exposed",
+        "p": 0.12154158215010143
+      },
+      {
+        "mode": "lean_friction",
+        "p": 0.12000000000000001
+      },
+      {
+        "mode": "decomposition_reserve_not_exposed",
+        "p": 0.11845841784989859
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 84.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:39:23Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-13 same tick",
+    "layer": "micro",
+    "objective_resolver": "lake env lean and lake build pass for ns_route1_fresh_frequency_coercivity_adapter; source must split harmonic reserve source from pressure decomposition reserve and receipt projection",
+    "question": "Will this tick add a compiling harmonic pressure decomposition source below FreshFrequencyHarmonicPressureReserveSource without mutating pre-GNN harness?",
+    "success_threshold": "compiles and no new sorry; harmonic source constructor consumes lower decomposition object",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Hooke",
+        "raw_agent_ids": [
+          "Hooke"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:McClintock",
+        "raw_agent_ids": [
+          "McClintock"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Hooke",
+      "McClintock"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Hooke",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313/hooke.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 100.0,
+        "forecasted_at": "2026-05-13T23:39:37Z",
+        "p_success": 0.44,
+        "rationale_short": "B is second-ranked; useful if it splits harmonic source from receipt projection without wrapper laundering.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "McClintock",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313/mcclintock.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 48.0,
+        "forecasted_at": "2026-05-13T23:39:37Z",
+        "p_success": 0.45,
+        "rationale_short": "Important branch after Riesz; risk is restating pressureReserve receipt rather than decomposing harmonic source.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:41:46Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.01,
+      "p_success": 0.445058667686899,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "identity_collapses_to_receipt_projection",
+        "p": 0.17218390804597702
+      },
+      "voi_proxy": 1.257
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 73.66599053414471,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.445058667686899,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "identity_collapses_to_receipt_projection",
+        "p": 0.17218390804597702
+      },
+      {
+        "mode": "identity_wrapper_only",
+        "p": 0.167816091954023
+      },
+      {
+        "mode": "decomposition_reserve_definition_not_exposed",
+        "p": 0.12154158215010143
+      },
+      {
+        "mode": "lean_friction",
+        "p": 0.12000000000000001
+      },
+      {
+        "mode": "decomposition_reserve_not_exposed",
+        "p": 0.11845841784989859
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.30805000000000005,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:41:46Z"
+  }
+}

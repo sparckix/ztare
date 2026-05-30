@@ -1,0 +1,94 @@
+{
+  "contract_id": "ns_clay_gowers_no_silent_flat_defect_or_ess_cf_dichotomy_tick442_20260514",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "attack one of three named residuals: L3EndpointBlowupResidual or VorticityDirectionDecoherenceResidual or GenuineMeasureValuedFlatDefect; or revert per ns_graph_tick to Track-B top targets",
+      "old_next_action": "attempt PDE closure of NoSilentFlatDefectProfile directly"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.097,
+  "mean_log_score": -0.37200975546685094,
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "artifact_hash": "e9dc492908525201d0e96ea4427a005e27d163d19217a73e69c6b32cbf460692",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "clean",
+    "contract_id": "ns_clay_gowers_no_silent_flat_defect_or_ess_cf_dichotomy_tick442_20260514",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "attack one of three named residuals: L3EndpointBlowupResidual or VorticityDirectionDecoherenceResidual or GenuineMeasureValuedFlatDefect; or revert per ns_graph_tick to Track-B top targets",
+    "old_next_action": "attempt PDE closure of NoSilentFlatDefectProfile directly",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Backup (b) shipped: SilentFlatDefectProfile + ESSKillsSilentFlatOrdinaryProfile + CFKillsSilentFlatOrdinaryProfile + SilentFlatProfileFiveBranchDichotomy + ESSAndCFDichotomyClosesSilentFlatBranch + noSilentFlatDefectProfile_of_dichotomy_and_killers (real disjunction-elimination proof) + three named residuals (L3EndpointBlowupResidual, VorticityDirectionDecoherenceResidual, GenuineMeasureValuedFlatDefect) + scope guards + NoSilentFlatDefectProfile.ofDichotomyAndKillers constructor. Lake env lean compiles clean; sorry/admit scan on touched portion (lines 11159-11572) clean. Primary attempt (a) honestly failed: no PDE closure of NoSilentFlatDefectProfile is shipped; the named primitive is inhabited only via the conditional dichotomy bundle, which forwards the analytic content to the three open residuals. Honest scope: ESS and CF are externally cited; the dichotomy itself is an analytic axiom (DiPerna-Majda decomposition); the three residual exclusions are Prop hypotheses. NOT Clay closure.",
+    "resolved_at": "2026-05-15T01:02:01Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-15T01:02:02Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "codex_rd",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T00:58:40Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T00:58:52Z",
+        "resolved_at": "2026-05-15T01:02:01Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 50.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T00:58:40Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T00:58:52Z",
+        "resolved_at": "2026-05-15T01:02:01Z"
+      }
+    }
+  ]
+}

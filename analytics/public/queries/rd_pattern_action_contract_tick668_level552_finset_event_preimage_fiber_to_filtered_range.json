@@ -1,0 +1,39 @@
+{
+  "contract_id": "rd-pattern-action-contract-tick668-level552-finset-event-preimage-fiber-to-filtered-range",
+  "tick_id": "TICK668",
+  "level": 552,
+  "selected_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "GP-219:pde_estimate_craft_ops",
+    "typed_coverage_packet_appearance",
+    "finite_support_extraction",
+    "finite_image_support",
+    "provenance_edge_direction",
+    "provenance_acyclic_edge"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "filtered-range final-prefix support was sourced from finite maximum data",
+      "check": "derive finite maximum data internally from concrete Finset event-preimage fiber source"
+    },
+    {
+      "residual": "finite fiber could be a downstream target restatement",
+      "check": "finite support/image support receipts fix the domain as Finset.range (supportLength - 1)"
+    },
+    {
+      "residual": "source contraction could form a cycle",
+      "check": "provenance acyclicity receipt forbids Level551/550/549 as Level552 sources"
+    }
+  ],
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level552_finset_event_preimage_fiber_to_filtered_range_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level552_finite_support_extraction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level552_finite_image_support_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level552_provenance_edge_direction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level552_provenance_acyclic_edge_receipt.json"
+  ],
+  "positive_forecast": "Concrete Finset event-preimage fiber data should construct the filtered-range source through the existing finite maximum bridge without importing a downstream filtered-range family.",
+  "nearest_confuser": "finite event-preimage maximum data used directly as source",
+  "confuser_distinction": "Level552 consumes concrete Finset fiber data and constructs finite maximum data before filtered-range support is available"
+}

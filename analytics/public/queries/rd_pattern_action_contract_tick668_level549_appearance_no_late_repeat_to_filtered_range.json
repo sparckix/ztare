@@ -1,0 +1,36 @@
+{
+  "tick": "tick668",
+  "target": "L3AFilteredRangeEventPreimageFromAppearanceNoLateRepeatSource.toFilteredRangeEventPreimageFromRankBoundarySource",
+  "pattern_chain": [
+    "Gowers-First-Formalize-Second",
+    "PATTERN-028 recursive tool-depth loop",
+    "PATTERN-011 hard mathematical residual swarm lane"
+  ],
+  "positive_forecast_phrasing": "A successful step should expose no-late-repeat appearance-index data as the lower live source of the filtered finite-prefix support.",
+  "residual_to_check_edges": [
+    {
+      "residual": "filtered final-prefix support still stopped at selected-node rank-boundary data",
+      "check": "derive Level548 source from appearance-index no-late-repeat source",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    },
+    {
+      "residual": "appearance-index route could become circular if rank-boundary or filtered-range data is imported upstream",
+      "check": "run provenance acyclicity gate with Level548/Level547/Level546 forbidden as sources",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level549_provenance_acyclic_edge_receipt.json"
+    }
+  ],
+  "anti_pattern_guards": [
+    "no rank-boundary assumption as source",
+    "no filtered-range backedge into no-late-repeat data",
+    "no endpoint-capacity-only appearance bound",
+    "no post-payoff appearance index selection"
+  ],
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level549_appearance_no_late_repeat_to_filtered_range_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level549_finite_support_extraction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level549_finite_image_support_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level549_provenance_edge_direction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level549_provenance_acyclic_edge_receipt.json"
+  ]
+}
+

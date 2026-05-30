@@ -1,0 +1,125 @@
+{
+  "contract_id": "ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Leave NonflatNonInheritedBadCenterForcesFreshFrequencyPacket as an opaque next target.",
+      "counterfactual_action": "Expose the lower fresh-packet audit and locks as the exact remaining source target."
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "fresh_packet_gate_sharpened",
+        "anti_tautology_guard",
+        "lean_reuse"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "fresh_packet_audit_unproved",
+        "beta_still_open"
+      ],
+      "new_next_action": "Attack FreshComparablePacketSideConditionAudit: nonflat/inherited/flat partition, fresh event selection rule, payment/carrier locks, and no event-price definition from beta-radius target.",
+      "old_next_action": "Attack NonflatNonInheritedBadCenterForcesFreshFrequencyPacket as a single theorem.",
+      "preconditioner_effect": "Prevented a generic fresh-packet theorem from hiding event selection and beta price independence.",
+      "preconditioner_source": "scientific amnesia scan + sidecar Darwin prompt + Gowers-first classifier",
+      "realized_failure_mode_ids": [
+        "fresh_packet_side_condition_audit_unproved",
+        "event_selection_rule_unproved",
+        "payment_carrier_locks_unproved"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.10880000000000001,
+  "mean_log_score": -0.3926312347338755,
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "artifact_hash": "6b38b442d419d6f119914228711a9daba3841e61ba673e4d07eb9ca98887d0b1",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "pass",
+    "contract_id": "ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "fresh_packet_gate_sharpened",
+      "anti_tautology_guard",
+      "lean_reuse"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 5,
+    "negative_externality_tags": [
+      "fresh_packet_audit_unproved",
+      "beta_still_open"
+    ],
+    "new_next_action": "Attack FreshComparablePacketSideConditionAudit: nonflat/inherited/flat partition, fresh event selection rule, payment/carrier locks, and no event-price definition from beta-radius target.",
+    "old_next_action": "Attack NonflatNonInheritedBadCenterForcesFreshFrequencyPacket as a single theorem.",
+    "preconditioner_effect": "Prevented a generic fresh-packet theorem from hiding event selection and beta price independence.",
+    "preconditioner_source": "scientific amnesia scan + sidecar Darwin prompt + Gowers-first classifier",
+    "realized_failure_mode_ids": [
+      "fresh_packet_side_condition_audit_unproved",
+      "event_selection_rule_unproved",
+      "payment_carrier_locks_unproved"
+    ],
+    "resolution_note": "Added BetaNonflatFreshPacketSourceSplit, assembly def nonflatFreshPacket_of_betaSourceSplit, and guard BetaNonflatFreshPacketSourceSplitIsNotClosure. Lean passes; no sorry/admit. The patch reduces NonflatNonInheritedBadCenterForcesFreshFrequencyPacket to FreshComparablePacketSideConditionAudit plus pressure same-carrier, square-budget, and bounded-fanout locks, while keeping partition/selection/payment audit open.",
+    "resolved_at": "2026-05-14T21:58:07Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T21:58:07Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "codex-rd",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "ns_n8_beta",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:56:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:56:39Z",
+        "resolved_at": "2026-05-14T21:58:07Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "meta-darwin-proxy",
+      "brier": 0.16000000000000003,
+      "cost_error_agent_minutes": 18.0,
+      "domain": "ns_n8_beta",
+      "expected_cost_agent_minutes": 34.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.5108256237659907,
+      "p_success": 0.6,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:56:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:56:39Z",
+        "resolved_at": "2026-05-14T21:58:07Z"
+      }
+    }
+  ]
+}

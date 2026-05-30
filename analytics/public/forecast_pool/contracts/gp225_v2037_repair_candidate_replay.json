@@ -1,0 +1,101 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2037_repair_candidate_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2037_repair_candidate_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2037_repair_candidate_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2037_repair_candidate_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2037_repair_candidate_replay.json"
+  },
+  "baseline_action": "do not replay repaired candidates; keep v20.35 as static pre-replay supply",
+  "budget_agent_minutes": 41.12,
+  "budget_agent_minutes_source": "domain_effort_prior:exact",
+  "contract_id": "gp225_v2037_repair_candidate_replay",
+  "cost_penalty": 0.06,
+  "counterfactual_action": "build replay adapter and run strict-implies-compile replay over v20.35 repaired candidates",
+  "created_at": "2026-05-14T15:28:35Z",
+  "created_by": "codex_RD_2026_05_14",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 41.12,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "general",
+    "score": 1.0,
+    "selected_domain": "general",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 41.12,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 4,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.0625,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0625,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.0476,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "May show deterministic repairs still fail Lean, redirecting to external adapter or source-discovery rather than more hand repairs"
+    ],
+    "positive": [
+      "May convert repaired public-adapter supply into compile-backed labels for future union training"
+    ]
+  },
+  "horizon": "one adapter plus local Lean replay over 20 v20.35 repaired candidates",
+  "information_value": 0.7,
+  "layer": "micro",
+  "objective_resolver": "Success iff a v20.37 replay artifact exists and reports attempted_candidate_rows >= 20, compiled_candidate_actions >= 1, new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions == 0, source-policy flags clean, train_gnn_now=false, and gnn_blocked=true. A replay-compatible adapter from v20.35 may be built, but labels count only from Lean replay.",
+  "question": "Will replay of the v20.35 source-aligned repaired candidates add at least one compile-backed same-target strict row without harmful mismatches?",
+  "risk_penalty": 0.18,
+  "success_threshold": "attempted_candidate_rows>=20,compiled_candidate_actions>=1,new_strict_same_target_rows>=1,harmful_mismatches=0,no_forbidden_context,no_training,gnn_blocked_true",
+  "task_type": "gp225_public_adapter_repair_candidate_replay_micro",
+  "value_if_success": 0.9,
+  "void_conditions": "v20.35 or v20.36 missing, adapter cannot preserve source-policy fields, or replay bridge cannot hydrate candidate rows"
+}

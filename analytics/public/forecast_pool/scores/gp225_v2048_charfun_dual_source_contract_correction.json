@@ -1,0 +1,138 @@
+{
+  "contract_id": "gp225_v2048_charfun_dual_source_contract_correction",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Proceed from v20.46 canary split.",
+      "counterfactual_action": "Correct charFunDual source contract before replay pricing.",
+      "externality_hypotheses": {
+        "negative": [
+          "still no compile evidence"
+        ],
+        "positive": [
+          "prevents target-shape Goodharting",
+          "restores source-contract alignment"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Shannon",
+        "Hopper"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "target_shape_alignment",
+        "anti_goodhart",
+        "source_contract_correction"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "still_no_compile_evidence"
+      ],
+      "new_next_action": "price corrected charFunDual/L canary replay or verify helper source-safety",
+      "old_next_action": "price v20.46 charFun_map_eq/t canary replay",
+      "preconditioner_effect": "Prevented replay pricing against the stale non-dual canary and forced target-shape correction first.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2047_historic_target_shape_audit_for_charfun_canary.json",
+      "realized_failure_mode_ids": [
+        "corrected_template_still_semantic_not_compile",
+        "historic_names_not_source_safe"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.07085000000000001,
+  "mean_log_score": -0.30846357732426816,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "ece757cfb8e2b8af988bde4abbcc3a4bb394e379b57e1f08561c2fb5e1bb84a4",
+    "artifact_path": "analytics/public/leanmill/results/v2048_charfun_dual_source_contract_correction.json",
+    "changed_by_forecast_ids": [
+      "Shannon",
+      "Hopper"
+    ],
+    "compile_status": "static_source_contract_correction_passed",
+    "contract_id": "gp225_v2048_charfun_dual_source_contract_correction",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "target_shape_alignment",
+      "anti_goodhart",
+      "source_contract_correction"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "still_no_compile_evidence"
+    ],
+    "new_next_action": "price corrected charFunDual/L canary replay or verify helper source-safety",
+    "old_next_action": "price v20.46 charFun_map_eq/t canary replay",
+    "preconditioner_effect": "Prevented replay pricing against the stale non-dual canary and forced target-shape correction first.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2047_historic_target_shape_audit_for_charfun_canary.json",
+    "realized_failure_mode_ids": [
+      "corrected_template_still_semantic_not_compile",
+      "historic_names_not_source_safe"
+    ],
+    "resolution_note": "v20.48 corrected the charFun target family to charFunDual/L, emitted two static-only corrected templates, forbade the old charFun_map_eq/t pattern, and kept replay/training blocked.",
+    "resolved_at": "2026-05-14T17:41:21Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T17:41:26Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Hopper",
+      "brier": 0.08410000000000002,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn_source_contract_correction",
+      "expected_cost_agent_minutes": 20.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.62,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.342490308946776,
+      "p_success": 0.71,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:39:50Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:40:04Z",
+        "resolved_at": "2026-05-14T17:41:21Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Shannon",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "gp225_pre_gnn_source_contract_correction",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.63,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:39:50Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:40:04Z",
+        "resolved_at": "2026-05-14T17:41:21Z"
+      }
+    }
+  ]
+}

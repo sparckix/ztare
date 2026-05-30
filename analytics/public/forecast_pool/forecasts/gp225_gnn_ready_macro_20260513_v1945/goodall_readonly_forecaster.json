@@ -1,0 +1,21 @@
+{
+  "agent_id": "goodall_readonly_forecaster",
+  "contract_id": "gp225_gnn_ready_macro_20260513_v1945",
+  "contract_question": "GP-225 reaches a GNN-training-ready label gate within the next 10 GP-225 ticks",
+  "domain": "gp225_macro",
+  "expected_cost_agent_minutes": 240.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "auxiliary_not_strict": 0.35,
+    "baseline_absorbs_signal": 0.2,
+    "holdout_diversity_collapse": 0.2,
+    "teacher_oracle_quarantine": 0.25
+  },
+  "forecasted_at": "2026-05-14T00:28:11Z",
+  "p_dependency_issue": 0.62,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.08,
+  "p_success": 0.18,
+  "rationale_short": "Blocked after v19.41 pull-forward-only canary and v19.43 0/14 compiled holdout; GNN-ready needs heldout labels plus baseline/model-delta evidence.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_gehring_Ainfty_chain_closes_clay_macro_20260515_tick555",
+  "contract_question": "tick555 assembles a gate-bound candidate Clay-closure chain (narrow Track-B route-1): GPT-5.5 P1 Young-Bernstein (PROOF_ROUTE) \u2192 [OPEN: same-cube reverse-Holder structure, gate C*(q-1)<gehringThreshold] \u2192 Gehring self-improvement \u2192 A_inf weight \u2192 weighted-Vitali beta>0 \u2192 tick554 \u2192 tick458 disjoint radius-packing \u2192 tick551 freshness \u2192 closure. Every link proved-Lean or cited-textbook except the gated open link. Does the GPT-5.5 P1 bound, reorganized over the same cube (plausibly via a Caccioppoli + Sobolev-Poincare precondition), satisfy the reverse-Holder pass-gate \u2014 closing Clay route-1 \u2014 or is it only a cross-quantity bound (Gehring inapplicable; tick554 beta=0 flux-anti-aligned residual)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cross_quantity_only_gehring_inapplicable": 0.32,
+    "gehring_admissibility_constant_too_weak": 0.12,
+    "positive_same_carrier_cutoff_flux_not_caccioppoli_admissible": 0.46,
+    "stale_or_refactored_route_signatures": 0.1
+  },
+  "forecast_externality_tags": [
+    "same_cube_reverse_holder",
+    "gehring_gate",
+    "localized_flux_caccioppoli",
+    "route1_clay_chain"
+  ],
+  "forecasted_at": "2026-05-15T23:54:01Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.8,
+  "p_regression": 0.03,
+  "p_success": 0.23,
+  "rationale_short": "Same-contract evidence is still mostly structural: the chain is fully pinned except the open positive-flux same-cube estimate, and the ledger does not show a direct Caccioppoli/Sobolev-Poincare witness for this carrier. The most likely outcome is that the bound stays cross-quantity or needs one localized-flux lemma before Gehring applies; that keeps p_success below one-third and leaves the main risk in admissibility rather than downstream A_inf/Vitali links.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "positive_same_carrier_cutoff_flux_not_caccioppoli_admissible",
+    "cross_quantity_only_gehring_inapplicable",
+    "gehring_admissibility_constant_too_weak",
+    "stale_or_refactored_route_signatures"
+  ]
+}

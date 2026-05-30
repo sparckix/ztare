@@ -1,0 +1,32 @@
+[
+  {
+    "name": "AllOutputPrefixPriceTendsToDeclaredTarget",
+    "kind": "def",
+    "outcome": "attempted",
+    "proof_excerpt": "AllOutputPrefixPriceTendsToDeclaredTarget--OutputONLYtheproof:AllOutputPrefixPriceTendsToDeclaredTarget--OutputONLYtheproof:AllOutputPrefixPriceTendsToDeclaredTarget--OutputONLYtheproof:AllOutputPrefixPriceTendsToDeclaredTarget--OutputONLYtheproof:AllOutputPrefixPriceTendsToDeclaredTarget--OutputONL"
+  },
+  {
+    "name": "AllOutputPrefixPriceTailCauchy",
+    "kind": "def",
+    "outcome": "attempted",
+    "proof_excerpt": "AllOutputPrefixPriceTailCauchy--OutputONLYtheproof:AllOutputPrefixPriceTailCauchy--OutputONLYtheproof:AllOutputPrefixPriceTailCauchy--OutputONLYtheproof:AllOutputPrefixPriceTailCauchy--OutputONLYtheproof:AllOutputPrefixPriceTailCauchy--OutputONLYtheproof:AllOutputPrefixPriceTailCauchy--OutputONLYthe"
+  },
+  {
+    "name": "LPBeatBackscatterChargeStream",
+    "kind": "structure",
+    "outcome": "attempted",
+    "proof_excerpt": "positivePartx^(2:Nat)leftPrice*rightPrice--/theoremns_littlewood_paley_paraproduct_bridge(leftPricerightPrice:Real)(hleft:0leftPrice)(hright:0rightPrice)(hcauchy:x^(2:Nat)leftPrice*rightPrice):positivePartx^(2:Nat)leftPrice*rightPrice:=byhavehprod_nonneg:0leftPrice*rightPrice:=mul_nonneghlefthrightb"
+  },
+  {
+    "name": "BeatBackscatterAntiTautologyRules",
+    "kind": "structure",
+    "outcome": "attempted",
+    "proof_excerpt": "positivePartx^(2:Nat)leftPrice*rightPrice--/theorembeat_backscatter_anti_tautology_rules_output_only_the_proof(leftPricerightPrice:Real)(hleft:0leftPrice)(hright:0rightPrice)(hcauchy:x^(2:Nat)leftPrice*rightPrice):positivePartx^(2:Nat)leftPrice*rightPrice:=byhavehprod_nonneg:0leftPrice*rightPrice:=m"
+  },
+  {
+    "name": "UniformLPBeatBackscatterChargeObligation",
+    "kind": "structure",
+    "outcome": "attempted",
+    "proof_excerpt": "positivePartx^(2:Nat)leftPrice*rightPrice--/theorembeat_backscatter_coherence_charge_obligation_Phase5_IH_5II_5IK_exposed_as_specific_TrackB_gap_ordinary_cross_terms_and_positive_beat_backscatter_coherence_cannot_be_bundled_into_an_unnamed_residual_after_a_profitable_route_is_scored_this_file_stays_"
+  }
+]

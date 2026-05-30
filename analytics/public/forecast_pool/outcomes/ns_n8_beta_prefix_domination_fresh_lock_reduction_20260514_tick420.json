@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 14.0,
+  "artifact_hash": "ab743e7b4056123ba240b6152adbc7f71a1823f1ffff2404d3d66499dc2705d1",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "pass",
+  "contract_id": "ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "beta_prefix_gap_sharpened",
+    "fresh_packet_gate_exposed",
+    "anti_tautology_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 5,
+  "negative_externality_tags": [
+    "fresh_packet_theorem_unproved",
+    "beta_still_open"
+  ],
+  "new_next_action": "Attack FreshFrequencyEventSameTreeLock subprimitives: nonflat/inherited/flat fresh-packet dichotomy, gain-to-beta, square-budget radius-beta payment, bounded fanout/no-log-reuse, pressure same-carrier, flat skeleton.",
+  "old_next_action": "Prove cofinal same-tree event-budgeted incidence as a raw field.",
+  "preconditioner_effect": "Forced the tick to name hPrefixDomination as the gap and expose FreshFrequencyEventSameTreeLock rather than declaring beta closure.",
+  "preconditioner_source": "sidecar Meta-Darwin + L3 scientific-amnesia scan",
+  "realized_failure_mode_ids": [
+    "fresh_packet_subprimitives_unproved",
+    "prefix_domination_still_adapter_only",
+    "same_tree_lock_not_constructed"
+  ],
+  "resolution_note": "Added BetaPrefixDominationReducedToFreshFrequencySameTreeLock, projection prefixDominationPrimitive_of_betaFreshFrequencySameTreeLock, and guard BetaPrefixDominationFreshLockIsNotClosure. Lean passes; no sorry/admit. The patch lowers cofinal prefix domination to FreshFrequencyEventSameTreeLock and records fresh packet, gain-to-beta, square-budget, and no-log-reuse subprimitives as still required.",
+  "resolved_at": "2026-05-14T21:48:57Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted",
+  "contract_question": "An AUTOMATED grounded-iterative prover (seeded by the canonical pinned v4.29.0 sandbox's own simp?/exact?/apply?/aesop? suggestions + error-driven iteration, NO human-in-loop) run on the 12-row powered Tier-2 corpus, verified by the FIXED bundle_verify (EXACT_TIMEOUT never genuine): does it CERTIFIED-convert >= 3 of the 9 prior honest-gap rows into genuine_novel_closures (COMPILE_OK + exact? ran-to-completion could-not-close), beating the blind general battery (which certified-converted 0 of the 9: its only closures were the pre-existing T2P_118 + 2 single-lemma)?",
+  "domain": "tier2_mined_corpus_run",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "automation_cannot_compose_multistep_calc": 0.34,
+    "error_iteration_loop_diverges": 0.14,
+    "matches_or_beats_3_of_9": 0.1,
+    "only_thin_single_lemma_rows_auto_convert": 0.2,
+    "sandbox_suggestions_too_sparse_to_seed": 0.22
+  },
+  "forecast_externality_tags": [
+    "automated_grounded_iterative",
+    "bundle_path_a",
+    "read_only_attestation"
+  ],
+  "forecasted_at": "2026-05-17T12:43:27Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.4,
+  "p_regression": 0.05,
+  "p_success": 0.5,
+  "rationale_short": "Prior: deterministic-only scaffold 0/3 (LLM-composition load-bearing) \u2014 but don't pre-concede. Automation seeded by sandbox's own simp?/exact?/apply?/aesop? suggestions + error iteration should beat blind-battery 0/9 certified and likely auto-convert the thin/structural rows (T2P_80 thin, T2P_51/166 simp-only/constructor), fall short on multi-step calc rows (T2P_57/117 inline-dependency). >=3/9 is the honest over/under.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "automation_cannot_compose_multistep_calc",
+    "only_thin_single_lemma_rows_auto_convert"
+  ]
+}

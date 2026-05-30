@@ -1,0 +1,159 @@
+{
+  "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue carrying targetSlot and injectivity as opaque Level498 fields",
+      "counterfactual_action": "factor targetSlot construction into a finite incidence extraction law with totality, uniqueness/collision exclusion, same-family binding, and pre-payoff choice discipline",
+      "externality_hypotheses": {
+        "negative": "may expose that current incidence language lacks all selectable/collision fields and require a new analytic source",
+        "positive": "turns the C5-facing bridge into a named finite matching/extraction theorem rather than another socket"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex:RD",
+        "codex"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "positive_extraction_interface",
+        "selector_equality_reflection",
+        "c5_facing_source_law"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "prove the analytic selector/equality-reflection law: construct targetEventIndex and targetSlot from BadCenterEventIncidenceGeometry/eventData with collision exclusion before cardinality",
+      "old_next_action": "derive targetSlot and injectivity directly from broad incidence/prefix labels",
+      "preconditioner_effect": "forced injectivity to be derived from equality reflection before cardinality, not supplied as an opaque Level498 socket",
+      "preconditioner_source": "existing G-INCIDENCE-DERIVED-FINITE-INJECTION plus Level499 selector/equality-reflection pencil",
+      "realized_failure_mode_ids": [
+        "current_incidence_fields_prop_only",
+        "level498_schema_as_law_confuser"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.11285,
+  "mean_log_score": -0.40867539200962577,
+  "outcome": {
+    "actual_cost_agent_minutes": 36.0,
+    "artifact_hash": "08ddaa4280cb5a73790659bfe5390f8359e85eca1412d178a4303cc6350dc70a",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level499_finite_incidence_extraction_pencil.md",
+    "changed_by_forecast_ids": [
+      "codex:RD",
+      "codex"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": true,
+    "compile_status": "lake_build_pass",
+    "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "positive_extraction_interface",
+      "selector_equality_reflection",
+      "c5_facing_source_law"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 4,
+    "independent_forecaster_bet_present": true,
+    "independent_forecaster_bets": [
+      {
+        "agent_id": "codex",
+        "canonical_agent_id": "codex",
+        "forecasted_at": "2026-05-27T04:24:52Z",
+        "path": "analytics/public/forecast_pool/forecasts/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary/codex.json"
+      }
+    ],
+    "negative_externality_tags": [],
+    "new_next_action": "prove the analytic selector/equality-reflection law: construct targetEventIndex and targetSlot from BadCenterEventIncidenceGeometry/eventData with collision exclusion before cardinality",
+    "old_next_action": "derive targetSlot and injectivity directly from broad incidence/prefix labels",
+    "ordering_override_no_codex": null,
+    "ordering_override_no_independent_forecaster": null,
+    "preconditioner_effect": "forced injectivity to be derived from equality reflection before cardinality, not supplied as an opaque Level498 socket",
+    "preconditioner_source": "existing G-INCIDENCE-DERIVED-FINITE-INJECTION plus Level499 selector/equality-reflection pencil",
+    "realized_failure_mode_ids": [
+      "current_incidence_fields_prop_only",
+      "level498_schema_as_law_confuser"
+    ],
+    "resolution_note": "TRUE: Level499 added TargetSlotFromFiniteIncidenceExtractionSource, deriving Function.Injective targetSlot from slotEqualityReflection, plus L3AFiniteIncidenceTargetSlotExtractionSource packaging it into the Level498 incidence-derived source. It also added the two-target/one-slot obstruction for the sharper finite extraction source. Strict receipts, work-unit gate, orchestration gate, PDE workbench, lake env lean, and lake build all pass.",
+    "resolved_at": "2026-05-27T04:25:14Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T04:25:21Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 36.0,
+      "agent_id": "codex",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 42.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 78.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.4462871026284195,
+      "p_dependency_issue": 0.26,
+      "p_needs_new_lemma": 0.48,
+      "p_regression": 0.13,
+      "p_success": 0.64,
+      "predicted_self_error_ratio": 0.27,
+      "success_bool": true,
+      "tail_downside_worry": 34.0,
+      "tail_upside_surprise": 18.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T04:16:21Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T04:24:52Z",
+        "resolved_at": "2026-05-27T04:25:14Z"
+      },
+      "verbalized_confidence": 0.64
+    },
+    {
+      "actual_cost_agent_minutes": 36.0,
+      "agent_id": "codex:RD",
+      "brier": 0.09610000000000003,
+      "cost_error_agent_minutes": 39.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 75.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.37106368139083207,
+      "p_buy_yes_max": 0.61,
+      "p_dependency_issue": 0.21,
+      "p_needs_new_lemma": 0.46,
+      "p_regression": 0.12,
+      "p_sell_yes_min": 0.78,
+      "p_success": 0.69,
+      "predicted_brier_hi": 0.29,
+      "predicted_brier_lo": 0.14,
+      "predicted_self_error_ratio": 0.24,
+      "success_bool": true,
+      "tail_downside_worry": 32.0,
+      "tail_upside_surprise": 22.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T04:16:21Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T04:16:55Z",
+        "resolved_at": "2026-05-27T04:25:14Z"
+      },
+      "verbalized_confidence": 0.69
+    }
+  ]
+}

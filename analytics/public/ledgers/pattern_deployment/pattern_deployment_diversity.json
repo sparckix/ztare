@@ -1,0 +1,65 @@
+{
+  "computed_at": "2026-05-09",
+  "metrics": {
+    "n": 15,
+    "window": 15,
+    "primary_shares": {
+      "PATTERN-014": 0.2,
+      "PATTERN-018": 0.06666666666666667,
+      "PATTERN-028": 0.5333333333333333,
+      "PATTERN-002": 0.13333333333333333,
+      "PATTERN-008": 0.06666666666666667
+    },
+    "monoculture_flag": true,
+    "monoculture_max_share": 0.533,
+    "monoculture_max_pattern": "PATTERN-028",
+    "audit_share": 0.067,
+    "audit_in_band": false,
+    "external_share": 0.0,
+    "external_in_band": false,
+    "eigenquestion_share": 1.0,
+    "eigenquestion_in_band": true
+  },
+  "blind_spots": [
+    [
+      "PATTERN-003",
+      0.0
+    ],
+    [
+      "PATTERN-004",
+      0.0
+    ],
+    [
+      "PATTERN-005",
+      0.0
+    ],
+    [
+      "PATTERN-006",
+      0.0
+    ],
+    [
+      "PATTERN-007",
+      0.0
+    ],
+    [
+      "PATTERN-009",
+      0.0
+    ],
+    [
+      "PATTERN-010",
+      0.0
+    ],
+    [
+      "PATTERN-011",
+      0.0
+    ],
+    [
+      "PATTERN-012",
+      0.0
+    ],
+    [
+      "PATTERN-013",
+      0.0
+    ]
+  ]
+}

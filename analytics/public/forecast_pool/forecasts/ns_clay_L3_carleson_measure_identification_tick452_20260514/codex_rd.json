@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_L3_carleson_measure_identification_tick452_20260514",
+  "contract_question": "Will tick452 ship a NEW Lean file ns_L3_endpoint_carleson_identification.lean closing the tick448 Meta-Darwin audit gap on tick446's L3DefectMeasureValue: build an honest MeasureTheory.Measure SpaceTime + L3CarlesonMeasureFromESS structure tying the ESS hypothesis to that measure + identification theorem (L3DefectMeasureValue Real equals (L3DefectMeasure Q).toReal under field choices) + a concrete parabolic-cube measure inequality mu(Q_r).toReal <= r * M^3 derived (not asserted as Prop), compiling clean with no sorry/admit on the new file?",
+  "domain": "lean_proof_attempt_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T02:26:51Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.35,
+  "p_regression": 0.05,
+  "p_success": 0.72,
+  "rationale_short": "Tick452 closes tick448 audit gap. Risk: building a real Mathlib MeasureTheory.Measure (not just a Real). Mitigation: scalar multiple of dirac or smul of existing measure gives an honest measure with provable cube bound.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

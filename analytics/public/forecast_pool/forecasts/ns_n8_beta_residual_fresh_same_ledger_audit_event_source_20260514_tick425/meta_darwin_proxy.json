@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Proceed only if the source is strictly smaller than CoherentFreshPacketAuditResidualRoutingSource.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_n8_beta_residual_fresh_same_ledger_audit_event_source_20260514_tick425",
+  "contract_question": "Will tick425 add a compiling smaller Lean source surface for residual fresh excess producing a same-ledger audit event, below CoherentFreshPacketAuditResidualRoutingSource and without claiming full beta source split?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "full_split_smuggling": 0.24,
+    "no_new_decision_change": 0.18,
+    "overclaim": 0.12,
+    "redundant_adapter": 0.28,
+    "signature_mismatch": 0.18
+  },
+  "forecast_externality_tags": [
+    "darwin",
+    "anti_smuggling",
+    "ns_n8_beta",
+    "sidecar"
+  ],
+  "forecasted_at": "2026-05-14T22:36:10Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.84,
+  "p_regression": 0.16,
+  "p_success": 0.62,
+  "rationale_short": "Useful if it lowers the positive branch; harmful if it repeats tick423. Watch for pressure/fanout/square-budget fields entering the small source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "redundant_adapter",
+    "full_split_smuggling",
+    "signature_mismatch",
+    "no_new_decision_change",
+    "overclaim"
+  ]
+}

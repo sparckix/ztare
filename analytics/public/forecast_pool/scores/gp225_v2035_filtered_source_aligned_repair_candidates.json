@@ -1,0 +1,125 @@
+{
+  "contract_id": "gp225_v2035_filtered_source_aligned_repair_candidates",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "do not generate repaired public-adapter candidates; stop at v20.34 repair seed packet",
+      "counterfactual_action": "build deterministic source-aligned repaired candidate packet, then separately price replay only if source policy and static filters pass",
+      "externality_hypotheses": {
+        "negative": [
+          "May show deterministic repair rules are still too weak, redirecting to external adapter or source-discovery rather than replay"
+        ],
+        "positive": [
+          "May convert v20.31 negative into a small repaired public-adapter replay packet without raw beam width"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "gp230_hypatia_gp225_v2035",
+        "gp230_descartes_gp225_v2035"
+      ],
+      "counterfactual_value_bucket": "medium_positive",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "general_purpose_lean_harness",
+        "public_adapter_repair_packet",
+        "pre_replay_filter",
+        "pre_gnn"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Run a separate pre-replay static check or GP-230 replay gate over v20.35; do not train or count labels.",
+      "old_next_action": "Stop at v20.34 seed packet or replay existing candidates.",
+      "preconditioner_effect": "Kept v20.35 static-only and preserved blocked rows instead of replaying weak raw beams.",
+      "preconditioner_source": "v20.34 repair seed packet plus GP-230 forecasts"
+    }
+  },
+  "mean_brier": 0.040400000000000005,
+  "mean_log_score": -0.22345614901116895,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "df39418b6542da64aaf3e0f292992002f7dd061244b0d62da5217f2a85967e2d",
+    "artifact_path": "analytics/public/leanmill/results/v2035_filtered_source_aligned_repair_candidates.json",
+    "changed_by_forecast_ids": [
+      "gp230_hypatia_gp225_v2035",
+      "gp230_descartes_gp225_v2035"
+    ],
+    "compile_status": "pass",
+    "contract_id": "gp225_v2035_filtered_source_aligned_repair_candidates",
+    "counterfactual_value_bucket": "medium_positive",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "general_purpose_lean_harness",
+      "public_adapter_repair_packet",
+      "pre_replay_filter",
+      "pre_gnn"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "Run a separate pre-replay static check or GP-230 replay gate over v20.35; do not train or count labels.",
+    "old_next_action": "Stop at v20.34 seed packet or replay existing candidates.",
+    "preconditioner_effect": "Kept v20.35 static-only and preserved blocked rows instead of replaying weak raw beams.",
+    "preconditioner_source": "v20.34 repair seed packet plus GP-230 forecasts",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.35 emitted deterministic static repair candidates from v20.34: repair_rows=6, candidate_actions=20, blocked_rows_preserved=5, source-policy booleans clean, replay=false, training=false, GNN blocked.",
+    "resolved_at": "2026-05-14T15:24:45Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T15:24:49Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "gp230_descartes_gp225_v2035",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:19:53Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:23:13Z",
+        "resolved_at": "2026-05-14T15:24:45Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "gp230_hypatia_gp225_v2035",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:19:53Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:23:13Z",
+        "resolved_at": "2026-05-14T15:24:45Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+{
+  "audit_timestamp_utc": "2026-05-09T23:23:48.109162+00:00",
+  "n_cage_engagement_files": 24,
+  "n_cage_events": 615,
+  "n_distinct_gate_names_seen": 35,
+  "all_actual_gate_names_with_counts": {
+    "ansatz_survivor": 615,
+    "asymptotic_claim_discipline": 615,
+    "circularity": 615,
+    "continuum_limit": 615,
+    "coordinate_invariance": 615,
+    "derived_constraints": 615,
+    "deterministic_charter_gates": 615,
+    "domain_match": 615,
+    "ensemble_ambiguity": 615,
+    "falsifiability": 615,
+    "prompt_leak_audit": 615,
+    "proof_surveyability": 615,
+    "pslq_falsity_audit": 615,
+    "semantic_gate_stabilization": 615,
+    "translation_diff": 615,
+    "wasserstein_persistence": 615,
+    "R10_cross_class_extrapolation": 552,
+    "R11_per_class_mre_ceiling": 552,
+    "R13_substrate_critic_post_fit": 552,
+    "R13_substrate_critic_preflight": 552,
+    "R14_noise_profile_post_fit": 552,
+    "R14_noise_profile_preflight": 552,
+    "R15_analogy": 552,
+    "R16_framer_pre_fit": 552,
+    "R170_symbolic_logic_cage": 552,
+    "R20_withheld_value_leakage": 552,
+    "R21_effective_parameter_count": 552,
+    "R22_apparatus_meta_runner": 552,
+    "R23_sparse_cell_exclusion": 552,
+    "R24_feature_bump_pattern": 552,
+    "cassini_ppn": 551,
+    "g_circ_structural": 551,
+    "mercury_precession": 551,
+    "R8_feature_coverage_adequacy": 106,
+    "R9_target_convention_homogeneity": 106
+  },
+  "expected_gate_names": [
+    "analogy",
+    "apparatus_meta_runner",
+    "cross_class_extrapolation",
+    "effective_parameter_count",
+    "feature_bump_pattern",
+    "feature_coverage_adequacy",
+    "framer_1d",
+    "noise_profile",
+    "per_class_farther_tail",
+    "sparse_cell_exclusion",
+    "substrate_critic",
+    "symbolic_logic_cage",
+    "target_convention_homogeneity",
+    "withheld_value_leakage"
+  ],
+  "expected_present_in_logs": [],
+  "expected_missing_from_logs": [
+    "analogy",
+    "apparatus_meta_runner",
+    "cross_class_extrapolation",
+    "effective_parameter_count",
+    "feature_bump_pattern",
+    "feature_coverage_adequacy",
+    "framer_1d",
+    "noise_profile",
+    "per_class_farther_tail",
+    "sparse_cell_exclusion",
+    "substrate_critic",
+    "symbolic_logic_cage",
+    "target_convention_homogeneity",
+    "withheld_value_leakage"
+  ],
+  "unexpected_present_in_logs": [
+    "R10_cross_class_extrapolation",
+    "R11_per_class_mre_ceiling",
+    "R13_substrate_critic_post_fit",
+    "R13_substrate_critic_preflight",
+    "R14_noise_profile_post_fit",
+    "R14_noise_profile_preflight",
+    "R15_analogy",
+    "R16_framer_pre_fit",
+    "R170_symbolic_logic_cage",
+    "R20_withheld_value_leakage",
+    "R21_effective_parameter_count",
+    "R22_apparatus_meta_runner",
+    "R23_sparse_cell_exclusion",
+    "R24_feature_bump_pattern",
+    "R8_feature_coverage_adequacy",
+    "R9_target_convention_homogeneity",
+    "ansatz_survivor",
+    "asymptotic_claim_discipline",
+    "cassini_ppn",
+    "circularity",
+    "continuum_limit",
+    "coordinate_invariance",
+    "derived_constraints",
+    "deterministic_charter_gates",
+    "domain_match",
+    "ensemble_ambiguity",
+    "falsifiability",
+    "g_circ_structural",
+    "mercury_precession",
+    "prompt_leak_audit",
+    "proof_surveyability",
+    "pslq_falsity_audit",
+    "semantic_gate_stabilization",
+    "translation_diff",
+    "wasserstein_persistence"
+  ],
+  "rename_candidates": [
+    {
+      "expected": "analogy",
+      "actual": "R15_analogy",
+      "shared_tokens": [
+        "analogy"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "apparatus_meta_runner",
+      "actual": "R22_apparatus_meta_runner",
+      "shared_tokens": [
+        "apparatus",
+        "meta",
+        "runner"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "cross_class_extrapolation",
+      "actual": "R10_cross_class_extrapolation",
+      "shared_tokens": [
+        "class",
+        "cross",
+        "extrapolation"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "cross_class_extrapolation",
+      "actual": "R11_per_class_mre_ceiling",
+      "shared_tokens": [
+        "class"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "effective_parameter_count",
+      "actual": "R21_effective_parameter_count",
+      "shared_tokens": [
+        "count",
+        "effective",
+        "parameter"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "feature_bump_pattern",
+      "actual": "R24_feature_bump_pattern",
+      "shared_tokens": [
+        "bump",
+        "feature",
+        "pattern"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "feature_coverage_adequacy",
+      "actual": "R24_feature_bump_pattern",
+      "shared_tokens": [
+        "feature"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "framer_1d",
+      "actual": "R16_framer_pre_fit",
+      "shared_tokens": [
+        "framer"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "noise_profile",
+      "actual": "R14_noise_profile_post_fit",
+      "shared_tokens": [
+        "noise",
+        "profile"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "noise_profile",
+      "actual": "R14_noise_profile_preflight",
+      "shared_tokens": [
+        "noise",
+        "profile"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "per_class_farther_tail",
+      "actual": "R10_cross_class_extrapolation",
+      "shared_tokens": [
+        "class"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "per_class_farther_tail",
+      "actual": "R11_per_class_mre_ceiling",
+      "shared_tokens": [
+        "class",
+        "per"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "sparse_cell_exclusion",
+      "actual": "R23_sparse_cell_exclusion",
+      "shared_tokens": [
+        "cell",
+        "exclusion",
+        "sparse"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "substrate_critic",
+      "actual": "R13_substrate_critic_post_fit",
+      "shared_tokens": [
+        "critic",
+        "substrate"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "substrate_critic",
+      "actual": "R13_substrate_critic_preflight",
+      "shared_tokens": [
+        "critic",
+        "substrate"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "symbolic_logic_cage",
+      "actual": "R170_symbolic_logic_cage",
+      "shared_tokens": [
+        "cage",
+        "logic",
+        "symbolic"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "withheld_value_leakage",
+      "actual": "R20_withheld_value_leakage",
+      "shared_tokens": [
+        "leakage",
+        "value",
+        "withheld"
+      ],
+      "actual_count": 552
+    },
+    {
+      "expected": "feature_bump_pattern",
+      "actual": "R8_feature_coverage_adequacy",
+      "shared_tokens": [
+        "feature"
+      ],
+      "actual_count": 106
+    },
+    {
+      "expected": "feature_coverage_adequacy",
+      "actual": "R8_feature_coverage_adequacy",
+      "shared_tokens": [
+        "adequacy",
+        "coverage",
+        "feature"
+      ],
+      "actual_count": 106
+    },
+    {
+      "expected": "target_convention_homogeneity",
+      "actual": "R9_target_convention_homogeneity",
+      "shared_tokens": [
+        "convention",
+        "homogeneity",
+        "target"
+      ],
+      "actual_count": 106
+    }
+  ],
+  "expected_gate_summary": [
+    {
+      "expected_name": "analogy",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "apparatus_meta_runner",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "cross_class_extrapolation",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "effective_parameter_count",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "feature_bump_pattern",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "feature_coverage_adequacy",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "framer_1d",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "noise_profile",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "per_class_farther_tail",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "sparse_cell_exclusion",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "substrate_critic",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "symbolic_logic_cage",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "target_convention_homogeneity",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    },
+    {
+      "expected_name": "withheld_value_leakage",
+      "total_appearances": 0,
+      "engaged": 0,
+      "refused": 0,
+      "n_projects_seen": 0,
+      "engagement_rate": 0.0,
+      "verdict": "missing_from_logs"
+    }
+  ],
+  "diagnosis": "H1 confirmed: logging-name mismatch \u2014 see rename_candidates"
+}

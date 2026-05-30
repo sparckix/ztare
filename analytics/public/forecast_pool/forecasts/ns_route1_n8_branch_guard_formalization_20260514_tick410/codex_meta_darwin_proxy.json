@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "proceed_but_score_as_guard_not_closure",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_route1_n8_branch_guard_formalization_20260514_tick410",
+  "contract_question": "Will the N8 branch guard formalization tick add compiling Lean surfaces for upstream branch exhaustion and non-route branch guards without overclaiming route-1 closure as critical-increment closure?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_compile_issue": 0.15,
+    "n8_surfaces_too_abstract": 0.35,
+    "route1_boundary_already_encoded": 0.25,
+    "upstream_branch_predicates_not_actual": 0.25
+  },
+  "forecast_externality_tags": [
+    "negative-externality-audit",
+    "conditionality-preservation",
+    "n8-not-closed"
+  ],
+  "forecasted_at": "2026-05-14T20:06:02Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.34,
+  "p_regression": 0.12,
+  "p_success": 0.58,
+  "rationale_short": "The edit can help prevent overclaiming, but it will not close N8. Risk is mistaking named branch predicates for actual branch exhaustion.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "route1_boundary_already_encoded",
+    "n8_surfaces_too_abstract",
+    "upstream_branch_predicates_not_actual",
+    "lean_compile_issue"
+  ]
+}

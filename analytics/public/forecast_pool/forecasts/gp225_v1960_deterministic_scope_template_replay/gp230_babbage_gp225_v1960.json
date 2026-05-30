@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_babbage_gp225_v1960",
+  "contract_id": "gp225_v1960_deterministic_scope_template_replay",
+  "contract_question": "Will deterministic scope-template candidates generated from v19.59 replay into at least one strict or pull-forward label, with harmful mismatches zero and clean source policy?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_packet_too_small": 0.12,
+    "funext_or_ext_template_type_mismatch": 0.2,
+    "other": 0.14,
+    "progress_only_no_strict_or_pull_forward": 0.2,
+    "replay_runtime_or_hydration_regression": 0.1,
+    "scope_name_templates_still_not_target_aligned": 0.24
+  },
+  "forecasted_at": "2026-05-14T02:52:49Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.48,
+  "rationale_short": "Hydration is clean after v19.58 and v19.59 found two deterministic template rows, so a small strict-or-pull-forward hit is under even odds but not remote. The main upside is high information value even if it fails.",
+  "read_only_attestation": true
+}

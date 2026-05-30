@@ -1,0 +1,31 @@
+{
+  "actual_cost_agent_minutes": 21.0,
+  "artifact_hash": "c34cda731c0c17cb302c855c26a67e98291592c0f7b5d226616e58ebb23b480b",
+  "artifact_path": "analytics/public/leanmill/results/v2072_parallel_training_delta_triage.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": "py_compile_passed",
+  "contract_id": "gp225_v2072_parallel_training_delta_triage",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "parallel_training_delta",
+    "anti_goodhart",
+    "heldout_candidate_content"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [],
+  "new_next_action": "parallel v2073 label inventory freeze, v2074 heldout candidate-content discovery, and v2075 null training baseline spec",
+  "old_next_action": "single serial source-discovery continuation",
+  "preconditioner_effect": "v20.71 established 0/5 post-bayesRisk replayable heldout arms, so v20.72 could parallelize closure without starting training.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2071_post_bayesRisk_union_heldout_delta_packet.json",
+  "realized_failure_mode_ids": [
+    "heldout_content_delta_still_blocked"
+  ],
+  "resolution_note": "v20.72 passed. It split the GNN readiness question into three parallel lanes: v2073 strict label inventory freeze, v2074 heldout source candidate-content discovery, and v2075 null training baseline spec. Training and replay remain blocked because heldout replayable changed arms are 0/5.",
+  "resolved_at": "2026-05-14T19:17:36Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

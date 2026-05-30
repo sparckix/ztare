@@ -1,0 +1,22 @@
+{
+  "agent_id": "rawls_skeptic_tick358",
+  "contract_id": "ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358",
+  "contract_question": "Can we add a Lean-checked local-energy positive cutoff-flux visible/invisible split source feeding the route-level transport closure, without defining invisible leakage from the target bound or substituting DR/pressure carriers?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bare_prop_provenance_not_enforcing_construction": 0.24,
+    "local_energy_identity_source_missing": 0.16,
+    "other": 0.08,
+    "pde_content_entirely_conditional": 0.22,
+    "split_residuals_sourced_after_target": 0.3
+  },
+  "forecasted_at": "2026-05-14T12:27:09Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.66,
+  "p_regression": 0.08,
+  "p_success": 0.43,
+  "rationale_short": "Compile surface likely; non-tautological value depends on a lower local-energy identity source for the split.",
+  "read_only_attestation": true
+}

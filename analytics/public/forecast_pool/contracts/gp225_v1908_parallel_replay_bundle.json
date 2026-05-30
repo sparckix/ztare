@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1908_parallel_replay_bundle.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1908_parallel_replay_bundle.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1908_parallel_replay_bundle",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1908_parallel_replay_bundle.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1908_parallel_replay_bundle.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "contract_id": "gp225_v1908_parallel_replay_bundle",
+  "cost_penalty": 0.02,
+  "created_at": "2026-05-13T20:55:39Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "through v19.08 replay closure or earlier static-blocker",
+  "information_value": 0.8,
+  "layer": "micro",
+  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1908_parallel_replay_bundle.json metrics.",
+  "question": "Will the next GP-225 parallel replay bundle over the v19.07 PDE+functional shard and v19.06 non-PDE variety shard complete cleanly, keep false accepts at zero, and produce at least one validated high-density holdout shard while keeping GNN blocked?",
+  "risk_penalty": 0.8,
+  "success_threshold": "both_lanes_completed=true AND pde_functional.clean_replay_rows>=90 AND non_pde.clean_replay_rows>=90 AND selected_true_false_accepts_total=0 AND all_post_quarantine_false_accepts_total=0 AND at_least_one_lane_density>=0.50 AND at_least_one_lane_source_packets>=3 AND at_least_one_lane_top_areas>=8 AND at_least_one_lane_action_families>=4 AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_parallel_replay_bundle",
+  "value_if_success": 1.7,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

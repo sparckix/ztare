@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 2.38,
+  "artifact_hash": "2fda3274cce58f317bc86e38b04a4054cec92c104d8ababaa6a0de47b1902859",
+  "artifact_path": "analytics/public/leanmill/results/v1752_guarded_probe_selected_shard.json",
+  "compile_status": "fail_gate",
+  "contract_id": "gp225_v1752_guarded_probe_micro_batch",
+  "error_type": "source_slice_prefix_context_and_tactic_match_gap",
+  "goal_delta": 1,
+  "resolution_note": "v17.52 produced 1 target-guarded label, 1 action-unique row, 0 closure-contribution candidates, and 0 true false accepts in 142.539 seconds; failed success threshold. Main blockers: source-sliced prefix context insufficient for CoveringNumber typeclasses and several selected tactics not matched as top-level source body lines.",
+  "resolved_at": "2026-05-12T20:58:22Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

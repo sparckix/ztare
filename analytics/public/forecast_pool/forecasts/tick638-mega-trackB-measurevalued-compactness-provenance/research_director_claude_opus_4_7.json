@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "tick638-mega-trackB-measurevalued-compactness-provenance",
+  "contract_question": "tick638 MEGA (void-audit-DRIVEN, RC3): dominating min-vertex-cut of clay_continuation_endpoint = selected_branch_projected_compactness_measure_valued_output_source; status open: selected projected branch needs numeric compactness/liminf provenance from a FIXED approximation family; heavy open sub-atom = 8c Reynolds-stress defect (Clay-open). Depth-n: does the fixed approximation family (Galerkin/vanishing-viscosity) for 3D Leray-Hopf admit measure-valued-output compactness provenance with the Reynolds-stress defect measure provably ZERO (strong L2_t,x subsequential compactness \u21d2 energy equality, no anomalous dissipation in the regularization limit), or is a nontrivial DiPerna-Majda/Alibert-Bouchitt\u00e9 concentration-defect measure the irreducible Track-B obstruction at this cut?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "8a_or_2a_discharge_skips_a_term": 0.15,
+    "laundering_zero_defect_adapter": 0.08,
+    "reduction_correct_genuine_negative_SOUND": 0.34,
+    "same_atom_claim_is_vague_restatement_not_reduction": 0.3,
+    "sigma_localization_imprecise": 0.13
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T13:26:30Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.05,
+  "p_success": 0.62,
+  "rationale_short": "Depth-n: surfaced min-vertex-cut reduces (8a closed by Aubin-Lions-Simon; 2a discharged by periodic normalization; velocity-product defect=0 by local strong L2; residual = gradient dissipation concentration-defect sigma) to sigma==0 <=> energy equality <=> the one-power critical a-priori = the SAME route-1 atom from an independent surfacing. Scheffer/ABC self-test predicts sigma not soft-dischargeable. Honest p just above even: the reduction chain is standard and I expect it SOUND as a genuine convergence finding, but the Track-B<->route-1 same-atom step is the real kill risk (vague-restatement vs reduction).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_atom_claim_is_vague_restatement_not_reduction",
+    "8a_or_2a_discharge_skips_a_term"
+  ]
+}

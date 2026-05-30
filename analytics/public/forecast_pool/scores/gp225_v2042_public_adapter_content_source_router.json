@@ -1,0 +1,130 @@
+{
+  "contract_id": "gp225_v2042_public_adapter_content_source_router",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue rank-policy replay or generic GNN discussion",
+      "counterfactual_action": "Route next work to content-changing blocked-row source discovery and external schema mapping",
+      "externality_hypotheses": {
+        "negative": [
+          "could over-delay external adapter execution"
+        ],
+        "positive": [
+          "prevents replay churn",
+          "chooses candidate-content source over ranking policy",
+          "keeps external adapters honest until schema mapping"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Fisher",
+        "Kolmogorov"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "candidate_content_bottleneck",
+        "replay_churn_guard",
+        "external_adapter_schema_gate"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "external_adapter_execution_deferred"
+      ],
+      "new_next_action": "blocked-row content source discovery plus external schema mapping prerequisite",
+      "old_next_action": "rank-policy replay or generic external adapter execution",
+      "preconditioner_effect": "prevented rank-policy replay churn and forced candidate-content source routing",
+      "preconditioner_source": "analytics/public/leanmill/results/v2041_heldout_dual_head_delta_replay_market_abort.json"
+    }
+  },
+  "mean_brier": 0.0738,
+  "mean_log_score": -0.3155558948202464,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "061ae645477238bb0a1d184468f7bd254b2ef565ff7a0821d2515f68f112a058",
+    "artifact_path": "analytics/public/leanmill/results/v2042_public_adapter_content_source_router.json",
+    "changed_by_forecast_ids": [
+      "Fisher",
+      "Kolmogorov"
+    ],
+    "compile_status": "passed_static_router",
+    "contract_id": "gp225_v2042_public_adapter_content_source_router",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "candidate_content_bottleneck",
+      "replay_churn_guard",
+      "external_adapter_schema_gate"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "external_adapter_execution_deferred"
+    ],
+    "new_next_action": "blocked-row content source discovery plus external schema mapping prerequisite",
+    "old_next_action": "rank-policy replay or generic external adapter execution",
+    "preconditioner_effect": "prevented rank-policy replay churn and forced candidate-content source routing",
+    "preconditioner_source": "analytics/public/leanmill/results/v2041_heldout_dual_head_delta_replay_market_abort.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.42 emitted the content-source router: consumed v2034/v2041/v1918/v1921, recorded rank-policy replay abort, recorded external exact coverage 0.0 as schema-mapping blocker, selected 5 blocked rows for content-changing source discovery, replay=false, training=false, GNN blocked=true.",
+    "resolved_at": "2026-05-14T17:18:40Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T17:18:43Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Fisher",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn_route_selection",
+      "expected_cost_agent_minutes": 20.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:17:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:17:25Z",
+        "resolved_at": "2026-05-14T17:18:40Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Kolmogorov",
+      "brier": 0.09000000000000002,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "gp225_pre_gnn_route_selection",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.35667494393873245,
+      "p_success": 0.7,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:17:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:17:25Z",
+        "resolved_at": "2026-05-14T17:18:40Z"
+      }
+    }
+  ]
+}

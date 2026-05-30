@@ -1,0 +1,208 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:47:09Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 14.0,
+    "expected_value": 0.32712075269578567,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.09,
+    "p_needs_new_lemma": 0.055,
+    "p_regression": 0.045,
+    "p_success": 0.8108091397995878,
+    "participants": [
+      {
+        "agent_id": "Babbage3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_hydrated_candidate_patch",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2065_public_union_hydrated_top_row_patch/babbage3.json",
+        "forecasted_at": "2026-05-14T18:47:06Z",
+        "p_success": 0.83,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Shannon3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_hydrated_candidate_patch",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2065_public_union_hydrated_top_row_patch/shannon3.json",
+        "forecasted_at": "2026-05-14T18:46:52Z",
+        "p_success": 0.79,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "branch_hypothesis_name_still_wrong",
+        "p": 0.32
+      },
+      {
+        "mode": "static_gate_misses_unicode_binder_issue",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "candidate_not_bridge_compatible",
+        "p": 0.2
+      },
+      {
+        "mode": "finite_bound_simp_needs_extra_instances",
+        "p": 0.155
+      },
+      {
+        "mode": "scope_creep_to_replay",
+        "p": 0.12
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2065_public_union_hydrated_top_row_patch.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2065_public_union_hydrated_top_row_patch.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2065_public_union_hydrated_top_row_patch.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2065_public_union_hydrated_top_row_patch.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2065_public_union_hydrated_top_row_patch.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 14.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:46:39Z",
+    "created_by": "codex:RD",
+    "horizon": "same session 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff v2065 consumes v20.64 and v20.62, emits a one-row hydrated bayesRisk candidate packet using branch-local \u03c0/h\u2113C/P.bound_lt_top rather than pi/hLC/hP_bound, passes strict static checks, records no replay/training and GNN blocked, and names separate replay pricing.",
+    "question": "Will v20.65 generate a hydrated static patch for the top queued row current_scale_0126/bayesRisk_lt_top that removes synthetic binders and names replay preconditions without running replay or training?",
+    "success_threshold": "one row; >=2 hydrated candidates; zero synthetic binder tokens; no replay/training; next replay pricing named",
+    "task_type": "hydrated_candidate_patch"
+  },
+  "contract_id": "gp225_v2065_public_union_hydrated_top_row_patch",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Babbage3",
+        "raw_agent_ids": [
+          "Babbage3"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Shannon3",
+        "raw_agent_ids": [
+          "Shannon3"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Babbage3",
+      "Shannon3"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Emit replay-compatible tactic fields but keep execution blocked pending separate replay pricing.",
+        "agent_id": "Babbage3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2065_public_union_hydrated_top_row_patch/babbage3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_hydrated_candidate_patch",
+        "expected_cost_agent_minutes": 13.0,
+        "forecasted_at": "2026-05-14T18:47:06Z",
+        "p_success": 0.83,
+        "rationale_short": "v20.64 names the exact synthetic tokens to replace; the task is a bounded static patch, not proof execution.",
+        "specific_failure_mode_ids": [
+          "branch_hypothesis_name_still_wrong",
+          "candidate_not_bridge_compatible"
+        ]
+      },
+      {
+        "action_change_recommendation": "Make synthetic-token removal a machine check and do not count the patch as compile evidence.",
+        "agent_id": "Shannon3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2065_public_union_hydrated_top_row_patch/shannon3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_hydrated_candidate_patch",
+        "expected_cost_agent_minutes": 15.0,
+        "forecasted_at": "2026-05-14T18:46:52Z",
+        "p_success": 0.79,
+        "rationale_short": "The reducer gives a clear patch recipe; residual risk is mismatch between branch-local names and actual replay harness.",
+        "specific_failure_mode_ids": [
+          "branch_hypothesis_name_still_wrong",
+          "static_gate_misses_unicode_binder_issue"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "changed_by_forecast_ids": [
+      "Babbage3",
+      "Shannon3"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:48:19Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.32712075269578567,
+      "forecast_spread": 0.04,
+      "p_success": 0.8108091397995878,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.3734
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 14.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8108091397995878,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "branch_hypothesis_name_still_wrong",
+        "p": 0.32
+      },
+      {
+        "mode": "static_gate_misses_unicode_binder_issue",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "candidate_not_bridge_compatible",
+        "p": 0.2
+      },
+      {
+        "mode": "finite_bound_simp_needs_extra_instances",
+        "p": 0.155
+      },
+      {
+        "mode": "scope_creep_to_replay",
+        "p": 0.12
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0365,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:48:22Z"
+  }
+}

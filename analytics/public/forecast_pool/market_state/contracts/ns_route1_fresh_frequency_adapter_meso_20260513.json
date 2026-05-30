@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T20:39:27Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 19.0,
+    "expected_value": -0.5121945452020117,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.30000000000000004,
+    "p_needs_new_lemma": 0.645,
+    "p_regression": 0.15000000000000002,
+    "p_success": 0.7003818184974857,
+    "participants": [
+      {
+        "agent_id": "kierkegaard_independent_forecaster",
+        "domain": "NS_route1",
+        "p_success": 0.68,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "singer_independent_forecaster",
+        "domain": "NS_route1",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "l3_route1_variable_mismatch",
+        "p": 0.2
+      },
+      {
+        "mode": "lean_integration_failure",
+        "p": 0.19642857142857142
+      },
+      {
+        "mode": "v1902_lane_map_not_causal",
+        "p": 0.18333333333333335
+      },
+      {
+        "mode": "adapter_only_name_bridge",
+        "p": 0.1607142857142857
+      },
+      {
+        "mode": "graph_signal_noisy",
+        "p": 0.14285714285714285
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_fresh_frequency_adapter_meso_20260513.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_fresh_frequency_adapter_meso_20260513.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_fresh_frequency_adapter_meso_20260513.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_fresh_frequency_adapter_meso_20260513.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_fresh_frequency_adapter_meso_20260513.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 20.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T20:39:08Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-13",
+    "layer": "meso",
+    "objective_resolver": "TRUE iff a Lean route1 fresh-frequency/localized-coercivity bridge typechecks and an E/F row records the changed next move; route-choice resolved by whether fresh-frequency adapter remains next frontier after graph/Lean audit.",
+    "question": "Will graph plus v19.02 consumption yield a non-tautological typechecked Lean bridge and E/F row in this session, and should next frontier prioritize fresh-frequency/event-tent over pressure-small scalar strengthening?",
+    "success_threshold": "typechecked_adapter_and_logged_next_move",
+    "task_type": "ns_route1_pde_branch_choice"
+  },
+  "contract_id": "ns_route1_fresh_frequency_adapter_meso_20260513",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:kierkegaard_independent_forecaster",
+        "raw_agent_ids": [
+          "kierkegaard_independent_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:singer_independent_forecaster",
+        "raw_agent_ids": [
+          "singer_independent_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "kierkegaard_independent_forecaster",
+      "singer_independent_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "kierkegaard_independent_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fresh_frequency_adapter_meso_20260513/kierkegaard_independent_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-13T20:39:23Z",
+        "p_success": 0.68,
+        "rationale_short": "Fresh-frequency/event-tent adapter is favored over pressure-small scalar strengthening; resolution requires a non-tautological typechecked bridge and explicit E/F next-move record.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "singer_independent_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fresh_frequency_adapter_meso_20260513/singer_independent_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-13T20:39:16Z",
+        "p_success": 0.72,
+        "rationale_short": "Graph paths already isolate X_tail to tailSquareFunction to localQuadraticTentExcess with leakage fanout; main uncertainty is typecheck/logging and avoiding hidden visibility oracle.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T20:43:17Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 19.0,
+      "expected_value": -0.5121945452020117,
+      "p_success": 0.7003818184974857,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.0998
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 19.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7003818184974857,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "l3_route1_variable_mismatch",
+        "p": 0.2
+      },
+      {
+        "mode": "lean_integration_failure",
+        "p": 0.19642857142857142
+      },
+      {
+        "mode": "v1902_lane_map_not_causal",
+        "p": 0.18333333333333335
+      },
+      {
+        "mode": "adapter_only_name_bridge",
+        "p": 0.1607142857142857
+      },
+      {
+        "mode": "graph_signal_noisy",
+        "p": 0.14285714285714285
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09039999999999998,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T20:43:22Z"
+  }
+}

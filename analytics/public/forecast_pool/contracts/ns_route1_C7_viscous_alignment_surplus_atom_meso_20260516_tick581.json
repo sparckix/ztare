@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 50.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581",
+  "cost_penalty": 0.5,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T13:54:27Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1296,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_C7_viscous_alignment_surplus_20260516",
+    "score": 0.1296,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0909,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1296,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.1296,
+        "score_rows": 4,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "21d",
+  "information_value": 9.5,
+  "layer": "meso",
+  "objective_resolver": "Lean: alignment_sign_not_from_triple (re-exports tick578 proof) + ViscousAlignmentSurplusBudget structure (uninhabited, the open theorem) + route1_closes_given_viscous_surplus_budget conditional PROVED, builds clean, Tier-3 clean. success iff C7 is a genuine new node respecting \u00a72 negative + conditional reduction PROVED + Grok-B correctly rejected per ANTI-PATTERN-014; 0.5 if weak; fail iff C7 is a relabel or refuted by \u00a72.",
+  "question": "Eigenq output: is the viscous alignment surplus A_visc=\u03be\u00b7S\u03be\u2212\u03bd|\u2207\u03be|\u00b2 (from the vorticity-direction evolution eq) the genuine NEW canonical node C7 \u2014 using \u2207\u03be OUTSIDE the \u00a72-refuted (s_z,Type-I,R1) triple, not a C5/pressure-Hessian/helicity/route relabel \u2014 with the missing theorem being a finite fresh alignment-surplus budget on the inherited CKN-bad cascade? Grok-B 'atom closed p=0 insurmountable' = premature-settled-negative (reject); GPT-5.5 MISSING_HYPOTHESIS = accept.",
+  "risk_penalty": 0.6,
+  "success_threshold": "success iff C7 genuine-new + \u00a72-respecting + conditional PROVED + Tier-3 clean; 0.5 weak; fail relabel/refuted",
+  "task_type": "ns_clay_C7_viscous_alignment_surplus_20260516",
+  "value_if_success": 9.0,
+  "void_conditions": "tick578 negative refactored"
+}

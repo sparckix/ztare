@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_",
+  "contract_question": "tick612 (FIRST tick of the out-of-route-1 program; route-1 is tick611-proven unconditionally terminal): draft a PATTERN-015 eigenquestion for a coercive global-regularity functional Phi NOT built from the route-1 algebra {Biot-Savart,grad,omega} \u2014 Lagrangian flow-map / Cauchy-invariants / relative-entropy-along-characteristics / optimal-transport displacement / Constantin-Iyer stochastic-Lagrangian \u2014 where nu enters via the back-to-labels stochastic flow (NOT nuDelta on algebra fields), so the nu-length is genuinely OFF-LATTICE and decoupled from the parabolic heat-length, paired vs a SUBCRITICAL companion (delta>0). Route it to the external prover (log to external_prover_ledger) + an independent external-prover attempt. Success = a PATTERN-015-conformant single falsifiable eigenquestion (anti-laundering: the Phi must provably NOT reduce to a {B,grad,omega} word NOR a parabolic/heat functional \u2014 respecting the tick611 closing-the-space theorem) logged to external_prover + an external-prover attempt whose verdict (Y construct / N forcing-extends-to-this-class-too / U) SURVIVES dogfood-claused adversarial-survival. Fail = eigenq is laundering/non-falsifiable, OR collapses to a route-1 recast, OR the external attempt is asserted-not-derived.",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adversary_check_slips_provenance": 0.1,
+    "in_lattice_recast_disguised_as_off_lattice_escape": 0.36,
+    "sqrt_nu_t_or_scale_critical_companion_disguise": 0.24,
+    "structural_derivation_stalls_before_derived_verdict": 0.3
+  },
+  "forecast_externality_tags": [
+    "route-invariance",
+    "off-lattice-risk",
+    "provenance-audit"
+  ],
+  "forecasted_at": "2026-05-16T22:43:40Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.64,
+  "p_regression": 0.05,
+  "p_success": 0.24,
+  "rationale_short": "No prior codex forecast exists. Closest anchor is tick611 codex at p_success=0.28 and 34m cost. Tick612 adds the PATTERN-015 eigenquestion drafting plus external-prover logging/attempt requirement, so I trim success modestly and keep cost in the low 30s; main risks are a route-1 recast, sqrt(nu t) or subcritical-companion disguise, or stalling before a derived verdict.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

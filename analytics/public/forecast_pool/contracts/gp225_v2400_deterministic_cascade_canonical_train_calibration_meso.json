@@ -1,0 +1,98 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2400_deterministic_cascade_canonical_train_calibration_meso.json"
+  },
+  "baseline_action": "skip; route to next deterministic primitive (typed-template synthesis)",
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "skip and accept that pure tactics cannot replicate canonical positives without Mathlib-lemma application",
+  "created_at": "2026-05-15T01:42:59Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0588,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pure_decision_procedure_cascade_calibration_on_known_positive_rows",
+    "score": 0.0588,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0588,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0588,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0526,
+        "domain": "gp230_forecast_pool_infrastructure",
+        "expected_cost_agent_minutes_prior": 49.0,
+        "sample_limited": true,
+        "score": 0.0526,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0469,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0469,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0448,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0448,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0366,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0366,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "if_at_least_one_then_partial_deterministic_floor": "any non-zero close gives a deterministic baseline above zero that future model-delta tests must exceed",
+    "if_zero_deterministic_floor_then_lemma_application_required": "if pure decision procedures close zero canonical train rows, the harness requires specific Mathlib lemma machinery; pure-tactic baseline is dead",
+    "simp_at_least_partially_solves_some_simple_rows": "current_scale_0025 lineMap_apply_one gold is `simp [lineMap_apply]` \u2014 bare simp may close it via the global simp set, but this is borderline indirect leakage"
+  },
+  "horizon": "2026-05-15T05:00:00Z",
+  "information_value": 0.6,
+  "layer": "meso",
+  "objective_resolver": "analytics/public/leanmill/results/v24_00_deterministic_cascade_canonical_train_audit.json:metrics.target_equivalent_closures_total >= 1 AND metrics.false_positives_total == 0",
+  "question": "Will pure-tactic decision-procedure cascade (simp/aesop/omega/linarith/ring/norm_num/decide/field_simp/rfl/tauto/polyrith/nlinarith) close (target_equivalent_closure under GPT-5.5 review contract) AT LEAST 1 of the 15 canonical train rows where positives demonstrably exist (a non-zero deterministic floor)? Threshold: at least 1 row \u00d7 1 distinct witness signature, 0 false positives.",
+  "risk_penalty": 0.5,
+  "success_threshold": "metrics.target_equivalent_closures_total >= 1 AND metrics.false_positives_total == 0",
+  "task_type": "pure_decision_procedure_cascade_calibration_on_known_positive_rows",
+  "value_if_success": 0.6,
+  "void_conditions": "lean toolchain unavailable; bridge fails; replay metadata missing for all 15 train rows"
+}

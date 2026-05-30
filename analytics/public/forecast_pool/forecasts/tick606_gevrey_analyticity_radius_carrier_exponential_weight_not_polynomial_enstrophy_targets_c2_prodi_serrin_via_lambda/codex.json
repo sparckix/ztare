@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick606_gevrey_analyticity_radius_carrier_exponential_weight_not_polynomial_enstrophy_targets_c2_prodi_serrin_via_lambda",
+  "contract_question": "tick606 gevrey analyticity-radius carrier exponential weight not polynomial enstrophy targets C2 Prodi-Serrin via lambda t gtrsim sqrt T minus t structurally absent from all 15 recurrences. Does the Foias-Temam Oliver-Titi analyticity-radius lower-bound differential inequality at NS-critical parabolic scaling supply a STRICT sub-scaling exponent route alive OR is it conformally scale-invariant order r^0 secretly Type-I 16th recurrence but DERIVED. Success equals a derived verdict either direction surviving the mandatory adversarial-survival block no laundering no preconceded pessimism.",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 36.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "hidden_scaling_or_normalization_gap": 0.23,
+    "needs_new_comparison_object_or_lemma": 0.27,
+    "route_resolves_to_scale_invariant_type_i_derivation": 0.18,
+    "structural_derivation_stalls_before_clean_verdict": 0.32
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T21:18:31Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.04,
+  "p_success": 0.58,
+  "rationale_short": "The contract is a narrow PDE-analyticity question with a plausible derived-verdict path, but the evidence is thin: no probability DAG, no outcome/score, and no explicit coercivity or scaling witness. I price moderate success because a disciplined derivation may still close either way, while the main failure risk is a stalled structural translation rather than outright regression.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

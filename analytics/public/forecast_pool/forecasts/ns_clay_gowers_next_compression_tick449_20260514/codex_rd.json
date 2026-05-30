@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_gowers_next_compression_tick449_20260514",
+  "contract_question": "Will tick449 ship a Gowers-style next-level compression on the disjunctive r-linear charge frontier (L3-endpoint charge OR vorticity-decoherence charge) by either (a) shipping a UnifiedClayChargePrimitive structure that both L3EndpointBlowupChargeReplacement and VorticityDecoherenceChargeReplacement reduce to (compressing 2 to 1), (b) shipping a structural impossibility countermodel witness for either charge, or (c) shipping a third cheaper charge replacement derived from a weaker external classical input \u2014 appended after any other agents additions in ns_silent_flat_defect_observability.lean, compiling clean with no new sorry/admit on the touched file?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T01:55:49Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.74,
+  "rationale_short": "Compression (a) is a structural refactor: both charge replacements share the same Real-valued finite-budget r-linear shape; factoring shape from external-classical-source into a UnifiedClayChargePrimitive plus two reduction defs is Lean engineering, not new analytic content. Low risk; mirrors tick441 depth-reserve telescoping factoring. Honest catch: this is a syntactic 2\u21921 compression, NOT PDE progress on constructing either inhabitant.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

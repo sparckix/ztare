@@ -1,0 +1,22 @@
+{
+  "agent_id": "dirac_skeptical_forecaster",
+  "contract_id": "gp225_v1947_public_residual_blended_system_contract",
+  "contract_question": "v19.47 defines an offline public+GP-225 blended system contract with public credit, provenance-weighted training tiers, and next same-sample benchmark gate without overclaiming",
+  "domain": "gp225_blended_contract",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "credit_assignment_blurs": 0.18,
+    "overclaims_static_exact_coverage": 0.28,
+    "same_sample_gate_missing_identity": 0.12,
+    "scope_creeps_into_adapter_execution": 0.22,
+    "training_tiers_too_vague": 0.2
+  },
+  "forecasted_at": "2026-05-14T00:41:12Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.08,
+  "p_success": 0.74,
+  "rationale_short": "Likely bounded synthesis from v19.46 ingredients; must credit public systems and define GP-225 as cleaner residual-label instrumentation, not overall superiority.",
+  "read_only_attestation": true
+}

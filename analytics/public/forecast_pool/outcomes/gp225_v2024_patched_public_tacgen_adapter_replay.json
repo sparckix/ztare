@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 6.0,
+  "artifact_hash": "29e789fb5bce7fd599e7633e9a884ed067f0745f7747dc0447236cd5f01d34be",
+  "artifact_path": "analytics/public/leanmill/results/v2025_patched_public_tacgen_replay_market_gate.json",
+  "compile_status": "no_replay_market_gated",
+  "contract_id": "gp225_v2024_patched_public_tacgen_adapter_replay",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "Voided by contract condition: GP-230 aggregate p_success=0.0524, expected value negative, routing audit_or_explore_only, so cached v1952 replay was not run. v20.25 market gate records no-replay decision and redirects to fresh public candidate supply/non-cached adapter.",
+  "resolved_at": "2026-05-14T13:46:18Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": true
+}

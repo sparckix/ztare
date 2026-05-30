@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T11:51:25Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 70.0,
+    "expected_value": -12.588284984903266,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.375,
+    "p_needs_new_lemma": 0.485,
+    "p_regression": 0.060000000000000005,
+    "p_success": 0.5857151338334121,
+    "participants": [
+      {
+        "agent_id": "hooke_pde_tick352",
+        "domain": "ns_route1_pde",
+        "p_success": 0.63,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_skeptic_tick352",
+        "domain": "ns_route1_pde",
+        "p_success": 0.54,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "ranking_not_actionable",
+        "p": 0.165
+      },
+      {
+        "mode": "only_ranks_existing_artifacts",
+        "p": 0.15
+      },
+      {
+        "mode": "bundle_masks_missing_pde_content",
+        "p": 0.14
+      },
+      {
+        "mode": "overweights_scout_rows_vs_pde_content",
+        "p": 0.125
+      },
+      {
+        "mode": "other",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 70.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T11:51:12Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T14:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "script compiles and runs, emits JSON+MD with sentinel_ok true, at least five named estimate gates, ranked bottleneck list, and next Lean/PDE action",
+    "question": "Can one bundled discriminator rank the pressure/Q, normalizer, transport, commutator, and boundary PDE estimate obligations feeding FixedWindowPreSummedStressMassShardCLeakageSource, with clean artifacts and no new Lean wrappers?",
+    "success_threshold": "sentinel_ok=true and len(estimate_gates)>=5 and top_bottleneck has evidence pointers",
+    "task_type": "bundle_discriminator_stack"
+  },
+  "contract_id": "ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_pde_tick352",
+        "raw_agent_ids": [
+          "hooke_pde_tick352"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_skeptic_tick352",
+        "raw_agent_ids": [
+          "rawls_skeptic_tick352"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_pde_tick352",
+      "rawls_skeptic_tick352"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_pde_tick352",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352/hooke_pde_tick352.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 58.0,
+        "forecasted_at": "2026-05-14T11:51:25Z",
+        "p_success": 0.63,
+        "rationale_short": "Bundle should succeed as a discriminator because artifacts and Lean bridge fields exist; risk is that ranking is evidence synthesis rather than a PDE estimate proof.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_skeptic_tick352",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352/rawls_skeptic_tick352.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 82.0,
+        "forecasted_at": "2026-05-14T11:51:25Z",
+        "p_success": 0.54,
+        "rationale_short": "Meso bundle may rank blockers, but success requires an actionable top PDE estimate and evidence pointers, not just a prettier synthesis.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T11:54:37Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.09,
+      "p_success": 0.5857151338334121,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "ranking_not_actionable",
+        "p": 0.165
+      },
+      "voi_proxy": 1.2527
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 70.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5857151338334121,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "ranking_not_actionable",
+        "p": 0.165
+      },
+      {
+        "mode": "only_ranks_existing_artifacts",
+        "p": 0.15
+      },
+      {
+        "mode": "bundle_masks_missing_pde_content",
+        "p": 0.14
+      },
+      {
+        "mode": "overweights_scout_rows_vs_pde_content",
+        "p": 0.125
+      },
+      {
+        "mode": "other",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.17424999999999996,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T11:54:43Z"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Run only the two hydrated bayesRisk candidates with max_workers=2 and score compile/harmful separately from strict label credit.",
+  "agent_id": "Dijkstra3",
+  "contract_id": "gp225_v2066_bayesRisk_hydrated_canary_replay_gate",
+  "contract_question": "If GP-225 runs the v20.65 hydrated one-row bayesRisk canary replay, will at least one candidate compile with zero harmful mismatches, without using target proof lines for generation?",
+  "domain": "gp225_pre_gnn_hydrated_canary_replay",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bayesRisk_le_mul_argument_shape_mismatch": 0.23,
+    "branch_hypothesis_name_still_wrong": 0.32,
+    "bridge_hydration_skip": 0.1,
+    "finite_bound_simp_needs_extra_instances": 0.17,
+    "gold_witness_target_shape_gap": 0.12,
+    "harmful_mismatch_from_overclosure": 0.06
+  },
+  "forecast_externality_tags": [
+    "hydrated_canary_replay",
+    "compile_signal",
+    "anti_goodhart"
+  ],
+  "forecasted_at": "2026-05-14T18:57:25Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.14,
+  "p_regression": 0.09,
+  "p_success": 0.46,
+  "rationale_short": "Hydration removed obvious synthetic tokens, but actual branch-local hypothesis shape can still fail; a one-row replay is informative if bounded.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "branch_hypothesis_name_still_wrong",
+    "bayesRisk_le_mul_argument_shape_mismatch"
+  ]
+}

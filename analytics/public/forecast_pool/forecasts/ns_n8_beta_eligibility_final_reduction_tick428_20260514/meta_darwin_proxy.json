@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_n8_beta_eligibility_final_reduction_tick428_20260514",
+  "contract_question": "Will tick428 add a compiling Lean theorem that compresses the current N8 frontier after beta eligibility to flat-radius scale reserve or pressure visibility/coherence, without claiming those branches are closed?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T22:59:06Z",
+  "p_dependency_issue": 0.48,
+  "p_needs_new_lemma": 0.75,
+  "p_regression": 0.18,
+  "p_success": 0.58,
+  "rationale_short": "Main risk is adding another wrapper rather than a useful frontier reduction, or colliding with existing CriticalIncrementReducedAfterPressureBetaAudit naming.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

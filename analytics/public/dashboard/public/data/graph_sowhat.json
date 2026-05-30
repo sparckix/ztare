@@ -1,0 +1,46 @@
+{
+  "note": "Per-graph 'so what' — authored IN FLIGHT by the agent doing this week's update (2026-05-16, Claude), grounded in this cycle's verified numbers. Not templated. Re-authored every cycle; build_graph_sowhat.py gates on freshness.",
+  "authored_utc": "2026-05-16",
+  "panels": {
+    "scope_evolution": {
+      "headline": "The small vision did not sprawl incoherently and did not stay singular — it branched into a few coherent phyla. Reading the ancestral-core spine by hand: GP-023→GP-035→GP-037 is a genuine depth-3 refinement chain (gap-found→primitive-built→verifier-built) with NO parent: metadata, so the deterministic 'orphan dust = sprawl' verdict was an extraction artifact, not the truth.",
+      "detail": "Probe (5 cores + chain, ex-post semantic, GP-237 v2): the cores are different KINDS of root — substrate-program (GP-023), measurement-protocol (GP-072), verification-pipeline (GP-088). So: structured branching into ~3 coherent lineages, each speciating — not architecture-inflation, not one vision deepened. The real risk surfaced is a RECORDING-discipline gap, not incoherence: lineage exists but is not written as metadata (~85% of seams), and ids drift (GP-088 file ↔ '# GP-081' H1). Per recursive_over_architecting: the architecture grew coherently in places but WITHOUT lineage discipline, so the apparatus cannot see its own coherence — that is the actionable finding, not a sprawl score.",
+      "trend": "caveat"
+    },
+    "p0": {
+      "headline": "Positive at the discipline level, honestly flat-to-stuck at the science level — and the apparatus, not the operator, now carries self-correction.",
+      "detail": "What's real: the instrument catches its own laundering autonomously — Meta-Darwin + audit agents authored ~85 of 133 catches (the NS W6 and v30/GP-225 demolitions), operator only 6. Calibration is net-positive on signals with real denominators (forecast externalities 211:95 ≈2.5:1; cross-family disagreement low and mostly resolved; Brier 0.16 < 0.25 this period). What's honestly flat/stuck: insight density plateaued (~2.5-3.1, no paradigm-shifters); the hard-math frontier did not move (NS strict-margin atom open, gravity unearned, neural law failed); the one Goodhart-resistant metric (external validation) is not yet a number. Net: the defensible claim is the apparatus and its autonomous self-correction — NOT a scientific result. Calling the whole thing 'good progress this week' would be the narrative-inflation this page exists to catch (the #1 catch category).",
+      "trend": "caveat"
+    },
+    "bifurcation": {
+      "headline": "~97% of this week's authored work happened out-of-loop (~75% cumulative). The ZTARE iteration loop is a minority substrate — the live work is RD/agent dispatch + governance + mining. In-loop = the iter** work files themselves, not project-dir membership.",
+      "detail": "This is the central finding: the apparatus runs almost entirely outside its own evolutionary loop, by design and by measurement.",
+      "trend": "caveat"
+    },
+    "sophistication": {
+      "headline": "Do NOT read the rising blue line as progress — it is CUMULATIVE capability (82→1453); a cumulative count only ever goes up. The orange bars (Soph-D) count ZTARE iter-loop cage engagements only — they read ~20 because the iter-loop / VPS cognitive-firm workers were not run this week, NOT because autonomy fell. The real autonomous activity (RD/agent dispatch, ~20,500 out-of-loop artifacts this week) is in the Bifurcation panel; Soph-D mismeasures autonomy and should not be read as a P0 metric.",
+      "detail": "Soph-D = sum of engaged_count in projects/*/workspace/cage_engagement.jsonl = dormant-loop throughput. Methodology gap: the dashboard lacks an out-of-loop autonomous-activity metric; Soph-D needs relabeling/demotion.",
+      "trend": "caveat"
+    },
+    "insight_volume": {
+      "headline": "Volume only — counts of artifacts created, not their quality. High volume here with a flat-to-modest taste curve means activity, not insight. The honest signal is the Taste panel.",
+      "detail": "These curves cannot tell boilerplate from breakthrough; that is the Taste panel's job.",
+      "trend": "caveat"
+    },
+    "taste": {
+      "headline": "Contextualized insight density sits in the ~2.5–3.1 band recently (off an early 4.0 spike), no paradigm-shifters (no 5s). On the force-refreshed recent NS/meta/ledger content the cross-family raters agree it is above the broad-corpus baseline (codex ≈3.36 / Claude-warm ≈2.93). Compounding through early May, then plateau — not exponential.",
+      "detail": "The cold/warm/cross-family raters converge on the band; this is the trustworthy insight signal, weekly-bucketed (current bucket relabeled to the as-of date).",
+      "trend": "flat"
+    },
+    "compounding": {
+      "headline": "Cross-artifact citation: a rising ratio of new work citing prior work is the signature of work building on work; a flat ratio means parallel islands. Watch the ratio line, not the raw bar heights.",
+      "detail": "Complements per-artifact taste, which treats each file as an island.",
+      "trend": "mixed"
+    },
+    "recursive_gain": {
+      "headline": "Concrete recursive-gain bets surfaced, ranked high-confidence + low-cost first. These are candidates to ship, not realized gains — the value is which moves would compound the apparatus, not a score.",
+      "detail": "Each row is a move the operator could ship; the strange-loop substrate row is the meta-recursive one.",
+      "trend": "flat"
+    }
+  }
+}

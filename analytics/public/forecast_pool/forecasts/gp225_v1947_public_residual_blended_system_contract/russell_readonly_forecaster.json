@@ -1,0 +1,22 @@
+{
+  "agent_id": "russell_readonly_forecaster",
+  "contract_id": "gp225_v1947_public_residual_blended_system_contract",
+  "contract_question": "v19.47 defines an offline public+GP-225 blended system contract with public credit, provenance-weighted training tiers, and next same-sample benchmark gate without overclaiming",
+  "domain": "gp225_blended_contract",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "external_adapter_signal_too_thin": 0.34,
+    "overclaims_comparability": 0.18,
+    "same_sample_join_keys_weak": 0.24,
+    "schema_noise": 0.1,
+    "unnecessary_replay_scope_creep": 0.14
+  },
+  "forecasted_at": "2026-05-14T00:41:12Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.06,
+  "p_success": 0.68,
+  "rationale_short": "Above even odds because v19.46 already states the next gate and v112/v1918 provide offline patterns; main risk is semantic overclaiming from weak external coverage.",
+  "read_only_attestation": true
+}

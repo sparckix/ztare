@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "78de85f6dc9a7eb3c987faee670a0fd4f8d1ce29b46ff7eb3f17b6468f0088d5",
+  "artifact_path": "analytics/public/leanmill/results/v1710_bm25_action_sweep_baseline.json",
+  "compile_status": "pass",
+  "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
+  "error_type": "none",
+  "goal_delta": 23,
+  "resolution_note": "v17.10 produced the required artifact; strong deterministic accessibility/action-sweep scenario closed 23/23 with ratio 1.0, keeping GNN blocked.",
+  "resolved_at": "2026-05-12T14:51:42Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

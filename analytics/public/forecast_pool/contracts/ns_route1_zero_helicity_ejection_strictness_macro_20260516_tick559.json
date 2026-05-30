@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T00:14:02Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_pressure_hessian_ejection_macro_20260516",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.1176,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1176,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0213,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "30d",
+  "information_value": 4.0,
+  "layer": "macro",
+  "objective_resolver": "PDE judgment: Pressure Poisson for a flat zero-helicity cascade \u2014 does partial_z^2 p<0 yield a scale-INVARIANT strictly-positive transverse ejection steepness s0 (vortex-stretching-free strict 2D->3D instability => theta<1) vs s0->0 scale-critical degeneration (zero helicity removes the strict surplus). Cite 2D-3D transition / Pressure-Poisson rank-one literature",
+  "question": "Gemini-Pro channel binds the unique-survivor Lojasiewicz theta<1 to the Pressure-Hessian Parametric Ejection: flat zero-helicity Ghost's rank-one kinetic load forces partial_z^2 p<0 (Pressure Poisson) ejecting z-noise => energy functional strictly convex in z => theta<1 => gamma>0 => tick558->552->551 closure (chain PROVED given the gate). Decisive sharpened question: is the 2D->3D pressure-Hessian ejection of a ZERO-HELICITY flat cascade scale-invariant-STRICT (s0>0 uniform => theta<1 => Ghost broken => route-1 closure) OR scale-CRITICAL (s0->0, the Ghost is engineered-marginal by zero helicity => theta=1 => criticality fixed point in pressure-Hessian vocabulary)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "success iff zero-helicity pressure-Hessian ejection is scale-invariant-strict (theta<1, closure); 0.5 if strict only under an extra geometric sub-class; fail iff s0->0 scale-critical (zero-helicity Ghost survives; atom invariant across ALL enumerated channels incl pressure-Hessian)",
+  "task_type": "ns_clay_pressure_hessian_ejection_macro_20260516",
+  "value_if_success": 8.0,
+  "void_conditions": "tick558/552/551 refactored"
+}

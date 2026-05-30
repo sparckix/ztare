@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 30.0,
+  "artifact_hash": "729dce0ff7c296a5e8a6c3692bde8c1c0e7004256756dffb6e64353092a74cc0",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "compile_status": "downstream_build_passed",
+  "contract_id": "ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Imported ns_no_invisible_critical_profile and added FixedWindowOppositeConeCriticalProfileObstruction, no_oppositeConeOverflow_of_criticalProfileObstruction, FixedWindowStressConeMassCriticalProfileSource, constructor to FixedWindowStressConeMassSubordination, and pressureHessianL2_tail_lower_bound_of_coneMassCriticalProfileSource; downstream route-1 adapter build passed; no sorry/admit introduced in checked files.",
+  "resolved_at": "2026-05-14T01:38:56Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

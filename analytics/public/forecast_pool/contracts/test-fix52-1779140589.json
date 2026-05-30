@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/test-fix52-1779140589.json",
+    "contract": "analytics/public/forecast_pool/contracts/test-fix52-1779140589.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/test-fix52-1779140589",
+    "outcome": "analytics/public/forecast_pool/outcomes/test-fix52-1779140589.json",
+    "score": "analytics/public/forecast_pool/scores/test-fix52-1779140589.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_compactness_measure_valued_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "test-fix52-1779140589",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-18T21:43:10Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0526,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "membrane_fix52_selftest",
+    "score": 0.0526,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0526,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.0526,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.05,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.05,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0435,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.0435,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0345,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0238,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.0238,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-20T00:00:00Z",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "self-test F-TEST-MEMBRANE-FIX52-1779140589/test-fix52-1779140589",
+  "question": "fix52 e2e self-test (throwaway)",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "membrane_fix52_selftest",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

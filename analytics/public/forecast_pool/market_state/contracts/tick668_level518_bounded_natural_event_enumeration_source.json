@@ -1,0 +1,176 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T07:49:45Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.69,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.2139
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 80.0,
+    "expected_value": -0.1500000000000001,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.25,
+    "p_regression": 0.04,
+    "p_success": 0.69,
+    "participants": [
+      {
+        "agent_id": "codex-rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level518_bounded_natural_event_enumeration_source/codex_rd.json",
+        "forecasted_at": "2026-05-27T07:49:38Z",
+        "p_success": 0.69,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "enumeration_bound_not_strict",
+        "p": 0.34
+      },
+      {
+        "mode": "nat_to_fin_subtype_mismatch",
+        "p": 0.22
+      },
+      {
+        "mode": "workbench_arg_gap",
+        "p": 0.2
+      },
+      {
+        "mode": "gate_semantics_regression",
+        "p": 0.12
+      },
+      {
+        "mode": "lake_build_regression",
+        "p": 0.12
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level518_bounded_natural_event_enumeration_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level518_bounded_natural_event_enumeration_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level518_bounded_natural_event_enumeration_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level518_bounded_natural_event_enumeration_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level518_bounded_natural_event_enumeration_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 85.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-27T07:49:05Z",
+    "created_by": "codex-rd",
+    "horizon": "2h",
+    "layer": "meso",
+    "objective_resolver": "TRUE iff Lean compiles L3ABoundedNaturalEventEnumerationPacketSource.toEventPrefixEnumerationSource, strict bounded-natural enumeration gate passes, PDE workbench surfaces one passing check, active gate audit is clean, and focused tests pass.",
+    "question": "Will Level518 construct the Level517 finite selected-bad-node event-prefix enumeration from bounded natural event-index witnesses, with Lean/workbench/gate/tests passing?",
+    "success_threshold": "all listed checks pass",
+    "task_type": "formal_bridge"
+  },
+  "contract_id": "tick668_level518_bounded_natural_event_enumeration_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex-rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level518_bounded_natural_event_enumeration_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 80.0,
+        "forecasted_at": "2026-05-27T07:49:38Z",
+        "p_success": 0.69,
+        "rationale_short": "Positive construction should be mostly syntactic: bounded Nat witnesses convert to Fin witnesses; risk is Lean subtype projection or workbench wiring.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T07:50:02Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 75.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T07:49:54Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.69,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.2139
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 80.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.69,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "enumeration_bound_not_strict",
+        "p": 0.34
+      },
+      {
+        "mode": "nat_to_fin_subtype_mismatch",
+        "p": 0.22
+      },
+      {
+        "mode": "workbench_arg_gap",
+        "p": 0.2
+      },
+      {
+        "mode": "gate_semantics_regression",
+        "p": 0.12
+      },
+      {
+        "mode": "lake_build_regression",
+        "p": 0.12
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09610000000000003,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T07:50:02Z"
+  }
+}

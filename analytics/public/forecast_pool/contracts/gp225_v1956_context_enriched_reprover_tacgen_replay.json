@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1956_context_enriched_reprover_tacgen_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1956_context_enriched_reprover_tacgen_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1956_context_enriched_reprover_tacgen_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1956_context_enriched_reprover_tacgen_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1956_context_enriched_reprover_tacgen_replay.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1956_context_enriched_reprover_tacgen_replay",
+  "cost_penalty": 0.2,
+  "created_at": "2026-05-14T02:26:08Z",
+  "created_by": "codex_rd_gp225",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 21.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_repair_micro",
+    "score": 1.0,
+    "selected_domain": "gp225_repair_micro",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 14,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 3,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.2143,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same session after bounded context-enriched candidate emission and replay",
+  "information_value": 0.84,
+  "layer": "micro",
+  "objective_resolver": "Resolve from v19.56 candidate and replay artifacts: additional_new_strict_same_target_rows>=1 beyond v19.53/v19.55, harmful_compiled_mismatch_rows==0, forbidden_generation_fields_absent==true, train_gnn_now==false. Progress-only and pull-forward rows are auxiliary and do not by themselves satisfy success.",
+  "question": "Will GP-225 v19.56 context/scope-enriched ReProver candidate emission plus top-4 replay produce at least one new strict same-target row on fresh/eligible PDE holdout candidates, with harmful mismatches zero and forbidden gold fields absent?",
+  "risk_penalty": 0.16,
+  "success_threshold": "additional_new_strict_same_target_rows >= 1 AND harmful_compiled_mismatch_rows == 0 AND clean source policy true",
+  "task_type": "bundled_context_enriched_public_tacgen_replay",
+  "value_if_success": 0.86,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

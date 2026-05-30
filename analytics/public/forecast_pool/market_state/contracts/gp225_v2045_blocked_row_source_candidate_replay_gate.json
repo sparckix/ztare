@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:29:21Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 40.0,
+    "expected_value": -0.19589533393599468,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.15000000000000002,
+    "p_needs_new_lemma": 0.09,
+    "p_regression": 0.055,
+    "p_success": 0.32482030275636603,
+    "participants": [
+      {
+        "agent_id": "Church",
+        "domain": "gp225_pre_gnn_replay_gate",
+        "p_success": 0.34,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Curry",
+        "domain": "gp225_pre_gnn_replay_gate",
+        "p_success": 0.31,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "context_variable_mismatch",
+        "p": 0.3332452431289641
+      },
+      {
+        "mode": "zero_compile_like_prior_public_adapter",
+        "p": 0.2531712473572939
+      },
+      {
+        "mode": "source_contract_wrong_shape",
+        "p": 0.2180232558139535
+      },
+      {
+        "mode": "timeout_rows_still_timeout",
+        "p": 0.10465116279069767
+      },
+      {
+        "mode": "static_check_not_semantic",
+        "p": 0.09090909090909091
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2045_blocked_row_source_candidate_replay_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2045_blocked_row_source_candidate_replay_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2045_blocked_row_source_candidate_replay_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2045_blocked_row_source_candidate_replay_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2045_blocked_row_source_candidate_replay_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 50.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:29:01Z",
+    "created_by": "codex:RD",
+    "horizon": "120m",
+    "layer": "micro",
+    "objective_resolver": "success iff replay attempts v20.44 candidates, reports strict/solver/auxiliary/harmful heads separately, harmful rows/actions are zero, and at least one candidate compiles as strict target, solver closure, or auxiliary pull-forward",
+    "question": "If we replay the 10 v20.44 blocked-row source candidates, will at least one candidate compile into a strict, solver-closure, or auxiliary head with harmful mismatches zero?",
+    "success_threshold": "objective resolver true; static packet alone is false",
+    "task_type": "gp225_pre_gnn_replay_gate"
+  },
+  "contract_id": "gp225_v2045_blocked_row_source_candidate_replay_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Church",
+        "raw_agent_ids": [
+          "Church"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Curry",
+        "raw_agent_ids": [
+          "Curry"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Church",
+      "Curry"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run only as bounded information replay if EV positive; otherwise source-context adapter should be refined.",
+        "agent_id": "Church",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2045_blocked_row_source_candidate_replay_gate/church.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T17:29:15Z",
+        "p_success": 0.34,
+        "rationale_short": "Content changed, but many candidates still depend on guessed local binder names and may fail at Lean elaboration.",
+        "specific_failure_mode_ids": [
+          "context_variable_mismatch",
+          "zero_compile_like_prior_public_adapter"
+        ]
+      },
+      {
+        "action_change_recommendation": "Prefer one-row canary or abort if aggregate EV is negative; static hygiene is weaker than Lean replay.",
+        "agent_id": "Curry",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2045_blocked_row_source_candidate_replay_gate/curry.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes": 38.0,
+        "forecasted_at": "2026-05-14T17:29:15Z",
+        "p_success": 0.31,
+        "rationale_short": "At least one compile is possible, especially source-copied rows, but strict/safe head success across guessed contexts remains under even odds.",
+        "specific_failure_mode_ids": [
+          "context_variable_mismatch",
+          "source_contract_wrong_shape"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "changed_by_forecast_ids": [
+      "Church",
+      "Curry"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:31:39Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 40.0,
+      "expected_value": -0.19589533393599468,
+      "p_success": 0.32482030275636603,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.5993
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 40.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.32482030275636603,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "context_variable_mismatch",
+        "p": 0.3332452431289641
+      },
+      {
+        "mode": "zero_compile_like_prior_public_adapter",
+        "p": 0.2531712473572939
+      },
+      {
+        "mode": "source_contract_wrong_shape",
+        "p": 0.2180232558139535
+      },
+      {
+        "mode": "timeout_rows_still_timeout",
+        "p": 0.10465116279069767
+      },
+      {
+        "mode": "static_check_not_semantic",
+        "p": 0.09090909090909091
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T15:23:18Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 23.0,
+    "expected_value": -0.1645858800569816,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.8007529453509428,
+    "participants": [
+      {
+        "agent_id": "gp230_descartes_gp225_v2035",
+        "domain": "general",
+        "p_success": 0.78,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_hypatia_gp225_v2035",
+        "domain": "general",
+        "p_success": 0.82,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2035_filtered_source_aligned_repair_candidates.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2035_filtered_source_aligned_repair_candidates.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2035_filtered_source_aligned_repair_candidates.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2035_filtered_source_aligned_repair_candidates.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2035_filtered_source_aligned_repair_candidates.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 41.12,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T15:19:53Z",
+    "created_by": "codex_RD_2026_05_14",
+    "horizon": "one deterministic no-replay repaired candidate packet over v20.34 seed rows",
+    "layer": "micro",
+    "objective_resolver": "Success iff analytics/public/leanmill/results/v2035_filtered_source_aligned_repair_candidates.json exists and reports repair_rows >= 4, candidate_actions >= 8, blocked_rows_preserved >= 5, replay_run=false, candidate_generation_run=false or deterministic_static_only=true, forbidden_fields_fed=false, target_proof_lines_used=false, post_target_same_file_declarations_used=false, gold_tactic_used=false, training_now=false, and gnn_blocked=true.",
+    "question": "Will v20.35 build a source-aligned repaired candidate packet from the six v20.34 repair seed rows without replay, training, or source-policy leakage?",
+    "success_threshold": "repair_rows>=4,candidate_actions>=8,source_policy_clean,no_replay,no_training,gnn_blocked_true,blocked_rows_preserved",
+    "task_type": "gp225_public_adapter_repair_candidate_packet_micro"
+  },
+  "contract_id": "gp225_v2035_filtered_source_aligned_repair_candidates",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_descartes_gp225_v2035",
+        "raw_agent_ids": [
+          "gp230_descartes_gp225_v2035"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_hypatia_gp225_v2035",
+        "raw_agent_ids": [
+          "gp230_hypatia_gp225_v2035"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_descartes_gp225_v2035",
+      "gp230_hypatia_gp225_v2035"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Build v20.35 from v20.34 only as static deterministic repair supply; open a separate GP-230 contract before replay.",
+        "agent_id": "gp230_descartes_gp225_v2035",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2035_filtered_source_aligned_repair_candidates/gp230_descartes_gp225_v2035.json",
+        "canonical_agent_id": null,
+        "domain": "general",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T15:23:13Z",
+        "p_success": 0.78,
+        "rationale_short": "Six seed rows can emit enough source-aligned repair actions, but v20.31 zero-compile means this is only pre-replay filtration supply.",
+        "specific_failure_mode_ids": [
+          "schema_resolver_mismatch",
+          "occurrence_precheck_overclaim",
+          "leakage_via_convenience_sources",
+          "multi_step_lane_quality_weak"
+        ]
+      },
+      {
+        "action_change_recommendation": "Build v20.35 static packet only; preserve blocked rows, emit explicit forbidden-source booleans, do not replay or train.",
+        "agent_id": "gp230_hypatia_gp225_v2035",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2035_filtered_source_aligned_repair_candidates/gp230_hypatia_gp225_v2035.json",
+        "canonical_agent_id": null,
+        "domain": "general",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T15:23:13Z",
+        "p_success": 0.82,
+        "rationale_short": "v20.34 already has six repair seed rows and five blocked rows; success is deterministic packet hygiene, not verifier yield.",
+        "specific_failure_mode_ids": [
+          "schema_resolver_mismatch",
+          "repair_templates_underproduce_candidates",
+          "source_policy_ambiguity",
+          "overblocking_leaves_too_few_rows",
+          "implementation_path_bug"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "gp230_hypatia_gp225_v2035",
+      "gp230_descartes_gp225_v2035"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:24:45Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 23.0,
+      "expected_value": -0.1645858800569816,
+      "p_success": 0.8007529453509428,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.7495
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 23.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8007529453509428,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.040400000000000005,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:24:49Z"
+  }
+}

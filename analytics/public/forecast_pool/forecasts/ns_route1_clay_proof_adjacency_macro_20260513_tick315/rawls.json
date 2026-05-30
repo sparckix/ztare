@@ -1,0 +1,23 @@
+{
+  "agent_id": "Rawls",
+  "contract_id": "ns_route1_clay_proof_adjacency_macro_20260513_tick315",
+  "contract_question": "Within the next 10 NS route-1 RD ticks, will we reach Clay-proof-adjacent status under the stricter predicate: build-passed Lean plus E/F and GP-233 row showing route-1 strictness reduces to one externally meaningful Navier-Stokes PDE estimate, not scalar strict-budget oracle and not route wiring or certificate reshuffling?",
+  "domain": "ns_route1_clay_adjacency",
+  "expected_cost_agent_minutes": 535.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_identification_gap": 0.18,
+    "certificate_adapter_only": 0.25,
+    "hidden_scalar_oracle": 0.18,
+    "import_dependency_risk": 0.12,
+    "pressure_decomposition_bookkeeping": 0.15,
+    "weak_gp233_row": 0.12
+  },
+  "forecasted_at": "2026-05-13T23:59:01Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.16,
+  "p_success": 0.27,
+  "rationale_short": "Current infrastructure can package the reduction, but avoiding oracle-shaped assumptions likely needs a new lemma tying angular dominance or critical-tail visibility to recovered pressure-Hessian carrier.",
+  "read_only_attestation": true
+}

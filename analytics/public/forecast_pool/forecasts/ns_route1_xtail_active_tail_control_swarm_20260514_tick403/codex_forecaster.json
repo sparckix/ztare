@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "Keep the same-carrier bridge explicit; if the swarm cannot lift X_tail into the activeTail carrier, stop at a named no-go instead of broadening the theorem.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+  "contract_question": "Will a 3-agent swarm plus local work produce a usable proof route or decisive no-go for same-carrier tail control X_tail <= C_A * activeTail in route 1?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "activeTail_too_narrow_for_Xtail": 0.28,
+    "lean_surface_friction": 0.06,
+    "proof_route_only_conditional": 0.2,
+    "route_tail_raw_energy_countermodel": 0.16,
+    "same_carrier_definition_missing": 0.18,
+    "tautological_tail_control": 0.12
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioner",
+    "same_carrier_guard",
+    "ns_route1"
+  ],
+  "forecasted_at": "2026-05-14T18:55:10Z",
+  "p_dependency_issue": 0.26,
+  "p_needs_new_lemma": 0.6,
+  "p_regression": 0.08,
+  "p_success": 0.64,
+  "rationale_short": "Route 1 now has explicit same-carrier tail control and the finite-tail amortized strictness interface; the remaining risk is whether the swarm can lift that into a usable proof/no-go without falling back to a tautological carrier swap.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "activeTail_too_narrow_for_Xtail",
+    "proof_route_only_conditional",
+    "route_tail_raw_energy_countermodel"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2072_parallel_training_delta_triage.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2072_parallel_training_delta_triage.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2072_parallel_training_delta_triage",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2072_parallel_training_delta_triage.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2072_parallel_training_delta_triage.json"
+  },
+  "baseline_action": "serially continue source discovery after v20.71",
+  "budget_agent_minutes": 22.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2072_parallel_training_delta_triage",
+  "cost_penalty": 0.04,
+  "counterfactual_action": "parallelize training-delta closure into independent label, heldout, and null-baseline gates",
+  "created_at": "2026-05-14T19:15:50Z",
+  "created_by": "codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0323,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "training_delta_triage",
+    "score": 0.0323,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0323,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0323,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0294,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0294,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0278,
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.0278,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0256,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.0256,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0222,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.0222,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14",
+  "information_value": 0.9,
+  "layer": "meso",
+  "objective_resolver": "Resolve true iff v2072_parallel_training_delta_triage.json exists, status is passed, consumes v20.71, v20.70, latest manifest, v20.40, and leakage/strict compile guard artifacts, specifies lane-level success predicates and next artifacts, and reports train_now=false and gnn_blocked=true when no heldout changed arm exists.",
+  "question": "Will v20.72 produce an artifact-backed parallel training-delta triage that defines the exact GNN unlock beliefs, splits them into label-inventory, heldout candidate-content, and null-training-baseline lanes, and keeps training blocked unless heldout candidate-content delta exists?",
+  "risk_penalty": 0.25,
+  "success_threshold": "passed triage with explicit parallel lanes, no training execution, no row-count unlock, and concrete next artifacts",
+  "task_type": "training_delta_triage",
+  "value_if_success": 2.0,
+  "void_conditions": "starts training; claims 15 rows are enough; omits heldout changed-arm blocker; ignores leakage/compile-invariant guards"
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "rawls_independent_micro",
+  "contract_id": "ns_route1_piece_branch_meso_20260513_tick302",
+  "contract_question": "Should the next bounded NS route-1 proof tick attack pressure-piece decomposition before velocity-piece Caccioppoli?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "harmonic_tail_or_child_collar_remainder": 0.28,
+    "lean_mismatch": 0.1,
+    "other": 0.08,
+    "pressure_receipts_not_bound_to_fresh_pressure_piece": 0.36,
+    "station_too_wrapper_like": 0.18
+  },
+  "forecasted_at": "2026-05-13T22:44:37Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.08,
+  "p_success": 0.43,
+  "rationale_short": "Pressure branch has nearby receipt machinery but high risk that local CZ/fresh pressure energy is not yet connected to pressureExcessBound.",
+  "read_only_attestation": true
+}

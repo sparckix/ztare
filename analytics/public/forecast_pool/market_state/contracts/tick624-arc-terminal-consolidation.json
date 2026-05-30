@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T01:53:51Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": -0.09267969724363397,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.32482030275636603,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick624-arc-terminal-consolidation/claude_rd.json",
+        "forecasted_at": "2026-05-17T01:53:51Z",
+        "p_success": 0.34,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick624-arc-terminal-consolidation/codex.json",
+        "forecasted_at": "2026-05-17T01:53:51Z",
+        "p_success": 0.31,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick624-arc-terminal-consolidation.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick624-arc-terminal-consolidation.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick624-arc-terminal-consolidation.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick624-arc-terminal-consolidation.json",
+    "score": "analytics/public/forecast_pool/scores/tick624-arc-terminal-consolidation.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T01:53:04Z",
+    "created_by": "claude:RD",
+    "horizon": "arc",
+    "layer": "meso",
+    "objective_resolver": "manual_rd",
+    "question": "tick624: is the NS scale-margin arc + complement provably TERMINAL for the apparatus (structural exhaustion across tick611-623, each leg derived+adversary-survived, residual Clay-equivalent), so the disciplined action is STOP-this-line + handoff, NOT further in-arc ticks (which would be the treadmill the apparatus exists to stop)?",
+    "success_threshold": "terminal iff every leg (611-618 scale-margin exhausted, 620-621 complement empty, 622 trichotomy complete adversary-survived, 623 residual Clay-equivalent non-reductive) holds and no in-arc progress is possible; success = consolidated verdict survives self-Meta-Darwin (not AP-014 premature-settled \u2014 it is family-scoped, derived, adversary-survived, NOT an NS-impossibility claim)",
+    "task_type": "ns_arc_terminal"
+  },
+  "contract_id": "tick624-arc-terminal-consolidation",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick624-arc-terminal-consolidation/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T01:53:51Z",
+        "p_success": 0.34,
+        "rationale_short": "concede the adversary: tick616 is hypothesis-bounded theorem, tick622 is informal taxonomy NOT a formal no-go; 'provably terminal/complete' is an overclaim; honest status = exhausted-AS-EXPLORED + de-prioritize, NOT provably terminal; AP-014 risk acknowledged",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick624-arc-terminal-consolidation/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T01:53:51Z",
+        "p_success": 0.31,
+        "rationale_short": "ADVERSARY KILL: family-scoped OK but complete/exhausted/provably-terminal too strong without formal no-go coverage; AP-014 risk material",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T01:53:51Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 36.75,
+      "expected_value": -0.09267969724363397,
+      "p_success": 0.32482030275636603,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.2493
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.32482030275636603,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10585000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:50Z"
+  }
+}

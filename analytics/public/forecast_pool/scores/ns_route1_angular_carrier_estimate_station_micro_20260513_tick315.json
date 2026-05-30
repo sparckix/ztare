@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_angular_carrier_estimate_station_micro_20260513_tick315",
+  "mean_brier": 0.040400000000000005,
+  "mean_log_score": -0.22345614901116895,
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "artifact_hash": "d071365a32fe8c8222fd13502a9de096264359ecfef6b3e73d4d28c489d9a20b",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "pass",
+    "contract_id": "ns_route1_angular_carrier_estimate_station_micro_20260513_tick315",
+    "error_type": "none",
+    "goal_delta": 2,
+    "resolution_note": "Added Route1PressureAngularCarrierEstimate, direct theorem pressureHessianL2_tail_lower_bound_of_angularCarrierEstimate, and constructor into Route1PressureAngularMomentTailMassCertificate; Lean check and module build passed; no sorry/admit in file.",
+    "resolved_at": "2026-05-14T00:04:41Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T00:04:47Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 8.0,
+      "agent_id": "Gibbs",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 13.0,
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-13T23:59:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:00:44Z",
+        "resolved_at": "2026-05-14T00:04:41Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 8.0,
+      "agent_id": "Herschel",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 20.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 28.0,
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-13T23:59:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:00:44Z",
+        "resolved_at": "2026-05-14T00:04:41Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "contract_id": "ns_clay_dyadic_flatDepthReserve_instance_tick450_20260514",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Ship dyadic instance with computed values + discharged verification",
+      "counterfactual_action": "Skip; chain remains all-wrapper per tick448 audit"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "Tick441 structure now has a real non-vacuous combinatorial witness with computed verification. Next: identify BadNode with CKN bad cylinders from an actual Leray-Hopf weak solution, populate route/pressure/beta/residual charges from honest local-energy data. That is the real NS construction the audit prescribed.",
+      "old_next_action": "All 13 named primitives in tick432-445 are wrappers or naming per audit; chain hangs on tick441 unconstructed."
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.047450000000000006,
+  "mean_log_score": -0.24306650558780962,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "db775a293441a31435b402e8c8c1262828aed15d0ee94302ad0f1347172af88f",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_flat_depth_reserve_dyadic_instance.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passing",
+    "contract_id": "ns_clay_dyadic_flatDepthReserve_instance_tick450_20260514",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "Tick441 structure now has a real non-vacuous combinatorial witness with computed verification. Next: identify BadNode with CKN bad cylinders from an actual Leray-Hopf weak solution, populate route/pressure/beta/residual charges from honest local-energy data. That is the real NS construction the audit prescribed.",
+    "old_next_action": "All 13 named primitives in tick432-445 are wrappers or naming per audit; chain hangs on tick441 unconstructed.",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Shipped FlatDepthReserveLike with self-contained shape clone (avoids 10K-line route1 import). Dyadic instance on Nat \u00d7 Nat: radius (k,j) = 2^(-k), remainingDepth (k,j) = N - k, flatChildren = {(k+1, 2j), (k+1, 2j+1)}, all non-flat charges = 0. Verification: depth_child_le via omega; flat_children_radius_sum_le via computed dyadicRadius_sum_children lemma (2 \u00b7 2^(-(k+1)) = 2^(-k)). Real Lean construction, no Prop wrappers in verification, no sorry/admit. Two scope guards explicitly tagged as 'toy combinatorial, not NS data'. Per tick448 audit pull-forward: this addresses the prescription to construct (not name) the tick441 structure; combinatorial level only.",
+    "resolved_at": "2026-05-15T02:07:29Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-15T02:07:29Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "codex_rd",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "ns_clay_real_instance",
+      "expected_cost_agent_minutes": 15.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T02:07:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T02:07:29Z",
+        "resolved_at": "2026-05-15T02:07:29Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.0625,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "ns_clay_real_instance",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2876820724517809,
+      "p_success": 0.75,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T02:07:29Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T02:07:29Z",
+        "resolved_at": "2026-05-15T02:07:29Z"
+      }
+    }
+  ]
+}

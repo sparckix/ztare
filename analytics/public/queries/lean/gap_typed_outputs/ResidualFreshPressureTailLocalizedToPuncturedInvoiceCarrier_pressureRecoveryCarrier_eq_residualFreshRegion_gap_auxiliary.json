@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-19T21:32:11.717260+00:00",
+  "target": "ResidualFreshPressureTailLocalizedToPuncturedInvoiceCarrier",
+  "field": "pressureRecoveryCarrier_eq_residualFreshRegion",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched carrier/region identity language. These gaps usually need a tailored localization or test-object construction before Lean wiring.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

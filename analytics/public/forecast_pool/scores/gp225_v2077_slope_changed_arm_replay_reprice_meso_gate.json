@@ -1,0 +1,114 @@
+{
+  "contract_id": "gp225_v2077_slope_changed_arm_replay_reprice_meso_gate",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "stop after context hydration and do not replay",
+      "counterfactual_action": "bounded replay of two hydrated slope variants if meso EV permits"
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "meso_only_forecast",
+        "heldout_strict_yield",
+        "anti_goodhart"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "promote one heldout strict row into manifest refresh and re-evaluate GNN distance",
+      "old_next_action": "stop after context hydration",
+      "preconditioner_effect": "v20.76 hydration made the method-syntax variant compile while isolating the rw variant hy-shape failure.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2076_slope_changed_arm_context_hydration_reducer.json",
+      "realized_failure_mode_ids": [
+        "rw_variant_hy_shape_fails"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.2605,
+  "mean_log_score": -0.7141835687708993,
+  "outcome": {
+    "actual_cost_agent_minutes": 26.0,
+    "artifact_hash": "fb34c3cc2e23aebf100a7f79f0a37b5ae57ad53830f444ac737b0da52cc15a50",
+    "artifact_path": "analytics/public/leanmill/results/v2077_slope_changed_arm_replay.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": "replay_passed",
+    "contract_id": "gp225_v2077_slope_changed_arm_replay_reprice_meso_gate",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "meso_only_forecast",
+      "heldout_strict_yield",
+      "anti_goodhart"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "negative_externality_tags": [],
+    "new_next_action": "promote one heldout strict row into manifest refresh and re-evaluate GNN distance",
+    "old_next_action": "stop after context hydration",
+    "preconditioner_effect": "v20.76 hydration made the method-syntax variant compile while isolating the rw variant hy-shape failure.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2076_slope_changed_arm_context_hydration_reducer.json",
+    "realized_failure_mode_ids": [
+      "rw_variant_hy_shape_fails"
+    ],
+    "resolution_note": "v20.77 meso reprice cleared run threshold and bounded replay ran on two hydrated variants for current_scale_0242/slope_of_Y_ne. Result: 1/2 compiled, 1 new strict same-target heldout row, 0 harmful mismatches, no target proof/gold-state generation, training=false, GNN blocked=true.",
+    "resolved_at": "2026-05-14T19:33:20Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:33:24Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 26.0,
+      "agent_id": "Gentzen4",
+      "brier": 0.24009999999999998,
+      "cost_error_agent_minutes": -2.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.6733445532637656,
+      "p_success": 0.51,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:31:33Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:31:45Z",
+        "resolved_at": "2026-05-14T19:33:20Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 26.0,
+      "agent_id": "Prawitz4",
+      "brier": 0.28090000000000004,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 27.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.7550225842780328,
+      "p_success": 0.47,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:31:33Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:31:45Z",
+        "resolved_at": "2026-05-14T19:33:20Z"
+      }
+    }
+  ]
+}

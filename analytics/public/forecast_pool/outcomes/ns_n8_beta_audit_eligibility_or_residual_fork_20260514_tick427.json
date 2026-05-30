@@ -1,0 +1,42 @@
+{
+  "actual_cost_agent_minutes": 12.0,
+  "artifact_hash": "fef65ca4ae498a1667c813ae718b1b86d7a8fb985f4fa1e32bcb1b98cecfb097",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "meta_darwin_proxy",
+    "banach_gpt55_xhigh"
+  ],
+  "compile_status": "lean_passed_no_sorry",
+  "contract_id": "ns_n8_beta_audit_eligibility_or_residual_fork_20260514_tick427",
+  "counterfactual_value_bucket": "nogo_to_branch_surface",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_n8_beta",
+    "eligibility_fork",
+    "banach_nogo",
+    "gp233_positive_with_nogo"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "eligibility_still_open",
+    "radius_pressure_beta_residuals_open"
+  ],
+  "new_next_action": "Attack the eligibility theorem with explicit residual alternatives: prove residual fresh nodes are audit-eligible, or route to flat radius scale reserve, pressure visibility/rigidity, or beta incidence.",
+  "old_next_action": "Prove audit eligibility directly from residual fresh excess.",
+  "preconditioner_effect": "Converted no-go into an explicit eligibility-level residual fork instead of overclaiming the positive branch.",
+  "preconditioner_source": "Banach GPT-5.5 xhigh negative audit + tick426 eligibility data",
+  "realized_failure_mode_ids": [
+    "banach_nogo_recorded",
+    "eligibility_still_analytic",
+    "residual_branches_explicit",
+    "no_beta_closure"
+  ],
+  "resolution_note": "Added ResidualFreshAuditEligibilityOrN8ResidualFork, theorem auditEligibilityDataNonempty_of_eligibilityFork, and a no-closure guard. The fork records Banach's no-four-object-source theorem and yields eligibility data only after flat radius, pressure cone, and beta incidence residual branches are ruled out.",
+  "resolved_at": "2026-05-14T22:46:50Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

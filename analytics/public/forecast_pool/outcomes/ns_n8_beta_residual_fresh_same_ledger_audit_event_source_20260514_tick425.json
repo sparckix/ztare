@@ -1,0 +1,40 @@
+{
+  "actual_cost_agent_minutes": 13.0,
+  "artifact_hash": "9d8ecf641e76d91874f212f0aacca8449dfaac77303fae4cd0e616ce2e5f473c",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd",
+    "meta_darwin_proxy"
+  ],
+  "compile_status": "lean_passed_no_sorry",
+  "contract_id": "ns_n8_beta_residual_fresh_same_ledger_audit_event_source_20260514_tick425",
+  "counterfactual_value_bucket": "small_corrective_source",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_n8_beta",
+    "audit_event_source",
+    "sidecar_feedback",
+    "gp233_positive"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "analytic_selection_still_open",
+    "full_beta_split_still_requires_locks"
+  ],
+  "new_next_action": "Prove ResidualFreshExcessSameLedgerAuditEventSource first: residual fresh excess plus audit/coherence yields same-ledger audit event without full beta payment fields.",
+  "old_next_action": "Use CoherentFreshPacketAuditResidualRoutingSource as the positive branch target directly.",
+  "preconditioner_effect": "Prevented the positive branch from overclaiming full beta source split; lowered the target to same-ledger audit-event source.",
+  "preconditioner_source": "Arendt sidecar feedback after tick424",
+  "realized_failure_mode_ids": [
+    "analytic_selection_still_open",
+    "small_source_not_full_split",
+    "pressure_fanout_square_budget_omitted_by_design"
+  ],
+  "resolution_note": "Added ResidualFreshExcessSameLedgerAuditEventSource, a downward projection from CoherentFreshPacketAuditResidualRoutingSource, and a no-closure guard. The small source omits square-budget, fanout, full pressure payment, and inherited-skeleton closure fields; it only captures residual fresh excess plus audit and same-ledger coherence.",
+  "resolved_at": "2026-05-14T22:37:52Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

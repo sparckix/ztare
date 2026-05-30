@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_gowers_no_silent_flat_defect_or_ess_cf_dichotomy_tick442_20260514",
+  "contract_question": "Will tick442 ship either (a) a real Lean theorem materially closing NoSilentFlatDefectProfile, or (b) a clean ESS+Constantin-Fefferman 5-branch dichotomy structure with a conditional theorem closing the silent-flat branch, compiling clean with no new sorry/admit on the touched file?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T00:58:52Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.72,
+  "rationale_short": "Backup (ESS/CF dichotomy structures) is structural Lean engineering and highly likely to compile; primary closure of NoSilentFlatDefectProfile is unlikely but the contract resolves TRUE if (b) alone is shipped. Five-residual split aligns with classical ESS + Constantin-Fefferman partitioning of L^infty L^3 endpoint vs vorticity coherence vs measure-valued limits.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

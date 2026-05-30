@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365",
+  "mean_brier": 0.33299999999999996,
+  "mean_log_score": -0.8663680643892968,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "21e471aa342017978d63377c0719518b3cc67d22ed29aba2fef8fdd0148f6a08",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/xhigh_no_nonzero_zero_visibility_feynman_verdict_20260514.md",
+    "compile_status": "not_applicable_sidecar",
+    "contract_id": "ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "Feynman did not prove the lemma but produced a useful lower missing hypothesis: ActiveTailCarrierVisibilityDomination, plus fifth-channel warning V_A_perp.",
+    "resolved_at": "2026-05-14T12:58:10Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T12:58:18Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_rd",
+      "brier": 0.2304,
+      "cost_error_agent_minutes": 20.0,
+      "domain": "navier_stokes_route1",
+      "expected_cost_agent_minutes": 38.0,
+      "log_score": -0.6539264674066639,
+      "p_success": 0.52,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:53:03Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:53:18Z",
+        "resolved_at": "2026-05-14T12:58:10Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_skeptic",
+      "brier": 0.4355999999999999,
+      "cost_error_agent_minutes": 32.0,
+      "domain": "navier_stokes_route1",
+      "expected_cost_agent_minutes": 50.0,
+      "log_score": -1.0788096613719298,
+      "p_success": 0.34,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:53:03Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:53:18Z",
+        "resolved_at": "2026-05-14T12:58:10Z"
+      }
+    }
+  ]
+}

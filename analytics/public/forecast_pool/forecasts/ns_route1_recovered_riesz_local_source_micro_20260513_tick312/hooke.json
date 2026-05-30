@@ -1,0 +1,22 @@
+{
+  "agent_id": "Hooke",
+  "contract_id": "ns_route1_recovered_riesz_local_source_micro_20260513_tick312",
+  "contract_question": "Will this tick add a compiling recovered Riesz/local pressure formula source that lowers the raw recoveredRiesz_le_localPressureSource branch without mutating pre-GNN harness?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.08,
+    "gauge_fresh_cutoff_blocker": 0.27,
+    "lean_type_friction": 0.11,
+    "missing_analytic_infrastructure": 0.2,
+    "tautological_source_wrapper": 0.34
+  },
+  "forecasted_at": "2026-05-13T23:35:31Z",
+  "p_dependency_issue": 0.27,
+  "p_needs_new_lemma": 0.47,
+  "p_regression": 0.08,
+  "p_success": 0.53,
+  "rationale_short": "A is highest-yield: lower recoveredRiesz_le_localPressureSource with same gauge/fresh cutoff and anti-tautology guards.",
+  "read_only_attestation": true
+}

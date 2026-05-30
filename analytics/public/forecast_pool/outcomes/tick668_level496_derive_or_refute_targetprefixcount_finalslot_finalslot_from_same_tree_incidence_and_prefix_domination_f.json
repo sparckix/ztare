@@ -1,0 +1,39 @@
+{
+  "actual_cost_agent_minutes": 45.0,
+  "artifact_hash": "d5a1a44fc819f63f13e03d4735a4f3f6505bb7556e31507f25cc06a363bcdbf0",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level496_target_count_bound_pencil.md",
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "passed",
+  "contract_id": "tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": false,
+  "error_type": null,
+  "externality_tags": [
+    "ns_trackb",
+    "level496",
+    "c5_adjacent",
+    "target_count_refute"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": "live warm-consumer-once returned blocked_input; existing read-only sidecars were used as post-hoc Lean/gate reviewers, not independent forecasts",
+  "ordering_override_no_independent_forecaster": "live warm-consumer-once returned blocked_input; existing read-only sidecars were used as post-hoc Lean/gate reviewers, not independent forecasts",
+  "preconditioner_effect": "converted target-count route into typed oversubscription witness",
+  "preconditioner_source": "target-indexed event assignment refute gate plus PDE workbench",
+  "realized_failure_mode_ids": [
+    "hostile_oversubscription_witness_survives",
+    "incidence_fields_prop_only"
+  ],
+  "resolution_note": "Level496 refuted the current same-tree/prefix-domination-to-target-count route by adding the Lean theorem sourceBudgetWithoutInjection_targetPrefix_finalSlot_bound_fails and the opaque-receipts schema guard; target_count_value=2 exceeds event_count_value=1, so Level495 still needs a genuine incidence-derived target-count theorem.",
+  "resolved_at": "2026-05-27T02:57:55Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

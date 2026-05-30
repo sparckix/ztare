@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": "Proceed only if the new object is share-specific and carries an explicit guard that it does not source Galilean/reserve or leakage/child receipts.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514",
+  "contract_question": "Will the next pressure tick compile a non-tautological resolved-mean-free-to-local-quadratic receipt source or guard in ns_pressure_hessian_l2_bridge.lean, with Lean pass and no pressure-closure overclaim?",
+  "domain": "ns_pressure",
+  "expected_cost_agent_minutes": 43.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "pressure_closure_laundering": 0.18,
+    "proof_surface_duplicates_old_local_quadratic_source": 0.22,
+    "share_is_defined_posthoc": 0.31,
+    "tent_excess_does_not_identify_local_quadratic_receipt_for_share": 0.29
+  },
+  "forecast_externality_tags": [
+    "darwin",
+    "anti_tautology",
+    "pressure_visible_branch"
+  ],
+  "forecasted_at": "2026-05-14T23:23:24Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.73,
+  "p_regression": 0.19,
+  "p_success": 0.54,
+  "rationale_short": "The target is plausible but easy to overstate; the useful result may be a guard showing resolved mean-free is the only receipt share covered by the local-quadratic/tent-excess path.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

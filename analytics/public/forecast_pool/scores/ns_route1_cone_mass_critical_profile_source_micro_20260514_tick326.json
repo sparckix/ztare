@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326",
+  "mean_brier": 0.2916,
+  "mean_log_score": -0.7765287894989963,
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "artifact_hash": "729dce0ff7c296a5e8a6c3692bde8c1c0e7004256756dffb6e64353092a74cc0",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "downstream_build_passed",
+    "contract_id": "ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Imported ns_no_invisible_critical_profile and added FixedWindowOppositeConeCriticalProfileObstruction, no_oppositeConeOverflow_of_criticalProfileObstruction, FixedWindowStressConeMassCriticalProfileSource, constructor to FixedWindowStressConeMassSubordination, and pressureHessianL2_tail_lower_bound_of_coneMassCriticalProfileSource; downstream route-1 adapter build passed; no sorry/admit introduced in checked files.",
+    "resolved_at": "2026-05-14T01:38:56Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T01:39:01Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "hooke_forecast_tick326",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 65.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 95.0,
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:35:41Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:37:10Z",
+        "resolved_at": "2026-05-14T01:38:56Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "rawls_forecast_tick326",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 28.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 58.0,
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:35:41Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:37:19Z",
+        "resolved_at": "2026-05-14T01:38:56Z"
+      }
+    }
+  ]
+}

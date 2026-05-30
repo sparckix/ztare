@@ -1,0 +1,23 @@
+{
+  "action_change_recommendation": "run_or_continue",
+  "agent_id": "Lamport4",
+  "contract_id": "gp225_v2072_parallel_training_delta_triage",
+  "contract_question": "Will v20.72 produce an artifact-backed parallel training-delta triage that defines the exact GNN unlock beliefs, splits them into label-inventory, heldout candidate-content, and null-training-baseline lanes, and keeps training blocked unless heldout candidate-content delta exists?",
+  "domain": "lean_gnn_harness",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "heldout_content_delta_not_actionable": 0.47222222222222227,
+    "label_inventory_quarantine_gap": 0.22222222222222224,
+    "null_training_baseline_underdefined": 0.3055555555555556
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T19:16:01Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.06,
+  "p_success": 0.74,
+  "rationale_short": "Parallelization can speed the decision, but only if the null trainer stays blocked and the heldout lane demands new candidate content rather than rank-only arms.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

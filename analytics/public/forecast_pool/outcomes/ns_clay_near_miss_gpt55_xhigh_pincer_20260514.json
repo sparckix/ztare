@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 45.0,
+  "artifact_hash": null,
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "not_applicable",
+  "contract_id": "ns_clay_near_miss_gpt55_xhigh_pincer_20260514",
+  "counterfactual_value_bucket": "mixed",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "useful-no-go",
+    "overclaim-prevented",
+    "pressure-priority"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no-clay-closure",
+    "no-new-lemma"
+  ],
+  "new_next_action": "Do not claim near-miss closure; prioritize pressure pre-summed visibility/coherence over flat radius, while keeping beta eligibility and flat-radius reserve explicit.",
+  "old_next_action": "Ask GPT-5.5 xhigh to attempt Clay-adjacent near-miss closure.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "repeats-current-frontier",
+    "no-new-positive-surface",
+    "pressure-coherence-priority"
+  ],
+  "resolution_note": "GPT-5.5 xhigh sidecar returned a no-go: no new positive surface is worth adding; existing reducedFailure_of_pressureBetaAudit and eligibility fork already isolate the missing primitives. It identified the first illegal inference as residual fresh excess -> audit eligibility and recommended pressure coherence as the most plausible next useful attack.",
+  "resolved_at": "2026-05-14T23:01:30Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

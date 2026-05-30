@@ -1,0 +1,40 @@
+{
+  "actual_cost_agent_minutes": 42.0,
+  "artifact_hash": "acb29a7a33bfd80eb4146f26ea70f1e67c602253b43a1c12135352af5b24c380",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd_graph_basin",
+    "codex_rd_no_go_skeptic"
+  ],
+  "compile_status": "passed",
+  "contract_id": "ns_route1_lineage_fresh_reservoir_source_20260514_tick392",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "graph_basin_connection",
+    "residual_language_feedback",
+    "sidecar_no_go_agreement",
+    "same_tree_bridge"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no_unconditional_route_closure",
+    "new_pde_lemma_required"
+  ],
+  "new_next_action": "attack EventLocalDefectDropNoReuse through LineageFreshMonotoneReservoirSource, event recurrence section incidence, and Duhamel same-tree reserve drop; if false add recurrent reuse fifth channel",
+  "old_next_action": "generic event-local no-reuse wrapper or profile self-tax detour",
+  "preconditioner_effect": "Prevented a false same-tree incidence closure claim; encoded the missing primitive and guard instead.",
+  "preconditioner_source": "graph basin closure scan plus Arendt/Plato xhigh sidecars plus GP-219 residual feedback",
+  "realized_failure_mode_ids": [
+    "same_tree_incidence_wrong_layer",
+    "adapter_only_no_pde_source",
+    "lineage_reservoir_missing_theorem"
+  ],
+  "resolution_note": "Connected route-1 event-local no-reuse to the same-tree/Duhamel/fresh-frequency basin by adding compile-checked LineageFreshMonotoneReservoirSource, SameTreeIncidenceLineageReservoirSource, and guards that bounded overlap or same-tree incidence alone do not source lineage-fresh reservoir drop. This is a proof-surface success, not route-1 closure.",
+  "resolved_at": "2026-05-14T15:26:34Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_pressure_cone_q_to_tent_certificate_micro_20260514_tick336",
+  "mean_brier": 0.1469,
+  "mean_log_score": -0.48129824237533325,
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "artifact_hash": "313397684d12949318c21ae58f5e345b83facd6cf384f4f679932caadac19042",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_pressure_cone_q_to_tent_certificate_micro_20260514_tick336",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Added tent-excess payment source consuming existing Route1LocalQuadraticTentExcessCertificate to construct pressure-cone local quadratic payment/receipt bridge; target and downstream builds passed.",
+    "resolved_at": "2026-05-14T03:15:03Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:15:21Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "hooke_forecast_tick336",
+      "brier": 0.10889999999999997,
+      "cost_error_agent_minutes": 24.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 58.0,
+      "log_score": -0.40047756659712525,
+      "p_success": 0.67,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:10:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:10:39Z",
+        "resolved_at": "2026-05-14T03:15:03Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "rawls_adversarial_tick336",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 42.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 76.0,
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:10:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:10:52Z",
+        "resolved_at": "2026-05-14T03:15:03Z"
+      }
+    }
+  ]
+}

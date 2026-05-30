@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick622-terminal-adversarial-kill",
+  "contract_question": "tick622: does the tick621 strong terminal ('non-scale-margin complement is EMPTY of any currently-known 3D-NS regularity mechanism') SURVIVE an independent adversarial kill attempt that tries to name a known regularity mechanism outside {scale-margin, ESS-backward-uniqueness-rigidity, topological-coercive}?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T01:49:06Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.78,
+  "rationale_short": "in-thread composed reduction sharper than adversary: CKN/Kato/LPS/BKM/harmonic/CF=(1) scale-margin (CKN r^-2\u222b|u|^3 scale-invariant; DGNM decay-exponent IS the margin, \u21920 at criticality=tick610; CF surplus=geometric strict-margin atom); Seregin-Sverak/Kenig-Merle=(2) Liouville-rigidity; Tao=obstruction not mechanism; (3) non-coercive tick621 \u2014 trichotomy COMPLETE, codex concurs",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

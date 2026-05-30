@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558",
+  "contract_question": "Per META-PATTERN-024 the transverse-escape ledger is down to ONE survivor: does the route-1 localized NS enstrophy functional admit a Lojasiewicz-Simon gradient inequality with a SCALE-INVARIANT exponent theta<1 (=> strict scale-invariant per-reversal enstrophy toll gamma>0 => tick552 geometric series => tick551 freshness => Clay route-1 closure), OR does theta degenerate to the critical endpoint theta=1 at high frequency (= the NS-scaling-criticality fixed point AGAIN, in Lojasiewicz vocabulary => atom invariant under ALL enumerated transverse channels)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T00:03:25Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.85,
+  "p_regression": 0.03,
+  "p_success": 0.15,
+  "rationale_short": "Unique surviving transverse channel (Besicovitch falsifier-fired, Coifman-Rochberg delta=1-killed). But pre-flight MD (META-PATTERN-024 step4): Lojasiewicz-Simon for 3D NS localized enstrophy with scale-invariant theta<1 is plausibly itself Clay-hard (theta=1 = criticality fixed point in Lojasiewicz vocab; LS gradient inequality for 3D NS is open). Honest p_success 0.15 macro \u2014 not pre-conceding (push it), but the pre-flight risk that the atom is invariant across ALL enumerated fields is real and would be the honest Clay-hardness localization. p_needs_new_lemma 0.85.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

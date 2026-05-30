@@ -1,0 +1,55 @@
+{
+  "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
+  "mean_brier": 0.04306666666666667,
+  "mean_log_score": -0.23179121910694586,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "78de85f6dc9a7eb3c987faee670a0fd4f8d1ce29b46ff7eb3f17b6468f0088d5",
+    "artifact_path": "analytics/public/leanmill/results/v1710_bm25_action_sweep_baseline.json",
+    "compile_status": "pass",
+    "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
+    "error_type": "none",
+    "goal_delta": 23,
+    "resolution_note": "v17.10 produced the required artifact; strong deterministic accessibility/action-sweep scenario closed 23/23 with ratio 1.0, keeping GNN blocked.",
+    "resolved_at": "2026-05-12T14:51:42Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-12T14:51:48Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_gp230_pro_gp225_route_selector_readonly",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "gp225_baseline",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_readonly_gp230",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "gp225_baseline",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_readonly_gp230_skeptical_baseline",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "gp225_baseline",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true
+    }
+  ]
+}

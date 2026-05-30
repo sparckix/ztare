@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick634-newmechanism-portfolio-depthn",
+  "contract_question": "tick634 (fork-2, ONE tick, PORTFOLIO of 6 depth-n-derived new-program mechanisms M1..M6): does ANY survive as non-reducible to {critical-a-priori=Clay, taxonomy-relabel, energy-level, a.s.\u2260\u2200, amnesia-recurrence}? Composed in-thread: M1 modified-energy/I-method (no NS dispersion\u21d2small-data only), M2 Cauchy+ropelength (lower-bound/topology-not-conserved\u21d2helicity-class), M3 Caffarelli-Vasseur nonlocal-De-Giorgi (genuinely-distinct; 3D-NS obstruction localizes EXACTLY to vortex-stretching breaking the L\u221e/BMO drift-closure), M4 self-similar/RG (tick592/599/600 recurrence), M5 kinetic-H-theorem\u2192NS (\u2192L\u00b2-energy subcritical), M6 Duchon-Robert critical (tick617 absorbed). Claim: 5/6 reduce/recur via NAMED obstructions; M3 is the sharp survivor-as-precise-obstruction (vortex-stretching vs CV drift-closure).",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T12:10:54Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.84,
+  "rationale_short": "M1/M2/M4/M5/M6 killed for stated named obstructions (each correct, no missed large-data critical a-priori survivor); M3=sharpest obstruction-localizer, vortex-stretching-breaks-CV-drift/BMO localization ACCURATE not vague-Clay; verdict mostly right, M3 not an un-killed route",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

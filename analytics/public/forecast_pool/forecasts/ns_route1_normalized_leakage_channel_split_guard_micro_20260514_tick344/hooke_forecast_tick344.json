@@ -1,0 +1,24 @@
+{
+  "agent_id": "hooke_forecast_tick344",
+  "contract_id": "ns_route1_normalized_leakage_channel_split_guard_micro_20260514_tick344",
+  "contract_question": "Will we add and verify a Lean normalized shard-C channel split source plus undercharge guard below the leakage normalizer compatibility source?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 70.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_sorry_or_import_regression": 0.06,
+    "lean_arithmetic_or_namespace_plumbing_breaks_compile": 0.08,
+    "no_final_carrier_guard_prop_level_weak": 0.1,
+    "normalized_channel_split_source_restates_existing_leakage_split": 0.27,
+    "normalizer_compatibility_and_channel_split_have_mismatched_scalar_terms": 0.17,
+    "scalar_bridge_needs_missing_nonnegativity_or_monotonicity_fields": 0.13,
+    "undercharge_guard_not_connected_to_charge_sum_less_than_normalized_leakage": 0.19
+  },
+  "forecasted_at": "2026-05-14T04:03:22Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.29,
+  "p_regression": 0.05,
+  "p_success": 0.67,
+  "rationale_short": "Compile odds decent for scalar source lowering, but success needs a real normalized charge-sum bridge and connected undercharge guard, not renamed leakage split.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 35.0,
+  "artifact_hash": "a239ec53d33d62cd1d23dfaed6e53a23aea25acdb1d3b4066a73eecccc981860",
+  "artifact_path": "analytics/public/leanmill/results/v1713_route1_scalar_subcriticality_margin_split.json",
+  "compile_status": "lean_compiled",
+  "contract_id": "gp225_v1713_route1_scalar_subcriticality_margin_split",
+  "error_type": "none",
+  "goal_delta": 0,
+  "resolution_note": "Resolved success: strict-margin guard compiled; source_obligation_closed remains 0; unpaid scalar inequalities named explicitly.",
+  "resolved_at": "2026-05-12T15:26:11Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

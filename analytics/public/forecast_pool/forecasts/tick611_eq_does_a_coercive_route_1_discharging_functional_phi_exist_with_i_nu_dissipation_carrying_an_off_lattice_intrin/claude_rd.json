@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "tick611_eq_does_a_coercive_route_1_discharging_functional_phi_exist_with_i_nu_dissipation_carrying_an_off_lattice_intrin",
+  "contract_question": "tick611 EQ: does a coercive route-1-discharging functional Phi exist with (i) nu-dissipation carrying an OFF-LATTICE intrinsic length (r-dependent under blowup rescaling, NOT the r-independent sqrt(nu t) heat-length) AND (ii) production dominated by a strictly SUBCRITICAL off-critical companion (non-degenerate delta>0)? Cold de-anchored carve-out-3 attempts YES (construct Phi + verify i,ii) OR returns the derived NO (extend the tick607 {BS,grad,omega} lattice + tick609 scale-criticality forcing to ALL coercive Phi). Success = a DERIVED answer (constructed Phi with i,ii verified, OR forcing-extends proof) that SURVIVES an adversarial-survival run carrying the dogfood clause (must-catch: in-lattice recast disguised as escape / sqrt(nu t) in disguise / scale-critical companion in disguise; must-not: declare NS impossible). Fail = in-lattice recast, OR asserted-not-derived, OR laundering.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T22:34:34Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.6,
+  "rationale_short": "Cold carve-out-3 twice produced genuine reframes this session (tick607 lattice theorem, tick595 void) \u2014 it is the de-anchoring channel that works when I generate in-lattice while anchored. Sharpened prompt (exact derived requirement) is genuinely new vs tick607's general ask. P(YES, real Phi) low ~0.12 (18 recurrences + lattice theorem); P(clean DERIVED answer either way surviving dogfood-claused adversary) ~0.6 = the contract criterion.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

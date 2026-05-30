@@ -1,0 +1,205 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T15:26:07Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 31.0,
+    "expected_value": 0.7910446631295541,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.285,
+    "p_needs_new_lemma": 0.8200000000000001,
+    "p_regression": 0.09,
+    "p_success": 0.5460446631295541,
+    "participants": [
+      {
+        "agent_id": "codex_rd_graph_basin",
+        "domain": "ns_route1_pde",
+        "p_success": 0.62,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_no_go_skeptic",
+        "domain": "ns_route1_pde",
+        "p_success": 0.47,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "adapter_only_no_pde_source",
+        "p": 0.29000000000000004
+      },
+      {
+        "mode": "same_tree_incidence_wrong_layer",
+        "p": 0.25
+      },
+      {
+        "mode": "recurrent_reuse_countermodel",
+        "p": 0.2
+      },
+      {
+        "mode": "overabstract_wrapper",
+        "p": 0.17
+      },
+      {
+        "mode": "lean_type_mismatch",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_lineage_fresh_reservoir_source_20260514_tick392.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_lineage_fresh_reservoir_source_20260514_tick392.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_lineage_fresh_reservoir_source_20260514_tick392.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_lineage_fresh_reservoir_source_20260514_tick392.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_lineage_fresh_reservoir_source_20260514_tick392.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T15:18:14Z",
+    "created_by": "codex:RD",
+    "horizon": "same-session tick392",
+    "layer": "micro",
+    "objective_resolver": "Lean surface compiles or no-go guard/logged work packet identifies first illegal inference; no full route-1 closure claimed",
+    "question": "Can the next NS tick connect route-1 event-local defect no-reuse to existing fresh-frequency/profile machinery by encoding or killing a lineage-fresh monotone reservoir source/guard?",
+    "success_threshold": "true iff the tick changes the next proof action with a compile-checked Lean surface or a recorded no-go guard/work packet, and records residual_language_feedback",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_lineage_fresh_reservoir_source_20260514_tick392",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_graph_basin",
+        "raw_agent_ids": [
+          "codex_rd_graph_basin"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_no_go_skeptic",
+        "raw_agent_ids": [
+          "codex_rd_no_go_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_graph_basin",
+      "codex_rd_no_go_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "encode same-tree/Duhamel-to-no-reuse adapter plus guard; do not claim route closure",
+        "agent_id": "codex_rd_graph_basin",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_lineage_fresh_reservoir_source_20260514_tick392/codex_rd_graph_basin.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T15:21:56Z",
+        "p_success": 0.62,
+        "rationale_short": "Graph closure summary ranks self-tax/profile basin, while declaration scan found SameTreeNonadaptiveEventIncidenceCarleson and Duhamel budget sources. Success likely as a useful adapter/guard, not as PDE closure.",
+        "specific_failure_mode_ids": [
+          "adapter_only_no_pde_source",
+          "recurrent_reuse_countermodel"
+        ]
+      },
+      {
+        "action_change_recommendation": "prefer a guard unless source fields explicitly cite monotone reserve drop and lineage freshness",
+        "agent_id": "codex_rd_no_go_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_lineage_fresh_reservoir_source_20260514_tick392/codex_rd_no_go_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T15:21:56Z",
+        "p_success": 0.47,
+        "rationale_short": "Same-tree incidence historically controls beta-square event budgets, not necessarily route-1 active local-energy defect reuse. The safe success is a no-go/guard or residual classifier, not a source theorem.",
+        "specific_failure_mode_ids": [
+          "same_tree_incidence_wrong_layer",
+          "adapter_only_no_pde_source"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "changed_by_forecast_ids": [
+      "codex_rd_graph_basin",
+      "codex_rd_no_go_skeptic"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:26:34Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.15,
+      "p_success": 0.5460446631295541,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "adapter_only_no_pde_source",
+        "p": 0.29000000000000004
+      },
+      "voi_proxy": 0.9979
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 31.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5460446631295541,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "adapter_only_no_pde_source",
+        "p": 0.29000000000000004
+      },
+      {
+        "mode": "same_tree_incidence_wrong_layer",
+        "p": 0.25
+      },
+      {
+        "mode": "recurrent_reuse_countermodel",
+        "p": 0.2
+      },
+      {
+        "mode": "overabstract_wrapper",
+        "p": 0.17
+      },
+      {
+        "mode": "lean_type_mismatch",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.21265,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:26:41Z"
+  }
+}

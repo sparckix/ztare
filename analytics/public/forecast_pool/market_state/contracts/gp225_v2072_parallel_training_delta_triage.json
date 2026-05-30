@@ -1,0 +1,199 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T19:16:05Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 22.0,
+    "expected_value": 1.5601532332898693,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.14,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.055,
+    "p_success": 0.7769516166449346,
+    "participants": [
+      {
+        "agent_id": "Hopper4",
+        "belief_update": false,
+        "domain": "lean_gnn_harness",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2072_parallel_training_delta_triage/hopper4.json",
+        "forecasted_at": "2026-05-14T19:16:01Z",
+        "p_success": 0.81,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Lamport4",
+        "belief_update": false,
+        "domain": "lean_gnn_harness",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2072_parallel_training_delta_triage/lamport4.json",
+        "forecasted_at": "2026-05-14T19:16:01Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "heldout_content_delta_not_actionable",
+        "p": 0.23611111111111113
+      },
+      {
+        "mode": "lane_predicates_too_vague",
+        "p": 0.2027027027027027
+      },
+      {
+        "mode": "training_unlock_overclaimed",
+        "p": 0.17567567567567569
+      },
+      {
+        "mode": "null_training_baseline_underdefined",
+        "p": 0.1527777777777778
+      },
+      {
+        "mode": "missing_leakage_guard",
+        "p": 0.12162162162162161
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2072_parallel_training_delta_triage.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2072_parallel_training_delta_triage.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2072_parallel_training_delta_triage.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2072_parallel_training_delta_triage.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2072_parallel_training_delta_triage.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 22.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T19:15:50Z",
+    "created_by": "codex",
+    "horizon": "2026-05-14",
+    "layer": "meso",
+    "objective_resolver": "Resolve true iff v2072_parallel_training_delta_triage.json exists, status is passed, consumes v20.71, v20.70, latest manifest, v20.40, and leakage/strict compile guard artifacts, specifies lane-level success predicates and next artifacts, and reports train_now=false and gnn_blocked=true when no heldout changed arm exists.",
+    "question": "Will v20.72 produce an artifact-backed parallel training-delta triage that defines the exact GNN unlock beliefs, splits them into label-inventory, heldout candidate-content, and null-training-baseline lanes, and keeps training blocked unless heldout candidate-content delta exists?",
+    "success_threshold": "passed triage with explicit parallel lanes, no training execution, no row-count unlock, and concrete next artifacts",
+    "task_type": "training_delta_triage"
+  },
+  "contract_id": "gp225_v2072_parallel_training_delta_triage",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Hopper4",
+        "raw_agent_ids": [
+          "Hopper4"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Lamport4",
+        "raw_agent_ids": [
+          "Lamport4"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Hopper4",
+      "Lamport4"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "Hopper4",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2072_parallel_training_delta_triage/hopper4.json",
+        "canonical_agent_id": null,
+        "domain": "lean_gnn_harness",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T19:16:01Z",
+        "p_success": 0.81,
+        "rationale_short": "The triage is a static artifact with known inputs; success depends on making lane predicates executable and keeping the heldout changed-arm blocker explicit.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "Lamport4",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2072_parallel_training_delta_triage/lamport4.json",
+        "canonical_agent_id": null,
+        "domain": "lean_gnn_harness",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T19:16:01Z",
+        "p_success": 0.74,
+        "rationale_short": "Parallelization can speed the decision, but only if the null trainer stays blocked and the heldout lane demands new candidate content rather than rank-only arms.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 21.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T19:17:36Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 1.5601532332898693,
+      "forecast_spread": 0.07,
+      "p_success": 0.7769516166449346,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 1.1433
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 22.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7769516166449346,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "heldout_content_delta_not_actionable",
+        "p": 0.23611111111111113
+      },
+      {
+        "mode": "lane_predicates_too_vague",
+        "p": 0.2027027027027027
+      },
+      {
+        "mode": "training_unlock_overclaimed",
+        "p": 0.17567567567567569
+      },
+      {
+        "mode": "null_training_baseline_underdefined",
+        "p": 0.1527777777777778
+      },
+      {
+        "mode": "missing_leakage_guard",
+        "p": 0.12162162162162161
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.05184999999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T19:17:40Z"
+  }
+}

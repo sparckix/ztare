@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_skeptic_tick356",
+  "contract_id": "ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356",
+  "contract_question": "Can we add a Lean-checked transport visible/invisible route-level closure theorem from the Gowers-first informal proof, without substituting DR/pressure carriers or adding sorry/admit?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 68.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "DR_pressure_substitution_risk": 0.1,
+    "alternate_charges_not_numeric_receipts": 0.2,
+    "build_or_namespace_friction": 0.09,
+    "invisible_shear_not_coercive": 0.15,
+    "positive_flux_split_assumed_not_derived": 0.18,
+    "visible_invisible_split_restates_desired_bound": 0.28
+  },
+  "forecasted_at": "2026-05-14T12:16:28Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.11,
+  "p_success": 0.44,
+  "rationale_short": "Compiles if consuming explicit split, but high smuggling risk unless invisible remainder is paid by independently named charges.",
+  "read_only_attestation": true
+}

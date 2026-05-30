@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "Install finite-tail amortized strictness only if X_tail <= C activeTail is explicit; keep upstream branch exhaustion separate.",
+  "agent_id": "codex_rd_tick402",
+  "contract_id": "ns_route1_finite_tail_amortized_strictness_20260514_tick402",
+  "contract_question": "Will the next NS tick compile Route1FiniteTailAmortizedStrictness and a large-prefix strictness theorem from finite active-tail budget plus X_tail <= C activeTail?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "finite_prefix_budget_interface_mismatch": 0.14,
+    "lean_finset_or_prefix_sum_friction": 0.08,
+    "missing_same_carrier_tail_control": 0.3,
+    "route_failure_semantics_not_sourced": 0.12,
+    "scalar_large_prefix_algebra_friction": 0.18,
+    "strictness_overclaim": 0.18
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioner",
+    "same_carrier_guard",
+    "ns_route1"
+  ],
+  "forecasted_at": "2026-05-14T18:46:47Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.1,
+  "p_success": 0.7,
+  "rationale_short": "The scalar adapter is plausible and useful, but it must not replace the same-carrier tail control or branch-exhaustion theorem.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "missing_same_carrier_tail_control",
+    "strictness_overclaim",
+    "route_failure_semantics_not_sourced"
+  ]
+}

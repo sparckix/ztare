@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 9.0,
+  "artifact_hash": "765e7dd8ce99c215444a1d00bf2027a4f5b0acf9a2fd1b579b2224a513bbe290",
+  "artifact_path": "analytics/public/leanmill/results/v2014_internal_holdout_replay.json",
+  "compile_status": "replay_completed_internal_holdout_strict_win",
+  "contract_id": "gp225_v2014_internal_holdout_replay",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Replay attempted 12 candidates across 4 internal randomized holdout source-safe rows. compiled_candidate_actions=1, fresh primary strict rows=1, auxiliary pull-forward actions=0, harmful mismatches=0, source-policy flags clean, training_now=false, gnn_blocked=true. Contract resolved true on current_scale_0021/interior_sInter.",
+  "resolved_at": "2026-05-14T12:58:15Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544",
+  "contract_question": "Does ns_tick544 NON-LAUNDERINGLY produce the perennial strict-margin atom defectBudgetStrictMarginCertificate (open & tracked since 2026-05-12) from genuine PDE inputs \u2014 concentration H1 (M^3*vol \u2264 kappa*A, the super-Type-I branch definition) + L-infinity-to-L2 H2 + cited Calderon-Zygmund L2 boundedness H3 \u2014 yielding ratio = C*kappa/M < 1 strictly, fed into the pre-existing defectBudgetStrictMarginCertificate_of_strict_ratio_and_budget_slack, rather than adapting from a nextStep-controlling strict-ratio object?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T22:04:32Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.4,
+  "p_regression": 0.05,
+  "p_success": 0.74,
+  "rationale_short": "Lean compiles, 5 theorems proved, linter 10/10, H1 is the genuine super-Type-I branch DEFINITION (M^3*vol<=kappa*A is what concentration means, not the conclusion); sole cited input textbook CZ/Riesz L2. needs-new-lemma high because H3 may require the angular-nonnullness caveat (F-314/F-437): projected pressure FLUX vs norm on the fixed window may not be plain CZ-L2 \u2014 that is the live risk that would reopen the atom.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

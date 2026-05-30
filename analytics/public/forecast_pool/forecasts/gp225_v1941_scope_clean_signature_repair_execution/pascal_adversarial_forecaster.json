@@ -1,0 +1,24 @@
+{
+  "agent_id": "pascal_adversarial_forecaster",
+  "contract_id": "gp225_v1941_scope_clean_signature_repair_execution",
+  "contract_question": "Will v19.41 scope-clean signature-driven primary repair execution improve beyond v19.37 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, using only pre-target scope-available declaration signatures?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dependency_or_namespace_issue": 0.09,
+    "harmful_compiled_mismatch": 0.04,
+    "needed_lemma_is_post_target_or_target_contaminated": 0.18,
+    "only_existing_pull_forward_repeats": 0.21,
+    "other": 0.04,
+    "remaining_signature_packets_too_weak": 0.31,
+    "signature_name_compiles_but_wrong_orientation": 0.13
+  },
+  "forecasted_at": "2026-05-13T23:59:14Z",
+  "p_dependency_issue": 0.46,
+  "p_needs_new_lemma": 0.57,
+  "p_regression": 0.1,
+  "p_success": 0.24,
+  "rationale_short": "v19.41 is cleaner but probably weaker: v19.40 removed post-target same-file leakage, improving validity while removing useful local signal. Prior is three straight 1/5 runs with no harmful mismatches.",
+  "read_only_attestation": true
+}

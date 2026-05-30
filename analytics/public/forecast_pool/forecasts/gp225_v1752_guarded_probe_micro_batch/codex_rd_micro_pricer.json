@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd_micro_pricer",
+  "contract_id": "gp225_v1752_guarded_probe_micro_batch",
+  "contract_question": "Will v17.52 guarded replay/probe batch over v17.51 selected public SLT rows produce at least 8 executable target-guarded labels, at least 5 action-unique or closure-contribution candidate rows, and zero true false accepts within 25 wall minutes?",
+  "domain": "gp225_micro_probe",
+  "expected_cost_agent_minutes": 18.0,
+  "failure_mode_distribution": {
+    "broad_normalizers_still_reach_target": 0.18,
+    "lean_probe_timeout_cost": 0.15,
+    "process_noise": 0.05,
+    "selected_rows_nested_or_not_source_slice_replayable": 0.3,
+    "source_context_mismatch": 0.1,
+    "target_guard_pretty_print_parse_friction": 0.22
+  },
+  "forecasted_at": "2026-05-12T20:52:32Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.07,
+  "p_success": 0.52,
+  "rationale_short": "v17.51 selected better non-scalar/context rows, but v17.49 showed target guards and broad normalizers can still distort labels; moderate odds, high information value.",
+  "read_only_attestation": true
+}

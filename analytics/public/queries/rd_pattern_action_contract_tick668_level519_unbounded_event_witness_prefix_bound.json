@@ -1,0 +1,31 @@
+{
+  "tick_id": "tick668",
+  "level": 519,
+  "contract_id": "tick668_level519_unbounded_event_witness_prefix_bound_source",
+  "selected_pattern_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second",
+    "GP-219 estimate-craft"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018",
+    "no assumed bounded Nat witness",
+    "no bound on a different witness",
+    "no bare Prop choice",
+    "no endpoint-capacity substitute",
+    "no shell-only enumeration",
+    "no post-payoff selector"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level518 assumes a bounded natural event-index witness for each selected bad node",
+    "check": "G-UNBOUNDED-EVENT-WITNESS-PREFIX-BOUND plus Lean construction of bounded witness from typed witness and same-witness bound",
+    "positive_construction": "construct L3ABoundedNaturalEventEnumerationPacketSource from typed natural event witnesses and final-prefix bounds"
+  },
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level519_unbounded_event_witness_prefix_bound_receipt.json"
+  ],
+  "nearest_universal_op": "pec_b: split bounded event enumeration into witness and bound obligations",
+  "nearest_confuser": "Level518 assumed bounded Nat event enumeration",
+  "remaining_live_vector": "derive the typed natural witness from cofinal incidence and the same-witness bound from final-prefix geometry"
+}

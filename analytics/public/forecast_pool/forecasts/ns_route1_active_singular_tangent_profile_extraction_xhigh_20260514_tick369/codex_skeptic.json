@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_active_singular_tangent_profile_extraction_xhigh_20260514_tick369",
+  "contract_question": "Can xhigh pull forward ActiveSingularTangentProfileExtraction by producing a proof route, route-native no-go, or exact mass-persistence sublemma for mu_A_perp tangent blowups?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "mass_persistence_fails": 0.18,
+    "needs_new_profile_measure_topology": 0.26,
+    "restates_prior_gap": 0.16,
+    "singular_tangent_not_profile": 0.3,
+    "useful_sublemma_split": 0.1
+  },
+  "forecasted_at": "2026-05-14T13:17:51Z",
+  "p_dependency_issue": 0.66,
+  "p_needs_new_lemma": 0.98,
+  "p_regression": 0.11,
+  "p_success": 0.27,
+  "rationale_short": "A singular measure tangent can be a defect measure rather than solution profile; proof likely needs new topology or fifth channel.",
+  "read_only_attestation": true
+}

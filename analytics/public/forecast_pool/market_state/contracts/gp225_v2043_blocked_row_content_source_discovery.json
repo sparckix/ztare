@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:21:13Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 30.0,
+    "expected_value": 0.9843657674978268,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.11,
+    "p_needs_new_lemma": 0.065,
+    "p_regression": 0.04,
+    "p_success": 0.6908033926457805,
+    "participants": [
+      {
+        "agent_id": "Hilbert",
+        "domain": "gp225_pre_gnn_source_discovery",
+        "p_success": 0.72,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Lovasz",
+        "domain": "gp225_pre_gnn_source_discovery",
+        "p_success": 0.66,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "source_contracts_too_abstract",
+        "p": 0.3765182186234818
+      },
+      {
+        "mode": "timeout_rows_still_timeout_like",
+        "p": 0.15384615384615385
+      },
+      {
+        "mode": "elliptic_or_probability_rows_underresolved",
+        "p": 0.14473684210526316
+      },
+      {
+        "mode": "non_timeout_candidate_family_not_checkable",
+        "p": 0.11842105263157894
+      },
+      {
+        "mode": "artifact_schema_mismatch",
+        "p": 0.11417004048582996
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2043_blocked_row_content_source_discovery.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2043_blocked_row_content_source_discovery.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2043_blocked_row_content_source_discovery.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2043_blocked_row_content_source_discovery.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2043_blocked_row_content_source_discovery.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:20:54Z",
+    "created_by": "codex:RD",
+    "horizon": "45m",
+    "layer": "micro",
+    "objective_resolver": "success iff v2043 JSON exists, consumes v2042 and Mathlib source snippets, emits >=5 content source rows, each has target_content_change and non_timeout_candidate_family, marks prior raw candidates forbidden, replay_run=false, training_now=false, gnn_blocked=true",
+    "question": "Will v20.43 emit a no-replay blocked-row content source-discovery packet that names concrete non-timeout source contracts for the v20.42 selected rows and keeps replay/training blocked?",
+    "success_threshold": "all objective resolver clauses true",
+    "task_type": "gp225_pre_gnn_source_discovery"
+  },
+  "contract_id": "gp225_v2043_blocked_row_content_source_discovery",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Hilbert",
+        "raw_agent_ids": [
+          "Hilbert"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Lovasz",
+        "raw_agent_ids": [
+          "Lovasz"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Hilbert",
+      "Lovasz"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed static source-discovery packet; require non-timeout families before candidate generation.",
+        "agent_id": "Hilbert",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2043_blocked_row_content_source_discovery/hilbert.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T17:21:08Z",
+        "p_success": 0.72,
+        "rationale_short": "The source snippets expose useful named declarations; success depends on converting them into concrete content-changing contracts.",
+        "specific_failure_mode_ids": [
+          "source_contracts_too_abstract",
+          "timeout_rows_still_timeout_like"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed only if the packet makes replay predicates and source names explicit per row.",
+        "agent_id": "Lovasz",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2043_blocked_row_content_source_discovery/lovasz.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T17:21:08Z",
+        "p_success": 0.66,
+        "rationale_short": "Five-row static packet is feasible, but the harder rows can easily become prose unless each row has a checkable non-timeout family.",
+        "specific_failure_mode_ids": [
+          "source_contracts_too_abstract",
+          "non_timeout_candidate_family_not_checkable"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": [
+      "Hilbert",
+      "Lovasz"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:22:28Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.9843657674978268,
+      "forecast_spread": 0.06,
+      "p_success": 0.6908033926457805,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.7236
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 30.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6908033926457805,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "source_contracts_too_abstract",
+        "p": 0.3765182186234818
+      },
+      {
+        "mode": "timeout_rows_still_timeout_like",
+        "p": 0.15384615384615385
+      },
+      {
+        "mode": "elliptic_or_probability_rows_underresolved",
+        "p": 0.14473684210526316
+      },
+      {
+        "mode": "non_timeout_candidate_family_not_checkable",
+        "p": 0.11842105263157894
+      },
+      {
+        "mode": "artifact_schema_mismatch",
+        "p": 0.11417004048582996
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.097,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:22:35Z"
+  }
+}

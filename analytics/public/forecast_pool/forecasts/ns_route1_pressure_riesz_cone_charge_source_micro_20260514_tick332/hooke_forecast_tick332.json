@@ -1,0 +1,24 @@
+{
+  "agent_id": "hooke_forecast_tick332",
+  "contract_id": "ns_route1_pressure_riesz_cone_charge_source_micro_20260514_tick332",
+  "contract_question": "Will real tick 2 add a compiled pressure/Riesz cone charge source that specializes the visible overflow channel split to the pressureRieszCone channel?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 70.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "charge_not_independent_of_final_carrier": 0.2,
+    "downstream_build_break": 0.1,
+    "same_kernel_only_prop_level": 0.16,
+    "selectedCharge_rewrite_issue": 0.04,
+    "strict_subratio_smuggling": 0.06,
+    "tail_visibility_bound_unavailable": 0.13,
+    "wraps_selectedChannelCharge_fields": 0.31
+  },
+  "forecasted_at": "2026-05-14T02:44:05Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.43,
+  "p_regression": 0.08,
+  "p_success": 0.61,
+  "rationale_short": "Close compile target because channel machinery exists; quality risk is that pressure/Riesz charge must be independent of final carrier and numeric.",
+  "read_only_attestation": true
+}

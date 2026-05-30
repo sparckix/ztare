@@ -1,0 +1,198 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:42Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 78.0,
+      "expected_value": -0.3308666868167848,
+      "p_success": 0.6107450743331944,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.3177
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 78.0,
+    "expected_value": -0.3308666868167848,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.11499999999999999,
+    "p_needs_new_lemma": 0.11000000000000001,
+    "p_regression": 0.07,
+    "p_success": 0.6107450743331944,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife/codex.json",
+        "forecasted_at": "2026-05-16T23:03:18Z",
+        "p_success": 0.57,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T23:01:20Z",
+        "p_success": 0.65,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "hard_open_rows_stay_open",
+        "p": 0.17
+      },
+      {
+        "mode": "canonical_manifest_node_mismatch",
+        "p": 0.13
+      },
+      {
+        "mode": "resolver_bundle_run_coupling_failure",
+        "p": 0.11
+      },
+      {
+        "mode": "ns_next_lever_not_formalizable",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife.json",
+    "contract": "analytics/public/forecast_pool/contracts/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife.json",
+    "score": "analytics/public/forecast_pool/scores/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 80.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T23:01:11Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "bundle_run on 3 Lean rows + tier_scoreboard tier3 + manifest-cited NS gap_isolation; gate eval",
+    "question": "Tier-3 5-row packet (2 hard-open analysis Lean + 1 falsifier via bundle_run; 2 NS gap_isolation rows naming canonical manifest nodes C3/C7-upper by reference + manifest-recorded next-lever, NOT re-derived): does it hit Tier-3 gate (>=3/5 closure|exact-gap|valid-falsifier, 0 false-ratify, 0 wrong-kind, >=1 NS formalizable next-lever)?",
+    "success_threshold": "0.5",
+    "task_type": "tier3_5row_packet"
+  },
+  "contract_id": "tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 76.0,
+        "forecasted_at": "2026-05-16T23:03:18Z",
+        "p_success": 0.57,
+        "rationale_short": "Above coin flip because the contract has a plausible 3/5 path: a valid falsifier plus two manifest-cited NS gap-isolation rows can carry the Tier-3 gate even if the two Lean analysis rows stay open. The dominant void is not the top-level threshold but whether bundle_run output and canonical-node naming stay aligned without hidden resolver coupling or re-derived next-lever content.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 80.0,
+        "forecasted_at": "2026-05-16T23:01:20Z",
+        "p_success": 0.65,
+        "rationale_short": "2 NS gap_isolation = manifest-cited precise next-levers (exact-gap class; >=1 NS next-lever satisfied via tick602 porosity lever) + falsifier likely valid + >=1 analysis gap => >=3/5 plausible; 0-false-ratify high-confidence; honest Tier-3 = mostly gaps not closures (document-predicted)",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 70.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T23:05:52Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 78.0,
+      "expected_value": -0.3308666868167848,
+      "p_success": 0.6107450743331944,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.3177
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 78.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6107450743331944,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "hard_open_rows_stay_open",
+        "p": 0.17
+      },
+      {
+        "mode": "canonical_manifest_node_mismatch",
+        "p": 0.13
+      },
+      {
+        "mode": "resolver_bundle_run_coupling_failure",
+        "p": 0.11
+      },
+      {
+        "mode": "ns_next_lever_not_formalizable",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1537,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:39:24Z"
+  }
+}

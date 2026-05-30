@@ -1,0 +1,40 @@
+{
+  "actual_cost_agent_minutes": 54.0,
+  "artifact_hash": "40dcc02064b8c9d377fcaf971f496609ad6cb4cd54e7ee7f934eec7fe1a3e177",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/route1_pincer_bottom_up_top_down_20260514.md",
+  "changed_by_forecast_ids": [
+    "rd_codex",
+    "codex_forecaster"
+  ],
+  "compile_status": "lean_pass",
+  "contract_id": "ns_route1_pincer_bottom_up_top_down_20260514_tick409",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "gp-233:positive:pincer-map",
+    "top-down-bottom-up",
+    "darwin-pressure"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "finite-mass-semantics-open",
+    "n8-branches-open",
+    "not-clay-closure"
+  ],
+  "new_next_action": "isolate route-1 pincer surface, then attack scalar failure semantics, single-use lineage accounting, and N8 branch dominance",
+  "old_next_action": "continue bottom-up N2 only",
+  "preconditioner_effect": "Built a two-sided pincer while preserving the scalar failure-semantics and N8 branch obligations instead of claiming upstream closure.",
+  "preconditioner_source": "GP-230 forecasts, reused bottom-up/top-down sidecars, meta-Darwin, N8 inversion packet",
+  "realized_failure_mode_ids": [
+    "finite_mass_semantics_unsourced",
+    "branch_dominance_wrapper_only",
+    "route1_closed_but_upstream_open"
+  ],
+  "resolution_note": "Saved pincer packet. Added bottom-up Route1FiniteTailAmortizedStrictness.ofPincerSources, Route1ClosedFromPincerSources, typed and binary top-down branch dominance, finite-mass residual harmless theorem, and open-branch guard. Added N8 inversion packet and Darwin critique. Lean route1 adapter compiles; no sorry/admit. Result is conditional route-1 proof surface, not upstream Clay closure.",
+  "resolved_at": "2026-05-14T20:01:39Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

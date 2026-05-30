@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 14.0,
+  "artifact_hash": "419375d97ff81a1c669e58e069550c82e24444fad2efdece2e3f0af5e7f91999",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "pass",
+  "contract_id": "ns_route1_harmonic_decomposition_formula_source_micro_20260513_tick313",
+  "error_type": "none",
+  "goal_delta": 1,
+  "resolution_note": "Added FreshFrequencyHarmonicPressureDecompositionSource, theorem harmonicReserveSource_le_decompositionReserve_of_decompositionSource, and constructor into FreshFrequencyHarmonicPressureReserveSource; Lean check and lake build passed.",
+  "resolved_at": "2026-05-13T23:41:46Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

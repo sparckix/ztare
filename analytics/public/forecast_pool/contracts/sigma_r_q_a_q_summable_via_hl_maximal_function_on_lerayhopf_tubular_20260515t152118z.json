@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z.json",
+    "contract": "analytics/public/forecast_pool/contracts/sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z",
+    "outcome": "analytics/public/forecast_pool/outcomes/sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z.json",
+    "score": "analytics/public/forecast_pool/scores/sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "sigma_r_q_a_q_summable_via_hl_maximal_function_on_lerayhopf_tubular_20260515t152118z",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T15:21:18Z",
+  "created_by": "principal_claude_session_20260515_hl_max",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0465,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "clay_dual_load_macro_codex_20260515",
+    "score": 0.0465,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0465,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.0465,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0278,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0278,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.025,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.025,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0244,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 14.0,
+        "sample_limited": false,
+        "score": 0.0244,
+        "score_rows": 43,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0217,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.0217,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "14d",
+  "information_value": 0.0,
+  "layer": "macro",
+  "objective_resolver": "PDE-derivation-check",
+  "question": "Sigma_r_Q_A_Q_summable_via_HL_maximal_function_on_LerayHopf_tubular",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "clay_dual_load_macro_codex_20260515",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

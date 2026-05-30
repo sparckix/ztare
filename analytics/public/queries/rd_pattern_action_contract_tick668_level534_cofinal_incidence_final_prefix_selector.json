@@ -1,0 +1,41 @@
+{
+  "contract_id": "tick668_level534_cofinal_incidence_final_prefix_selector",
+  "surface": "NS Track-B cofinal incidence direct final-prefix selector theorem",
+  "pattern_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "GP-219:pde_estimate_craft_ops"
+  ],
+  "anti_patterns": [
+    "ANTI-PATTERN-018",
+    "Level519 witness-bound adapter recurrence",
+    "endpoint-capacity-only bound"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level533 reduces to L3AFinalPrefixCofinalSelectorTheoremSource",
+      "check": "construct that theorem directly from cofinal selected-tree incidence plus a same-witness final-prefix bound"
+    }
+  ],
+  "carrier_schema_receipts": [
+    {
+      "schema": "typed_coverage_packet_appearance",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level534_cofinal_incidence_final_prefix_selector_receipt.json"
+    },
+    {
+      "schema": "provenance_edge_direction",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level534_provenance_edge_direction_receipt.json"
+    },
+    {
+      "schema": "provenance_acyclic_edge",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level534_provenance_acyclic_edge_receipt.json"
+    }
+  ],
+  "positive_construction": {
+    "source": "L3ACofinalIncidenceFinalPrefixSelectorTheoremSource",
+    "projection": "Choose the cofinal event from the proof-carrying incidence receipt, use the same-witness bound for Fin, and use choose_spec for the displayed equality.",
+    "target": "L3AFinalPrefixCofinalSelectorTheoremSource"
+  },
+  "nearest_confuser": "Level519 witness-bound adapter",
+  "next_lever": "prove cofinalWitness_bound from finite-prefix exhaustion, event ordering, same-tree incidence, and nonadaptive event geometry"
+}

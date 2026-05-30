@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_source_local_energy_measure_split_20260514_tick371",
+  "contract_question": "Can we pull LocalEnergyPositiveBoundaryFluxMeasureSplitSource one layer lower by encoding a fixed local-energy signed-measure positive-variation source, without hiding singular control in measureDomination?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compiled_lower_source": 0.34,
+    "lean_failure": 0.1,
+    "local_energy_identity_not_sourced": 0.18,
+    "signed_measure_api_deferred": 0.18,
+    "wrapper_only_risk": 0.2
+  },
+  "forecasted_at": "2026-05-14T13:36:49Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.06,
+  "p_success": 0.67,
+  "rationale_short": "Can add a lower abstract source with signed pieces and positive-variation subadditivity; actual PDE local-energy identity remains an explicit field.",
+  "read_only_attestation": true
+}

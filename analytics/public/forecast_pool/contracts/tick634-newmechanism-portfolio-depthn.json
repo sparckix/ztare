@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick634-newmechanism-portfolio-depthn.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick634-newmechanism-portfolio-depthn.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick634-newmechanism-portfolio-depthn",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick634-newmechanism-portfolio-depthn.json",
+    "score": "analytics/public/forecast_pool/scores/tick634-newmechanism-portfolio-depthn.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick634-newmechanism-portfolio-depthn",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T12:10:01Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_new_mechanism_portfolio",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick634 (fork-2, ONE tick, PORTFOLIO of 6 depth-n-derived new-program mechanisms M1..M6): does ANY survive as non-reducible to {critical-a-priori=Clay, taxonomy-relabel, energy-level, a.s.\u2260\u2200, amnesia-recurrence}? Composed in-thread: M1 modified-energy/I-method (no NS dispersion\u21d2small-data only), M2 Cauchy+ropelength (lower-bound/topology-not-conserved\u21d2helicity-class), M3 Caffarelli-Vasseur nonlocal-De-Giorgi (genuinely-distinct; 3D-NS obstruction localizes EXACTLY to vortex-stretching breaking the L\u221e/BMO drift-closure), M4 self-similar/RG (tick592/599/600 recurrence), M5 kinetic-H-theorem\u2192NS (\u2192L\u00b2-energy subcritical), M6 Duchon-Robert critical (tick617 absorbed). Claim: 5/6 reduce/recur via NAMED obstructions; M3 is the sharp survivor-as-precise-obstruction (vortex-stretching vs CV drift-closure).",
+  "risk_penalty": 1.0,
+  "success_threshold": "the 6 depth-n derivations are each correct (the named obstruction per Mi is right), AND the honest verdict \u2014 5 reduce/recur, M3 = genuinely-distinct mechanism whose 3D-NS failure is precisely vortex-stretching-breaks-CV-drift-closure (NOT a vague Clay-reduction) \u2014 survives ONE codex adversarial-kill; non-laundered, not inflated",
+  "task_type": "ns_new_mechanism_portfolio",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": "Proceed; pre-verify adjudicator compares full goal-state witness (not just error signatures) before counting strict matches.",
+  "agent_id": "Noether",
+  "contract_id": "gp225_v2206_artisanal_moat_extension_bounded_replay_meso_gate",
+  "contract_question": "Will bounded replay of v22.05 (8 candidates \u00d7 2 heldout-unsolved rows: current_scale_0079/dist_map_map_zero_lt and current_scale_0000/isoSpec_hom_apply) produce at least 1 NEW strict same-step heldout label (witness exactly equal to gold intermediate, or via the v21.06 witness-equality sub-bucket on a non-closing step) with zero harmful mismatches and no leakage?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 4.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adjudicator_shallow_signature_harmful_mislabel": 0.05,
+    "row_0000_rank1_verbatim_gold_prefix_strict_match": 0.45,
+    "row_0000_rank4_unverified_definitional_identity_fail": 0.03,
+    "row_0079_rank1_simp_only_normalises_past_gold_state": 0.04,
+    "row_0079_split_rw_strict_match_at_least_one_of_three": 0.3,
+    "schema_or_timeout_error": 0.03,
+    "simp_only_variants_divergence_non_match": 0.1
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:26:28Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.05,
+  "p_success": 0.78,
+  "rationale_short": "Row 0000 rank-1 IS verbatim the gold-truncated prefix already shown to compile in v2099 gold adjudication; row 0079 split-rw on non-conflicting lemmas is sequentially equivalent to the full chain.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

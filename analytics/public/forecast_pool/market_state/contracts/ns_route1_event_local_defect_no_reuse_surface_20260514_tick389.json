@@ -1,0 +1,204 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T14:55:25Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 35.0,
+    "expected_value": -5.1443808758455924,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.38,
+    "p_needs_new_lemma": 0.73,
+    "p_regression": 0.16,
+    "p_success": 0.6784462159926418,
+    "participants": [
+      {
+        "agent_id": "codex_rd_no_reuse_prior",
+        "domain": "ns_route1_local_energy_measure_split",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic_no_reuse_prior",
+        "domain": "ns_route1_local_energy_measure_split",
+        "p_success": 0.61,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "local_domination_mistaken_for_global_closure",
+        "p": 0.275
+      },
+      {
+        "mode": "no_reuse_surface_too_abstract",
+        "p": 0.255
+      },
+      {
+        "mode": "recurrent_same_mass_reuse_countermodel",
+        "p": 0.165
+      },
+      {
+        "mode": "lean_type_breakage",
+        "p": 0.11499999999999999
+      },
+      {
+        "mode": "amortized_closure_overclaimed",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_event_local_defect_no_reuse_surface_20260514_tick389.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_event_local_defect_no_reuse_surface_20260514_tick389.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_event_local_defect_no_reuse_surface_20260514_tick389.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_event_local_defect_no_reuse_surface_20260514_tick389.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_event_local_defect_no_reuse_surface_20260514_tick389.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T14:55:01Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles and the diff adds EventLocalDefectDropNoReuse plus a guard that local measure domination alone does not imply no-reuse/global closure.",
+    "question": "Can this tick encode the next no-reuse/fresh-event defect-drop theorem surface after tick388 without claiming global closure?",
+    "success_threshold": "lake env lean passes; no new sorry/admit; theorem surface distinguishes local domination from fresh bounded-overlap payment and amortized reserve drop",
+    "task_type": "ns_route1_lean_frontier"
+  },
+  "contract_id": "ns_route1_event_local_defect_no_reuse_surface_20260514_tick389",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_no_reuse_prior",
+        "raw_agent_ids": [
+          "codex_rd_no_reuse_prior"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic_no_reuse_prior",
+        "raw_agent_ids": [
+          "codex_skeptic_no_reuse_prior"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_no_reuse_prior",
+      "codex_skeptic_no_reuse_prior"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Encode freshRegion/boundedOverlap fields and an explicit local-domination-only no-go guard; do not claim route-1 closure.",
+        "agent_id": "codex_rd_no_reuse_prior",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_event_local_defect_no_reuse_surface_20260514_tick389/codex_rd_no_reuse_prior.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T14:55:18Z",
+        "p_success": 0.74,
+        "rationale_short": "The surface should compile if kept abstract. The important constraint is to record no-reuse as a new missing theorem, not as a consequence of local measure domination.",
+        "specific_failure_mode_ids": [
+          "local_domination_mistaken_for_global_closure",
+          "amortized_closure_overclaimed"
+        ]
+      },
+      {
+        "action_change_recommendation": "Add a guard model for repeated events reusing the same \u03a9 mass; require fresh subregions and finite root budget before amortized closure.",
+        "agent_id": "codex_skeptic_no_reuse_prior",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_event_local_defect_no_reuse_surface_20260514_tick389/codex_skeptic_no_reuse_prior.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T14:55:19Z",
+        "p_success": 0.61,
+        "rationale_short": "The theorem surface is right only if it keeps recurrent reuse as the blocker. Any field deriving global summability from local domination would be false.",
+        "specific_failure_mode_ids": [
+          "recurrent_same_mass_reuse_countermodel",
+          "bounded_overlap_unpaid"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 26.0,
+    "changed_by_forecast_ids": [
+      "codex_rd_no_reuse_prior",
+      "codex_skeptic_no_reuse_prior",
+      "Zeno",
+      "Volta"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:08:42Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 35.0,
+      "expected_value": -5.1443808758455924,
+      "p_success": 0.6784462159926418,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.0282
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 35.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6784462159926418,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "local_domination_mistaken_for_global_closure",
+        "p": 0.275
+      },
+      {
+        "mode": "no_reuse_surface_too_abstract",
+        "p": 0.255
+      },
+      {
+        "mode": "recurrent_same_mass_reuse_countermodel",
+        "p": 0.165
+      },
+      {
+        "mode": "lean_type_breakage",
+        "p": 0.11499999999999999
+      },
+      {
+        "mode": "amortized_closure_overclaimed",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10985,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:08:52Z"
+  }
+}

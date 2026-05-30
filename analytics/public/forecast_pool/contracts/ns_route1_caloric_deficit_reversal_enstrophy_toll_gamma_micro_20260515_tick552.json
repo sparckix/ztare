@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T23:32:20Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0714,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_caloric_deficit_gamma_micro_20260515",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0714,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0652,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0638,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 14.0,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 43,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "7d",
+  "information_value": 2.5,
+  "layer": "micro",
+  "objective_resolver": "PDE judgment: a localized \u0141ojasiewicz-Simon / entropy-dissipation inequality yields scale-invariant \u03b3>0 for a high-freq reversing wave (closure), vs \u03b3_n\u21920 countermodel (fixed point persists). NOT resolvable by asserting the penalty (that = laundering, tick552 forbids inhabiting kills_ghost_configuration)",
+  "question": "Caloric-Deficit MD-verdict: tick552 PROVES the viscous-reflection-penalty L(n+1)\u2264(1-\u03b3)L_n is a SPECIAL CASE of the already-open tick551 positiveFluxScaleFresh reserve-drop (R_n=L_n/\u03b3) and its geometric closure IS tick551 telescoping \u2014 so it adds no new closure; \u03b3>0 scale-invariant-strict \u2261 the perennial atom. Forward question: can the reversal\u21d2enstrophy-toll mechanism (\u0141ojasiewicz-Simon localized inequality channel) actually deliver \u03b3>0 scale-invariant for a high-frequency reversing wave, or does \u03b3_n\u21920 (mechanism fails, P4 reuse-cascade fixed point persists)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "success if \u0141ojasiewicz channel gives scale-invariant \u03b3>0 from standard Sobolev-trace+heat-operator; fail if \u03b3_n\u21920 or only assertable not provable",
+  "task_type": "ns_clay_caloric_deficit_gamma_micro_20260515",
+  "value_if_success": 4.0,
+  "void_conditions": "tick551 reserve-drop signature refactored"
+}

@@ -1,0 +1,1364 @@
+{
+  "experiment": "gp216_classify_ztare_seams",
+  "n_seams": 169,
+  "distribution": {
+    "unclassified": 78,
+    "problem_solving": 79,
+    "theory_building": 9,
+    "mixed": 3
+  },
+  "results": [
+    {
+      "path": "research_areas/private/seams/README.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/gaming/GP-058_bug_bounty_factory_integration_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/gaming/GP-073_subliminal_learning_reproduction_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=5 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/reflexive/GP-106_proportionality_precautionary_principle_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 2,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=2 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/reflexive/GP-105_mform_alignment_audit_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-172_research_director_mform_role_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=0 PS=6 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-072_sandbox_14_debate_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 7,
+      "confidence": "high",
+      "rationale": "TB=0 PS=7 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-076_predictive_divergence_sweep_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-193_post_run_thesis_synthesizer_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-189_ns_continuation_criterion_after_bounded_near_miss_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 13,
+      "confidence": "high",
+      "rationale": "TB=1 PS=13 ratio=13.00"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-128b_inbound_principal_directives.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 16,
+      "confidence": "high",
+      "rationale": "TB=0 PS=16 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-188_research_director_primitive_compilation_boundary_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-192_enterprise_grade_org_runtime_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-072_sandbox_14_blind_path_b_pre_registration.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=3 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=2 PS=4 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-079_persona_library_unification_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 4,
+      "ps_signal": 0,
+      "confidence": "medium",
+      "rationale": "TB=4 PS=0 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md",
+      "dominant": "mixed",
+      "tb_signal": 3,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "signals comparable: TB=3 PS=3 ratio=1.00 < 1.5"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-191_org_kernel_policy_boundary_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 10,
+      "confidence": "high",
+      "rationale": "TB=0 PS=10 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-096_science_programme_decomposition_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=1 PS=6 ratio=6.00"
+    },
+    {
+      "path": "research_areas/private/seams/mission/ztare_mission_hypothesis_ledger_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 8,
+      "confidence": "high",
+      "rationale": "TB=0 PS=8 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/mission/SESSION_HANDOFF_2026-05-01_three_frontier_tracks.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-136_pmdl_threshold_hardening_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 5,
+      "confidence": "high",
+      "rationale": "TB=2 PS=5 ratio=2.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 5,
+      "ps_signal": 2,
+      "confidence": "high",
+      "rationale": "TB=5 PS=2 ratio=2.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-049_epistemic_verification_decomposition_validation_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 10,
+      "confidence": "high",
+      "rationale": "TB=0 PS=10 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-133_R4_py_exec_sandbox_review.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-135_meta_law_hypothesis_family_program_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-082_substrate_scope_boundary_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 5,
+      "confidence": "high",
+      "rationale": "TB=2 PS=5 ratio=2.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-050_post_treatise_philosophy_anchors_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 5,
+      "ps_signal": 1,
+      "confidence": "high",
+      "rationale": "TB=5 PS=1 ratio=5.00"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-129_biological_org_design_panel_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=3 ratio=3.00"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-128_persistent_manager_agent_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=3 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-140_ztare_discovery_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-169_consciousness_decision_protocol_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 9,
+      "confidence": "high",
+      "rationale": "TB=2 PS=9 ratio=4.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-141_continuous_A_plus_B_reference_implementation_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 21,
+      "confidence": "high",
+      "rationale": "TB=1 PS=21 ratio=21.00"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-191_transformer_vs_neural_status_2026-05-01.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-166_self_enacted_procedural_compliance_seam.md",
+      "dominant": "mixed",
+      "tb_signal": 4,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "signals comparable: TB=4 PS=5 ratio=1.25 < 1.5"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-127_falsify_before_patent_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=3 ratio=3.00"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-085_grammar_ceiling_hypothesis_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-131_work_discovery_loop_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 7,
+      "confidence": "high",
+      "rationale": "TB=2 PS=7 ratio=3.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-083_inference_type_boundary_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=3 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-130_non_llm_substrate_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 8,
+      "confidence": "high",
+      "rationale": "TB=1 PS=8 ratio=8.00"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-134_ztare_on_ztare_self_recursive_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 2,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=2 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-133_multidisciplinary_discovery_panel_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-167_multi_agent_interface_form_factor_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/mission/ztare_operational_mode_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/GP-154_class_K_diagnostic_and_panel_review.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/GP-173_comparative_closure_clock_substrate_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-143_continuous_chaotic_kernel_integration_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=0 PS=6 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-149_phase2_refresh_2026-05-04.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-154_learning_mechanics_scaling_exponents_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 3,
+      "ps_signal": 2,
+      "confidence": "medium",
+      "rationale": "TB=3 PS=2 ratio=1.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-145_saw_mu_square_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 20,
+      "confidence": "high",
+      "rationale": "TB=0 PS=20 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-149_mining_findings_and_interventions_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 7,
+      "confidence": "high",
+      "rationale": "TB=0 PS=7 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-216_theory_building_operations_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 17,
+      "ps_signal": 5,
+      "confidence": "high",
+      "rationale": "TB=17 PS=5 ratio=3.40"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-169_cold_llm_synthetic_erdos_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-162_convention_homogeneity_enforcement_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-149_failure_taxonomy_hardening_primitives_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-171_tier3_mechanism_search_via_lean_lagrangian.md",
+      "dominant": "theory_building",
+      "tb_signal": 3,
+      "ps_signal": 1,
+      "confidence": "medium",
+      "rationale": "TB=3 PS=1 ratio=3.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-170_symbolic_logic_cage_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 8,
+      "confidence": "high",
+      "rationale": "TB=1 PS=8 ratio=8.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-109_residual_periodicity_detector_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=3 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-164_ztare_v2_reframe_analogy_meta_architecture_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-116_compression_as_architecture_discovery.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-190_post_run_discriminator_daemon_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 12,
+      "confidence": "high",
+      "rationale": "TB=1 PS=12 ratio=12.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-081_lean_formal_bridge_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 9,
+      "confidence": "high",
+      "rationale": "TB=0 PS=9 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-115_residual_driven_grammar_expansion.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 11,
+      "confidence": "high",
+      "rationale": "TB=0 PS=11 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-211_lean_proof_substrate_class_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 2,
+      "ps_signal": 1,
+      "confidence": "medium",
+      "rationale": "TB=2 PS=1 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-213_operator_role_mechanization_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-151_classifier_telemetry_downgrade_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=2 PS=4 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-215_meta_arc_mining_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 15,
+      "confidence": "high",
+      "rationale": "TB=0 PS=15 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-212_meta_solver_kernel_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-111_proactive_closure_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=3 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-114_neural_scaling_spectral_dynamics.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-148_void_mining_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-191_typed_cold_shot_portfolio_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 2,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=2 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-112_margin_of_safety_gate.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 5,
+      "confidence": "high",
+      "rationale": "TB=1 PS=5 ratio=5.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-110_statistical_fingerprint_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=0 PS=6 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-113_diagnosis_feedback_loop.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-117_why_only_kills.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=3 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-103_topology_induction_gap.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-144_new_science_claim_discipline_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=5 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-214_pattern_bank_kernel_injection_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-055_meta_judge_parse_robustness_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/interfaces/D4_distribution_form_factor_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/interfaces/D3_layer3_surfacing_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 2,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=2 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-099_vocabulary_floor_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 10,
+      "confidence": "high",
+      "rationale": "TB=1 PS=10 ratio=10.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-095_post_fit_residual_ambiguity_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-060_parallel_champion_synthesis_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 8,
+      "confidence": "high",
+      "rationale": "TB=0 PS=8 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=5 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-078_component_d_topology_synthesizer_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 12,
+      "confidence": "high",
+      "rationale": "TB=1 PS=12 ratio=12.00"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-174_parallel_recombination_pipeline_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=0 PS=6 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-056_axiomatic_patching_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-097_nd_manifold_compressor_seam.md",
+      "dominant": "mixed",
+      "tb_signal": 4,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "signals comparable: TB=4 PS=4 ratio=1.00 < 1.5"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-069_champion_nesting_audit_gate_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-069_nesting_cleared_target_construction_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-034_loop_control_blind_to_latent_distance_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-100_epistemic_decoupling_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 2,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-062_trajectory_thrash_detection_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-042_mutator_structural_diversity_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-057_ratio_finiteness_gate_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 3,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=3 PS=5 ratio=1.67"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_nesting_collapse_audit.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_07_closure.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=0 PS=6 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_09_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_07_pre_registration.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=0 PS=6 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 8,
+      "ps_signal": 2,
+      "confidence": "high",
+      "rationale": "TB=8 PS=2 ratio=4.00"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox06_identifiability_hardening_seam.md",
+      "dominant": "theory_building",
+      "tb_signal": 2,
+      "ps_signal": 1,
+      "confidence": "medium",
+      "rationale": "TB=2 PS=1 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_08_closure.md",
+      "dominant": "unclassified",
+      "tb_signal": 2,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_09_post_run_audit.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-084_crucial_experiment_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_07_blind_eml_inversion_design.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 11,
+      "confidence": "high",
+      "rationale": "TB=1 PS=11 ratio=11.00"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_08_pre_registration.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=2 PS=4 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_post_run_audit.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_09_pre_registration_RETIRED_2026-04-15.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-042_structural_memory_01_pre_registration.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 3,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=3 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_13_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_12_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 2,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_13v2_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_11_01_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_steering_ab_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/erdos/GP-090_erdos_dark_sequence_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/erdos/GP-089_erdos_dark_sequence_pre_registration.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 8,
+      "confidence": "high",
+      "rationale": "TB=0 PS=8 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/erdos/GP-077_oeis_sequence_law_recovery_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 9,
+      "confidence": "high",
+      "rationale": "TB=0 PS=9 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/selkov/GP-073_sandbox_15_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 3,
+      "ps_signal": 7,
+      "confidence": "medium",
+      "rationale": "TB=3 PS=7 ratio=2.33"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/selkov/GP-074_sandbox_15_component_c_pre_registration.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/cage/GP-157_cage_orchestrator_substrate_agnostic_dispatch.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/cage/GP-039_gate_library_formalization_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-040_throughput_instrumentation_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=0 PS=6 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=5 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-098_evidence_compressor_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-134_prompt_layer_contamination_incident_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-038_tail_cycle_time_instrumentation_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 3,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=3 PS=5 ratio=1.67"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-183_falsification_mechanization_plan.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-032_epistemic_throughput_unit_economics_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 6,
+      "confidence": "high",
+      "rationale": "TB=1 PS=6 ratio=6.00"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-024_persistent_research_workspace_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-033_multi_project_synthesis_generalization_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 7,
+      "confidence": "high",
+      "rationale": "TB=0 PS=7 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-036_findings_runner_supervisor_convergence_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 9,
+      "confidence": "high",
+      "rationale": "TB=0 PS=9 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-061_void_driven_steering_measurement_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 2,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-031_findings_birth_bridge_seam.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 8,
+      "confidence": "high",
+      "rationale": "TB=2 PS=8 ratio=4.00"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-071_executive_inbox_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 1,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-061_constraint_accumulation_as_output_seam.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_arnold_cat_map.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_validity_horizon.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=4 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/substrate_classifier_v1.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_pslq_bound.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 14,
+      "confidence": "high",
+      "rationale": "TB=0 PS=14 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/alien_math_null_hypothesis_backtest.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=5 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_ulam_steinerberger_gpt41.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_kww_polymer.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 2,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=2 ratio=2.00"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_horizon_gpt41.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_v2_1_meta_architecture_session_postmortem.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 1,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_novelty_audit_vs_cold_llm.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 15,
+      "confidence": "high",
+      "rationale": "TB=0 PS=15 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_mu_square.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 5,
+      "confidence": "medium",
+      "rationale": "TB=0 PS=5 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/GP-163d_unified_accel_run_postmortem.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_gp023_planck_gpt41.md",
+      "dominant": "problem_solving",
+      "tb_signal": 0,
+      "ps_signal": 9,
+      "confidence": "high",
+      "rationale": "TB=0 PS=9 ratio=inf"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_deep_audit_findings.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/specs/active/README.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/specs/active/GP-104_general_purpose_project_generator_spec.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 2,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=2 ratio=2.00"
+    },
+    {
+      "path": "research_areas/specs/active/engine/grammar/GP-021_topological_pivot_heuristics_spec.md",
+      "dominant": "problem_solving",
+      "tb_signal": 2,
+      "ps_signal": 12,
+      "confidence": "high",
+      "rationale": "TB=2 PS=12 ratio=6.00"
+    },
+    {
+      "path": "research_areas/specs/active/engine/grammar/GP-011_derived_constraints_lane_spec.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 2,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 2 < 3"
+    },
+    {
+      "path": "research_areas/specs/active/apparatus/instrumentation/GP-022_forecast_project_typing_spec.md",
+      "dominant": "problem_solving",
+      "tb_signal": 1,
+      "ps_signal": 4,
+      "confidence": "medium",
+      "rationale": "TB=1 PS=4 ratio=4.00"
+    },
+    {
+      "path": "research_areas/specs/active/apparatus/instrumentation/GP-027_evidence_compile_reuse_spec.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    },
+    {
+      "path": "research_areas/specs/active/apparatus/supervisor/GP-026_runner_no_suite_rejection_spec.md",
+      "dominant": "unclassified",
+      "tb_signal": 0,
+      "ps_signal": 0,
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 3"
+    }
+  ]
+}

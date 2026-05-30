@@ -1,0 +1,24 @@
+{
+  "agent_id": "pascal_adversarial_forecaster",
+  "contract_id": "gp225_v1933_codex_blind_repair_sandbox",
+  "contract_question": "Will a Codex-blind repair sandbox over uncontaminated v19.16 repair-canary rows produce at least two Lean-verified strict-target or pull-forward repair rows with zero harmful compiled mismatches?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "blind_candidates_too_generic_after_known_success_rows_excluded": 0.32,
+    "gold_or_witness_adjudication_artifact_makes_target_comparison_unstable": 0.13,
+    "harmful_compiled_mismatch_or_false_accept_split_reappears": 0.04,
+    "lean_hydration_or_toolchain_drift_drops_attempted_rows_below_threshold": 0.06,
+    "needs_specific_named_mathlib_rewrites_or_extensionality_lemmas": 0.18,
+    "overclosure_counts_as_success_but_is_weak_self_licking_signal": 0.17,
+    "strict_or_pull_forward_rows_reaches_only_one_of_five": 0.1
+  },
+  "forecasted_at": "2026-05-13T23:25:18Z",
+  "p_dependency_issue": 0.13,
+  "p_needs_new_lemma": 0.16,
+  "p_regression": 0.06,
+  "p_success": 0.34,
+  "rationale_short": "Five uncontaminated candidate rows should attempt, but the threshold is vulnerable to overclosure/self-licking and may need named Mathlib rewrites rather than generic Codex tactics.",
+  "read_only_attestation": true
+}

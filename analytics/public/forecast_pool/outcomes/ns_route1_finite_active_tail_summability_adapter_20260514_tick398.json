@@ -1,0 +1,32 @@
+{
+  "actual_cost_agent_minutes": 24.0,
+  "artifact_hash": null,
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster"
+  ],
+  "compile_status": "lake-env-lean-pass",
+  "contract_id": "ns_route1_finite_active_tail_summability_adapter_20260514_tick398",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "failure_mode_preconditioner",
+    "no_overclaim_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "attack CaloricDissipationPaidByReserveDropPlusRecharge and Route1FailureForcesDivergentActiveTail separately",
+  "old_next_action": "continue route-1 reservoir closure without explicit summability adapter",
+  "preconditioner_effect": "Kept the closure claim at finite active-tail recurrence plus explicit failure-divergence adapter, not pointwise strict-subratio.",
+  "preconditioner_source": "codex_forecaster",
+  "realized_failure_mode_ids": [
+    "summability_to_strict_subratio_smuggling"
+  ],
+  "resolution_note": "Added finite-active-tail budget/failure-divergence adapter and guard separating summability closure from pointwise strict-subratio; lake env lean passed and touched-file sorry/admit scan was clean.",
+  "resolved_at": "2026-05-14T18:20:42Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

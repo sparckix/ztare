@@ -1,0 +1,22 @@
+{
+  "agent_id": "rawls_skeptic_tick350",
+  "contract_id": "ns_route1_boundary_tent_provenance_source_micro_20260514_tick350",
+  "contract_question": "Can we add a compile-checked Lean provenance source/guard for boundary tent lower payment: same tent-family and same cutoff feed the boundary lower-payment source, while mismatch-undercharge blocks any matching lower-payment source?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 50.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_arithmetic_or_exists_issue": 0.1,
+    "only_scaffolding": 0.34,
+    "other": 0.14,
+    "payment_still_assumed": 0.24,
+    "provenance_props_not_numeric": 0.18
+  },
+  "forecasted_at": "2026-05-14T11:41:52Z",
+  "p_dependency_issue": 0.32,
+  "p_needs_new_lemma": 0.42,
+  "p_regression": 0.08,
+  "p_success": 0.64,
+  "rationale_short": "Likely compiles, but it remains conditional unless the same-tent/cutoff assumptions do real numeric work. Still useful as a guard against dropping provenance.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,201 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:32Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 3.26615141621502,
+      "forecast_spread": 0.01,
+      "p_success": 0.294975354053755,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.718
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 36.375,
+    "expected_value": 3.26615141621502,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.10500000000000001,
+    "p_needs_new_lemma": 0.84,
+    "p_regression": 0.05,
+    "p_success": 0.294975354053755,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550/claude_rd.json",
+        "forecasted_at": "2026-05-15T23:08:46Z",
+        "p_success": 0.3,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550/codex.json",
+        "forecasted_at": "2026-05-15T23:10:08Z",
+        "p_success": 0.29,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "same_window_no_reuse_obstruction_reappears",
+        "p": 0.23
+      },
+      {
+        "mode": "one_new_no_reuse_lemma_required",
+        "p": 0.155
+      },
+      {
+        "mode": "cutoff_scale_or_weight_mismatch",
+        "p": 0.065
+      },
+      {
+        "mode": "hidden_coupling_between_receipt_and_caloric_absorption",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T23:08:45Z",
+    "created_by": "claude_rd",
+    "horizon": "7d",
+    "layer": "micro",
+    "objective_resolver": "PDE judgment: does caloric/Young-Bernstein parabolic absorption at the localized cutoff scale yield a finite weighted no-reuse bound on the positive same-carrier flux charge (L_summable), or does a new same-window/no-reuse obstruction reappear (loop continues at the positive-carrier level)?",
+    "question": "The whole strict-margin arc localizes (tick550) to ONE existing open field: tick491/492 L_summable (weighted no-reuse of the positive same-carrier transport/kinetic cutoff-flux charge). Can L_summable be discharged via the Young/Bernstein CALORIC ABSORPTION route (tick396 attack, F-293 'PDE-native but unpaid'), given all surrounding machinery is proved (tick491/492 Cauchy-Schwarz, substrate SameCarrierPositiveTransportFluxReceipt, tick548/549 signed-futile/positive-unique)?",
+    "success_threshold": "success if caloric absorption closes L_summable with only standard parabolic Gagliardo-Nirenberg/Bernstein; 0.5 if needs one new no-reuse lemma; fail if a positive-carrier same-window/reuse obstruction reappears (fixed point persists at the transverse level too)",
+    "task_type": "ns_clay_Lsummable_caloric_micro_20260515"
+  },
+  "contract_id": "ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-15T23:08:46Z",
+        "p_success": 0.3,
+        "rationale_short": "Maximal honest compression: arc localizes to tick491/492 L_summable, surrounding machinery all proved, attack route named (caloric/Young-Bernstein). But tick396 already attacked this with p_needs_new_lemma 0.90 and it stayed unpaid; the weighted no-reuse is itself the deep open object (not the interpolation, which is proved). Likely needs a genuine no-reuse lemma \u2014 the positive-carrier analogue may itself be a fixed point. p_success 0.30, p_needs_new_lemma 0.85.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-15T23:10:08Z",
+        "p_success": 0.29,
+        "rationale_short": "Calibration is close to claude_rd but slightly more conservative: the route is PDE-native and the surrounding C-S / receipt machinery is done, yet the open item is exactly the weighted no-reuse bound, which already behaved like the deep residual in tick396. Most mass stays on a same-window reuse obstruction or the need for one genuinely new no-reuse lemma rather than extra PDE infrastructure.",
+        "specific_failure_mode_ids": [
+          "same_window_no_reuse_obstruction_reappears",
+          "one_new_no_reuse_lemma_required"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T00:06:49.521722+00:00",
+    "success_bool": null,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 3.26615141621502,
+      "forecast_spread": 0.01,
+      "p_success": 0.294975354053755,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.718
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.375,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.294975354053755,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "same_window_no_reuse_obstruction_reappears",
+        "p": 0.23
+      },
+      {
+        "mode": "one_new_no_reuse_lemma_required",
+        "p": 0.155
+      },
+      {
+        "mode": "cutoff_scale_or_weight_mismatch",
+        "p": 0.065
+      },
+      {
+        "mode": "hidden_coupling_between_receipt_and_caloric_absorption",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

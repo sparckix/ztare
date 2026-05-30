@@ -1,0 +1,596 @@
+You are working on closing the NS Track B Clay obligation `TrackBProfileLipschitzControlObligation`. You will produce ONE LAKE-CHECKABLE Lean patch in the chosen patch class. Refuse with `# CANNOT PATCH` if you cannot do so within the constraints.
+
+# Target obligation
+
+  TrackBProfileLipschitzControlObligation
+  leverage_score: 108.57
+  n_fields: 5
+  source file: ztare_proofs/ZtareProofs/ns_profile_lipschitz_clay_bridge.lean
+
+# Target field
+
+  Field name: generated_quartic_survival_amplitude_projection
+  Field type: ∀ (U : NSEvolution) (n : ℕ), QuarticSurvivalAmplitudeProjectionReceipt ((lipschitz_bridge.ledger_of_evolution U).block n)
+  Type head: QuarticSurvivalAmplitudeProjectionReceipt
+
+# Resolved target structure body
+
+### structure TrackBProfileLipschitzControlObligation (from ns_profile_lipschitz_clay_bridge.lean)
+Fields:
+  - evolution_of_initial_data : SmoothNSInitialData → NSEvolution
+  - profile_bundle : TrackBProfileDecompositionBridgeBundle
+  - lipschitz_bridge : LowFrequencyLipschitzBridge
+  - source_coupling : TrackBProfileLipschitzSourceCoupling
+  - generated_quartic_survival_amplitude_projection : ∀ (U : NSEvolution) (n : ℕ),
+
+# Existing declarations that PRODUCE the target structure
+
+### def TrackBProfileLipschitzControlObligation.generated_quartic_survival_projection (in ns_profile_lipschitz_clay_bridge.lean, score=7 type_uses=2)
+```lean
+def TrackBProfileLipschitzControlObligation.generated_quartic_survival_projection
+    (O : TrackBProfileLipschitzControlObligation) :
+    ∀ (U : NSEvolution) (n : ℕ),
+      QuarticSurvivalProjectionReceipt
+        ((O.lipschitz_bridge.ledger_of_evolution U).block n) :=
+  generated_quartic_survival_projection_of_amplitude_receipts
+    O.lipschitz_bridge
+    O.generated_quartic_survival_amplitude_projection
+
+/-- Generated-block below-wall cap exposed as a named theorem.
+
+This is the first branch of the quartic projection for the exact Lipschitz
+ledger block, not a detached scalar inequality. -/
+```
+
+### def TrackBProfileLipschitzControlObligation.profile_obligation (in ns_profile_lipschitz_clay_bridge.lean, score=7 type_uses=2)
+```lean
+def TrackBProfileLipschitzControlObligation.profile_obligation
+    (O : TrackBProfileLipschitzControlObligation) :
+    TrackBProfileDecompositionObligation :=
+  trackb_profile_decomposition_obligation_of_bridge_bundle O.profile_bundle
+
+/-- The generated block is source-ready for profile pricing and Lipschitz
+reserve pricing under the same predeclared block identity. -/
+```
+
+### def trackB_profile_lipschitz_control_obligation_of_profile_bridge_bundle_and_amplitude_receipts (in ns_profile_lipschitz_clay_bridge.lean, score=7 type_uses=2)
+```lean
+def trackB_profile_lipschitz_control_obligation_of_profile_bridge_bundle_and_amplitude_receipts
+    (evolution_of_initial_data : SmoothNSInitialData → NSEvolution)
+    (profile_bundle : TrackBProfileDecompositionBridgeBundle)
+    (lipschitz_bridge : LowFrequencyLipschitzBridge)
+    (source_coupling :
+      TrackBProfileLipschitzSourceCoupling
+        evolution_of_initial_data
+        (trackb_profile_decomposition_obligation_of_bridge_bundle
+          profile_bundle)
+        lipschitz_bridge)
+    (hamplitude :
+      ∀ (U : NSEvolution) (n : ℕ),
+        QuarticSurvivalAmplitudeProjectionReceipt
+          ((lipschitz_bridge.ledger_of_evolution U).block n)) :
+    TrackBProfileLipschitzControlObligation :=
+  trackB_profile_lipschitz_control_obligation_of_amplitude_receipts
+    evolution_of_initial_data
+    profile_bundle
+    lipschitz_bridge
+    source_coupling
+    hamplitude
+
+/-- Hostile fal
+```
+
+### def GP216BridgeCompositionReceipt.profileLipschitzObligation (in ns_gp216_bridge_composition_receipt.lean, score=6 type_uses=1)
+```lean
+def GP216BridgeCompositionReceipt.profileLipschitzObligation
+    (R : GP216BridgeCompositionReceipt) :
+    TrackBProfileLipschitzControlObligation :=
+  R.continuationHandoff.profile_lipschitz
+
+/-- The GP216 initial datum is the one carried by the concrete continuation
+handoff, not a detached copy plus equality proof. -/
+```
+
+### def TrackBGeneratedLipschitzBlockProfileHandoffReady (in ns_low_high_profile_lipschitz_composition.lean, score=6 type_uses=1)
+```lean
+def TrackBGeneratedLipschitzBlockProfileHandoffReady
+    (O : TrackBProfileLipschitzControlObligation)
+    (u0 : SmoothNSInitialData)
+    (n : ℕ) : Prop :=
+  TrackBProfileLipschitzGeneratedBlockHandoffSourceReady O u0 n
+
+/-- The Track B profile/Lipschitz source receipts produce the stronger
+generated-block handoff package consumed by the composition layer. -/
+```
+
+### def trackBGeneratedLowFrequencyLipschitzAuditedCertificate (in ns_low_high_profile_lipschitz_composition.lean, score=6 type_uses=1)
+```lean
+def trackBGeneratedLowFrequencyLipschitzAuditedCertificate
+    (O : TrackBProfileLipschitzControlObligation)
+    (u0 : SmoothNSInitialData) :
+    LowFrequencyLipschitzAuditedControlCertificate
+      (trackBGeneratedLowFrequencyLipschitzLedger O u0) := by
+  unfold trackBGeneratedLowFrequencyLipschitzLedger
+  exact O.lipschitz_bridge.audited_certificate_of_evolution
+    (O.evolution_of_initial_data u0)
+
+/-- The legacy generated Lipschitz certificate is the forgetful projection of
+the audited certificate, so older low-high adapters cannot consume a detached
+continuation source. -/
+```
+
+### def trackBGeneratedLowFrequencyLipschitzCertificate (in ns_low_high_profile_lipschitz_composition.lean, score=6 type_uses=1)
+```lean
+def trackBGeneratedLowFrequencyLipschitzCertificate
+    (O : TrackBProfileLipschitzControlObligation)
+    (u0 : SmoothNSInitialData) :
+    LowFrequencyLipschitzControlCertificate
+      (trackBGeneratedLowFrequencyLipschitzLedger O u0) := by
+  unfold trackBGeneratedLowFrequencyLipschitzLedger
+  exact O.lipschitz_bridge.certificate_of_evolution
+    (O.evolution_of_initial_data u0)
+
+/-- The audited control certificate attached to the generated Lipschitz
+ledger.
+
+The legacy certificate above is retained for older adapters, but final closure
+routes should prefer this source-preserving certificate whenever they need the
+continuation/BKM guard provenance. -/
+```
+
+### def trackBGeneratedLowFrequencyLipschitzLedger (in ns_low_high_profile_lipschitz_composition.lean, score=6 type_uses=1)
+```lean
+def trackBGeneratedLowFrequencyLipschitzLedger
+    (O : TrackBProfileLipschitzControlObligation)
+    (u0 : SmoothNSInitialData) :
+    LowFrequencyLipschitzLedger :=
+  O.lipschitz_bridge.ledger_of_evolution
+    (O.evolution_of_initial_data u0)
+
+/-- The control certificate attached to the generated Lipschitz ledger. -/
+```
+
+### def TrackBProfileLipschitzGeneratedBlockHandoffSourceReady (in ns_profile_lipschitz_clay_bridge.lean, score=6 type_uses=1)
+```lean
+def TrackBProfileLipschitzGeneratedBlockHandoffSourceReady
+    (O : TrackBProfileLipschitzControlObligation)
+    (u0 : SmoothNSInitialData)
+    (n : ℕ) : Prop :=
+  let U := O.evolution_of_initial_data u0
+  let L := O.lipschitz_bridge.ledger_of_evolution U
+  let hglobal :=
+    (O.lipschitz_bridge.audited_certificate_of_evolution U).block_is_global n
+  TrackBProfileLipschitzGeneratedBlockSourceReady O u0 n ∧
+    TrackBProfileDecompositionThresholdHandoffSourceReady
+      O.profile_obligation.source_receipt
+      (L.block n)
+      hglobal
+
+/-- Existing source receipts produce the combined generated-block handoff
+package used by the no-survivor theorem. -/
+```
+
+### def TrackBProfileLipschitzGeneratedBlockSourceReady (in ns_profile_lipschitz_clay_bridge.lean, score=6 type_uses=1)
+```lean
+def TrackBProfileLipschitzGeneratedBlockSourceReady
+    (O : TrackBProfileLipschitzControlObligation)
+    (u0 : SmoothNSInitialData)
+    (n : ℕ) : Prop :=
+  let U := O.evolution_of_initial_data u0
+  let L := O.lipschitz_bridge.ledger_of_evolution U
+  let hglobal :=
+    (O.lipschitz_bridge.audited_certificate_of_evolution U).block_is_global n
+  O.source_coupling.generated_lipschitz_block_declared_before_profile_pricing
+      u0 n ∧
+    O.source_coupling.profile_family_applied_to_generated_lipschitz_block
+        u0 n ∧
+      O.source_coupling.no_posthoc_profile_lipschitz_block_substitution
+          u0 n ∧
+        TrackBProfileDecompositionBranchSourceReady
+          O.profile_obligation.source_receipt
+          (L.block n)
+          hglobal
+
+/-- The declared source coupling and the profile-decomposition source receipt
+make every generated Lipschitz block ready for non-tautological profil
+```
+
+# Resolved type constructors (full type body for type_head)
+
+### structure QuarticSurvivalAmplitudeProjectionReceipt (from ns_leray_gain_tax_trackb_obligation.lean)
+Fields:
+  - survival_observable_fixed_before_defect_scoring : Prop
+  - root_defect_ledger_same_as_survival_observable : Prop
+  - survival_observable_fixed_before_defect_scoring_proved : survival_observable_fixed_before_defect_scoring
+  - root_defect_ledger_same_as_survival_observable_proved : root_defect_ledger_same_as_survival_observable
+  - ampSq : Real
+  - gamma_nonnegative : 0 ≤ B.gamma
+  - amp_sq_nonnegative : 0 ≤ ampSq
+  - amp_sq_le_one : ampSq ≤ 1
+  - survival_profit_le_gain_at_amp : B.survivalProfit ≤ B.gamma * ampSq
+  - above_wall_amp_sq_le_threshold : sharpTarget < B.gamma →
+
+# Existing declarations that PRODUCE the target type
+
+### def GP216BridgeCompositionReceipt.branchQuarticSurvivalAmplitudeProjection (in ns_gp216_bridge_composition_receipt.lean, score=6 type_uses=1)
+```lean
+def GP216BridgeCompositionReceipt.branchQuarticSurvivalAmplitudeProjection
+    (R : GP216BridgeCompositionReceipt) :
+    QuarticSurvivalAmplitudeProjectionReceipt R.branchBlock := by
+  rw [R.branch_matches_profile_lipschitz_generated_block]
+  exact R.profileLipschitzObligation.generated_quartic_survival_amplitude_projection
+    (R.profileLipschitzObligation.evolution_of_initial_data
+      R.profileLipschitzInitialData)
+    R.profileLipschitzBranchIndex
+
+/-- The branch projection receipt is derived from the generated
+profile/Lipschitz amplitude receipt, not supplied as a free GP216 field. -/
+```
+
+### def quartic_survival_projection_family_of_amplitude_receipts (in ns_leray_gain_tax_trackb_obligation.lean, score=6 type_uses=1)
+```lean
+def quartic_survival_projection_family_of_amplitude_receipts
+    (R : ∀ B : FullLedgerBlock,
+      QuarticSurvivalAmplitudeProjectionReceipt B) :
+    ∀ B : FullLedgerBlock, QuarticSurvivalProjectionReceipt B :=
+  fun B => quartic_survival_projection_of_amplitude_receipt B (R B)
+
+/-- Amplitude-level survival projection supplies no-survivor from
+threshold-defect convexity without a black-box projection assumption. -/
+```
+
+### def quartic_survival_projection_of_amplitude_receipt (in ns_leray_gain_tax_trackb_obligation.lean, score=6 type_uses=1)
+```lean
+def quartic_survival_projection_of_amplitude_receipt
+    (B : FullLedgerBlock)
+    (R : QuarticSurvivalAmplitudeProjectionReceipt B) :
+    QuarticSurvivalProjectionReceipt B where
+  survival_observable_fixed_before_defect_scoring :=
+    R.survival_observable_fixed_before_defect_scoring
+  root_defect_ledger_same_as_survival_observable :=
+    R.root_defect_ledger_same_as_survival_observable
+  survival_observable_fixed_before_defect_scoring_proved :=
+    R.survival_observable_fixed_before_defect_scoring_proved
+  root_defect_ledger_same_as_survival_observable_proved :=
+    R.root_defect_ledger_same_as_survival_observable_proved
+  below_wall_profit_cap := by
+    intro hbelow
+    have hgain_le_gamma : B.gamma * R.ampSq ≤ B.gamma := by
+      exact mul_le_of_le_one_right R.gamma_nonnegative R.amp_sq_le_one
+    exact R.survival_profit_le_gain_at_amp.trans
+      (hgain_le_gamma.trans hbelow)
+  abo
+```
+
+### def generated_quartic_survival_projection_of_amplitude_receipts (in ns_profile_lipschitz_clay_bridge.lean, score=6 type_uses=1)
+```lean
+def generated_quartic_survival_projection_of_amplitude_receipts
+    (lipschitz_bridge : LowFrequencyLipschitzBridge)
+    (hamplitude :
+      ∀ (U : NSEvolution) (n : ℕ),
+        QuarticSurvivalAmplitudeProjectionReceipt
+          ((lipschitz_bridge.ledger_of_evolution U).block n)) :
+    ∀ (U : NSEvolution) (n : ℕ),
+      QuarticSurvivalProjectionReceipt
+        ((lipschitz_bridge.ledger_of_evolution U).block n) := by
+  intro U n
+  exact quartic_survival_projection_of_amplitude_receipt
+    ((lipschitz_bridge.ledger_of_evolution U).block n)
+    (hamplitude U n)
+
+/-- Projection-level generated-block receipt derived from the amplitude-level
+receipt carried by `TrackBProfileLipschitzControlObligation`.
+
+Existing downstream proofs consume the projection receipt through this method;
+new instantiations must supply the stronger amplitude receipt instead of a
+detached projection proof. -/
+```
+
+### def trackB_profile_lipschitz_control_obligation_of_amplitude_receipts (in ns_profile_lipschitz_clay_bridge.lean, score=6 type_uses=1)
+```lean
+def trackB_profile_lipschitz_control_obligation_of_amplitude_receipts
+    (evolution_of_initial_data : SmoothNSInitialData → NSEvolution)
+    (profile_bundle : TrackBProfileDecompositionBridgeBundle)
+    (lipschitz_bridge : LowFrequencyLipschitzBridge)
+    (source_coupling :
+      TrackBProfileLipschitzSourceCoupling
+        evolution_of_initial_data
+        (trackb_profile_decomposition_obligation_of_bridge_bundle
+          profile_bundle)
+        lipschitz_bridge)
+    (hamplitude :
+      ∀ (U : NSEvolution) (n : ℕ),
+        QuarticSurvivalAmplitudeProjectionReceipt
+          ((lipschitz_bridge.ledger_of_evolution U).block n)) :
+    TrackBProfileLipschitzControlObligation where
+  evolution_of_initial_data := evolution_of_initial_data
+  profile_bundle := profile_bundle
+  lipschitz_bridge := lipschitz_bridge
+  source_coupling := source_coupling
+  generated_quartic_survival_amplitude_proje
+```
+
+### def trackB_profile_lipschitz_control_obligation_of_profile_bridge_bundle_and_amplitude_receipts (in ns_profile_lipschitz_clay_bridge.lean, score=6 type_uses=1)
+```lean
+def trackB_profile_lipschitz_control_obligation_of_profile_bridge_bundle_and_amplitude_receipts
+    (evolution_of_initial_data : SmoothNSInitialData → NSEvolution)
+    (profile_bundle : TrackBProfileDecompositionBridgeBundle)
+    (lipschitz_bridge : LowFrequencyLipschitzBridge)
+    (source_coupling :
+      TrackBProfileLipschitzSourceCoupling
+        evolution_of_initial_data
+        (trackb_profile_decomposition_obligation_of_bridge_bundle
+          profile_bundle)
+        lipschitz_bridge)
+    (hamplitude :
+      ∀ (U : NSEvolution) (n : ℕ),
+        QuarticSurvivalAmplitudeProjectionReceipt
+          ((lipschitz_bridge.ledger_of_evolution U).block n)) :
+    TrackBProfileLipschitzControlObligation :=
+  trackB_profile_lipschitz_control_obligation_of_amplitude_receipts
+    evolution_of_initial_data
+    profile_bundle
+    lipschitz_bridge
+    source_coupling
+    hamplitude
+
+/-- Hostile fal
+```
+
+### theorem quartic_no_survivor_kernel_of_survival_projection (in ns_leray_gain_tax_trackb_obligation.lean, score=5 type_uses=2)
+```lean
+theorem quartic_no_survivor_kernel_of_survival_projection
+    (R : ∀ B : FullLedgerBlock, QuarticSurvivalProjectionReceipt B) :
+    ∀ B : FullLedgerBlock,
+      ThresholdDefectConvexity B → FullLedgerNoSurvivor B := by
+  intro B h
+  exact full_ledger_no_survivor_of_quartic_survival_projection B (R B) h
+
+/-- Amplitude-level survival projection receipt.
+
+This is the scalar mechanism behind the quartic survival projection: the
+candidate survivor has a predeclared amplitude square, its payoff is bounded by
+`gamma * ampSq`, and the above-wall/root-defect branch forces that amplitude
+under the Track B threshold `sharpTarget / gamma`.  The below-wall branch uses
+the normalized unit-amplitude cap. -/
+structure QuarticSurvivalAmplitudeProjectionReceipt
+    (B : FullLedgerBlock) where
+  survival_observable_fixed_before_defect_scoring : Prop
+  root_defect_ledger_same_as_survival_observable : Prop
+ 
+```
+
+### theorem full_ledger_no_survivor_of_quartic_survival_amplitude_projection (in ns_leray_gain_tax_trackb_obligation.lean, score=4 type_uses=1)
+```lean
+theorem full_ledger_no_survivor_of_quartic_survival_amplitude_projection
+    (B : FullLedgerBlock)
+    (R : QuarticSurvivalAmplitudeProjectionReceipt B)
+    (h : ThresholdDefectConvexity B) :
+    FullLedgerNoSurvivor B :=
+  full_ledger_no_survivor_of_quartic_survival_projection B
+    (quartic_survival_projection_of_amplitude_receipt B R)
+    h
+
+/-- Anti-tautology witness: threshold-defect convexity alone cannot imply the
+survival-profit cap while `survivalProfit` is an independent field.
+
+This blocks the common overclaim "we proved the defect, therefore the survivor
+is gone" unless a quartic survival projection receipt ties the survival
+observable to that same ledger. -/
+```
+
+### theorem no_quartic_survival_amplitude_projection_falsifier (in ns_leray_gain_tax_trackb_obligation.lean, score=4 type_uses=1)
+```lean
+theorem no_quartic_survival_amplitude_projection_falsifier
+    (B : FullLedgerBlock)
+    (R : QuarticSurvivalAmplitudeProjectionReceipt B)
+    (F : QuarticSurvivalAmplitudeProjectionFalsifier B R) :
+    False := by
+  cases F with
+  | survivalObservable h =>
+      exact h R.survival_observable_fixed_before_defect_scoring_proved
+  | sameLedger h =>
+      exact h R.root_defect_ledger_same_as_survival_observable_proved
+  | gammaNegative h =>
+      exact h R.gamma_nonnegative
+  | ampSqNegative h =>
+      exact h R.amp_sq_nonnegative
+  | ampSqAboveOne h =>
+      exact not_lt_of_ge R.amp_sq_le_one h
+  | survivalProfitAboveGainAtAmp h =>
+      exact not_lt_of_ge R.survival_profit_le_gain_at_amp h
+  | aboveWallAmpThresholdFailure hgt hdefect h =>
+      exact not_lt_of_ge
+        (R.above_wall_amp_sq_le_threshold hgt hdefect)
+        h
+
+/-- The amplitude-level receipt instantiates the structured s
+```
+
+### theorem no_quartic_survival_amplitude_projection_for_unlinked_counterexample (in ns_leray_gain_tax_trackb_obligation.lean, score=4 type_uses=1)
+```lean
+theorem no_quartic_survival_amplitude_projection_for_unlinked_counterexample :
+    ¬ Nonempty
+      (QuarticSurvivalAmplitudeProjectionReceipt
+        thresholdDefectButSurvivalProfitUnlinkedLedger) := by
+  intro hR
+  rcases hR with ⟨R⟩
+  exact threshold_defect_but_survival_profit_unlinked_not_no_survivor
+    (full_ledger_no_survivor_of_quartic_survival_amplitude_projection
+      thresholdDefectButSurvivalProfitUnlinkedLedger
+      R
+      threshold_defect_but_survival_profit_unlinked_has_threshold_defect)
+
+/-- A dual state-pricing certificate for the exact Track B ledger.
+
+This is the no-arbitrage form of the remaining analytic burden: every
+admissible Leray state is priced by a positive certificate before it can be
+used as a blowup trade. The certificate must control the exact quartic defect,
+not merely compare polynomial degrees. -/
+structure DualStatePriceKernel where
+  positive : Pr
+```
+
+# Theorems that USE this field as a term (top-6 by uses count)
+
+### quartic_no_survivor_kernel_of_survival_projection (in ns_leray_gain_tax_trackb_obligation.lean, score=4 field_uses=0 type_uses=2)
+```lean
+theorem quartic_no_survivor_kernel_of_survival_projection
+    (R : ∀ B : FullLedgerBlock, QuarticSurvivalProjectionReceipt B) :
+    ∀ B : FullLedgerBlock,
+      ThresholdDefectConvexity B → FullLedgerNoSurvivor B := by
+  intro B h
+  exact full_ledger_no_survivor_of_quartic_survival_projection B (R B) h
+
+/-- Amplitude-level survival projection receipt.
+
+This is the scalar mechanism behind the quartic survival projection: the
+candidate survivor has a predeclared amplitude square, its payoff is bou
+```
+
+### no_quartic_survival_amplitude_projection_falsifier (in ns_leray_gain_tax_trackb_obligation.lean, score=4 field_uses=0 type_uses=2)
+```lean
+theorem no_quartic_survival_amplitude_projection_falsifier
+    (B : FullLedgerBlock)
+    (R : QuarticSurvivalAmplitudeProjectionReceipt B)
+    (F : QuarticSurvivalAmplitudeProjectionFalsifier B R) :
+    False := by
+  cases F with
+  | survivalObservable h =>
+      exact h R.survival_observable_fixed_before_defect_scoring_proved
+  | sameLedger h =>
+      exact h R.root_defect_ledger_same_as_survival_observable_proved
+  | gammaNegative h =>
+      exact h R.gamma_nonnegative
+  | ampSqNegative h =>
+```
+
+### generated_lipschitz_above_wall_defect_profit_cap (in ns_profile_lipschitz_clay_bridge.lean, score=3 field_uses=1 type_uses=1)
+```lean
+theorem generated_lipschitz_above_wall_defect_profit_cap
+    (O : TrackBProfileLipschitzControlObligation)
+    (U : NSEvolution) (n : ℕ)
+    (hgt :
+      sharpTarget <
+        ((O.lipschitz_bridge.ledger_of_evolution U).block n).gamma)
+    (hdefect :
+      1 ≤ survivalDefect
+        ((O.lipschitz_bridge.ledger_of_evolution U).block n)
+        (Real.sqrt
+          (sharpTarget /
+            ((O.lipschitz_bridge.ledger_of_evolution U).block n).gamma))) :
+    ((O.lipschitz_bridge.ledger_of_evolutio
+```
+
+### full_ledger_no_survivor_of_quartic_survival_amplitude_projection (in ns_leray_gain_tax_trackb_obligation.lean, score=2 field_uses=0 type_uses=1)
+```lean
+theorem full_ledger_no_survivor_of_quartic_survival_amplitude_projection
+    (B : FullLedgerBlock)
+    (R : QuarticSurvivalAmplitudeProjectionReceipt B)
+    (h : ThresholdDefectConvexity B) :
+    FullLedgerNoSurvivor B :=
+  full_ledger_no_survivor_of_quartic_survival_projection B
+    (quartic_survival_projection_of_amplitude_receipt B R)
+    h
+
+/-- Anti-tautology witness: threshold-defect convexity alone cannot imply the
+survival-profit cap while `survivalProfit` is an independent field.
+
+This b
+```
+
+### no_quartic_survival_amplitude_projection_for_unlinked_counterexample (in ns_leray_gain_tax_trackb_obligation.lean, score=2 field_uses=0 type_uses=1)
+```lean
+theorem no_quartic_survival_amplitude_projection_for_unlinked_counterexample :
+    ¬ Nonempty
+      (QuarticSurvivalAmplitudeProjectionReceipt
+        thresholdDefectButSurvivalProfitUnlinkedLedger) := by
+  intro hR
+  rcases hR with ⟨R⟩
+  exact threshold_defect_but_survival_profit_unlinked_not_no_survivor
+    (full_ledger_no_survivor_of_quartic_survival_amplitude_projection
+      thresholdDefectButSurvivalProfitUnlinkedLedger
+      R
+      threshold_defect_but_survival_profit_unlinked_has_thresh
+```
+
+### generated_lipschitz_block_no_survivor_of_profile_lipschitz_source (in ns_profile_lipschitz_clay_bridge.lean, score=1 field_uses=1 type_uses=0)
+```lean
+theorem generated_lipschitz_block_no_survivor_of_profile_lipschitz_source
+    (O : TrackBProfileLipschitzControlObligation)
+    (u0 : SmoothNSInitialData)
+    (n : ℕ) :
+    FullLedgerNoSurvivor
+      ((O.lipschitz_bridge.ledger_of_evolution
+        (O.evolution_of_initial_data u0)).block n) := by
+  let U := O.evolution_of_initial_data u0
+  let L := O.lipschitz_bridge.ledger_of_evolution U
+  let B := L.block n
+  have hhandoff_source :
+      TrackBProfileLipschitzGeneratedBlockHandoffSourceReady O
+```
+
+# Patch class you MUST use
+
+INSTANCE WITH EVIDENCE
+
+You will produce a `def` (or `noncomputable def`) that constructs an
+INSTANCE of the target structure type, supplying explicit evidence for
+each field. The shape is:
+
+```lean
+noncomputable def <target>_instance_<scenario>
+    (<typed_assumptions>) : <TargetStructure> :=
+{ field1 := <existing_decl_or_proof_of_field1_type>,
+  field2 := <existing_decl_or_proof_of_field2_type>,
+  ... }
+```
+
+Constraints:
+- Every field's value MUST be either an existing declaration in the
+  resolved set OR an inline construction using only resolved decls.
+- Every typed assumption MUST cite an existing structure or hypothesis
+  type from the resolved set.
+- This patch type is appropriate when the target obligation is itself a
+  structure that needs to be INSTANTIATED, not derived as an inequality.
+  Example: `TrackBProfileLipschitzControlObligation` requires building
+  the obligation as an instance with field-evidence, not bounding it
+  from another quantity.
+
+If the resolved set lacks a field's evidence (e.g. no construction of
+`QuarticSurvivalProjectionReceipt` is available), output `# CANNOT PATCH`
+and name the missing constructor explicitly.
+
+# Strict constraints
+
+- Only reference identifiers in the resolved target-structure,
+  constructor, type-producer, and using-theorem set above.
+- Do NOT invent names. Do NOT use sorry/admit/axiom/native_decide.
+- Do NOT repeat an existing top-level declaration name.
+- Do NOT return a decorative negation wrapper of the form
+  `theorem no_X (...)(h : ¬ existing_positive_endpoint) : False := h (...)`;
+  it is compiler-green but not endpoint progress.
+- Return a COMPLETE Lean file. Include the needed `import ZtareProofs.<module>`
+  lines and wrap declarations in `namespace ZtareProofs.NS ... end ZtareProofs.NS`
+  whenever using NS spine declarations.
+- Output ONE Lean file in a single ```lean fenced block.
+- If the constraints make the patch impossible (e.g. no usable existing
+  bound for the transitivity adapter), output `# CANNOT PATCH` followed
+  by a one-paragraph specification of the missing analytic inequality
+  or constructor that would be needed.
+
+Return your patch in a single ```lean fenced block, OR output `# CANNOT PATCH` with the diagnosis.
+
+# Important: produce 4 MAXIMALLY DIFFERENT candidates
+
+The apparatus runs all candidates in parallel through lake-build. Diversity
+across candidates is what gives this approach its leverage. So:
+
+  - Each candidate should explore a DIFFERENT structural approach
+    (e.g. one transitivity-style, one direct-construction, one falsifier-style)
+  - Vary the choice of intermediate quantities / hypotheses
+  - Vary the proof strategy (`exact`, `apply`, `refine`, ...)
+
+Output exactly 4 Lean blocks, each in its own ```lean fenced block,
+separated by blank lines. Do NOT output prose between them. Do NOT add
+"# CANNOT PATCH" — even if uncertain, attempt 4 different angles.

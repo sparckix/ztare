@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 15.0,
+  "artifact_hash": "1d9702c8977c4240da28329244f4ca6d76a773d2e5fdb6fd29e213f445ed13bf",
+  "artifact_path": "analytics/public/leanmill/results/v2055_source_safe_charfun_dual_one_row_replay.json",
+  "changed_by_forecast_ids": [
+    "Curry3",
+    "Euclid2"
+  ],
+  "compile_status": "replay_compiled_auxiliary_pull_forward_only",
+  "contract_id": "gp225_v2055_source_safe_charfun_dual_one_row_replay",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "compile_signal",
+    "anti_goodhart",
+    "strict_adjudication_gap"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no_strict_label",
+    "gold_multiline_capture_gap"
+  ],
+  "new_next_action": "repair strict adjudication for multiline gold target before any label promotion",
+  "old_next_action": "keep charFunDual at static packet stage",
+  "preconditioner_effect": "Limited replay to source-safe one-row packet with target-copy guards.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+  "realized_failure_mode_ids": [
+    "gold_multiline_capture_incomplete"
+  ],
+  "resolution_note": "v20.55 replay ran one row/two candidates: 2/2 compiled, 0 strict same-target under current bridge adjudicator, 2 auxiliary pull-forwards, 0 harmful mismatches, no training, GNN blocked. Contract objective was at least one compiled candidate with zero harmful mismatches, so resolved true; strict-label promotion remains blocked by gold multiline capture/adjudication.",
+  "resolved_at": "2026-05-14T18:06:26Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

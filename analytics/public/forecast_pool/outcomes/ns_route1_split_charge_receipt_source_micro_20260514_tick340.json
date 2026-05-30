@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 42.0,
+  "artifact_hash": "46b04fe97ddef51f9d783176a23fb73596d9edc8ae5f50f47d6cd47ed545d18a",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "compile_status": "pass",
+  "contract_id": "ns_route1_split_charge_receipt_source_micro_20260514_tick340",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Added FixedWindowPreSummedStressMassSplitReceiptSource: resolved mean-free weighted stress <= localQuadraticReceipt, Galilean mean <= pressureReserveReceipt, frequency leakage <= childChargeReceipt; constructor proves pressureRieszConeCharge <= receiptSum and feeds FixedWindowOverflowVisibleOrInvisibleProfile. File Lean and downstream fresh-frequency adapter build passed; no new sorry/admit in touched surfaces.",
+  "resolved_at": "2026-05-14T03:38:05Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

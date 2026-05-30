@@ -1,0 +1,22 @@
+{
+  "agent_id": "confucius",
+  "contract_id": "gp225_v1919_external_baseline_bootstrap",
+  "contract_question": "Will GP-225 external baseline bootstrap clone/inspect LeanHammer and ReProver plus prepare a safe install/run plan without mutating the Lean project or launching heavy training?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_heavy_install_training_or_repo_lean_mutation": 0.125,
+    "artifact_schema_missing_resolver_metrics": 0.125,
+    "benchmark_mapping_bottleneck_not_named_from_v1918_exact_coverage_zero": 0.25,
+    "install_plan_too_vague_or_missing_second_adapter": 0.33333333333333337,
+    "repo_clone_or_presence_count_below_threshold_due_to_path_or_git_issue": 0.16666666666666669
+  },
+  "forecasted_at": "2026-05-13T22:14:12Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.06,
+  "p_success": 0.88,
+  "rationale_short": "External repos are cloned/present and v19.18 names exact coverage 0.0 as the bottleneck; remaining risk is artifact discipline and safe install/run plans.",
+  "read_only_attestation": true
+}

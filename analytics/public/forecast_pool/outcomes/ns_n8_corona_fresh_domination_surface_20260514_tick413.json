@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 31.0,
+  "artifact_hash": "049e2a5089e17bb3124d9cb8eedd4ed4beebbb0892f6e142f7d5114be4c069f3",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_n8_corona_fresh_domination_surface_20260514_tick413",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "corona-telescoping",
+    "component-estimate-isolation",
+    "anti-tautology"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "fresh-domination-unproved",
+    "component-estimates-unsourced",
+    "compression-not-closure"
+  ],
+  "new_next_action": "Prove componentwise TriCarrierFreshDomination: radius, pre-summed pressure visibility, beta incidence, route schedule, finite residual",
+  "old_next_action": "Attack raw tri-carrier drop",
+  "preconditioner_effect": "Separated corona geometry/telescoping from local fresh-domination component estimates",
+  "preconditioner_source": "GPT-5.5 corona-potential correction plus RD anti-tautology audit",
+  "realized_failure_mode_ids": [
+    "component_estimates_are_the_real_theorem",
+    "component_estimates_unsourced"
+  ],
+  "resolution_note": "Added compiling corrected corona surfaces: TriCarrierFreshDomination, TriCarrierCoronaPotential, TriCarrierCoronaPotentialFromFreshDomination, CriticalIncrementClosedFromTriCarrierCorona, and TriCarrierCoronaDoesNotProveFreshDomination. The edit replaces raw node-value drop with fixed corona measure/tent/fresh-region telescoping and keeps component estimates as unproved local PDE/GMT obligations.",
+  "resolved_at": "2026-05-14T20:25:18Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

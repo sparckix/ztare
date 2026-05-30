@@ -1,0 +1,86 @@
+{
+  "contract_id": "gp225_v2079_union_training_readiness_gate_after_slope_heldout_strict",
+  "forecast_history_count": 2,
+  "mean_brier": 0.018250000000000002,
+  "mean_log_score": -0.14504247853404567,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "c656dc16511060192623d6022e5a2561e9566af808c15d64862d013087daf84e",
+    "artifact_path": "analytics/public/leanmill/results/v2079_union_training_readiness_gate_after_slope_heldout_strict.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": "gate_passed",
+    "contract_id": "gp225_v2079_union_training_readiness_gate_after_slope_heldout_strict",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "meso_only_forecast",
+      "heldout_strict_yield",
+      "null_baseline_allowed",
+      "anti_goodhart"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "negative_externality_tags": [],
+    "new_next_action": "v2080_null_baseline_split_and_leakage_dry_run_after_slope_heldout_strict",
+    "old_next_action": "full training remains blocked after manifest refresh",
+    "preconditioner_effect": "v20.77/v20.78 closed the heldout-content blocker but exposed the baseline/model-delta blocker.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2078_manifest_after_slope_heldout_strict_replay.json",
+    "realized_failure_mode_ids": [
+      "baseline_model_delta_evidence_missing_for_full_training"
+    ],
+    "resolution_note": "v20.79 passed as a read-only gate: full GNN/cross-encoder training remains blocked, but a null/baseline split and leakage dry-run is now allowed as the next evidence-generating artifact.",
+    "resolved_at": "2026-05-14T20:02:37Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T20:02:37Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Franklin",
+      "brier": 0.019600000000000003,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.22,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true
+      },
+      "log_score": -0.15082288973458366,
+      "p_success": 0.86,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:58:40Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:59:10Z",
+        "resolved_at": "2026-05-14T20:02:37Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Noether",
+      "brier": 0.016900000000000002,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "lean_gnn_harness",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.24,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true
+      },
+      "log_score": -0.13926206733350766,
+      "p_success": 0.87,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:58:40Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:59:24Z",
+        "resolved_at": "2026-05-14T20:02:37Z"
+      }
+    }
+  ]
+}

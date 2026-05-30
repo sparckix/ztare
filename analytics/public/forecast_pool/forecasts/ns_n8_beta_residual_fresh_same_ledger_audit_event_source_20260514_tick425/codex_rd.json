@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "Proceed; this is a small corrective surface from sidecar feedback.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_n8_beta_residual_fresh_same_ledger_audit_event_source_20260514_tick425",
+  "contract_question": "Will tick425 add a compiling smaller Lean source surface for residual fresh excess producing a same-ledger audit event, below CoherentFreshPacketAuditResidualRoutingSource and without claiming full beta source split?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "guard_only_no_projection": 0.15,
+    "logging_gap": 0.1,
+    "overclaim": 0.15,
+    "redundant_with_tick423": 0.22,
+    "signature_mismatch": 0.18,
+    "too_strong_fields_smuggled": 0.2
+  },
+  "forecast_externality_tags": [
+    "ns_n8_beta",
+    "audit_event_source",
+    "sidecar_feedback",
+    "anti_overclaim"
+  ],
+  "forecasted_at": "2026-05-14T22:36:10Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.1,
+  "p_success": 0.74,
+  "rationale_short": "Arendt identified a smaller missing source below the strong routing object. The patch is likely additive and compile-safe if it only projects down from tick423.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "redundant_with_tick423",
+    "signature_mismatch",
+    "too_strong_fields_smuggled",
+    "guard_only_no_projection",
+    "logging_gap",
+    "overclaim"
+  ]
+}

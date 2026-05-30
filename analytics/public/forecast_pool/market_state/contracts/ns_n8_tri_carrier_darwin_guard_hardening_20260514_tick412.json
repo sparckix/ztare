@@ -1,0 +1,209 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T20:20:53Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 23.0,
+    "expected_value": -0.6179529338675787,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.29000000000000004,
+    "p_needs_new_lemma": 0.39999999999999997,
+    "p_regression": 0.085,
+    "p_success": 0.7151470816638176,
+    "participants": [
+      {
+        "agent_id": "codex-meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns-proof-falsification",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412/codex_meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T20:20:53Z",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex-rd-main",
+        "belief_update": false,
+        "domain": "ns-n8-proof-frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412/codex_rd_main.json",
+        "forecasted_at": "2026-05-14T20:20:53Z",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.225
+      },
+      {
+        "mode": "too_many_wrappers",
+        "p": 0.15
+      },
+      {
+        "mode": "darwin_report_not_fully_captured",
+        "p": 0.125
+      },
+      {
+        "mode": "fourth_carrier_still_not_named",
+        "p": 0.125
+      },
+      {
+        "mode": "guards_become_tautology_themselves",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T20:20:37Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles, no sorry/admit is introduced, and the added surfaces explicitly keep TriCarrierCriticalIncrementDrop as guarded target rather than closure.",
+    "question": "Will the Darwin follow-up tick add compiling Lean guard surfaces for fourth-carrier exclusion, tri-carrier supermartingale, radius lower bound, pressure visibility, and beta cofinality without claiming N8 closure?",
+    "success_threshold": "Lean compile plus no-sorry scan plus five Darwin guard surfaces",
+    "task_type": "ns-proof-frontier-guard-hardening"
+  },
+  "contract_id": "ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd-main"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex-meta-darwin-proxy",
+        "raw_agent_ids": [
+          "codex-meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-meta-darwin-proxy",
+      "codex-rd-main"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "proceed_only_as_guard",
+        "agent_id": "codex-meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412/codex_meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns-proof-falsification",
+        "expected_cost_agent_minutes": 26.0,
+        "forecasted_at": "2026-05-14T20:20:53Z",
+        "p_success": 0.64,
+        "rationale_short": "Good as anti-overclaim hygiene, but it will mostly record missing hypotheses. Do not treat success as PDE yield.",
+        "specific_failure_mode_ids": [
+          "guards_become_tautology_themselves",
+          "fourth_carrier_still_not_named",
+          "supermartingale_gate_too_abstract",
+          "lean_compile_issue"
+        ]
+      },
+      {
+        "action_change_recommendation": "proceed_minimal",
+        "agent_id": "codex-rd-main",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412/codex_rd_main.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns-n8-proof-frontier",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T20:20:53Z",
+        "p_success": 0.78,
+        "rationale_short": "Small Lean guard edit should compile; main risk is more surfaces without mathematical progress, so keep it minimal and explicitly non-closure.",
+        "specific_failure_mode_ids": [
+          "lean_compile_issue",
+          "guards_duplicate_existing_surfaces",
+          "too_many_wrappers",
+          "darwin_report_not_fully_captured"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T20:22:13Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 23.0,
+      "expected_value": -0.6179529338675787,
+      "p_success": 0.7151470816638176,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.6537
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 23.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7151470816638176,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.225
+      },
+      {
+        "mode": "too_many_wrappers",
+        "p": 0.15
+      },
+      {
+        "mode": "darwin_report_not_fully_captured",
+        "p": 0.125
+      },
+      {
+        "mode": "fourth_carrier_still_not_named",
+        "p": 0.125
+      },
+      {
+        "mode": "guards_become_tautology_themselves",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.089,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T20:22:29Z"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json",
+    "contract": "analytics/public/forecast_pool/contracts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c",
+    "outcome": "analytics/public/forecast_pool/outcomes/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json",
+    "score": "analytics/public/forecast_pool/scores/re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 40.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "re_verifying_the_12_row_a_corpus_verbatim_through_the_canonical_pinned_v4_29_0_carleson_sandbox_will_the_genuine_novel_c",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T19:59:14Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1053,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "a_corpus_canonical_reverify",
+    "score": 0.1053,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1053,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1053,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0571,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0571,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0263,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.0263,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0222,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.0222,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.02,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.02,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "gp233_adversary_yield_decomp.py --result /tmp/adv_verify_A2/result.txt vs prior 5/4/3",
+  "question": "Re-verifying the 12-row A-corpus VERBATIM through the canonical pinned v4.29.0 carleson sandbox: will the genuine-novel-closure count be within +/-2 of the original (5) AND false_ratifications=0 (i.e. provenance defect was routing-only, original yield structurally reproduces)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "a_corpus_canonical_reverify",
+  "value_if_success": 0.7,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

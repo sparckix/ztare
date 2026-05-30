@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 542,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level541 finite support is still an abstract Set Nat predicate",
+    "check": "replace the support predicate with a concrete Finset Nat fiber and membership iff"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level542_finset_event_preimage_fiber_max_last_hit_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level542_finite_image_support_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level542_finset_event_preimage_fiber_max_last_hit"
+  },
+  "anti_pattern_guards": [
+    "no abstract support predicate without Finset carrier",
+    "no one-way membership label",
+    "no post-payoff fiber pruning",
+    "no Level541 source assumption"
+  ],
+  "positive_forecast": "If Finset membership is equivalent to displayed eventToBadNode preimage membership, Level541 support transport follows by Iff.mp/Iff.mpr."
+}

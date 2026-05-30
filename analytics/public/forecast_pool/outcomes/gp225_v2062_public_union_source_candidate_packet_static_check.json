@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 19.0,
+  "artifact_hash": "04b8d8a2caba94285eebd39b0bf46ebe07e08279bc113c3fc87c299556dd6e2a",
+  "artifact_path": "analytics/public/leanmill/results/v2062_public_union_source_candidate_packet_static_check.json",
+  "changed_by_forecast_ids": [
+    "Noether3",
+    "Hilbert3"
+  ],
+  "compile_status": "static_candidate_packet_passed",
+  "contract_id": "gp225_v2062_public_union_source_candidate_packet_static_check",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "candidate_content_delta",
+    "source_discovery",
+    "anti_goodhart"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "static_only",
+    "replay_blockers_present"
+  ],
+  "new_next_action": "price bounded canary replay with replay blockers as preconditions",
+  "old_next_action": "reuse v20.44 loose candidate packet or stop at queue",
+  "preconditioner_effect": "Excluded solved charFun row and constrained v20.62 to unsolved source-content rows.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "v20.62 passed: four unsolved v20.61 rows, eight candidate actions, eight strict static-passed actions, three replay blockers recorded, no replay/training, GNN blocked.",
+  "resolved_at": "2026-05-14T18:37:53Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,203 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:05:14Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 15.0,
+    "expected_value": -1.5384804729186015,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.125,
+    "p_needs_new_lemma": 0.09,
+    "p_regression": 0.065,
+    "p_success": 0.3895821974620858,
+    "participants": [
+      {
+        "agent_id": "Curry3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_lean_replay",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2055_source_safe_charfun_dual_one_row_replay/curry3.json",
+        "forecasted_at": "2026-05-14T18:05:14Z",
+        "p_success": 0.42,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Euclid2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_lean_replay",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2055_source_safe_charfun_dual_one_row_replay/euclid2.json",
+        "forecasted_at": "2026-05-14T18:05:04Z",
+        "p_success": 0.36,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "normalizer_tactic_elaboration_fails",
+        "p": 0.375
+      },
+      {
+        "mode": "typed_context_missing_notation_or_instance",
+        "p": 0.255
+      },
+      {
+        "mode": "bridge_multiline_format_issue",
+        "p": 0.22
+      },
+      {
+        "mode": "candidate_closes_wrong_shape",
+        "p": 0.15000000000000002
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2055_source_safe_charfun_dual_one_row_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2055_source_safe_charfun_dual_one_row_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2055_source_safe_charfun_dual_one_row_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2055_source_safe_charfun_dual_one_row_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2055_source_safe_charfun_dual_one_row_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:05:04Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2055_source_safe_charfun_dual_one_row_replay.json exists, replay_run=true, attempted_candidate_rows>=1, compiled_candidate_actions>=1, harmful_compiled_mismatch_actions=0, training_now=false, gnn_blocked=true. Resolve false if replay runs but compiled_candidate_actions=0 or harmful_compiled_mismatch_actions>0. Void only if replay cannot launch for infrastructure reasons.",
+    "question": "Will v20.55 replay the v20.54 source-safe charFunDual one-row packet and produce at least one compiled candidate with zero harmful mismatches?",
+    "success_threshold": "1.0",
+    "task_type": "pre_gnn_lean_replay"
+  },
+  "contract_id": "gp225_v2055_source_safe_charfun_dual_one_row_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Curry3",
+        "raw_agent_ids": [
+          "Curry3"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Euclid2",
+        "raw_agent_ids": [
+          "Euclid2"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Curry3",
+      "Euclid2"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run one-row replay because packet is source-safe and cheap; score false if zero compile.",
+        "agent_id": "Curry3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2055_source_safe_charfun_dual_one_row_replay/curry3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_lean_replay",
+        "expected_cost_agent_minutes": 14.0,
+        "forecasted_at": "2026-05-14T18:05:14Z",
+        "p_success": 0.42,
+        "rationale_short": "The proof shape is close to Mathlib's theorem but intentionally not a copied full rw line; two multiline candidates may still hit elaboration or bridge formatting.",
+        "specific_failure_mode_ids": [
+          "normalizer_tactic_elaboration_fails",
+          "bridge_multiline_format_issue"
+        ]
+      },
+      {
+        "action_change_recommendation": "Run only the one-row canary; do not train regardless of outcome.",
+        "agent_id": "Euclid2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2055_source_safe_charfun_dual_one_row_replay/euclid2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_lean_replay",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T18:05:04Z",
+        "p_success": 0.36,
+        "rationale_short": "Source-safety is now clean, but the local replay context may not elaborate notation and normalizers exactly as packet text expects.",
+        "specific_failure_mode_ids": [
+          "normalizer_tactic_elaboration_fails",
+          "typed_context_missing_notation_or_instance"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 15.0,
+    "changed_by_forecast_ids": [
+      "Curry3",
+      "Euclid2"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:06:26Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.06,
+      "p_success": 0.3895821974620858,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "normalizer_tactic_elaboration_fails",
+        "p": 0.375
+      },
+      "voi_proxy": 0.7178
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 15.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3895821974620858,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "normalizer_tactic_elaboration_fails",
+        "p": 0.375
+      },
+      {
+        "mode": "typed_context_missing_notation_or_instance",
+        "p": 0.255
+      },
+      {
+        "mode": "bridge_multiline_format_issue",
+        "p": 0.22
+      },
+      {
+        "mode": "candidate_closes_wrong_shape",
+        "p": 0.15000000000000002
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.37300000000000005,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:06:30Z"
+  }
+}

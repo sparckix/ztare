@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Use the gate output only if it forces a sharper fifth-channel or event-section source target; otherwise skip logging beyond forecast resolution.",
+  "agent_id": "codex_rd_pde_skeptic",
+  "contract_id": "ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+  "contract_question": "Can the next NS tick use the GP-216/219 language gates on the compiled lineage-reservoir surface to sharpen the next route-1 action: prove event-section/Duhamel reservoir source vs promote recurrent reuse as fifth channel?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 26.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_section_source_not_found": 0.15,
+    "gate_no_decision_delta": 0.42,
+    "input_too_synthetic": 0.16,
+    "lean_type_mismatch": 0.09,
+    "recurrent_reuse_channel_underdescribed": 0.18
+  },
+  "forecast_externality_tags": [
+    "no_go_hygiene",
+    "gate_value_test"
+  ],
+  "forecasted_at": "2026-05-14T15:29:11Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.08,
+  "p_success": 0.58,
+  "rationale_short": "High chance the gate repeats tick389 rather than changing the theorem. The useful outcome is a crisp residual report that says to stop gate work and go back to PDE source/falsifier.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "gate_no_decision_delta",
+    "recurrent_reuse_channel_underdescribed",
+    "event_section_source_not_found"
+  ]
+}

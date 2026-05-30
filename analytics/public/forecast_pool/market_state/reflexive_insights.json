@@ -1,0 +1,884 @@
+{
+  "counts": {
+    "aggregate_contracts": 326,
+    "contracts": 368,
+    "decision_use_rows": 2,
+    "forecast_update_files": 11,
+    "score_rows": 594,
+    "thin_independence_contracts": 65
+  },
+  "effective_independence": {
+    "contracts_with_forecasts": 343,
+    "effective_n_bins": {
+      "1": 65,
+      "2": 262,
+      "3": 14,
+      "4": 2
+    },
+    "thin_independence_contract_count": 65,
+    "thin_independence_contracts_sample": [
+      {
+        "contract_id": "automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "research_director_claude_opus_4_7"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "eg_v51_v52_hard_discriminators_meso_20260520",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "legacy_or_named_agent:codex:RD",
+            "raw_agent_ids": [
+              "codex:RD"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "gp225_v1752_guarded_probe_micro_batch",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "legacy_or_named_agent:codex_rd_micro_pricer",
+            "raw_agent_ids": [
+              "codex_rd_micro_pricer"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "gp225_v1753_prefix_aware_replay_micro_batch",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "legacy_or_named_agent:codex_rd_micro_pricer",
+            "raw_agent_ids": [
+              "codex_rd_micro_pricer"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "gp225_v1872_next_remaining_witness_pilot",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "legacy_or_named_agent:codex_local_rd_v1872",
+            "raw_agent_ids": [
+              "codex_local_rd_v1872"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "gp225_v1874_remaining_8_witness_backfill",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "legacy_or_named_agent:codex_local_rd_v1874",
+            "raw_agent_ids": [
+              "codex_local_rd_v1874"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude",
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 2
+      },
+      {
+        "contract_id": "gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude",
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 2
+      },
+      {
+        "contract_id": "gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude",
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 2
+      },
+      {
+        "contract_id": "gp225_v2600_leanhammer_baseline_on_12_open_rows_meso",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude",
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 2
+      },
+      {
+        "contract_id": "gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude",
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 2
+      },
+      {
+        "contract_id": "gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "gp230_ns_clay_route_selection_meso_20260515",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "ns_route1_Lsummable_caloric_absorption_micro_20260516_tick593",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:claude",
+            "raw_agent_ids": [
+              "claude_rd"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:codex",
+            "raw_agent_ids": [
+              "codex"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:codex",
+            "raw_agent_ids": [
+              "codex"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "ns_route1_birkhoff_R2_summable_tangential_meso_20260516_tick571",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:codex",
+            "raw_agent_ids": [
+              "codex"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "independent_agent_family:codex",
+            "raw_agent_ids": [
+              "codex"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      },
+      {
+        "contract_id": "ns_route1_channel_producer_pde_leg_micro",
+        "effective_n": 1,
+        "independence_groups": [
+          {
+            "group": "legacy_or_named_agent:codex_rd_ns_route1_channel_producer",
+            "raw_agent_ids": [
+              "codex_rd_ns_route1_channel_producer"
+            ]
+          }
+        ],
+        "latest_forecast_count": 1
+      }
+    ]
+  },
+  "forecast_update_health": {
+    "forecast_update_files": 11,
+    "note": "Belief updates should be evidence-driven. A zero update count is acceptable only when no material evidence arrived before resolution.",
+    "open_contracts_with_prior_forecast": 31,
+    "open_contracts_with_prior_forecast_samples": [
+      "gp225_gnn_ready_macro_20260513_v1945",
+      "gp225_v1844_macro_harness_solver_detour",
+      "gp225_v1866_current_toolchain_witness_backfill_pilot",
+      "gp225_v1919_mixed_density_replay_gate",
+      "gp225_v1963_bundled_typed_feedback_deterministic_scale",
+      "gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate",
+      "ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514",
+      "ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562",
+      "ns_route1_clay_adjacency_10tick_macro_20260514_tick321",
+      "ns_route1_clay_adjacency_macro_20260513_tick294",
+      "ns_route1_clay_adjacency_macro_20260513_tick302",
+      "ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397",
+      "ns_route1_clay_proof_adjacency_macro_20260513_tick315",
+      "ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560",
+      "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+      "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+      "tick668_level500_bounded_event_index_selector_source",
+      "tick668_level501_least_hit_incidence_selector_source",
+      "tick668_level502_pde_bounded_incidence_collision_source",
+      "tick668_level503_no_reuse_collision_free_incidence_source"
+    ]
+  },
+  "generated_at": "2026-05-27T08:40:51Z",
+  "insight_count": 8,
+  "insights": [
+    {
+      "evidence": {
+        "preconditioner_used_contracts": 86,
+        "samples": [
+          {
+            "changed_by_forecast_ids": [
+              "gp230_lovelace_gp225_v2030",
+              "gp230_parfit_gp225_v2030"
+            ],
+            "contract_id": "gp225_v2030_corrected_scope_reprover_candidate_generation",
+            "preconditioner_effect": "Blocked literal remaining-scope route and excluded current_scale_0256/current_scale_0298 before generation.",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2030_corrected_scope_reprover_candidate_generation.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "gp230_erdos_gp225_v2031",
+              "gp230_maxwell_gp225_v2031"
+            ],
+            "contract_id": "gp225_v2031_corrected_scope_reprover_replay",
+            "preconditioner_effect": "Avoided a false under-attempted run from default per-row-limit 4; replay attempted all 88 candidate actions.",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2031_corrected_scope_reprover_replay.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "gp230_hypatia_gp225_v2035",
+              "gp230_descartes_gp225_v2035"
+            ],
+            "contract_id": "gp225_v2035_filtered_source_aligned_repair_candidates",
+            "preconditioner_effect": "Kept v20.35 static-only and preserved blocked rows instead of replaying weak raw beams.",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2035_filtered_source_aligned_repair_candidates.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "gp230_chandrasekhar_gp225_v2037",
+              "gp230_mill_gp225_v2037"
+            ],
+            "contract_id": "gp225_v2037_repair_candidate_replay",
+            "preconditioner_effect": "Ensured all 20 actions were attempted through a replay-compatible adapter; replay produced useful auxiliary compile signal but no strict labels.",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2037_repair_candidate_replay.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "Noether",
+              "Turing"
+            ],
+            "contract_id": "gp225_v2039_ofscalars_alignment_gate",
+            "preconditioner_effect": "separated candidate closed state from gold open target state before policy promotion",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2039_ofscalars_alignment_gate.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "Bayes",
+              "Shannon"
+            ],
+            "contract_id": "gp225_v2040_heldout_dual_head_delta_packet",
+            "preconditioner_effect": "blocked single-theorem ofScalars signal from acting as benchmark or training evidence",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2040_heldout_dual_head_delta_packet.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "Fisher",
+              "Kolmogorov"
+            ],
+            "contract_id": "gp225_v2042_public_adapter_content_source_router",
+            "preconditioner_effect": "prevented rank-policy replay churn and forced candidate-content source routing",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2042_public_adapter_content_source_router.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "Hilbert",
+              "Lovasz"
+            ],
+            "contract_id": "gp225_v2043_blocked_row_content_source_discovery",
+            "preconditioner_effect": "forced row-level content-changing source contracts after rank-policy abort",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2043_blocked_row_content_source_discovery.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "Knuth",
+              "Noether2"
+            ],
+            "contract_id": "gp225_v2044_blocked_row_source_candidate_static_check",
+            "preconditioner_effect": "converted source contracts into candidate content and caught one static source-hinge mismatch before replay",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2044_blocked_row_source_candidate_static_check.json"
+          },
+          {
+            "changed_by_forecast_ids": [
+              "Noether",
+              "Turing"
+            ],
+            "contract_id": "gp225_v2046_context_binding_adapter",
+            "preconditioner_effect": "Converted negative full-replay market into a static context-binding split before replay.",
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2046_context_binding_adapter.json"
+          }
+        ]
+      },
+      "id": "positive_externality_failure_mode_preconditioning",
+      "kind": "positive_externality",
+      "severity": "info",
+      "suggested_action": "Keep requiring forecasts to name specific failure modes and action-change recommendations.",
+      "title": "Forecasts have already preconditioned execution against named traps."
+    },
+    {
+      "evidence": {
+        "aggregate_contracts": 326,
+        "decision_changed_rows": 2,
+        "decision_use_rows": 2
+      },
+      "id": "decision_use_capture_gap",
+      "kind": "reflexive_capture_gap",
+      "severity": "medium",
+      "suggested_action": "Let RD tooling consume rd_fast_read and write decision-use rows automatically when a forecast routes, confirms, delays, or is overridden.",
+      "title": "Aggregates exist without matching decision-use coverage."
+    },
+    {
+      "evidence": {
+        "mean_realized_failure_mode_mass": 0.254,
+        "scoreable_rows": 149,
+        "specific_id_precision": 0.6019,
+        "top1_precision": 0.4362
+      },
+      "id": "failure_mode_signal_quality",
+      "kind": "externality_quality",
+      "severity": "info",
+      "suggested_action": "Prefer forecasts with specific_failure_mode_ids over diffuse risk lists.",
+      "title": "Failure-mode forecasts are now scoreable against realized traps."
+    },
+    {
+      "evidence": {
+        "count": 10,
+        "samples": [
+          {
+            "agent_id": "gp230_noether_gp225_v2004",
+            "brier": 0.7056,
+            "contract_id": "gp225_v2004_high_yield_top3_replay",
+            "domain": "gp225_repair_micro",
+            "p_success": 0.16,
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2004_high_yield_top3_replay.json",
+            "success_bool": true
+          },
+          {
+            "agent_id": "Noether",
+            "brier": 0.6723999999999999,
+            "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+            "domain": "gp225_pre_gnn",
+            "p_success": 0.82,
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2103_strict_same_step_candidate_replay_meso_gate.json",
+            "success_bool": false
+          },
+          {
+            "agent_id": "gp230_noether_gp225_v2001",
+            "brier": 0.6241,
+            "contract_id": "gp225_v2001_fresh_clean_topology_replay",
+            "domain": "gp225_repair_micro",
+            "p_success": 0.21,
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2001_fresh_clean_topology_replay.json",
+            "success_bool": true
+          },
+          {
+            "agent_id": "gp230_tarski_gp225_v2004",
+            "brier": 0.6084,
+            "contract_id": "gp225_v2004_high_yield_top3_replay",
+            "domain": "gp225_repair_micro",
+            "p_success": 0.22,
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2004_high_yield_top3_replay.json",
+            "success_bool": true
+          },
+          {
+            "agent_id": "codex",
+            "brier": 0.6084,
+            "contract_id": "tick631-energy-to-critical-is-scaling-supercriticality-wall",
+            "domain": "general",
+            "p_success": 0.78,
+            "score_path": "analytics/public/forecast_pool/scores/tick631-energy-to-critical-is-scaling-supercriticality-wall.json",
+            "success_bool": false
+          },
+          {
+            "agent_id": "pascal_adversarial_forecaster",
+            "brier": 0.5776,
+            "contract_id": "gp225_v1941_scope_clean_signature_repair_execution",
+            "domain": "gp225_repair_micro",
+            "p_success": 0.24,
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v1941_scope_clean_signature_repair_execution.json",
+            "success_bool": true
+          },
+          {
+            "agent_id": "gp230_noether_gp225_v2010",
+            "brier": 0.5776,
+            "contract_id": "gp225_v2010_high_yield_tail_holdout_replay",
+            "domain": "gp225_repair_micro",
+            "p_success": 0.24,
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2010_high_yield_tail_holdout_replay.json",
+            "success_bool": true
+          },
+          {
+            "agent_id": "gp230_noether_gp225_v2020",
+            "brier": 0.5776,
+            "contract_id": "gp225_v2020_second_holdout_replay",
+            "domain": "gp225_repair_micro",
+            "p_success": 0.24,
+            "score_path": "analytics/public/forecast_pool/scores/gp225_v2020_second_holdout_replay.json",
+            "success_bool": true
+          },
+          {
+            "agent_id": "codex",
+            "brier": 0.5776,
+            "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+            "domain": "ns_route1_pde",
+            "p_success": 0.24,
+            "score_path": "analytics/public/forecast_pool/scores/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+            "success_bool": true
+          },
+          {
+            "agent_id": "codex",
+            "brier": 0.5776,
+            "contract_id": "tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_",
+            "domain": "ns_route1_pde",
+            "p_success": 0.24,
+            "score_path": "analytics/public/forecast_pool/scores/tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_.json",
+            "success_bool": true
+          }
+        ]
+      },
+      "id": "high_confidence_miss_review",
+      "kind": "calibration_incident",
+      "severity": "medium",
+      "suggested_action": "Review these rows before trusting high-confidence forecasts in the same domain or agent family.",
+      "title": "High-confidence misses exist and should update weights or prompts."
+    },
+    {
+      "evidence": {
+        "contracts_with_forecasts": 343,
+        "effective_n_bins": {
+          "1": 65,
+          "2": 262,
+          "3": 14,
+          "4": 2
+        },
+        "samples": [
+          {
+            "contract_id": "automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "research_director_claude_opus_4_7"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "eg_v51_v52_hard_discriminators_meso_20260520",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "legacy_or_named_agent:codex:RD",
+                "raw_agent_ids": [
+                  "codex:RD"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "gp225_v1752_guarded_probe_micro_batch",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "legacy_or_named_agent:codex_rd_micro_pricer",
+                "raw_agent_ids": [
+                  "codex_rd_micro_pricer"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "gp225_v1753_prefix_aware_replay_micro_batch",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "legacy_or_named_agent:codex_rd_micro_pricer",
+                "raw_agent_ids": [
+                  "codex_rd_micro_pricer"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "gp225_v1872_next_remaining_witness_pilot",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "legacy_or_named_agent:codex_local_rd_v1872",
+                "raw_agent_ids": [
+                  "codex_local_rd_v1872"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "gp225_v1874_remaining_8_witness_backfill",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "legacy_or_named_agent:codex_local_rd_v1874",
+                "raw_agent_ids": [
+                  "codex_local_rd_v1874"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "gp225_v2400_deterministic_cascade_canonical_train_calibration_meso",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude",
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 2
+          },
+          {
+            "contract_id": "gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude",
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 2
+          },
+          {
+            "contract_id": "gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude",
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 2
+          },
+          {
+            "contract_id": "gp225_v2600_leanhammer_baseline_on_12_open_rows_meso",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude",
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 2
+          },
+          {
+            "contract_id": "gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude",
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 2
+          },
+          {
+            "contract_id": "gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "gp230_ns_clay_route_selection_meso_20260515",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "ns_route1_Lsummable_caloric_absorption_micro_20260516_tick593",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:claude",
+                "raw_agent_ids": [
+                  "claude_rd"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:codex",
+                "raw_agent_ids": [
+                  "codex"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "ns_route1_birkhoff_R1_cutoff_commutator_meso_20260516_tick570",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:codex",
+                "raw_agent_ids": [
+                  "codex"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "ns_route1_birkhoff_R2_summable_tangential_meso_20260516_tick571",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:codex",
+                "raw_agent_ids": [
+                  "codex"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "independent_agent_family:codex",
+                "raw_agent_ids": [
+                  "codex"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          },
+          {
+            "contract_id": "ns_route1_channel_producer_pde_leg_micro",
+            "effective_n": 1,
+            "independence_groups": [
+              {
+                "group": "legacy_or_named_agent:codex_rd_ns_route1_channel_producer",
+                "raw_agent_ids": [
+                  "codex_rd_ns_route1_channel_producer"
+                ]
+              }
+            ],
+            "latest_forecast_count": 1
+          }
+        ],
+        "thin_contract_count": 65
+      },
+      "id": "thin_effective_independence",
+      "kind": "market_depth",
+      "severity": "medium",
+      "suggested_action": "Treat thin contracts as single-view forecasts unless another independent agent family prices them.",
+      "title": "Some forecasted contracts have fewer than two independent agent families."
+    },
+    {
+      "evidence": {
+        "count": 1,
+        "samples": [
+          "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575"
+        ]
+      },
+      "id": "resolved_score_debt",
+      "kind": "hygiene",
+      "severity": "high",
+      "suggested_action": "Score or explicitly void these contracts before treating calibration weights as current.",
+      "title": "Some resolved forecast contracts are not yet scored."
+    },
+    {
+      "evidence": {
+        "count": 15,
+        "samples": [
+          "ns_route1_C7_surplus_cf_depletion_reduction_meso_20260516_tick582",
+          "ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581",
+          "ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577",
+          "ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578",
+          "ns_route1_atom_is_CF_clay_equiv_axiom_in_FINAL_THEOREM_meso_20260516_tick576",
+          "ns_route1_birkhoff_R3_slaving_bypass_quantKRZ_meso_20260516_tick572",
+          "ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573",
+          "ns_route1_negative_extends_to_6th_antitwist_meso_20260516_tick579",
+          "ns_route1_nu_pi2_two_sided_wall_symmetric_meso_20260516_tick580",
+          "test-fix52-1779140589",
+          "tick641-micro-dyadic-beta-rg-transport-discriminator",
+          "tick642-micro-localess-cubicghost-vs-superTypeI-recurrence-discriminator",
+          "tick643-omega-sup-coercive-entropy-atom",
+          "tick644-lagrangian-vortexline-history-observable",
+          "tick645-biotsavart-commutator-defect-nonlocality"
+        ]
+      },
+      "id": "resolved_without_forecasts",
+      "kind": "hygiene",
+      "severity": "medium",
+      "suggested_action": "Void, document the ordering override, or backfill under policy; do not treat these as normal market evidence.",
+      "title": "Some contracts resolved without usable pre-resolution forecasts."
+    },
+    {
+      "evidence": {
+        "fulfilled_messages_missing_aggregate": 2,
+        "open_for_resolved_contracts": 16
+      },
+      "id": "transport_debt",
+      "kind": "infrastructure",
+      "severity": "medium",
+      "suggested_action": "Run warm-daemon/aggregate maintenance before relying on channel state as market state.",
+      "title": "Forecasting transport has stale or unaggregated messages."
+    }
+  ],
+  "producer": "forecast_pool.materialize-state",
+  "purpose": "Mechanized reflexive insight read model. RDs consume these nudges; they do not need to author separate meta-analysis to discover them."
+}

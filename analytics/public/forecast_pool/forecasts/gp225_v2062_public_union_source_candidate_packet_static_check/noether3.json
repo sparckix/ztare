@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Emit candidates plus row-level replay cautions, and mark underhydrated rows separately instead of claiming replay readiness.",
+  "agent_id": "Noether3",
+  "contract_id": "gp225_v2062_public_union_source_candidate_packet_static_check",
+  "contract_question": "Will v20.62 generate a source-safe candidate packet for the four unsolved v20.61 public/internal source rows, with at least six candidate actions, all passing strict static checks, and no replay/training/GNN promotion?",
+  "domain": "gp225_pre_gnn_static_candidate_packet",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_scope_creep_to_replay": 0.1,
+    "bayes_bound_context_underhydrated": 0.2,
+    "elliptic_case_split_template_vague": 0.17,
+    "radius_row_retains_structural_hole": 0.28,
+    "static_gate_too_weak_or_too_strict": 0.25
+  },
+  "forecast_externality_tags": [
+    "anti_goodhart",
+    "static_candidate_packet",
+    "source_discovery"
+  ],
+  "forecasted_at": "2026-05-14T18:35:56Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.08,
+  "p_success": 0.68,
+  "rationale_short": "The queue and source contracts already exist, but strict placeholder-free candidate text across all four rows is harder than the prior loose v20.44 static packet.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "static_gate_too_weak_or_too_strict",
+    "radius_row_retains_structural_hole"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_split_receipt_frontier_tick429_20260514",
+  "contract_question": "Will tick429 add a compiling Lean pressure-frontier theorem that identifies split pre-summed stress receipts as the actionable pressure/coherence source path, without claiming pressure branch closure?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:05:59Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.12,
+  "p_success": 0.68,
+  "rationale_short": "Pressure file already has split receipt source and constructors; exposing scalar receipt inequalities should compile and give a concrete pressure path without closure overclaim.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

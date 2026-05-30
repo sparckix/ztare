@@ -1,0 +1,164 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T06:26:51Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.61,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2379
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 92.0,
+    "expected_value": -171.33,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.08,
+    "p_needs_new_lemma": 0.33,
+    "p_regression": 0.07,
+    "p_success": 0.61,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_trackb_formal_bridge",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level510_prefix_cover_eventdata_index_source/codex_rd.json",
+        "forecasted_at": "2026-05-27T06:19:47Z",
+        "p_success": 0.61,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "prefix_cover_relation_still_supplied_not_derived",
+        "p": 0.5384615384615384
+      },
+      {
+        "mode": "lean_field_dependency_mismatch",
+        "p": 0.3076923076923077
+      },
+      {
+        "mode": "gate_semantics_regression",
+        "p": 0.15384615384615385
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level510_prefix_cover_eventdata_index_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level510_prefix_cover_eventdata_index_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level510_prefix_cover_eventdata_index_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level510_prefix_cover_eventdata_index_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level510_prefix_cover_eventdata_index_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T06:19:25Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-27T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve TRUE iff Lean compiles a Level510 prefix-cover eventData-index source into Level509, strict receipt/workbench checks pass, active-chain gate audit is high-severity clean, and targeted tests pass.",
+    "question": "Can Level510 construct the same-tree eventData index from a prefix-cover relation whose selected index is bound to sameTreeLock.eventData and displayed incidence?",
+    "success_threshold": "A prefix-cover relation supplies a selected eventData index with Fin final-slot codomain, same-tree eventData binding, displayed incidence transport, and pre-payoff provenance, without endpoint-capacity-only or label-only substitutes.",
+    "task_type": "ns_trackb_formal_bridge"
+  },
+  "contract_id": "tick668_level510_prefix_cover_eventdata_index_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Add a meta-semantics audit pass before the Level510 gate and keep weak substitutes advisory unless escalated to hard violations.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level510_prefix_cover_eventdata_index_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_trackb_formal_bridge",
+        "expected_cost_agent_minutes": 92.0,
+        "forecasted_at": "2026-05-27T06:19:47Z",
+        "p_success": 0.61,
+        "rationale_short": "Level509 already exposes the exact targetEventDataIndex socket. The next positive reduction is structurally narrow: selectedIndex plus cover relation plus cover-to-incidence transport should package cleanly, with main risk that cover totality remains a named source.",
+        "specific_failure_mode_ids": [
+          "prefix_cover_relation_still_supplied_not_derived",
+          "lean_field_dependency_mismatch",
+          "gate_semantics_regression"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T06:27:36Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 37.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T06:27:26Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.61,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2379
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 92.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.61,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "prefix_cover_relation_still_supplied_not_derived",
+        "p": 0.5384615384615384
+      },
+      {
+        "mode": "lean_field_dependency_mismatch",
+        "p": 0.3076923076923077
+      },
+      {
+        "mode": "gate_semantics_regression",
+        "p": 0.15384615384615385
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1521,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T06:27:31Z"
+  }
+}

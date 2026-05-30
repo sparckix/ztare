@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2043_blocked_row_content_source_discovery.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2043_blocked_row_content_source_discovery.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2043_blocked_row_content_source_discovery",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2043_blocked_row_content_source_discovery.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2043_blocked_row_content_source_discovery.json"
+  },
+  "baseline_action": "Stop at router without source contracts",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2043_blocked_row_content_source_discovery",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Emit concrete blocked-row source-discovery contracts before any replay",
+  "created_at": "2026-05-14T17:20:54Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2308,
+    "expected_cost_agent_minutes_prior": 31.5,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_pre_gnn_source_discovery",
+    "score": 0.4286,
+    "selected_domain": "gp225_pre_gnn_alignment_policy",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4286,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2308,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.4286,
+        "score_rows": 4,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.2368,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.4286,
+        "score_rows": 2,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.2258,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.3333,
+        "score_rows": 2,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.0938,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0769,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "source contracts may still be too abstract for candidate generation"
+    ],
+    "positive": [
+      "turns blocked rows into candidate-content obligations",
+      "reduces timeout replay churn"
+    ]
+  },
+  "horizon": "45m",
+  "information_value": 0.45,
+  "layer": "micro",
+  "objective_resolver": "success iff v2043 JSON exists, consumes v2042 and Mathlib source snippets, emits >=5 content source rows, each has target_content_change and non_timeout_candidate_family, marks prior raw candidates forbidden, replay_run=false, training_now=false, gnn_blocked=true",
+  "question": "Will v20.43 emit a no-replay blocked-row content source-discovery packet that names concrete non-timeout source contracts for the v20.42 selected rows and keeps replay/training blocked?",
+  "risk_penalty": 1.0,
+  "success_threshold": "all objective resolver clauses true",
+  "task_type": "gp225_pre_gnn_source_discovery",
+  "value_if_success": 1.7,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

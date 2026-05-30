@@ -1,0 +1,26 @@
+{
+  "agent_id": "Franklin",
+  "agent_name": "Codex GP-225 Forecaster",
+  "contract_id": "gp225_v2093_new_heldout_candidate_replay_meso_gate",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 32,
+  "forecasted_at": "2026-05-14T21:22:01Z",
+  "p_dependency": 0.16,
+  "p_new_lemma": 0.04,
+  "p_regression": 0.08,
+  "p_success": 0.52,
+  "rationale": "This is worth running because v20.90 showed the two-row eval is saturated by cheap baselines and v20.91 correctly routes to fresh heldout rows. The success bar is broader than strict closure because useful non-strict contrast labels count if they expand heldout difficulty. Probability stays near even because v20.92 candidates come from scope-clean signatures rather than target proof/gold state, so source safety is good, but new heldout rows often fail on binder/context hydration or produce failures that are not yet useful as hard negatives. No training or GNN should unlock from this replay alone.",
+  "routing_hint": "run_or_continue",
+  "top_failure_modes": {
+    "all_candidates_fail_without_discriminating_contrast_label": 0.18,
+    "artifact_schema_or_replay_bridge_error": 0.04,
+    "candidate_context_underhydrated_for_new_heldout_rows": 0.22,
+    "cheap_rank_or_length_features_still_explain_replay_outcome": 0.13,
+    "harmful_compiled_mismatch_detected": 0.05,
+    "leakage_metadata_or_packet_accounting_gap": 0.04,
+    "non_strict_contrast_label_not_useful_for_eval_difficulty": 0.11,
+    "other": 0.02,
+    "source_signature_insufficient_without local binder names": 0.09,
+    "strict_target_shape_mismatch": 0.12
+  }
+}

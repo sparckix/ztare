@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Run bounded v20.37 adapter plus replay over all 20 repaired candidates; no more static filtering first; keep training false and GNN blocked.",
+  "agent_id": "gp230_chandrasekhar_gp225_v2037",
+  "contract_id": "gp225_v2037_repair_candidate_replay",
+  "contract_question": "Will replay of the v20.35 source-aligned repaired candidates add at least one compile-backed same-target strict row without harmful mismatches?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [
+    "general_purpose_lean_harness",
+    "public_adapter_repair_replay",
+    "strict_compile_invariant",
+    "pre_gnn"
+  ],
+  "forecasted_at": "2026-05-14T15:31:28Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.06,
+  "p_success": 0.4,
+  "rationale_short": "v20.36 exhausted cheap static filtering; real question is Lean elaboration plus strict same-target behavior.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "no_candidate_compiles_after_hydration",
+    "compiled_but_not_strict_same_target",
+    "adapter_schema_hydration_issue",
+    "import_namespace_runtime_regression",
+    "source_policy_metadata_blocks_resolution",
+    "harmful_compiled_mismatch"
+  ]
+}

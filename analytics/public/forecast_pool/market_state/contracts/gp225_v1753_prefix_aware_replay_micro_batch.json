@@ -1,0 +1,167 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-12T21:00:23Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 12.0,
+    "expected_value": 0.96,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.08,
+    "p_needs_new_lemma": 0.04,
+    "p_regression": 0.06,
+    "p_success": 0.66,
+    "participants": [
+      {
+        "agent_id": "codex_rd_micro_pricer",
+        "domain": "gp225_micro_probe",
+        "p_success": 0.66,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "selected_tactics_are_nested_not_matchable",
+        "p": 0.25
+      },
+      {
+        "mode": "source_prefix_duplicate_or_namespace_issue",
+        "p": 0.25
+      },
+      {
+        "mode": "target_guard_pretty_print_parse_friction",
+        "p": 0.2
+      },
+      {
+        "mode": "lean_probe_timeout_cost",
+        "p": 0.15
+      },
+      {
+        "mode": "process_noise",
+        "p": 0.15
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1753_prefix_aware_replay_micro_batch.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1753_prefix_aware_replay_micro_batch.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1753_prefix_aware_replay_micro_batch.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1753_prefix_aware_replay_micro_batch.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1753_prefix_aware_replay_micro_batch.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 20.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-12T21:00:23Z",
+    "created_by": "codex_rd",
+    "horizon": "one bounded v17.53 prefix-aware guarded Lean probe batch",
+    "layer": "micro",
+    "objective_resolver": "Resolve from analytics/public/leanmill/results/v1753_*.json metrics: success iff target_guarded_labels>=8, action_unique_or_closure_contribution_rows>=5, true_false_accepts=0, training_ready_rows=0, and actual_cost_agent_minutes<=20.",
+    "question": "Will v17.53 prefix-aware source replay over v17.51 selected public SLT rows produce at least 8 executable target-guarded labels, at least 5 action-unique or closure-contribution candidate rows, and zero true false accepts within 20 wall minutes?",
+    "success_threshold": "target_guarded_labels>=8 AND action_unique_or_closure_contribution_rows>=5 AND true_false_accepts=0 AND training_ready_rows=0 AND actual_cost_agent_minutes<=20",
+    "task_type": "prefix_aware_guarded_lean_probe_batch"
+  },
+  "contract_id": "gp225_v1753_prefix_aware_replay_micro_batch",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_micro_pricer",
+        "raw_agent_ids": [
+          "codex_rd_micro_pricer"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_micro_pricer"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_micro_pricer",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1753_prefix_aware_replay_micro_batch/codex_rd_micro_pricer.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes": 12.0,
+        "forecasted_at": "2026-05-12T21:00:23Z",
+        "p_success": 0.66,
+        "rationale_short": "v17.52 failed mostly because block-only replay lost source prefix context; full prefix replay should fix typeclass/variable gaps but nested tactic matching remains a risk.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 2.58,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-12T21:04:45Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.66,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.6744
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 12.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.66,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "selected_tactics_are_nested_not_matchable",
+        "p": 0.25
+      },
+      {
+        "mode": "source_prefix_duplicate_or_namespace_issue",
+        "p": 0.25
+      },
+      {
+        "mode": "target_guard_pretty_print_parse_friction",
+        "p": 0.2
+      },
+      {
+        "mode": "lean_probe_timeout_cost",
+        "p": 0.15
+      },
+      {
+        "mode": "process_noise",
+        "p": 0.15
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.43560000000000004,
+    "score_rows": 1,
+    "scored_at": "2026-05-12T21:04:45Z"
+  }
+}

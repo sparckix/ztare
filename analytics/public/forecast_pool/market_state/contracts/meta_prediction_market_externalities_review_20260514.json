@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:46:09Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 38.5,
+    "expected_value": 0.9249735963944927,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.28,
+    "p_needs_new_lemma": 0.415,
+    "p_regression": 0.06,
+    "p_success": 0.6899735963944927,
+    "participants": [
+      {
+        "agent_id": "codex_empirical_skeptic",
+        "domain": "meta_prediction_market",
+        "p_success": 0.61,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_market_mechanism",
+        "domain": "meta_prediction_market",
+        "p_success": 0.76,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "externalities_in_prose_only",
+        "p": 0.15
+      },
+      {
+        "mode": "good_schema_fields",
+        "p": 0.15
+      },
+      {
+        "mode": "data_scattered",
+        "p": 0.13
+      },
+      {
+        "mode": "recommendations_too_generic",
+        "p": 0.12
+      },
+      {
+        "mode": "actionable_report_possible",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/meta_prediction_market_externalities_review_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/meta_prediction_market_externalities_review_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/meta_prediction_market_externalities_review_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/meta_prediction_market_externalities_review_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/meta_prediction_market_externalities_review_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 50.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:41:47Z",
+    "created_by": "codex:RD",
+    "horizon": "same session",
+    "layer": "meso",
+    "objective_resolver": "success iff review produces specific code/spec/process recommendations grounded in current forecast outputs, calibration artifacts, and GP-233 evidence, not generic prediction-market advice",
+    "question": "Can a two-agent expert review plus local artifact audit identify concrete improvements to ex-post positive/negative externality analysis for the forecast-pool/prediction-market seam?",
+    "success_threshold": "actionable recommendations with artifact pointers and at least one proposed metric/schema/rule change",
+    "task_type": "meta_market_review"
+  },
+  "contract_id": "meta_prediction_market_externalities_review_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_empirical_skeptic",
+        "raw_agent_ids": [
+          "codex_empirical_skeptic"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_market_mechanism",
+        "raw_agent_ids": [
+          "codex_market_mechanism"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_empirical_skeptic",
+      "codex_market_mechanism"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_empirical_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/meta_prediction_market_externalities_review_20260514/codex_empirical_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-14T13:42:41Z",
+        "p_success": 0.61,
+        "rationale_short": "We can identify improvements, but current artifacts likely lack counterfactual and causality fields needed for robust externality measurement.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_market_mechanism",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/meta_prediction_market_externalities_review_20260514/codex_market_mechanism.json",
+        "canonical_agent_id": null,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T13:42:41Z",
+        "p_success": 0.76,
+        "rationale_short": "Existing forecast artifacts already expose calibration and effort learning; externality analysis likely needs schema additions, not new infrastructure.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 28.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:49:20Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.9249735963944927,
+      "forecast_spread": 0.15,
+      "p_success": 0.6899735963944927,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 1.0439
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 38.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6899735963944927,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "externalities_in_prose_only",
+        "p": 0.15
+      },
+      {
+        "mode": "good_schema_fields",
+        "p": 0.15
+      },
+      {
+        "mode": "data_scattered",
+        "p": 0.13
+      },
+      {
+        "mode": "recommendations_too_generic",
+        "p": 0.12
+      },
+      {
+        "mode": "actionable_report_possible",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10485,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:49:28Z"
+  }
+}

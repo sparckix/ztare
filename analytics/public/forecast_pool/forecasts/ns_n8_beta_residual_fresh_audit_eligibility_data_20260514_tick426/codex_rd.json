@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "Proceed with a per-node eligibility surface and derived coherence facts.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_n8_beta_residual_fresh_audit_eligibility_data_20260514_tick426",
+  "contract_question": "Will tick426 add a compiling Lean surface that lowers residualBranchCreatesAuditSelection to per-node residual-fresh audit eligibility data and derives the same-ledger event index plus bad-node/weight/gain matches?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dependent_match_theorem_syntax": 0.25,
+    "eligibility_tautology": 0.2,
+    "logging_gap": 0.1,
+    "overclaim": 0.1,
+    "pressure_only_smuggling": 0.15,
+    "pure_prop_wrapper": 0.2
+  },
+  "forecast_externality_tags": [
+    "ns_n8_beta",
+    "audit_eligibility",
+    "same_ledger_index",
+    "anti_tautology"
+  ],
+  "forecasted_at": "2026-05-14T22:41:10Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.16,
+  "p_success": 0.7,
+  "rationale_short": "Existing coherence receipt has the exact index and matching fields; eligibility data can expose the missing bridge without full analytic proof. Dependent theorem syntax is the main compile risk.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "dependent_match_theorem_syntax",
+    "pure_prop_wrapper",
+    "eligibility_tautology",
+    "pressure_only_smuggling",
+    "logging_gap",
+    "overclaim"
+  ]
+}

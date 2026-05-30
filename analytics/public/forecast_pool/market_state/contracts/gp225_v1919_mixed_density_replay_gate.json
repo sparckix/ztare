@@ -1,0 +1,199 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T22:12:06Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 29.0,
+    "expected_value": -9.625327679796639,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.25,
+    "p_needs_new_lemma": 0.025,
+    "p_regression": 0.07,
+    "p_success": 0.45894196372880147,
+    "participants": [
+      {
+        "agent_id": "kant",
+        "domain": "GP-225",
+        "p_success": 0.38,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "plato",
+        "domain": "GP-225",
+        "p_success": 0.54,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "no_rescue_density_below_0_45",
+        "p": 0.37
+      },
+      {
+        "mode": "clean_replay_rows_below_72",
+        "p": 0.125
+      },
+      {
+        "mode": "slice_selection_or_generator_contract_mismatch",
+        "p": 0.085
+      },
+      {
+        "mode": "top_area_or_source_packet_breadth_gate_fails",
+        "p": 0.08
+      },
+      {
+        "mode": "runner_or_manifest_integration_issue",
+        "p": 0.065
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1919_mixed_density_replay_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1919_mixed_density_replay_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1919_mixed_density_replay_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1919_mixed_density_replay_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1919_mixed_density_replay_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T22:06:55Z",
+    "created_by": "codex_rd",
+    "horizon": "before any GP-225 GNN training launch",
+    "layer": "meso",
+    "objective_resolver": "Resolve from future v19.19 mixed-density replay artifact metrics.",
+    "question": "Will a GP-225 mixed-density replay run generated from v19.15 pass a bounded replay gate without false accepts and without unblocking GNN training?",
+    "success_threshold": "rows_attempted between 80 and 140 AND clean_replay_rows>=72 AND selected_true_false_accepts=0 AND all_post_quarantine_false_accepts=0 AND no_rescue_density>=0.45 AND source_packets>=4 AND top_areas>=8 AND training_now=false AND gnn_blocked=true",
+    "task_type": "gp225_mixed_density_replay"
+  },
+  "contract_id": "gp225_v1919_mixed_density_replay_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:kant",
+        "raw_agent_ids": [
+          "kant"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:plato",
+        "raw_agent_ids": [
+          "plato"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "kant",
+      "plato"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "kant",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1919_mixed_density_replay_gate/kant.json",
+        "canonical_agent_id": null,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-13T22:11:46Z",
+        "p_success": 0.38,
+        "rationale_short": "Static v19.15 design is plausible and false-accept hygiene has held, but density is still the bottleneck; 0.45 requires preserving high-density pockets without same-family/same-head regression.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "plato",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1919_mixed_density_replay_gate/plato.json",
+        "canonical_agent_id": null,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-13T22:11:46Z",
+        "p_success": 0.54,
+        "rationale_short": "v19.15 is within row bounds and preserves controls; prior replay had clean rows and zero false accepts but missed density, so the question is whether mixed slices lift no-rescue density above 0.45.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.16,
+      "p_success": 0.45894196372880147,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "no_rescue_density_below_0_45",
+        "p": 0.37
+      },
+      "voi_proxy": 1.4083
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 29.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.45894196372880147,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "no_rescue_density_below_0_45",
+        "p": 0.37
+      },
+      {
+        "mode": "clean_replay_rows_below_72",
+        "p": 0.125
+      },
+      {
+        "mode": "slice_selection_or_generator_contract_mismatch",
+        "p": 0.085
+      },
+      {
+        "mode": "top_area_or_source_packet_breadth_gate_fails",
+        "p": 0.08
+      },
+      {
+        "mode": "runner_or_manifest_integration_issue",
+        "p": 0.065
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

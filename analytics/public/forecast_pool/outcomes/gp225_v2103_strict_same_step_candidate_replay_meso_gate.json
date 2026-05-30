@@ -1,0 +1,40 @@
+{
+  "actual_cost_agent_minutes": 22.0,
+  "artifact_hash": "4ea1b9951a3072ef44fbb3cf1fc2fc67bf39816f2a8165f0d471f42e998eda7f",
+  "artifact_path": "analytics/public/leanmill/results/v2104_strict_same_step_bounded_replay.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": "all_4_candidates_failed_compile_with_unsolved_goals_matching_gold_intermediate_signature",
+  "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+  "counterfactual_value_bucket": "useful_negative_apparatus_finding",
+  "decision_changed_bool": true,
+  "error_type": "unsolved_goals_bridge_strictness_gap",
+  "externality_tags": [
+    "meso_only_forecast",
+    "non_closing_step_candidate_packet",
+    "bridge_strictness_gap_identified",
+    "no_training",
+    "gnn_blocked"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [
+    "forecast_loss_for_noether_p082",
+    "candidate_structural_correctness_unrecognized_by_bridge",
+    "strict_same_step_label_acquisition_blocked_on_non_closing_steps"
+  ],
+  "new_next_action": "v2105_bridge_strictness_audit_or_closing_step_row_pivot",
+  "old_next_action": "v2105_typed_label_union_readiness_after_strict_step_replay",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "bridge_predicate_requires_full_compile_not_state_match",
+    "truncated_candidate_leaves_correct_open_state_but_classified_as_compile_failed",
+    "non_closing_step_index_incompatible_with_current_bridge",
+    "noether_structural_argument_correct_but_misaligned_with_bridge_predicate"
+  ],
+  "resolution_note": "v21.04 bounded replay attempted 4 truncated strict-step candidates. All 4 produced unsolved-goals errors with goal signature exactly equal to the gold intermediate (\u03bc.withDensity (pdf X \u2119 \u03bc)) s \u2264 (map X \u2119) s \u2014 structurally correct strict same-step witnesses \u2014 but the v1953 bridge's compile predicate requires the file to close ALL goals. step_idx=2 on setLIntegral_pdf_le_map is a non-closing step, so the bridge cannot certify any strict same-step positive even when the candidate matches gold exactly. Contract floor was new_strict_same_target_rows>=1 measured by the bridge; bridge measured 0; contract resolves false. Brier penalty is correct per the bridge predicate. NO ex-post relabeling: typed-label union readiness must remain at 15 strict positives until either the bridge gains a non-closing-step mode OR a closing-step row is targeted. Decision changes next action to v21.05 audit + bridge-gap finding.",
+  "resolved_at": "2026-05-14T22:27:01Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

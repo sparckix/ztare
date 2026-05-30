@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Audit the exact theorem hypotheses against the Leray-Hopf cascade geometry before treating the route as closed.",
+  "agent_id": "codex",
+  "contract_id": "ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562",
+  "contract_question": "tick562 DISCHARGES (Tier-3 PASS 2/3, not defer) the anti-lamellar input: PROVED (a) tangentially-coherent zero-helicity shear solves the pure heat equation => globally regular => NOT a singular CKN-bad node; (b) Bernstein composition: nonlinearity/dissipation ratio <= (Cb/cb)*xi_tau*r from CITED Bernstein inequality + proved algebra; (c) CKN-bad + CITED Serrin/Ladyzhenskaya threshold R*>0 => xi_tau >= R**xi_z => s_z >= R*^2/(R*^2+1) > 0 scale-invariant => tick559->558->552->551 => route-1 closure. Every cited input (heat regularity, Serrin, Bernstein) is a real textbook theorem, no Prop placeholder. Does the cited Serrin+Bernstein chain genuinely apply to the actual Leray-Hopf cascade in the precise form used (closing route-1), or is there a gap in the classical-theorem application to the cascade geometry?",
+  "domain": "ns_clay_antilamellar_discharge_macro_20260516",
+  "expected_cost_agent_minutes": 26.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bernstein_ratio_not_cascade_level": 0.23,
+    "cascade_geometry_to_hypothesis_mismatch": 0.34,
+    "extra_integrability_hypothesis_needed": 0.29,
+    "statement_drift_or_overclaim": 0.14
+  },
+  "forecast_externality_tags": [
+    "proof-risk",
+    "theorem-application",
+    "pde-verification"
+  ],
+  "forecasted_at": "2026-05-16T00:41:01Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.56,
+  "p_regression": 0.04,
+  "p_success": 0.31,
+  "rationale_short": "Read-only pricing: the algebraic pieces are plausible, but the main risk is that the asymptotically tangential Leray-Hopf cascade does not satisfy the classical theorem hypotheses in the exact form needed for route-1 closure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "theorem_hypothesis_mismatch",
+    "extra_integrability_needed"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick630-quantcovering-is-CKN-energy-level-not-critical",
+  "contract_question": "tick630: the quantitative covering/absorption theorem codex sharpened (tick629) for bad mass near the parabolic singular set S is, examined honestly, CKN itself \u2014 a Vitali covering with int_{Q_ri}|grad u|^2 >= eps r_i summed against the FINITE ENERGY dissipation int int |grad u|^2 (Leray, subcritical) \u21d2 P^1(S)=0. It EXISTS but at the energy-dissipation level; it does NOT close C3 (needs critical L^inf_t L^3); the residual is precisely the energy\u2192critical supercriticality gap (CKN is real partial-regularity progress, not a re-expression, NOT the enstrophy atom verbatim). Correct + honestly non-laundered?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T03:09:38Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.78,
+  "rationale_short": "codex: target IS essentially CKN partial-regularity machinery (caveat: needs suitable weak sols + LEI + pressure + eps-reg, not just finite-dissip+bad-cylinders); energy\u2192critical gap framing right; 'enstrophy atom' too reductive \u2014 one manifestation; CKN real progress not laundering",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

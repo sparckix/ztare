@@ -1,0 +1,26 @@
+{
+  "agent_id": "Franklin",
+  "agent_name": "Codex GP-225 Forecaster",
+  "contract_id": "gp225_v2096_blind_hydrated_new_heldout_replay_meso_gate",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 36,
+  "forecasted_at": "2026-05-14T21:28:38Z",
+  "p_dependency": 0.18,
+  "p_new_lemma": 0.05,
+  "p_regression": 0.09,
+  "p_success": 0.46,
+  "rationale": "The replay is worth running because v20.93 failed cleanly, v20.94 quarantined the contaminated inspection path, and v20.95 restores source-safe blind candidates with a broader success predicate that includes useful hard-negative/contrast labels. Probability remains below even because both target rows already showed context/name drift, and the supplied source hinges may still not align with the exact replay insertion goals. No training or GNN should unlock directly from this replay; a success would expand heldout eval support or difficulty for the next gate.",
+  "routing_hint": "run_or_continue",
+  "top_failure_modes": {
+    "all_candidates_fail_without_useful_contrast_signal": 0.14,
+    "artifact_schema_or_replay_bridge_error": 0.03,
+    "context_or_binder_hydration_still_wrong_after_blind_patch": 0.24,
+    "harmful_compiled_mismatch_detected": 0.04,
+    "isoSpec_hom_naturality_orientation_or_f_argument_mismatch": 0.16,
+    "leakage_quarantine_or_packet_accounting_gap": 0.04,
+    "non_strict_failure_labels_not_discriminating_enough_for_eval_difficulty": 0.1,
+    "other": 0.02,
+    "source_name_namespace_or_local_lemma_resolution_failure": 0.08,
+    "withDensity_pdf_le_map_shape_not_matching_setLIntegral_target": 0.15
+  }
+}

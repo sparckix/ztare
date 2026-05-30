@@ -1,0 +1,117 @@
+{
+  "schema": "forecast-meta-classifier-v3-verdict",
+  "generated_at": "2026-05-26",
+  "n_legacy": 1736,
+  "n_v22plus": 547,
+  "n_combined": 2283,
+  "n_features": 37,
+  "combined_cv_r2_mean": 0.5217994658010191,
+  "combined_cv_r2_std": 0.03535799565884878,
+  "combined_cv_mae_mean": 0.10024585588759372,
+  "combined_cv_mae_std": 0.006416282427745113,
+  "v2_baseline_r2": 0.5064023051604168,
+  "v2_baseline_mae": 0.09872443564720165,
+  "delta_r2_vs_v2": 0.015397160640602259,
+  "delta_mae_vs_v2": -0.001521420240392063,
+  "verdict": "v3-comparable-to-v2",
+  "interpretation": "WEAK: v3 features do not measurably improve on v2. Adopt v3 only for richer feature representation; performance is similar.",
+  "agent_family_distribution": {
+    "claude_family": 606,
+    "codex_5large_family": 532,
+    "codex_5mini_family": 509,
+    "other": 271,
+    "codex_family_other": 199,
+    "gemini_family": 65,
+    "deepseek_family": 64,
+    "meta_darwin_family": 36,
+    "rd_family_other": 1
+  },
+  "source_pilot_distribution": {
+    "pool": 579,
+    "v10_1": 469,
+    "v10": 358,
+    "v6_1": 240,
+    "v22": 130,
+    "v24": 119,
+    "v22d": 115,
+    "v11": 90,
+    "v22c": 88,
+    "v22b": 85,
+    "v23": 10
+  },
+  "top_features": [
+    [
+      "question_len",
+      0.5414994368518227
+    ],
+    [
+      "p_success",
+      0.3241919849923026
+    ],
+    [
+      "rationale_len",
+      0.025250745561961774
+    ],
+    [
+      "expected_cost",
+      0.02214073381637672
+    ],
+    [
+      "tail_signed_skew",
+      0.013199261697924292
+    ],
+    [
+      "tail_insurance_premium",
+      0.011169576759931705
+    ],
+    [
+      "domain_family_lean_family",
+      0.009850969149962236
+    ],
+    [
+      "agent_family_gemini_family",
+      0.0071191979864903875
+    ],
+    [
+      "agent_family_codex_5mini_family",
+      0.007050626832356246
+    ],
+    [
+      "failure_mention_count",
+      0.006871907233171719
+    ],
+    [
+      "rationale_word_count",
+      0.006690954502834907
+    ],
+    [
+      "p_reg",
+      0.00550115506505764
+    ],
+    [
+      "agent_family_claude_family",
+      0.0046584944908460504
+    ],
+    [
+      "balance_instruction_off",
+      0.00427283762691878
+    ],
+    [
+      "p_lem",
+      0.0034849203370145767
+    ]
+  ],
+  "per_source_mae": {
+    "pool": 0.06228761232178726,
+    "v10": 0.129864685376528,
+    "v10_1": 0.0909804037245795,
+    "v11": 0.08796275401740207,
+    "v6_1": 0.06974822588746253,
+    "v22": 0.11521783274057064,
+    "v22b": 0.11231757690601538,
+    "v22c": 0.1197811572014531,
+    "v22d": 0.07683434893677071,
+    "v23": 0.10167589855518815,
+    "v24": 0.0952923357395327
+  }
+}

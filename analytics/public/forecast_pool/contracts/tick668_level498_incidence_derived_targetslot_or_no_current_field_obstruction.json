@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json"
+  },
+  "baseline_action": "continue trying to use opaque same-tree incidence or prefix domination as if it carried a finite targetSlot",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "tick668_level497_target_finalslot_injection",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+  "cost_penalty": 11.0,
+  "counterfactual_action": "force the incidence-derived targetSlot question into a finite map/injectivity constructor or a typed obstruction before any C5 promotion",
+  "created_at": "2026-05-27T03:44:17Z",
+  "created_by": "codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1026,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "construct_or_refute",
+    "score": 0.1026,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1026,
+        "domain": "gp230_forecast_pool_infrastructure",
+        "expected_cost_agent_minutes_prior": 49.0,
+        "sample_limited": true,
+        "score": 0.1026,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0667,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0667,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0588,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0588,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.05,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.05,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0435,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0435,
+        "score_rows": 140,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "may prove another socket/obstruction rather than incidence construction",
+    "positive": "sharpens the C5-adjacent discharge path to the actual incidence data needed for targetSlot"
+  },
+  "horizon": "2026-05-27T10:00:00Z",
+  "information_value": 36.0,
+  "layer": "meso",
+  "objective_resolver": "checked Lean source plus target-indexed assignment gate and PDE workbench receipts",
+  "question": "TICK668 Level498: derive an explicit targetSlot injection from current same-tree incidence geometry, or prove the current incidence/prefix fields do not expose the data needed for targetSlot construction",
+  "risk_penalty": 8.0,
+  "success_threshold": "TRUE iff Lean compiles either a general incidence-derived TargetPrefixToFinalSlotInjectionSource constructor from concrete map/injectivity fields, or a sharp no-current-field obstruction showing the present incidence/prefix/fanout props cannot construct targetSlot without adding finite map data",
+  "task_type": "construct_or_refute",
+  "value_if_success": 42.0,
+  "void_conditions": "void if no Lean/gate/workbench artifact is attempted"
+}

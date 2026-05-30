@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T23:23:33Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 37.0,
+    "expected_value": 2.1062096587623844,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.32999999999999996,
+    "p_needs_new_lemma": 0.625,
+    "p_regression": 0.14500000000000002,
+    "p_success": 0.617802414690596,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_pressure",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-14T23:23:24Z",
+        "p_success": 0.69,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "ns_pressure",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T23:23:24Z",
+        "p_success": 0.54,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "existing_tent_excess_path_not_share_specific",
+        "p": 0.17
+      },
+      {
+        "mode": "share_is_defined_posthoc",
+        "p": 0.155
+      },
+      {
+        "mode": "tent_excess_does_not_identify_local_quadratic_receipt_for_share",
+        "p": 0.145
+      },
+      {
+        "mode": "local_quadratic_receipt_overgeneralized",
+        "p": 0.14
+      },
+      {
+        "mode": "proof_surface_duplicates_old_local_quadratic_source",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T23:23:10Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00-04:00",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean compiles after adding a source/guard that lowers resolved mean-free stress routing to the existing local-quadratic/tent-excess receipt path, with no sorry/admit and diff check clean",
+    "question": "Will the next pressure tick compile a non-tautological resolved-mean-free-to-local-quadratic receipt source or guard in ns_pressure_hessian_l2_bridge.lean, with Lean pass and no pressure-closure overclaim?",
+    "success_threshold": "true",
+    "task_type": "proof_frontier_tick"
+  },
+  "contract_id": "ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed with a small source object that reuses the existing tent-excess/local-quadratic receipt path for the resolved mean-free share only.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_pressure",
+        "expected_cost_agent_minutes": 31.0,
+        "forecasted_at": "2026-05-14T23:23:24Z",
+        "p_success": 0.69,
+        "rationale_short": "The local-quadratic/tent-excess certificate already exists, so resolved mean-free is the most plausible share to route first; risk is that the existing path pays full cone charge, not this share.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Proceed only if the new object is share-specific and carries an explicit guard that it does not source Galilean/reserve or leakage/child receipts.",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns_pressure",
+        "expected_cost_agent_minutes": 43.0,
+        "forecasted_at": "2026-05-14T23:23:24Z",
+        "p_success": 0.54,
+        "rationale_short": "The target is plausible but easy to overstate; the useful result may be a guard showing resolved mean-free is the only receipt share covered by the local-quadratic/tent-excess path.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 23.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T23:25:18Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.15,
+      "p_success": 0.617802414690596,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "existing_tent_excess_path_not_share_specific",
+        "p": 0.17
+      },
+      "voi_proxy": 2.3861
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 37.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.617802414690596,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "existing_tent_excess_path_not_share_specific",
+        "p": 0.17
+      },
+      {
+        "mode": "share_is_defined_posthoc",
+        "p": 0.155
+      },
+      {
+        "mode": "tent_excess_does_not_identify_local_quadratic_receipt_for_share",
+        "p": 0.145
+      },
+      {
+        "mode": "local_quadratic_receipt_overgeneralized",
+        "p": 0.14
+      },
+      {
+        "mode": "proof_surface_duplicates_old_local_quadratic_source",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.15385,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T23:25:26Z"
+  }
+}

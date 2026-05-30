@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd_local_macro",
+  "contract_id": "ns_route1_clay_adjacency_macro_20260513_tick302",
+  "contract_question": "Will the next ten NS route-1 ticks move from compiled proof-surface compression to a genuinely Clay-adjacent PDE estimate with a recognizable Caccioppoli/pressure-decomposition proof route?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 420.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "child_collar_leakage_forces_reroute": 0.18,
+    "other": 0.12,
+    "pde_estimate_false_or_too_weak": 0.34,
+    "pressure_nonlocality": 0.14,
+    "wrapper_progress_only": 0.22
+  },
+  "forecasted_at": "2026-05-13T22:44:37Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.08,
+  "p_success": 0.36,
+  "rationale_short": "We are compressing faster, but a genuine Caccioppoli/pressure-decomposition/no-invisible-profile estimate is still mathematically hard; ten ticks can reach proof vicinity but not guarantee the estimate.",
+  "read_only_attestation": true
+}

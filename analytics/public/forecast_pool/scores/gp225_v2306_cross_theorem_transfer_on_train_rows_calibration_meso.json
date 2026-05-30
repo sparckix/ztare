@@ -1,0 +1,160 @@
+{
+  "contract_id": "gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "skip calibration; default to retiring v23 model lane per GPT-5.5 review's (3)",
+      "counterfactual_action": "skip and authorise B public retrieval per GPT-5.5 review's (1)",
+      "externality_hypotheses": {
+        "if_positives_recovered_on_train_rows_then_9_heldout_rows_are_genuinely_hard": "non-zero recovery validates the machinery and re-routes operator decision to (1) public retrieval or (4) different row class",
+        "if_zero_positives_on_train_rows_then_blind_paradigm_is_dead": "if cross-theorem transfer recovers zero positives on rows where positives demonstrably exist, the blind-candidate-generation paradigm is structurally insufficient at this scale; v23 model lane retires by default",
+        "indirect_simp_set_or_same_family_leakage_risk": "train rows share Mathlib namespaces with each other; same-family pattern transfers could produce indirect positives requiring further audit"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 3,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "highest_value_negative_calibration_result_of_session",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "meso_only_forecast",
+        "calibration_on_train_rows",
+        "paradigm_falsification",
+        "no_training",
+        "gnn_remains_retired",
+        "deterministic_sidecar_lane_survives"
+      ],
+      "negative_externality_tags": [
+        "forecasters_overshot_actual_zero_positives",
+        "blind_candidate_generation_dead_at_local_scale",
+        "gpt55_review_option_iii_selected_by_autonomous_decomposition"
+      ],
+      "new_next_action": "v23_07_retire_v23_model_lane_double_down_on_deterministic_sidecar",
+      "old_next_action": "v23_06_cross_theorem_transfer_on_train_rows_calibration",
+      "realized_failure_mode_ids": [
+        "all_210_or_fewer_candidates_zero_positive_paradigm_dead",
+        "wrong_state_progress_only_no_target_equivalent",
+        "blind_paradigm_insufficient_on_train_rows_calibration_failure"
+      ]
+    }
+  },
+  "forecast_history_count": 3,
+  "mean_brier": 0.040266666666666666,
+  "mean_log_score": -0.22335194977884917,
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "artifact_hash": "470be73266ae8f12bbabfb554fe8141d008e0a7fc042c7c031d122f351572064",
+    "artifact_path": "analytics/public/leanmill/results/v23_06_cross_theorem_transfer_on_train_rows_audit.json",
+    "changed_by_forecast_ids": [],
+    "compile_status": "0_of_90_compiled_0_target_equivalent_positives_paradigm_dead",
+    "contract_id": "gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso",
+    "counterfactual_value_bucket": "highest_value_negative_calibration_result_of_session",
+    "decision_changed_bool": true,
+    "error_type": "blind_paradigm_structurally_insufficient_at_local_scale",
+    "externality_tags": [
+      "meso_only_forecast",
+      "calibration_on_train_rows",
+      "paradigm_falsification",
+      "no_training",
+      "gnn_remains_retired",
+      "deterministic_sidecar_lane_survives"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [
+      "forecasters_overshot_actual_zero_positives",
+      "blind_candidate_generation_dead_at_local_scale",
+      "gpt55_review_option_iii_selected_by_autonomous_decomposition"
+    ],
+    "new_next_action": "v23_07_retire_v23_model_lane_double_down_on_deterministic_sidecar",
+    "old_next_action": "v23_06_cross_theorem_transfer_on_train_rows_calibration",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "all_210_or_fewer_candidates_zero_positive_paradigm_dead",
+      "wrong_state_progress_only_no_target_equivalent",
+      "blind_paradigm_insufficient_on_train_rows_calibration_failure"
+    ],
+    "resolution_note": "v23.06 ran cross-theorem transfer on 10 train rows (5 of 15 lacked bridge-replayable metadata) with 90 candidates after 0 direct-leakage drops. Bridge compiled 0/90; 0 target-equivalent positives; 0 false positives; 82 no-progress; 8 wrong-state-progress. The calibration hypothesis tested: 'blind cross-theorem transfer recovers known positives'. Verdict: FALSE. The same machinery that produced 0 positives on the 9 heldout-unsolved rows produces 0 positives on the 10 train rows where positives demonstrably exist. The 9-row 0-positive result wasn't because those rows are uniquely hard; it's because the blind-candidate-generation paradigm is structurally insufficient at local scale. Forecasters overshot: Franklin p=0.22, Noether p=0.18, Claude p=0.20; actual=0. Mean Brier \u2248 0.04 (all underestimated paradigm brokenness). Decision: retire v23 model lane per GPT-5.5 review option (iii); GP-225's deterministic proof-repair sidecar lane survives. No GPU. No model-delta claim. No GP-230 score upward revision. The calibration result is the operator-decision dispositive: continue autonomously means routing GP-225 to deterministic-only lane, not iterating model architecture against a label/data failure.",
+    "resolved_at": "2026-05-15T01:05:22Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-15T01:05:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "Claude",
+      "brier": 0.04000000000000001,
+      "cost_error_agent_minutes": 85.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 90.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.52,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2231435513142097,
+      "p_success": 0.2,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T00:56:36Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T00:58:25Z",
+        "resolved_at": "2026-05-15T01:05:22Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "Franklin",
+      "brier": 0.0484,
+      "cost_error_agent_minutes": 90.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 95.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.57,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.22,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T00:56:36Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T00:58:24Z",
+        "resolved_at": "2026-05-15T01:05:22Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "Noether",
+      "brier": 0.0324,
+      "cost_error_agent_minutes": 75.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 80.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.47,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383818,
+      "p_success": 0.18,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T00:56:36Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T00:58:25Z",
+        "resolved_at": "2026-05-15T01:05:22Z"
+      }
+    }
+  ]
+}

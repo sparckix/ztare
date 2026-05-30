@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514",
+  "contract_question": "Will tick437 produce a Mathlib-grounded sub-lemma (using eLpNorm_condExp_le or analog) that supplies non-vacuous analytic content backing FixedWindowGalileanQuotientReserveIdentity, compiled clean, with no new sorries/admits on the touched file?",
+  "domain": "lean_pde",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T00:06:25Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.55,
+  "rationale_short": "eLpNorm_condExp_le supplies real Mathlib L2-contraction content for the spatial-mean / Galilean compensator; integration risk is namespace/instance plumbing on first compile against an unfamiliar amplitude API.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,211 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T21:19:51Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 27.5,
+    "expected_value": -0.7004882257011965,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.375,
+    "p_needs_new_lemma": 0.69,
+    "p_regression": 0.065,
+    "p_success": 0.7151470816638176,
+    "participants": [
+      {
+        "agent_id": "codex-meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns-proof-falsification",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417/codex_meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T21:19:47Z",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex-rd-main",
+        "belief_update": false,
+        "domain": "ns-n8-pressure-beta",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417/codex_rd_main.json",
+        "forecasted_at": "2026-05-14T21:19:47Z",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "names_not_sources",
+        "p": 0.175
+      },
+      {
+        "mode": "theorem_too_abstract",
+        "p": 0.14
+      },
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.135
+      },
+      {
+        "mode": "duplicate_surface_not_sharpening",
+        "p": 0.125
+      },
+      {
+        "mode": "pressure_beta_still_open",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 24.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T21:19:30Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff the Lean file compiles, no sorry/admit is introduced, and the tick adds a pressure/beta sharpened-failure reduction theorem preserving all three branches as open.",
+    "question": "Will the pressure/beta sharpening tick add compiling Lean structures and a theorem reducing CriticalIncrementFailure to FlatRadiusScaleReserveFailure or sharpened pressure/beta source failures, without claiming pressure, beta, or upstream closure?",
+    "success_threshold": "Lean compile plus sharpened pressure/beta reduced-frontier theorem",
+    "task_type": "ns-proof-frontier-branch-sharpening"
+  },
+  "contract_id": "ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd-main"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex-meta-darwin-proxy",
+        "raw_agent_ids": [
+          "codex-meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-meta-darwin-proxy",
+      "codex-rd-main"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "proceed_only_as_boundary",
+        "agent_id": "codex-meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417/codex_meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns-proof-falsification",
+        "expected_cost_agent_minutes": 31.0,
+        "forecasted_at": "2026-05-14T21:19:47Z",
+        "p_success": 0.64,
+        "rationale_short": "The tick can probably compile, but it likely remains boundary recording unless it names independent pressure/beta failure primitives cleanly.",
+        "specific_failure_mode_ids": [
+          "names_not_sources",
+          "pressure_beta_still_open",
+          "smuggles_radius_failure",
+          "lean_compile_issue",
+          "sidecar_contradiction"
+        ]
+      },
+      {
+        "action_change_recommendation": "proceed_minimal",
+        "agent_id": "codex-rd-main",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417/codex_rd_main.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns-n8-pressure-beta",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T21:19:47Z",
+        "p_success": 0.78,
+        "rationale_short": "A reduced-frontier theorem should be straightforward if it only sharpens failure primitives and avoids closure claims.",
+        "specific_failure_mode_ids": [
+          "lean_compile_issue",
+          "duplicate_surface_not_sharpening",
+          "overclaims_closure",
+          "theorem_too_abstract",
+          "sidecar_changes_direction"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 12.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T21:24:04Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 27.5,
+      "expected_value": -0.7004882257011965,
+      "p_success": 0.7151470816638176,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.7237
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 27.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7151470816638176,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "names_not_sources",
+        "p": 0.175
+      },
+      {
+        "mode": "theorem_too_abstract",
+        "p": 0.14
+      },
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.135
+      },
+      {
+        "mode": "duplicate_surface_not_sharpening",
+        "p": 0.125
+      },
+      {
+        "mode": "pressure_beta_still_open",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.089,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T21:24:11Z"
+  }
+}

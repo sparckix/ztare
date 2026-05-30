@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json",
+    "contract": "analytics/public/forecast_pool/contracts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard",
+    "outcome": "analytics/public/forecast_pool/outcomes/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json",
+    "score": "analytics/public/forecast_pool/scores/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 70.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T20:11:18Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0238,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "path_a_research_grade_hard_corpus",
+    "score": 0.0238,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0238,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0238,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0222,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.0222,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0213,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0213,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0189,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0189,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0175,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0175,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "gp233_adversary_yield_decomp.py --result /tmp/adv_verify_C/result.txt",
+  "question": "On a RESEARCH-GRADE 15-row adversary corpus C01-C15 (measure thy/functional analysis/number thy/Galois/topology \u2014 much harder than textbook B), verified through the canonical pinned v4.29.0 sandbox, will genuine novel closures be >=5/15 with 0 false ratifications?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "path_a_research_grade_hard_corpus",
+  "value_if_success": 0.85,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

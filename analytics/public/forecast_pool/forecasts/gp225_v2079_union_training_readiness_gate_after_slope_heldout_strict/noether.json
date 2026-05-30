@@ -1,0 +1,26 @@
+{
+  "agent_id": "Noether",
+  "belief_null_training_should_unlock": true,
+  "belief_training_should_unlock": false,
+  "contract_id": "gp225_v2079_union_training_readiness_gate_after_slope_heldout_strict",
+  "domain": "lean_gnn_harness",
+  "expected_cost_agent_minutes": 18.0,
+  "failure_mode_distribution": {
+    "anti_leakage_check_omitted": 0.08,
+    "artifact_path_or_version_mismatch": 0.05,
+    "baseline_model_delta_evidence_missing_or_underspecified": 0.24,
+    "gate_overclaims_full_training_from_one_heldout_delta": 0.3,
+    "manifest_count_goodharting": 0.12,
+    "null_training_vs_full_training_semantics_confused": 0.18,
+    "unexpected_replay_metric_inconsistency": 0.03
+  },
+  "forecasted_at": "2026-05-14T19:59:24Z",
+  "p_dependency_issue": 0.04,
+  "p_needs_new_lemma": 0.01,
+  "p_regression": 0.06,
+  "p_success": 0.87,
+  "question": "Build and run a read-only v20.79 union training-readiness gate after v20.77/v20.78, preserving anti-leakage and anti-Goodhart constraints while deciding whether training should start.",
+  "rationale": "The one heldout strict row justifies a null/dry-run baseline artifact to create evidence, but does not justify a real model-training or GNN-readiness claim.",
+  "routing_hint": "run_static_gate_only",
+  "weight": 1.0
+}

@@ -1,0 +1,90 @@
+{
+  "contract_id": "ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.016900000000000002,
+  "mean_log_score": -0.13926206733350766,
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "artifact_hash": null,
+    "artifact_path": "projects/ns_millennium_hunt/workspace/ns_residual_manifest.md",
+    "changed_by_forecast_ids": [],
+    "compile_status": null,
+    "contract_id": "ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": "no_positive_bakry_emery_curvature_critical_drift_scale_invariant",
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Verdict (b): critical non-gradient NS drift contributes sign-indefinite \u0393\u2082, \u2207U\u2208L\u00b2 critical gives NO Ricci lower bound \u21d2 \u03c1_eff=\u00bd\u2212\u2016S\u208b\u2016\u22640; DMS [A,B] constant = energy-critical \u2016\u2207u\u2016 scale-invariant \u03ba=O(1), collapses to borderline because drift is CRITICAL not subcritical. 11th recurrence; NOT a closure. RD p=0.13 well-calibrated (correctly predicted likely-fail; higher than scale-invariant 0.06 because Bakry-\u00c9mery IS the right object class).",
+    "resolved_at": "2026-05-16T16:24:36Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-16T16:24:36Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "claude_rd",
+      "brier": 0.016900000000000002,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 35.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.13926206733350766,
+      "p_success": 0.13,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T16:05:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T16:05:28Z",
+        "resolved_at": "2026-05-16T16:24:36Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "codex",
+      "brier": 0.016900000000000002,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 35.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.13926206733350766,
+      "p_success": 0.13,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T16:05:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T16:06:26Z",
+        "resolved_at": "2026-05-16T16:24:36Z"
+      }
+    }
+  ]
+}

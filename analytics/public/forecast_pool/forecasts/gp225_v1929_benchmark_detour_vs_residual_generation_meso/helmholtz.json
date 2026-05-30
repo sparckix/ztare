@@ -1,0 +1,25 @@
+{
+  "agent_id": "helmholtz",
+  "contract_id": "gp225_v1929_benchmark_detour_vs_residual_generation_meso",
+  "contract_question": "Over the next 30 agent-minutes, is the higher-yield GP-225 pre-GNN route to continue benchmark integration through v19.28/v19.29 LeanDojo trace/state extraction rather than returning immediately to residual generation/replay?",
+  "domain": "gp225_pre_gnn_route_selection",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_main_project_mutation_or_training_boundary_violation": 0.03,
+    "benchmark_detour_yields_only_tooling_status_not_decision_change": 0.13,
+    "direct_residual_generation_would_have_higher_immediate_label_yield": 0.12,
+    "lean_dojo_or_lake_dependency_friction_consumes_30_minute_budget": 0.18,
+    "leandojo_trace_still_fails_before_extracting_usable_states": 0.24,
+    "other": 0.05,
+    "state_adapter_artifacts_too_thin_for_next_route_decision": 0.09,
+    "traceable_sorry_project_does_not_match_gp225_residual_state_shape": 0.16
+  },
+  "forecasted_at": "2026-05-13T22:59:21Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.68,
+  "rationale_short": "Skeptically positive: the blocker has narrowed to LeanDojo trace/state extraction, and v19.28 is a plausible discriminator. Main risk is tooling friction producing no usable state adapter, but a decisive blocker is still higher yield than returning to replay immediately.",
+  "read_only_attestation": true
+}

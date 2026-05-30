@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_cutoff_cz_commutator_micro_20260513_tick308",
+  "mean_brier": 0.22865000000000002,
+  "mean_log_score": -0.6498748798598525,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_cutoff_cz_commutator_micro_20260513_tick308",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "Added FreshFrequencyCutoffCZCommutatorLeakageSource and two projection theorems; Lean check and module build passed.",
+    "resolved_at": "2026-05-13T23:16:25Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:16:47Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "hooke",
+      "brier": 0.28090000000000004,
+      "cost_error_agent_minutes": 67.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 85.0,
+      "log_score": -0.7550225842780328,
+      "p_success": 0.47,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "mcclintock",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559",
+  "contract_question": "Gemini-Pro channel binds the unique-survivor Lojasiewicz theta<1 to the Pressure-Hessian Parametric Ejection: flat zero-helicity Ghost's rank-one kinetic load forces partial_z^2 p<0 (Pressure Poisson) ejecting z-noise => energy functional strictly convex in z => theta<1 => gamma>0 => tick558->552->551 closure (chain PROVED given the gate). Decisive sharpened question: is the 2D->3D pressure-Hessian ejection of a ZERO-HELICITY flat cascade scale-invariant-STRICT (s0>0 uniform => theta<1 => Ghost broken => route-1 closure) OR scale-CRITICAL (s0->0, the Ghost is engineered-marginal by zero helicity => theta=1 => criticality fixed point in pressure-Hessian vocabulary)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "hidden_normalization_or_scale_invariance_gap": 0.18,
+    "scale_critical_degeneration_s0_goes_to_0": 0.67,
+    "strict_only_under_extra_geometric_subclass": 0.15
+  },
+  "forecast_externality_tags": [
+    "zero-helicity-pressure-hessian",
+    "scale-invariance-gap",
+    "route1-macro-residual"
+  ],
+  "forecasted_at": "2026-05-16T00:14:56Z",
+  "p_dependency_issue": 0.17,
+  "p_needs_new_lemma": 0.86,
+  "p_regression": 0.03,
+  "p_success": 0.15,
+  "rationale_short": "No supplied DAG or ledger entry shows a scale-invariant lower bound for the transverse steepness s0; the zero-helicity setup removes stretching but does not by itself certify a strict surplus, so the priced baseline is scale-critical degeneration. Success needs an explicit normalization or geometry lemma, not just carrier repackaging.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "scale_critical_degeneration_s0_goes_to_0",
+    "hidden_normalization_or_scale_invariance_gap",
+    "strict_only_under_extra_geometric_subclass"
+  ]
+}

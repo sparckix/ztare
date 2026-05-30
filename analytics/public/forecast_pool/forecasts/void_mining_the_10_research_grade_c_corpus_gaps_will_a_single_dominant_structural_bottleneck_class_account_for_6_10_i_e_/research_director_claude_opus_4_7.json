@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_",
+  "contract_question": "Void-mining the 10 research-grade C-corpus gaps: will a SINGLE dominant structural bottleneck class account for >=6/10 (i.e. the gaps are one improvable failure mode, not scattered)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:22:47Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.75,
+  "rationale_short": "prover's own GAP notes repeatedly cite 'cannot name the v4.29.0 lemma/shape' for true-and-existing theorems -> expect dominant class = pinned premise-retrieval/name-resolution, not math inability",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

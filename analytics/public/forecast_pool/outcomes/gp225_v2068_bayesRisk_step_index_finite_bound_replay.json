@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 23.0,
+  "artifact_hash": "e10172aea6abc1b2ebecfd94e99fcaa9f0bece8586edc9a7f26caef511f64bbf",
+  "artifact_path": "analytics/public/leanmill/results/v2068_bayesRisk_step_index_finite_bound_replay.json",
+  "changed_by_forecast_ids": [
+    "Knuth4",
+    "Wirth3"
+  ],
+  "compile_status": "step_index_finite_bound_replay_passed",
+  "contract_id": "gp225_v2068_bayesRisk_step_index_finite_bound_replay",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "positive_replay",
+    "strict_row",
+    "anti_goodhart"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [
+    "single_row_only",
+    "gnn_still_blocked"
+  ],
+  "new_next_action": "refresh manifest and run union training gate; keep GNN blocked",
+  "old_next_action": "continue context hydration before replay",
+  "preconditioner_effect": "Step-index patch corrected theorem-head insertion drift and produced strict compile signal.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2067_bayesRisk_step_index_finite_bound_patch.json",
+  "realized_failure_mode_ids": [
+    "ENNReal_mul_lt_top_argument_order_wrong"
+  ],
+  "resolution_note": "v20.68 ran step-index finite-bound bayesRisk replay: 2 attempted, 1 compiled, 1 new strict same-target row, 0 harmful mismatches, no target proof generation, no training, GNN blocked.",
+  "resolved_at": "2026-05-14T19:03:05Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

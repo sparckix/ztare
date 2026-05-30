@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T00:40:12Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_antilamellar_discharge_macro_20260516",
+    "score": 0.1429,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1429,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 10,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0217,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 140,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0192,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 7,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 4,
+        "token_jaccard": 0.0909
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "30d",
+  "information_value": 4.5,
+  "layer": "macro",
+  "objective_resolver": "PDE verification: do Serrin/Ladyzhenskaya conditional regularity and Bernstein's inequality apply to the Leray-Hopf tangential cascade exactly as composed in tick562 (heat-exclusion of pure shear is elementary; the content is whether the asymptotically-tangential cascade is genuinely Serrin-subcritical with the stated ratio). success iff the classical chain applies and closes; 0.5 if one classical application needs a stated extra integrability hypothesis; fail iff the cascade evades Serrin/Bernstein in the relevant regime",
+  "question": "tick562 DISCHARGES (Tier-3 PASS 2/3, not defer) the anti-lamellar input: PROVED (a) tangentially-coherent zero-helicity shear solves the pure heat equation => globally regular => NOT a singular CKN-bad node; (b) Bernstein composition: nonlinearity/dissipation ratio <= (Cb/cb)*xi_tau*r from CITED Bernstein inequality + proved algebra; (c) CKN-bad + CITED Serrin/Ladyzhenskaya threshold R*>0 => xi_tau >= R**xi_z => s_z >= R*^2/(R*^2+1) > 0 scale-invariant => tick559->558->552->551 => route-1 closure. Every cited input (heat regularity, Serrin, Bernstein) is a real textbook theorem, no Prop placeholder. Does the cited Serrin+Bernstein chain genuinely apply to the actual Leray-Hopf cascade in the precise form used (closing route-1), or is there a gap in the classical-theorem application to the cascade geometry?",
+  "risk_penalty": 1.0,
+  "success_threshold": "success iff cited Serrin+Bernstein genuinely close the discharged chain for the Leray-Hopf cascade; 0.5 if one extra standard integrability hypothesis needed; fail iff classical-theorem application gap",
+  "task_type": "ns_clay_antilamellar_discharge_macro_20260516",
+  "value_if_success": 9.0,
+  "void_conditions": "tick562/559/558/552/551 refactored"
+}

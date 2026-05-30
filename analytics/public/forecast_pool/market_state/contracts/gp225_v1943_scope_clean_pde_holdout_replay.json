@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:14:28Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 27.970200573065902,
+    "expected_value": 2.4910524732319845,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.3797020057306591,
+    "p_needs_new_lemma": 0.5195530085959885,
+    "p_regression": 0.09985100286532951,
+    "p_success": 0.21765137045699323,
+    "participants": [
+      {
+        "agent_id": "pascal_adversarial_forecaster",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.18,
+        "weight": 0.9526
+      },
+      {
+        "agent_id": "peirce_readonly_forecaster",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.26,
+        "weight": 0.9669
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.19007449856733521
+      },
+      {
+        "mode": "v1941_candidates_were_hand_mapped_and_do_not_generalize",
+        "p": 0.11910601719197708
+      },
+      {
+        "mode": "diverse_holdout_reduces_overfit_but_lower_closure_rate",
+        "p": 0.10074498567335244
+      },
+      {
+        "mode": "generic_templates_need_elaborator_feedback",
+        "p": 0.10074498567335244
+      },
+      {
+        "mode": "pde_holdout_requires_domain_specific_argument_shapes",
+        "p": 0.09925501432664757
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1943_scope_clean_pde_holdout_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1943_scope_clean_pde_holdout_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1943_scope_clean_pde_holdout_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1943_scope_clean_pde_holdout_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1943_scope_clean_pde_holdout_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 14.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:14:06Z",
+    "created_by": "codex:RD_2026_05_13",
+    "horizon": "same session",
+    "layer": "micro",
+    "objective_resolver": "Resolve from v1943 JSON metrics: attempted_rows>=12, strict_or_pull_forward_rows>=4, harmful_compiled_mismatch_rows==0, post_target_declarations_used_for_primary=false, target_proof_lines_used_for_candidate_generation=false, teacher_oracle_candidates_excluded_from_primary=true, training_now=false, gnn_blocked=true.",
+    "question": "Will v19.43 execute scope-clean signature repair on the v19.42 PDE-functional holdout shard and reach at least 4 strict-or-pull-forward closures with zero harmful compiled mismatches, using no post-target declarations, target proof lines, or teacher/oracle primary candidates?",
+    "success_threshold": "attempted_rows>=12 AND strict_or_pull_forward_rows>=4 AND harmful_compiled_mismatch_rows==0 AND all contamination controls clean; generator evidence only, not GNN unblock.",
+    "task_type": "lean_replay_repair_gate"
+  },
+  "contract_id": "gp225_v1943_scope_clean_pde_holdout_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:pascal_adversarial_forecaster",
+        "raw_agent_ids": [
+          "pascal_adversarial_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:peirce_readonly_forecaster",
+        "raw_agent_ids": [
+          "peirce_readonly_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "pascal_adversarial_forecaster",
+      "peirce_readonly_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "pascal_adversarial_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1943_scope_clean_pde_holdout_replay/pascal_adversarial_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T00:14:16Z",
+        "p_success": 0.18,
+        "rationale_short": "v19.41 is positive but small and partly hand-mapped. PDE-functional holdout has more variety and likely needs typed argument synthesis, so threshold 4 closures is hard; no-harm controls make pass valuable if achieved.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "peirce_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1943_scope_clean_pde_holdout_replay/peirce_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T00:14:24Z",
+        "p_success": 0.26,
+        "rationale_short": "v19.42 supplies 74 usable pre-target names across 15 files, so some replay closures should occur. But v19.41 success involved curated actions; a generic holdout replay probably lands below the 4-row gate unless templates exploit theorem/action families well.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 12.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T00:18:27Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 2.4910524732319845,
+      "forecast_spread": 0.08,
+      "p_success": 0.21765137045699323,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.2503
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 27.970200573065902,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.21765137045699323,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.19007449856733521
+      },
+      {
+        "mode": "v1941_candidates_were_hand_mapped_and_do_not_generalize",
+        "p": 0.11910601719197708
+      },
+      {
+        "mode": "diverse_holdout_reduces_overfit_but_lower_closure_rate",
+        "p": 0.10074498567335244
+      },
+      {
+        "mode": "generic_templates_need_elaborator_feedback",
+        "p": 0.10074498567335244
+      },
+      {
+        "mode": "pde_holdout_requires_domain_specific_argument_shapes",
+        "p": 0.09925501432664757
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.05,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T00:18:34Z"
+  }
+}

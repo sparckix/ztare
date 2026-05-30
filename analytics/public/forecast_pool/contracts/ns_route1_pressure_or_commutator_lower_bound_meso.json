@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_pressure_or_commutator_lower_bound_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_pressure_or_commutator_lower_bound_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_pressure_or_commutator_lower_bound_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_pressure_or_commutator_lower_bound_meso.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_pressure_or_commutator_lower_bound_meso.json"
+  },
+  "budget_agent_minutes": 60.0,
+  "contract_id": "ns_route1_pressure_or_commutator_lower_bound_meso",
+  "cost_penalty": 0.02,
+  "created_at": "2026-05-13T19:11:31Z",
+  "created_by": "codex:RD_2026_05_13_ns_route1",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same-session-next-leg",
+  "information_value": 0.9,
+  "layer": "meso",
+  "objective_resolver": "Resolve success if independent forecasts are aggregated before the next PDE-leg implementation and the selected leg produces a compiled theorem or a clear blocker that changes the next lever.",
+  "question": "Which next NS route1 PDE leg is likely to yield the best compiled non-tautological progress: pressure reserve/no-escape lower-bound, commutator endpoint lower-semicontinuity, or profile module build repair?",
+  "risk_penalty": 0.8,
+  "success_threshold": "independent forecast_count>=3 and selected leg yields compiled progress or typed blocker",
+  "task_type": "ns_route1_pde_leg_choice",
+  "value_if_success": 1.2,
+  "void_conditions": "operator redirects, Lean unavailable, or no independent forecasts returned"
+}

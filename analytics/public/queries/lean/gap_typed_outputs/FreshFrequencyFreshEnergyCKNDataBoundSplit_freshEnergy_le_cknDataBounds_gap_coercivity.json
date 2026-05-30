@@ -1,0 +1,28 @@
+{
+  "ts": "2026-05-13T22:33:43.921968+00:00",
+  "target": "FreshFrequencyFreshEnergyCKNDataBoundSplit",
+  "field": "freshEnergy_le_cknDataBounds",
+  "classification": {
+    "gap_type": "COERCIVITY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched COERCIVITY evidence in the field/type string. Target was not present in the workmap.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": [
+    {
+      "name": "bounded_below",
+      "file": "Analysis/InnerProductSpace/LaxMilgram.lean",
+      "preview": "theorem bounded_below (coercive : IsCoercive B) : \u2203 C, 0 < C \u2227 \u2200 v, C * \u2016v\u2016 \u2264 \u2016B\u266f v\u2016 := by   rcases coercive with \u27e8C, C_ge_0, coercivity\u27e9   refine \u27e8C, C_ge_0, ?_\u27e9   intro v   by_cases h : 0 < \u2016v\u2016   \u00b7 "
+    },
+    {
+      "name": "coord_norm",
+      "file": "Analysis/Normed/Operator/NormedSpace.lean",
+      "preview": "theorem coord_norm (x : E) (h : x \u2260 0) : \u2016coord \ud835\udd5c x h\u2016 = \u2016x\u2016\u207b\u00b9 := by   have hx : 0 < \u2016x\u2016 := norm_pos_iff.mpr h   haveI : Nontrivial (\ud835\udd5c \u2219 x) := Submodule.nontrivial_span_singleton h   exact ContinuousL"
+    },
+    {
+      "name": "range_eq_top",
+      "file": "Analysis/InnerProductSpace/LaxMilgram.lean",
+      "preview": "theorem range_eq_top (coercive : IsCoercive B) : B\u266f.range = \u22a4 := by   haveI := coercive.isClosed_range.completeSpace_coe   rw [\u2190 B\u266f.range.orthogonal_orthogonal]   rw [Submodule.eq_top_iff']   intro v "
+    }
+  ]
+}

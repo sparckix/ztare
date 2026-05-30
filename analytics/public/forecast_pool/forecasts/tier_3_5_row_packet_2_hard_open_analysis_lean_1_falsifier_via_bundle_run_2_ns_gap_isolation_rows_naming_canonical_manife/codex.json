@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tier_3_5_row_packet_2_hard_open_analysis_lean_1_falsifier_via_bundle_run_2_ns_gap_isolation_rows_naming_canonical_manife",
+  "contract_question": "Tier-3 5-row packet (2 hard-open analysis Lean + 1 falsifier via bundle_run; 2 NS gap_isolation rows naming canonical manifest nodes C3/C7-upper by reference + manifest-recorded next-lever, NOT re-derived): does it hit Tier-3 gate (>=3/5 closure|exact-gap|valid-falsifier, 0 false-ratify, 0 wrong-kind, >=1 NS formalizable next-lever)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 76.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "canonical_manifest_node_mismatch": 0.26,
+    "hard_open_rows_stay_open": 0.34,
+    "ns_next_lever_not_formalizable": 0.18,
+    "resolver_bundle_run_coupling_failure": 0.22
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T23:03:18Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.17,
+  "p_regression": 0.09,
+  "p_success": 0.57,
+  "rationale_short": "Above coin flip because the contract has a plausible 3/5 path: a valid falsifier plus two manifest-cited NS gap-isolation rows can carry the Tier-3 gate even if the two Lean analysis rows stay open. The dominant void is not the top-level threshold but whether bundle_run output and canonical-node naming stay aligned without hidden resolver coupling or re-derived next-lever content.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

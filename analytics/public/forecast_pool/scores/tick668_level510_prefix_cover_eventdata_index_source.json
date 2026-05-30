@@ -1,0 +1,99 @@
+{
+  "contract_id": "tick668_level510_prefix_cover_eventdata_index_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Keep targetEventDataIndex as a supplied field.",
+      "counterfactual_action": "Derive targetEventDataIndex from an explicit prefix-cover selected-index relation."
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "positive_source_reduction",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "positive_source_ladder",
+        "gate_semantics_meta_darwin"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "derive prefix-cover totality and selected-index membership from finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix",
+      "old_next_action": "keep targetEventDataIndex supplied directly",
+      "preconditioner_effect": "Meta-Darwin gate audit normalized recent weak-substitute handling before adding the new prefix-cover gate.",
+      "preconditioner_source": "analytics/public/queries/rd_pattern_action_contract_tick668_level510_prefix_cover_eventdata_index.json"
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.1521,
+  "mean_log_score": -0.4942963218147801,
+  "outcome": {
+    "actual_cost_agent_minutes": 37.0,
+    "artifact_hash": "38b8e24ace3c0b648654518fa05fe64abafc46e8ba596bdfb13a859110b549ad",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "pass",
+    "contract_id": "tick668_level510_prefix_cover_eventdata_index_source",
+    "counterfactual_value_bucket": "positive_source_reduction",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "positive_source_ladder",
+      "gate_semantics_meta_darwin"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "derive prefix-cover totality and selected-index membership from finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix",
+    "old_next_action": "keep targetEventDataIndex supplied directly",
+    "ordering_override_no_codex": "pre-resolution forecast was recorded as codex_rd at 2026-05-27T06:19:47Z before validation, but this local continuation did not have an independent live forecaster available",
+    "ordering_override_no_independent_forecaster": "pre-resolution forecast was recorded as codex_rd at 2026-05-27T06:19:47Z before validation, but this local continuation did not have an independent live forecaster available",
+    "preconditioner_effect": "Meta-Darwin gate audit normalized recent weak-substitute handling before adding the new prefix-cover gate.",
+    "preconditioner_source": "analytics/public/queries/rd_pattern_action_contract_tick668_level510_prefix_cover_eventdata_index.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Level510 compiled: prefix-cover selected index packages into Level509 same-tree eventData index source; strict gate/workbench and high-severity semantic audit passed.",
+    "resolved_at": "2026-05-27T06:27:26Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T06:27:31Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 37.0,
+      "agent_id": "codex_rd",
+      "brier": 0.1521,
+      "cost_error_agent_minutes": 55.0,
+      "domain": "ns_trackb_formal_bridge",
+      "expected_cost_agent_minutes": 92.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4942963218147801,
+      "p_buy_yes_max": 0.45,
+      "p_dependency_issue": 0.08,
+      "p_needs_new_lemma": 0.33,
+      "p_regression": 0.07,
+      "p_sell_yes_min": 0.56,
+      "p_success": 0.61,
+      "predicted_brier_hi": 0.29,
+      "predicted_brier_lo": 0.16,
+      "success_bool": true,
+      "tail_downside_worry": 16.0,
+      "tail_upside_surprise": 12.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T06:19:25Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T06:19:47Z",
+        "resolved_at": "2026-05-27T06:27:26Z"
+      }
+    }
+  ]
+}

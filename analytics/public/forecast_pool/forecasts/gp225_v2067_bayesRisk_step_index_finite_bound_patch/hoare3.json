@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Use explicit ENNReal.mul_lt_top and measure_lt_top candidates, mark replay separately, and block the exact target simp line.",
+  "agent_id": "Hoare3",
+  "contract_id": "gp225_v2067_bayesRisk_step_index_finite_bound_patch",
+  "contract_question": "Will v20.67 generate a source-safe finite-bound subgoal patch for current_scale_0126/bayesRisk_lt_top that matches the replay insertion point and avoids copying the target proof line?",
+  "domain": "gp225_pre_gnn_step_index_candidate_patch",
+  "expected_cost_agent_minutes": 15.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_accidentally_copies_gold_simp": 0.22,
+    "explicit_measure_lt_top_identifier_wrong": 0.3,
+    "finite_product_associativity_shape_mismatch": 0.2,
+    "scope_creep_to_replay": 0.12,
+    "static_gate_underchecks_namespace": 0.16
+  },
+  "forecast_externality_tags": [
+    "step_index_patch",
+    "anti_leakage",
+    "replay_preconditioner"
+  ],
+  "forecasted_at": "2026-05-14T18:59:50Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.07,
+  "p_regression": 0.05,
+  "p_success": 0.76,
+  "rationale_short": "The replay error exposes the exact subgoal; static patch generation is likely, compile remains separate.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "explicit_measure_lt_top_identifier_wrong",
+    "finite_product_associativity_shape_mismatch"
+  ]
+}

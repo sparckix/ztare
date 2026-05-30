@@ -1,0 +1,2550 @@
+{
+  "agents": {
+    "Ada2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Babbage3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0289,
+      "mean_log_score": -0.18633,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Bayes": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0529,
+      "mean_log_score": -0.261365,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Bayes2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0256,
+      "mean_log_score": -0.174353,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Boole2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0196,
+      "mean_log_score": -0.150823,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Church3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Claude": {
+      "failure_mode_evaluable": 3,
+      "failure_mode_top1_hit_rate": 0.6667,
+      "mean_brier": 0.2108,
+      "mean_log_score": -0.60426,
+      "mean_realized_failure_mass": 0.393333,
+      "n_scored": 3
+    },
+    "ClaudeRD": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.49,
+      "mean_log_score": -1.203973,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Curry2": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.53,
+      "n_scored": 1
+    },
+    "Curry3": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3364,
+      "mean_log_score": -0.867501,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Curry4": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Dijkstra3": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2116,
+      "mean_log_score": -0.616186,
+      "mean_realized_failure_mass": 0.4,
+      "n_scored": 1
+    },
+    "Euclid2": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4096,
+      "mean_log_score": -1.021651,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Euler": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0631,
+      "mean_log_score": -0.282174,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 3
+    },
+    "Fisher": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Fisher2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0441,
+      "mean_log_score": -0.235722,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Franklin": {
+      "failure_mode_evaluable": 5,
+      "failure_mode_top1_hit_rate": 0.2,
+      "mean_brier": 0.1884,
+      "mean_log_score": -0.546663,
+      "mean_realized_failure_mass": 0.198,
+      "n_scored": 10
+    },
+    "Gauss2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Gentzen4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2401,
+      "mean_log_score": -0.673345,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Gibbs": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.054133,
+      "mean_log_score": -0.259423,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 3
+    },
+    "Herschel": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.058,
+      "mean_log_score": -0.274783,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "Hilbert": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Hilbert2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Hilbert3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Hoare3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Hooke": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2123,
+      "mean_log_score": -0.61384,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 3
+    },
+    "Hopper": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.0841,
+      "mean_log_score": -0.34249,
+      "mean_realized_failure_mass": 0.62,
+      "n_scored": 1
+    },
+    "Hopper2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Hopper4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0361,
+      "mean_log_score": -0.210721,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Kleene4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.533333,
+      "n_scored": 1
+    },
+    "Knuth": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.142857,
+      "n_scored": 1
+    },
+    "Knuth2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Knuth4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.18,
+      "n_scored": 1
+    },
+    "Kolmogorov": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.09,
+      "mean_log_score": -0.356675,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Kolmogorov2": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Lamport4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Lovasz": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Lovelace2": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.62,
+      "n_scored": 1
+    },
+    "Lovelace3": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.5041,
+      "mean_log_score": -1.237874,
+      "mean_realized_failure_mass": 0.34,
+      "n_scored": 1
+    },
+    "McCarthy3": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.39,
+      "n_scored": 1
+    },
+    "McClintock": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.24805,
+      "mean_log_score": -0.689163,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "Milner3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.09,
+      "mean_log_score": -0.356675,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Mirzakhani": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.6,
+      "n_scored": 1
+    },
+    "Nash": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Neyman3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0441,
+      "mean_log_score": -0.235722,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Noether": {
+      "failure_mode_evaluable": 6,
+      "failure_mode_top1_hit_rate": 0.5,
+      "mean_brier": 0.2125,
+      "mean_log_score": -0.605634,
+      "mean_realized_failure_mass": 0.376667,
+      "n_scored": 12
+    },
+    "Noether2": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.09025,
+      "mean_log_score": -0.344378,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "Noether3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Pascal2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0361,
+      "mean_log_score": -0.210721,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Pearl3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0256,
+      "mean_log_score": -0.174353,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Prawitz4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2809,
+      "mean_log_score": -0.755023,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Rawls": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.158867,
+      "mean_log_score": -0.495855,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 3
+    },
+    "Russell": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.61,
+      "n_scored": 1
+    },
+    "Scott4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1296,
+      "mean_log_score": -0.446287,
+      "mean_realized_failure_mass": 0.574713,
+      "n_scored": 1
+    },
+    "Shannon": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.07085,
+      "mean_log_score": -0.308464,
+      "mean_realized_failure_mass": 0.63,
+      "n_scored": 2
+    },
+    "Shannon3": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0441,
+      "mean_log_score": -0.235722,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Shannon4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Turing": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1025,
+      "mean_log_score": -0.385771,
+      "mean_realized_failure_mass": 0.57,
+      "n_scored": 2
+    },
+    "Turing2": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0529,
+      "mean_log_score": -0.261365,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Turing3": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.4356,
+      "mean_log_score": -1.07881,
+      "mean_realized_failure_mass": 0.31,
+      "n_scored": 1
+    },
+    "Turing4": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0289,
+      "mean_log_score": -0.18633,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "VonNeumann2": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "Wirth3": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2401,
+      "mean_log_score": -0.673345,
+      "mean_realized_failure_mass": 0.19,
+      "n_scored": 1
+    },
+    "bernoulli_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3481,
+      "mean_log_score": -0.891598,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "bohr_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.09,
+      "mean_log_score": -0.356675,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "carver_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "chandrasekhar_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3364,
+      "mean_log_score": -0.867501,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "claude_rd": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.074,
+      "mean_log_score": -0.306983,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "codex": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.30985,
+      "mean_log_score": -0.826695,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "codex-meta-darwin-proxy": {
+      "failure_mode_evaluable": 9,
+      "failure_mode_top1_hit_rate": 0.6667,
+      "mean_brier": 0.154211,
+      "mean_log_score": -0.497167,
+      "mean_realized_failure_mass": 0.333333,
+      "n_scored": 9
+    },
+    "codex-rd": {
+      "failure_mode_evaluable": 4,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0734,
+      "mean_log_score": -0.31518,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 4
+    },
+    "codex-rd-main": {
+      "failure_mode_evaluable": 9,
+      "failure_mode_top1_hit_rate": 0.3333,
+      "mean_brier": 0.0586,
+      "mean_log_score": -0.273283,
+      "mean_realized_failure_mass": 0.121111,
+      "n_scored": 9
+    },
+    "codex_RD": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_empirical_skeptic": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_forecaster": {
+      "failure_mode_evaluable": 10,
+      "failure_mode_top1_hit_rate": 0.6,
+      "mean_brier": 0.149375,
+      "mean_log_score": -0.485258,
+      "mean_realized_failure_mass": 0.331,
+      "n_scored": 12
+    },
+    "codex_gp230_pro_gp225_route_selector_readonly": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_gpt5_readonly_2026_05_13": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_infra_skeptic": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3364,
+      "mean_log_score": -0.867501,
+      "mean_realized_failure_mass": 0.08,
+      "n_scored": 1
+    },
+    "codex_local_rd_v1869": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3364,
+      "mean_log_score": -0.867501,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_local_rd_v1872": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_local_rd_v1874": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3364,
+      "mean_log_score": -0.867501,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_market_architect": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.2,
+      "n_scored": 1
+    },
+    "codex_market_mechanism": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd": {
+      "failure_mode_evaluable": 11,
+      "failure_mode_top1_hit_rate": 0.0909,
+      "mean_brier": 0.103861,
+      "mean_log_score": -0.371093,
+      "mean_realized_failure_mass": 0.059091,
+      "n_scored": 38
+    },
+    "codex_rd_absorption_route": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.46,
+      "n_scored": 1
+    },
+    "codex_rd_countermodel_skeptic": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.16,
+      "mean_log_score": -0.510826,
+      "mean_realized_failure_mass": 0.56,
+      "n_scored": 1
+    },
+    "codex_rd_event_bridge": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.26,
+      "n_scored": 1
+    },
+    "codex_rd_executor_prior": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.356322,
+      "n_scored": 1
+    },
+    "codex_rd_graph_basin": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.48,
+      "n_scored": 1
+    },
+    "codex_rd_language_gate": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.5476,
+      "mean_log_score": -1.347074,
+      "mean_realized_failure_mass": 0.3,
+      "n_scored": 1
+    },
+    "codex_rd_local": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.276725,
+      "mean_log_score": -0.747465,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 4
+    },
+    "codex_rd_local_micro": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_micro_pricer": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.353,
+      "mean_log_score": -0.906389,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "codex_rd_no_go_skeptic": {
+      "failure_mode_evaluable": 2,
+      "failure_mode_top1_hit_rate": 0.5,
+      "mean_brier": 0.28625,
+      "mean_log_score": -0.765776,
+      "mean_realized_failure_mass": 0.34,
+      "n_scored": 2
+    },
+    "codex_rd_no_reuse_prior": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.34,
+      "n_scored": 1
+    },
+    "codex_rd_ns_route1_gowers_prompt": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0256,
+      "mean_log_score": -0.174353,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_ns_route1_gp233_decomposer": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0196,
+      "mean_log_score": -0.150823,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_ns_route1_intake_gate": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0144,
+      "mean_log_score": -0.127833,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_ns_route1_pricer": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_pde_no_go": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.2025,
+      "mean_log_score": -0.597837,
+      "mean_realized_failure_mass": 0.6,
+      "n_scored": 1
+    },
+    "codex_rd_pde_skeptic": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.3364,
+      "mean_log_score": -0.867501,
+      "mean_realized_failure_mass": 0.42,
+      "n_scored": 1
+    },
+    "codex_rd_pre": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_reuse_skeptic": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.2401,
+      "mean_log_score": -0.673345,
+      "mean_realized_failure_mass": 0.36,
+      "n_scored": 1
+    },
+    "codex_rd_source_route": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.12,
+      "n_scored": 1
+    },
+    "codex_rd_surface_repair": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.52,
+      "n_scored": 1
+    },
+    "codex_rd_tick358": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_tick359": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_tick360": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_tick361b": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_tick399": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_tick400": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1089,
+      "mean_log_score": -0.400478,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_rd_tick401": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.26,
+      "n_scored": 1
+    },
+    "codex_rd_tick402": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.09,
+      "mean_log_score": -0.356675,
+      "mean_realized_failure_mass": 0.3,
+      "n_scored": 1
+    },
+    "codex_rd_tick403": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.2916,
+      "mean_log_score": -0.776529,
+      "mean_realized_failure_mass": 0.66,
+      "n_scored": 1
+    },
+    "codex_readonly_gp230": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.097467,
+      "mean_log_score": -0.364765,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 3
+    },
+    "codex_readonly_gp230_ns_route1_2026_05_13": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1383,
+      "mean_log_score": -0.463831,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 3
+    },
+    "codex_readonly_gp230_skeptical_baseline": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_skeptic": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.34569,
+      "mean_log_score": -0.902035,
+      "mean_realized_failure_mass": 0.46,
+      "n_scored": 10
+    },
+    "codex_skeptic_no_reuse_prior": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.64,
+      "n_scored": 1
+    },
+    "codex_skeptic_pre": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_skeptic_prior": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 1.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.39,
+      "n_scored": 1
+    },
+    "codex_skeptic_tick358": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2601,
+      "mean_log_score": -0.71335,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_skeptic_tick359": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_skeptic_tick360": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2601,
+      "mean_log_score": -0.71335,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "codex_skeptic_tick361b": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "confucius": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0382,
+      "mean_log_score": -0.212296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 4
+    },
+    "copernicus": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2704,
+      "mean_log_score": -0.733969,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "copernicus_popper_skeptic_v1869": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1849,
+      "mean_log_score": -0.562119,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "copernicus_readonly_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "curry_policy_optimist": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "descartes": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4096,
+      "mean_log_score": -1.021651,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "dirac_skeptical_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "euler_pair_guard_tick346": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0144,
+      "mean_log_score": -0.127833,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "faraday_readonly_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4624,
+      "mean_log_score": -1.139434,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gibbs_market_B": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.18,
+      "mean_log_score": -0.550107,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "goodall_readonly_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3985,
+      "mean_log_score": -1.00013,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "gp230_ampere_gp225_v1951": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1936,
+      "mean_log_score": -0.579818,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_babbage_gp225_v1960": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2704,
+      "mean_log_score": -0.733969,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_chandrasekhar_gp225_v2037": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.16,
+      "mean_log_score": -0.510826,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_curie_gp225_v1968": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_descartes_gp225_v2035": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_erdos_gp225_v1949": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_erdos_gp225_v2031": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_faraday_gp225_v1968": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1936,
+      "mean_log_score": -0.579818,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_fermat_gp225_v2022": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_hypatia_gp225_v2035": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_kant_gp225_v2022": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_lamport_gp225_v1973": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0841,
+      "mean_log_score": -0.34249,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_lovelace_gp225_v1960": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4096,
+      "mean_log_score": -1.021651,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_lovelace_gp225_v2030": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0196,
+      "mean_log_score": -0.150823,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_maxwell_gp225_v2031": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_mcclintock_gp225_v1949": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.16,
+      "mean_log_score": -0.510826,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_mill_gp225_v2037": {
+      "failure_mode_evaluable": 1,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v1956": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v1978": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1089,
+      "mean_log_score": -0.400478,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v1990": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v1994": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4096,
+      "mean_log_score": -1.021651,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v2001": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.6241,
+      "mean_log_score": -1.560648,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v2004": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.7056,
+      "mean_log_score": -1.832581,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v2007": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4761,
+      "mean_log_score": -1.171183,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v2010": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.5776,
+      "mean_log_score": -1.427116,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v2014": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4356,
+      "mean_log_score": -1.07881,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_noether_gp225_v2020": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.5776,
+      "mean_log_score": -1.427116,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_ohm_skeptical_gp225_v1951": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4489,
+      "mean_log_score": -1.108663,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_parfit_gp225_v2030": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_readonly_ns_route1_forecast_2026_05_13": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.139767,
+      "mean_log_score": -0.465723,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 3
+    },
+    "gp230_shannon_gp225_v1973": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v1978": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2209,
+      "mean_log_score": -0.634878,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v1990": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v1994": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3249,
+      "mean_log_score": -0.84397,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v2001": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.5184,
+      "mean_log_score": -1.272966,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v2004": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.6084,
+      "mean_log_score": -1.514128,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v2007": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3844,
+      "mean_log_score": -0.967584,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v2010": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.5041,
+      "mean_log_score": -1.237874,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v2014": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3481,
+      "mean_log_score": -0.891598,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_tarski_gp225_v2020": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4761,
+      "mean_log_score": -1.171183,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "gp230_turing_gp225_v1956": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2116,
+      "mean_log_score": -0.616186,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "helmholtz": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1227,
+      "mean_log_score": -0.427383,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 4
+    },
+    "herschel": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "herschel_market_A": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.15725,
+      "mean_log_score": -0.504203,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "herschel_skeptic_tick342": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "herschel_skeptic_tick343": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "herschel_skeptic_tick344": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "herschel_skeptic_tick345": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2116,
+      "mean_log_score": -0.616186,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "herschel_skeptic_tick347": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "herschel_skeptic_tick348": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1225,
+      "mean_log_score": -0.430783,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.183517,
+      "mean_log_score": -0.552546,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 6
+    },
+    "hooke_forecast_tick323": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1849,
+      "mean_log_score": -0.562119,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick324": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2601,
+      "mean_log_score": -0.71335,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick325": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3481,
+      "mean_log_score": -0.891598,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick326": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2916,
+      "mean_log_score": -0.776529,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick327": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick328": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick329": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2304,
+      "mean_log_score": -0.653926,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick330": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3136,
+      "mean_log_score": -0.820981,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick331": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2704,
+      "mean_log_score": -0.733969,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick332": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick333": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick334": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick335": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1296,
+      "mean_log_score": -0.446287,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick336": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1089,
+      "mean_log_score": -0.400478,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick337": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick338": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1369,
+      "mean_log_score": -0.462035,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick339": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick340": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.09,
+      "mean_log_score": -0.356675,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick341": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick342": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick343": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1296,
+      "mean_log_score": -0.446287,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick344": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1089,
+      "mean_log_score": -0.400478,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick345": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick347": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick348": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0841,
+      "mean_log_score": -0.34249,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick349": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0484,
+      "mean_log_score": -0.248461,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick350": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0729,
+      "mean_log_score": -0.314711,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_forecast_tick351": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_independent_micro": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "hooke_meta_darwin_B": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.09985,
+      "mean_log_score": -0.379003,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "hooke_pde_tick352": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1369,
+      "mean_log_score": -0.462035,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_pde_tick353": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_pde_tick354": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_pde_tick355": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_pde_tick356": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3969,
+      "mean_log_score": -0.994252,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hooke_pde_tick358": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2704,
+      "mean_log_score": -0.733969,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "hume_readonly_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.5184,
+      "mean_log_score": -1.272966,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "kant_skeptical_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "kierkegaard_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "kuhn_adversarial_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2704,
+      "mean_log_score": -0.733969,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "lagrange_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1849,
+      "mean_log_score": -0.562119,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "laplace_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "maxwell_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "mcclintock": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.217617,
+      "mean_log_score": -0.626559,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 6
+    },
+    "meta-darwin-proxy": {
+      "failure_mode_evaluable": 4,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1778,
+      "mean_log_score": -0.546879,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 4
+    },
+    "meta_darwin_proxy": {
+      "failure_mode_evaluable": 10,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.127596,
+      "mean_log_score": -0.431694,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 28
+    },
+    "noether_reducer_readonly": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0961,
+      "mean_log_score": -0.371064,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "ohm_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "parfit_readonly_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.35525,
+      "mean_log_score": -0.907616,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "pascal_adversarial_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.20132,
+      "mean_log_score": -0.594853,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 5
+    },
+    "pauli_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "peirce_readonly_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.22036,
+      "mean_log_score": -0.635501,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 5
+    },
+    "plato_operational_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick329": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1849,
+      "mean_log_score": -0.562119,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick330": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2601,
+      "mean_log_score": -0.71335,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick331": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2209,
+      "mean_log_score": -0.634878,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick332": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick333": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1156,
+      "mean_log_score": -0.415515,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick334": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2601,
+      "mean_log_score": -0.71335,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick335": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2116,
+      "mean_log_score": -0.616186,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick336": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1849,
+      "mean_log_score": -0.562119,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick337": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1936,
+      "mean_log_score": -0.579818,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick338": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.25,
+      "mean_log_score": -0.693147,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick339": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2916,
+      "mean_log_score": -0.776529,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick340": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2304,
+      "mean_log_score": -0.653926,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_adversarial_tick341": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2704,
+      "mean_log_score": -0.733969,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_forecast_tick323": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1444,
+      "mean_log_score": -0.478036,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_forecast_tick324": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_forecast_tick325": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2116,
+      "mean_log_score": -0.616186,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_forecast_tick326": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2916,
+      "mean_log_score": -0.776529,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_forecast_tick327": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0676,
+      "mean_log_score": -0.301105,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_forecast_tick328": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0361,
+      "mean_log_score": -0.210721,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_independent_micro": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3249,
+      "mean_log_score": -0.84397,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_meta_darwin_A": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.082,
+      "mean_log_score": -0.331988,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 2
+    },
+    "rawls_pair_guard_skeptic_tick346": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0324,
+      "mean_log_score": -0.198451,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick349": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.09,
+      "mean_log_score": -0.356675,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick350": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1296,
+      "mean_log_score": -0.446287,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick351": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick352": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.2116,
+      "mean_log_score": -0.616186,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick353": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1764,
+      "mean_log_score": -0.544727,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick354": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1521,
+      "mean_log_score": -0.494296,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick355": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1296,
+      "mean_log_score": -0.446287,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick356": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3136,
+      "mean_log_score": -0.820981,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rawls_skeptic_tick358": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.3249,
+      "mean_log_score": -0.84397,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "rd_codex": {
+      "failure_mode_evaluable": 6,
+      "failure_mode_top1_hit_rate": 0.8333,
+      "mean_brier": 0.168767,
+      "mean_log_score": -0.525103,
+      "mean_realized_failure_mass": 0.466667,
+      "n_scored": 6
+    },
+    "readonly_euler": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "readonly_pasteur": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "research_director_pl180": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.4096,
+      "mean_log_score": -1.021651,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "russell_readonly_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.1024,
+      "mean_log_score": -0.385662,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "singer_independent_forecaster": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0784,
+      "mean_log_score": -0.328504,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    },
+    "tarski_replay_skeptic": {
+      "failure_mode_evaluable": 0,
+      "failure_mode_top1_hit_rate": 0.0,
+      "mean_brier": 0.0576,
+      "mean_log_score": -0.274437,
+      "mean_realized_failure_mass": 0.0,
+      "n_scored": 1
+    }
+  },
+  "contracts_with_externality_hypotheses": 72,
+  "generated_at": "2026-05-16T13:12:44Z",
+  "mode": "externalities_rollup",
+  "negative_externality_tags": {
+    "abstract_lineage_interface_still_overstrong": 1,
+    "adapter-only-no-source-proof": 1,
+    "analytic_selection_still_open": 2,
+    "beta-branch-still-open": 1,
+    "beta-not-closed": 1,
+    "beta_still_open": 2,
+    "blind_candidate_generation_dead_at_local_scale": 1,
+    "branch-dominance-open": 3,
+    "candidate_may_fail_replay": 1,
+    "candidate_structural_correctness_unrecognized_by_bridge": 1,
+    "cofinality_unproved": 1,
+    "coherence_still_unproved": 1,
+    "compile_signal_delayed": 1,
+    "component-estimates-unsourced": 1,
+    "compression-not-closure": 2,
+    "conditional-not-full-closure": 1,
+    "drop-unproved": 1,
+    "duplicate_wake_if_forced": 1,
+    "eligibility_not_sourced": 1,
+    "eligibility_still_open": 1,
+    "external_adapter_execution_deferred": 1,
+    "finite-mass-semantics-open": 1,
+    "flat_radius_reserve_open": 1,
+    "forecast_loss_for_noether_p082": 1,
+    "forecasters_overshot_actual_zero_positives": 1,
+    "four_object_source_false": 1,
+    "fresh-domination-unproved": 1,
+    "fresh_packet_audit_unproved": 1,
+    "fresh_packet_selection_still_open": 1,
+    "fresh_packet_theorem_unproved": 1,
+    "full_beta_split_still_requires_locks": 1,
+    "gate_no_decision_delta": 1,
+    "gnn_still_blocked": 1,
+    "gold_multiline_capture_gap": 1,
+    "gpt55_review_option_iii_selected_by_autonomous_decomposition": 1,
+    "guard-only-no-pde-closure": 1,
+    "guard-only-no-pde-progress": 1,
+    "heldout_delta_missing": 1,
+    "inherited_flat_branch_separate": 1,
+    "interface-layer-no-pde-proof-yet": 1,
+    "local_mvp_not_vps_deploy": 1,
+    "long_replay_wall_time": 1,
+    "n2-no-double-counting-still-source": 1,
+    "n8-branches-open": 1,
+    "n8-not-closed": 4,
+    "n_2_canonical_heldout_resolution_unchanged": 1,
+    "names-not-sources": 2,
+    "new-flat-reserve-primitive-unproved": 1,
+    "new-pde-gmt-lemma-needed": 1,
+    "new_pde_lemma_required": 3,
+    "no-clay-closure": 1,
+    "no-new-lemma": 1,
+    "no_compile_evidence": 4,
+    "no_replay_ready_candidate": 1,
+    "no_replayable_arm": 1,
+    "no_strict_label": 1,
+    "no_unconditional_route_closure": 2,
+    "not-clay-closure": 1,
+    "not_full_route_closure": 1,
+    "persistence-unproved": 3,
+    "pressure-beta-still-open": 1,
+    "pressure-branch-still-open": 1,
+    "pressure_flat_branches_still_open": 1,
+    "pressure_not_closed": 1,
+    "pressure_rigidity_open": 1,
+    "pressure_visibility_separate": 1,
+    "radius-not-closed": 1,
+    "radius_pressure_beta_residuals_open": 1,
+    "remaining_two_shares_open": 1,
+    "replay_blockers_present": 1,
+    "replay_deferred": 6,
+    "replay_spend": 1,
+    "requires_manifest_refresh": 1,
+    "same_tree_source_still_open": 1,
+    "schedule-budget-unproved": 1,
+    "selection_theorem_still_open": 1,
+    "single_row_only": 2,
+    "single_theorem_signal_not_benchmark_win": 1,
+    "static_canary_may_not_compile": 1,
+    "static_candidates_not_replay_evidence": 1,
+    "static_contracts_not_replay_evidence": 1,
+    "static_gate_only": 1,
+    "static_only": 3,
+    "static_packet_not_replay_evidence": 1,
+    "static_queue_only": 1,
+    "static_reducer_only": 1,
+    "still_no_compile_evidence": 1,
+    "strict_same_step_label_acquisition_blocked_on_non_closing_steps": 1,
+    "sup-tail-needs-trace-or-inherited-charge": 1,
+    "training_deferred": 3,
+    "upstream-branch-still-open": 1,
+    "v22_04_adjudication_controls_still_outstanding": 1,
+    "visible-branch-only": 1,
+    "wrapper-risk-contained-by-guard": 1,
+    "zero_compile": 2
+  },
+  "positive_externality_tags": {
+    "accidental_positive_detected": 1,
+    "amortized_strictness": 1,
+    "anti-tautology": 3,
+    "anti-tautology-guard": 1,
+    "anti_goodhart": 20,
+    "anti_laundering": 2,
+    "anti_leakage": 6,
+    "anti_tautology": 3,
+    "anti_tautology_guard": 4,
+    "append_only_belief_updates": 1,
+    "artisanal_moat_extension": 1,
+    "audit_coverage": 1,
+    "audit_eligibility": 1,
+    "audit_event_source": 1,
+    "auxiliary_pull_forward_positive": 1,
+    "banach_nogo": 1,
+    "beta-adapter": 1,
+    "beta-incidence-source-theorem": 1,
+    "beta_branch_sharpened": 1,
+    "beta_prefix_gap_sharpened": 1,
+    "blind_hydrated_replay_failed": 1,
+    "blind_signature_synthesis": 1,
+    "branch-sharpening": 1,
+    "bridge_strictness_gap_identified": 1,
+    "calibration_on_train_rows": 1,
+    "candidate_content_bottleneck": 3,
+    "candidate_content_delta": 1,
+    "candidate_packet": 1,
+    "candidate_supply_positive": 1,
+    "carrier_conversion_guard": 1,
+    "carrier_guard": 1,
+    "carrier_lowering": 1,
+    "circularity_repair": 1,
+    "cognitive_firm_a2a_reuse": 1,
+    "coherent_event_selection": 1,
+    "compile_signal": 1,
+    "component-estimate-isolation": 1,
+    "component-source-bundle": 1,
+    "context_binding": 1,
+    "context_hydration": 2,
+    "context_hydration_needed": 2,
+    "corona-telescoping": 1,
+    "countermodel_preconditioning": 1,
+    "cpu_gate_allowed": 1,
+    "cpu_gate_can_rerun": 1,
+    "darwin-falsifier-capture": 1,
+    "darwin-pressure": 2,
+    "darwin_no_go": 1,
+    "deferred_audit_closure": 1,
+    "density_auxiliary_pull_forward_positive": 1,
+    "deterministic_sidecar_lane_survives": 1,
+    "distance_to_gnn": 1,
+    "eligibility_fork": 1,
+    "event_stream_coherence_guard": 1,
+    "eventized-constructive-data": 1,
+    "external_adapter_schema_gate": 1,
+    "failure_mode_preconditioner": 2,
+    "failure_mode_preconditioning": 1,
+    "final-carrier-shortcut-blocked": 2,
+    "finite_budget_bridge": 1,
+    "first_pde_sublemma": 1,
+    "flat-scale-reserve": 1,
+    "forecast-pool-calibration": 1,
+    "forecast_preconditioner": 1,
+    "fourth-carrier-exclusion": 1,
+    "fresh_packet_gate_exposed": 1,
+    "fresh_packet_gate_sharpened": 1,
+    "fresh_packet_risk": 1,
+    "frontier-sharpening": 1,
+    "gate_stop_signal": 1,
+    "general_purpose_lean_harness": 4,
+    "gnn_blocked": 1,
+    "gnn_remains_retired": 1,
+    "gnn_still_blocked": 1,
+    "gold_adjudication_only": 1,
+    "gowers-first": 2,
+    "gowers-first-dag": 2,
+    "gowers_style_replacement_carrier": 1,
+    "gp-233:positive:active-passive-lineage-schedule": 1,
+    "gp-233:positive:dag-swarm-next-nodes": 1,
+    "gp-233:positive:lineage-schedule-interface": 1,
+    "gp-233:positive:n1-proof-surface": 1,
+    "gp-233:positive:pincer-map": 1,
+    "gp-233:positive:same-carrier-source-separated": 1,
+    "gp230_calibrated": 1,
+    "gp233": 1,
+    "gp233_positive": 3,
+    "gp233_positive_with_nogo": 2,
+    "gpt55_xhigh_negative": 1,
+    "gpu_blocked": 1,
+    "graph_basin_connection": 2,
+    "heldout_candidate_content": 1,
+    "heldout_delta": 1,
+    "heldout_delta_gate": 1,
+    "heldout_expansion_attempt": 1,
+    "heldout_negative_label_created": 1,
+    "heldout_policy_delta": 1,
+    "heldout_strict_yield": 3,
+    "historic_workspace": 1,
+    "honest_combinatorial_scope_restricted_no_charge_fields": 1,
+    "hydrated_patch": 1,
+    "interface-wiring": 1,
+    "label_head_split": 1,
+    "lean_positive": 4,
+    "lean_reuse": 1,
+    "low_ev_replay_abort": 1,
+    "machine-visible-stop-conditions": 1,
+    "manifest_accounting": 1,
+    "market_abort": 1,
+    "meso_only_forecast": 12,
+    "n8-branch-visibility": 1,
+    "n8-compression": 1,
+    "negative-theorem": 1,
+    "negative_replay": 1,
+    "negative_replay_evidence": 1,
+    "no-closure-overclaim": 1,
+    "no_overclaim_guard": 2,
+    "no_reuse_guard": 1,
+    "no_strict_heldout_row": 1,
+    "no_training": 7,
+    "non_closing_step_candidate_packet": 1,
+    "normalization_obligation_split": 1,
+    "ns_n8_beta": 5,
+    "ns_route1": 5,
+    "ns_source_ladder": 2,
+    "null_baseline_allowed": 1,
+    "overclaim-guard": 1,
+    "overclaim-prevented": 1,
+    "overclaim-prevention": 1,
+    "paradigm_falsification": 1,
+    "parallel_training_delta": 1,
+    "pde_field_narrowed": 1,
+    "policy_gate": 1,
+    "positive-frontier-compression": 1,
+    "positive-pressure-gap-localization": 1,
+    "positive-pressure-source-path": 1,
+    "positive_adapter_reuse": 1,
+    "positive_replay": 1,
+    "pre_gnn": 4,
+    "pre_replay_filter": 1,
+    "pressure-beta-boundary": 1,
+    "pressure-priority": 1,
+    "pressure-source-theorem": 1,
+    "pressure_visible_branch": 1,
+    "prop_type_guard": 1,
+    "public_adapter_repair_packet": 1,
+    "public_adapter_repair_replay": 1,
+    "public_adapter_replay_negative": 1,
+    "public_repo_adapter": 1,
+    "public_repo_union_policy": 1,
+    "qp_overflow_guard": 1,
+    "queue": 1,
+    "radius-frontier-sharpening": 1,
+    "radius-next": 1,
+    "receipt_share_routing": 1,
+    "recharge_budget_source": 1,
+    "replay_budget_guard": 2,
+    "replay_churn_guard": 1,
+    "replay_gate": 2,
+    "replay_guard": 1,
+    "replay_preconditioner": 3,
+    "replay_scope_reduction": 1,
+    "residual_fresh_event_selection": 1,
+    "residual_language_feedback": 2,
+    "reuse-existing-L3-source": 1,
+    "role_bound_pubsub": 1,
+    "same-carrier-guard": 1,
+    "same_carrier_guard": 2,
+    "same_carrier_target_repair": 1,
+    "same_ledger_facts": 1,
+    "same_tree_bridge": 1,
+    "self_meta_darwin_load_bearing": 2,
+    "sidecar-capture": 1,
+    "sidecar-reuse": 2,
+    "sidecar_caught_interface_bug": 1,
+    "sidecar_feedback": 1,
+    "sidecar_no_go_agreement": 1,
+    "single_theorem_overfit_guard": 1,
+    "source-surface-only": 1,
+    "source_contract_correction": 1,
+    "source_discovery": 3,
+    "source_safety": 2,
+    "source_safety_quarantine": 1,
+    "source_signature_hydrated_replay": 1,
+    "static_hygiene": 1,
+    "step_index_drift": 1,
+    "step_index_patch": 1,
+    "strict_adjudication_gap": 1,
+    "strict_compile_invariant": 1,
+    "strict_label_negative": 1,
+    "strict_label_repair": 1,
+    "strict_row": 1,
+    "structured_externality_fields": 1,
+    "subscription_safe_scanner": 1,
+    "summability_adapter_needed": 1,
+    "swarm_dispatch": 1,
+    "target_shape_alignment": 1,
+    "tautology-guard": 1,
+    "timeout_guard": 1,
+    "top-down-bottom-up": 1,
+    "training_delta_triage": 1,
+    "training_gate": 2,
+    "tri-carrier-target": 1,
+    "two_new_theorems_now_have_moat_labels": 1,
+    "unknown_identifier_reducer": 1,
+    "useful-no-go": 1,
+    "warm_forecaster_memory": 1,
+    "witness_equality_sub_bucket_grew_from_4_to_10": 1,
+    "wrapper_inflation_risk_round_2": 1,
+    "wrapper_inflation_round_3": 1,
+    "young_bernstein_absorption": 1
+  },
+  "scored_contracts": 231
+}

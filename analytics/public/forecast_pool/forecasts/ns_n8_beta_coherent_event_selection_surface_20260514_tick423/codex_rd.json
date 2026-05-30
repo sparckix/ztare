@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Proceed with one bounded Lean surface; stop before claiming beta closure.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_n8_beta_coherent_event_selection_surface_20260514_tick423",
+  "contract_question": "Will tick423 add a compiling Lean surface reducing coherent fresh event selection to residual-fresh-excess, inherited-or-flat routing, and pressure/same-carrier inputs, while recording that the actual coherent event-selection theorem remains open?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_selection_still_unsourced": 0.27,
+    "guard_only_no_projection": 0.25,
+    "logging_or_resolution_gap": 0.15,
+    "overclaim_or_tautology": 0.15,
+    "signature_mismatch": 0.18
+  },
+  "forecast_externality_tags": [
+    "ns_n8_beta",
+    "gowers_first",
+    "anti_tautology",
+    "gp233"
+  ],
+  "forecasted_at": "2026-05-14T22:25:07Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.12,
+  "p_success": 0.68,
+  "rationale_short": "Existing coherence split gives a viable insertion point, but the new surface must avoid proving selection by naming residual routes. Likely to compile as a useful source split, unlikely to close the event-selection theorem.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "signature_mismatch",
+    "guard_only_no_projection",
+    "event_selection_still_unsourced",
+    "overclaim_or_tautology",
+    "logging_or_resolution_gap"
+  ]
+}

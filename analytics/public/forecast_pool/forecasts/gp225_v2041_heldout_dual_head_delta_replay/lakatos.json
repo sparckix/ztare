@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Prefer static abort now; run only if the contract is explicitly valued as falsification of auxiliary transfer.",
+  "agent_id": "Lakatos",
+  "contract_id": "gp225_v2041_heldout_dual_head_delta_replay",
+  "contract_question": "If we replay the v20.40 heldout baseline and auxiliary-conditioned arms, will the auxiliary-conditioned arm beat baseline on separate strict/solver/auxiliary head deltas with harmful rows zero?",
+  "domain": "gp225_pre_gnn_replay_gate",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "auxiliary_conditioning_not_transferable": 0.3255813953488372,
+    "no_strict_delta": 0.23255813953488372,
+    "static_packet_overfit": 0.1395348837209302,
+    "zero_compile_like_v2031": 0.3023255813953488
+  },
+  "forecast_externality_tags": [
+    "abort_option",
+    "auxiliary_transfer_falsifier",
+    "replay_budget_guard"
+  ],
+  "forecasted_at": "2026-05-14T17:12:20Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.07,
+  "p_regression": 0.05,
+  "p_success": 0.29,
+  "rationale_short": "There is some value in falsifying auxiliary transfer, but the actual success target is strict: rank-policy-only changes on previously failing rows should be under even odds.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "auxiliary_conditioning_not_transferable",
+    "zero_compile_like_v2031"
+  ]
+}

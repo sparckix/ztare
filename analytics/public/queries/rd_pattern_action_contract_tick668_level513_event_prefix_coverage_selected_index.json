@@ -1,0 +1,34 @@
+{
+  "tick": "TICK668",
+  "level": 513,
+  "residual": "Level512 tied selectedPrefixEventIndex to eventToBadNode and incidence, but its finite-prefix provenance remained generic.",
+  "pattern_chain": [
+    "PATTERN-011 hard mathematical residual swarm lane",
+    "PATTERN-028 recursive tool-depth loop",
+    "Gowers-First-Formalize-Second",
+    "positive source-ladder reduction"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018 tool underuse formal satisficing",
+    "coverage label only",
+    "appearance field as selector",
+    "shell-only enumeration",
+    "endpoint capacity as index construction",
+    "adaptive beta-sum stopping",
+    "post-payoff selected index"
+  ],
+  "carrier_schema_receipts": {
+    "claim_boundary": {
+      "broad": "bad-center event-prefix coverage should construct the finite selected event indices used by the same-tree source ladder",
+      "narrow": "Level513 only binds selectedPrefixEventIndex provenance to BadCenterEventPrefixCoversSelectedBadTree and its anti-shortcut fields"
+    },
+    "residual_to_check": {
+      "residual": "selectedPrefixEventIndex provenance is generic finite-prefix source data",
+      "check": "strict G-EVENT-PREFIX-COVERAGE-SELECTED-INDEX receipt plus Lean adapter to Level512"
+    },
+    "surplus_projection_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level513_event_prefix_coverage_selected_index_pencil.md"
+  },
+  "nearest_universal_op": "gp219_estimate_craft__source_ladder",
+  "nearest_confuser": "using everySelectedBadNodeAppearsInSomePrefix as a label while still carrying the selected index separately",
+  "next_lever": "construct selectedPrefixEventIndex from BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix plus target-node membership in the selected bad-tree prefix"
+}

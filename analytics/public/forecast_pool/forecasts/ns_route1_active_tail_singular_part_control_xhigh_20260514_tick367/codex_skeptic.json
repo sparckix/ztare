@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_active_tail_singular_part_control_xhigh_20260514_tick367",
+  "contract_question": "Can xhigh pull forward ActiveTailSingularPartControlledByProfileResidual by proving control of mu_A_perp by mu_I, producing a valid V_A_perp countermodel, or mapping mu_I to existing profile residual primitives?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 48.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "V_A_perp_unavoidable": 0.24,
+    "mu_I_tautology_risk": 0.18,
+    "no_existing_profile_mapping": 0.15,
+    "requires_new_profile_topology": 0.35,
+    "useful_mapping": 0.08
+  },
+  "forecasted_at": "2026-05-14T13:05:18Z",
+  "p_dependency_issue": 0.57,
+  "p_needs_new_lemma": 0.96,
+  "p_regression": 0.1,
+  "p_success": 0.27,
+  "rationale_short": "Controlling a singular measure by a profile residual is too strong unless the residual topology is already defined; expect a missing topology verdict.",
+  "read_only_attestation": true
+}

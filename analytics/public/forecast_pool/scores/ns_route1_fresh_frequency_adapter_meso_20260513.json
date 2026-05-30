@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_fresh_frequency_adapter_meso_20260513",
+  "mean_brier": 0.09039999999999998,
+  "mean_log_score": -0.35708327389201033,
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_fresh_frequency_adapter_meso_20260513",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Resolved true: adapter typechecked and module built; E/F rows 279 record graph+v19.02 next-move shift to fresh-frequency/event-tent localized coercivity.",
+    "resolved_at": "2026-05-13T20:43:17Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T20:43:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "kierkegaard_independent_forecaster",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 18.0,
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "singer_independent_forecaster",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 20.0,
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true
+    }
+  ]
+}

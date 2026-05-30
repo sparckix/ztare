@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo",
+  "contract_question": "tick604: prove in Lean uniformCKNBound (cascade-uniform G+H, porosity route's load-bearing hypothesis) IMPLIES cascade-uniform H = the tick600-killed enstrophy-budget object (Kolmogorov constant \u224d\u03bb^{4N/3}, not cascade-uniform). Success=hypothesis CLOSED negatively (porosity folded into route-invariant terminus, alias#15 formalized), Lean builds, no escape, not laundered. Fail=escape exists or close is circular.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:25:21Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.85,
+  "rationale_short": "Closing-negative: amnesia catch + tick600 already established uniformCKNBound needs cascade-uniform H = Kolmogorov-killed object; tick604 formalizes the implication in Lean (bookkeeping). Risk = Lean encoding circular/laundered not a genuine implication.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

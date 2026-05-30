@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/sigma_r_q_a_q_summable_from_lerayhopf_via_codim2_adams_trace_or_bmn_1999_local_energy_20260515t151851z.json",
+    "contract": "analytics/public/forecast_pool/contracts/sigma_r_q_a_q_summable_from_lerayhopf_via_codim2_adams_trace_or_bmn_1999_local_energy_20260515t151851z.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/sigma_r_q_a_q_summable_from_lerayhopf_via_codim2_adams_trace_or_bmn_1999_local_energy_20260515t151851z",
+    "outcome": "analytics/public/forecast_pool/outcomes/sigma_r_q_a_q_summable_from_lerayhopf_via_codim2_adams_trace_or_bmn_1999_local_energy_20260515t151851z.json",
+    "score": "analytics/public/forecast_pool/scores/sigma_r_q_a_q_summable_from_lerayhopf_via_codim2_adams_trace_or_bmn_1999_local_energy_20260515t151851z.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "sigma_r_q_a_q_summable_from_lerayhopf_via_codim2_adams_trace_or_bmn_1999_local_energy_20260515t151851z",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T15:18:51Z",
+  "created_by": "principal_claude_session_20260515",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0625,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "clay_dual_load_micro_kinetic_carleson_20260515",
+    "score": 0.1111,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1111,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0625,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0612,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 14.0,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 43,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0682,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0377,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.0377,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0351,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0351,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "30d",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "PDE-derivation-check-against-published-2024-2026-literature",
+  "question": "Sigma_r_Q_A_Q_summable_from_LerayHopf_via_codim2_Adams_trace_OR_BMN_1999_local_energy",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.3",
+  "task_type": "clay_dual_load_micro_kinetic_carleson_20260515",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

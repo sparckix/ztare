@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553",
+  "contract_question": "TERMINAL: the whole route-1 strict-margin edifice provably (tick544-553) localizes to ONE combinatorial core (scale-freshness/bounded-overlap of positive same-carrier cutoff-flux event tents) with TWO orthogonal solved-elsewhere attack channels. Does the route-1 event-tent construction satisfy EITHER (G) the Besicovitch controlled-eccentricity condition (\u21d2 dimension-only bounded multiplicity \u21d2 freshness) OR (A) a localized \u0141ojasiewicz-Simon strict scale-invariant entropy-dissipation debit per reversal (\u03b3>0)? Either \u21d2 Clay flat-radius cascade closure (narrow Track-B route-1 sense); neither \u21d2 the P4 reuse-cascade fixed point is the irreducible residual.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "localized_lojasiewicz_gamma_collapses_to_zero": 0.32,
+    "non_besicovitch_nesting_or_overlap": 0.4,
+    "one_new_gmt_or_pde_lemma_required": 0.18,
+    "stale_or_underpriced_route1_event_tent_observables": 0.1
+  },
+  "forecast_externality_tags": [
+    "same_carrier_event_tents",
+    "geometry_vs_entropy_split",
+    "route1_macro_residual"
+  ],
+  "forecasted_at": "2026-05-15T23:41:01Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.85,
+  "p_regression": 0.03,
+  "p_success": 0.19,
+  "rationale_short": "The ledger narrows the route to a Besicovitch-vs-localized-entropy split, but it does not verify either condition on the construction. No probability DAG is supplied, so the main priced risk is still that the event-tent nesting fails Besicovitch control or that the localized Lojasiewicz gamma degenerates to zero; one new GMT/PDE lemma remains the likeliest escape hatch.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "non_besicovitch_nesting_or_overlap",
+    "localized_lojasiewicz_gamma_collapses_to_zero",
+    "one_new_gmt_or_pde_lemma_required",
+    "stale_or_underpriced_route1_event_tent_observables"
+  ]
+}

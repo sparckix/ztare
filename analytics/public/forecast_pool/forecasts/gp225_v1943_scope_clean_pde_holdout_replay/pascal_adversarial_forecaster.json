@@ -1,0 +1,23 @@
+{
+  "agent_id": "pascal_adversarial_forecaster",
+  "contract_id": "gp225_v1943_scope_clean_pde_holdout_replay",
+  "contract_question": "Will v19.43 execute scope-clean signature repair on the v19.42 PDE-functional holdout shard and reach at least 4 strict-or-pull-forward closures with zero harmful compiled mismatches, using no post-target declarations, target proof lines, or teacher/oracle primary candidates?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "harmful_mismatch_or_false_progress": 0.08,
+    "other": 0.18,
+    "pde_holdout_requires_domain_specific_argument_shapes": 0.2,
+    "simple_scope_name_templates_compile_but_do_not_close": 0.18,
+    "source_order_filter_removes_needed_local_decls": 0.12,
+    "v1941_candidates_were_hand_mapped_and_do_not_generalize": 0.24
+  },
+  "forecasted_at": "2026-05-14T00:14:16Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.12,
+  "p_success": 0.18,
+  "rationale_short": "v19.41 is positive but small and partly hand-mapped. PDE-functional holdout has more variety and likely needs typed argument synthesis, so threshold 4 closures is hard; no-harm controls make pass valuable if achieved.",
+  "read_only_attestation": true
+}

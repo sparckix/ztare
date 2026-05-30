@@ -1,0 +1,31 @@
+{
+  "tick_id": "TICK668",
+  "level": 528,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level527 bounded appearance index is not yet connected to the older typed coverage packet lane",
+      "check": "prove Level516 typed packet witness projects to Level527 Nat index, bound, and equality"
+    },
+    {
+      "residual": "Level517/518/519 can masquerade as the packet source",
+      "check": "provenance acyclicity receipt forbids downstream enumeration and natural-witness source families"
+    }
+  ],
+  "surplus_projection_artifact": {
+    "source": "L3ATypedBadCenterEventPrefixCoveragePacket.typedSelectedBadNodeAppearance",
+    "projection": "Project Fin witness to Nat index, Fin.isLt bound, and sigma equality property.",
+    "target": "L3ABoundedCoverageAppearanceEventIndexSource"
+  },
+  "claim_boundary": {
+    "broad": "This does not construct the typed coverage packet from raw PDE data.",
+    "narrow": "This proves that an already typed coverage packet pays the current Level527 bounded-index obligation without downstream enumeration adapters."
+  },
+  "nearest_confuser": "Level517 selected-bad-node event-prefix enumeration packet",
+  "next_lever": "prove typed coverage packet construction from ordinary event-prefix coverage internals, or promote a strengthened primitive coverage packet"
+}

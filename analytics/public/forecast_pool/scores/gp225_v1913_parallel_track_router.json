@@ -1,0 +1,44 @@
+{
+  "contract_id": "gp225_v1913_parallel_track_router",
+  "mean_brier": 0.05000000000000002,
+  "mean_log_score": -0.24977801575387998,
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "artifact_hash": "5d7cbbb35819be01fe72eb007dea8d5c94cf1fdca957b44b493a797329be17af",
+    "artifact_path": "analytics/public/leanmill/results/v1913_parallel_track_router.json",
+    "compile_status": null,
+    "contract_id": "gp225_v1913_parallel_track_router",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "v19.13 static router passed and PL identifier was corrected to PL-GP225-1913 after detecting concurrent numeric PL collision; three concrete next tracks, thresholds, effort estimates, GP-233 decomposition block, training_now=false, gnn_blocked=true.",
+    "resolved_at": "2026-05-13T21:58:27Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T21:58:34Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "confucius",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 1.5,
+      "domain": "GP-225",
+      "expected_cost_agent_minutes": 6.5,
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "helmholtz",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "GP-225",
+      "expected_cost_agent_minutes": 6.0,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true
+    }
+  ]
+}

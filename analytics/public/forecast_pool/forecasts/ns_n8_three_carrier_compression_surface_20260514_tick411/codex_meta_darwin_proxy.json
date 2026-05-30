@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "proceed_but_do_not_score_as_closure",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_n8_three_carrier_compression_surface_20260514_tick411",
+  "contract_question": "Will the N8 three-carrier compression tick add compiling Lean surfaces that correctly reduce N8 to CKN/radius, pressure/cone, and beta/incidence plus a tri-carrier drop target, without claiming the drop is proved?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "beta_incidence_cofinality_missing": 0.2,
+    "lean_compile_issue": 0.1,
+    "pressure_nonlocality_not_tree_local": 0.2,
+    "tri_carrier_drop_too_broad": 0.3,
+    "unfresh_reuse_fourth_carrier": 0.2
+  },
+  "forecast_externality_tags": [
+    "darwin-pressure",
+    "n8-not-closed",
+    "new-lemma-risk"
+  ],
+  "forecasted_at": "2026-05-14T20:15:47Z",
+  "p_dependency_issue": 0.62,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.14,
+  "p_success": 0.53,
+  "rationale_short": "Compression is plausible as routing, but the proposed drop is a new PDE/GMT theorem with nonlocal pressure and incidence risks.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "tri_carrier_drop_too_broad",
+    "unfresh_reuse_fourth_carrier",
+    "pressure_nonlocality_not_tree_local",
+    "beta_incidence_cofinality_missing",
+    "lean_compile_issue"
+  ]
+}

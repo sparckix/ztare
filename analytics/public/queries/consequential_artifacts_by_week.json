@@ -1,0 +1,182 @@
+{
+  "audit_timestamp_utc": "2026-05-16T20:32:44.984049+00:00",
+  "score_floor": 3,
+  "weeks": {
+    "2026-03-30": {
+      "week": "2026-03-30",
+      "n_rated_above_floor": 2,
+      "n_cited_above_floor": 0,
+      "top_rated": [
+        {
+          "sample_id": "SAMPLE_015",
+          "kind": "project_workspace_md",
+          "path": "projects/epistemic_engine_v4/debate_log_iter_1775433220.md",
+          "score": 3,
+          "rationale": "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism",
+          "content_sha": "5d2a80f918719996"
+        },
+        {
+          "sample_id": "SAMPLE_072",
+          "kind": "raw_evidence_input",
+          "path": "projects/epistemic_engine_v4/raw/v3_variant_matrix.md",
+          "score": 3,
+          "rationale": "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
+          "content_sha": "bc2b2afec20a5942"
+        }
+      ],
+      "top_cited": [],
+      "rated_by_kind": {
+        "project_workspace_md": 1,
+        "raw_evidence_input": 1
+      },
+      "narrative_seeds": [
+        "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism",
+        "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings"
+      ]
+    },
+    "2026-04-20": {
+      "week": "2026-04-20",
+      "n_rated_above_floor": 1,
+      "n_cited_above_floor": 2,
+      "top_rated": [
+        {
+          "sample_id": "SAMPLE_013",
+          "kind": "raw_evidence_input",
+          "path": "projects/gp165_analogy_architecture_review/raw/starter_failure_modes.md",
+          "score": 4,
+          "rationale": "F1-F8 operator-seeded failure modes for v2.0 with HIGH-severity numerical-magnitude leak; concrete contamination mechanism",
+          "content_sha": "514ebf2a0555f341"
+        }
+      ],
+      "top_cited": [
+        {
+          "path": "docs/internal/agent_workflow/agent_task_discipline_map.md",
+          "kind": "doc",
+          "in_degree": 4,
+          "out_degree": 2,
+          "week": "2026-04-20"
+        },
+        {
+          "path": "docs/internal/architectural_maps/information_yield_architectural_map.md",
+          "kind": "doc",
+          "in_degree": 3,
+          "out_degree": 0,
+          "week": "2026-04-20"
+        }
+      ],
+      "rated_by_kind": {
+        "raw_evidence_input": 1
+      },
+      "narrative_seeds": [
+        "F1-F8 operator-seeded failure modes for v2.0 with HIGH-severity numerical-magnitude leak; concrete contamination mechanism"
+      ]
+    },
+    "2026-04-27": {
+      "week": "2026-04-27",
+      "n_rated_above_floor": 0,
+      "n_cited_above_floor": 1,
+      "top_rated": [],
+      "top_cited": [
+        {
+          "path": "docs/internal/agent_workflow/human_agent_flow_map_2026-04-30.md",
+          "kind": "doc",
+          "in_degree": 5,
+          "out_degree": 1,
+          "week": "2026-04-27"
+        }
+      ],
+      "rated_by_kind": {},
+      "narrative_seeds": []
+    },
+    "2026-05-04": {
+      "week": "2026-05-04",
+      "n_rated_above_floor": 0,
+      "n_cited_above_floor": 51,
+      "top_rated": [],
+      "top_cited": [
+        {
+          "path": "docs/concepts/reflexive_engineering.md",
+          "kind": "doc",
+          "in_degree": 18,
+          "out_degree": 4,
+          "week": "2026-05-04"
+        },
+        {
+          "path": "docs/guides/org_runtime_quickstart.md",
+          "kind": "doc",
+          "in_degree": 15,
+          "out_degree": 4,
+          "week": "2026-05-04"
+        },
+        {
+          "path": "projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_audit_2026_05_08.md",
+          "kind": "project",
+          "in_degree": 12,
+          "out_degree": 0,
+          "week": "2026-05-04"
+        },
+        {
+          "path": "docs/internal/architectural_maps/autoresearch_loop_architectural_map.md",
+          "kind": "doc",
+          "in_degree": 9,
+          "out_degree": 3,
+          "week": "2026-05-04"
+        },
+        {
+          "path": "projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_re_audit_2026_05_08.md",
+          "kind": "project",
+          "in_degree": 9,
+          "out_degree": 0,
+          "week": "2026-05-04"
+        }
+      ],
+      "rated_by_kind": {},
+      "narrative_seeds": []
+    },
+    "2026-05-11": {
+      "week": "2026-05-11",
+      "n_rated_above_floor": 0,
+      "n_cited_above_floor": 14,
+      "top_rated": [],
+      "top_cited": [
+        {
+          "path": "org/mandates/research_director_mandate.md",
+          "kind": "org",
+          "in_degree": 16,
+          "out_degree": 11,
+          "week": "2026-05-11"
+        },
+        {
+          "path": "docs/concepts/agentic_engineering_patterns.md",
+          "kind": "doc",
+          "in_degree": 9,
+          "out_degree": 5,
+          "week": "2026-05-11"
+        },
+        {
+          "path": "docs/concepts/anti_pattern_catalog.md",
+          "kind": "doc",
+          "in_degree": 8,
+          "out_degree": 0,
+          "week": "2026-05-11"
+        },
+        {
+          "path": "org/anti-patterns/INDEX.md",
+          "kind": "org",
+          "in_degree": 7,
+          "out_degree": 4,
+          "week": "2026-05-11"
+        },
+        {
+          "path": "org/patterns/swarm_dispatch.md",
+          "kind": "org",
+          "in_degree": 6,
+          "out_degree": 1,
+          "week": "2026-05-11"
+        }
+      ],
+      "rated_by_kind": {},
+      "narrative_seeds": []
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd_ns_route1_gowers_prompt",
+  "contract_id": "ns_route1_v1732_gowers_eigenq_micro",
+  "contract_question": "Will a Gowers-style rewrite of the GPT-5.5 NS route-1 eigenquestion make the next external prover query materially more actionable by naming the known construction, the inefficient oracle, and the desired replacement object or obstruction?",
+  "domain": "ns_live_scalar_hinge",
+  "expected_cost_agent_minutes": 6.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_not_grounded": 0.1,
+    "external_model_returns_philosophy": 0.25,
+    "prompt_still_too_defensive": 0.35,
+    "too_little_pde_context": 0.3
+  },
+  "forecasted_at": "2026-05-13T18:32:00Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.08,
+  "p_success": 0.84,
+  "rationale_short": "Gowers framing directly matches the needed move: ask for replacement of an inefficient oracle inside a known construction, not a meta-verdict on apparatus.",
+  "read_only_attestation": true
+}

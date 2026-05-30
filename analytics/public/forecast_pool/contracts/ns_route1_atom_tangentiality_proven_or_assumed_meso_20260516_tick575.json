@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
+  "cost_penalty": 0.5,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T13:23:29Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_atom_tangentiality_provenance_20260516",
+    "score": 0.1429,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1429,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 10,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 140,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0189,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 7,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0149,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 4,
+        "token_jaccard": 0.0909
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "14d",
+  "information_value": 9.0,
+  "layer": "meso",
+  "objective_resolver": "Trace the provenance of 'asymptotically tangential' in the arc and test against CKN/Type-I: does CKN-badness + Type-I FORCE the inherited cascade tangential (e.g. via the s_z>0 / transverse-lower-bound chain tick559-562), or was tangentiality assumed at some tick? success iff tangentiality is PROVEN forced by CKN/Type-I (atom bounded on it, Gemini undecidability refuted); 0.5 if forced only under an extra stated hypothesis; fail iff tangentiality is an unjustified assumption (then the non-tangential 3D-stretching regime is the genuine open core and the inversion/construction track is warranted in parallel).",
+  "question": "Munger-inversion dichotomy (Gemini-prompted, ANTI-PATTERN-014-screened): a Turing-pump blowup needs strong 3D vortex stretching (NON-tangential); the Birkhoff/slaving reduction operates only on the asymptotically-TANGENTIAL (near-2D, Ladyzhenskaya-regular) branch. So is 'asymptotically tangential' a PROVEN property of the inherited CKN-bad cascade (\u21d2 near-2D \u21d2 atom A_n bounded \u21d2 regularity, undecidability claim refuted) OR an unjustified ASSUMPTION carried through the arc (\u21d2 the real open regime is non-tangential 3D-stretching = where blowup/Turing-pump would live)? Resolve which, with the CKN/Type-I structure of the inherited bad cascade.",
+  "risk_penalty": 0.8,
+  "success_threshold": "success iff asymptotic-tangentiality PROVEN forced by CKN/Type-I structure; 0.5 if under one extra hypothesis; fail iff it was an assumption (\u21d2 non-tangential regime is the real open core)",
+  "task_type": "ns_clay_atom_tangentiality_provenance_20260516",
+  "value_if_success": 9.0,
+  "void_conditions": "Birkhoff arc tick570-574 refactored"
+}

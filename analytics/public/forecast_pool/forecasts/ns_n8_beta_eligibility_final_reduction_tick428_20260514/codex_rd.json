@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_n8_beta_eligibility_final_reduction_tick428_20260514",
+  "contract_question": "Will tick428 add a compiling Lean theorem that compresses the current N8 frontier after beta eligibility to flat-radius scale reserve or pressure visibility/coherence, without claiming those branches are closed?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T22:59:06Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.1,
+  "p_success": 0.72,
+  "rationale_short": "Existing file already has radius audit, pressure/beta audit, and eligibility fork; expected edit is a small Prop-level compression theorem plus guard.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_pressure_velocity_piece_micro_20260513_tick302",
+  "mean_brier": 0.16040000000000001,
+  "mean_log_score": -0.511381488192336,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "build_passed",
+    "contract_id": "ns_route1_pressure_velocity_piece_micro_20260513_tick302",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Compiled a non-tautological pressure-piece lower station under FreshFrequencyGalileanCKNFreshEnergySplitSource. It does not prove pressure CZ; it isolates local CZ pressure as the shard-B piece and books harmonic child collar and cutoff commutator pressure outside shard B.",
+    "resolved_at": "2026-05-13T22:47:45Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T22:47:52Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex_rd_local_micro",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 28.0,
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "hooke_independent_micro",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 18.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 42.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true
+    }
+  ]
+}

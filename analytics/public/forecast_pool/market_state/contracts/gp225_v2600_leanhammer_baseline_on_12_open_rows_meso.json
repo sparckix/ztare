@@ -1,0 +1,160 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:24Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.9499999999999998,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.0475
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 90.0,
+    "expected_value": 0.029999999999999822,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.2,
+    "p_needs_new_lemma": 0.1,
+    "p_regression": 0.02,
+    "p_success": 0.9499999999999998,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso/claude_rd.json",
+        "forecasted_at": "2026-05-15T03:14:44Z",
+        "p_success": 0.95,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "tautological_closure_confound_on_v4.29.0_mathlib",
+        "p": 0.6071428571428572
+      },
+      {
+        "mode": "toolchain_alignment_failure",
+        "p": 0.28571428571428575
+      },
+      {
+        "mode": "cloud_premise_selector_unreachable",
+        "p": 0.10714285714285715
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T03:14:44Z",
+    "created_by": "codex:RD",
+    "horizon": "1 tick",
+    "layer": "meso",
+    "objective_resolver": "Bridge-verified via Lean compile in v4.29.0 sandbox + v24.01-style indirect-leakage scan + tautology detection (premise = original theorem name) + automation-machinery detection (simp/aesop/fun_prop/measurability/grind in suggestion).",
+    "question": "On 12 canonical-train OPEN rows, how many does LeanHammer baseline (cloud premise selection + Duper + Aesop + Zipperposition) close moat-cleanly (not tautological-original-theorem-apply, not @[simp]/@[fun_prop]/@[grind]/automation-machinery indirect leakage, not gold-name overlap)?",
+    "success_threshold": "moat-surface-decisive-result-measured",
+    "task_type": "baseline_measurement"
+  },
+  "contract_id": "gp225_v2600_leanhammer_baseline_on_12_open_rows_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Run; the BASELINE NUMBER itself is the value, success/fail framing is secondary.",
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-15T03:14:44Z",
+        "p_success": 0.95,
+        "rationale_short": "This is a measurement contract not a binary win. The number IS the answer. Confound: original theorems in Mathlib v4.29.0 are in scope, so hammer can apply them \u2014 distorts the pure baseline number for theorems hammer was 'going to' close anyway. Audit MUST detect tautology.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 75.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T03:14:44Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.9499999999999998,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.0475
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 90.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.9499999999999998,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "tautological_closure_confound_on_v4.29.0_mathlib",
+        "p": 0.6071428571428572
+      },
+      {
+        "mode": "toolchain_alignment_failure",
+        "p": 0.28571428571428575
+      },
+      {
+        "mode": "cloud_premise_selector_unreachable",
+        "p": 0.10714285714285715
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0025000000000000044,
+    "score_rows": 1,
+    "scored_at": "2026-05-19T16:39:13Z"
+  }
+}

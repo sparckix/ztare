@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "Implement only the finite-prefix active-tail budget bridge and keep the failure-divergence and strictness boundary separate.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_frequency_budget_to_finite_active_tail_20260514_tick401",
+  "contract_question": "Will the next NS tick compile a finite active-tail prefix budget theorem from activeTail-to-caloric payment, reserve-drop/recharge, event-ledger budget, cutoff-error budget, and routed-residual budget?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "hidden_nonnegativity_missing": 0.18,
+    "namespace_lemma_mismatch": 0.1,
+    "prefix_sum_telescoping_friction": 0.3,
+    "routed_residual_budget_not_independent": 0.14,
+    "source_bundle_too_wrapper_like": 0.16,
+    "strict_subratio_overclaim": 0.12
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioner",
+    "finite_budget_bridge",
+    "ns_route1"
+  ],
+  "forecasted_at": "2026-05-14T18:38:58Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.08,
+  "p_success": 0.63,
+  "rationale_short": "Recent source-lowering ticks already established reserve-drop, recharge, cutoff, and routed-residual pieces; the remaining risk is the prefix-sum/telescoping bridge plus getting the residual budget into the same finite-budget theorem without collapsing into strict-subratio claims.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "prefix_sum_telescoping_friction",
+    "hidden_nonnegativity_missing",
+    "routed_residual_budget_not_independent"
+  ]
+}

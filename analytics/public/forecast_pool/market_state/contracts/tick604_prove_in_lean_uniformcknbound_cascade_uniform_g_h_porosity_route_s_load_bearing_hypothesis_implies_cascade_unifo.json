@@ -1,0 +1,187 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-16T20:28:05Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 23.5,
+    "expected_value": 0.5505487158476355,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.060000000000000005,
+    "p_needs_new_lemma": 0.065,
+    "p_regression": 0.05,
+    "p_success": 0.8355487158476356,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo/claude_rd.json",
+        "forecasted_at": "2026-05-16T20:25:21Z",
+        "p_success": 0.85,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo/codex.json",
+        "forecasted_at": "2026-05-16T20:26:18Z",
+        "p_success": 0.82,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "circular_or_laundered_close",
+        "p": 0.25
+      },
+      {
+        "mode": "alias15_formalization_gap",
+        "p": 0.125
+      },
+      {
+        "mode": "lean_build_or_import_failure",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo.json",
+    "score": "analytics/public/forecast_pool/scores/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T20:24:32Z",
+    "created_by": "claude_rd",
+    "horizon": "1 tick",
+    "layer": "micro",
+    "objective_resolver": "lean_build_and_manifest_alias15_negative_close",
+    "question": "tick604: prove in Lean uniformCKNBound (cascade-uniform G+H, porosity route's load-bearing hypothesis) IMPLIES cascade-uniform H = the tick600-killed enstrophy-budget object (Kolmogorov constant \u224d\u03bb^{4N/3}, not cascade-uniform). Success=hypothesis CLOSED negatively (porosity folded into route-invariant terminus, alias#15 formalized), Lean builds, no escape, not laundered. Fail=escape exists or close is circular.",
+    "success_threshold": "0.5",
+    "task_type": "ns_close_porosity_hypothesis_negative_20260516"
+  },
+  "contract_id": "tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-16T20:25:21Z",
+        "p_success": 0.85,
+        "rationale_short": "Closing-negative: amnesia catch + tick600 already established uniformCKNBound needs cascade-uniform H = Kolmogorov-killed object; tick604 formalizes the implication in Lean (bookkeeping). Risk = Lean encoding circular/laundered not a genuine implication.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-16T20:26:18Z",
+        "p_success": 0.82,
+        "rationale_short": "Evidence points to a bookkeeping close rather than new theorem discovery: the contract asks to formalize the implication and fold porosity into alias#15; main risks are a circular Lean encoding or a missing alias#15 bridge, not substantive refutation.",
+        "specific_failure_mode_ids": [
+          "circular_or_laundered_close",
+          "alias15_formalization_gap",
+          "lean_build_or_import_failure"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T20:28:05Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.5505487158476355,
+      "forecast_spread": 0.03,
+      "p_success": 0.8355487158476356,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.1674
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 23.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8355487158476356,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "circular_or_laundered_close",
+        "p": 0.25
+      },
+      {
+        "mode": "alias15_formalization_gap",
+        "p": 0.125
+      },
+      {
+        "mode": "lean_build_or_import_failure",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.027450000000000013,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:44Z"
+  }
+}

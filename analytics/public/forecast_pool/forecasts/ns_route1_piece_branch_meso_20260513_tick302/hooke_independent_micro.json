@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_independent_micro",
+  "contract_id": "ns_route1_piece_branch_meso_20260513_tick302",
+  "contract_question": "Should the next bounded NS route-1 proof tick attack pressure-piece decomposition before velocity-piece Caccioppoli?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_mismatch": 0.12,
+    "new_station_too_wrapper_like": 0.2,
+    "other": 0.12,
+    "pressure_nonlocality_forces_shard_c": 0.3,
+    "velocity_branch_would_have_been_cleaner": 0.26
+  },
+  "forecasted_at": "2026-05-13T22:44:37Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.06,
+  "p_success": 0.62,
+  "rationale_short": "Velocity branch may be cleaner, but pressure branch can still succeed if harmonic/child/cutoff terms are explicitly booked outside shard B.",
+  "read_only_attestation": true
+}

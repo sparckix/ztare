@@ -1,0 +1,31 @@
+{
+  "tick_id": "TICK668",
+  "level": 531,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "typed appearance source still stores the Fin witness directly",
+      "check": "split it into Nat event index, strict final-prefix bound, and eventToBadNode equality"
+    },
+    {
+      "residual": "endpoint capacity can masquerade as final-prefix selection",
+      "check": "require the same event index to carry both the bound and equality"
+    }
+  ],
+  "surplus_projection_artifact": {
+    "source": "NSL3MultiscaleYM.BadCenterEventOrderAppearanceIndexSource",
+    "projection": "Package the Nat event index and strict bound into Fin (supportLength - 1), then use the same-index eventToBadNode equality as the sigma property.",
+    "target": "NSL3MultiscaleYM.BadCenterEventPrefixTypedAppearanceSource"
+  },
+  "claim_boundary": {
+    "broad": "This does not prove the event-order index from raw same-tree geometry.",
+    "narrow": "This exposes the exact bounded same-index event-order theorem needed below the typed appearance source."
+  },
+  "nearest_confuser": "final-prefix capacity bound without same-index eventToBadNode equality",
+  "next_lever": "prove coverageAppearanceEventIndex, coverageAppearanceEventIndex_bound, and coverageAppearanceEventIndex_eq_eventToBadNode from finite-prefix exhaustion and event ordering"
+}

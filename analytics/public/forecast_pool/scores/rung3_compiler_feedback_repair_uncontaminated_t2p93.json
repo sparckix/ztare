@@ -1,0 +1,71 @@
+{
+  "contract_id": "rung3_compiler_feedback_repair_uncontaminated_t2p93",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "no repair loop; failed attempt stays a red X",
+      "counterfactual_action": "Path-A composition has no error-driven repair capability"
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.16000000000000003,
+  "mean_log_score": -0.5108256237659907,
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": false,
+    "compile_status": null,
+    "contract_id": "rung3_compiler_feedback_repair_uncontaminated_t2p93",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": "honest one-repair outcome; codex not on cadence",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "ONE repair (pre-registered protocol) did NOT yield a governance-genuine closure -> success=False on the binary. BUT instrument-vs-finding check (mandatory, 9th-artifact discipline) localized the root cause precisely: BOTH the cold-GPT5.5 attempt and its one repair failed identically because (1:\u211d\u22650\u221e) FAILS TO PARSE in the bare import-Mathlib probe context (error: expected token at the \u211d\u22650\u221e glyph) \u2014 a NOTATION artifact, NOT hard math and NOT a useless repair loop. Verified: the statement elaborates fine (:= by sorry no error); @Mem\u2113p.summable resolves exactly as the composer assumed (0<p.toReal -> Mem\u2113p f p -> Summable fun i=>\u2016f i\u2016^p.toReal); ENNReal.toReal_one resolves. DECISION-RELEVANT FINDING: the repair was MISDIRECTED because the surfaced Lean error fed back was 'unsolved goals \u2026 \u22a2 sorry' (a downstream symptom) while the true cause 'expected token' on \u211d\u22650\u221e was elsewhere in the compiler output \u2014 the compiler-feedback repair loop's efficacy is bounded by ERROR-LOCALIZATION quality; bare error_tail extraction feeds symptoms not root causes. NOT pessimist (math approach confirmed sound; not a hardness/kill finding) and NOT laundered (not claiming it works). Honest exact-gap: canonical bridge routes T2P_93 -> prove_missing_lemma/restate (non-treadmill, NOT a kill). Next lever (concrete, actionable): the repair-feedback channel must feed ROOT-CAUSE diagnostics (the first error/parse line + a notation-port for \u211d\u22650\u221e->ENNReal like the existing \u2211in->\u2211\u2208 port) not the bare tail; that single change likely converts this row. Scoped: cross-provider GPT-5.5 composer, in-thread governance, author!=verifier, no self-credit, two-scoreboard.",
+    "resolved_at": "2026-05-17T21:51:16Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:21Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "research_director_claude_opus_4_7",
+      "brier": 0.16000000000000003,
+      "cost_error_agent_minutes": 15.0,
+      "domain": "pathA_wedge",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5108256237659907,
+      "p_success": 0.4,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T21:42:27Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T21:42:27Z",
+        "resolved_at": "2026-05-17T21:51:16Z"
+      }
+    }
+  ]
+}

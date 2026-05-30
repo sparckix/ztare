@@ -1,0 +1,24 @@
+{
+  "_renamed_from": "noether",
+  "action_change_recommendation": "Same as Claude. Structurally there is no 'sibling' measurability lemma in Mathlib that closes Measurable (pdf ...) without going through Measure.measurable_rnDeriv, because pdf is defined as rnDeriv. The carve-out for sibling-lemma closures doesn't help here.",
+  "agent_id": "claude",
+  "contract_id": "gp225_v2501_micro_smoke_type_aware_canonical_0163_micro",
+  "contract_question": "On canonical OPEN row current_scale_0163 (measurable_pdf), does ANY of 8 hand-curated candidate tactics (fun_prop, measurability, simp/exact variants on sibling measurability lemmas, NOT measurable_rnDeriv) produce a literal Lean-verified closure? Sub-question: does any literal closure pass the v24.01-style moat audit (not @[fun_prop]/@[simp]/@[grind=] tagged, not rfl/tauto reproducible)?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 10.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_closures_pass_audit_break_glass_finding": 0.0449438202247191,
+    "no_candidate_closes_literal": 0.2808988764044944,
+    "only_fun_prop_or_measurability_close_via_indirect_leakage": 0.6741573033707865
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T02:34:32Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.02,
+  "p_success": 0.04,
+  "rationale_short": "Definitional: pdf X \u2119 \u03bc \u2261 (map X \u2119).rnDeriv \u03bc by pdf_def : ... := rfl. So Measurable (pdf X \u2119 \u03bc) reduces by rfl to Measurable ((map X \u2119).rnDeriv \u03bc), and the ONLY direct lemma is measurable_rnDeriv (which is @[fun_prop]). Any non-leaky closure requires either a new analytic fact (rnDeriv-of-map-is-measurable via a different route) or unfolding through Lebesgue decomposition. Both are out of scope for type-aware top-k smoke test.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

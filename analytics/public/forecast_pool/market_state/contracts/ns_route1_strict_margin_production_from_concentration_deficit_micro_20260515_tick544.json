@@ -1,0 +1,147 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T22:08:30Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": 3.3024999999999998,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.08,
+    "p_needs_new_lemma": 0.4,
+    "p_regression": 0.05,
+    "p_success": 0.74,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544/claude_rd.json",
+        "forecasted_at": "2026-05-15T22:04:32Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T22:10:49Z",
+    "created_by": "claude_rd",
+    "horizon": "7d",
+    "layer": "micro",
+    "objective_resolver": "lake build ns_tick544 clean AND 5 theorems proved AND adversarial: H3 survives trilinear-criticality objection (pressure flux degree-3 in w => scales as A => ratio O(1))",
+    "question": "Does ns_tick544 produce defectBudgetStrictMarginCertificate from H1 concentration + H2 + cited CZ H3 (ratio=Ckappa/M<1), or is the honest pressure-flux CZ bound trilinear-cubic-critical (~sqrt(kappa)*A, M cancels, ratio O(1)) FALSIFYING the strict gain?",
+    "success_threshold": "success if H3 defensible; fail if flux trilinear-critical so M cancels",
+    "task_type": "ns_clay_strict_margin_production_micro_20260515"
+  },
+  "contract_id": "ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecast_updates/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544/claude_rd/20260515t221544z_claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-15T22:15:44Z",
+        "p_success": 0.18,
+        "rationale_short": "Self-falsified the single-scale route (trilinear homogeneity, unconditional proof). Strict margin NOT produced at single scale. Live frontier = off-diagonal CZ across separated scales; needs the off-diagonal estimate |T|<=C(r'/r)^kappa A (new lemma). p_needs_new_lemma 0.82.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-15T22:12:50Z",
+        "p_success": 0.71,
+        "rationale_short": "Baseline is the existing codex_rd-free price: open contract, narrow proof surface, and the evidence package still favors a standard CZ-style reading. I discount slightly below the claude_rd aggregate because the live risk is that the pressure-flux estimate is genuinely trilinear-critical, so M cancels and the strict ratio never materializes; the main dependency risk is a missing normalization/non-nullness lemma rather than new PDE machinery.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T22:24:55Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.53,
+      "p_success": 0.74,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 2.7224
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.74,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.26825,
+    "score_rows": 2,
+    "scored_at": "2026-05-15T22:25:38Z"
+  }
+}

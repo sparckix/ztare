@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:26:13Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 39.0,
+    "expected_value": -9.670375353710691,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.09,
+    "p_needs_new_lemma": 0.07,
+    "p_regression": 0.045,
+    "p_success": 0.388831137270991,
+    "participants": [
+      {
+        "agent_id": "gp230_curie_gp225_v1968",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.34,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_faraday_gp225_v1968",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.44,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "strict_label_threshold_still_too_high",
+        "p": 0.27
+      },
+      {
+        "mode": "closure_conversion_does_not_follow_target_state",
+        "p": 0.25
+      },
+      {
+        "mode": "generic_candidate_templates_low_compile_yield",
+        "p": 0.16999999999999998
+      },
+      {
+        "mode": "other",
+        "p": 0.13
+      },
+      {
+        "mode": "row_distribution_shift",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1968_candidate_backed_bundled_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1968_candidate_backed_bundled_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1968_candidate_backed_bundled_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1968_candidate_backed_bundled_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1968_candidate_backed_bundled_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 31.5,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:25:54Z",
+    "created_by": "codex_rd_gp225",
+    "horizon": "same session if replay is launched; otherwise next GP-225 execution session",
+    "layer": "micro",
+    "objective_resolver": "Resolve from v19.68 replay artifacts: attempted_candidate_rows>=40, new_unique_strict_target_state_rows>=4, target_state_to_full_closure_conversions>=1, harmful_compiled_mismatch_actions==0, clean_source_policy true, train_gnn_now==false, gnn_blocked==true. Static candidate readiness alone does not count.",
+    "question": "Will the candidate-backed bundled GP-225 replay over v19.66/v19.67 produce at least 4 new unique strict target-state rows and at least 1 target-state-to-full-closure conversion across at least 40 clean candidate actions, with harmful mismatches zero and GNN still blocked?",
+    "success_threshold": "attempted_candidate_rows>=40 AND new_unique_strict_target_state_rows>=4 AND target_state_to_full_closure_conversions>=1 AND harmful_compiled_mismatch_actions==0 AND clean_source_policy true AND train_gnn_now==false AND gnn_blocked==true",
+    "task_type": "bundled_candidate_replay"
+  },
+  "contract_id": "gp225_v1968_candidate_backed_bundled_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_curie_gp225_v1968",
+        "raw_agent_ids": [
+          "gp230_curie_gp225_v1968"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_faraday_gp225_v1968",
+        "raw_agent_ids": [
+          "gp230_faraday_gp225_v1968"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_curie_gp225_v1968",
+      "gp230_faraday_gp225_v1968"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_curie_gp225_v1968",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1968_candidate_backed_bundled_replay/gp230_curie_gp225_v1968.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T03:26:09Z",
+        "p_success": 0.34,
+        "rationale_short": "Schema risk is mostly removed by v19.67, but v19.66 candidates are static generic templates. Four new strict rows plus one closure conversion remains ambitious; run only if the value of the discriminator justifies replay spend.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_faraday_gp225_v1968",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1968_candidate_backed_bundled_replay/gp230_faraday_gp225_v1968.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-14T03:26:09Z",
+        "p_success": 0.44,
+        "rationale_short": "Candidate denominator and hydration readiness materially improve the replay odds versus v19.63. The route is worth a bounded replay audit, but closure conversion is still the hard term and prevents a >0.5 price.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:31:10Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.1,
+      "p_success": 0.388831137270991,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "strict_label_threshold_still_too_high",
+        "p": 0.27
+      },
+      "voi_proxy": 1.2376
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 39.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.388831137270991,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "strict_label_threshold_still_too_high",
+        "p": 0.27
+      },
+      {
+        "mode": "closure_conversion_does_not_follow_target_state",
+        "p": 0.25
+      },
+      {
+        "mode": "generic_candidate_templates_low_compile_yield",
+        "p": 0.16999999999999998
+      },
+      {
+        "mode": "other",
+        "p": 0.13
+      },
+      {
+        "mode": "row_distribution_shift",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.15460000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:31:14Z"
+  }
+}

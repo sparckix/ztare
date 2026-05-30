@@ -1,0 +1,24 @@
+{
+  "agent_id": "herschel_market_A",
+  "contract_id": "ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321",
+  "contract_question": "Will the No-Go analysis find a genuine counter-model or missing hypothesis for same-scale sheath cancellation in the pressure/Riesz angular formula branch?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "abstract_countermodel": 0.19,
+    "branch_already_determined": 0.14,
+    "missing_hypothesis_not_compilable_today": 0.13,
+    "needs_harmonic_analysis": 0.18,
+    "other": 0.04,
+    "restates_existing_guard": 0.24,
+    "under_specified_sheath": 0.08
+  },
+  "forecasted_at": "2026-05-14T00:51:10Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.6,
+  "p_regression": 0.04,
+  "p_success": 0.57,
+  "rationale_short": "Known same-scale cancellation mechanism is likely to produce a genuine missing hypothesis for the projected angular formula.",
+  "read_only_attestation": true
+}

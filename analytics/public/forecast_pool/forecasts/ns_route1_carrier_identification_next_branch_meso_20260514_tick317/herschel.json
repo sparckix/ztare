@@ -1,0 +1,20 @@
+{
+  "agent_id": "Herschel",
+  "contract_id": "ns_route1_carrier_identification_next_branch_meso_20260514_tick317",
+  "contract_question": "Which next route-1 pressure-visibility branch should this tick prioritize after Route1PressureAngularCarrierIdentification: A) split/prove pressure-Hessian tail-window projection, B) split/prove projected Riesz kernel to angular moment, or C) split/prove radial-grade carrier normalization?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "branch_A_tail_window_couples_to_receipts": 0.55,
+    "compile_surface_churn": 0.2,
+    "hidden_helmholtz_leray_theorem_needed": 0.25
+  },
+  "forecasted_at": "2026-05-14T00:26:57Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.05,
+  "p_success": 0.74,
+  "rationale_short": "branch=A; closest to pressure visibility and likely compiled progress; risk is projection coupling to route receipts unless source separates carrier projection from unresolved tail accounting.",
+  "read_only_attestation": true
+}

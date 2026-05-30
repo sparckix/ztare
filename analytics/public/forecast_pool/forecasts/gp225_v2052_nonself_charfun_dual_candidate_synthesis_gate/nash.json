@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "If exact candidate requires the rw list from target theorem, emit normalization-obligation gate instead of replay packet.",
+  "agent_id": "Nash",
+  "contract_id": "gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate",
+  "contract_question": "Will v20.52 synthesize a source-safe charFunDual candidate gate from v20.51 that avoids copying target proof lines and correctly decides replay-ready vs normalization-obligation-only?",
+  "domain": "gp225_pre_gnn_candidate_synthesis_gate",
+  "expected_cost_agent_minutes": 23.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_format_mismatch": 0.12,
+    "no_replay_ready_templates": 0.26,
+    "normalization_obligation_not_separated": 0.3,
+    "target_proof_copy_leakage": 0.32
+  },
+  "forecast_externality_tags": [
+    "replay_budget_guard",
+    "source_safety"
+  ],
+  "forecasted_at": "2026-05-14T17:54:55Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.035,
+  "p_success": 0.69,
+  "rationale_short": "A safe synthesis gate is likely; a safe replay-ready candidate is less likely.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "target_proof_copy_leakage",
+    "no_replay_ready_templates"
+  ]
+}

@@ -1,0 +1,2195 @@
+{
+  "experiment": "gp216_ztare_seams_v4_reclassification",
+  "n_seams": 171,
+  "tier_distribution": {
+    "broadly_shared": 62,
+    "shared_core": 103,
+    "unclassified": 6
+  },
+  "op_distribution": {
+    "broad_07": 5,
+    "broad_05": 18,
+    "core_01": 10,
+    "unclassified": 6,
+    "core_02": 57,
+    "broad_04": 6,
+    "core_07": 19,
+    "core_05": 4,
+    "broad_06": 2,
+    "broad_01": 31,
+    "core_03": 6,
+    "core_06": 7
+  },
+  "results": [
+    {
+      "path": "research_areas/private/seams/README.md",
+      "dominant_op": "broad_07",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "core_03": 1,
+        "broad_06": 1,
+        "broad_07": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=broad_07(2) share=0.40"
+    },
+    {
+      "path": "research_areas/private/seams/gaming/GP-058_bug_bounty_factory_integration_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_05": 2,
+        "broad_05": 5
+      },
+      "confidence": "medium",
+      "rationale": "total=7 top=broad_05(5) share=0.71"
+    },
+    {
+      "path": "research_areas/private/seams/gaming/GP-073_subliminal_learning_reproduction_seam.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "broad_01": 1,
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_01(1) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md",
+      "dominant_op": null,
+      "tier": "unclassified",
+      "op_signals": {
+        "broad_01": 1
+      },
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 2"
+    },
+    {
+      "path": "research_areas/private/seams/reflexive/GP-106_proportionality_precautionary_principle_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 7,
+        "core_07": 1,
+        "broad_01": 1,
+        "broad_05": 1,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=11 top=core_02(7) share=0.64"
+    },
+    {
+      "path": "research_areas/private/seams/reflexive/GP-105_mform_alignment_audit_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 6,
+        "core_03": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=core_02(6) share=0.75"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-172_research_director_mform_role_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 5,
+        "core_07": 3,
+        "broad_05": 2,
+        "broad_07": 3
+      },
+      "confidence": "medium",
+      "rationale": "total=13 top=core_02(5) share=0.38"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-072_sandbox_14_debate_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 11,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=core_02(11) share=0.92"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-076_predictive_divergence_sweep_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 7,
+        "core_05": 4,
+        "core_07": 3,
+        "broad_01": 6,
+        "broad_05": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=21 top=core_02(7) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-193_post_run_thesis_synthesizer_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "broad_01": 1,
+        "broad_05": 8
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=broad_05(8) share=0.80"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-189_ns_continuation_criterion_after_bounded_near_miss_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 2,
+        "core_02": 5,
+        "broad_04": 2,
+        "broad_06": 1
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=core_02(5) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-128b_inbound_principal_directives.md",
+      "dominant_op": "broad_04",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "broad_04": 2
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=broad_04(2) share=1.00"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-188_research_director_primitive_compilation_boundary_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_05": 2,
+        "core_07": 3,
+        "broad_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_07(3) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-192_enterprise_grade_org_runtime_seam.md",
+      "dominant_op": "core_05",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_05": 2
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_05(2) share=1.00"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-072_sandbox_14_blind_path_b_pre_registration.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 3,
+        "core_06": 2,
+        "broad_05": 5
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=broad_05(5) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "core_05": 1,
+        "core_07": 4,
+        "broad_01": 1,
+        "broad_05": 2,
+        "broad_07": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=12 top=core_07(4) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-079_persona_library_unification_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 4,
+        "broad_05": 3
+      },
+      "confidence": "medium",
+      "rationale": "total=7 top=core_02(4) share=0.57"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_06": 1,
+        "core_07": 3,
+        "broad_01": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_07(3) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/protocol/GP-191_org_kernel_policy_boundary_seam.md",
+      "dominant_op": "broad_06",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_03": 1,
+        "broad_06": 4
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=broad_06(4) share=0.80"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-096_science_programme_decomposition_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "core_03": 2,
+        "core_06": 1,
+        "core_07": 2,
+        "broad_01": 1,
+        "broad_05": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=9 top=core_02(2) share=0.22"
+    },
+    {
+      "path": "research_areas/private/seams/mission/ztare_mission_hypothesis_ledger_seam.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 6,
+        "core_02": 2,
+        "broad_01": 1,
+        "broad_04": 1
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=core_01(6) share=0.60"
+    },
+    {
+      "path": "research_areas/private/seams/mission/SESSION_HANDOFF_2026-05-01_three_frontier_tracks.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "core_05": 2,
+        "core_07": 1,
+        "broad_01": 7,
+        "broad_05": 1,
+        "broad_06": 2,
+        "sub_04_addcomb": 2
+      },
+      "confidence": "high",
+      "rationale": "total=16 top=broad_01(7) share=0.44"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-136_pmdl_threshold_hardening_seam.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "broad_04": 1
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_01(1) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 5,
+        "core_07": 2,
+        "broad_01": 4,
+        "broad_05": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=13 top=core_02(5) share=0.38"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-049_epistemic_verification_decomposition_validation_seam.md",
+      "dominant_op": "core_03",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 3,
+        "core_03": 14,
+        "core_07": 1,
+        "broad_01": 7
+      },
+      "confidence": "high",
+      "rationale": "total=26 top=core_03(14) share=0.54"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-133_R4_py_exec_sandbox_review.md",
+      "dominant_op": "core_06",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_06": 8
+      },
+      "confidence": "high",
+      "rationale": "total=9 top=core_06(8) share=0.89"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-135_meta_law_hypothesis_family_program_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_03": 1,
+        "core_06": 1,
+        "core_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=4 top=core_02(1) share=0.25"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-082_substrate_scope_boundary_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_07": 5,
+        "broad_04": 2,
+        "broad_05": 2
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=core_07(5) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-050_post_treatise_philosophy_anchors_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_03": 2,
+        "core_07": 4,
+        "broad_01": 3,
+        "broad_04": 1,
+        "broad_05": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=11 top=core_07(4) share=0.36"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-129_biological_org_design_panel_seam.md",
+      "dominant_op": "core_03",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_03": 1,
+        "core_06": 1,
+        "core_07": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_03(1) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-128_persistent_manager_agent_seam.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 1,
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_01(1) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-140_ztare_discovery_seam.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 1
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_01(1) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-169_consciousness_decision_protocol_seam.md",
+      "dominant_op": "core_05",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 1,
+        "core_03": 2,
+        "core_05": 3,
+        "core_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=8 top=core_05(3) share=0.38"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-141_continuous_A_plus_B_reference_implementation_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "broad_01": 5,
+        "broad_05": 3
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=broad_01(5) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-191_transformer_vs_neural_status_2026-05-01.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_07": 1,
+        "broad_01": 4
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=broad_01(4) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-166_self_enacted_procedural_compliance_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_05": 1,
+        "core_07": 2
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_07(2) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-127_falsify_before_patent_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "broad_01": 1
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_02(1) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-085_grammar_ceiling_hypothesis_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 2,
+        "core_02": 4,
+        "core_07": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=core_02(4) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-131_work_discovery_loop_seam.md",
+      "dominant_op": "core_05",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_05": 1,
+        "core_06": 1,
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_05(1) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-083_inference_type_boundary_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_07": 2,
+        "broad_01": 3,
+        "broad_05": 6
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=broad_05(6) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-130_non_llm_substrate_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_06": 1,
+        "core_07": 4,
+        "broad_06": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_07(4) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-134_ztare_on_ztare_self_recursive_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 3,
+        "core_07": 1,
+        "broad_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=core_02(3) share=0.60"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-133_multidisciplinary_discovery_panel_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_03": 1,
+        "core_07": 1,
+        "broad_01": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=4 top=broad_01(2) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/GP-167_multi_agent_interface_form_factor_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "core_05": 1,
+        "broad_01": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=4 top=core_02(2) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/mission/ztare_operational_mode_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 10,
+        "core_07": 1,
+        "broad_05": 3,
+        "broad_06": 1,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=16 top=core_02(10) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/GP-154_class_K_diagnostic_and_panel_review.md",
+      "dominant_op": "core_03",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_03": 4,
+        "broad_01": 2,
+        "broad_06": 1,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=core_03(4) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/GP-173_comparative_closure_clock_substrate_seam.md",
+      "dominant_op": null,
+      "tier": "unclassified",
+      "op_signals": {
+        "core_03": 1
+      },
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 2"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-143_continuous_chaotic_kernel_integration_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 5,
+        "core_03": 1,
+        "broad_04": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=core_02(5) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-149_phase2_refresh_2026-05-04.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 3,
+        "core_07": 2,
+        "broad_05": 8,
+        "broad_07": 5
+      },
+      "confidence": "high",
+      "rationale": "total=18 top=broad_05(8) share=0.44"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-154_learning_mechanics_scaling_exponents_seam.md",
+      "dominant_op": "core_03",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_03": 3,
+        "core_07": 1,
+        "broad_01": 3,
+        "broad_05": 1,
+        "broad_06": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=9 top=core_03(3) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-145_saw_mu_square_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 8,
+        "broad_04": 2
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=core_02(8) share=0.80"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-149_mining_findings_and_interventions_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 5,
+        "core_03": 1,
+        "core_07": 9,
+        "broad_01": 2,
+        "broad_05": 3,
+        "broad_07": 3
+      },
+      "confidence": "medium",
+      "rationale": "total=23 top=core_07(9) share=0.39"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-216_theory_building_operations_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 3,
+        "core_02": 3,
+        "core_07": 7,
+        "broad_01": 3,
+        "broad_07": 3
+      },
+      "confidence": "medium",
+      "rationale": "total=19 top=core_07(7) share=0.37"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-169_cold_llm_synthetic_erdos_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "broad_01": 5,
+        "broad_04": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=broad_01(5) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-162_convention_homogeneity_enforcement_seam.md",
+      "dominant_op": "core_06",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "core_04": 1,
+        "core_05": 1,
+        "core_06": 3,
+        "core_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=8 top=core_06(3) share=0.38"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-149_failure_taxonomy_hardening_primitives_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_05": 1,
+        "core_07": 7,
+        "broad_07": 3
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=core_07(7) share=0.58"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-171_tier3_mechanism_search_via_lean_lagrangian.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 3,
+        "core_05": 1,
+        "broad_04": 3,
+        "broad_05": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=9 top=core_01(3) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-170_symbolic_logic_cage_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_04": 1,
+        "broad_01": 1,
+        "broad_04": 2,
+        "broad_05": 18,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=24 top=broad_05(18) share=0.75"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-216b_mechanization_roadmap.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 17,
+        "core_03": 3,
+        "core_05": 2,
+        "core_06": 2,
+        "core_07": 12,
+        "broad_05": 4,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=42 top=core_02(17) share=0.40"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-109_residual_periodicity_detector_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 3,
+        "core_03": 1,
+        "core_07": 1,
+        "broad_01": 19,
+        "broad_05": 1,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=26 top=broad_01(19) share=0.73"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-164_ztare_v2_reframe_analogy_meta_architecture_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_06": 1,
+        "broad_01": 6,
+        "broad_05": 6,
+        "broad_06": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=16 top=broad_01(6) share=0.38"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-116_compression_as_architecture_discovery.md",
+      "dominant_op": "core_05",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 2,
+        "core_05": 3,
+        "broad_01": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=7 top=core_05(3) share=0.43"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-190_post_run_discriminator_daemon_seam.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 6,
+        "core_02": 1,
+        "core_05": 1,
+        "core_06": 1,
+        "broad_01": 2,
+        "broad_04": 1
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=core_01(6) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-081_lean_formal_bridge_seam.md",
+      "dominant_op": "broad_04",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_03": 1,
+        "core_04": 1,
+        "core_07": 4,
+        "broad_01": 3,
+        "broad_04": 6
+      },
+      "confidence": "medium",
+      "rationale": "total=16 top=broad_04(6) share=0.38"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-115_residual_driven_grammar_expansion.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 3,
+        "broad_01": 22,
+        "broad_05": 3
+      },
+      "confidence": "high",
+      "rationale": "total=28 top=broad_01(22) share=0.79"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-216c_ns_trackb_application.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 11,
+        "core_03": 5,
+        "core_05": 1,
+        "core_06": 1,
+        "core_07": 6,
+        "broad_01": 1
+      },
+      "confidence": "high",
+      "rationale": "total=26 top=core_02(11) share=0.42"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-211_lean_proof_substrate_class_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 5,
+        "core_04": 1,
+        "core_05": 2,
+        "core_06": 5,
+        "broad_05": 17,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=32 top=broad_05(17) share=0.53"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-213_operator_role_mechanization_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 4,
+        "core_03": 1,
+        "broad_01": 3,
+        "broad_05": 1,
+        "broad_07": 4
+      },
+      "confidence": "medium",
+      "rationale": "total=14 top=core_02(4) share=0.29"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-151_classifier_telemetry_downgrade_seam.md",
+      "dominant_op": "broad_07",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 5,
+        "core_05": 1,
+        "core_07": 3,
+        "broad_05": 2,
+        "broad_07": 8
+      },
+      "confidence": "high",
+      "rationale": "total=19 top=broad_07(8) share=0.42"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-215_meta_arc_mining_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 6,
+        "core_02": 12,
+        "core_03": 2,
+        "broad_01": 2,
+        "broad_07": 4
+      },
+      "confidence": "high",
+      "rationale": "total=26 top=core_02(12) share=0.46"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-212_meta_solver_kernel_seam.md",
+      "dominant_op": "broad_07",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 1,
+        "core_07": 7,
+        "broad_07": 13
+      },
+      "confidence": "high",
+      "rationale": "total=22 top=broad_07(13) share=0.59"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-111_proactive_closure_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_02(2) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-114_neural_scaling_spectral_dynamics.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "broad_01": 2
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=broad_01(2) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-148_void_mining_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 9,
+        "core_07": 1,
+        "broad_05": 12,
+        "broad_07": 2
+      },
+      "confidence": "high",
+      "rationale": "total=24 top=broad_05(12) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-191_typed_cold_shot_portfolio_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 2,
+        "core_06": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=core_02(2) share=0.40"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-112_margin_of_safety_gate.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_03": 1,
+        "core_07": 1,
+        "broad_01": 9,
+        "broad_04": 1
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=broad_01(9) share=0.75"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-110_statistical_fingerprint_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "core_03": 2,
+        "broad_01": 4,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=broad_01(4) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-113_diagnosis_feedback_loop.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 1,
+        "broad_01": 4,
+        "broad_05": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=7 top=broad_01(4) share=0.57"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-117_why_only_kills.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_03": 4,
+        "broad_01": 6,
+        "broad_04": 2,
+        "broad_05": 2
+      },
+      "confidence": "high",
+      "rationale": "total=14 top=broad_01(6) share=0.43"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-103_topology_induction_gap.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 3,
+        "core_05": 1,
+        "core_06": 1,
+        "broad_01": 1,
+        "broad_05": 6
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=broad_05(6) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-144_new_science_claim_discipline_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 2,
+        "core_02": 4,
+        "core_05": 2,
+        "broad_01": 5,
+        "broad_05": 6
+      },
+      "confidence": "medium",
+      "rationale": "total=19 top=broad_05(6) share=0.32"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-214_pattern_bank_kernel_injection_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 13,
+        "broad_07": 7
+      },
+      "confidence": "high",
+      "rationale": "total=21 top=core_02(13) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/engine/GP-055_meta_judge_parse_robustness_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_02(2) share=1.00"
+    },
+    {
+      "path": "research_areas/private/seams/interfaces/D4_distribution_form_factor_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 6,
+        "core_06": 2,
+        "broad_05": 2
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=core_02(6) share=0.60"
+    },
+    {
+      "path": "research_areas/private/seams/interfaces/D3_layer3_surfacing_seam.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 3,
+        "broad_05": 2,
+        "broad_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_01(3) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-099_vocabulary_floor_seam.md",
+      "dominant_op": "broad_04",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_06": 1,
+        "broad_04": 16,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=18 top=broad_04(16) share=0.89"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 6,
+        "core_03": 1,
+        "core_06": 2,
+        "core_07": 1,
+        "broad_01": 12,
+        "broad_04": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=24 top=broad_01(12) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-095_post_fit_residual_ambiguity_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 19,
+        "core_05": 1,
+        "core_06": 1,
+        "broad_01": 22,
+        "broad_05": 1,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=45 top=broad_01(22) share=0.49"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-060_parallel_champion_synthesis_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 6,
+        "core_04": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=core_02(6) share=0.75"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "broad_01": 20,
+        "broad_05": 2
+      },
+      "confidence": "high",
+      "rationale": "total=22 top=broad_01(20) share=0.91"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-078_component_d_topology_synthesizer_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 2,
+        "core_07": 1,
+        "broad_01": 13,
+        "broad_05": 2,
+        "broad_06": 1
+      },
+      "confidence": "high",
+      "rationale": "total=19 top=broad_01(13) share=0.68"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-174_parallel_recombination_pipeline_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 2,
+        "core_06": 1,
+        "broad_01": 1,
+        "broad_04": 1,
+        "broad_05": 1,
+        "broad_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=8 top=core_02(2) share=0.25"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-056_axiomatic_patching_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_05": 1,
+        "broad_05": 30,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=32 top=broad_05(30) share=0.94"
+    },
+    {
+      "path": "research_areas/private/seams/engine/grammar/GP-097_nd_manifold_compressor_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 2,
+        "core_05": 1,
+        "core_07": 2,
+        "broad_01": 4,
+        "broad_05": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=11 top=broad_01(4) share=0.36"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-069_champion_nesting_audit_gate_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 3,
+        "core_07": 4,
+        "broad_01": 1,
+        "broad_05": 4
+      },
+      "confidence": "medium",
+      "rationale": "total=12 top=core_07(4) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 1,
+        "core_04": 1,
+        "broad_01": 10,
+        "broad_04": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=15 top=broad_01(10) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-069_nesting_cleared_target_construction_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "broad_01": 3,
+        "broad_04": 1,
+        "broad_05": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=broad_01(3) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-034_loop_control_blind_to_latent_distance_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 9,
+        "broad_01": 3,
+        "broad_05": 5,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=18 top=core_02(9) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-100_epistemic_decoupling_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 7,
+        "core_03": 1,
+        "core_04": 2,
+        "core_06": 1,
+        "broad_05": 5
+      },
+      "confidence": "high",
+      "rationale": "total=16 top=core_02(7) share=0.44"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-062_trajectory_thrash_detection_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 23,
+        "core_03": 1,
+        "broad_05": 13
+      },
+      "confidence": "high",
+      "rationale": "total=37 top=core_02(23) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-042_mutator_structural_diversity_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 9,
+        "core_06": 1,
+        "broad_01": 6,
+        "broad_05": 4,
+        "broad_07": 2
+      },
+      "confidence": "high",
+      "rationale": "total=22 top=core_02(9) share=0.41"
+    },
+    {
+      "path": "research_areas/private/seams/engine/mutator/GP-057_ratio_finiteness_gate_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_07": 1,
+        "broad_01": 3,
+        "broad_05": 6
+      },
+      "confidence": "high",
+      "rationale": "total=11 top=broad_05(6) share=0.55"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_nesting_collapse_audit.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_07": 5,
+        "broad_01": 3
+      },
+      "confidence": "high",
+      "rationale": "total=9 top=core_07(5) share=0.56"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_07_closure.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 4,
+        "core_03": 1,
+        "broad_01": 5,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=11 top=broad_01(5) share=0.45"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_pre_registration.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_07": 3,
+        "broad_05": 1,
+        "broad_06": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_07(3) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_09_pre_registration.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 4,
+        "core_07": 4,
+        "broad_01": 17,
+        "broad_04": 1,
+        "broad_05": 3,
+        "broad_06": 1
+      },
+      "confidence": "high",
+      "rationale": "total=30 top=broad_01(17) share=0.57"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_07_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 8,
+        "core_06": 2,
+        "broad_01": 1
+      },
+      "confidence": "high",
+      "rationale": "total=11 top=core_02(8) share=0.73"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "broad_04": 2,
+        "broad_05": 5
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=broad_05(5) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox06_identifiability_hardening_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "broad_01": 3,
+        "broad_05": 3,
+        "broad_06": 2,
+        "broad_07": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=11 top=broad_01(3) share=0.27"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_08_closure.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 12,
+        "broad_05": 12
+      },
+      "confidence": "high",
+      "rationale": "total=24 top=core_02(12) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_09_post_run_audit.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 9,
+        "core_04": 1,
+        "core_07": 4,
+        "broad_01": 2
+      },
+      "confidence": "high",
+      "rationale": "total=16 top=core_02(9) share=0.56"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-084_crucial_experiment_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_02(2) share=1.00"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_07_blind_eml_inversion_design.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "core_03": 1,
+        "core_06": 1,
+        "broad_01": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=broad_01(2) share=0.40"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_08_pre_registration.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 9,
+        "broad_01": 19,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "high",
+      "rationale": "total=29 top=broad_01(19) share=0.66"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_post_run_audit.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_07": 3
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_07(3) share=1.00"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_09_pre_registration_RETIRED_2026-04-15.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 4,
+        "broad_01": 5,
+        "broad_05": 4
+      },
+      "confidence": "medium",
+      "rationale": "total=14 top=broad_01(5) share=0.36"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-042_structural_memory_01_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 5,
+        "broad_01": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=7 top=core_02(5) share=0.71"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_13_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 23,
+        "core_07": 1,
+        "broad_01": 1,
+        "broad_05": 3
+      },
+      "confidence": "high",
+      "rationale": "total=28 top=core_02(23) share=0.82"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_12_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 24,
+        "core_04": 1,
+        "core_07": 1,
+        "broad_01": 1,
+        "broad_05": 2
+      },
+      "confidence": "high",
+      "rationale": "total=29 top=core_02(24) share=0.83"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_13v2_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 19,
+        "core_03": 1,
+        "core_07": 2,
+        "broad_01": 1,
+        "broad_05": 2
+      },
+      "confidence": "high",
+      "rationale": "total=25 top=core_02(19) share=0.76"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_11_01_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 13,
+        "broad_01": 3,
+        "broad_05": 6,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "high",
+      "rationale": "total=23 top=core_02(13) share=0.57"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_steering_ab_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 18,
+        "core_07": 2,
+        "broad_01": 8,
+        "broad_05": 10
+      },
+      "confidence": "high",
+      "rationale": "total=38 top=core_02(18) share=0.47"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_05": 1,
+        "broad_01": 3,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=broad_01(3) share=0.60"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/erdos/GP-090_erdos_dark_sequence_pre_registration.md",
+      "dominant_op": "core_06",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 3,
+        "core_06": 12
+      },
+      "confidence": "high",
+      "rationale": "total=15 top=core_06(12) share=0.80"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/erdos/GP-089_erdos_dark_sequence_pre_registration.md",
+      "dominant_op": "core_03",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 6,
+        "core_03": 8,
+        "core_06": 5,
+        "broad_04": 1
+      },
+      "confidence": "high",
+      "rationale": "total=20 top=core_03(8) share=0.40"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/erdos/GP-077_oeis_sequence_law_recovery_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_03": 5,
+        "core_05": 1,
+        "broad_01": 12
+      },
+      "confidence": "high",
+      "rationale": "total=18 top=broad_01(12) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/selkov/GP-073_sandbox_15_pre_registration.md",
+      "dominant_op": "core_06",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_06": 3,
+        "broad_01": 1,
+        "broad_06": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=core_06(3) share=0.60"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 4,
+        "broad_01": 23,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=28 top=broad_01(23) share=0.82"
+    },
+    {
+      "path": "research_areas/private/seams/substrates/selkov/GP-074_sandbox_15_component_c_pre_registration.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 19,
+        "core_06": 1,
+        "broad_01": 8,
+        "broad_05": 2
+      },
+      "confidence": "high",
+      "rationale": "total=30 top=core_02(19) share=0.63"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/cage/GP-157_cage_orchestrator_substrate_agnostic_dispatch.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 2,
+        "core_07": 2,
+        "broad_04": 1,
+        "broad_07": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=7 top=core_01(2) share=0.29"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 6,
+        "core_07": 3,
+        "broad_05": 1,
+        "broad_07": 3
+      },
+      "confidence": "high",
+      "rationale": "total=13 top=core_02(6) share=0.46"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/cage/GP-039_gate_library_formalization_seam.md",
+      "dominant_op": "broad_07",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "core_07": 2,
+        "broad_05": 2,
+        "broad_07": 27,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "high",
+      "rationale": "total=33 top=broad_07(27) share=0.82"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-040_throughput_instrumentation_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 12,
+        "core_03": 3
+      },
+      "confidence": "high",
+      "rationale": "total=15 top=core_02(12) share=0.80"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_01": 1,
+        "core_03": 1,
+        "broad_01": 4,
+        "broad_04": 3
+      },
+      "confidence": "high",
+      "rationale": "total=9 top=broad_01(4) share=0.44"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-098_evidence_compressor_seam.md",
+      "dominant_op": "broad_06",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "broad_01": 3,
+        "broad_06": 4,
+        "broad_07": 1,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "high",
+      "rationale": "total=9 top=broad_06(4) share=0.44"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-134_prompt_layer_contamination_incident_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 3,
+        "core_03": 2,
+        "core_07": 1,
+        "broad_01": 2,
+        "broad_07": 2,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=11 top=core_02(3) share=0.27"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-038_tail_cycle_time_instrumentation_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 25,
+        "core_06": 2,
+        "core_07": 1,
+        "broad_01": 2
+      },
+      "confidence": "high",
+      "rationale": "total=30 top=core_02(25) share=0.83"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-183_falsification_mechanization_plan.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_07": 2,
+        "broad_07": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_07(2) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-032_epistemic_throughput_unit_economics_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 7,
+        "core_03": 1,
+        "broad_01": 1,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=core_02(7) share=0.70"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md",
+      "dominant_op": "core_06",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "core_06": 3
+      },
+      "confidence": "medium",
+      "rationale": "total=4 top=core_06(3) share=0.75"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "core_02": 8,
+        "broad_01": 1,
+        "broad_07": 2
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=core_02(8) share=0.67"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-024_persistent_research_workspace_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_06": 1,
+        "broad_05": 9
+      },
+      "confidence": "high",
+      "rationale": "total=10 top=broad_05(9) share=0.90"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-033_multi_project_synthesis_generalization_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_07": 5,
+        "broad_07": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_07(5) share=0.83"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-036_findings_runner_supervisor_convergence_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 9,
+        "core_02": 15,
+        "core_06": 1,
+        "broad_05": 1
+      },
+      "confidence": "high",
+      "rationale": "total=26 top=core_02(15) share=0.58"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-061_void_driven_steering_measurement_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 9,
+        "core_05": 1,
+        "core_07": 2,
+        "broad_01": 2,
+        "broad_05": 4,
+        "broad_07": 1,
+        "sub_04_addcomb": 3
+      },
+      "confidence": "high",
+      "rationale": "total=22 top=core_02(9) share=0.41"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 3,
+        "core_03": 2,
+        "broad_05": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_02(3) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-031_findings_birth_bridge_seam.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 16,
+        "core_06": 1,
+        "broad_01": 2
+      },
+      "confidence": "high",
+      "rationale": "total=19 top=core_02(16) share=0.84"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_03": 2,
+        "core_07": 4,
+        "broad_01": 1,
+        "broad_05": 5
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=broad_05(5) share=0.42"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-071_executive_inbox_seam.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "core_05": 1,
+        "core_07": 3
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_07(3) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-061_constraint_accumulation_as_output_seam.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 4,
+        "core_05": 1,
+        "core_06": 1,
+        "broad_01": 4,
+        "broad_05": 25
+      },
+      "confidence": "high",
+      "rationale": "total=35 top=broad_05(25) share=0.71"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_arnold_cat_map.md",
+      "dominant_op": "core_01",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 1,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_01(1) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_validity_horizon.md",
+      "dominant_op": "broad_04",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 4,
+        "core_06": 1,
+        "broad_01": 1,
+        "broad_04": 5
+      },
+      "confidence": "high",
+      "rationale": "total=11 top=broad_04(5) share=0.45"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/substrate_classifier_v1.md",
+      "dominant_op": "broad_07",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "core_07": 1,
+        "broad_01": 1,
+        "broad_07": 2
+      },
+      "confidence": "medium",
+      "rationale": "total=5 top=broad_07(2) share=0.40"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_pslq_bound.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "broad_01": 1,
+        "broad_04": 1,
+        "broad_05": 1,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "medium",
+      "rationale": "total=6 top=core_02(2) share=0.33"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/alien_math_null_hypothesis_backtest.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_01": 3,
+        "core_02": 1,
+        "core_07": 4,
+        "broad_01": 1,
+        "broad_04": 2,
+        "broad_05": 1,
+        "broad_07": 4
+      },
+      "confidence": "medium",
+      "rationale": "total=16 top=core_07(4) share=0.25"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_ulam_steinerberger_gpt41.md",
+      "dominant_op": "broad_04",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 4,
+        "core_03": 1,
+        "broad_01": 1,
+        "broad_04": 5,
+        "sub_04_addcomb": 1
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=broad_04(5) share=0.42"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_kww_polymer.md",
+      "dominant_op": "core_07",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_07": 1,
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=core_07(1) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_horizon_gpt41.md",
+      "dominant_op": "broad_04",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "core_02": 1,
+        "broad_01": 2,
+        "broad_04": 9
+      },
+      "confidence": "high",
+      "rationale": "total=12 top=broad_04(9) share=0.75"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_v2_1_meta_architecture_session_postmortem.md",
+      "dominant_op": "core_06",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_03": 1,
+        "core_06": 5,
+        "broad_04": 1,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=8 top=core_06(5) share=0.62"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_novelty_audit_vs_cold_llm.md",
+      "dominant_op": "core_03",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 2,
+        "core_03": 9,
+        "core_04": 1,
+        "broad_01": 3,
+        "broad_04": 1,
+        "broad_07": 2
+      },
+      "confidence": "high",
+      "rationale": "total=18 top=core_03(9) share=0.50"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_mu_square.md",
+      "dominant_op": null,
+      "tier": "unclassified",
+      "op_signals": {
+        "core_02": 1
+      },
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 2"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/GP-163d_unified_accel_run_postmortem.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 3,
+        "core_04": 1,
+        "core_06": 3,
+        "broad_01": 3
+      },
+      "confidence": "medium",
+      "rationale": "total=10 top=core_02(3) share=0.30"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_gp023_planck_gpt41.md",
+      "dominant_op": "broad_01",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "broad_01": 3
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=broad_01(3) share=1.00"
+    },
+    {
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_deep_audit_findings.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 6,
+        "broad_01": 2,
+        "broad_07": 1
+      },
+      "confidence": "high",
+      "rationale": "total=9 top=core_02(6) share=0.67"
+    },
+    {
+      "path": "research_areas/specs/active/README.md",
+      "dominant_op": null,
+      "tier": "unclassified",
+      "op_signals": {},
+      "confidence": "low",
+      "rationale": "insufficient signal: total 0 < 2"
+    },
+    {
+      "path": "research_areas/specs/active/GP-104_general_purpose_project_generator_spec.md",
+      "dominant_op": "core_06",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_06": 1,
+        "core_07": 1,
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_06(1) share=0.33"
+    },
+    {
+      "path": "research_areas/specs/active/engine/grammar/GP-021_topological_pivot_heuristics_spec.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "broad_05": 2
+      },
+      "confidence": "low",
+      "rationale": "total=2 top=broad_05(2) share=1.00"
+    },
+    {
+      "path": "research_areas/specs/active/engine/grammar/GP-011_derived_constraints_lane_spec.md",
+      "dominant_op": "broad_05",
+      "tier": "broadly_shared",
+      "op_signals": {
+        "broad_05": 28
+      },
+      "confidence": "high",
+      "rationale": "total=28 top=broad_05(28) share=1.00"
+    },
+    {
+      "path": "research_areas/specs/active/apparatus/instrumentation/GP-022_forecast_project_typing_spec.md",
+      "dominant_op": null,
+      "tier": "unclassified",
+      "op_signals": {
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 2"
+    },
+    {
+      "path": "research_areas/specs/active/apparatus/instrumentation/GP-027_evidence_compile_reuse_spec.md",
+      "dominant_op": null,
+      "tier": "unclassified",
+      "op_signals": {
+        "broad_05": 1
+      },
+      "confidence": "low",
+      "rationale": "insufficient signal: total 1 < 2"
+    },
+    {
+      "path": "research_areas/specs/active/apparatus/supervisor/GP-026_runner_no_suite_rejection_spec.md",
+      "dominant_op": "core_02",
+      "tier": "shared_core",
+      "op_signals": {
+        "core_02": 1,
+        "broad_05": 1,
+        "broad_07": 1
+      },
+      "confidence": "low",
+      "rationale": "total=3 top=core_02(1) share=0.33"
+    }
+  ]
+}

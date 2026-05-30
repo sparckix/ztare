@@ -1,0 +1,96 @@
+{
+  "contract_id": "tick668_level502_pde_bounded_incidence_collision_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "treat bounded incident existence and collision-free incidence as free fields on the Level501 least-hit source",
+      "counterfactual_action": "bind those fields to displayed same-tree eventData, prefix domination, and bounded fanout/no-log-reuse provenance in an L3A source",
+      "externality_hypotheses": {
+        "negative": "still source-level: it records the PDE theorem fields rather than proving them from estimates",
+        "positive": "moves the exact analytic debt onto PDE geometry provenance rather than a pure selector socket"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex:RD"
+      ]
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.06760000000000001,
+  "mean_log_score": -0.3011050927839216,
+  "outcome": {
+    "actual_cost_agent_minutes": 32.0,
+    "artifact_hash": "311a79d99af4780fc56d0eef059694b9f4a4652325523d9d51f19b20c98b3777",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level502_pde_bounded_incidence_collision_pencil.md",
+    "changed_by_forecast_ids": [
+      "codex:RD"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "lake_build_pass",
+    "contract_id": "tick668_level502_pde_bounded_incidence_collision_source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": "no warm forecaster was emitted for this local meso contract; RD forecast predates resolution and strict gate/workbench/Lake evidence decides the source result",
+    "ordering_override_no_independent_forecaster": "no warm forecaster was emitted for this local meso contract; RD forecast predates resolution and strict gate/workbench/Lake evidence decides the source result",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Positive Level502 result: L3A PDE-geometry source for bounded incident existence plus collision-free incidence formalized and composed through Level501 into Level500; strict receipt, workbench, and Lake build passed.",
+    "resolved_at": "2026-05-27T04:54:01Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T04:54:08Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 32.0,
+      "agent_id": "codex:RD",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 28.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 60.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3011050927839216,
+      "p_buy_yes_max": 0.66,
+      "p_dependency_issue": 0.14,
+      "p_needs_new_lemma": 0.3,
+      "p_regression": 0.09,
+      "p_sell_yes_min": 0.83,
+      "p_success": 0.74,
+      "predicted_brier_hi": 0.2,
+      "predicted_brier_lo": 0.08,
+      "predicted_self_error_ratio": 0.19,
+      "success_bool": true,
+      "tail_downside_worry": 20.0,
+      "tail_upside_surprise": 12.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T04:48:27Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T04:48:45Z",
+        "resolved_at": "2026-05-27T04:54:01Z"
+      },
+      "verbalized_confidence": 0.74
+    }
+  ]
+}

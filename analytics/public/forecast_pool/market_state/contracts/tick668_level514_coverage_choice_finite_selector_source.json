@@ -1,0 +1,168 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T07:16:53Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.6,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 9.24
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 85.0,
+    "expected_value": -155.78,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.06,
+    "p_needs_new_lemma": 0.34,
+    "p_regression": 0.06,
+    "p_success": 0.6,
+    "participants": [
+      {
+        "agent_id": "codex-rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level514_coverage_choice_finite_selector_source/codex_rd.json",
+        "forecasted_at": "2026-05-27T07:08:09Z",
+        "p_success": 0.6,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "sigma_witness_still_source_theorem_not_derived",
+        "p": 0.45
+      },
+      {
+        "mode": "target_membership_binding_too_weak",
+        "p": 0.25
+      },
+      {
+        "mode": "lean_dependent_type_mismatch",
+        "p": 0.18
+      },
+      {
+        "mode": "gate_workbench_regression",
+        "p": 0.12
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level514_coverage_choice_finite_selector_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level514_coverage_choice_finite_selector_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level514_coverage_choice_finite_selector_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level514_coverage_choice_finite_selector_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level514_coverage_choice_finite_selector_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T07:06:18Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-27T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve TRUE iff Lean compiles a Level514 finite coverage-choice selector source into Level513, strict receipt/workbench checks pass, active-chain gate audit is clean, and targeted tests pass.",
+    "question": "Can Level514 construct selectedPrefixEventIndex from a finite coverage-choice witness theorem tied to eventToBadNode and target-node membership, then package into Level513?",
+    "success_threshold": "A coverage-choice source defines selectedPrefixEventIndex from a sigma witness into Fin (supportLength - 1), proves targetNode = eventToBadNode at that witness, binds the theorem to BadCenterEventPrefixCoversSelectedBadTree and target-node selected-bad membership, and packages into Level513 without arbitrary, endpoint-capacity-only, or post-payoff substitutes.",
+    "task_type": "ns_trackb_formal_bridge"
+  },
+  "contract_id": "tick668_level514_coverage_choice_finite_selector_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex-rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level514_coverage_choice_finite_selector_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 85.0,
+        "forecasted_at": "2026-05-27T07:08:09Z",
+        "p_success": 0.6,
+        "rationale_short": "Level514 can define selectedPrefixEventIndex from a sigma coverage-choice witness and package into Level513; remaining risk is that the witness is still an assumed theorem, not yet derived from the Prop appearance field.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T07:17:19Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 95.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T07:17:12Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.6,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 9.24
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 85.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.6,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "sigma_witness_still_source_theorem_not_derived",
+        "p": 0.45
+      },
+      {
+        "mode": "target_membership_binding_too_weak",
+        "p": 0.25
+      },
+      {
+        "mode": "lean_dependent_type_mismatch",
+        "p": 0.18
+      },
+      {
+        "mode": "gate_workbench_regression",
+        "p": 0.12
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.16000000000000003,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T07:17:19Z"
+  }
+}

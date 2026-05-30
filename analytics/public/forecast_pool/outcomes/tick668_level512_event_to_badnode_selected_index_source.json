@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 10.0,
+  "artifact_hash": "2e9d1d3b966822729899cdae8a16eb7a2f3836ed6d4858004aa40f1075778661",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+  "changed_by_forecast_ids": [],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "passed",
+  "contract_id": "tick668_level512_event_to_badnode_selected_index_source",
+  "counterfactual_value_bucket": "positive",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "positive_source_ladder",
+    "clay_adjacent_conditional_bridge",
+    "gate_semantics_cleaned"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [],
+  "new_next_action": "derive selectedPrefixEventIndex from BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix",
+  "old_next_action": "derive selectedEventDataIndex from finite event-prefix enumeration and displayed incidence",
+  "ordering_override_no_codex": "Local continuation lacked a live independent forecaster; ordering override recorded after strict Lean/workbench verification.",
+  "ordering_override_no_independent_forecaster": "Local continuation lacked a live independent forecaster; ordering override recorded after strict Lean/workbench verification.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "selected_prefix_event_still_supplied_as_next_residual"
+  ],
+  "resolution_note": "Level512 added L3ASelectedIndexFromEventToBadNodeSource, selectedPrefixEventIndex_incident, and toFiniteScaleCofinalitySource; Lean file check and module build passed; PDE workbench accepted strict G-EVENT-TO-BADNODE-SELECTED-INDEX receipt.",
+  "resolved_at": "2026-05-27T06:53:18Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

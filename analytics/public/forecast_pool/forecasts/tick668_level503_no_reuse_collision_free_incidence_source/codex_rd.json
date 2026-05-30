@@ -1,0 +1,43 @@
+{
+  "action_change_recommendation": "Use Level503 if no-reuse proof explicitly feeds collision freedom and composes to Level502; otherwise keep Level502 and isolate the missing proof term.",
+  "agent_family": "codex",
+  "agent_id": "codex:RD",
+  "b_mid": 0.115,
+  "b_width": 0.11,
+  "contract_id": "tick668_level503_no_reuse_collision_free_incidence_source",
+  "contract_question": "Can Level503 compile a no-reuse-derived collision-free incidence source that packages into the Level502 bounded-incidence collision source?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "gate_schema_too_weak": 0.2916666666666667,
+    "lake_build_regression": 0.20833333333333334,
+    "no_reuse_proof_term_gap": 0.5
+  },
+  "forecast_externality_tags": [
+    "no_reuse_collision_free",
+    "before_cardinality",
+    "finite_selector_source"
+  ],
+  "forecasted_at": "2026-05-27T05:00:26Z",
+  "p_buy_yes_max": 0.69,
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.2,
+  "p_regression": 0.08,
+  "p_sell_yes_min": 0.85,
+  "p_success": 0.77,
+  "predicted_brier_hi": 0.17,
+  "predicted_brier_lo": 0.06,
+  "predicted_self_error_ratio": 0.16,
+  "rationale_short": "Positive path: this is a clean dependent-record split from Level502; main risk is whether noRepeatedDescendantCharging is available as a proof term, already patched by explicit proof field.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "no_reuse_proof_term_gap",
+    "gate_schema_too_weak",
+    "lake_build_regression"
+  ],
+  "spread": -0.16,
+  "tail_downside_worry": 16.0,
+  "tail_upside_surprise": 10.0,
+  "verbalized_confidence": 0.77
+}

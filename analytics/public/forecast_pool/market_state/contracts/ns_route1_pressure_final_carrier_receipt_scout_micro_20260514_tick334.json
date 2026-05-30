@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T02:56:35Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 76.5,
+    "expected_value": -140.11770203403108,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.3,
+    "p_needs_new_lemma": 0.77,
+    "p_regression": 0.2,
+    "p_success": 0.5352872457461161,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick334",
+        "domain": "ns_route1_pde",
+        "p_success": 0.58,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_adversarial_tick334",
+        "domain": "ns_route1_pde",
+        "p_success": 0.49,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "final_carrier_not_same_as_receipt_sum",
+        "p": 0.175
+      },
+      {
+        "mode": "build_regression",
+        "p": 0.125
+      },
+      {
+        "mode": "guard_tautological",
+        "p": 0.125
+      },
+      {
+        "mode": "lean_guard_too_abstract",
+        "p": 0.125
+      },
+      {
+        "mode": "numerical_model_too_weak",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 70.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T02:56:30Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T06:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "Success iff scout artifact verdict is FINAL_CARRIER_RECEIPT_NO_GO or equivalent, Lean guard/check compiles, no sorry/admit introduced, and E/GP-233 rows are written.",
+    "question": "Will a same-window packet scout plus Lean guard show that final-carrier-only pressure receipts cannot pay the pre-summed pressure/Riesz cone charge?",
+    "success_threshold": "scout+lean_guard+build+ledger",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick334",
+        "raw_agent_ids": [
+          "hooke_forecast_tick334"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_adversarial_tick334",
+        "raw_agent_ids": [
+          "rawls_adversarial_tick334"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick334",
+      "rawls_adversarial_tick334"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick334",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334/hooke_forecast_tick334.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 68.0,
+        "forecasted_at": "2026-05-14T02:56:30Z",
+        "p_success": 0.58,
+        "rationale_short": "Packet model strongly suggests final carrier cannot pay pre-summed cone charge, but success requires separating this from the already-known angular cancellation no-go and compiling a useful Lean guard.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_adversarial_tick334",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334/rawls_adversarial_tick334.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 85.0,
+        "forecasted_at": "2026-05-14T02:56:30Z",
+        "p_success": 0.49,
+        "rationale_short": "Main risk is object mismatch: route1PressureVisibilityReceipts are independent reserve/local/child charges, so a final-carrier no-go may only guard one bad instantiation rather than falsify the current bridge.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 44.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:01:06Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.09,
+      "p_success": 0.5352872457461161,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "final_carrier_not_same_as_receipt_sum",
+        "p": 0.175
+      },
+      "voi_proxy": 9.3388
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 76.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5352872457461161,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "final_carrier_not_same_as_receipt_sum",
+        "p": 0.175
+      },
+      {
+        "mode": "build_regression",
+        "p": 0.125
+      },
+      {
+        "mode": "guard_tautological",
+        "p": 0.125
+      },
+      {
+        "mode": "lean_guard_too_abstract",
+        "p": 0.125
+      },
+      {
+        "mode": "numerical_model_too_weak",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.21825,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:01:06Z"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json",
+    "score": "analytics/public/forecast_pool/scores/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick637-mega-degiorgi-powerdeficit-invariant-subnogo",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T12:31:13Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_mega_portfolio",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick637 MEGA: is the tick636 De-Giorgi-vorticity degree-3-vs-2 power-deficit INVARIANT under all admissible convex test nonlinearities \u03a6(|\u03c9|) (e.g. |\u03c9|^p, v=|\u03c9|^{(p+1)/2})? Depth-n: source \u222b(\u03be\u00b7S\u03be)|\u03c9|\u03a6' ~ \u222b\u2016S\u2016v\u00b2 with \u2016S\u2016~\u2016\u03c9\u2016~v^{2/(p+1)} since S=CZ(\u03c9) is DEGREE-0 / exactly scale-invariant \u21d2 source ~ \u222bv^{2+2/(p+1)} vs dissipation \u03bd\u222b|\u2207v|\u00b2 \u21d2 under NS scaling the ratio carries the SAME one-\u03c9-power deficit for EVERY p (CZ degree-0 scales identically to any renormalized power) \u21d2 sharp SUB-NO-GO: no De-Giorgi test-function geometry rebalances it; the deficit's untouchability IS the degree-0 scale-invariance of S=CZ(\u03c9). Honest scope: consistent with the known route-invariant atom (manifest:180) \u2014 deliverable = the precise test-function-invariance sub-no-go + its mechanistic cause (CZ degree-0), a sharpening NOT a new route.",
+  "risk_penalty": 1.0,
+  "success_threshold": "the v=|\u03c9|^{(p+1)/2} renormalization power-count is correct AND the invariance argument (CZ degree-0 \u21d2 deficit p-independent under NS scaling) is right AND honestly scoped as a sub-no-go/sharpening of the known atom (not new, not impossibility-overclaim); survives ONE codex adversarial-kill",
+  "task_type": "ns_mega_portfolio",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

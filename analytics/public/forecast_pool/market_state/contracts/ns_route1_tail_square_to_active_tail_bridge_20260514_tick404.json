@@ -1,0 +1,204 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T19:03:59Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 48.5,
+    "expected_value": -5.564959368175074,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.315,
+    "p_needs_new_lemma": 0.5700000000000001,
+    "p_regression": 0.07500000000000001,
+    "p_success": 0.5408050345923112,
+    "participants": [
+      {
+        "agent_id": "codex_forecaster",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404/codex_forecaster.json",
+        "forecasted_at": "2026-05-14T19:03:20Z",
+        "p_success": 0.61,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rd_codex",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404/rd_codex.json",
+        "forecasted_at": "2026-05-14T19:01:52Z",
+        "p_success": 0.47,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "proof_route_only_conditional",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "tail_square_not_active_leakage",
+        "p": 0.12
+      },
+      {
+        "mode": "missing_same_carrier_tail_bridge",
+        "p": 0.09
+      },
+      {
+        "mode": "raw_tail_countermodel",
+        "p": 0.09
+      },
+      {
+        "mode": "same_carrier_definition_missing",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T19:00:10Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Artifact states PROOF_ROUTE/MISSING_HYPOTHESIS/NO_GO for tailSquareFunction-to-activeTail same-carrier bridge; if stable, Lean compiles a source/guard without claiming the PDE bridge itself; no upstream Clay closure claim.",
+    "question": "Will the next NS tick produce a usable math-first verdict and Lean-facing source/guard for bridging tailSquareFunction/X_tail to the lineage activeTail schedule?",
+    "success_threshold": "usable_verdict_and_compiled_guard_or_source",
+    "task_type": "ns_route1_math_first_then_lean"
+  },
+  "contract_id": "ns_route1_tail_square_to_active_tail_bridge_20260514_tick404",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_forecaster",
+          "rd_codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_forecaster",
+      "rd_codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Keep the bridge scoped to a source/guard and avoid claiming the PDE bridge or upstream closure; if the guard cannot be stabilized, record a named no-go instead of widening the carrier identity.",
+        "agent_id": "codex_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404/codex_forecaster.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T19:03:20Z",
+        "p_success": 0.61,
+        "rationale_short": "The proof file already carries same-carrier and active-tail source surfaces, so the next tick is more likely to produce a usable source/guard than a full bridge, but conditionality and Lean surface friction still dominate.",
+        "specific_failure_mode_ids": [
+          "proof_route_only_conditional",
+          "missing_same_carrier_tail_bridge",
+          "tautological_tail_control"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed math-first; mechanize only a same-carrier source and mismatch guard unless the audit finds an existing carrier identity.",
+        "agent_id": "rd_codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_tail_square_to_active_tail_bridge_20260514_tick404/rd_codex.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 65.0,
+        "forecasted_at": "2026-05-14T19:01:52Z",
+        "p_success": 0.47,
+        "rationale_short": "Likely to produce a useful conditional source/guard, but current fields probably do not prove fresh-frequency tail square mass is paid by active local-energy leakage without a new same-carrier prefix inequality.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T19:04:22Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.14,
+      "p_success": 0.5408050345923112,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "proof_route_only_conditional",
+        "p": 0.20500000000000002
+      },
+      "voi_proxy": 1.1383
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 48.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.5408050345923112,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "proof_route_only_conditional",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "tail_square_not_active_leakage",
+        "p": 0.12
+      },
+      {
+        "mode": "missing_same_carrier_tail_bridge",
+        "p": 0.09
+      },
+      {
+        "mode": "raw_tail_countermodel",
+        "p": 0.09
+      },
+      {
+        "mode": "same_carrier_definition_missing",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.21650000000000003,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T19:04:30Z"
+  }
+}

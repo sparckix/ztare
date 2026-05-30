@@ -1,0 +1,198 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:32Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 2.60625,
+      "forecast_spread": 0.0,
+      "p_success": 0.3400000000000001,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.2244
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 36.375,
+    "expected_value": 2.60625,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.15,
+    "p_needs_new_lemma": 0.7,
+    "p_regression": 0.05,
+    "p_success": 0.3400000000000001,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547/claude_rd.json",
+        "forecasted_at": "2026-05-15T22:54:48Z",
+        "p_success": 0.34,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547/codex.json",
+        "forecasted_at": "2026-05-15T22:55:34Z",
+        "p_success": 0.34,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "transport_same_window_moment_obstruction",
+        "p": 0.23
+      },
+      {
+        "mode": "missing_transport_bridge_lemma",
+        "p": 0.155
+      },
+      {
+        "mode": "carrier_or_scope_mismatch",
+        "p": 0.065
+      },
+      {
+        "mode": "repo_or_evidence_drift",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T22:54:48Z",
+    "created_by": "claude_rd",
+    "horizon": "7d",
+    "layer": "meso",
+    "objective_resolver": "PDE judgment + Lean: does a tick chaining tick547 outer-term into tick458/491/492 produce a strict transport-flux-moment bound without a new same-window cancellation NO-GO? success = tractable via existing transport machinery; fail = transport analogue of angular-nonnullness reappears (obstruction merely moved, not reduced)",
+    "question": "Given tick547's virial/mean-stress channel-shift (trace-free Reynolds-stress monopole = outer transport-momentum-flux moment minus r'-gaining inner virial term), does the relocated obstruction (outer transport boundary-flux moment) become tractable via the EXISTING transport-channel radius-receipt/no-reuse machinery (tick458 SilentFlatResidualMeasurePaysRadius / tick491-492 FlatKineticLoadNoReuse Cauchy-Schwarz), or does the outer transport-momentum-flux moment carry its own equally-hard same-window obstruction (transport analogue of F-314/F-437)?",
+    "success_threshold": "success if outer transport moment closes via existing tick458/491/492; 0.5 if partial (needs one new transport-side lemma); fail if a transport same-window cancellation NO-GO appears (pure channel-relabel, no reduction)",
+    "task_type": "ns_clay_virial_channel_shift_meso_20260515"
+  },
+  "contract_id": "ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-15T22:54:48Z",
+        "p_success": 0.34,
+        "rationale_short": "Virial isomorphism genuinely breaks the pressure F-314/F-437 loop (pressure never used; inner term r'-gains via Leray-Hopf E*D). But MD-kill #4: outer transport-momentum-flux moment at scale r has NO gain; likely carries a transport analogue of same-window angular-nonnullness. Existing tick458/491/492 handle SUMMABILITY given a per-node charge, not the same-window MOMENT cancellation \u2014 so probably needs one new transport-side moment lemma. p_success 0.34, p_needs_new_lemma 0.70.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_virial_meanstress_channel_shift_to_transport_meso_20260515_tick547/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-15T22:55:34Z",
+        "p_success": 0.34,
+        "rationale_short": "Transport summability machinery is genuine, but tick458/tick491/tick492 close per-node load/summability, not the same-window moment obstruction named by this contract. Virial-to-transport relabeling removes the pressure loop, yet the outer transport boundary-flux moment still looks like a transport analogue of the same-window angular-nonnullness gap, so I price success as slightly below one-third and new-lemma risk high.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T22:59:50Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 2.60625,
+      "forecast_spread": 0.0,
+      "p_success": 0.3400000000000001,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.2244
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.375,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3400000000000001,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "transport_same_window_moment_obstruction",
+        "p": 0.23
+      },
+      {
+        "mode": "missing_transport_bridge_lemma",
+        "p": 0.155
+      },
+      {
+        "mode": "carrier_or_scope_mismatch",
+        "p": 0.065
+      },
+      {
+        "mode": "repo_or_evidence_drift",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11560000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-15T22:59:50Z"
+  }
+}

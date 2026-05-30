@@ -1,0 +1,136 @@
+{
+  "contract_id": "gp225_v2046_context_binding_adapter",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Run replay directly from v20.44 static candidates.",
+      "counterfactual_action": "Build context-binding adapter before replay.",
+      "externality_hypotheses": {
+        "negative": [
+          "may overfit adapter to five rows"
+        ],
+        "positive": [
+          "reduces context_variable_mismatch before replay",
+          "prevents static-candidate Goodharting"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Noether",
+        "Turing"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "context_binding",
+        "replay_scope_reduction",
+        "anti_goodhart"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "static_canary_may_not_compile"
+      ],
+      "new_next_action": "price only a one-row charFunDual_map_eq canary and build binder wrappers for high-risk rows",
+      "old_next_action": "run or price full replay of all ten v20.44 candidates",
+      "preconditioner_effect": "Converted negative full-replay market into a static context-binding split before replay.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2045_blocked_row_source_candidate_replay_market_abort.json",
+      "realized_failure_mode_ids": [
+        "source_hinge_binding_too_shallow",
+        "candidate_context_not_available"
+      ]
+    }
+  },
+  "mean_brier": 0.09364999999999998,
+  "mean_log_score": -0.3644908167845807,
+  "outcome": {
+    "actual_cost_agent_minutes": 21.0,
+    "artifact_hash": "a0da4041fddd81febfcde7bd2edb93b807dfb1f6bc9312de909c2df7a965f02e",
+    "artifact_path": "analytics/public/leanmill/results/v2046_context_binding_adapter_for_source_candidates.json",
+    "changed_by_forecast_ids": [
+      "Noether",
+      "Turing"
+    ],
+    "compile_status": "static_context_binding_passed",
+    "contract_id": "gp225_v2046_context_binding_adapter",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "context_binding",
+      "replay_scope_reduction",
+      "anti_goodhart"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "static_canary_may_not_compile"
+    ],
+    "new_next_action": "price only a one-row charFunDual_map_eq canary and build binder wrappers for high-risk rows",
+    "old_next_action": "run or price full replay of all ten v20.44 candidates",
+    "preconditioner_effect": "Converted negative full-replay market into a static context-binding split before replay.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2045_blocked_row_source_candidate_replay_market_abort.json",
+    "realized_failure_mode_ids": [
+      "source_hinge_binding_too_shallow",
+      "candidate_context_not_available"
+    ],
+    "resolution_note": "v20.46 classified all ten static-passed v20.44 candidates, surfaced one static-only canary candidate, and kept replay/training/GNN blocked.",
+    "resolved_at": "2026-05-14T17:35:29Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T17:35:32Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 21.0,
+      "agent_id": "Noether",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn_context_binding",
+      "expected_cost_agent_minutes": 23.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.63,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:33:42Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:33:55Z",
+        "resolved_at": "2026-05-14T17:35:29Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 21.0,
+      "agent_id": "Turing",
+      "brier": 0.10889999999999997,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "gp225_pre_gnn_context_binding",
+      "expected_cost_agent_minutes": 27.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.57,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.40047756659712525,
+      "p_success": 0.67,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:33:42Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:33:55Z",
+        "resolved_at": "2026-05-14T17:35:29Z"
+      }
+    }
+  ]
+}

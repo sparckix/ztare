@@ -1,0 +1,1760 @@
+{
+  "generated": "2026-05-09",
+  "source_fine_input": "analytics/public/queries/classification/cross_provider_classifier_agreement_2026-04-24.json",
+  "n_sampled": 100,
+  "providers": [
+    "openai_gpt-4.1-mini",
+    "anthropic_claude-haiku-4.5",
+    "google_gemini-3.1-flash-lite"
+  ],
+  "pairwise_kappa_super_class": {
+    "openai_gpt-4.1-mini__anthropic_claude-haiku-4.5": 0.459,
+    "openai_gpt-4.1-mini__google_gemini-3.1-flash-lite": 0.48,
+    "anthropic_claude-haiku-4.5__google_gemini-3.1-flash-lite": 0.635
+  },
+  "three_way_agreement_count": 75,
+  "three_way_agreement_rate": 0.75,
+  "per_super_class_stability": {
+    "structural_blocker": {
+      "n_at_least_one": 35,
+      "n_three_way_agreement": 10,
+      "stability_rate": 0.286
+    },
+    "ceiling_breaker": {
+      "n_at_least_one": 90,
+      "n_three_way_agreement": 65,
+      "stability_rate": 0.722
+    },
+    "other": {
+      "n_at_least_one": 1,
+      "n_three_way_agreement": 0,
+      "stability_rate": 0.0
+    }
+  },
+  "fine_grained_baseline_three_way_rate": 0.48,
+  "fine_grained_baseline_pairwise_kappa": {
+    "openai_gpt-4.1-mini__anthropic_claude-haiku-4.5": 0.582,
+    "openai_gpt-4.1-mini__google_gemini-3.1-flash-lite": 0.561,
+    "anthropic_claude-haiku-4.5__google_gemini-3.1-flash-lite": 0.571
+  },
+  "super_class_map": {
+    "unfalsifiable_claim": "structural_blocker",
+    "catastrophic_fit_failure": "structural_blocker",
+    "missing_baseline": "structural_blocker",
+    "temporal_mismatch": "structural_blocker",
+    "unmeasurable_construct": "structural_blocker",
+    "definition_ambiguity": "structural_blocker",
+    "non_identifiability": "structural_blocker",
+    "overclaimed_scope": "ceiling_breaker",
+    "overclaimed_exclusivity": "ceiling_breaker",
+    "missing_mechanism": "ceiling_breaker",
+    "missing_counterfactual": "ceiling_breaker",
+    "parameter_sensitivity": "ceiling_breaker",
+    "unsupported_assumption": "ceiling_breaker",
+    "missing_derivation": "ceiling_breaker",
+    "other": "other"
+  },
+  "verdict": "PATH_C_ONLY (0.70-0.90): keep observability; defer Path A",
+  "records": [
+    {
+      "project": "stieltjes_power_sums",
+      "iter_timestamp": 1776893978,
+      "score": 28,
+      "weakest_point_snippet": "The difference (or sum) of two real exponentials plus a smooth trend cannot reproduce the observed irregular, repeated sign alternation in z(n); mathematically, such a function can cross zero at most ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "missing_mechanism",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "seattle_tech_housing",
+      "iter_timestamp": 1776716761,
+      "score": 88,
+      "weakest_point_snippet": "Assumption that only hard-unit physical replacement cost is a valid denominator for closure, categorically excluding any blended or partial voucher success until \u226590% utilization is 'proven'\u2014thus pote",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp138_noether_g_selection",
+      "iter_timestamp": 1776988713,
+      "score": 96,
+      "weakest_point_snippet": "Coverage for selectors leveraging non-AST substrate metadata (timestamps, provenance, etc.) is not formally excluded.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "overclaimed_scope",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "figs_hbs_turnaround_2026",
+      "iter_timestamp": 1775871430,
+      "score": 67,
+      "weakest_point_snippet": "The thesis explicitly quarantines granular causal mechanisms (e.g., specific Community Hub ROIC, SKU-level markdown losses) as 'Epistemic Voids' to focus on an aggregate financial target. While pragma",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_mechanism",
+        "anthropic_claude-haiku-4.5": "missing_mechanism",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp137_tw_replacement",
+      "iter_timestamp": 1776987362,
+      "score": 60,
+      "weakest_point_snippet": "Fragility of parameter-free claim: class separation and admission margin are brittle to moderate (10%) perturbations of class means or sample variance, and the detector lacks robustness to banded/spar",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "riemann_lagarias",
+      "iter_timestamp": 1776892617,
+      "score": 43,
+      "weakest_point_snippet": "Assumes all observed positivity and lower-bound fit of the Robin gap for superabundant n extends to all n, extrapolating far beyond available evidence.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_scope",
+        "anthropic_claude-haiku-4.5": "overclaimed_scope",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_crucial_03",
+      "iter_timestamp": 1776530656,
+      "score": 0,
+      "weakest_point_snippet": "The thesis catastrophically overstates that the 'parameter constraint' (P > K * R_obs), derived from the fitted formula and observed peak ratio, uniquely diagnoses the mechanism and robustly distingui",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "stieltjes_power_sums",
+      "iter_timestamp": 1776895660,
+      "score": 79,
+      "weakest_point_snippet": "Absence of formal proof that for all parameterizations passing the fit on n=0..41, the signed sum of exponentials in the numerator cannot exhibit revival (i.e., local maxima, sign flips, or amplitude ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_derivation",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_langevin_sandbox_16",
+      "iter_timestamp": 1776608629,
+      "score": 50,
+      "weakest_point_snippet": "Catastrophic overcommitment to an exponential-fractional (multi-exponential) topology for the plateau approach, when current data does not distinguish it from a polynomial (inverse power law) rival in",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "non_identifiability"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp023_planck_sandbox_01",
+      "iter_timestamp": 1775875989,
+      "score": 0,
+      "weakest_point_snippet": "Level 3 falsification suite status was `fail`. The model's hardcoded parameters fail to meet multiple quantitative anchor proxy tolerances and the overall maximum residual claim, indicating a fundamen",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "seattle_tech_housing",
+      "iter_timestamp": 1776727723,
+      "score": 68,
+      "weakest_point_snippet": "The thesis's central ambiguity\u2014the claim that the distributional outcome for Seattle's non-tech middle strata is unresolvable\u2014relies on the untestable assumption that available data and inferential te",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unfalsifiable_claim",
+        "anthropic_claude-haiku-4.5": "unfalsifiable_claim",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp045_cold_residual_01",
+      "iter_timestamp": 1776037332,
+      "score": 100,
+      "weakest_point_snippet": "The precise physical origin of the power-law exponents is not derived, nor is the uniqueness of the additive superposition rule.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_derivation",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "eu_union_failure_probability_2035",
+      "iter_timestamp": 1775794977,
+      "score": 83,
+      "weakest_point_snippet": "The thesis explicitly identifies the definition of 'material_union_failure by 2035-01-01' and 'formal_intactness' as Epistemic Voids, which are foundational for a complete probabilistic forecast, even",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unmeasurable_construct",
+        "anthropic_claude-haiku-4.5": "unmeasurable_construct",
+        "google_gemini-3.1-flash-lite": "definition_ambiguity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp069_sandbox_12",
+      "iter_timestamp": 1776310840,
+      "score": 83,
+      "weakest_point_snippet": "The derivation of the modulus m=13 is asserted based on selected examples from the evidence, rather than being explicitly derived step-by-step from a broader analysis of the visible data. While suppor",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776885936,
+      "score": 87,
+      "weakest_point_snippet": "The thesis assumes mean post-training weight norm directly and causally determines cancellation delta (alignment) across architectures permitting learned coordination, with no unmodeled confounders. I",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "riemann_lagarias",
+      "iter_timestamp": 1776891616,
+      "score": 63,
+      "weakest_point_snippet": "No proof is supplied that the fitted envelope f(n) remains strictly below 1 for all n >= 2; empirical fit cannot suffice for a universal statement required by the Lagarias criterion and the Riemann Hy",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "seattle_tech_housing",
+      "iter_timestamp": 1776716567,
+      "score": 67,
+      "weakest_point_snippet": "The thesis systematically substitutes voucher stream NPV ($231,000/unit) as the closure denominator, despite robust evidence that such vouchers fail to functionally replace affordable units in Seattle",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776950922,
+      "score": 98,
+      "weakest_point_snippet": "Residual ambiguity remains whether the slow-decaying term b/log(n) becomes dominant in the observable regime; at current evidence scale, 1/n correction empirically fits best but analytic theory is not",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "temporal_mismatch",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "ztare_on_ztare",
+      "iter_timestamp": 1776957088,
+      "score": 9,
+      "weakest_point_snippet": "Primitive 3 (Intrinsic Regime Edge Detector) fails adversarial robustness, as demonstrated by unit and counter-tests: its edge detection is not substrate-invariant and is highly sensitive to noise and",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "hormuz_oil_shock_2026",
+      "iter_timestamp": 1776111512,
+      "score": 62,
+      "weakest_point_snippet": "Axiom 3 \u2014 the claim that tanker spot rates (VLCC PG-China) are 'near-zero' sensitive to risk premium \u2014 is the load-bearing falsehood the firing squad correctly identifies. The thesis depends on this a",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "non_identifiability"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "oeis_a001156",
+      "iter_timestamp": 1776885586,
+      "score": 85,
+      "weakest_point_snippet": "Unproven uniqueness of the composite rational functional form ('model class closure'): The thesis asserts that only this rational hybrid of shifted-root and root-plus-linear numerator over reciprocal-",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp138_noether_g_selection",
+      "iter_timestamp": 1776988196,
+      "score": 93,
+      "weakest_point_snippet": "Empirical testing and code-based discriminators only cover polynomials/ASTs with distinct or equal coefficients (i.e., special-case classes); they do not formally close all possible substrate AST enco",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_crucial_02_extended",
+      "iter_timestamp": 1776525837,
+      "score": 87,
+      "weakest_point_snippet": "The thesis rests on the assumption that both P_peak_x1_ratio_constant and P_amplitude_x2_exponent are globally invariant across all possible (x2) regimes. If any regime-change or piecewise behavior is",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "ztare_on_ztare",
+      "iter_timestamp": 1776956555,
+      "score": 10,
+      "weakest_point_snippet": "Total absence of architectural primitives \u2014 the thesis proposes no mechanism and fails to instantiate even a minimal discovery scaffold, violating the core charter aims.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_mechanism",
+        "anthropic_claude-haiku-4.5": "missing_mechanism",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "eu_union_load_bearing_pillars",
+      "iter_timestamp": 1775742087,
+      "score": 67,
+      "weakest_point_snippet": "The exact quantitative threshold for a 'material' central fiscal capacity to constitute Mode DE remains unresolved, making precise identification of a shift challenging.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776883698,
+      "score": 80,
+      "weakest_point_snippet": "Lack of mechanistic first-principles derivation: The thesis proposes a dampened multiplicative law with additive correction (z(n) = a * exp(-b*n) + c/n + d) fit to data, but does not derive it from th",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_mechanism",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp069_sandbox_13",
+      "iter_timestamp": 1776360704,
+      "score": 5,
+      "weakest_point_snippet": "The thesis lacks a concrete hypothesis, rendering it untestable and unfalsifiable, and critically depends on an unverified assumption that a deterministic functional relationship exists in the data.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unfalsifiable_claim",
+        "anthropic_claude-haiku-4.5": "unfalsifiable_claim",
+        "google_gemini-3.1-flash-lite": "unfalsifiable_claim"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_langevin_sandbox_16",
+      "iter_timestamp": 1776573017,
+      "score": 75,
+      "weakest_point_snippet": "The claim that matching the tail difference ratio to the grid ratio at 0.01% precision strictly excludes any O(1/u^2) or subleading terms, and thus logically necessitates a cubic-over-cubic (degree 3/",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776882715,
+      "score": 88,
+      "weakest_point_snippet": "The catastrophic assumption is treating the observed fit (z(n) = a * exp(-b * n) + c/n + d) as a general law for all deep residual networks with cross-layer orthogonality, rather than a contingent for",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_scope",
+        "anthropic_claude-haiku-4.5": "overclaimed_scope",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_kww_sandbox_17",
+      "iter_timestamp": 1776565827,
+      "score": 98,
+      "weakest_point_snippet": "The thesis overclaims falsification of all finite Prony/multi-exponential topologies by appealing to strictly monotonic decay of the empirical fractional decay rate r(t) across the window [18.6, 67.9]",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp088_oeis_a000607",
+      "iter_timestamp": 1776744992,
+      "score": 0,
+      "weakest_point_snippet": "The explored functional space may not contain the true law and the candidate expression is highly overparameterized (14 parameters, strong multicollinearity risk). This may lead to overfitting, limite",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "non_identifiability",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776875451,
+      "score": 65,
+      "weakest_point_snippet": "Assumes that the specific residual magnitude decay form (e.g., sqrt(log(n)) or its more complex composite) is an inherent, architecture-constraining law rather than a contingent artifact of normalizat",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp088_oeis_a002858",
+      "iter_timestamp": 1776776342,
+      "score": 0,
+      "weakest_point_snippet": "The model rests on an unproven assumption that additive combinations of analytic basis functions (logarithmic, polynomial, and rational terms) are sufficient to capture all monotone increasing integer",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp090_01",
+      "iter_timestamp": 1776969312,
+      "score": 0,
+      "weakest_point_snippet": "The catastrophic assumption is that composing linear, logarithmic, and exponential primitives can produce a structural, generalizable law for z(n) that matches all observed integers and generalizes to",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp080_01",
+      "iter_timestamp": 1776475790,
+      "score": 87,
+      "weakest_point_snippet": "Assuming that zero residual fit over the finite observed domain implies the global dominance of the pure dual-exponential (n=0), when numerous polynomial-exponential hybrid functions could produce ide",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "non_identifiability"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "hormuz_oil_shock_2026",
+      "iter_timestamp": 1776212302,
+      "score": 98,
+      "weakest_point_snippet": "The introduction of P_PHYS_MIN_OBSERVED_ABQ ($1.00/bbl) as a domain-specific assertion, while logically necessary to ground the model in physical reality, relies on an empirical judgment rather than a",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp090_01",
+      "iter_timestamp": 1776968820,
+      "score": 0,
+      "weakest_point_snippet": "Catastrophic inductive bias: Analytic closed-form model with real coefficients cannot reproduce large irregular integer jumps, nor extrapolate them; it is structurally incapable of zero-residual fit a",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "survey_s3",
+      "iter_timestamp": 1776918169,
+      "score": 62,
+      "weakest_point_snippet": "The catastrophic assumption that all spike amplitudes are governed by a smooth function of the baseline (log or sqrt mean), making the volatility envelope globally smooth and monotonic in n, even thou",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_langevin_sandbox_16",
+      "iter_timestamp": 1776613111,
+      "score": 50,
+      "weakest_point_snippet": "Failure to pass farther-tail gates: the rational polynomial fraction model underpredicts the observable farther-tail holdout (u > 32), with residuals exceeding the strict 0.02 (global) and 0.01 (satur",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "temporal_mismatch",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776865128,
+      "score": 77,
+      "weakest_point_snippet": "Assumes that minimum effective rank in interior layers constitutes a true representational bottleneck, without directly showing that low rank equates to information compression or functional constrain",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "missing_mechanism",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "oeis_a001156",
+      "iter_timestamp": 1776885799,
+      "score": 85,
+      "weakest_point_snippet": "The claim of unique necessity: That only the proposed composite rational model (including all closely related forms) achieves the required fit and curvature across both the observed and farther-tail r",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_crucial_02",
+      "iter_timestamp": 1776522608,
+      "score": 74,
+      "weakest_point_snippet": "The thesis' most catastrophic assumption is its global extrapolation: it equates local proportionalities (peak x1/x2 \u2248 constant, amplitude scaling as x2^n) with global laws, solely based on parameter ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_scope",
+        "anthropic_claude-haiku-4.5": "overclaimed_scope",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "oeis_a002865",
+      "iter_timestamp": 1776885732,
+      "score": 54,
+      "weakest_point_snippet": "The thesis catastrophically assumes that the apparent super-logarithmic growth (as measured by the delta_z/delta_log ratio in evidence.txt) must extrapolate as a sqrt(n) term indefinitely, explicitly ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "paper5_self_review",
+      "iter_timestamp": 1776717228,
+      "score": 86,
+      "weakest_point_snippet": "The treatise fails to meet its own Principle I (structural separation) at the most load-bearing meta-level: the decomposition is both generated and evaluated by the same principal. While full disclosu",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "oeis_a000009",
+      "iter_timestamp": 1776956182,
+      "score": 67,
+      "weakest_point_snippet": "The thesis assumes that the empirically optimal fractional log-polynomial correction exponent gamma (0 < gamma < 1), fit on n in [10,2000], will generalize to all large n \u2014 but fails to rule out even-",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "ztare_on_ztare",
+      "iter_timestamp": 1776981932,
+      "score": 55,
+      "weakest_point_snippet": "Threshold provenance and robustness: Numeric thresholds for SFF monotonicity and parameter drift (7/9, 40%) are cooked/empirical, not externally published, leading directly to pass/fail toggling under",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776883727,
+      "score": 71,
+      "weakest_point_snippet": "The central assumption\u2014that the dampened multiplicative-plus-additive law for residual magnitude is architecturally dictated and robust to variations in training process\u2014remains unproven, with empiric",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776867132,
+      "score": 88,
+      "weakest_point_snippet": "The thesis\u2019s architectural implication\u2014namely, that low effective rank reliably spots efficient pruning locales\u2014overstretches the statistical compressibility signal, subtly equating it with true funct",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_scope",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp089_01",
+      "iter_timestamp": 1776548396,
+      "score": 87,
+      "weakest_point_snippet": "Non-uniqueness of mechanism: It is unproven that subset-sum combinatorics is the only discrete deterministic process which produces identically matching log-counts for all n \u2014 alternative discrete mec",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp136_pmdl_hardening",
+      "iter_timestamp": 1776986146,
+      "score": 87,
+      "weakest_point_snippet": "Domain-extrapolation: Proof does not cover finite-N transition regime, nor does it provide explicit redundancy stats for emerging compressors or for codecs whose header approaches zero via engineering",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_scope",
+        "anthropic_claude-haiku-4.5": "temporal_mismatch",
+        "google_gemini-3.1-flash-lite": "temporal_mismatch"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "ztare_on_ztare",
+      "iter_timestamp": 1776964121,
+      "score": 41,
+      "weakest_point_snippet": "Coverage and laundering detection is structurally dependent on the exhaustiveness of motif/label libraries and the continuous adequacy of adversarial negative controls; newly arisen laundering paths o",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp037_substrate_swap_01",
+      "iter_timestamp": 1776021293,
+      "score": 0,
+      "weakest_point_snippet": "Level 3 falsification suite disproved the thesis by assertion (`fail_assert`). The numerical fit of the model to the observed data, as evidenced by the visible-slice assertion failure.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp137_tw_replacement",
+      "iter_timestamp": 1776986751,
+      "score": 36,
+      "weakest_point_snippet": "Test suite and detector fail empirical soundness: normalization for \u03b2=4 (GSE) is egregiously wrong (off by \u00d725), blocking any generalization or safe composition; log-likelihood gap D statistic fails t",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776950893,
+      "score": 96,
+      "weakest_point_snippet": "Non-monotonic convergence (the overshoot of z(n) near n~9000\u201318,000) is not fully explained by the model\u2019s correction terms; single-sign corrections cannot model the observed non-monotone pattern, int",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_mechanism",
+        "anthropic_claude-haiku-4.5": "missing_mechanism",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_crucial_01",
+      "iter_timestamp": 1776516653,
+      "score": 73,
+      "weakest_point_snippet": "The assumption that the exponential decay rate is exactly inversely proportional to x2 (i.e., decay term is exp(-p2 * x1 / x2)), rather than more generally depending monotonically on x2 as data sugges",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "eu_union_load_bearing_pillars",
+      "iter_timestamp": 1775772973,
+      "score": 0,
+      "weakest_point_snippet": "Structured semantic-gate derivation classified the proof as hard self-reference. The thesis's internally grounded, exclusionary definition of 'durable_equilibrium' (Mode DE) that preemptively disallow",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "definition_ambiguity",
+        "google_gemini-3.1-flash-lite": "definition_ambiguity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp096_langevin_sandbox_16",
+      "iter_timestamp": 1776608545,
+      "score": 75,
+      "weakest_point_snippet": "The model captures the transition and saturating regimes well on visible and in-range holdout, but fails to match the farther-tail behavior (global residual 0.1128 > 0.02 threshold), indicating overfi",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "temporal_mismatch",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776876496,
+      "score": 66,
+      "weakest_point_snippet": "The thesis's catastrophic assumption is that square-root-damped decay (z(n) = a / sqrt(n) + b) is not just an empirical fit but represents a true, structural law of deep residual networks, absent a me",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_mechanism",
+        "anthropic_claude-haiku-4.5": "missing_mechanism",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "oeis_a002865",
+      "iter_timestamp": 1776805707,
+      "score": 54,
+      "weakest_point_snippet": "The catastrophic over-interpretation of the delta_z / delta_log ratio between n=1000 and n=2000 as decisive evidence for a sqrt(n) or root-like leading term, without formally excluding all slowly supe",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_langevin_sandbox_16",
+      "iter_timestamp": 1776614816,
+      "score": 75,
+      "weakest_point_snippet": "The farther-tail holdout gate (max_abs_residual < 0.02) is failed with an error of ~0.11, indicating that the form's specific saturating mechanics diverge from unseen post-saturation data. The adopted",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776950823,
+      "score": 98,
+      "weakest_point_snippet": "Unresolved discrimination between 1/n and 1/log(n) convergence for n > 10^6; the analytic argument for eventual 1/log(n) correction remains unproven by numerical evidence at accessible n.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "temporal_mismatch",
+        "google_gemini-3.1-flash-lite": "non_identifiability"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "riemann_lagarias",
+      "iter_timestamp": 1776892797,
+      "score": 70,
+      "weakest_point_snippet": "The model assumes that the fitted, strictly decreasing smooth envelope for \u03c3(n)/L(n) remains valid for all (even astronomically large and unobserved) n, with no analytic proof to preclude unexpected s",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_scope",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp140_ztare_discovery",
+      "iter_timestamp": 1777005411,
+      "score": 65,
+      "weakest_point_snippet": "Assumes Weak-form LLL produces the COMPLETE behavioural-equivalence set under 1 % noise \u2014 no theoretical or empirical guarantee; if false, downstream MDL ranking never sees the true rule.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_langevin_sandbox_16",
+      "iter_timestamp": 1776617272,
+      "score": 50,
+      "weakest_point_snippet": "The main vulnerability is the unproven commitment, even if cautious, to a polynomial (1/u) tail form to capture slow saturation \u2014 the evidence does not decisively rule out exponential or logarithmic r",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "missing_counterfactual"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp139_lean_hardening",
+      "iter_timestamp": 1776989469,
+      "score": 73,
+      "weakest_point_snippet": "Insufficient real adversarial coverage in the falsification suite; allowlist parser and header schema are asserted but not property-tested or fuzzed for edge cases such as malformed #print axioms outp",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776885808,
+      "score": 47,
+      "weakest_point_snippet": "The thesis treats mean weight norm as a causal driver of alignment, but provides no experimental evidence decoupling it from confounding factors (data, initialization, regularization), risking that we",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "missing_counterfactual"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776944803,
+      "score": 76,
+      "weakest_point_snippet": "Equating statistically significant and out-of-sample improving fractional log-power correction with persistent, real analytic structure in z(n) \u2014 without demonstrable uniqueness or mechanistic/analyti",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_mechanism",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_planck_sandbox_01",
+      "iter_timestamp": 1775914382,
+      "score": 85,
+      "weakest_point_snippet": "The model cannot achieve the global `max |I_obs - I_model| < 0.05` residual target for high-phi points of the `psi=1.8` sweep. The thesis attributes this to the observed data for this sweep not extend",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp116_cot_exchange",
+      "iter_timestamp": 1776882842,
+      "score": 87,
+      "weakest_point_snippet": "The law\u2019s fundamental dependence on empirically observed cross-layer residual orthogonality; if future measurements find significant correlation between layer residuals, the mechanistic story and the ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "unfalsifiable_claim",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp096_sandbox_20",
+      "iter_timestamp": 1776705909,
+      "score": 87,
+      "weakest_point_snippet": "The most catastrophic assumption is that the two families compared (power-law \u00d7 exponential cutoff and log-quadratic exponential) exhaust all possible 3-parameter monotonic, continuous functional form",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_planck_sandbox_01",
+      "iter_timestamp": 1775916979,
+      "score": 50,
+      "weakest_point_snippet": "The arbitrary assumption that M_high_global = 1.0, which dictates the functional form of the high-phi decay for all sweeps. This assumption, made for 'simplicity', is neither derived nor empirically v",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "glp1_adoption_economics",
+      "iter_timestamp": 1776129989,
+      "score": 85,
+      "weakest_point_snippet": "The thesis's strong assertion of 'compulsion' for payer coverage expansion purely based on economic rationality (improved CEI) may underestimate the influence of non-economic factors, aggregate budget",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_scope"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_crucial_03",
+      "iter_timestamp": 1776530193,
+      "score": 68,
+      "weakest_point_snippet": "The most catastrophic assumption is that the search over rival function families is exhaustive and uniquely discriminated by the observed ratios; that is, because a power-law-plus-inverse-exponential-",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_planck_sandbox_02",
+      "iter_timestamp": 1775936443,
+      "score": 0,
+      "weakest_point_snippet": "Level 3 harness defect (fail_runtime) \u2014 the suite did not run to completion. Per the Phase 1 post-mortem, a harness that raised a runtime exception is a categorization failure, not a falsification att",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "other"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "other"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "eu_union_load_bearing_pillars",
+      "iter_timestamp": 1775772624,
+      "score": 0,
+      "weakest_point_snippet": "Structured semantic-gate derivation classified the proof as hard self-reference. The lack of an independently grounded quantitative threshold for 'material' central fiscal capacity and 'reduced recurr",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_planck_sandbox_03",
+      "iter_timestamp": 1776047031,
+      "score": 0,
+      "weakest_point_snippet": "Level 3 falsification suite disproved the thesis by assertion (`fail_assert`). The model's inability to achieve the basic `max_abs_residual < 0.05` on the visible data, leading to direct falsification",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "mlh_f5",
+      "iter_timestamp": 1776986693,
+      "score": 93,
+      "weakest_point_snippet": "Minor suite omission: no formal domain boundary handling (n=1, n=0, n<0, or non-integer input), and no algorithmic partition to prevent non-integer or negative arguments; relies on the arithmetic defi",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_baseline",
+        "anthropic_claude-haiku-4.5": "missing_baseline",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "figs_hbs_turnaround_2026",
+      "iter_timestamp": 1775864135,
+      "score": 60,
+      "weakest_point_snippet": "The thesis names the CAC-reduction-vs-friction-cost trade-off as the critical unknown but then issues an execution directive to redirect capital toward enterprise integration capability without resolv",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_sandbox_18",
+      "iter_timestamp": 1776638442,
+      "score": 95,
+      "weakest_point_snippet": "The most catastrophic assumption is that the data demands a slow (power-law) tail correction (1/u, 1/sqrt(u), or constant) in the functional form, even though the available data cannot definitively di",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "non_identifiability"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "ztare_on_ztare",
+      "iter_timestamp": 1776983394,
+      "score": 34,
+      "weakest_point_snippet": "The artificially restricted CODECS tuple and hardcoded model_bits stub introduce parametric fragility and structural incompleteness, preventing the thesis from claiming universal baseline or true thre",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp096_sandbox_18_gagorder",
+      "iter_timestamp": 1776647053,
+      "score": 0,
+      "weakest_point_snippet": "The thesis presumes (though with modest hedging) the necessity for two stretched exponentials and rational tails to capture the decelerating decay, but cannot uniquely justify this structure as necess",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "non_identifiability",
+        "google_gemini-3.1-flash-lite": "non_identifiability"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp147_gate_discovery_validation",
+      "iter_timestamp": 1777035469,
+      "score": 75,
+      "weakest_point_snippet": "CLE gate equates syntactic absence of :ResolutionParameter symbols with true continuum-limit independence; numeric literals can silently encode the resolution parameter and evade the check.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unfalsifiable_claim",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "mlh_f5",
+      "iter_timestamp": 1776986951,
+      "score": 69,
+      "weakest_point_snippet": "Catastrophic overgeneralization: The law asserts \u03c4(n) (the number of divisors) as the governing mechanism universally, but this is justified solely by fit to evidence\u2014not by a deductive or mechanistic",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_scope",
+        "anthropic_claude-haiku-4.5": "overclaimed_scope",
+        "google_gemini-3.1-flash-lite": "missing_mechanism"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp090_01",
+      "iter_timestamp": 1776958119,
+      "score": 0,
+      "weakest_point_snippet": "The assumption that irregular, large deviations in z from linearity are deterministic and structurally reproducible, rather than fundamentally random or arbitrary.",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "survey_s2",
+      "iter_timestamp": 1776918148,
+      "score": 92,
+      "weakest_point_snippet": "Assumes that no sum/difference of monotonic primitives (e.g., sqrt(n), log(n), exp(), constants) can match the observed number and arrangement of sign-switches in z(n) without adding parameter complex",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp147_gate_discovery_validation",
+      "iter_timestamp": 1777034723,
+      "score": 88,
+      "weakest_point_snippet": "The pivotal completeness claim that every surviving wrong artefact must violate at least one of hazards H1\u2013H8 is asserted, not proven; if a novel error channel exists outside that taxonomy the entire ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776950762,
+      "score": 98,
+      "weakest_point_snippet": "Regime Discrimination Is Empirical, Not Theoretical \u2014 The formal discrimination between 1/n and 1/log(n) corrections is based on current empirical gate performance, not deep analytic confirmation. The",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "temporal_mismatch",
+        "google_gemini-3.1-flash-lite": "temporal_mismatch"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp096_sandbox_18_gagorder",
+      "iter_timestamp": 1776647272,
+      "score": 0,
+      "weakest_point_snippet": "The primary weakness is the non-unique justification for the addition of a second stretched exponential term and rational tail: these terms flatten residuals but cannot be strictly demanded by finite-",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "non_identifiability"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776950856,
+      "score": 97,
+      "weakest_point_snippet": "The model's logic is contingent upon theory-anchored asymptote (a=[0.2470, 0.2490]). The debate remains unresolved about the eventual dominance of the 1/log(n) correction versus 1/n in the observed in",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "temporal_mismatch",
+        "google_gemini-3.1-flash-lite": "temporal_mismatch"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776948508,
+      "score": 88,
+      "weakest_point_snippet": "The analytic assumption that the correction to the density is 1/log(n) rather than another form (e.g., 1/n), based only on Mertens-type heuristics without a stepwise derivation for the specific abunda",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "us_tariff_passthrough_2026",
+      "iter_timestamp": 1776142565,
+      "score": 110,
+      "weakest_point_snippet": "The single most catastrophic assumption in this thesis is that incumbent firms will reliably and effectively prioritize long-term market share and deterrence of new entrants over immediate short-term ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unsupported_assumption",
+        "google_gemini-3.1-flash-lite": "unsupported_assumption"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "hormuz_oil_shock_2026",
+      "iter_timestamp": 1776211056,
+      "score": 90,
+      "weakest_point_snippet": "The upper bound assumption for the residual risk premium at Day 17 of the Abqaiq event (RP(17)",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776948348,
+      "score": 66,
+      "weakest_point_snippet": "Dismissal of higher-order correction terms (e.g., log-log, oscillatory, or cross terms) despite unresolved bias in the asymptotic constant and known deeper multiplicative structure in number-theoretic",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "missing_derivation",
+        "google_gemini-3.1-flash-lite": "missing_derivation"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_planck_sandbox_06",
+      "iter_timestamp": 1776194343,
+      "score": 0,
+      "weakest_point_snippet": "Level 3 falsification suite disproved the thesis by assertion (`fail_assert`). The model's failure to fit the visible data slice within the required tolerance, directly falsifying its primary claim of",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp069_sandbox_13",
+      "iter_timestamp": 1776364213,
+      "score": -45,
+      "weakest_point_snippet": "Declares the N-1 degree integer-valued polynomial as the only Occam-justified generalization for extrapolation, grossly inverting Occam\u2019s Razor and creating catastrophic overfitting and epistemically ",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "overclaimed_exclusivity",
+        "anthropic_claude-haiku-4.5": "overclaimed_exclusivity",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "paper5_self_review",
+      "iter_timestamp": 1776717505,
+      "score": 61,
+      "weakest_point_snippet": "The treatise cannot satisfy its own Principle I (Separation) at the foundational, theory-launch layer: both the generation and evaluation of the decomposition are performed by the same agent, and no p",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "unsupported_assumption",
+        "anthropic_claude-haiku-4.5": "unfalsifiable_claim",
+        "google_gemini-3.1-flash-lite": "definition_ambiguity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "survey_s1",
+      "iter_timestamp": 1776947062,
+      "score": 75,
+      "weakest_point_snippet": "The diagnostic regime for microstructure suppression is limited: using only 200-step difference envelopes and short-window alternation checks may miss hidden or non-alternating residual structure at o",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "temporal_mismatch",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "temporal_mismatch"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": false
+    },
+    {
+      "project": "gp072_sandbox_14",
+      "iter_timestamp": 1776369846,
+      "score": 94,
+      "weakest_point_snippet": "The assumption that the observed zero-crossing compression and 'chirp' are caused uniquely by the sinusoidal quadratic mechanism (sin(0.01*x^2)), rather than by adversarial or piecewise imitation in t",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "missing_counterfactual",
+        "anthropic_claude-haiku-4.5": "missing_counterfactual",
+        "google_gemini-3.1-flash-lite": "overclaimed_exclusivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "eu_union_failure_probability_2035",
+      "iter_timestamp": 1775934718,
+      "score": 0,
+      "weakest_point_snippet": "Structured semantic-gate derivation classified the proof as hard self-reference. The derivation of the N=3 threshold for 'multi-state breakdown' from qualitative textual evidence in S006 and S019 rema",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "parameter_sensitivity",
+        "anthropic_claude-haiku-4.5": "parameter_sensitivity",
+        "google_gemini-3.1-flash-lite": "parameter_sensitivity"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "ceiling_breaker",
+        "anthropic_claude-haiku-4.5": "ceiling_breaker",
+        "google_gemini-3.1-flash-lite": "ceiling_breaker"
+      },
+      "all_agree_super": true
+    },
+    {
+      "project": "gp023_planck_sandbox_01",
+      "iter_timestamp": 1775881368,
+      "score": 0,
+      "weakest_point_snippet": "Level 3 falsification suite status was `fail`. The fundamental conflict between the Project Charter's 'falls back toward zero' asymptote and the observed non-zero high-phi plateau for psi=0.6 and psi=",
+      "fine_labels": {
+        "openai_gpt-4.1-mini": "catastrophic_fit_failure",
+        "anthropic_claude-haiku-4.5": "catastrophic_fit_failure",
+        "google_gemini-3.1-flash-lite": "catastrophic_fit_failure"
+      },
+      "super_labels": {
+        "openai_gpt-4.1-mini": "structural_blocker",
+        "anthropic_claude-haiku-4.5": "structural_blocker",
+        "google_gemini-3.1-flash-lite": "structural_blocker"
+      },
+      "all_agree_super": true
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick621-helicity-noncoercive",
+  "contract_question": "tick621: is the helicity/topological class (the only non-collapsed complement candidate after ESS\u2192atom#9) provably NON-coercive for the 3D NS regularity problem, so the non-scale-margin complement is EMPTY of any currently-known regularity mechanism (a strong honest arc terminal)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T01:45:28Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.58,
+  "rationale_short": "codex independent bet: helicity non-coercivity well-established; complement-empty meta-claim slightly less certain",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

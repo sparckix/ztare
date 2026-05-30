@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg",
+  "contract_question": "On the scaled Rung-1 (T2P pin_delta + controls, STRONG statement-BM25 pools, dedicated/quiet sandbox), does B7 (kernel-grounded rerank + governance) beat the STRONGER of B0(text-BM25) and B5(random NULL) by >=5pp closed_or_exact_gap@budget OR <=0.8x probes-to-verdict, AND 0 false-ratify, with all closures replaying?",
+  "domain": "pathA_wedge",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_arms_honest_gap_no_separation_inconclusive": 0.34,
+    "controls_trivially_close_uninformative_bucket": 0.12,
+    "cpu_or_timeout_confound": 0.08,
+    "kernel_prescore_too_coarse_to_separate": 0.12,
+    "t2p_rows_single_lemma_weak_at_pin_corpus_quality": 0.16,
+    "text_bm25_already_wins_FM2": 0.18
+  },
+  "forecast_externality_tags": [
+    "pathA_wedge",
+    "null_included_B5",
+    "strong_baseline_non_strawman",
+    "read_only_attestation"
+  ],
+  "forecasted_at": "2026-05-17T15:49:52Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.2,
+  "p_regression": 0.05,
+  "p_success": 0.4,
+  "rationale_short": "Cheapest falsifier; standing \u00a76 = closure prover-bound + SOTA-beating killed. Kernel pre-score gives real signal BUT with post-pin closer absent by construction many pin_delta rows may be honest-gap for ALL orderings (no separation = inconclusive, the dominant risk, ~0.34) and the strong-BM25 baseline already surfaces near-equiv pinned lemmas (T2P_42) risking FM2/corpus-quality. Honest p~0.4: real-but-uncertain; not pre-conceding (anti solver-pessimism) but not optimistic.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "all_arms_honest_gap_no_separation_inconclusive",
+    "text_bm25_already_wins_FM2",
+    "t2p_rows_single_lemma_weak_at_pin_corpus_quality"
+  ]
+}

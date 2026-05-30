@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 2.58,
+  "artifact_hash": "7ef699640e43695adda12e97ecaeca64491b7eb369862af55d1114d6348a8830",
+  "artifact_path": "analytics/public/leanmill/results/v1753_prefix_aware_guarded_probe.json",
+  "compile_status": "fail_gate",
+  "contract_id": "gp225_v1753_prefix_aware_replay_micro_batch",
+  "error_type": "prefix_replay_improved_but_nested_tactic_and_guard_gaps_remain",
+  "goal_delta": 3,
+  "resolution_note": "v17.53 improved over v17.52 from 1 to 3 target-guarded/action-unique rows with zero false accepts, but failed threshold requiring >=8 labels and >=5 useful rows. Prefix replay fixed some context loss; remaining blockers are nested tactic matching and target-guard fragility on branch/local-context steps.",
+  "resolved_at": "2026-05-12T21:04:45Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

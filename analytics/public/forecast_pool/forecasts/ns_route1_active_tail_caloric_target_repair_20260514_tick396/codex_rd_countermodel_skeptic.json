@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Add guard fields: active tail must be same-cutoff local-energy carrier; if QP does not include |u|^2|v|^2, theorem is false.",
+  "agent_id": "codex_rd_countermodel_skeptic",
+  "contract_id": "ns_route1_active_tail_caloric_target_repair_20260514_tick396",
+  "contract_question": "Can the next NS tick repair the ActiveTailPaidByCaloricDissipation target so it binds fixed same-carrier quantities instead of arbitrary functions?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "active_tail_not_same_carrier": 0.18,
+    "lean_field_shape_error": 0.14,
+    "no_decision_delta": 0.12,
+    "qp_residual_not_bound": 0.26,
+    "target_still_too_abstract": 0.3
+  },
+  "forecast_externality_tags": [
+    "same_carrier_guard",
+    "no_go_hygiene"
+  ],
+  "forecasted_at": "2026-05-14T17:03:02Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.93,
+  "p_regression": 0.08,
+  "p_success": 0.6,
+  "rationale_short": "The analytic estimate is plausible, but only under carrier restrictions. The surface should make failure modes explicit rather than claim proof.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "target_still_too_abstract",
+    "active_tail_not_same_carrier",
+    "qp_residual_not_bound"
+  ]
+}

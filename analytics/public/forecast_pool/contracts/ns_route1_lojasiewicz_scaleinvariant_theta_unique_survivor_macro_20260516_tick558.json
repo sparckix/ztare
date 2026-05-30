@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T00:03:25Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_lojasiewicz_unique_survivor_macro_20260516",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.02,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0143,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 4,
+        "token_jaccard": 0.0833
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "30d",
+  "information_value": 4.0,
+  "layer": "macro",
+  "objective_resolver": "PDE judgment: 3D NS localized-enstrophy Lojasiewicz-Simon inequality with scale-invariant theta in (1/2,1) STRICT (closure) vs theta->1 degeneration (fixed point persists; atom = scaling-criticality invariant under geometric/maximal-fn/entropy channels => route-1 closure equivalent to a genuine extra-scaling input no classical field supplies)",
+  "question": "Per META-PATTERN-024 the transverse-escape ledger is down to ONE survivor: does the route-1 localized NS enstrophy functional admit a Lojasiewicz-Simon gradient inequality with a SCALE-INVARIANT exponent theta<1 (=> strict scale-invariant per-reversal enstrophy toll gamma>0 => tick552 geometric series => tick551 freshness => Clay route-1 closure), OR does theta degenerate to the critical endpoint theta=1 at high frequency (= the NS-scaling-criticality fixed point AGAIN, in Lojasiewicz vocabulary => atom invariant under ALL enumerated transverse channels)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "success iff scale-invariant theta<1 Lojasiewicz-Simon for the localized NS enstrophy; 0.5 if conditional on a known sub-class; fail iff theta->1 degeneration (fixed point invariant across all 3 enumerated channels)",
+  "task_type": "ns_clay_lojasiewicz_unique_survivor_macro_20260516",
+  "value_if_success": 8.0,
+  "void_conditions": "tick551/552/557 refactored"
+}

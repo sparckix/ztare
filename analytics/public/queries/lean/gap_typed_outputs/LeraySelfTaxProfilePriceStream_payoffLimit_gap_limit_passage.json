@@ -1,0 +1,73 @@
+{
+  "ts": "2026-05-06T14:35:33.389611+00:00",
+  "target": "LeraySelfTaxProfilePriceStream",
+  "field": "payoffLimit",
+  "classification": {
+    "gap_type": "LIMIT_PASSAGE",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched LIMIT_PASSAGE evidence in the target/field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": [
+    {
+      "name": "eLpNorm_exponent_top_lim_le_liminf_eLpNorm_exponent_top",
+      "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+      "preview": "theorem eLpNorm_exponent_top_lim_le_liminf_eLpNorm_exponent_top {\u03b9} [Nonempty \u03b9] [Countable \u03b9]     [LinearOrder \u03b9] {f : \u03b9 \u2192 \u03b1 \u2192 E} {f_lim : \u03b1 \u2192 E}     (h_lim : \u2200\u1d50 x : \u03b1 \u2202\u03bc, Tendsto (fun n => f n x) at"
+    },
+    {
+      "name": "eLpNorm_lim_le_liminf_eLpNorm",
+      "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+      "preview": "theorem eLpNorm_lim_le_liminf_eLpNorm {f : \u2115 \u2192 \u03b1 \u2192 E}     (hf : \u2200 n, AEStronglyMeasurable (f n) \u03bc) (f_lim : \u03b1 \u2192 E)     (h_lim : \u2200\u1d50 x : \u03b1 \u2202\u03bc, Tendsto (fun n => f n x) atTop (\ud835\udcdd (f_lim x))) :     eLpNorm"
+    },
+    {
+      "name": "lintegral_enorm_le_liminf_of_tendsto",
+      "file": "MeasureTheory/Function/L1Space/Integrable.lean",
+      "preview": "theorem lintegral_enorm_le_liminf_of_tendsto     {G : \u2115 \u2192 \u211d \u2192 \u211d} {f : \u211d \u2192 \u211d} {\u03bc : Measure \u211d}     (hGf : \u2200\u1d50 x \u2202\u03bc, Tendsto (fun (n : \u2115) \u21a6 G n x) atTop (\ud835\udcdd (f x)))     (hG : \u2200 (n : \u2115), AEMeasurable (fun x"
+    },
+    {
+      "name": "cauchy_tendsto_of_tendsto",
+      "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+      "preview": "theorem cauchy_tendsto_of_tendsto {f : \u2115 \u2192 \u03b1 \u2192 E} (hf : \u2200 n, AEStronglyMeasurable (f n) \u03bc)     (f_lim : \u03b1 \u2192 E) {B : \u2115 \u2192 \u211d\u22650\u221e} (hB : \u2211' i, B i \u2260 \u221e)     (h_cau : \u2200 N n m : \u2115, N \u2264 n \u2192 N \u2264 m \u2192 eLpNorm (f "
+    },
+    {
+      "name": "eLpNorm_le_of_ae_tendsto",
+      "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+      "preview": "theorem eLpNorm_le_of_ae_tendsto {\u03b9 : Type*} {u : Filter \u03b9} [NeBot u] [IsCountablyGenerated u]     {f : \u03b9 \u2192 \u03b1 \u2192 E} {g : \u03b1 \u2192 E} {C : \u211d\u22650\u221e} (bound : \u2200\u1da0 n in u, eLpNorm (f n) p \u03bc \u2264 C)     (hf : \u2200 n, AESt"
+    },
+    {
+      "name": "tendsto_integral_of_forall_integral_le_liminf_integral",
+      "file": "MeasureTheory/Integral/BoundedContinuousFunction.lean",
+      "preview": "lemma tendsto_integral_of_forall_integral_le_liminf_integral {\u03b9 : Type*} {L : Filter \u03b9}     {\u03bc : Measure X} [IsProbabilityMeasure \u03bc] {\u03bcs : \u03b9 \u2192 Measure X} [\u2200 i, IsProbabilityMeasure (\u03bcs i)]     (h : \u2200 "
+    },
+    {
+      "name": "ae_bdd_liminf_atTop_of_eLpNorm_bdd",
+      "file": "MeasureTheory/Function/LpSeminorm/Basic.lean",
+      "preview": "theorem ae_bdd_liminf_atTop_of_eLpNorm_bdd {p : \u211d\u22650\u221e} (hp : p \u2260 0) {f : \u2115 \u2192 \u03b1 \u2192 E}     (hfmeas : \u2200 n, Measurable (f n)) (hbdd : \u2200 n, eLpNorm (f n) p \u03bc \u2264 R) :     \u2200\u1d50 x \u2202\u03bc, liminf (fun n => (\u2016f n x\u2016\u2091)) "
+    },
+    {
+      "name": "ae_bdd_liminf_atTop_rpow_of_eLpNorm_bdd",
+      "file": "MeasureTheory/Function/LpSeminorm/Basic.lean",
+      "preview": "theorem ae_bdd_liminf_atTop_rpow_of_eLpNorm_bdd {p : \u211d\u22650\u221e} {f : \u2115 \u2192 \u03b1 \u2192 E}     (hfmeas : \u2200 n, Measurable (f n)) (hbdd : \u2200 n, eLpNorm (f n) p \u03bc \u2264 R) :     \u2200\u1d50 x \u2202\u03bc, liminf (fun n => ((\u2016f n x\u2016\u2091) ^ p.toRe"
+    },
+    {
+      "name": "hausdorffMeasure_le_liminf_sum",
+      "file": "MeasureTheory/Measure/Hausdorff.lean",
+      "preview": "theorem hausdorffMeasure_le_liminf_sum {\u03b2 : Type*} {\u03b9 : \u03b2 \u2192 Type*} [\u2200 n, Fintype (\u03b9 n)]     (d : \u211d) (s : Set X) {l : Filter \u03b2} (r : \u03b2 \u2192 \u211d\u22650\u221e) (hr : Tendsto r l (\ud835\udcdd 0))     (t : \u2200 n : \u03b2, \u03b9 n \u2192 Set X) (h"
+    },
+    {
+      "name": "hausdorffMeasure_le_liminf_tsum",
+      "file": "MeasureTheory/Measure/Hausdorff.lean",
+      "preview": "theorem hausdorffMeasure_le_liminf_tsum {\u03b2 : Type*} {\u03b9 : \u03b2 \u2192 Type*} [\u2200 n, Countable (\u03b9 n)]     (d : \u211d) (s : Set X) {l : Filter \u03b2} (r : \u03b2 \u2192 \u211d\u22650\u221e) (hr : Tendsto r l (\ud835\udcdd 0))     (t : \u2200 n : \u03b2, \u03b9 n \u2192 Set X)"
+    },
+    {
+      "name": "le_liminf_measure_open_of_forall_tendsto_measure",
+      "file": "MeasureTheory/Measure/Portmanteau.lean",
+      "preview": "lemma le_liminf_measure_open_of_forall_tendsto_measure     {\u03a9 \u03b9 : Type*} {L : Filter \u03b9} [MeasurableSpace \u03a9] [TopologicalSpace \u03a9]     [PseudoMetrizableSpace \u03a9] [OpensMeasurableSpace \u03a9]     {\u03bc : Measure"
+    },
+    {
+      "name": "liminf_add_of_right_tendsto_zero",
+      "file": "Topology/Instances/ENNReal/Lemmas.lean",
+      "preview": "theorem liminf_add_of_right_tendsto_zero {u : Filter \u03b9} {g : \u03b9 \u2192 \u211d\u22650\u221e} (hg : u.Tendsto g (\ud835\udcdd 0))     (f : \u03b9 \u2192 \u211d\u22650\u221e) : u.liminf (f + g) = u.liminf f := by   refine le_antisymm ?_ <| liminf_le_liminf <| "
+    }
+  ]
+}

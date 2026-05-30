@@ -1,0 +1,168 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T07:25:33Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.64,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 9.2304
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 80.0,
+    "expected_value": -145.39000000000001,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.3,
+    "p_regression": 0.05,
+    "p_success": 0.64,
+    "participants": [
+      {
+        "agent_id": "codex-rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level515_typed_appearance_coverage_choice_source/codex_rd.json",
+        "forecasted_at": "2026-05-27T07:19:40Z",
+        "p_success": 0.64,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "typed_appearance_theorem_still_assumed",
+        "p": 0.42
+      },
+      {
+        "mode": "target_membership_specialization_type_mismatch",
+        "p": 0.22
+      },
+      {
+        "mode": "lean_subtype_projection_mismatch",
+        "p": 0.18
+      },
+      {
+        "mode": "workbench_gate_gap",
+        "p": 0.18
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level515_typed_appearance_coverage_choice_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level515_typed_appearance_coverage_choice_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level515_typed_appearance_coverage_choice_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level515_typed_appearance_coverage_choice_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level515_typed_appearance_coverage_choice_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T07:19:28Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-27T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve TRUE iff Lean compiles a Level515 typed appearance source into Level514, strict receipt/workbench checks pass, active-chain gate audit is clean, and focused tests pass.",
+    "question": "Can Level515 derive coverageChoice from a typed selected-bad-node appearance theorem plus target-node selected-bad membership, then package into Level514?",
+    "success_threshold": "A typed appearance source supplies forall Q in hCarrier.selectedBadNodes, a finite event-prefix witness whose eventToBadNode is Q; target-node membership specializes this theorem to coverageChoice and packages into Level514 without bare Prop choice, endpoint-capacity, shell-only, or post-payoff substitutes.",
+    "task_type": "ns_trackb_formal_bridge"
+  },
+  "contract_id": "tick668_level515_typed_appearance_coverage_choice_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex-rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level515_typed_appearance_coverage_choice_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 80.0,
+        "forecasted_at": "2026-05-27T07:19:40Z",
+        "p_success": 0.64,
+        "rationale_short": "Level515 should compile because the typed appearance theorem specializes directly at skeleton.targetNode using targetNode_mem_selectedBadNodes; the mathematical debt moves to proving that typed appearance theorem from the old Prop coverage packet.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T07:25:54Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 85.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T07:25:47Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.64,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 9.2304
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 80.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.64,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "typed_appearance_theorem_still_assumed",
+        "p": 0.42
+      },
+      {
+        "mode": "target_membership_specialization_type_mismatch",
+        "p": 0.22
+      },
+      {
+        "mode": "lean_subtype_projection_mismatch",
+        "p": 0.18
+      },
+      {
+        "mode": "workbench_gate_gap",
+        "p": 0.18
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1296,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T07:25:53Z"
+  }
+}

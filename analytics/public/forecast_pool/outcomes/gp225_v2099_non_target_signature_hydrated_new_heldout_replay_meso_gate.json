@@ -1,0 +1,27 @@
+{
+  "actual_cost_agent_minutes": 31.0,
+  "artifact_hash": "73e657ebb39ca1bcad9b35779f41da8f8d1a318691dc147860f881ac4bd97b18",
+  "artifact_path": "analytics/public/leanmill/results/v2099_non_target_signature_hydrated_new_heldout_replay.json",
+  "compile_status": "replay_failed_with_auxiliary_pull_forward",
+  "contract_id": "gp225_v2099_non_target_signature_hydrated_new_heldout_replay_meso_gate",
+  "decision_changed_bool": true,
+  "externality_tags": [
+    "meso_only_forecast",
+    "source_signature_hydrated_replay",
+    "density_auxiliary_pull_forward_positive",
+    "no_strict_heldout_row",
+    "no_training"
+  ],
+  "goal_delta": 0,
+  "new_next_action": "v2100_auxiliary_pull_forward_label_audit_before_training_or_more_replay",
+  "realized_failure_mode_ids": [
+    "affine_opens_orientation_or_type_shape_still_wrong",
+    "density_bridge_compiles_as_pull_forward_not_strict_same_target",
+    "no_new_strict_or_contrast_label_under_contract",
+    "auxiliary_labels_positive_but_not_model_evidence"
+  ],
+  "resolution_note": "v20.99 bounded replay of the v20.98 source-signature hydrated packet compiled 4/8, all on the density row. They closed as verified overclosure pull-forward auxiliary labels, not new strict same-target rows or useful contrast labels under the pre-registered contract. Harmful mismatches remained 0 and leakage/training flags remained false. The forecast resolves false conservatively to avoid ex-post relabeling, while the auxiliary positives should be audited next.",
+  "resolved_at": "2026-05-14T21:52:00Z",
+  "success_bool": false,
+  "voided": false
+}

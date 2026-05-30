@@ -1,0 +1,81 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/test-membrane-e2e-1779139825.json",
+    "contract": "analytics/public/forecast_pool/contracts/test-membrane-e2e-1779139825.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/test-membrane-e2e-1779139825.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/test-membrane-e2e-1779139825.json",
+    "score": "analytics/public/forecast_pool/scores/test-membrane-e2e-1779139825.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_projected_compactness_measure_valued_source",
+    "created_at": "2026-05-18T21:30:25Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-20T00:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "self-test of F-TEST-MEMBRANE-E2E-1779139825 / test-membrane-e2e-1779139825; no science claim",
+    "question": "E2E membrane self-test (throwaway; will retire) \u2014 does the documented sequence flow start\u2192close",
+    "success_threshold": "0.5",
+    "task_type": "membrane_e2e_selftest"
+  },
+  "contract_id": "test-membrane-e2e-1779139825",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-18T21:53:42Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

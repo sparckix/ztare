@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 28.0,
+  "artifact_hash": "739d11e0981732804d6e712914c0100660ab990cc8577f3881f932d8d95c13c7",
+  "artifact_path": "analytics/public/forecast_pool/forecast_pool_externalities_audit_20260514.json",
+  "compile_status": "passed",
+  "contract_id": "meta_prediction_market_externalities_review_20260514",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Two-agent review plus local audit produced a derived externalities report and concrete schema/metric recommendations; implemented audit_forecast_pool_externalities.py.",
+  "resolved_at": "2026-05-14T13:49:20Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

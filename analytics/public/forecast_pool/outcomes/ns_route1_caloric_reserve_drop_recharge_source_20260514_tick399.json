@@ -1,0 +1,33 @@
+{
+  "actual_cost_agent_minutes": 12.0,
+  "artifact_hash": "d7d11423995fbab7c785ce918fc42dc4a0183cc14af9bd7665f1adaded2a0bc8",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd_tick399"
+  ],
+  "compile_status": "pass",
+  "contract_id": "ns_route1_caloric_reserve_drop_recharge_source_20260514_tick399",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_route1",
+    "lean_positive",
+    "carrier_lowering",
+    "gp230_calibrated"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "Attack caloric dissipation reserve-drop source and then Duhamel recharge summability",
+  "old_next_action": "Implement broad reservoir wrapper",
+  "preconditioner_effect": "Focused implementation on sub-estimates rather than another route wrapper",
+  "preconditioner_source": "Gowers-style carrier lowering plus GP-230 live forecast",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Compiled CaloricDissipationReserveDropRechargeSource, projection theorem to the reserve-drop/recharge field, and explicit gap guard for annular/cutoff/Duhamel/error routing assumptions.",
+  "resolved_at": "2026-05-14T18:30:39Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "if true, populate strict_same_step_positive bucket with at least one new label and re-run typed-label union readiness; if false, retire density row from strict-acquisition lane and route to current_scale_0000 or current_scale_0079",
+  "agent_id": "Franklin",
+  "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+  "contract_question": "Can bounded replay of v21.02 add at least one strict same-step heldout label on current_scale_0164 matching the gold intermediate open state, with zero harmful mismatches, no leakage, and no training?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apply_does_not_unify_at_target": 0.06,
+    "auxiliary_overclosure_again_despite_truncation": 0.05,
+    "candidate_rank_baseline_saturates_again": 0.12,
+    "harmful_compiled_mismatch": 0.02,
+    "leakage_or_packet_accounting_gap": 0.01,
+    "new_strict_same_step_label_added": 0.41,
+    "refine_question_mark_metavariable_mismatch": 0.05,
+    "schema_or_timeout_error": 0.04,
+    "truncated_candidate_leaves_wrong_open_state": 0.14,
+    "withDensity_apply_le_implicit_arg_resolution_fails": 0.1
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T22:20:01Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.05,
+  "p_success": 0.62,
+  "rationale_short": "Truncating an already-compiled candidate to its first line should leave the gold intermediate open state with high probability; main risks are implicit-arg resolution on withDensity_apply_le and refine-metavariable mismatch.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

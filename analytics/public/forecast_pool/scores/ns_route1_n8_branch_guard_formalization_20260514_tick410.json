@@ -1,0 +1,132 @@
+{
+  "contract_id": "ns_route1_n8_branch_guard_formalization_20260514_tick410",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Stop after route1 pincer packet",
+      "counterfactual_action": "Formalize N8 branch guards and upstream closure theorem surfaces",
+      "externality_hypotheses": {
+        "negative": [
+          "may_add_wrappers_without_new_pde",
+          "could_duplicate_existing_branch_surfaces"
+        ],
+        "positive": [
+          "prevents_route1_to_clay_overclaim",
+          "makes_n8_branches_machine_visible"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "overclaim-prevention",
+        "n8-branch-visibility",
+        "machine-visible-stop-conditions"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "n8-not-closed",
+        "guard-only-no-pde-closure"
+      ],
+      "new_next_action": "Wait for actual N8 closure attempt; locally attack scalar failure semantics and single-use lineage accounting only",
+      "old_next_action": "Potentially continue route1 wrappers",
+      "preconditioner_effect": "Kept the edit to guard surfaces and prevented route1-to-critical-increment overclaim",
+      "preconditioner_source": "Meta-Darwin/N8 inversion packet",
+      "realized_failure_mode_ids": [
+        "route1_boundary_already_encoded"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.1274,
+  "mean_log_score": -0.43661562120685415,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "32994a6c2b9f7c0e5126a6b881f0614dc15bdb40beb77e199abadf3d42f9aebf",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passed",
+    "contract_id": "ns_route1_n8_branch_guard_formalization_20260514_tick410",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "overclaim-prevention",
+      "n8-branch-visibility",
+      "machine-visible-stop-conditions"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "n8-not-closed",
+      "guard-only-no-pde-closure"
+    ],
+    "new_next_action": "Wait for actual N8 closure attempt; locally attack scalar failure semantics and single-use lineage accounting only",
+    "old_next_action": "Potentially continue route1 wrappers",
+    "preconditioner_effect": "Kept the edit to guard surfaces and prevented route1-to-critical-increment overclaim",
+    "preconditioner_source": "Meta-Darwin/N8 inversion packet",
+    "realized_failure_mode_ids": [
+      "route1_boundary_already_encoded"
+    ],
+    "resolution_note": "Added compiling N8 branch guard and branch-exhaustion surfaces: Route1ClosedFromSchedulePincer, CriticalIncrementBranchExhaustion, CriticalIncrementClosedFromBranchExhaustion, and specific CKN/pressure/beta/unfresh/reuse guard structures. This is guard formalization only, not N8 closure.",
+    "resolved_at": "2026-05-14T20:07:35Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T20:07:42Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex-meta-darwin-proxy",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "ns-proof-falsification",
+      "expected_cost_agent_minutes": 35.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.25,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:05:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:06:02Z",
+        "resolved_at": "2026-05-14T20:07:35Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex-rd-main",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns-route1-proof-frontier",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:05:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:06:02Z",
+        "resolved_at": "2026-05-14T20:07:35Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu",
+  "contract_question": "Bounded grounded-ITERATIVE typed-assembly (assemble->compile->read v4.29.0 error->fix, <=6 iters/row) on the post-name H2 residual C15(Basel reindex) + C06(legendreSym chi4 iff), correct names already harvested: will >=1/2 close GENUINE in the canonical pinned v4.29.0 sandbox \u2014 validating the lever as grounded-iterative (not just name-resolution)?",
+  "domain": "grounded_iterative_loop_h2_residual",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "c06_iff_split_gap": 0.2,
+    "c15_reindex_gap": 0.24,
+    "canonical_sandbox_mismatch": 0.12,
+    "checker_brittleness": 0.34,
+    "name_resolution_regression": 0.1
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T21:25:56Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.08,
+  "p_success": 0.64,
+  "rationale_short": "Names are already harvested, so the lever is mostly mechanical typed-assembly; main uncertainty is exact? checker coupling plus residual proof gaps in C15/C06, with bounded iterations reducing but not removing brittleness.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

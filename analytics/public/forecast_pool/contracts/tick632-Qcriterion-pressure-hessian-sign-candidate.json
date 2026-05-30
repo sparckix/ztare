@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick632-Qcriterion-pressure-hessian-sign-candidate.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick632-Qcriterion-pressure-hessian-sign-candidate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick632-Qcriterion-pressure-hessian-sign-candidate",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick632-Qcriterion-pressure-hessian-sign-candidate.json",
+    "score": "analytics/public/forecast_pool/scores/tick632-Qcriterion-pressure-hessian-sign-candidate.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick632-Qcriterion-pressure-hessian-sign-candidate",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T11:59:53Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_new_mechanism_probe",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick632 (new-program probe): does the strain-vorticity / Q-criterion sign structure (Q := (|\u03c9|\u00b2/2 \u2212 |S|\u00b2) = \u00bd\u0394p, the pressure-Laplacian decomposition) supply a GENUINELY-NEW critical-scale-invariant a-priori constraint OUTSIDE the exhausted taxonomy (scale-margin / ESS-rigidity / topological / CKN-energy-covering) \u2014 i.e. is there a positive-definite scale-critical functional whose NS evolution has a SIGN-controlled vortex-stretching term via the pressure-Hessian, OR does it reduce (like everything) to the critical-norm a-priori estimate / a known CF-alignment relabel / energy-level?",
+  "risk_penalty": 1.0,
+  "success_threshold": "an HONEST verdict: either (a) a specific scale-critical positive functional with a genuinely sign-controlled stretching term is identified (genuinely-new), or (b) it is DERIVED to reduce to {critical-norm a-priori = Clay re-expression / CF-alignment relabel / energy-level} \u2014 with the reduction explicit, codex-survived, amnesia-checked, NOT laundered as progress",
+  "task_type": "ns_new_mechanism_probe",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

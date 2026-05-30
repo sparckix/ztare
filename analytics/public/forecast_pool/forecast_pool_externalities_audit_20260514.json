@@ -1,0 +1,321 @@
+{
+  "calibration": {
+    "brier_skill_vs_uniform_binary": 0.2365,
+    "mean_brier": 0.1909,
+    "mean_log_score": -0.5671,
+    "score_rows": 252,
+    "top_domains": [
+      {
+        "brier_skill_vs_uniform_binary": 0.3936,
+        "domain": "ns_route1_pde",
+        "mean_brier": 0.1516,
+        "median_expected_over_actual": 1.625,
+        "score_rows": 128
+      },
+      {
+        "brier_skill_vs_uniform_binary": -0.1994,
+        "domain": "gp225_repair_micro",
+        "mean_brier": 0.2999,
+        "median_expected_over_actual": 2.25,
+        "score_rows": 43
+      },
+      {
+        "brier_skill_vs_uniform_binary": -0.2389,
+        "domain": "navier_stokes_route1",
+        "mean_brier": 0.3097,
+        "median_expected_over_actual": 2.3056,
+        "score_rows": 16
+      },
+      {
+        "brier_skill_vs_uniform_binary": 0.2546,
+        "domain": "NS_route1",
+        "mean_brier": 0.1864,
+        "median_expected_over_actual": 1.4632,
+        "score_rows": 10
+      },
+      {
+        "brier_skill_vs_uniform_binary": 0.367,
+        "domain": "GP-225",
+        "mean_brier": 0.1583,
+        "median_expected_over_actual": 1.3868,
+        "score_rows": 8
+      },
+      {
+        "brier_skill_vs_uniform_binary": 0.3403,
+        "domain": "ns_live_scalar_hinge",
+        "mean_brier": 0.1649,
+        "median_expected_over_actual": 1.2857,
+        "score_rows": 7
+      },
+      {
+        "brier_skill_vs_uniform_binary": -0.0021,
+        "domain": "gp225_lean_witness_backfill",
+        "mean_brier": 0.2505,
+        "median_expected_over_actual": 11.9369,
+        "score_rows": 4
+      },
+      {
+        "brier_skill_vs_uniform_binary": 0.605,
+        "domain": "meta_prediction_market",
+        "mean_brier": 0.0988,
+        "median_expected_over_actual": 1.3361,
+        "score_rows": 4
+      },
+      {
+        "brier_skill_vs_uniform_binary": 0.7541,
+        "domain": "gnn_synthetic_data_factory",
+        "mean_brier": 0.0615,
+        "median_expected_over_actual": 3.9271,
+        "score_rows": 3
+      },
+      {
+        "brier_skill_vs_uniform_binary": 0.8277,
+        "domain": "gp225_baseline",
+        "mean_brier": 0.0431,
+        "median_expected_over_actual": 1.9444,
+        "score_rows": 3
+      },
+      {
+        "brier_skill_vs_uniform_binary": 0.5896,
+        "domain": "gp225_parallel_replay",
+        "mean_brier": 0.1026,
+        "median_expected_over_actual": 1.2667,
+        "score_rows": 3
+      },
+      {
+        "brier_skill_vs_uniform_binary": -0.8039,
+        "domain": "lean_replay_verification",
+        "mean_brier": 0.451,
+        "median_expected_over_actual": 40.6977,
+        "score_rows": 3
+      }
+    ]
+  },
+  "coverage": {
+    "aggregates": 136,
+    "contracts": 136,
+    "forecasts": 276,
+    "outcomes": 127,
+    "score_files": 124,
+    "score_rows": 252
+  },
+  "effort": {
+    "large_overestimate_rows": 41,
+    "large_underestimate_rows": 2,
+    "mean_cost_error_agent_minutes": 17.5618,
+    "median_cost_error_agent_minutes": 14.0,
+    "median_expected_over_actual": 1.7817
+  },
+  "generated_at": "2026-05-14T14:30:37Z",
+  "negative_externalities": {
+    "forecast_drag_flags_top20": [
+      {
+        "actual_cost_agent_minutes": 12.0,
+        "contract_id": "gp225_v1920_executable_repair_canary_gate",
+        "forecast_to_resolution_minutes": 71.77
+      },
+      {
+        "actual_cost_agent_minutes": 8.0,
+        "contract_id": "gp225_v1994_bundled_clean_strict_repair_replay",
+        "forecast_to_resolution_minutes": 154.53
+      }
+    ],
+    "high_entropy_failure_mode_forecasts": 258,
+    "negative_externality_tag_counts": [],
+    "p_success_hedge_band_fraction": 0.1486,
+    "p_success_hedge_band_rows": 41,
+    "resolved_selection_rate": 0.9338,
+    "unresolved_contracts": 9
+  },
+  "positive_externalities": {
+    "calibration_summary_exists": true,
+    "calibration_weights_exists": true,
+    "gp233_forecast_related_rows": 150,
+    "gp233_forecast_related_sample": [
+      "| 2026-05-14 | NS route-1 active singular residual density gap | `projects/ns_millennium_hunt/workspace/external_prover/responses/gpt55_active_singular_residual_density_gap_20260514.md`; `projects/ns_millennium_hunt/workspace/route1_active_singular_residual_density_gap_20260514.md`; `projects/ns_millennium_hunt/workspace/xhigh_active_singular_residual_density_gap_feynman_verdict_20260514.md`; `analytics/public/forecast_pool/scores/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP225-NS-ACTIVE-SINGULAR-RESIDUAL-DENSITY-GAP-20260514-368` | `rn_density_gap_to_tangent_profile_extraction_or_fifth_channel` | GP-233 sharpened the singular residual branch from `mu_A_perp <= C * mu_I` into the exact RN-density requirement `d mu_I / d mu_A_perp >= c > 0`. The GPT-5.5 proof route shows the conditional contradiction: density failure produces cubes with visible and residual density vanishing relative to `mu_A_perp`; if normalized blowups extract a nonzero active profile and lower semicontinuity kills all channels, `NoNonzeroZeroVisibilityActiveProfile` gives contradiction. Feynman found the unpaid theorem: `ActiveSingularTangentProfileExtraction`, especially mass persistence from singular tangent measure to active route-1 critical profile. Forecast pool tick368 resolved true with mean Brier `0.40745`, actual effort `18`, and artifact hash `4918f7018a0058b9a015c614cc4bfd965c8d7036a7cb42d40e8fe89998ca40ee`. | positive-negative-discriminator |",
+      "| 2026-05-14 | NS route-1 active singular tangent profile extraction | `projects/ns_millennium_hunt/workspace/route1_active_singular_tangent_profile_extraction_20260514.md`; `projects/ns_millennium_hunt/workspace/xhigh_active_singular_tangent_profile_extraction_feynman_verdict_20260514.md`; `analytics/public/forecast_pool/scores/ns_route1_active_singular_tangent_profile_extraction_xhigh_20260514_tick369.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP225-NS-ACTIVE-SINGULAR-TANGENT-PROFILE-EXTRACTION-20260514-369` | `ordinary_profile_extraction_too_strong_generalized_defect_or_fifth_channel` | GP-233 turned the density-gap proof route into a sharper negative discriminator. Feynman found that a tangent of `mu_A_perp` can be a measure-valued active source defect rather than an ordinary route-1 suitable profile. The exact missing theorem is `ActiveTailSingularMassPersistenceUnderSuitableProfileBlowup`, with a no-defect-loss clause `tangent(mu_A_perp) = activeTailCarrier(U)`. The more honest theorem is `ActiveSingularTangentDichotomy`: either the tangent realizes as an ordinary critical profile with positive active carrier, or it is a generalized defect profile / fifth channel. Forecast pool tick369 resolved true with mean Brier `0.4525`, actual effort `16`, artifact hash `23ddb736e5f602bc2ee512958f4435699d3d185243f62dcfe0b206dcf51b97c0`. | negative-result-object-discovery |",
+      "| 2026-05-14 | NS route-1 local-energy measure split singular control | `ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean`; `projects/ns_millennium_hunt/workspace/external_prover/responses/gpt55_local_energy_measure_split_singular_control_20260514.md`; `projects/ns_millennium_hunt/workspace/route1_local_energy_measure_split_singular_control_20260514.md`; `analytics/public/forecast_pool/scores/ns_route1_local_energy_measure_split_singular_control_20260514_tick370.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP225-NS-LOCAL-ENERGY-MEASURE-SPLIT-SINGULAR-CONTROL-20260514-370` | `borel_local_measure_split_closes_singular_control_conditionally` | GP-233 recorded a positive theorem-surface pivot. The ordinary-profile tangent route was too strong, but GPT-5.5 identified a shorter measure-local route: a Borel-local signed-measure split from the fixed local-energy identity gives `mu_A <= nu_vis + mu_I`; restricting to a singular support for `mu_A_perp \u27c2 nu_vis` gives `mu_A_perp(E) <= mu_I(E)`. Codex encoded this as `LocalEnergyPositiveBoundaryFluxMeasureSplitSource`, `ActiveSingularRestriction`, theorem `activeSingular_le_residual_of_measureLocalSplit`, and scalar-only guard `ScalarOnlyBoundaryFluxSplitDoesNotControlSingularPart`; Lean compilation passed. Forecast pool tick370 resolved true with mean Brier `0.145`, actual effort `18`, artifact hash `3592f8a3e32d4129132c4ea42cff01ae7cec2576dcdef89695c4f92fef82e5d5`. | positive-conditional-bridge |",
+      "| 2026-05-14 | NS route-1 source local-energy measure split | `ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean`; `analytics/public/forecast_pool/scores/ns_route1_source_local_energy_measure_split_20260514_tick371.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP225-NS-SOURCE-LOCAL-ENERGY-MEASURE-SPLIT-20260514-371` | `signed_measure_positive_variation_source_ladder` | GP-233 lowered the measure-local singular-control bridge one more level. Codex added `LocalEnergySignedMeasurePositiveVariationSource` and constructor `LocalEnergyPositiveBoundaryFluxMeasureSplitSource.ofSignedMeasurePositiveVariation`, so the Borel-local domination field is now sourced from named positive-variation pieces and a fixed signed local-energy identity field, rather than standing alone. Lean compilation passed. Forecast pool tick371 resolved true with mean Brier `0.1845`, actual effort `13`, artifact hash `4a2ca18793d0a65d7f40c7831b959f84f513a060d9fb52daa652fdee0dc13b96`. | positive-source-ladder |",
+      "| 2026-05-14 | GP-225 route selection after public benchmark and strict-compile audit | `analytics/public/leanmill/results/v2022_route_selection_adapter_readiness.json`; `analytics/public/leanmill/results/v2022_route_selection_adapter_readiness.md`; `analytics/public/forecast_pool/scores/gp225_v2022_route_selection_adapter_readiness_meso.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP225-ROUTE-SELECTION-ADAPTER-READINESS-20260514-385` | `patched_public_tacgen_before_union_training` | GP-233 records a control-positive / training-negative result. The historical public benchmark and union plan remain strategically valid as supply and baselines, but v20.22's strict-compile invariant makes stale v19.53 public tacgen rows unusable for blending. The route selector consumed the active v20.23 manifest, public/union benchmark state, and two GP-230 forecasts (`p_success=0.82`, expected effort `19.0m`), then resolved true with actual effort `20m`, mean Brier `0.0324`. It selected a bounded `v2024_patched_public_tacgen_adapter_packet` route: 12-24 source-resolved public tacgen rows, compile-backed strict labels only, new strict rows `>=1`, harmful mismatches `0`, no training, GNN blocked. Decision changes the next GP-225 action from generic union/training or stale public blend to patched executable public-adapter replay first. | positive-control-negative-training |",
+      "| 2026-05-14 | GP-225 cached public tacgen replay market gate | `analytics/public/leanmill/results/v2024_patched_public_tacgen_adapter_packet.json`; `analytics/public/leanmill/results/v2025_patched_public_tacgen_replay_market_gate.json`; `analytics/public/forecast_pool/aggregates/gp225_v2024_patched_public_tacgen_adapter_replay.json`; `analytics/public/forecast_pool/outcomes/gp225_v2024_patched_public_tacgen_adapter_replay.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP225-PATCHED-PUBLIC-TACGEN-PACKET-MARKET-GATE-20260514-386` | `cached_public_tacgen_not_next_spend_target` | GP-233 records a negative spend gate with positive routing value. v20.24 built a clean static replay packet from cached v19.52 public tacgen candidates: `12` rows, `48` rank-1-to-4 candidates, stale v19.53 strict row excluded, no generation, no replay, no training, GNN blocked. GP-230 then priced the actual patched cached replay with two forecasts at aggregate `p_success=0.0524`, expected effort `18.5m`, expected value `-1.0072`, routing `audit_or_explore_only`. v20.25 therefore voided the replay contract by no-run condition and redirected the public/union path to fresh public candidate supply or a non-cached external adapter under the patched strict-implies-compile bridge. Decision changes from \"rerun cached public tacgen\" to \"do not spend on cached v19.52 without a new information source.\" | negative-control-positive-routing |",
+      "| 2026-05-14 | GP-230 prediction-market externalities audit | `scripts/public/analytics_shared/audit_forecast_pool_externalities.py`; `analytics/public/forecast_pool/forecast_pool_externalities_audit_20260514.json`; `analytics/public/forecast_pool/forecast_pool_externalities_review_20260514.md`; `analytics/public/forecast_pool/scores/meta_prediction_market_externalities_review_20260514.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP230-PREDICTION-MARKET-EXTERNALITIES-AUDIT-20260514` | `externality_fields_needed_for_meta_market_learning` | GP-233 records a meta-process finding. The forecast pool already supports Brier/log-score/effort/routing audits, and the latest scored review resolved true with mean Brier `0.10485`. The new audit script found `134` contracts, `272` forecasts, `124` outcomes, and `246` score rows. It also found the main gap: positive externalities are mostly in GP-233 prose and resolution notes, not structured outcome fields. Decision changes the GP-230 spec direction: add optional counterfactual and externality fields, score failure-mode precision separately from Brier, and track negative externalities such as hedging, high-entropy failure modes, unresolved contracts, and forecast drag. | positive-process-mechanization |",
+      "| 2026-05-14 | NS route-1 fixed-cutoff signed identity source | `ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean`; `analytics/public/forecast_pool/scores/ns_route1_fixed_cutoff_signed_identity_source_20260514_tick372.json`; `research_areas/EXPERIMENT_TRACK_RECORD.md#E-GP225-NS-FIXED-CUTOFF-SIGNED-IDENTITY-SOURCE-20260514-372` | `fixed_signed_event_pieces_source_ladder` | GP-233 records a positive source-ladder reduction. The local-energy branch now names signed event-local pieces `alphaA`, `alphaT`, `alphaQP`, `alphaC`, `alphaI` and a per-event identity before positive variation. Codex added `FixedCutoffLocalEnergySignedMeasureIdentitySource` plus a constructor into `LocalEnergySignedMeasurePositiveVariationSource`; Lean compilation passed with no new sorry/admit. Forecast pool tick372 resolved true with mean Brier `0.1274`, actual effort `16`, artifact hash `3edb932edb3c3aa28596c214fbc96942168f221689f2b8140acc7a33b51fc866`. Decision changes the next NS action: source the signed identity from the fixed-cutoff local-energy inequality and define the residual measure independently, rather than reworking the singular-support theorem. | positive-source-ladder |"
+    ],
+    "outcome_resolution_note_term_counts": {
+      "calibration": 1,
+      "changed": 3,
+      "effort": 2,
+      "externality": 1,
+      "forecast pool": 0,
+      "forecast-pool": 0,
+      "overestimated": 0,
+      "preconditioner": 2,
+      "routing": 2,
+      "trap": 1,
+      "underpriced": 0,
+      "warning": 1
+    },
+    "structured_coverage": {
+      "contracts_with_counterfactual_fields": 1,
+      "forecasts_with_action_change_recommendation": 2,
+      "forecasts_with_specific_failure_mode_ids": 2,
+      "outcomes_with_decision_changed_bool": 1,
+      "outcomes_with_failure_mode_preconditioner_used": 1,
+      "outcomes_with_realized_failure_mode_ids": 1
+    },
+    "structured_samples": {
+      "contracts_with_counterfactual_fields": [
+        "gp230_externality_fields_schema_impl_20260514"
+      ],
+      "outcomes_with_decision_changed_bool": [
+        "gp230_externality_fields_schema_impl_20260514"
+      ],
+      "outcomes_with_failure_mode_preconditioner_used": [
+        "gp230_externality_fields_schema_impl_20260514"
+      ]
+    }
+  },
+  "recommended_fields": {
+    "contract": [
+      "baseline_action",
+      "counterfactual_action",
+      "externality_hypotheses"
+    ],
+    "forecast": [
+      "specific_failure_mode_ids",
+      "action_change_recommendation",
+      "forecast_externality_tags"
+    ],
+    "outcome": [
+      "realized_failure_mode_ids",
+      "failure_mode_preconditioner_used",
+      "decision_changed_bool",
+      "old_next_action",
+      "new_next_action",
+      "externality_tags",
+      "negative_externality_tags",
+      "counterfactual_value_bucket"
+    ]
+  },
+  "risk_and_failure_modes": {
+    "failure_mode_scoreable_forecasts": 255,
+    "failure_mode_top1_text_hit_rate": 0.0078,
+    "forecast_failure_mode_mass_top15": [
+      [
+        "other",
+        15.539999999999994
+      ],
+      [
+        "build_regression",
+        3.08
+      ],
+      [
+        "fresh_strict_success",
+        2.62
+      ],
+      [
+        "generic_candidates_do_not_compile",
+        2.2
+      ],
+      [
+        "success",
+        1.7000000000000002
+      ],
+      [
+        "progress_only_no_strict",
+        1.6899999999999997
+      ],
+      [
+        "wrapper_only",
+        1.1400000000000001
+      ],
+      [
+        "gap_only",
+        0.9550000000000001
+      ],
+      [
+        "closure_conversion_does_not_follow_target_state",
+        0.92
+      ],
+      [
+        "guard_split",
+        0.8999999999999999
+      ],
+      [
+        "identity_source_still_too_prop_like",
+        0.8200000000000001
+      ],
+      [
+        "source_still_conditional",
+        0.8
+      ],
+      [
+        "one_or_both_lanes_clean_replay_rows_below_90",
+        0.76
+      ],
+      [
+        "no_rescue_density_below_0_45",
+        0.74
+      ],
+      [
+        "tautology_risk",
+        0.71
+      ]
+    ],
+    "structured_failure_mode_top1_hit_rate": 0.0,
+    "structured_mean_realized_failure_mode_mass": 0.42,
+    "structured_realized_failure_mode_scoreable_forecasts": 2,
+    "structured_specific_failure_mode_hit_rate": 1.0
+  },
+  "root": "analytics/public/forecast_pool",
+  "routing": {
+    "approx_realized_ev_proxy_by_hint": {
+      "audit_or_explore_only": 0.3073,
+      "conditional_strict_replay_after_v1992_v1993_packets_exist": 0.313,
+      "material_internal_holdout_replay_positive_information_value_calibrated_effort": 0.2835,
+      "material_replay_high_information_low_success": 0.1089,
+      "material_replay_low_confidence_but_policy_informative": 0.1746,
+      "material_replay_positive_ev_after_policy_yield_benchmark": 0.2537,
+      "material_tail_holdout_replay_positive_information_value_low_success": 0.1938,
+      "run_or_continue": 0.4552
+    },
+    "hint_confusion": {
+      "audit_or_explore_only": {
+        "failure": 14,
+        "success": 67,
+        "unresolved": 10
+      },
+      "conditional_strict_replay_after_v1992_v1993_packets_exist": {
+        "success": 1
+      },
+      "material_internal_holdout_replay_positive_information_value_calibrated_effort": {
+        "success": 1
+      },
+      "material_replay_high_information_low_success": {
+        "success": 1
+      },
+      "material_replay_low_confidence_but_policy_informative": {
+        "success": 1
+      },
+      "material_replay_positive_ev_after_policy_yield_benchmark": {
+        "success": 1
+      },
+      "material_tail_holdout_replay_positive_information_value_low_success": {
+        "success": 1
+      },
+      "run_or_continue": {
+        "failure": 4,
+        "success": 33,
+        "unresolved": 2
+      }
+    }
+  },
+  "schema_gaps": [
+    "legacy outcomes lack structured decision_changed_bool / old_next_action / new_next_action",
+    "legacy failure_mode_distribution rows are not scored against realized_failure_mode_ids",
+    "positive externalities historically mostly live in GP-233 prose and resolution notes",
+    "forecaster correlation/effective-n is not computed",
+    "forecast drag and overuse are not part of routing weights",
+    "legacy rows usually lack counterfactual_value_bucket"
+  ]
+}

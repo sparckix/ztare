@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick635-mega-CV-C7-junction-depthn.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick635-mega-CV-C7-junction-depthn.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick635-mega-CV-C7-junction-depthn",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick635-mega-CV-C7-junction-depthn.json",
+    "score": "analytics/public/forecast_pool/scores/tick635-mega-CV-C7-junction-depthn.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick635-mega-CV-C7-junction-depthn",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T12:16:55Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_mega_portfolio",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick635 MEGA (CV\u2194C7 junction, portfolio B1-B4 depth-n in-thread): B3 \u2014 in the De Giorgi level-set energy for {|\u03c9|>k}, div u=0 \u21d2 the drift term integrates to ZERO by parts (exactly the CV/SQG free-drift mechanism), so tick634/M3's 'drift-BMO closure fails' was IMPRECISE: the drift IS controlled for NS too; the SOLE residual obstruction is the vortex-stretching SOURCE \u222b(\u03be\u00b7S\u03be)|\u03c9|(|\u03c9|-k)_+. B1: that source = C7 alignment-surplus \u21d2 CV-closure \u27fa C7 fresh-surplus budget (CV requires, does not bypass, C7). B2: De Giorgi \u03bd\u0394-gain on |\u03c9| = exponent-0 at NS-critical parabolic scaling (tick610 recurrence). B4: C7-budget depth-n = indefinite \u03c9\u00b7S\u00b7\u03be sign-control = critical a-priori atom (route-invariant manifest:180). Net: CV transfers FURTHER than M3 stated (div-free handles drift \u2014 M3 corrected), obstruction localized PURELY to the stretching source = C7 = \u03c9\u00b7S\u00b7\u03c9 atom.",
+  "risk_penalty": 1.0,
+  "success_threshold": "B3 div-free level-set-energy correction of M3 is CORRECT (drift vanishes by div-free; sole residual = stretching source), B1/B2/B4 reductions correct (CV\u27faC7; gain exponent-0=tick610; C7-budget=\u03c9\u00b7S\u00b7\u03c9 atom); honest \u2014 a genuine depth-n correction+sharpening of M3, NOT a closure, NOT inflated; survives ONE codex adversarial-kill",
+  "task_type": "ns_mega_portfolio",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

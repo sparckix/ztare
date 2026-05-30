@@ -1,0 +1,71 @@
+{
+  "contract_id": "gp225_v2089_heldout_hard_negative_replay_meso_gate",
+  "forecast_history_count": 2,
+  "mean_brier": 0.08499999999999999,
+  "mean_log_score": -0.3433837867979531,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "35c708216c21fe0e34467979b8372e4b03700f59642c27481a715e4284de7718",
+    "artifact_path": "analytics/public/leanmill/results/v2089_heldout_hard_negative_replay.json",
+    "compile_status": "replay_passed",
+    "contract_id": "gp225_v2089_heldout_hard_negative_replay_meso_gate",
+    "decision_changed_bool": true,
+    "externality_tags": [
+      "meso_only_forecast",
+      "heldout_negative_label_created",
+      "accidental_positive_detected",
+      "cpu_gate_can_rerun",
+      "no_training"
+    ],
+    "goal_delta": 1,
+    "new_next_action": "v2090_tiny_cpu_model_fit_gate_after_hard_negative_replay",
+    "realized_failure_mode_ids": [
+      "contrast_candidate_accidentally_compiles_or_closes_target_like_positive",
+      "hard_negative_label_created"
+    ],
+    "resolution_note": "v20.89 replay passed and produced one clean failed/non-strict contrast label for current_scale_0036/map_direction with zero harmful mismatches and no leakage/training. One intended hard negative also compiled strict, so the result is useful but shows contrast design must be audited.",
+    "resolved_at": "2026-05-14T20:55:56Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T20:55:56Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Franklin",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": -6.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 24,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:50:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:51:16Z",
+        "resolved_at": "2026-05-14T20:55:56Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Noether",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": -6.0,
+      "domain": "gp225_pre_gnn",
+      "expected_cost_agent_minutes": 24,
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T20:50:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T20:51:16Z",
+        "resolved_at": "2026-05-14T20:55:56Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,715 @@
+{
+  "generated_date": "2026-05-06",
+  "repository": "",
+  "task": "mathlib translation lane for NS Track B phase/quartic/defect handoff",
+  "inputs_used": [
+    "analytics/queries/ns_mathlib_reconnaissance_summary.json",
+    "analytics/queries/mathlib_lemma_index.json",
+    "scripts/lean/mathlib_lemma_scout.py",
+    "ztare_proofs/.lake/packages/mathlib/Mathlib/"
+  ],
+  "constraints": {
+    "paid_external_calls": false,
+    "lean_source_edits": false,
+    "do_not_invent_theorem_claims": true
+  },
+  "authorization_note": "Repo write authorization for role.engineer denied analytics/queries outputs; this artifact is the narrow direct-principal requested output, not a role-scope change.",
+  "summary_counts_from_recon": {
+    "LOWER_SEMICONTINUOUS": 188,
+    "LIMINF": 268,
+    "FATOU": 0,
+    "INTEGRAL": 1374,
+    "NORM_LE": 1677,
+    "HOLDER": 198,
+    "SOBOLEV": 1013,
+    "POSITIVE": 2516
+  },
+  "negative_findings": [
+    {
+      "gap": "Direct Young-measure object",
+      "finding": "No YoungMeasure or youngMeasure primitive found by targeted source search; Young hits were Young inequality and unrelated combinatorial Young diagrams.",
+      "thin_zone_warning": "Use ProbabilityMeasure/Portmanteau as a surrogate only after explicitly building the defect measure state space, barycenter or atom map, and concentration payload."
+    },
+    {
+      "gap": "FATOU scout tag",
+      "finding": "The heuristic scout returned zero FATOU-tagged declarations, but Mathlib source comments label lintegral_liminf_le' and lintegral_liminf_le as Fatou lemma variants.",
+      "thin_zone_warning": "Do not rely on the FATOU shape tag; query LIMINF plus integral names instead."
+    }
+  ],
+  "entries": [
+    {
+      "id": "lsc_liminf_core",
+      "primitive_family": "Lower-semicontinuity as liminf",
+      "exact_lemma_names": [
+        {
+          "name": "lowerSemicontinuous_iff_le_liminf",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lowerSemicontinuousOn_iff_le_liminf",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lowerSemicontinuousAt_iff_le_liminf",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lowerSemicontinuousWithinAt_iff_le_liminf",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "LowerSemicontinuous.le_liminf",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "source alias"
+        }
+      ],
+      "likely_gap_covered": "Scalarizes fixed-topology lower-semicontinuity into the target <= liminf price shape used by Track B profile/defect adapters.",
+      "thin_zone_warning": "Requires the topology and observable to be fixed before payoff. It supplies no PDE convergence or profile construction.",
+      "confidence": "high"
+    },
+    {
+      "id": "lsc_closed_epigraph",
+      "primitive_family": "Lower-semicontinuity via epigraph and level sets",
+      "exact_lemma_names": [
+        {
+          "name": "lowerSemicontinuous_iff_isClosed_epigraph",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lowerSemicontinuousOn_iff_isClosed_epigraph",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lowerSemicontinuous_iff_isClosed_preimage",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lowerSemicontinuous_iff_isOpen_preimage",
+          "file": "Topology/Semicontinuity/Basic.lean",
+          "source": "mathlib_lemma_index"
+        }
+      ],
+      "likely_gap_covered": "Alternative way to encode phase/quartic price lower-semicontinuity when closed epigraph or sublevel-set preservation is easier to prove.",
+      "thin_zone_warning": "Order-topology and closed-domain hypotheses matter. Coordinate reformulations must preserve the exact epigraph, not only scaling.",
+      "confidence": "high"
+    },
+    {
+      "id": "fatou_lintegral_liminf",
+      "primitive_family": "Fatou and nonnegative integral liminf",
+      "exact_lemma_names": [
+        {
+          "name": "MeasureTheory.lintegral_liminf_le'",
+          "file": "MeasureTheory/Integral/Lebesgue/Add.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.lintegral_liminf_le",
+          "file": "MeasureTheory/Integral/Lebesgue/Add.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "lintegral_enorm_le_liminf_of_tendsto",
+          "file": "MeasureTheory/Function/L1Space/Integrable.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "eLpNorm_lim_le_liminf_eLpNorm",
+          "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+          "source": "mathlib_lemma_index"
+        }
+      ],
+      "likely_gap_covered": "Defect-energy and Lp norm lower bounds under pointwise or a.e. convergence, especially nonnegative ENNReal streams.",
+      "thin_zone_warning": "Signed Bochner integral variants need nonnegativity conversion, integrability, and measurability. The scout FATOU tag is empty.",
+      "confidence": "high"
+    },
+    {
+      "id": "filter_liminf_calculus",
+      "primitive_family": "Filter-level liminf calculus",
+      "exact_lemma_names": [
+        {
+          "name": "Filter.le_liminf_iff'",
+          "file": "Order/LiminfLimsup.lean",
+          "source": "mathlib_lemma_index and existing Lean use"
+        },
+        {
+          "name": "Filter.liminf_le_iff'",
+          "file": "Order/LiminfLimsup.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "eventually_lt_of_lt_liminf",
+          "file": "Order/LiminfLimsup.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "eventually_add_neg_lt_of_le_liminf",
+          "file": "Order/LiminfLimsup.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "exists_lt_of_le_liminf",
+          "file": "Order/LiminfLimsup.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "liminf_le_limsup_of_frequently_le",
+          "file": "Order/LiminfLimsup.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "le_liminf_add",
+          "file": "Topology/Instances/EReal/Lemmas.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "le_liminf_mul",
+          "file": "Topology/Instances/EReal/Lemmas.lean",
+          "source": "mathlib_lemma_index"
+        }
+      ],
+      "likely_gap_covered": "Turns liminf lower bounds into eventual epsilon inequalities and transports lower bounds through action <= price streams.",
+      "thin_zone_warning": "Boundedness/coboundedness side conditions are load-bearing for real-valued filters; EReal multiplication also needs nonnegativity.",
+      "confidence": "high"
+    },
+    {
+      "id": "portmanteau_relaxation",
+      "primitive_family": "Portmanteau and weak probability-measure relaxation",
+      "exact_lemma_names": [
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.tendsto_iff_forall_integral_tendsto",
+          "file": "MeasureTheory/Measure/ProbabilityMeasure.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.tendsto_iff_forall_lintegral_tendsto",
+          "file": "MeasureTheory/Measure/ProbabilityMeasure.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.limsup_measure_closed_le_of_tendsto",
+          "file": "MeasureTheory/Measure/Portmanteau.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.le_liminf_measure_open_of_tendsto",
+          "file": "MeasureTheory/Measure/Portmanteau.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.tendsto_measure_of_null_frontier_of_tendsto",
+          "file": "MeasureTheory/Measure/Portmanteau.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "integral_le_liminf_integral_of_forall_isOpen_measure_le_liminf_measure",
+          "file": "MeasureTheory/Measure/Portmanteau.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lintegral_le_liminf_lintegral_of_forall_isOpen_measure_le_liminf_measure",
+          "file": "MeasureTheory/Measure/Portmanteau.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "tendsto_integral_of_forall_integral_le_liminf_integral",
+          "file": "MeasureTheory/Integral/BoundedContinuousFunction.lean",
+          "source": "mathlib_lemma_index"
+        }
+      ],
+      "likely_gap_covered": "Closest Mathlib lane for Young-measure-like relaxation: encode defect distributions as probability measures and use weak-convergence test integrals plus open/closed set liminf inequalities.",
+      "thin_zone_warning": "Not a direct Young-measure theorem. The PDE side still must define the defect measure, barycenter/atom map, state topology, and tightness.",
+      "confidence": "medium_high"
+    },
+    {
+      "id": "levy_prokhorov_tightness",
+      "primitive_family": "Levy-Prokhorov and tightness route",
+      "exact_lemma_names": [
+        {
+          "name": "BoundedContinuousFunction.integral_le_of_levyProkhorovEDist_lt",
+          "file": "MeasureTheory/Measure/LevyProkhorovMetric.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.tendsto_of_tight_of_separatesPoints",
+          "file": "MeasureTheory/Measure/LevyConvergence.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.tendsto_of_tendsto_charFun",
+          "file": "MeasureTheory/Measure/LevyConvergence.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.tendsto_iff_tendsto_charFun",
+          "file": "MeasureTheory/Measure/LevyConvergence.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MeasureTheory.ProbabilityMeasure.continuous_map",
+          "file": "MeasureTheory/Measure/ProbabilityMeasure.lean",
+          "source": "targeted source search"
+        }
+      ],
+      "likely_gap_covered": "Possible compactness/convergence path for packaged phase or defect laws, using tight probability-measure families and continuous pushforwards.",
+      "thin_zone_warning": "Tightness and separating test families are not automatic from NS energy bounds. This is packaging infrastructure, not the compactness proof.",
+      "confidence": "medium"
+    },
+    {
+      "id": "vitali_caratheodory_lsc_regularization",
+      "primitive_family": "Vitali-Caratheodory lower-semicontinuous regularization",
+      "exact_lemma_names": [
+        {
+          "name": "exists_le_lowerSemicontinuous_lintegral_ge",
+          "file": "MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "exists_lt_lowerSemicontinuous_lintegral_ge",
+          "file": "MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "exists_lt_lowerSemicontinuous_lintegral_ge_of_aemeasurable",
+          "file": "MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean",
+          "source": "ns_mathlib_reconnaissance_summary"
+        },
+        {
+          "name": "exists_lt_lowerSemicontinuous_integral_lt",
+          "file": "MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "exists_lt_lowerSemicontinuous_integral_gt_nnreal",
+          "file": "MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean",
+          "source": "ns_mathlib_reconnaissance_summary"
+        }
+      ],
+      "likely_gap_covered": "Replaces rough measurable defect densities by lsc majorants/approximants with controlled integrals.",
+      "thin_zone_warning": "Regularization changes the observable unless the bridge proves domination and constant preservation before payoff.",
+      "confidence": "high"
+    },
+    {
+      "id": "convex_lsc_support_envelope",
+      "primitive_family": "Convex lower-semicontinuous support/envelope",
+      "exact_lemma_names": [
+        {
+          "name": "exists_affine_le_of_lt",
+          "file": "Analysis/Convex/Approximation.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "exists_affine_le_of_lt_real",
+          "file": "Analysis/Convex/Approximation.lean",
+          "source": "ns_mathlib_reconnaissance_summary"
+        },
+        {
+          "name": "exists_affine_le_real",
+          "file": "Analysis/Convex/Approximation.lean",
+          "source": "ns_mathlib_reconnaissance_summary"
+        },
+        {
+          "name": "real_sSup_affine_eq",
+          "file": "Analysis/Convex/Approximation.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "real_sSup_of_countable_affine_eq",
+          "file": "Analysis/Convex/Approximation.lean",
+          "source": "ns_mathlib_reconnaissance_summary"
+        }
+      ],
+      "likely_gap_covered": "Affine support-plane and envelope formulation for convex lsc prices, useful near no-arbitrage and quartic pricing splits.",
+      "thin_zone_warning": "Requires actual convexity and closed-domain hypotheses for the exact price functional. It does not prove the quartic coercivity root.",
+      "confidence": "medium_high"
+    },
+    {
+      "id": "integral_nonnegativity",
+      "primitive_family": "Integral nonnegativity, positivity, and zero iff",
+      "exact_lemma_names": [
+        {
+          "name": "integral_nonneg_of_ae",
+          "file": "MeasureTheory/Integral/Bochner/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "integral_nonneg",
+          "file": "MeasureTheory/Integral/Bochner/L1.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "setIntegral_nonneg_ae",
+          "file": "MeasureTheory/Integral/Bochner/Set.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "setIntegral_eq_zero_iff_of_nonneg_ae",
+          "file": "MeasureTheory/Integral/Bochner/Set.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "integral_eq_zero_iff_of_nonneg_ae",
+          "file": "MeasureTheory/Integral/Bochner/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "integral_pos_iff_support_of_nonneg_ae",
+          "file": "MeasureTheory/Integral/Bochner/Basic.lean",
+          "source": "mathlib_lemma_index"
+        }
+      ],
+      "likely_gap_covered": "Discharges nonnegative self-tax/defect ledger integrals and zero-defect consequences.",
+      "thin_zone_warning": "Nonnegativity alone is not evidence of the correct defect. Preserve the declared integrand identity.",
+      "confidence": "high"
+    },
+    {
+      "id": "ae_from_set_integrals",
+      "primitive_family": "Almost-everywhere inequalities from set integrals",
+      "exact_lemma_names": [
+        {
+          "name": "ae_nonneg_of_forall_setIntegral_nonneg",
+          "file": "MeasureTheory/Function/AEEqOfIntegral.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "ae_le_of_forall_setIntegral_le",
+          "file": "MeasureTheory/Function/AEEqOfIntegral.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "integral_mono_ae",
+          "file": "MeasureTheory/Integral/Bochner/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "integral_mono_of_nonneg",
+          "file": "MeasureTheory/Integral/Bochner/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "setIntegral_mono_set",
+          "file": "MeasureTheory/Integral/Bochner/Set.lean",
+          "source": "mathlib_lemma_scout_query"
+        }
+      ],
+      "likely_gap_covered": "Turns finite-measure local set integral tests into a.e. domination and local-to-global defect charging.",
+      "thin_zone_warning": "The family of test sets and finite-measure conditions are part of the theorem, not bureaucracy.",
+      "confidence": "high"
+    },
+    {
+      "id": "holder_young_product_control",
+      "primitive_family": "Holder and Young product/integral controls",
+      "exact_lemma_names": [
+        {
+          "name": "Real.young_inequality_of_nonneg",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "Real.young_inequality",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "NNReal.young_inequality_real",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "ENNReal.young_inequality",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "inner_le_Lp_mul_Lq",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "inner_le_Lp_mul_Lq_of_nonneg",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "Lr_rpow_le_Lp_mul_Lq",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "Lr_le_Lp_mul_Lq",
+          "file": "Analysis/MeanInequalities.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "ENNReal.lintegral_mul_le_Lp_mul_Lq",
+          "file": "MeasureTheory/Integral/MeanInequalities.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "NNReal.lintegral_mul_le_Lp_mul_Lq",
+          "file": "MeasureTheory/Integral/MeanInequalities.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "integral_mul_le_Lp_mul_Lq_of_nonneg",
+          "file": "MeasureTheory/Integral/Bochner/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "integral_mul_norm_le_Lp_mul_Lq",
+          "file": "MeasureTheory/Integral/Bochner/Basic.lean",
+          "source": "targeted source search"
+        }
+      ],
+      "likely_gap_covered": "Prices mixed phase/quartic products by splitting them into Lp/Lq factors and Young inequalities.",
+      "thin_zone_warning": "This is Holder inequality, not Holder regularity. Endpoint and nonnegativity hypotheses must match the chosen variant.",
+      "confidence": "high"
+    },
+    {
+      "id": "lp_norm_limit_controls",
+      "primitive_family": "Lp norm limit, boundedness, and product membership",
+      "exact_lemma_names": [
+        {
+          "name": "eLpNorm_le_of_ae_tendsto",
+          "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "eLpNorm_lim_le_liminf_eLpNorm",
+          "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "eLpNorm_exponent_top_lim_le_liminf_eLpNorm_exponent_top",
+          "file": "MeasureTheory/Function/LpSpace/Complete.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "ae_bdd_liminf_atTop_of_eLpNorm_bdd",
+          "file": "MeasureTheory/Function/LpSeminorm/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "ae_bdd_liminf_atTop_rpow_of_eLpNorm_bdd",
+          "file": "MeasureTheory/Function/LpSeminorm/Basic.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "MemLp.mul",
+          "file": "MeasureTheory/Function/LpSeminorm/CompareExp.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "MemLp.smul",
+          "file": "MeasureTheory/Function/LpSeminorm/CompareExp.lean",
+          "source": "targeted source search"
+        }
+      ],
+      "likely_gap_covered": "Lets limit profiles inherit Lp bounds and product membership from a.e. convergence and uniform seminorm controls.",
+      "thin_zone_warning": "Does not prove compactness or existence of the convergent subsequence. Watch `p = 0`, `p = infinity`, countability, and measurability assumptions.",
+      "confidence": "high"
+    },
+    {
+      "id": "sobolev_derivative_control",
+      "primitive_family": "Sobolev and smooth derivative control",
+      "exact_lemma_names": [
+        {
+          "name": "eLpNorm_le_eLpNorm_fderiv_one",
+          "file": "Analysis/FunctionalSpaces/SobolevInequality.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "eLpNorm_le_eLpNorm_fderiv",
+          "file": "Analysis/FunctionalSpaces/SobolevInequality.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "eLpNorm_le_eLpNorm_fderiv_of_le",
+          "file": "Analysis/FunctionalSpaces/SobolevInequality.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "eLpNorm_le_eLpNorm_fderiv_of_eq",
+          "file": "Analysis/FunctionalSpaces/SobolevInequality.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "lintegral_pow_le_pow_lintegral_fderiv",
+          "file": "Analysis/FunctionalSpaces/SobolevInequality.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "lintegral_pow_le_pow_lintegral_fderiv_aux",
+          "file": "Analysis/FunctionalSpaces/SobolevInequality.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "exist_eLpNorm_sub_le",
+          "file": "Analysis/Normed/Lp/SmoothApprox.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "exist_eLpNorm_sub_le_of_continuous",
+          "file": "Analysis/Normed/Lp/SmoothApprox.lean",
+          "source": "targeted source search"
+        }
+      ],
+      "likely_gap_covered": "Smooth compact-support finite-dimensional Sobolev estimates and smooth approximation used before a profile/defect limit passage.",
+      "thin_zone_warning": "Not a full PDE Sobolev compactness or Rellich/profile-decomposition theorem. Usually requires ContDiff, compact support, finite dimension, or approximation hypotheses.",
+      "confidence": "medium_high"
+    },
+    {
+      "id": "metric_holder_regularity",
+      "primitive_family": "Metric Holder regularity",
+      "exact_lemma_names": [
+        {
+          "name": "HolderWith.dist_le_of_le",
+          "file": "Topology/MetricSpace/Holder.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "HolderWith.edist_le_of_le",
+          "file": "Topology/MetricSpace/Holder.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "HolderOnWith.ediam_image_le",
+          "file": "Topology/MetricSpace/Holder.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "HolderWith.dimH_image_le",
+          "file": "Topology/MetricSpace/HausdorffDimension.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "ContDiffPointwiseHolderAt.continuousAt",
+          "file": "Analysis/Calculus/ContDiffHolder/Pointwise.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "ContDiffPointwiseHolderAt.fderiv",
+          "file": "Analysis/Calculus/ContDiffHolder/Pointwise.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "eHolderNorm_add_le",
+          "file": "Topology/MetricSpace/HolderNorm.lean",
+          "source": "mathlib_lemma_scout_query"
+        },
+        {
+          "name": "HolderWith.nnholderNorm_le",
+          "file": "Topology/MetricSpace/HolderNorm.lean",
+          "source": "mathlib_lemma_scout_query"
+        }
+      ],
+      "likely_gap_covered": "Tracks metric Holder constants if phase alignment is recast as Holder regularity of a map or phase observable.",
+      "thin_zone_warning": "Regularity of maps is separate from Holder inequality. It does not produce the phase-latency Gramian or quartic charge.",
+      "confidence": "medium"
+    },
+    {
+      "id": "norm_operator_matrix_convolution",
+      "primitive_family": "Norm, operator, matrix, and convolution bounds",
+      "exact_lemma_names": [
+        {
+          "name": "norm_inner_le_norm",
+          "file": "Analysis/InnerProductSpace/Defs.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "inner_mul_inner_self_le",
+          "file": "Analysis/InnerProductSpace/Defs.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "abs_real_inner_le_norm",
+          "file": "Analysis/InnerProductSpace/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "norm_sum_le",
+          "file": "Analysis/Normed/Group/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "enorm_sum_le",
+          "file": "Analysis/Normed/Group/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "opNorm_add_le",
+          "file": "Analysis/Normed/Module/Multilinear/Basic.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "norm_fderiv_norm_rpow_le",
+          "file": "Analysis/InnerProductSpace/NormPow.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "l2_opNorm_mulVec",
+          "file": "Analysis/CStarAlgebra/Matrix.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "l2_opNorm_mul",
+          "file": "Analysis/CStarAlgebra/Matrix.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "convolution_integrand_bound_right_of_le_of_subset",
+          "file": "Analysis/Convolution.lean",
+          "source": "mathlib_lemma_index"
+        },
+        {
+          "name": "dist_convolution_le",
+          "file": "Analysis/Convolution.lean",
+          "source": "mathlib_lemma_index"
+        }
+      ],
+      "likely_gap_covered": "Local discharge lane for quartic matrix blocks, Cauchy-Schwarz charges, convolution mollifier bounds, and residual norm aggregation.",
+      "thin_zone_warning": "These are small inequalities. They do not identify the correct projector, pressure term, PDE block, or survival observable.",
+      "confidence": "high"
+    },
+    {
+      "id": "mollifier_smooth_approximation",
+      "primitive_family": "Mollifier and smooth approximation controls",
+      "exact_lemma_names": [
+        {
+          "name": "ContDiffBump.dist_normed_convolution_le",
+          "file": "Analysis/Calculus/BumpFunction/Convolution.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable",
+          "file": "Analysis/Calculus/BumpFunction/Convolution.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "convolution_integrand_bound_right_of_le_of_subset",
+          "file": "Analysis/Convolution.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "exist_eLpNorm_sub_le",
+          "file": "Analysis/Normed/Lp/SmoothApprox.lean",
+          "source": "targeted source search"
+        },
+        {
+          "name": "exist_eLpNorm_sub_le_of_continuous",
+          "file": "Analysis/Normed/Lp/SmoothApprox.lean",
+          "source": "targeted source search"
+        }
+      ],
+      "likely_gap_covered": "Useful if the defect handoff needs mollification, smooth approximation, or convergence of locally integrable profiles before applying LSC.",
+      "thin_zone_warning": "Approximation is not identity. Need an explicit proof that the mollified/smoothed lane preserves the declared Track B price observable and constants.",
+      "confidence": "medium_high"
+    }
+  ]
+}

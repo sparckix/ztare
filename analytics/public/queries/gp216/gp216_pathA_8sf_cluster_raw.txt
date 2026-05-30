@@ -1,0 +1,276 @@
+{
+  "clusters": [
+    {
+      "cluster_id": "core_01",
+      "name": "Problem Reformulation & Reduction",
+      "structural_mechanism": "Replacing a problem with a structurally equivalent or logically connected surrogate to make it more tractable or to transfer properties like computational hardness.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "n_subfields": 8,
+      "n_moves": 112
+    },
+    {
+      "cluster_id": "core_02",
+      "name": "Generalization & Abstraction",
+      "structural_mechanism": "Replacing a class of objects or a specific structure with a more encompassing one that relaxes constraints, thereby unifying disparate cases under a single framework.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "n_subfields": 8,
+      "n_moves": 81
+    },
+    {
+      "cluster_id": "core_03",
+      "name": "Decomposition & Recomposition",
+      "structural_mechanism": "Breaking a complex object or problem into simpler, manageable components, analyzing or solving them independently, and then reassembling the results.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "n_subfields": 8,
+      "n_moves": 89
+    },
+    {
+      "cluster_id": "core_04",
+      "name": "Local-to-Global Assembly",
+      "structural_mechanism": "Constructing a global object or proving a global property by specifying local pieces and rules for how they cohere, often through gluing or integration.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "n_subfields": 8,
+      "n_moves": 64
+    },
+    {
+      "cluster_id": "core_05",
+      "name": "Canonical Form & Invariance",
+      "structural_mechanism": "Identifying stable properties or unique representatives within equivalence classes to simplify analysis by eliminating redundant or superficial complexity.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "n_subfields": 7,
+      "n_moves": 78
+    },
+    {
+      "cluster_id": "core_06",
+      "name": "Cross-Domain Translation",
+      "structural_mechanism": "Establishing a formal correspondence between two distinct conceptual domains, allowing methods and insights from one to be applied to the other.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology"
+      ],
+      "n_subfields": 7,
+      "n_moves": 95
+    },
+    {
+      "cluster_id": "broad_01",
+      "name": "Iterative Refinement",
+      "structural_mechanism": "Progressively improving a solution or approximation through repeated application of a procedure that guarantees monotonic improvement of a key metric.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "geometric_flow_pde",
+        "applied_math",
+        "theory_building"
+      ],
+      "n_subfields": 5,
+      "n_moves": 71
+    },
+    {
+      "cluster_id": "broad_02",
+      "name": "Recursive Decomposition",
+      "structural_mechanism": "Solving a problem by repeatedly breaking it down into smaller, self-similar instances of the same problem until a trivial base case is reached.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "logic_set_theory",
+        "applied_math"
+      ],
+      "n_subfields": 5,
+      "n_moves": 53
+    },
+    {
+      "cluster_id": "broad_03",
+      "name": "Duality & Adversarial Framing",
+      "structural_mechanism": "Reframing a problem by constructing a corresponding 'dual' problem or a strategic game whose solution provides insight into the original.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "graph_theory",
+        "complexity_theory",
+        "additive_combinatorics",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "n_subfields": 5,
+      "n_moves": 48
+    },
+    {
+      "cluster_id": "broad_04",
+      "name": "Layered Approximation & Convergence",
+      "structural_mechanism": "Constructing a solution as the limit of a sequence of simpler, staged approximations whose properties are analyzed at each step.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "geometric_flow_pde",
+        "algebraic_topology"
+      ],
+      "n_subfields": 4,
+      "n_moves": 41
+    },
+    {
+      "cluster_id": "broad_05",
+      "name": "Extremal Method",
+      "structural_mechanism": "Analyzing boundary, worst-case, or optimal examples to deduce properties that must hold for all instances within a class.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "geometric_flow_pde",
+        "theory_building"
+      ],
+      "n_subfields": 4,
+      "n_moves": 45
+    },
+    {
+      "cluster_id": "broad_06",
+      "name": "Probabilistic & Stochastic Methods",
+      "structural_mechanism": "Using randomness, sampling, and expectation as computational tools to solve deterministic problems or to prove existence.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "applied_math"
+      ],
+      "n_subfields": 4,
+      "n_moves": 49
+    },
+    {
+      "cluster_id": "broad_07",
+      "name": "Dimensional & Structural Lifting",
+      "structural_mechanism": "Embedding a problem into a higher-dimensional or more abstract space where constraints are relaxed or new geometric/algebraic tools become available.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "complexity_theory",
+        "algebraic_topology",
+        "theory_building"
+      ],
+      "n_subfields": 4,
+      "n_moves": 42
+    },
+    {
+      "cluster_id": "broad_08",
+      "name": "Constraint Imposition & Propagation",
+      "structural_mechanism": "Establishing a set of required conditions and deriving the necessary consequences, often forcing a unique structure or revealing a contradiction.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "geometric_flow_pde",
+        "logic_set_theory"
+      ],
+      "n_subfields": 4,
+      "n_moves": 55
+    },
+    {
+      "cluster_id": "spec_01",
+      "name": "Characterization by Obstruction",
+      "structural_mechanism": "Defining a class of objects not by its internal properties but by the absence of a finite set of forbidden substructures or configurations.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "graph_theory"
+      ],
+      "n_subfields": 1,
+      "n_moves": 43
+    },
+    {
+      "cluster_id": "spec_02",
+      "name": "Internalization & Self-Reference",
+      "structural_mechanism": "Encoding a system's own structure or meta-properties within the system itself to construct statements about its own limits or behavior.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "logic_set_theory",
+        "complexity_theory"
+      ],
+      "n_subfields": 2,
+      "n_moves": 40
+    },
+    {
+      "cluster_id": "spec_03",
+      "name": "Axiomatization & Foundational Repair",
+      "structural_mechanism": "Establishing or fixing the ground rules of a formal system by explicitly enumerating a minimal set of generative principles to resolve paradoxes and ensure consistency.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "theory_building",
+        "logic_set_theory"
+      ],
+      "n_subfields": 2,
+      "n_moves": 37
+    },
+    {
+      "cluster_id": "spec_04",
+      "name": "Controlled Universe Extension",
+      "structural_mechanism": "Augmenting a logical or algebraic universe with new elements in a way that preserves existing axioms while forcing a specific independent proposition to be true or false.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "logic_set_theory"
+      ],
+      "n_subfields": 1,
+      "n_moves": 29
+    }
+  ],
+  "n_outliers": 82,
+  "n_shared_core": 6,
+  "n_broadly_shared": 8,
+  "n_subfield_specific": 4,
+  "auditor_notes": "The expanded 8-subfield test confirms the stability of a universal vocabulary. A 'shared_core' of 6 operations (Reformulation, Generalization, Decomposition, Local-to-Global Assembly, Canonical Forms, and Cross-Domain Translation) appears in at least 7 of 8 subfields, solidifying the finding from the previous 5-subfield audit. The new subfields did not introduce a new core operation, but rather broadened the reach of existing ones. Operations like Iterative Refinement and Recursive Decomposition, previously candidates for core status, are now clearly classified as 'broadly_shared,' indicating they are powerful computational engines rather than universal principles of argumentation. The existence of a stable, compact core across this wider disciplinary range provides strong evidence for a shared structural logic underlying diverse mathematical inquiry. The hypothesis of a universal vocabulary is supported, with the nuance that this vocabulary consists of a small core, a larger set of widely shared methods, and a periphery of highly specialized techniques."
+}

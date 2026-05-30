@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate.json"
+  },
+  "baseline_action": "Try replay candidate directly from target proof shape.",
+  "budget_agent_minutes": 24.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2052_nonself_charfun_dual_candidate_synthesis_gate",
+  "cost_penalty": 0.012,
+  "counterfactual_action": "Run source-safe synthesis gate before replay.",
+  "created_at": "2026-05-14T17:54:41Z",
+  "created_by": "Codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1579,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_candidate_synthesis_gate",
+    "score": 0.4286,
+    "selected_domain": "gp225_pre_gnn_replay_gate",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4286,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1579,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.4286,
+        "score_rows": 2,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.35,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.0889,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1429,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1163,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may defer replay again"
+    ],
+    "positive": [
+      "prevents target proof line leakage",
+      "separates source hinge from normalization obligation"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.24,
+  "layer": "micro",
+  "objective_resolver": "Artifact analytics/public/leanmill/results/v2052_nonself_charfun_dual_candidate_synthesis_gate.json has status passed, forbidden target-proof copy checks true, candidate_generation_run true, replay_run false, training_now false, gnn_blocked true, and decision separates replay-ready templates from normalization-obligation-only templates.",
+  "question": "Will v20.52 synthesize a source-safe charFunDual candidate gate from v20.51 that avoids copying target proof lines and correctly decides replay-ready vs normalization-obligation-only?",
+  "risk_penalty": 0.05,
+  "success_threshold": "source-safe synthesis gate passes without leakage and without replay",
+  "task_type": "pre_gnn_candidate_synthesis_gate",
+  "value_if_success": 0.48,
+  "void_conditions": "Void if v20.51 source contract is modified before synthesis."
+}

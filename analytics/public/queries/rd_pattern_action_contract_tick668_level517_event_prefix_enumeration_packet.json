@@ -1,0 +1,30 @@
+{
+  "tick_id": "tick668",
+  "level": 517,
+  "contract_id": "tick668_level517_event_prefix_enumeration_packet_source",
+  "selected_pattern_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second",
+    "GP-219 estimate-craft"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018",
+    "no assumed typed packet",
+    "no bare Prop choice",
+    "no endpoint-capacity substitute",
+    "no shell-only enumeration",
+    "no post-payoff selector"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level516 assumes L3ATypedBadCenterEventPrefixCoveragePacket directly",
+    "check": "G-EVENT-PREFIX-ENUMERATION-PACKET plus Lean construction of typed packet from selected-bad-node event-prefix enumeration",
+    "positive_construction": "construct L3ATypedBadCenterEventPrefixCoveragePacket from selectedBadNodeEventPrefixEnumeration"
+  },
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level517_event_prefix_enumeration_packet_receipt.json"
+  ],
+  "nearest_universal_op": "pec_b: convert event-prefix enumeration into structural packet data",
+  "nearest_confuser": "Level516 assumed typed coverage packet",
+  "remaining_live_vector": "derive selectedBadNodeEventPrefixEnumeration from eventToBadNode, finite prefix coverage, and same-tree selected-bad geometry"
+}

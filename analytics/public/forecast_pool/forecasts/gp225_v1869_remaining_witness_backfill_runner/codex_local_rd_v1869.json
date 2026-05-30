@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_local_rd_v1869",
+  "contract_id": "gp225_v1869_remaining_witness_backfill_runner",
+  "contract_question": "Will the v18.69 explicit-manifest adaptation of the v18.01 target-state witness runner backfill clean closure/target witnesses for at least 4 of the 8 v18.68 selected remaining hard-residual rows, with zero true false accepts and no training?",
+  "domain": "gp225_lean_witness_backfill",
+  "expected_cost_agent_minutes": 18.0,
+  "failure_mode_distribution": {
+    "decoy_guard_rejects_gold_like_progress": 0.12,
+    "lean_runtime_or_local_changes_noise": 0.14,
+    "manifest_adaptation_bug": 0.18,
+    "other": 0.2,
+    "selected_rows_lack_required_prefix_context": 0.28,
+    "static_prefilter_reduces_attempts": 0.08
+  },
+  "forecasted_at": "2026-05-13T17:09:59Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.08,
+  "p_success": 0.58,
+  "rationale_short": "Existing v18.01/v18.02 runner got 17 clean labels from 20 current-toolchain rows and v18.68 selected high-prior rows, but these are remaining hard-residual rows not direct overlap rows; prefix/source-body context and explicit manifest adaptation are the main risks.",
+  "read_only_attestation": true
+}

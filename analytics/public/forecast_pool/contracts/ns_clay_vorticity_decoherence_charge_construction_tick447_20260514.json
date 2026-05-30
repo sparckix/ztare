@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_vorticity_decoherence_charge_construction_tick447_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_vorticity_decoherence_charge_construction_tick447_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_vorticity_decoherence_charge_construction_tick447_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_vorticity_decoherence_charge_construction_tick447_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_vorticity_decoherence_charge_construction_tick447_20260514.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_vorticity_decoherence_charge_construction_tick447_20260514",
+  "cost_penalty": 0.1,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T01:54:18Z",
+  "created_by": "claude_rd_extension",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0952,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "lean_pde_primitive_construction",
+    "score": 0.1667,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0952,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0606,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0294,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0435,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 4,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0926,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0926,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "P1H",
+  "information_value": 0.7,
+  "layer": "micro",
+  "objective_resolver": "lake env lean ZtareProofs/ns_silent_flat_defect_observability.lean compiles clean AND ConstantinFeffermanDirectionDecoherenceHypothesis + VorticityDecoherenceChargeReplacement.ofCFDecoherenceHypothesis + r-linear charge theorem are defined AND rg -n 'sorry|admit' on touched lines is empty",
+  "question": "Will Claude RD-extension produce a clean-compiling Lean construction of VorticityDecoherenceChargeReplacement from a ConstantinFeffermanDirectionDecoherenceHypothesis carrier (with finite-root-budget + r-linear charge theorem), appended below PDE-A's L3-endpoint additions inside ns_silent_flat_defect_observability.lean, with no new sorry/admit?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.6",
+  "task_type": "lean_pde_primitive_construction",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

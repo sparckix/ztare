@@ -1,0 +1,164 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T06:53:07Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.57,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2451
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 88.0,
+    "expected_value": -163.65,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.08,
+    "p_needs_new_lemma": 0.37,
+    "p_regression": 0.07,
+    "p_success": 0.57,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_trackb_formal_bridge",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level512_event_to_badnode_selected_index_source/codex_rd.json",
+        "forecasted_at": "2026-05-27T06:43:35Z",
+        "p_success": 0.57,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "selected_prefix_event_still_supplied",
+        "p": 0.5113636363636364
+      },
+      {
+        "mode": "eventToBadNode_refinement_only_prop",
+        "p": 0.2840909090909091
+      },
+      {
+        "mode": "target_node_equality_too_strong",
+        "p": 0.20454545454545453
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level512_event_to_badnode_selected_index_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level512_event_to_badnode_selected_index_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level512_event_to_badnode_selected_index_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level512_event_to_badnode_selected_index_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level512_event_to_badnode_selected_index_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T06:43:24Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-27T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve TRUE iff Lean compiles a Level512 event-to-bad-node selected-index source into Level511, strict receipt/workbench checks pass, active-chain gate audit is high-severity clean, and targeted tests pass.",
+    "question": "Can Level512 source selectedEventDataIndex from a finite event-prefix index bound to BadCenterEventNodeIdentification.eventToBadNode and displayed incidence geometry?",
+    "success_threshold": "An event-to-bad-node selected-index source packages into Level511 using a Fin final-slot event index, targetNode = eventToBadNode at that index, and displayed incidence refinement, without arbitrary selected-index, endpoint-capacity-only, or post-payoff substitutes.",
+    "task_type": "ns_trackb_formal_bridge"
+  },
+  "contract_id": "tick668_level512_event_to_badnode_selected_index_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Use eventToBadNode equality and displayed incidence refinement to constrain the selected index, and name finite prefix appearance as the next residual.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level512_event_to_badnode_selected_index_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_trackb_formal_bridge",
+        "expected_cost_agent_minutes": 88.0,
+        "forecasted_at": "2026-05-27T06:43:35Z",
+        "p_success": 0.57,
+        "rationale_short": "The eventToBadNode map is already in the L3 primitive layer. Lean should package a selected finite event index into Level511; main risk is that the selected prefix event remains a field rather than being derived from appearance/cofinality.",
+        "specific_failure_mode_ids": [
+          "selected_prefix_event_still_supplied",
+          "eventToBadNode_refinement_only_prop",
+          "target_node_equality_too_strong"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T06:53:26Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 10.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T06:53:18Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.57,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2451
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 88.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.57,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "selected_prefix_event_still_supplied",
+        "p": 0.5113636363636364
+      },
+      {
+        "mode": "eventToBadNode_refinement_only_prop",
+        "p": 0.2840909090909091
+      },
+      {
+        "mode": "target_node_equality_too_strong",
+        "p": 0.20454545454545453
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.18490000000000004,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T06:53:25Z"
+  }
+}

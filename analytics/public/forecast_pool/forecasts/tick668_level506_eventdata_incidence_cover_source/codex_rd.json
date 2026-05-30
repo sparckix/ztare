@@ -1,0 +1,40 @@
+{
+  "action_change_recommendation": "Proceed with Level506 eventData-incidence cover source; keep the next residual as the PDE theorem producing cover-event existence from actual same-tree packets, not a millennium-problem claim.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.16,
+  "b_width": 0.2,
+  "contract_id": "tick668_level506_eventdata_incidence_cover_source",
+  "contract_question": "Will Level506 compile a Lean source deriving Level505 targetCover selection from explicit same-tree eventData incidence-cover laws and validate it through a strict gate, PDE workbench, and targeted lake build?",
+  "domain": "ns_trackb",
+  "expected_cost_agent_minutes": 110.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cover_law_too_opaque": 0.28,
+    "lean_implicit_mismatch": 0.28,
+    "other": 0.22,
+    "workbench_or_gate_wiring": 0.22
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T05:32:35Z",
+  "p_buy_yes_max": 0.63,
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.38,
+  "p_regression": 0.16,
+  "p_sell_yes_min": 0.77,
+  "p_success": 0.69,
+  "predicted_brier_hi": 0.26,
+  "predicted_brier_lo": 0.06,
+  "predicted_self_error_ratio": 0.26,
+  "rationale_short": "Level505 isolated targetCover. A stronger eventData-incidence cover source should compile if the selected cover event, horizon law, and incidence law are named directly; the risk is merely renaming the cover relation without paying totality.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "cover_law_too_opaque",
+    "lean_implicit_mismatch",
+    "workbench_or_gate_wiring"
+  ],
+  "spread": -0.14,
+  "tail_downside_worry": 36.0,
+  "tail_upside_surprise": 21.0,
+  "verbalized_confidence": 0.69
+}

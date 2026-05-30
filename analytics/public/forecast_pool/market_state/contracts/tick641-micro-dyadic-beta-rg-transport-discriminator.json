@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick641-micro-dyadic-beta-rg-transport-discriminator.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick641-micro-dyadic-beta-rg-transport-discriminator.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick641-micro-dyadic-beta-rg-transport-discriminator.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick641-micro-dyadic-beta-rg-transport-discriminator.json",
+    "score": "analytics/public/forecast_pool/scores/tick641-micro-dyadic-beta-rg-transport-discriminator.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": "selected_projected_same_family_approximation_binding_source",
+    "created_at": "2026-05-18T19:22:38Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-19T00:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "codex xhigh adversarial kill of ztare_proofs/ZtareProofs/ns_tick640_c3_no_complementary_pair_c7lower_nontransfer.lean + ns_tick641_dyadic_beta_function_identically_zero_marginal.lean; SOUND iff NO load-bearing error in (i) identical lambda-prefactor cancellation => b_{n+1}=b_{n-1}^2/b_n, (ii) roots {1,-2} + distinct-root=>no-log-running, (iii) honest scope (NOT closure/impossibility; residual=stochastic-beta principal-gated)",
+    "question": "CONSUMES surfaced void node selected_projected_same_family_approximation_binding_source (single approximation_family tied to compactness provenance) \u2014 the Katz-Pavlovic dyadic shell model IS that same-family approximation binding of the enstrophy cascade. Does a codex xhigh adversarial kill confirm SOUND: K41-renormalized (a_n=lambda^{-n/3} b_n) inertial fixed-flux balance yields the scale-FREE recursion b_{n+1}=b_{n-1}^2/b_n (all lambda-prefactors cancel identically); logs u_{n+1}=2u_{n-1}-u_n; char x^2+x-2=(x-1)(x+2) roots {1,-2}; distinct roots => NO repeated unit root => NO log-running marginal-relevance lever; only |-2|>1 alternating blow-up-side mode; so the RG marginal-coupling cross-field transport CONFIRMS+STRENGTHENS the route-1 supercritical terminus (NOT a lever); residual_class=new_channel_or_residual_measure_needed (sole un-probed object=stochastic-fluctuation/ensemble beta = NEW object algebra, principal-gated, NOT route-1) \u2014 versus codex finding a load-bearing error (as in tick637)?",
+    "success_threshold": "0.65",
+    "task_type": "ns_cross_field_isomorphism_negative_discriminator"
+  },
+  "contract_id": "tick641-micro-dyadic-beta-rg-transport-discriminator",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "forecast_backfill_or_void_no_score"
+    ],
+    "next_action": "resolved_without_forecasts",
+    "state": "resolved_without_forecasts"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-18T20:31:49Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "resolved_without_forecasts",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

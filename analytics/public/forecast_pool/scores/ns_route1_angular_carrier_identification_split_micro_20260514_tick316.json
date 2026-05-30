@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_angular_carrier_identification_split_micro_20260514_tick316",
+  "mean_brier": 0.053799999999999994,
+  "mean_log_score": -0.26212432204906566,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "1dd71e0b7a11e0b646a601a20fc4d76a73d9ee209bbfc7cca1a7cb8f77e682c5",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "lake env lean pass; lake build pass",
+    "contract_id": "ns_route1_angular_carrier_identification_split_micro_20260514_tick316",
+    "error_type": "none",
+    "goal_delta": 2,
+    "resolution_note": "Added Route1PressureAngularCarrierIdentification, Route1PressureAngularCarrierEstimate.ofCarrierIdentification, and pressureHessianL2_tail_lower_bound_of_carrierIdentification. failure_mode_preconditioner_used=true: Euler/Gibbs forecast rationales flagged the risk of a cosmetic equality rename or Prop-only split too weak to build the constructor; implementation carried the equality explicitly while separating projection, Riesz/angular matching, normalization, and anti-tautology fields. rg sorry/admit returned no matches; lake build passed.",
+    "resolved_at": "2026-05-14T00:19:51Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T00:19:58Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Euler",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "ns_lean_micro",
+      "expected_cost_agent_minutes": 22.0,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:11:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:12:14Z",
+        "resolved_at": "2026-05-14T00:19:51Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Gibbs",
+      "brier": 0.03999999999999998,
+      "cost_error_agent_minutes": -2.0,
+      "domain": "ns_lean_micro",
+      "expected_cost_agent_minutes": 16.0,
+      "log_score": -0.2231435513142097,
+      "p_success": 0.8,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:11:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:12:14Z",
+        "resolved_at": "2026-05-14T00:19:51Z"
+      }
+    }
+  ]
+}

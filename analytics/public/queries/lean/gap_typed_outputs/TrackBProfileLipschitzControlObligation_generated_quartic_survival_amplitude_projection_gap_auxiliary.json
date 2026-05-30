@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-06T13:40:44.426211+00:00",
+  "target": "TrackBProfileLipschitzControlObligation",
+  "field": "generated_quartic_survival_amplitude_projection",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched AUXILIARY evidence in the target/field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

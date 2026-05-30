@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_pressure_cone_tent_operator_norm_source_micro_20260514_tick337",
+  "mean_brier": 0.14485,
+  "mean_log_score": -0.47544108832188703,
+  "outcome": {
+    "actual_cost_agent_minutes": 29.0,
+    "artifact_hash": "80d7d0621e505bf56f084c69b0b54937cf7126fde57051117d10fc80145a9bf4",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_pressure_cone_tent_operator_norm_source_micro_20260514_tick337",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Lowered pressureRieszConeCharge \u2264 tentExcess into fixed-kernel operator-norm cone bound plus CKN/tent stress-mass domination field; target and downstream builds passed.",
+    "resolved_at": "2026-05-14T03:19:43Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:19:43Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 29.0,
+      "agent_id": "hooke_forecast_tick337",
+      "brier": 0.09610000000000003,
+      "cost_error_agent_minutes": 33.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 62.0,
+      "log_score": -0.37106368139083207,
+      "p_success": 0.69,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:16:26Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:16:26Z",
+        "resolved_at": "2026-05-14T03:19:43Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 29.0,
+      "agent_id": "rawls_adversarial_tick337",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": 49.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 78.0,
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:16:26Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:16:37Z",
+        "resolved_at": "2026-05-14T03:19:43Z"
+      }
+    }
+  ]
+}

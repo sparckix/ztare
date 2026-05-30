@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd_tick359",
+  "contract_id": "ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359",
+  "contract_question": "Can we add a Lean-checked positive boundary-flux subadditivity source replacing exact split equality with a PDE-native inequality, while still paying normalized transport by transport plus local/commutator/no-invisible charges?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_surprise": 0.1,
+    "lean_linear_arithmetic_issue": 0.15,
+    "other": 0.2,
+    "source_still_conditional": 0.3,
+    "too_close_to_tick358": 0.25
+  },
+  "forecasted_at": "2026-05-14T12:28:47Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.04,
+  "p_success": 0.74,
+  "rationale_short": "Subadditivity source is scalar and more PDE-native than exact split; main risk is it remains conditional.",
+  "read_only_attestation": true
+}

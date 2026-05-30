@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421.json"
+  },
+  "baseline_action": "Leave NonflatNonInheritedBadCenterForcesFreshFrequencyPacket as an opaque next target.",
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421",
+  "cost_penalty": 2.0,
+  "counterfactual_action": "Expose the lower fresh-packet audit and locks as the exact remaining source target.",
+  "created_at": "2026-05-14T21:56:39Z",
+  "created_by": "codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0571,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "lean_frontier_adapter",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0571,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 3,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0833,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0541,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 4,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0476,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0312,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14T23:59:00-04:00",
+  "information_value": 7.0,
+  "layer": "micro",
+  "objective_resolver": "Lean target file compiles; no sorry/admit introduced; added declarations assemble the nonflat fresh-packet theorem from existing lower L3 interfaces and guard against event-per-bad-node or beta-defined event price overclaim.",
+  "question": "Will tick421 add a compiling Lean surface assembling NonflatNonInheritedBadCenterForcesFreshFrequencyPacket from existing fresh-packet side-condition audit, pressure same-carrier lock, square-budget, and bounded-fanout/no-log-reuse sources while explicitly recording that fresh packet side-condition data remains unproved?",
+  "risk_penalty": 3.0,
+  "success_threshold": "true",
+  "task_type": "lean_frontier_adapter",
+  "value_if_success": 6.0,
+  "void_conditions": "Do not count as success if the patch claims fresh packet existence from badness vocabulary alone, hides the side-condition audit, or defines event price from the target beta-radius sum."
+}

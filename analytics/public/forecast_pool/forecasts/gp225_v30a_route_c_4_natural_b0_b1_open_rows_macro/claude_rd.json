@@ -1,0 +1,23 @@
+{
+  "action_change_recommendation": "If macro hits, strong reason to scale per operator. Run with full DAG fingerprint + leakage audit.",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro",
+  "contract_question": "Will Route C (LLM-mediated proof composition) close \u22653 of 4 B0+B1-open natural rows (D02 triangle inequality, D03 n.choose 2 identity, D04 2*inner \u2264 norm^2+norm^2, E05 Finset sum_add_distrib) under strict v30 contract: no oracle proof lines, replay from scratch, 0 manual edits, machinery-OK per relaxed audit?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "D03_n_choose_2_unfolding_fails": 0.4117647058823529,
+    "D04_inner_product_typeclass_synth_issues": 0.23529411764705885,
+    "leakage_kills_more_than_2_proofs": 0.35294117647058826
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T15:33:08Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.4,
+  "p_regression": 0.05,
+  "p_success": 0.4,
+  "rationale_short": "3-of-4 is the strong-scale gate. D03 Nat.choose 2 unfolding most likely to fail; without it, 3/4 needs the harder rows D04+E05 both to land moat-clean.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

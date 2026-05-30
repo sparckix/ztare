@@ -1,0 +1,44 @@
+{
+  "branch_text": "TICK655 pressure carrier localization: carrier equality pressureRecoveryCarrier(eventIndex Q)=freshRegion(Q), pressure L2/pressure tail, same carrier, event tent, missing hypothesis, harmonic inherited pressure escape, observable and theorem surface unstable.",
+  "generated_at": "2026-05-19T21:23:16.629194+00:00",
+  "gowers_first_score": 6,
+  "lean_first_score": 0,
+  "matched_gowers_first_terms": [
+    "carrier",
+    "missing hypothesis",
+    "observable",
+    "pressure l2",
+    "same carrier",
+    "theorem surface"
+  ],
+  "matched_lean_first_terms": [],
+  "matched_wrapper_risk_terms": [],
+  "output_path": "analytics/public/queries/formalization_sequence/tick655_pressure_carrier_classifier.json",
+  "recommended_next_steps": [
+    "write a 10-30 line informal proof or countermodel before editing formal code",
+    "name observable, carrier, sign, scale, telescope, and failure model",
+    "formalize only the survivor: corrected primitive, route consequence, and no-go guard"
+  ],
+  "verdict": "gowers_first_required",
+  "vocabulary_fingerprint": {
+    "pde_estimate_craft_ops": [
+      "pec_a auxiliary comparison object",
+      "pec_c threshold/channel split",
+      "pec_e sharpness or failure witness",
+      "cand_g observable reformulation"
+    ],
+    "problem_solving_ops": [
+      "ps_06 proof by estimate chaining after the right observable is fixed"
+    ],
+    "theory_building_ops": [
+      "tb_06 tacit pattern formalization after informal surface discovery",
+      "tb_LAK2 proof-analysis under counter-example"
+    ],
+    "universal_research_ops": [
+      "core_03 decomposition and recomposition",
+      "broad_05 extremal/countermodel case analysis",
+      "core_02 generalization only after the survivor is stable"
+    ]
+  },
+  "wrapper_risk_score": 0
+}

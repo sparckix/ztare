@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level515_typed_appearance_coverage_choice_source",
+  "contract_question": "Can Level515 derive coverageChoice from a typed selected-bad-node appearance theorem plus target-node selected-bad membership, then package into Level514?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 80.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_subtype_projection_mismatch": 0.18,
+    "target_membership_specialization_type_mismatch": 0.22,
+    "typed_appearance_theorem_still_assumed": 0.42,
+    "workbench_gate_gap": 0.18
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T07:19:40Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.05,
+  "p_success": 0.64,
+  "rationale_short": "Level515 should compile because the typed appearance theorem specializes directly at skeleton.targetNode using targetNode_mem_selectedBadNodes; the mathematical debt moves to proving that typed appearance theorem from the old Prop coverage packet.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

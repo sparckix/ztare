@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": "Acquire a baseline-unsaturating row before running the logistic diagnostic; strict-exceed is structurally infeasible while baseline=1.0.",
+  "agent_id": "Noether",
+  "contract_id": "gp225_v2109_typed_label_cpu_logistic_diagnostic_micro",
+  "contract_question": "On the typed-label heldout eval union (canonical compile-backed strict rows + current_scale_0164 with witness-equality positives + v20.96 hard negatives), does the tiny CPU logistic top1_rate strictly exceed the candidate-rank baseline top1_rate? Resolves true only on strict majority and no harmful smuggling of witness-equality labels into the canonical training table.",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 12.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "logistic_matches_baseline_at_1p0_no_strict_exceed": 0.16,
+    "logistic_overfits_train_underperforms_eval": 0.3,
+    "logistic_strictly_exceeds_baseline": 0.04,
+    "rank_baseline_still_saturates_top1_1p0": 0.42,
+    "schema_or_runtime_error": 0.05,
+    "witness_equality_smuggled_into_strict_training_table_anti_pattern": 0.03
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T22:50:53Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.55,
+  "p_success": 0.04,
+  "rationale_short": "Baseline saturates at top1=1.0 on all three eval rows under natural merge; >1.0 is structurally impossible. v2090 logistic regressed to 0.5; expanding eval is unlikely to flip the inequality.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

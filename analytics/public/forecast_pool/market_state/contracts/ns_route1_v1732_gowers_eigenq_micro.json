@@ -1,0 +1,159 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T18:32:08Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 6.0,
+    "expected_value": 1.9639999999999997,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.12,
+    "p_needs_new_lemma": 0.7,
+    "p_regression": 0.08,
+    "p_success": 0.84,
+    "participants": [
+      {
+        "agent_id": "codex_rd_ns_route1_gowers_prompt",
+        "domain": "ns_live_scalar_hinge",
+        "p_success": 0.84,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "prompt_still_too_defensive",
+        "p": 0.35
+      },
+      {
+        "mode": "too_little_pde_context",
+        "p": 0.3
+      },
+      {
+        "mode": "external_model_returns_philosophy",
+        "p": 0.25
+      },
+      {
+        "mode": "artifact_not_grounded",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_v1732_gowers_eigenq_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_v1732_gowers_eigenq_micro.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_v1732_gowers_eigenq_micro.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_v1732_gowers_eigenq_micro.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_v1732_gowers_eigenq_micro.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 8.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T18:31:48Z",
+    "created_by": "codex:RD",
+    "horizon": "1h",
+    "layer": "micro",
+    "objective_resolver": "Resolve success if the rewritten eigenquestion exists, avoids direct strict-source-budget restatement as the main ask, asks for a replacement object or obstruction, and is grounded in v17.30/v17.31 evidence.",
+    "question": "Will a Gowers-style rewrite of the GPT-5.5 NS route-1 eigenquestion make the next external prover query materially more actionable by naming the known construction, the inefficient oracle, and the desired replacement object or obstruction?",
+    "success_threshold": "0.70",
+    "task_type": "prompt_refinement"
+  },
+  "contract_id": "ns_route1_v1732_gowers_eigenq_micro",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_ns_route1_gowers_prompt",
+        "raw_agent_ids": [
+          "codex_rd_ns_route1_gowers_prompt"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_ns_route1_gowers_prompt"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_ns_route1_gowers_prompt",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_v1732_gowers_eigenq_micro/codex_rd_ns_route1_gowers_prompt.json",
+        "canonical_agent_id": null,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes": 6.0,
+        "forecasted_at": "2026-05-13T18:32:00Z",
+        "p_success": 0.84,
+        "rationale_short": "Gowers framing directly matches the needed move: ask for replacement of an inefficient oracle inside a known construction, not a meta-verdict on apparatus.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T18:32:25Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.84,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 1.6344
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 6.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.84,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "prompt_still_too_defensive",
+        "p": 0.35
+      },
+      {
+        "mode": "too_little_pde_context",
+        "p": 0.3
+      },
+      {
+        "mode": "external_model_returns_philosophy",
+        "p": 0.25
+      },
+      {
+        "mode": "artifact_not_grounded",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.02560000000000001,
+    "score_rows": 1,
+    "scored_at": "2026-05-13T18:32:28Z"
+  }
+}

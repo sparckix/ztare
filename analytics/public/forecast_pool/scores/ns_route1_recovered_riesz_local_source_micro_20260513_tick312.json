@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_recovered_riesz_local_source_micro_20260513_tick312",
+  "mean_brier": 0.20725,
+  "mean_log_score": -0.6073483838444558,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "e9a7383d2adb11dcbc7b46e8a05bac37b7d3d5c56ec7c6f6d1b5793b1804a3c9",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "pass",
+    "contract_id": "ns_route1_recovered_riesz_local_source_micro_20260513_tick312",
+    "error_type": "none",
+    "goal_delta": 1,
+    "resolution_note": "Added FreshFrequencyRecoveredRieszLocalPressureSource, theorem recoveredRiesz_le_localPressureSource_of_velocityTensorSource, and constructor into FreshFrequencyLocalCZPressureExcessSource; Lean check and lake build passed.",
+    "resolved_at": "2026-05-13T23:37:25Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:37:25Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Hooke",
+      "brier": 0.22089999999999999,
+      "cost_error_agent_minutes": 72.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 90.0,
+      "log_score": -0.6348782724359695,
+      "p_success": 0.53,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "McClintock",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": 24.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 42.0,
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true
+    }
+  ]
+}

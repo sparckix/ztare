@@ -1,0 +1,99 @@
+{
+  "contract_id": "tick668_level511_finite_scale_cofinality_prefix_cover_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Keep targetEventDataIndexCover as a supplied relation.",
+      "counterfactual_action": "Define targetEventDataIndexCover as a primitive-field-guarded selected-index graph and package it into Level510."
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "positive_source_reduction",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "positive_source_ladder",
+        "finite_prefix_cover_graph"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "derive selectedEventDataIndex from finite event-prefix enumeration and displayed bad-center incidence geometry",
+      "old_next_action": "derive arbitrary targetEventDataIndexCover totality",
+      "preconditioner_effect": "The pattern contract forced the cover relation to be defined as a guarded graph instead of a supplied relation.",
+      "preconditioner_source": "analytics/public/queries/rd_pattern_action_contract_tick668_level511_finite_scale_cofinality_prefix_cover.json"
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.17640000000000003,
+  "mean_log_score": -0.5447271754416722,
+  "outcome": {
+    "actual_cost_agent_minutes": 38.0,
+    "artifact_hash": "a52af0e6db455612e410d792fe205ebd5fd5dcc6c64d320e60584b315cc5d1d7",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "pass",
+    "contract_id": "tick668_level511_finite_scale_cofinality_prefix_cover_source",
+    "counterfactual_value_bucket": "positive_source_reduction",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "positive_source_ladder",
+      "finite_prefix_cover_graph"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "derive selectedEventDataIndex from finite event-prefix enumeration and displayed bad-center incidence geometry",
+    "old_next_action": "derive arbitrary targetEventDataIndexCover totality",
+    "ordering_override_no_codex": "pre-resolution forecast was recorded as codex_rd at 2026-05-27T06:31:40Z before validation, but this local continuation did not have an independent live forecaster available",
+    "ordering_override_no_independent_forecaster": "pre-resolution forecast was recorded as codex_rd at 2026-05-27T06:31:40Z before validation, but this local continuation did not have an independent live forecaster available",
+    "preconditioner_effect": "The pattern contract forced the cover relation to be defined as a guarded graph instead of a supplied relation.",
+    "preconditioner_source": "analytics/public/queries/rd_pattern_action_contract_tick668_level511_finite_scale_cofinality_prefix_cover.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Level511 compiled: finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix guard the selected-index graph defining targetEventDataIndexCover; strict gate/workbench and semantic audit passed.",
+    "resolved_at": "2026-05-27T06:39:51Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T06:40:00Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 38.0,
+      "agent_id": "codex_rd",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 46.0,
+      "domain": "ns_trackb_formal_bridge",
+      "expected_cost_agent_minutes": 84.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5447271754416722,
+      "p_buy_yes_max": 0.43,
+      "p_dependency_issue": 0.07,
+      "p_needs_new_lemma": 0.36,
+      "p_regression": 0.07,
+      "p_sell_yes_min": 0.55,
+      "p_success": 0.58,
+      "predicted_brier_hi": 0.31,
+      "predicted_brier_lo": 0.17,
+      "success_bool": true,
+      "tail_downside_worry": 18.0,
+      "tail_upside_surprise": 11.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T06:31:26Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T06:31:40Z",
+        "resolved_at": "2026-05-27T06:39:51Z"
+      }
+    }
+  ]
+}

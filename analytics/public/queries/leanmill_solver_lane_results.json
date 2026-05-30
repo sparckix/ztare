@@ -1,0 +1,34 @@
+{
+  "schema": "leanmill-solver-lane-results-v1",
+  "lane": "solver_lane",
+  "provider": "claude_opus",
+  "generated_at": "2026-05-29T00:04:16.177447+00:00",
+  "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
+  "prover_cmd": "claude_opus",
+  "results": [
+    {
+      "name": "APN_hilbert_1_sorried",
+      "target_name": "P1",
+      "kind": "c_pool_no_template",
+      "outcome": "closed",
+      "exit_code": 0,
+      "proof_text": "trivial",
+      "provider": "claude_opus",
+      "provider_error": "none",
+      "provider_error_detail": null,
+      "provider_wallclock_s": 3.1,
+      "routing": {
+        "chain_walked": [
+          "claude_opus"
+        ],
+        "skipped_unavailable": [],
+        "skipped_hard_failed": []
+      },
+      "matched_negative_control": {
+        "kind": "context_stripped",
+        "instruction": "governance recompiles proof_text under bare `import Mathlib` (gold-bearing context removed); a closure that still compiles is leakage/paraphrase and is REJECTED by L3 (gold_name_verbatim / lean_closure_laundering)."
+      },
+      "stderr_excerpt": null
+    }
+  ]
+}

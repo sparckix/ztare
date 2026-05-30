@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Record gap + name missing commutator-shard / child-charge identity primitive; mirror tick432 structure.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_frequency_leakage_child_charge_receipt_tick433_20260514",
+  "contract_question": "Can the frequency-leakage weighted-stress share in FixedWindowPreSummedStressMassCKNTentCompatibility be routed to childChargeReceipt using only CKN/tent compatibility + share-budget arithmetic (the tick431 pattern), with the touched Lean file compiling and no new axioms?",
+  "domain": "ns_clay_pressure",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:35:47Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.05,
+  "p_success": 0.1,
+  "rationale_short": "childChargeReceipt := acceptableChildCharge is a field on the pressure obligation, structurally disjoint from tent excess \u2014 same architecture as Galilean reserve case from tick432. Handover predicts 'frequency leakage needs child/tent charge or commutator shard' as missing primitive.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:28:33Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 195.0,
+    "expected_value": 0.6226582910721761,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.6,
+    "p_needs_new_lemma": 0.56,
+    "p_regression": 0.07500000000000001,
+    "p_success": 0.1697658291072176,
+    "participants": [
+      {
+        "agent_id": "goodall_readonly_forecaster",
+        "domain": "gp225_macro",
+        "p_success": 0.18,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "parfit_readonly_forecaster",
+        "domain": "gp225_macro",
+        "p_success": 0.16,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "teacher_oracle_quarantine",
+        "p": 0.245
+      },
+      {
+        "mode": "baseline_absorbs_signal",
+        "p": 0.22
+      },
+      {
+        "mode": "auxiliary_not_strict",
+        "p": 0.175
+      },
+      {
+        "mode": "pull_forward_only",
+        "p": 0.16
+      },
+      {
+        "mode": "holdout_diversity_collapse",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_gnn_ready_macro_20260513_v1945.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_gnn_ready_macro_20260513_v1945.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_gnn_ready_macro_20260513_v1945.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_gnn_ready_macro_20260513_v1945.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_gnn_ready_macro_20260513_v1945.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 240.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:27:30Z",
+    "created_by": "codex_rd",
+    "horizon": "next_10_gp225_ticks",
+    "layer": "macro",
+    "objective_resolver": "Resolve true only if an artifact records train_cross_encoder_or_gnn_now=true or equivalent GNN-ready gate with heldout labels and baseline/model-delta evidence; resolve false otherwise at 10 ticks or explicit blocked verdict.",
+    "question": "GP-225 reaches a GNN-training-ready label gate within the next 10 GP-225 ticks",
+    "success_threshold": "GNN-ready gate true within next 10 GP-225 ticks",
+    "task_type": "pre_gnn_label_gate"
+  },
+  "contract_id": "gp225_gnn_ready_macro_20260513_v1945",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:goodall_readonly_forecaster",
+        "raw_agent_ids": [
+          "goodall_readonly_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:parfit_readonly_forecaster",
+        "raw_agent_ids": [
+          "parfit_readonly_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "goodall_readonly_forecaster",
+      "parfit_readonly_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "goodall_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_gnn_ready_macro_20260513_v1945/goodall_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_macro",
+        "expected_cost_agent_minutes": 240.0,
+        "forecasted_at": "2026-05-14T00:28:11Z",
+        "p_success": 0.18,
+        "rationale_short": "Blocked after v19.41 pull-forward-only canary and v19.43 0/14 compiled holdout; GNN-ready needs heldout labels plus baseline/model-delta evidence.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "parfit_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_gnn_ready_macro_20260513_v1945/parfit_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_macro",
+        "expected_cost_agent_minutes": 150.0,
+        "forecasted_at": "2026-05-14T00:28:11Z",
+        "p_success": 0.16,
+        "rationale_short": "v19.42 created clean policy, but v19.43 produced 0/49 compiled candidates and v19.44 keeps train_cross_encoder_or_gnn_now=false.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.6226582910721761,
+      "forecast_spread": 0.02,
+      "p_success": 0.1697658291072176,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.1609
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 195.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.1697658291072176,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "teacher_oracle_quarantine",
+        "p": 0.245
+      },
+      {
+        "mode": "baseline_absorbs_signal",
+        "p": 0.22
+      },
+      {
+        "mode": "auxiliary_not_strict",
+        "p": 0.175
+      },
+      {
+        "mode": "pull_forward_only",
+        "p": 0.16
+      },
+      {
+        "mode": "holdout_diversity_collapse",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

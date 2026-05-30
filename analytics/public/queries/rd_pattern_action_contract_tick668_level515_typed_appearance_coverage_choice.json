@@ -1,0 +1,29 @@
+{
+  "tick_id": "tick668",
+  "level": 515,
+  "contract_id": "tick668_level515_typed_appearance_coverage_choice_source",
+  "selected_pattern_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second",
+    "GP-219 estimate-craft"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018",
+    "no bare Prop choice",
+    "no opaque coverageChoice",
+    "no endpoint-capacity substitute",
+    "no post-payoff selector"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level514 assumes coverageChoice directly",
+    "check": "G-TYPED-APPEARANCE-COVERAGE-CHOICE plus Lean specialization of typed selected-bad appearance",
+    "positive_construction": "derive coverageChoice by applying typedSelectedBadNodeAppearance to skeleton.targetNode and target-node membership"
+  },
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level515_typed_appearance_coverage_choice_receipt.json"
+  ],
+  "nearest_universal_op": "pec_b: turn carrier membership plus appearance into a finite witness",
+  "nearest_confuser": "Level514 direct coverageChoice witness",
+  "remaining_live_vector": "replace Prop-valued everySelectedBadNodeAppearsInSomePrefix with typedSelectedBadNodeAppearance in the coverage packet"
+}

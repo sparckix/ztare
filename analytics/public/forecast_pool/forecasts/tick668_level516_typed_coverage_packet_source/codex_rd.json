@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level516_typed_coverage_packet_source",
+  "contract_question": "Can Level516 package a strengthened typed coverage packet into the Level515 typed appearance source without relying on a standalone appearance theorem?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 80.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_field_forwarding_mismatch": 0.22,
+    "typed_packet_still_wrapper_not_proved": 0.4,
+    "upstream_packet_confusion": 0.2,
+    "workbench_gate_gap": 0.18
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T07:27:53Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.05,
+  "p_success": 0.66,
+  "rationale_short": "A local strengthened packet should compile by forwarding old coverage fields and exposing typedSelectedBadNodeAppearance as packet data; the mathematical debt moves to proving that packet from event-prefix enumeration.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

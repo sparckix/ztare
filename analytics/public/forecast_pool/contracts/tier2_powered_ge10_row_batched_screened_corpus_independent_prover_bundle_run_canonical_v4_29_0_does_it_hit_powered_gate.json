@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tier2_powered_ge10_row_batched_screened_corpus_independent_prover_bundle_run_canonical_v4_29_0_does_it_hit_powered_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/tier2_powered_ge10_row_batched_screened_corpus_independent_prover_bundle_run_canonical_v4_29_0_does_it_hit_powered_gate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tier2_powered_ge10_row_batched_screened_corpus_independent_prover_bundle_run_canonical_v4_29_0_does_it_hit_powered_gate",
+    "outcome": "analytics/public/forecast_pool/outcomes/tier2_powered_ge10_row_batched_screened_corpus_independent_prover_bundle_run_canonical_v4_29_0_does_it_hit_powered_gate.json",
+    "score": "analytics/public/forecast_pool/scores/tier2_powered_ge10_row_batched_screened_corpus_independent_prover_bundle_run_canonical_v4_29_0_does_it_hit_powered_gate.json"
+  },
+  "baseline_action": "n=3 pilot only (powered verdict OPEN)",
+  "budget_agent_minutes": 120.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tier2_powered_ge10_row_batched_screened_corpus_independent_prover_bundle_run_canonical_v4_29_0_does_it_hit_powered_gate",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "claim Tier-2 sourceable but never powered-verify",
+  "created_at": "2026-05-17T03:04:23Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0606,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "tier2_mined_corpus_run",
+    "score": 0.0606,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0606,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0606,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.037,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.037,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0312,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.025,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.025,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0204,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0204,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-18",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "bundle_run result.txt classified per gp233 rules (hand-classify T2B ids; gp233 [A-Z]+d+ regex artifact); CE v33 advisory-only; owner-scoped",
+  "question": "POWERED Tier-2: a >=10-row corpus from the batched pin-stable screener (300-candidate local v4.30<->pinned-v4.29.0 delta mine) -> independent prover (closer-name stripped) -> bundle_run through canonical pinned v4.29.0: does it hit the Tier-2 gate (>=2 clean non-control closures OR >=5 exact-gaps/falsifiers, 0 false-ratify, 0 wrong-kind) AT N>=10 (powered, not the resolved-NO n=3 pilot)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "tier2_mined_corpus_run",
+  "value_if_success": 0.8,
+  "void_conditions": "screener cannot reach >=10 pin-stable from 300 sample (yield << 7%); pinned env broken"
+}

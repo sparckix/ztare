@@ -1,0 +1,40 @@
+{
+  "actual_cost_agent_minutes": 42.0,
+  "artifact_hash": "c1f63b9e6b2e743891cf341a7fc15c027a0759ac4b593f888e34705474a670b6",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/route1_fixed_cutoff_annular_persistence_proof_attempt_20260514.md",
+  "changed_by_forecast_ids": [
+    "rd_codex",
+    "codex_forecaster"
+  ],
+  "compile_status": "lean_pass",
+  "contract_id": "ns_route1_fixed_cutoff_annular_persistence_20260514_tick408",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "gp-233:positive:n1-proof-surface",
+    "gowers-first-dag",
+    "sidecar-reuse"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "sup-tail-needs-trace-or-inherited-charge",
+    "n2-no-double-counting-still-source",
+    "branch-dominance-open"
+  ],
+  "new_next_action": "prove averaged persistence directly or prove pointwise backward-Duhamel/Gronwall trace; then prove concrete N2 aggregate schedule budget and branch dominance",
+  "old_next_action": "treat FixedCutoffAnnularPacketEnergyPersistenceSource as a single opaque field",
+  "preconditioner_effect": "Separated averaged tail square from pointwise/sup trace, lowered N2 away from a compressed schedule budget field, and wired persistence charges directly into same-carrier schedule control.",
+  "preconditioner_source": "GP-230 forecasts, reused N1/N2 sidecars, PATTERN-025 dependency DAG",
+  "realized_failure_mode_ids": [
+    "trace_or_sup_tail_square_not_paid",
+    "persistence_trace_too_broad",
+    "same_packet_identity_missing"
+  ],
+  "resolution_note": "Saved math-first N1 persistence proof packet. Split Lean surface into averaged packet persistence and pointwise/sup trace persistence, added PointwiseTailSquarePersistenceGap, lowered N2 to a concrete aggregate budget source, and added a direct persistence-to-same-carrier schedule control projection. Lean route1 adapter compiles; no sorry/admit; upstream branch dominance remains open.",
+  "resolved_at": "2026-05-14T19:34:50Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

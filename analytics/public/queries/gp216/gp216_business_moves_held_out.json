@@ -1,0 +1,925 @@
+{
+  "n_moves": 115,
+  "moves": [
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Invert Success Premise",
+      "signature": "Reframe the domain's celebrated outcome (success) as the hidden cause of a catastrophic vulnerability.",
+      "anchor": "successful companies fail"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Performance Gap Mapping",
+      "signature": "Plot two trajectories on the same axis to reveal the moment an inferior entrant crosses the incumbent's line.",
+      "anchor": "improve faster, eventually overtaking"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Stakeholder Capture Diagnosis",
+      "signature": "Identify how loyalty to the current power-holder blinds the actor to signals from outside that constituency.",
+      "anchor": "incumbents listen to current customers"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Resource Allocation Trap",
+      "signature": "Show how rational internal investment decisions systematically starve the threat that will later prove fatal.",
+      "anchor": "invest in sustaining innovation"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Dual Entry Vector Split",
+      "signature": "Distinguish two structurally different attack routes\u2014low-end displacement and entirely new-market creation\u2014to prevent conflation.",
+      "anchor": "low-end and new-market disruption"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Cross-Domain Pattern Lock",
+      "signature": "Repeat the same structural mechanism across unrelated industries to isolate the mechanism from any single context.",
+      "anchor": "disk drives, steel mills, retailing"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Mechanism Extraction",
+      "signature": "Strip away domain-specific detail to name the underlying causal engine that operates across all observed cases.",
+      "anchor": "identify structural mechanism"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Asymmetric Improvement Rate",
+      "signature": "Establish that the challenger's rate of change exceeds the incumbent's, making current inferiority a temporary and misleading signal.",
+      "anchor": "worse performance than incumbents but improve faster"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Rational-Action Paradox",
+      "signature": "Demonstrate that the losing actor's choices were locally optimal yet globally self-defeating, removing moral blame and exposing structural inevitability.",
+      "anchor": "miss low-end and new-market disruption"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "sonnet",
+      "name": "Framework Crystallization",
+      "signature": "Consolidate the recurring pattern into a named, portable model that can be applied prospectively rather than only retrospectively.",
+      "anchor": "Generalized into Innovator's Dilemma framework"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Profitability Source Reframe",
+      "signature": "Relocates the explanatory target from internal attributes to external structural conditions.",
+      "anchor": "Industry profitability determined by five forces"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Force Enumeration",
+      "signature": "Partitions a complex phenomenon into a fixed, exhaustive set of discrete causal agents.",
+      "anchor": "rivalry among competitors, threat of new entrants, threat of substitutes, bargaining power of suppli"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Structural Decomposition",
+      "signature": "Breaks a unified domain into constituent components whose individual characterization enables aggregate prediction.",
+      "anchor": "decompose industry into structural components"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Force Characterization",
+      "signature": "Assigns descriptive properties to each enumerated agent to establish its intensity and direction.",
+      "anchor": "characterize each force"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Configuration Reading",
+      "signature": "Treats the combined state of all components as a pattern whose gestalt predicts an outcome.",
+      "anchor": "predict profitability from force configuration"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Outcome Derivation",
+      "signature": "Derives a measurable result as a downstream consequence of the mapped structural arrangement.",
+      "anchor": "predict profitability from force configuration"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Response Design",
+      "signature": "Translates a structural diagnosis into a prescriptive action oriented toward altering or exploiting the identified conditions.",
+      "anchor": "design competitive strategy"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Boundary Setting",
+      "signature": "Defines the unit of analysis explicitly so that the framework applies to a delimited arena rather than an unbounded field.",
+      "anchor": "structural industry analysis"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Leverage Point Identification",
+      "signature": "Locates the nodes within the structure where intervention yields disproportionate influence over the outcome.",
+      "anchor": "identify strategic response"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Cross-Force Synthesis",
+      "signature": "Integrates findings across all enumerated components into a unified interpretive judgment.",
+      "anchor": "force configuration"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "sonnet",
+      "name": "Methodology Codification",
+      "signature": "Packages the sequence of analytical steps into a repeatable procedure transferable across instances.",
+      "anchor": "Methodology: decompose industry into structural components"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Disciplinary Boundary Crossing",
+      "signature": "Deliberately importing explanatory structures from outside one's home domain to reframe a problem.",
+      "anchor": "mental models from major disciplines (psychology, mathematics, biology, physics, economics)"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Repertoire Capping",
+      "signature": "Setting a finite, manageable ceiling on the number of core tools so the set remains operable rather than infinite.",
+      "anchor": "~80 mental models"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Multi-Lens Triangulation",
+      "signature": "Applying several independent frameworks simultaneously to a single situation and reading where their outputs converge.",
+      "anchor": "Apply multiple models to any decision"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Convergence Amplification",
+      "signature": "Treating the simultaneous agreement of independent lines of reasoning as a signal of disproportionately higher confidence or force.",
+      "anchor": "lollapalooza effect when several models point same direction"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Cross-Domain Pattern Harvest",
+      "signature": "Scanning disparate fields specifically to extract recurring structural regularities that transfer across contexts.",
+      "anchor": "pattern recognition across domains"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Broad Intake Discipline",
+      "signature": "Sustaining a reading and learning practice that spans unrelated fields to continuously replenish the model repertoire.",
+      "anchor": "cross-disciplinary reading"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Procedural Externalization",
+      "signature": "Encoding judgment steps into an explicit sequential list so cognitive load and omission risk are reduced under pressure.",
+      "anchor": "explicit checklist for high-stakes decisions"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Stakes-Gated Rigor",
+      "signature": "Reserving the most thorough analytical protocol for decisions whose consequences exceed a defined threshold.",
+      "anchor": "checklist application to specific decisions"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Negative-Space Targeting",
+      "signature": "Orienting effort toward identifying and eliminating bad outcomes rather than directly pursuing good ones.",
+      "anchor": "inversion (avoid mistakes vs seek wins)"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Outcome Reframing by Inversion",
+      "signature": "Restating a goal as its opposite to surface constraints and failure modes that forward-looking analysis misses.",
+      "anchor": "avoid mistakes vs seek wins"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "sonnet",
+      "name": "Lattice Assembly",
+      "signature": "Organizing acquired models into an interconnected structure so each node reinforces and contextualizes the others.",
+      "anchor": "latticework of mental models"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Cross-Domain Pattern Harvest",
+      "signature": "Protagonist samples diverse real-world instances to extract a pattern that transcends any single context.",
+      "anchor": "case observation across industries"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Abstraction Ladder Climb",
+      "signature": "Protagonist lifts concrete observations to a generalized framework, stripping domain-specific detail to reveal transferable structure.",
+      "anchor": "framework abstraction"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Dual Alignment Reframe",
+      "signature": "Protagonist reframes a tension between two levels or parties as a solvable alignment problem rather than an inherent conflict.",
+      "anchor": "align organizational and individual goals"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Progress Made Visible",
+      "signature": "Protagonist installs a measurement mechanism so that movement toward a goal becomes legible and actionable.",
+      "anchor": "measure progress against objectives"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Means-of-Production Shift",
+      "signature": "Protagonist identifies that the locus of productive power has migrated from external assets to internal, person-held capacity.",
+      "anchor": "workers who own means of production (knowledge)"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Era Boundary Declaration",
+      "signature": "Protagonist draws a historical threshold, asserting that prior rules no longer apply and a new operating logic has taken hold.",
+      "anchor": "post-industrial economy"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Practice-Over-Theory Inversion",
+      "signature": "Protagonist subordinates theoretical elegance to demonstrated applicability, judging ideas by what they enable practitioners to do.",
+      "anchor": "emphasize practice over theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Explicit Prescription Delivery",
+      "signature": "Protagonist converts analytical findings into direct, actionable recommendations rather than leaving implications implicit.",
+      "anchor": "explicit recommendations"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Recurring-Pattern Isolation",
+      "signature": "Protagonist scans multiple cases to identify a structural regularity that persists across surface variation.",
+      "anchor": "identify recurring organizational patterns"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "sonnet",
+      "name": "Framework Portability Claim",
+      "signature": "Protagonist asserts that the abstracted structure applies beyond its origin context, inviting adoption in unrelated domains.",
+      "anchor": "transferable framework"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Normative Frame Rejection",
+      "signature": "The protagonist discards the prevailing ideal-standard model as the operative framework, replacing it with an empirically grounded alternative.",
+      "anchor": "replace normative with descriptive theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Reference Point Insertion",
+      "signature": "The protagonist introduces a relative baseline against which all outcomes are measured, shifting evaluation from absolute to differential.",
+      "anchor": "evaluate gains/losses relative to reference point"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Systematic Deviation Mapping",
+      "signature": "The protagonist catalogs consistent departures from the dominant model as the primary evidential material rather than treating them as noise.",
+      "anchor": "identify systematic deviations from EU"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Controlled Elicitation Design",
+      "signature": "The protagonist constructs minimal, repeatable decision tasks to isolate a single cognitive mechanism from confounding variables.",
+      "anchor": "experimental decision tasks"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Asymmetry Foregrounding",
+      "signature": "The protagonist elevates an observed directional imbalance between two nominally equivalent quantities into a central explanatory principle.",
+      "anchor": "loss-averse"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Nonlinear Rescaling",
+      "signature": "The protagonist replaces a linear input-output mapping with a curved function that captures differential sensitivity across the input range.",
+      "anchor": "weight probabilities nonlinearly"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Bias Quantification",
+      "signature": "The protagonist converts qualitative cognitive tendencies into measurable parameters embedded within a formal model.",
+      "anchor": "quantify cognitive biases"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Empirical Pattern Fitting",
+      "signature": "The protagonist constructs the model's architecture to conform to observed data rather than deriving predictions from first principles.",
+      "anchor": "build descriptive model fitting empirical patterns"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Domain Boundary Redraw",
+      "signature": "The protagonist redefines the scope of the field by distinguishing what the model is meant to describe from what it is meant to prescribe.",
+      "anchor": "replace normative with descriptive theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "sonnet",
+      "name": "Dual-Outcome Framing",
+      "signature": "The protagonist structures the problem space around two opposing outcome categories to expose differential responses that a unified treatment would obscure.",
+      "anchor": "gains/losses relative to reference point"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Reframe Core Concept",
+      "signature": "The protagonist replaces a dominant single definition with a richer, multi-faceted set of definitions that expose hidden dimensions of the subject.",
+      "anchor": "Five Ps: plan, ploy, pattern, position, perspective"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Expose Received Wisdom Gap",
+      "signature": "The protagonist identifies a widely held assumption and demonstrates empirically that practice systematically diverges from it.",
+      "anchor": "plans rarely match implementation"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Invert Causality Arrow",
+      "signature": "The protagonist reverses the assumed direction of cause and effect, showing that outcomes precede and generate the principles attributed to them.",
+      "anchor": "strategy emerges from organizational action over time"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Legitimize the Residual",
+      "signature": "The protagonist elevates what was previously treated as noise, deviation, or failure into a recognized and valued category of the phenomenon.",
+      "anchor": "emergent learning"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Dual-Source Synthesis",
+      "signature": "The protagonist resolves an apparent opposition by arguing that both poles are necessary components of a functional whole rather than rivals.",
+      "anchor": "effective strategy combines deliberate intent and emergent learning"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Longitudinal Evidence Shift",
+      "signature": "The protagonist replaces cross-sectional or theoretical evidence with time-extended observation to reveal processes invisible in snapshots.",
+      "anchor": "longitudinal case studies of strategy formation"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Descriptive Over Prescriptive",
+      "signature": "The protagonist repositions the field's goal from telling practitioners what to do toward accurately describing what actually occurs.",
+      "anchor": "descriptive empirical strategy theory; reject prescriptive planning models"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Pattern Extraction Move",
+      "signature": "The protagonist identifies coherent structure not in stated intentions but in the accumulated trace of repeated actions across time.",
+      "anchor": "pattern-from-action emergence"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Institutional Critique",
+      "signature": "The protagonist targets a dominant professional practice or formal system and argues it systematically produces the failure it claims to prevent.",
+      "anchor": "formal strategic planning often fails"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "sonnet",
+      "name": "Temporal Recontextualization",
+      "signature": "The protagonist reframes a static object as a dynamic process by insisting it can only be understood across an extended time horizon.",
+      "anchor": "strategy is not just deliberate planning; emerges over time"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Isolate Core Anomaly",
+      "signature": "Identify a recurring, paradoxical outcome that defies conventional wisdom.",
+      "anchor": "why successful companies fail"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Assemble Comparative Set",
+      "signature": "Select a diverse set of instances exhibiting the same core anomaly to enable cross-case analysis.",
+      "anchor": "case studies (disk drives, steel mills, retailing)"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Extract Repeating Pattern",
+      "signature": "Discern a common sequence of events or relationships that appears across multiple independent instances.",
+      "anchor": "pattern recognition"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Model Competing Trajectories",
+      "signature": "Define the system by the opposing or intersecting developmental paths of its key components.",
+      "anchor": "worse performance than incumbents but improve faster"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Frame Local Optimum Trap",
+      "signature": "Explain a systemic failure as the result of agents rationally pursuing their immediate, localized incentives.",
+      "anchor": "incumbents listen to current customers"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Pinpoint Reinforcing Loop",
+      "signature": "Identify the primary activity that reinforces the existing system's structure and prevents adaptation.",
+      "anchor": "invest in sustaining innovation"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Delineate Sub-Types",
+      "signature": "Classify a general phenomenon into distinct variants based on their entry mechanism or target.",
+      "anchor": "low-end and new-market disruption"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Articulate Causal Engine",
+      "signature": "Propose the underlying causal process that generates the observed pattern of outcomes.",
+      "anchor": "identify structural mechanism"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "christensen_disruption",
+      "author": "gemini",
+      "name": "Abstract to General Framework",
+      "signature": "Elevate a specific explanation into a portable, abstract model applicable to other domains.",
+      "anchor": "Generalized into Innovator's Dilemma framework"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Adopt Governing Model",
+      "signature": "Select a pre-defined framework to explain the dynamics of a complex system.",
+      "anchor": "Industry profitability determined by five forces"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Decompose Into Factors",
+      "signature": "Break down a complex whole into a discrete set of constituent elements or influences.",
+      "anchor": "decompose industry into structural components"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Enumerate Core Elements",
+      "signature": "List the specific, named components dictated by the chosen framework.",
+      "anchor": "rivalry among competitors, threat of new entrants, threat of substitutes, bargaining power of suppli"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Characterize Each Component",
+      "signature": "Assess the state, intensity, or nature of each identified element in isolation.",
+      "anchor": "characterize each force"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Synthesize System Configuration",
+      "signature": "Combine the individual component assessments to form a holistic understanding of the system's current structure.",
+      "anchor": "force configuration"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Predict System Outcome",
+      "signature": "Use the synthesized understanding of the system's structure to forecast a key result or behavior.",
+      "anchor": "predict profitability"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Design Responsive Action",
+      "signature": "Develop a course of action based on the structural analysis to achieve a desired outcome.",
+      "anchor": "design competitive strategy"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "porter_five_forces",
+      "author": "gemini",
+      "name": "Label The Method",
+      "signature": "Assign a formal label to the overall method of inquiry and action.",
+      "anchor": "Method: structural industry analysis"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Constructing a Cognitive Toolkit",
+      "signature": "Intentionally assemble a personal library of fundamental concepts to be used for problem-solving.",
+      "anchor": "building latticework of ~80 mental models"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Broad Spectrum Sourcing",
+      "signature": "Consume information from a wide variety of fields to build a robust intellectual toolkit.",
+      "anchor": "cross-disciplinary reading"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Multi-Lens Analysis",
+      "signature": "Deliberately examine a single problem through several distinct conceptual viewpoints before forming a conclusion.",
+      "anchor": "Apply multiple models to any decision"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Convergent Signal Amplification",
+      "signature": "Identify and prioritize outcomes indicated by the convergence of multiple, independent analytical frameworks.",
+      "anchor": "lollapalooza effect when several models point same direction"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Cross-Domain Synthesis",
+      "signature": "Actively seek out and connect underlying patterns that recur across disparate areas of knowledge.",
+      "anchor": "pattern recognition across domains"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Triangulating from Principles",
+      "signature": "Validate a conclusion by ensuring it is supported by several independent, fundamental principles.",
+      "anchor": "multi-model triangulation"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Procedural Scaffolding",
+      "signature": "Formalize a sequence of analytical steps into a repeatable protocol for critical situations.",
+      "anchor": "explicit checklist for high-stakes decisions"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "munger_mental_models",
+      "author": "gemini",
+      "name": "Inverting the Problem",
+      "signature": "Reframe a goal from achieving success to systematically avoiding sources of failure.",
+      "anchor": "inversion (avoid mistakes vs seek wins)"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Isolate Recurring Pattern",
+      "signature": "Identify a consistent structure or behavior by observing multiple, seemingly disparate instances.",
+      "anchor": "identify recurring organizational patterns"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Sample Diverse Contexts",
+      "signature": "Collect evidence from a wide range of environments to establish the generality of a phenomenon.",
+      "anchor": "case observation across industries"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Construct Abstract Model",
+      "signature": "Build a simplified representation of a complex system to explain its core dynamics and relationships.",
+      "anchor": "framework abstraction"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Generalize Specific Instances",
+      "signature": "Distill a set of specific observations into a universal model or principle that can be applied elsewhere.",
+      "anchor": "abstract into transferable framework"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Synchronize Component Goals",
+      "signature": "Create a mechanism that aligns the objectives of individual agents with the overarching goals of the system.",
+      "anchor": "align organizational and individual goals"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Define Progress Metrics",
+      "signature": "Establish clear, quantifiable indicators to track movement toward a desired state.",
+      "anchor": "measure progress against objectives"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Identify New Power Source",
+      "signature": "Recognize and articulate a fundamental shift in the primary resource or control mechanism within a system.",
+      "anchor": "workers who own means of production (knowledge)"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Prioritize Practical Application",
+      "signature": "Value actionable implementation and observable results more highly than purely theoretical constructs.",
+      "anchor": "emphasize practice over theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Formulate Actionable Directives",
+      "signature": "Translate a general model or insight into specific, prescriptive actions for others to follow.",
+      "anchor": "explicit recommendations"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "drucker_management_by_objectives",
+      "author": "gemini",
+      "name": "Establish New Field",
+      "signature": "Synthesize disparate observations and principles to create a novel and coherent domain of inquiry.",
+      "anchor": "founded modern management theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Displace The Incumbent",
+      "signature": "Propose a new explanatory framework intended to supersede a dominant, established theory.",
+      "anchor": "Replaced expected utility theory with prospect theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Establish A Relative Datum",
+      "signature": "Define outcomes not in absolute terms but in relation to a contextual, shifting baseline.",
+      "anchor": "evaluate gains/losses relative to a reference point"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Isolate An Asymmetric Response",
+      "signature": "Identify a consistent, unequal reaction to stimuli that are superficially opposites.",
+      "anchor": "are loss-averse"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Model Subjective Distortion",
+      "signature": "Account for the non-linear way actors internally represent objective external values.",
+      "anchor": "weight probabilities nonlinearly"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Construct Choice Architectures",
+      "signature": "Design controlled, hypothetical scenarios to elicit and observe decision-making processes.",
+      "anchor": "experimental decision tasks"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Systematize The Anomalies",
+      "signature": "Treat recurring exceptions to a rule not as noise but as a coherent pattern requiring its own explanation.",
+      "anchor": "identify systematic deviations from EU"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Swap 'Ought' For 'Is'",
+      "signature": "Shift the theoretical goal from prescribing ideal behavior to describing actual behavior.",
+      "anchor": "replace normative with descriptive theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Build From Empirical Fit",
+      "signature": "Develop a model primarily based on its ability to match observed, real-world data patterns.",
+      "anchor": "build descriptive model fitting empirical patterns"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "kahneman_prospect_theory",
+      "author": "gemini",
+      "name": "Measure Predictable Error",
+      "signature": "Assign formal, quantitative measures to consistent, non-rational patterns of judgment.",
+      "anchor": "quantify cognitive biases"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Exposing Framework Brittleness",
+      "signature": "Reveal the practical failures of a prevailing theoretical model.",
+      "anchor": "formal strategic planning often fails"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Codifying Organic Formation",
+      "signature": "Articulate a new model where structure arises from accumulated actions rather than from a pre-ordained design.",
+      "anchor": "emerges from organizational action over time"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Decomposing a Monolith",
+      "signature": "Reframe a singular concept as a multi-faceted system of interacting components.",
+      "anchor": "Five Ps: plan, ploy, pattern, position, perspective"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Synthesizing Intent and Emergence",
+      "signature": "Create a hybrid model that combines directed planning with adaptive, responsive learning.",
+      "anchor": "combines deliberate intent + emergent learning"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Tracking Evolution Over Time",
+      "signature": "Observe a system's behavior across a long duration to identify developmental patterns.",
+      "anchor": "longitudinal case studies"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Highlighting Intent-Outcome Gap",
+      "signature": "Isolate a persistent discrepancy between stated goals and realized results.",
+      "anchor": "'plans' rarely match implementation"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Shifting to Descriptive Theory",
+      "signature": "Change the analytical focus from how a system should work to how it actually does.",
+      "anchor": "descriptive empirical strategy theory"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Rejecting Prescriptive Models",
+      "signature": "Abandon idealized instructions in favor of models that reflect observed reality.",
+      "anchor": "reject prescriptive planning models"
+    },
+    {
+      "subfield": "business_held_out",
+      "arc": "mintzberg_emergent_strategy",
+      "author": "gemini",
+      "name": "Finding Signal in Action",
+      "signature": "Identify a coherent, underlying pattern within a stream of discrete actions.",
+      "anchor": "embrace pattern-from-action emergence"
+    }
+  ]
+}

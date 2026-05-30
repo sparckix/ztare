@@ -1,0 +1,8 @@
+{
+  "ts": 1778023073.006171,
+  "n_closed_examples": 350,
+  "n_obligations": 0,
+  "n_examples_in_prompt": 30,
+  "prompts": [],
+  "next_step": "Spawn Claude subagent per prompt; call verify_proof() on each candidate; record outcome."
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "readonly_euler",
+  "contract_id": "gp225_v1737_synthetic_factory_smoke",
+  "contract_question": "Will v17.37 produce a useful 20-row synthetic residual factory smoke packet with at least 3 domains, at least 5 mutation families, row-schema-complete records, zero wrong accepts, and explicit generator-family holdout metadata, while still not authorizing GNN training?",
+  "domain": "gnn_synthetic_data_factory",
+  "expected_cost_agent_minutes": 24.0,
+  "failure_mode_distribution": {
+    "generator_family_holdout_metadata_omitted_or_underspecified": 0.24,
+    "process_or_artifact_naming_noise": 0.08,
+    "public_source_adapter_or_trace_fixture_friction": 0.18,
+    "row_schema_completeness_gap": 0.32,
+    "scope_creep_into_training_readiness_claim": 0.06,
+    "wrong_accept_or_baseline_filter_bug": 0.12
+  },
+  "forecasted_at": "2026-05-12T18:41:33Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.76,
+  "rationale_short": "v17.36 specifies the smoke gate and schema, so the packet is mostly packaging plus fixture generation. Main risk is satisfying row-schema-complete and generator-family holdout metadata without overclaiming replay/public-baseline readiness.",
+  "read_only_attestation": true
+}

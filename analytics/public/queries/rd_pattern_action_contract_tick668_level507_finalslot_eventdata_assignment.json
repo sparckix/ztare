@@ -1,0 +1,32 @@
+{
+  "contract_id": "rd_pattern_action_contract_tick668_level507_finalslot_eventdata_assignment",
+  "tick_id": "tick668",
+  "level": 507,
+  "selected_patterns": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018",
+    "GP-219:pde_estimate_craft_ops"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level506 coverEventSelector is a supplied Nat-valued map",
+      "check": "G-COVER-EVENT-SELECTOR-FINALSLOT-ASSIGNMENT strict receipt",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level507_finalslot_eventdata_assignment_receipt.json"
+    },
+    {
+      "residual": "endpoint capacity could be mistaken for an actual assignment",
+      "check": "selector is targetSlot.val with targetSlot : Fin target -> Fin finalSlot",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    }
+  ],
+  "carrier_schema_receipts": [
+    {
+      "schema": "cover_event_selector_finalslot_assignment",
+      "receipt": "projects/ns_millennium_hunt/workspace/queries/tick668_level507_finalslot_eventdata_assignment_receipt.json",
+      "expected_gate": "G-COVER-EVENT-SELECTOR-FINALSLOT-ASSIGNMENT"
+    }
+  ],
+  "next_positive_lever": "construct targetSlot and targetSlot_incident from same-tree prefix domination and displayed bad-center event incidence"
+}

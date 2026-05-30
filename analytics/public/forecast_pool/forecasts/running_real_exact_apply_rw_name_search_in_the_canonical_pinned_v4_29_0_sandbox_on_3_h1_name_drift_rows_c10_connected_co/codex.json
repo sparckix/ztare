@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co",
+  "contract_question": "Running REAL exact?/apply?/rw? + name-search in the canonical pinned v4.29.0 sandbox on 3 H1 name-drift rows (C10 connected->constant, C15 Basel, C06 chi4): will >=2/3 close genuine, confirming research-tier is grounding-bound and recoverable by grounded tool-exec (not a dead static-memory index)?",
+  "domain": "grounded_search_validation_h1",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "resolver_unavailable_or_exact_search_drift": 0.34,
+    "row_specific_name_drift_requires_manual_trace": 0.26,
+    "sandbox_or_tooling_drift": 0.24,
+    "stale_or_missing_evidence": 0.16
+  },
+  "forecast_externality_tags": [
+    "grounded_search_validation",
+    "read_only_attestation",
+    "forecast_pool"
+  ],
+  "forecasted_at": "2026-05-16T21:11:49Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.04,
+  "p_success": 0.58,
+  "rationale_short": "The contract is narrowly grounded and the baseline forecast is favorable, but the main risks are resolver/tooling drift and whether all three H1 name-drift rows behave like the same recoverable grounding problem rather than three separate traces.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "resolver_unavailable_or_exact_search_drift",
+    "sandbox_or_tooling_drift",
+    "row_specific_name_drift_requires_manual_trace",
+    "stale_or_missing_evidence"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "proceed_only_if_logged_as_guard",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_n8_fresh_domination_source_bundle_20260514_tick414",
+  "contract_question": "Will the component-estimate source-bundle tick add a compiling Lean surface that names the required sources for TriCarrierFreshDomination without adding a closure claim?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bundle_is_names_not_sources": 0.35,
+    "lean_compile_issue": 0.15,
+    "pressure_beta_sources_still_missing": 0.25,
+    "radius_source_still_false": 0.25
+  },
+  "forecast_externality_tags": [
+    "negative-boundary",
+    "n8-not-closed"
+  ],
+  "forecasted_at": "2026-05-14T20:27:29Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.68,
+  "p_regression": 0.1,
+  "p_success": 0.66,
+  "rationale_short": "This can prevent tautology, but it should be scored as naming missing source theorems, not progress on them.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "bundle_is_names_not_sources",
+    "radius_source_still_false",
+    "pressure_beta_sources_still_missing",
+    "lean_compile_issue"
+  ]
+}

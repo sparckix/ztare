@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T02:14:52Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2432,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "premise_selection_calibration",
+    "score": 0.2432,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1429,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2432,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.2432,
+        "score_rows": 4,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.2222,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.2222,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1081,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1081,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.098,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.098,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.075,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.075,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1-2 ticks",
+  "information_value": 0.0,
+  "layer": "meso",
+  "objective_resolver": "v25 audit: each closure on an OPEN row must pass v24.01-style indirect-simp-set-leakage audit + definitional-triviality check (rfl/tauto closure pattern) AND must not be a direct match to the gold lemma name before counting toward threshold.",
+  "question": "Will type-aware Mathlib-dep-graph-grounded premise suggestion (top-k by type-similarity over the 122867-decl graph) on 2-3 canonical-train OPEN rows surface at least 1 moat-grade closure (NOT direct gold-name match, NOT indirect-simp-set leakage, NOT definitional triviality)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "at-least-one-moat-grade-closure-on-OPEN-rows-after-type-aware-premise-suggestion-and-anti-laundering",
+  "task_type": "premise_selection_calibration",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

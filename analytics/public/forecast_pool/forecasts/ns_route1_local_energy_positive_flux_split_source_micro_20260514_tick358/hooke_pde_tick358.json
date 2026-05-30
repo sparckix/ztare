@@ -1,0 +1,25 @@
+{
+  "agent_id": "hooke_pde_tick358",
+  "contract_id": "ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358",
+  "contract_question": "Can we add a Lean-checked local-energy positive cutoff-flux visible/invisible split source feeding the route-level transport closure, without defining invisible leakage from the target bound or substituting DR/pressure carriers?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructor_harder_to_inhabit": 0.12,
+    "namespace_friction": 0.08,
+    "noInvisibleProfileCharge_not_numeric_receipt": 0.2,
+    "other": 0.04,
+    "positiveBoundaryFluxCharge_not_independent": 0.26,
+    "regression": 0.04,
+    "route1_field_mismatch": 0.16,
+    "sum_lemma_or_nonneg_issue": 0.1
+  },
+  "forecasted_at": "2026-05-14T12:27:09Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.66,
+  "p_regression": 0.08,
+  "p_success": 0.48,
+  "rationale_short": "Meaningful only if positive flux and residual charges are separately named numeric receipts; wrapper-only if residuals are chosen to make final inequality true.",
+  "read_only_attestation": true
+}

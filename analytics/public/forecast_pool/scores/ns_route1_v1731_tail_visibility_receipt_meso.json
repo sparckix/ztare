@@ -1,0 +1,33 @@
+{
+  "contract_id": "ns_route1_v1731_tail_visibility_receipt_meso",
+  "mean_brier": 0.07840000000000001,
+  "mean_log_score": -0.3285040669720361,
+  "outcome": {
+    "actual_cost_agent_minutes": 4.5,
+    "artifact_hash": "728831443bb782c057d5e02262b640ac92bb7bc72abfc7fde76051dbe03c078b",
+    "artifact_path": "analytics/public/leanmill/results/v1731_ns_route1_tail_visibility_receipt_miner.json",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_v1731_tail_visibility_receipt_meso",
+    "error_type": "none",
+    "goal_delta": 0,
+    "resolution_note": "v17.31 saved-artifact miner succeeded: no local non-tautological tail-visibility receipt producer found; selected next move is GPT-5.5 eigenquestion packet.",
+    "resolved_at": "2026-05-13T18:29:23Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T18:29:28Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 4.5,
+      "agent_id": "codex_rd_ns_route1_pricer",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 3.5,
+      "domain": "ns_live_scalar_hinge",
+      "expected_cost_agent_minutes": 8.0,
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true
+    }
+  ]
+}

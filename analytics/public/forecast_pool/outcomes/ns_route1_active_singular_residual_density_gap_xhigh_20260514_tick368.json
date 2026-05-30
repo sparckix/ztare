@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "4918f7018a0058b9a015c614cc4bfd965c8d7036a7cb42d40e8fe89998ca40ee",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/xhigh_active_singular_residual_density_gap_feynman_verdict_20260514.md",
+  "compile_status": "not_applicable",
+  "contract_id": "ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+  "error_type": null,
+  "goal_delta": 0,
+  "resolution_note": "Feynman isolated ActiveSingularTangentProfileExtraction and mass persistence under blowup as the exact missing sublemma below RN density failure; also preserved fifth-channel fallback.",
+  "resolved_at": "2026-05-14T13:16:31Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

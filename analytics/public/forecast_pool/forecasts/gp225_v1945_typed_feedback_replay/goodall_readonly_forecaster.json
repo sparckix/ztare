@@ -1,0 +1,21 @@
+{
+  "agent_id": "goodall_readonly_forecaster",
+  "contract_id": "gp225_v1945_typed_feedback_replay",
+  "contract_question": "v19.45 typed-feedback replay reaches attempted_rows>=8, compiled_candidate_rows>=2, harmful_compiled_mismatch_rows=0, and no teacher/oracle primary inputs",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "contract_blocks_teacher_schema": 0.2,
+    "rewrite_feedback_misses": 0.2,
+    "typed_unification_rejects": 0.25,
+    "unsolved_goals_need_synthesis": 0.35
+  },
+  "forecasted_at": "2026-05-14T00:28:27Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.08,
+  "p_success": 0.33,
+  "rationale_short": "Attempted rows and clean-source clauses are likely; compiled_candidate_rows>=2 is hard after v19.43 had zero compiled candidates.",
+  "read_only_attestation": true
+}

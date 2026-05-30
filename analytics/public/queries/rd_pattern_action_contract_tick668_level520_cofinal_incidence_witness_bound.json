@@ -1,0 +1,31 @@
+{
+  "tick_id": "tick668",
+  "level": 520,
+  "contract_id": "tick668_level520_cofinal_incidence_witness_bound_source",
+  "selected_pattern_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second",
+    "GP-219 estimate-craft"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018",
+    "no unbacked cofinal label",
+    "no bound on a nonchosen witness",
+    "no bare Prop choice beyond cofinal receipt",
+    "no endpoint-capacity substitute",
+    "no shell-only enumeration",
+    "no post-payoff selector"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level519 assumes a typed natural event witness plus same-witness prefix bound",
+    "check": "G-COFINAL-INCIDENCE-WITNESS-BOUND plus Lean construction of typed witness from cofinal selected-tree incidence",
+    "positive_construction": "construct L3AUnboundedNaturalEventWitnessWithPrefixBoundSource from cofinal incidence and chosen-event final-prefix bound"
+  },
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level520_cofinal_incidence_witness_bound_receipt.json"
+  ],
+  "nearest_universal_op": "pec_b: convert cofinal event incidence into typed witness data",
+  "nearest_confuser": "Level519 assumed typed natural event witness directly",
+  "remaining_live_vector": "derive the same chosen-event prefix bound from event ordering and finite-prefix coverage geometry"
+}

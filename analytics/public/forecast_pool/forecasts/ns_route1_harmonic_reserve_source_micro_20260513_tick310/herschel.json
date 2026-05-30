@@ -1,0 +1,23 @@
+{
+  "agent_id": "herschel",
+  "contract_id": "ns_route1_harmonic_reserve_source_micro_20260513_tick310",
+  "contract_question": "Can harmonic pressure reserve be lowered into a source object tied to the existing pressure-reserve decomposition receipt and composed with child/cutoff sources?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_mismatch": 0.12,
+    "gauge_mismatch": 0.1,
+    "other": 0.08,
+    "overcompression_hides_provenance": 0.18,
+    "tautology_defining_source_as_receipt": 0.28,
+    "wrong_direction_or_identification_gap": 0.24
+  },
+  "forecasted_at": "2026-05-13T23:29:54Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.32,
+  "p_regression": 0.06,
+  "p_success": 0.82,
+  "rationale_short": "Lean shape should compile if source is bounded by decomposition reserve before receipt projection and has anti-tautology fields.",
+  "read_only_attestation": true
+}

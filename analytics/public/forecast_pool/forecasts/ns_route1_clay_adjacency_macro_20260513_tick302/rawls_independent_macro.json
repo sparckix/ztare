@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_independent_macro",
+  "contract_id": "ns_route1_clay_adjacency_macro_20260513_tick302",
+  "contract_question": "Will the next ten NS route-1 ticks move from compiled proof-surface compression to a genuinely Clay-adjacent PDE estimate with a recognizable Caccioppoli/pressure-decomposition proof route?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 600.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "branch_reroute_needed": 0.18,
+    "estimate_requires_new_compactness_or_CZ_lemma": 0.38,
+    "other": 0.16,
+    "ten_ticks_only_surface_compression": 0.28
+  },
+  "forecasted_at": "2026-05-13T22:44:54Z",
+  "p_dependency_issue": 0.52,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.1,
+  "p_success": 0.29,
+  "rationale_short": "Macro Clay-adjacency remains hard: current route is better organized, but the decisive step likely requires a new PDE lemma rather than more Lean assembly.",
+  "read_only_attestation": true
+}

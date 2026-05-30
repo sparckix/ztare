@@ -1,0 +1,138 @@
+{
+  "contract_id": "gp225_v2049_corrected_charfun_dual_canary_replay",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Do not replay; keep building static wrappers.",
+      "counterfactual_action": "Run one-row corrected charFunDual canary replay.",
+      "externality_hypotheses": {
+        "negative": [
+          "may still fail from helper source-safety or instance mismatch"
+        ],
+        "positive": [
+          "tests whether corrected public-source contract can produce executable proof progress",
+          "calibrates historic target-shape audit"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Russell",
+        "Mirzakhani"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "negative_replay_evidence",
+        "source_safety_quarantine",
+        "replay_budget_guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "zero_compile"
+      ],
+      "new_next_action": "reduce v20.49 failure; quarantine post-target same-file charFunDual helper for primary source contracts",
+      "old_next_action": "scale corrected charFunDual canary replay or count it as source-contract success",
+      "preconditioner_effect": "Limited replay spend to one row and two candidates.",
+      "preconditioner_source": "analytics/public/forecast_pool/aggregates/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+      "realized_failure_mode_ids": [
+        "helper_source_safety_or_name_missing",
+        "aemeasurable_or_instance_mismatch"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.13,
+  "mean_log_score": -0.4467756224523329,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "16f49d41c456279bd7be6abe49f517aab533debb21e58258e14ad393fe2f00c1",
+    "artifact_path": "analytics/public/leanmill/results/v2049_corrected_charfun_dual_canary_replay.json",
+    "changed_by_forecast_ids": [
+      "Russell",
+      "Mirzakhani"
+    ],
+    "compile_status": "replay_failed_zero_compile",
+    "contract_id": "gp225_v2049_corrected_charfun_dual_canary_replay",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "zero_compile_post_target_source_risk",
+    "externality_tags": [
+      "negative_replay_evidence",
+      "source_safety_quarantine",
+      "replay_budget_guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "zero_compile"
+    ],
+    "new_next_action": "reduce v20.49 failure; quarantine post-target same-file charFunDual helper for primary source contracts",
+    "old_next_action": "scale corrected charFunDual canary replay or count it as source-contract success",
+    "preconditioner_effect": "Limited replay spend to one row and two candidates.",
+    "preconditioner_source": "analytics/public/forecast_pool/aggregates/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "realized_failure_mode_ids": [
+      "helper_source_safety_or_name_missing",
+      "aemeasurable_or_instance_mismatch"
+    ],
+    "resolution_note": "Corrected charFunDual canary replay attempted two candidates; zero compiled, zero strict/auxiliary, zero harmful. Replay output also shows the dual iff support is post-target same-file and therefore not source-safe for primary generation.",
+    "resolved_at": "2026-05-14T17:44:39Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T17:44:42Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Mirzakhani",
+      "brier": 0.11560000000000002,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "gp225_pre_gnn_replay_gate",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.6,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.41551544396166595,
+      "p_success": 0.34,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:42:58Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:43:12Z",
+        "resolved_at": "2026-05-14T17:44:39Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Russell",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn_replay_gate",
+      "expected_cost_agent_minutes": 26.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.61,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4780358009429998,
+      "p_success": 0.38,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:42:58Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:43:12Z",
+        "resolved_at": "2026-05-14T17:44:39Z"
+      }
+    }
+  ]
+}

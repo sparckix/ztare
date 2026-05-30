@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "rung3_compiler_feedback_repair_uncontaminated_t2p93",
+  "contract_question": "On the UNCONTAMINATED honest-gap row T2P_93 (no prior certified proof exists; repair-author has no memorized answer), does a compiler-feedback repair loop \u2014 genuine compose attempt from the pinned-primitive pool -> real Lean error -> ONE repair conditioned on {broken proof, Lean error, goal, governance residual} -> govern \u2014 produce a governance-genuine closure (kernel print-axioms-clean + exact?-not-single-lemma + target-kind, two-scoreboard, author!=verifier), cost-accounted, scoped as in-thread-AI capability demonstration NOT unattended solver?",
+  "domain": "pathA_wedge",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "governance_rejects_repair_single_lemma": 0.18,
+    "honest_exact_gap_outcome_not_a_kill": 0.12,
+    "pool_lacks_the_actual_bridge_lemma": 0.1,
+    "summable_memlp_needs_multistep_not_one_repair": 0.26,
+    "t2p93_genuinely_hard_no_single_repair_suffices": 0.34
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T21:42:27Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.45,
+  "p_regression": 0.05,
+  "p_success": 0.4,
+  "rationale_short": "Uncontaminated (I never certified T2P_93). Mem\u2113p 1 -> Summable is real analysis; one repair may not suffice (likely multi-step). p~0.4: honest \u2014 either a genuine closure via repair (validates the loop, scoped) OR an honest exact-gap (prove_missing_lemma, NOT a kill \u2014 non-treadmill). Not pre-conceding (anti solver-pessimism, 3x-flagged); not optimistic.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

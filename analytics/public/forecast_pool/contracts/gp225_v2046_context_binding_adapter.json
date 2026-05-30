@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2046_context_binding_adapter.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2046_context_binding_adapter.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2046_context_binding_adapter",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2046_context_binding_adapter.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2046_context_binding_adapter.json"
+  },
+  "baseline_action": "Run replay directly from v20.44 static candidates.",
+  "budget_agent_minutes": 28.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2046_context_binding_adapter",
+  "cost_penalty": 0.1,
+  "counterfactual_action": "Build context-binding adapter before replay.",
+  "created_at": "2026-05-14T17:33:42Z",
+  "created_by": "Codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1081,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_static_adapter",
+    "score": 0.2857,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2857,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1081,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.0857,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 3,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0571,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0571,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0294,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0294,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may overfit adapter to five rows"
+    ],
+    "positive": [
+      "reduces context_variable_mismatch before replay",
+      "prevents static-candidate Goodharting"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.24,
+  "layer": "micro",
+  "objective_resolver": "Artifact analytics/public/leanmill/results/v2046_context_binding_adapter_for_source_candidates.json has status passed, 10/10 candidates classified, at least one canary_eligible_static_only candidate, replay_run=false, training_now=false, gnn_blocked=true.",
+  "question": "If we build v20.46 context-binding/source-hinge adapter for the v20.44 blocked-row source candidates, will it classify all 10 candidates and surface at least one no-replay canary-eligible candidate while keeping replay/training blocked?",
+  "risk_penalty": 0.05,
+  "success_threshold": "all candidates classified and static-only canary set nonempty",
+  "task_type": "pre_gnn_static_adapter",
+  "value_if_success": 0.42,
+  "void_conditions": "Void if v20.44 candidate packet is modified before v20.46 runs."
+}

@@ -1,0 +1,23 @@
+{
+  "action_change_recommendation": "run_or_continue",
+  "agent_id": "Curry4",
+  "contract_id": "gp225_v2073_strict_label_inventory_freeze",
+  "contract_question": "Will v20.73 produce an artifact-backed strict-label inventory freeze for the 15 current GP-225 labels, preserving source-safety/compile-invariant guards and keeping training blocked?",
+  "domain": "lean_gnn_harness",
+  "expected_cost_agent_minutes": 15.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compile_guard_not_bound": 0.3076923076923077,
+    "label_provenance_underdescribed": 0.4615384615384615,
+    "training_language_overclaim": 0.23076923076923075
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T19:20:25Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.84,
+  "rationale_short": "The manifest already has 15 labels; the artifact succeeds if it freezes provenance without implying GNN readiness.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

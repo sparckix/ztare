@@ -1,0 +1,23 @@
+{
+  "agent_id": "codex_skeptic_tick358",
+  "contract_id": "ns_route1_local_energy_positive_flux_split_source_micro_20260514_tick358",
+  "contract_question": "Can we add a Lean-checked local-energy positive cutoff-flux visible/invisible split source feeding the route-level transport closure, without defining invisible leakage from the target bound or substituting DR/pressure carriers?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "alternate_charge_fields_are_target_relabeling": 0.25,
+    "build_friction": 0.08,
+    "commutator_no_invisible_not_numeric": 0.14,
+    "local_energy_pressure_residual_mismatch": 0.18,
+    "other": 0.05,
+    "positive_flux_split_assumed_not_proved": 0.3
+  },
+  "forecasted_at": "2026-05-14T12:25:52Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.08,
+  "p_success": 0.49,
+  "rationale_short": "Useful only as source interface; high risk that the hard PDE split remains entirely assumed.",
+  "read_only_attestation": true
+}

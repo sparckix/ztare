@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366",
+  "contract_question": "Can Feynman/xhigh pull forward ActiveTailCarrierVisibilityDomination by proving it, producing a V_A_perp countermodel, or identifying the exact missing topology/submeasure split?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "countermodel_too_broad": 0.1,
+    "fresh_frequency_link_unclear": 0.12,
+    "needs_profile_topology": 0.3,
+    "restates_domination": 0.2,
+    "singular_channel_only": 0.28
+  },
+  "forecasted_at": "2026-05-14T13:00:06Z",
+  "p_dependency_issue": 0.42,
+  "p_needs_new_lemma": 0.92,
+  "p_regression": 0.07,
+  "p_success": 0.46,
+  "rationale_short": "The previous xhigh sidecar was useful. Domination is harder; success likely means a sharper topology or V_A_perp split, not a proof.",
+  "read_only_attestation": true
+}

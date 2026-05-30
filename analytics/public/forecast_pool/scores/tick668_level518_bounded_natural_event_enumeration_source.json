@@ -1,0 +1,82 @@
+{
+  "contract_id": "tick668_level518_bounded_natural_event_enumeration_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Assume Level517 Fin-valued selected-bad-node event-prefix enumeration directly.",
+      "counterfactual_action": "Construct the Fin enumeration from bounded natural event-index witnesses."
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "Prove selectedBadNodeNaturalEventEnumeration from event construction, eventToBadNode coverage, and strict final-prefix bounds.",
+      "old_next_action": "Assume Level517 Fin-valued selected-bad-node event-prefix enumeration directly."
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.09610000000000003,
+  "mean_log_score": -0.37106368139083207,
+  "outcome": {
+    "actual_cost_agent_minutes": 75.0,
+    "artifact_hash": null,
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level518_bounded_natural_event_enumeration_receipt.json",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "pass",
+    "contract_id": "tick668_level518_bounded_natural_event_enumeration_source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "Prove selectedBadNodeNaturalEventEnumeration from event construction, eventToBadNode coverage, and strict final-prefix bounds.",
+    "old_next_action": "Assume Level517 Fin-valued selected-bad-node event-prefix enumeration directly.",
+    "ordering_override_no_codex": "local subagent dispatch unavailable due thread limit; codex-rd forecast was read-only and resolver artifacts are deterministic",
+    "ordering_override_no_independent_forecaster": "local subagent dispatch unavailable due thread limit; codex-rd forecast was read-only and resolver artifacts are deterministic",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "TRUE: Lean compiles Level518 bounded-natural event enumeration source into Level517 finite event-prefix enumeration source; strict receipt/workbench checks pass; active gate audit clean; focused tests pass. Remaining theorem is proving selectedBadNodeNaturalEventEnumeration from event construction, eventToBadNode coverage, and strict final-prefix bounds.",
+    "resolved_at": "2026-05-27T07:49:54Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T07:50:02Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 75.0,
+      "agent_id": "codex-rd",
+      "brier": 0.09610000000000003,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 80.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.37106368139083207,
+      "p_dependency_issue": 0.05,
+      "p_needs_new_lemma": 0.25,
+      "p_regression": 0.04,
+      "p_success": 0.69,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T07:49:05Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T07:49:38Z",
+        "resolved_at": "2026-05-27T07:49:54Z"
+      }
+    }
+  ]
+}

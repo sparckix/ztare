@@ -1,0 +1,129 @@
+{
+  "contract_id": "gp225_v2039_ofscalars_alignment_gate",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Stop at v20.38 and do not classify auxiliary signal",
+      "counterfactual_action": "Run another replay or train on pull-forward rows before alignment gate",
+      "externality_hypotheses": {
+        "negative": [
+          "could over-specialize to ofScalars if framed as solver progress"
+        ],
+        "positive": [
+          "prevents auxiliary-label laundering into strict labels",
+          "sharpens public-repo union training policy"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Noether",
+        "Turing"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "anti_laundering",
+        "label_head_split",
+        "public_repo_union_policy"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "single_theorem_signal_not_benchmark_win"
+      ],
+      "new_next_action": "heldout dual-head delta gate before any training promotion",
+      "old_next_action": "another replay or untyped pull-forward promotion",
+      "preconditioner_effect": "separated candidate closed state from gold open target state before policy promotion",
+      "preconditioner_source": "analytics/public/leanmill/results/v2038_repair_replay_alignment_reducer.json"
+    }
+  },
+  "mean_brier": 0.08185000000000002,
+  "mean_log_score": -0.33608438708737687,
+  "outcome": {
+    "actual_cost_agent_minutes": 17.0,
+    "artifact_hash": "4e9c059fd24c5666dded0f3709f50e88f15eec64e813e3f263a3d77fd62e7490",
+    "artifact_path": "analytics/public/leanmill/results/v2039_ofScalars_target_alignment_or_auxiliary_head_gate.json",
+    "changed_by_forecast_ids": [
+      "Noether",
+      "Turing"
+    ],
+    "compile_status": "passed_static_gate",
+    "contract_id": "gp225_v2039_ofscalars_alignment_gate",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "anti_laundering",
+      "label_head_split",
+      "public_repo_union_policy"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "single_theorem_signal_not_benchmark_win"
+    ],
+    "new_next_action": "heldout dual-head delta gate before any training promotion",
+    "old_next_action": "another replay or untyped pull-forward promotion",
+    "preconditioner_effect": "separated candidate closed state from gold open target state before policy promotion",
+    "preconditioner_source": "analytics/public/leanmill/results/v2038_repair_replay_alignment_reducer.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.39 emitted the no-replay target-alignment gate: 2 compiled actions classified, 0 strict target rows, 1 solver-closure row, 1 auxiliary pull-forward row, 0 harmful rows, replay=false, training=false, GNN blocked=true.",
+    "resolved_at": "2026-05-14T17:04:46Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T17:04:59Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 17.0,
+      "agent_id": "Noether",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 7.0,
+      "domain": "gp225_pre_gnn_alignment_policy",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:03:05Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:03:19Z",
+        "resolved_at": "2026-05-14T17:04:46Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 17.0,
+      "agent_id": "Turing",
+      "brier": 0.09610000000000003,
+      "cost_error_agent_minutes": 11.0,
+      "domain": "gp225_pre_gnn_alignment_policy",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.37106368139083207,
+      "p_success": 0.69,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:03:05Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:03:19Z",
+        "resolved_at": "2026-05-14T17:04:46Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "curry_policy_optimist",
+  "contract_id": "gp225_v2017_repair_lane_replay",
+  "contract_question": "Will v20.17 repair-lane replay produce at least one new strict same-target row from the three v20.16 reduced holdout failures, with zero harmful compiled mismatches and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 11.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_rows_progress_no_close": 0.18,
+    "beta_order_source_missing": 0.24,
+    "map_ext_context_gap": 0.2,
+    "ofScalars_needs_more_simp_names": 0.2,
+    "other": 0.18
+  },
+  "forecasted_at": "2026-05-14T13:14:14Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.34,
+  "p_regression": 0.03,
+  "p_success": 0.38,
+  "rationale_short": "v20.16 made failures actionable and ofScalars/betaPDF had progress states; a single strict row from nine candidates is plausible, but GNN remains blocked either way.",
+  "read_only_attestation": true
+}

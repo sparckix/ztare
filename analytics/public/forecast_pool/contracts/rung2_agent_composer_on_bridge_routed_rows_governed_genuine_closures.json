@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json",
+    "contract": "analytics/public/forecast_pool/contracts/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures",
+    "outcome": "analytics/public/forecast_pool/outcomes/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json",
+    "score": "analytics/public/forecast_pool/scores/rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures.json"
+  },
+  "baseline_action": "deterministic Rung-1 probe grid only (0 genuine in-grid)",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": null,
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "rung2_agent_composer_on_bridge_routed_rows_governed_genuine_closures",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Path-A stays governance-only; no agentic composition in the loop",
+  "created_at": "2026-05-17T21:28:08Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pathA_wedge",
+    "score": 0.0,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-20",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "residual_to_lever --probe-matrix routes rows; agent composes per row; probe_matrix+governance verify; offline tier-separated report; genuine = #print-axioms-clean + exact?-cannot-single-close + target-kind-correct, ratified",
+  "question": "On the rows the canonical residual_to_lever bridge routes to agent-composition (governed verdict != genuine; named-gap / certified-primitive available), does an agent proof-composer \u2014 given goal + local context + the IN-POOL pinned certifying primitives + target_kind + known anti-patterns, with STRICT author!=prover!=verifier, pinned verbatim replay + #print-axioms-clean + exact?-not-single-lemma + target-kind adjudicated, NO agent self-credit (CLOSED counts ONLY after governance ratification, two-scoreboard) \u2014 produce >=3 governance-genuine closures across the routed rows, TIER-SEPARATED (no cross-tier aggregate), with 0 false-ratify and 0 wrong-target-kind, beating the deterministic-probe Rung-1 baseline (which produced 0 genuine in-grid)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "pathA_wedge",
+  "value_if_success": 0.85,
+  "void_conditions": "Rung-1 rich verdict not yet produced; bridge routes 0 rows to composition; sandbox/governance regression; agent-composer is the in-thread AI = capability demonstration NOT an unattended automated solver (must be labeled, never relabeled as automated \u2014 prior mislabel lesson)"
+}

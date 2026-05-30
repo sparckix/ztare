@@ -1,0 +1,133 @@
+{
+  "contract_id": "gp225_v2059_union_training_readiness_gate_after_charfun_strict",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Treat the new strict row as training readiness.",
+      "counterfactual_action": "Run a union readiness gate before training.",
+      "externality_hypotheses": {
+        "negative": [
+          "may defer model training again"
+        ],
+        "positive": [
+          "prevents single-row training Goodhart",
+          "converts manifest change into concrete next experiment"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Bayes2",
+        "Fisher2"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "anti_goodhart",
+        "training_gate",
+        "manifest_accounting"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "training_deferred",
+        "static_gate_only"
+      ],
+      "new_next_action": "build post-charFun heldout union delta packet before any training",
+      "old_next_action": "treat repaired strict row as training readiness",
+      "preconditioner_effect": "Converted the one-row manifest increase into a no-training union readiness gate.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2058_manifest_after_charfun_dual_strict_adjudication_repair.json"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.03485,
+  "mean_log_score": -0.20503786033292382,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "d92ea83db463bbac8f69c6c3eb467037d63bb8d06e55c2fd095555941fc3b07f",
+    "artifact_path": "analytics/public/leanmill/results/v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "changed_by_forecast_ids": [
+      "Bayes2",
+      "Fisher2"
+    ],
+    "compile_status": "static_union_gate_passed",
+    "contract_id": "gp225_v2059_union_training_readiness_gate_after_charfun_strict",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "anti_goodhart",
+      "training_gate",
+      "manifest_accounting"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "training_deferred",
+      "static_gate_only"
+    ],
+    "new_next_action": "build post-charFun heldout union delta packet before any training",
+    "old_next_action": "treat repaired strict row as training readiness",
+    "preconditioner_effect": "Converted the one-row manifest increase into a no-training union readiness gate.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2058_manifest_after_charfun_dual_strict_adjudication_repair.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.59 passed: manifest strict rows remain 14 with current_scale_0329 counted, charFunDual target proof generation leakage remains false, older adapter quarantines are preserved, five heldout rows are available, training=false, and GNN remains blocked. Next action is a post-charFun union heldout-delta packet, not immediate model training.",
+    "resolved_at": "2026-05-14T18:26:43Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:26:53Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "Bayes2",
+      "brier": 0.02560000000000001,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "gp225_pre_gnn_union_training_gate",
+      "expected_cost_agent_minutes": 14.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.1743533871447778,
+      "p_success": 0.84,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:25:21Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:25:30Z",
+        "resolved_at": "2026-05-14T18:26:43Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "Fisher2",
+      "brier": 0.044099999999999986,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn_union_training_gate",
+      "expected_cost_agent_minutes": 16.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.23572233352106983,
+      "p_success": 0.79,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:25:21Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:25:21Z",
+        "resolved_at": "2026-05-14T18:26:43Z"
+      }
+    }
+  ]
+}

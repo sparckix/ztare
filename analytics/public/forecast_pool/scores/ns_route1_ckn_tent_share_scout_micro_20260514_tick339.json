@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_ckn_tent_share_scout_micro_20260514_tick339",
+  "mean_brier": 0.197,
+  "mean_log_score": -0.5810956351554905,
+  "outcome": {
+    "actual_cost_agent_minutes": 54.0,
+    "artifact_hash": "2bf960e7c14e0488ae72992eefe267fc5e1043f1040a408e4a05d42974919827",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/fixed_window_ckn_tent_share_scout_20260514.json",
+    "compile_status": "pass",
+    "contract_id": "ns_route1_ckn_tent_share_scout_micro_20260514_tick339",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Created and ran fixed_window_ckn_tent_share_scout.py with 128 packets across four regimes; it separated share_budget_pays, galilean_mean_gap, and frequency_leakage_gap. Added Lean guard FixedWindowBareMeanFreeCKNTentPaymentGap and theorem no_bareMeanFreeCKNTent_payment_of_gap; file Lean and downstream adapter build passed; no new sorry/admit in touched proof surfaces.",
+    "resolved_at": "2026-05-14T03:32:59Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:33:14Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 54.0,
+      "agent_id": "hooke_forecast_tick339",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 58.0,
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:28:20Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:28:20Z",
+        "resolved_at": "2026-05-14T03:32:59Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 54.0,
+      "agent_id": "rawls_adversarial_tick339",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 38.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 92.0,
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:28:20Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:28:20Z",
+        "resolved_at": "2026-05-14T03:32:59Z"
+      }
+    }
+  ]
+}

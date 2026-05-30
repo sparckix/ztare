@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_adversarial_tick335",
+  "contract_id": "ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335",
+  "contract_question": "Will a fixed-kernel operator-norm scout plus Lean source show that local quadratic receipts can pay the pre-summed pressure/Riesz cone charge, avoiding the final-carrier No-Go?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 92.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_field_overgrowth": 0.2,
+    "q_receipt_not_same_as_stress_mass": 0.35,
+    "script_repeats_linear_algebra": 0.2,
+    "source_still_conditional": 0.25
+  },
+  "forecasted_at": "2026-05-14T03:02:59Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.8,
+  "p_regression": 0.24,
+  "p_success": 0.54,
+  "rationale_short": "The bound is true as linear algebra, but may remain conditional unless the local quadratic receipt is tied to actual CKN/tent excess already present in route-1.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_gp230_pro_gp225_route_selector_readonly",
+  "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
+  "contract_question": "Will v17.10 show that a strong BM25/accessibility + deterministic action-sweep baseline closes at least 20/23 natural replay rows or comes within 2x of GP-225 mean failed probes, keeping GNN blocked?",
+  "domain": "gp225_baseline",
+  "expected_cost_agent_minutes": 35.0,
+  "failure_mode_distribution": {
+    "baseline_candidate_accessibility_underextracts_row15_or_row20": 0.34,
+    "deterministic_action_sweep_lacks_named_implicit_or_tuple_body_templates": 0.29,
+    "natural_replay_packet_differs_from_v1625_style_scheduler_enough_to_lower_transfer": 0.13,
+    "new_missing_lemma_or_nonlocal_helper_required": 0.06,
+    "script_or_schema_dependency_issue_voids_or_blocks_metrics": 0.18
+  },
+  "forecasted_at": "2026-05-12T14:48:34Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.07,
+  "p_regression": 0.18,
+  "p_success": 0.82,
+  "rationale_short": "High success: v17.9 has zero GNN residuals and prior BM25/action-sweep nearly saturates related packets; risk is stricter natural replay templates for rows 15 and 20.",
+  "read_only_attestation": true
+}

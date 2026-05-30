@@ -1,0 +1,81 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/flatkineticloadnoreuse_derivable_from_lerayhopf_20260515t151818z.json",
+    "contract": "analytics/public/forecast_pool/contracts/flatkineticloadnoreuse_derivable_from_lerayhopf_20260515t151818z.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/flatkineticloadnoreuse_derivable_from_lerayhopf_20260515t151818z.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/flatkineticloadnoreuse_derivable_from_lerayhopf_20260515t151818z.json",
+    "score": "analytics/public/forecast_pool/scores/flatkineticloadnoreuse_derivable_from_lerayhopf_20260515t151818z.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T15:18:18Z",
+    "created_by": "principal_claude_session_20260515",
+    "horizon": "30d",
+    "layer": "macro",
+    "objective_resolver": "PDE-research-frontier-resolution",
+    "question": "FlatKineticLoadNoReuse_derivable_from_LerayHopf",
+    "success_threshold": "0.5",
+    "task_type": "clay_closure_dual_load_macro_20260515"
+  },
+  "contract_id": "flatkineticloadnoreuse_derivable_from_lerayhopf_20260515t151818z",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T00:06:49.521722+00:00",
+    "success_bool": null,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "contract_id": "gp225_v1737_synthetic_factory_smoke",
+  "mean_brier": 0.06146666666666667,
+  "mean_log_score": -0.28380075732409865,
+  "outcome": {
+    "actual_cost_agent_minutes": 7.13,
+    "artifact_hash": "6ed86177446badf49b43d1c8e75cc7016a913a9e3292cce6db48f27128f84e87",
+    "artifact_path": "analytics/public/leanmill/results/v1737_synthetic_factory_smoke_packet.json",
+    "compile_status": "not_applicable_schema_artifact",
+    "contract_id": "gp225_v1737_synthetic_factory_smoke",
+    "error_type": "none",
+    "goal_delta": 0,
+    "resolution_note": "v17.37 produced 20 rows, 9 domain labels, 11 mutation families, row_schema_complete=true, wrong_accepts=0, generator holdout metadata present, and training_now=false. It remains smoke/schema data, not training data.",
+    "resolved_at": "2026-05-12T18:42:07Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-12T18:42:07Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 7.13,
+      "agent_id": "codex_RD",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 20.87,
+      "domain": "gnn_synthetic_data_factory",
+      "expected_cost_agent_minutes": 28.0,
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 7.13,
+      "agent_id": "readonly_euler",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 16.87,
+      "domain": "gnn_synthetic_data_factory",
+      "expected_cost_agent_minutes": 24.0,
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 7.13,
+      "agent_id": "readonly_pasteur",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 26.87,
+      "domain": "gnn_synthetic_data_factory",
+      "expected_cost_agent_minutes": 34.0,
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T23:18:57Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 33.0,
+    "expected_value": 1.5015194868032058,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.365,
+    "p_needs_new_lemma": 0.6699999999999999,
+    "p_regression": 0.14,
+    "p_success": 0.6601381351639279,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-14T23:18:51Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T23:18:51Z",
+        "p_success": 0.57,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T23:18:41Z",
+    "created_by": "codex_rd",
+    "horizon": "same session 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff the Lean file compiles and contains a structure/projection from existing FixedWindowPreSummedStressMassCKNTentCompatibility plus explicit receipt-share compatibility into FixedWindowPreSummedStressMassSplitReceiptSource, with a guard that CKN/tent compatibility alone is insufficient.",
+    "question": "Will tick430 add a compiling Lean source-split showing that CKN/tent compatibility only yields the split receipt source after explicit receipt-share routing, without using final-carrier visibility?",
+    "success_threshold": "lake env lean succeeds; no sorry/admit; source split names resolved, Galilean, and leakage receipt routing explicitly; no pressure branch closure claim.",
+    "task_type": "lean_pressure_gap"
+  },
+  "contract_id": "ns_pressure_ckn_to_split_receipt_gap_tick430_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T23:18:51Z",
+        "p_success": 0.74,
+        "rationale_short": "The gap is visible in existing fields; a projection with explicit receipt-share routing should be a small Lean interface refinement.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_ckn_to_split_receipt_gap_tick430_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "general",
+        "expected_cost_agent_minutes": 38.0,
+        "forecasted_at": "2026-05-14T23:18:51Z",
+        "p_success": 0.57,
+        "rationale_short": "This is likely useful only if it blocks the false inference CKNTentCompatibility -> split receipts. Risk is interface churn without PDE progress.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T23:20:20Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 1.5015194868032058,
+      "forecast_spread": 0.17,
+      "p_success": 0.6601381351639279,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 8.3944
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 33.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6601381351639279,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.12625000000000003,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T23:20:24Z"
+  }
+}

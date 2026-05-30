@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1929_benchmark_detour_vs_residual_generation_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1929_benchmark_detour_vs_residual_generation_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1929_benchmark_detour_vs_residual_generation_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1929_benchmark_detour_vs_residual_generation_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1929_benchmark_detour_vs_residual_generation_meso.json"
+  },
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1929_benchmark_detour_vs_residual_generation_meso",
+  "cost_penalty": 0.4,
+  "created_at": "2026-05-13T22:57:24Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 15.75,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_external_baseline_smoke",
+    "score": 1.0,
+    "selected_domain": "gp225_external_baseline_smoke",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 1.0,
+        "score_rows": 2,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.3462,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.5,
+        "score_rows": 3,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.0811,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0857,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0882,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same-session next 30 agent-minutes",
+  "information_value": 0.9,
+  "layer": "meso",
+  "objective_resolver": "Resolve from next artifacts: success if benchmark integration produces a trace/state extraction artifact or decisive blocker that changes the GP-225 pre-GNN route within 30 agent-minutes; false if it only adds packaging/debug overhead and residual generation would have been the better next move.",
+  "question": "Over the next 30 agent-minutes, is the higher-yield GP-225 pre-GNN route to continue benchmark integration through v19.28/v19.29 LeanDojo trace/state extraction rather than returning immediately to residual generation/replay?",
+  "risk_penalty": 0.3,
+  "success_threshold": "trace_or_state_adapter_progress=true OR decisive_benchmark_blocker_with_route_change=true; overhead_minutes<=30; training_now=false; gnn_blocked=true",
+  "task_type": "gp225_pre_gnn_route_selection",
+  "value_if_success": 1.6,
+  "void_conditions": "User redirects away from GP-225, infrastructure outage, or artifact paths unavailable"
+}

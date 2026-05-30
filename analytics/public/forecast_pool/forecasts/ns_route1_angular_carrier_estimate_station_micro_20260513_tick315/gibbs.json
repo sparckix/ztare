@@ -1,0 +1,22 @@
+{
+  "agent_id": "Gibbs",
+  "contract_id": "ns_route1_angular_carrier_estimate_station_micro_20260513_tick315",
+  "contract_question": "Will this tick add a build-passed route-independent angular/carrier PDE estimate station and constructor into the existing pressure-tail visibility certificate without new sorry?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 13.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_identification_misderived": 0.2,
+    "field_order_lean_friction": 0.2,
+    "pure_wrapper_no_value": 0.18,
+    "receipt_fields_not_supplied": 0.24,
+    "route_independent_naming_drift": 0.18
+  },
+  "forecasted_at": "2026-05-14T00:00:44Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.06,
+  "p_success": 0.82,
+  "rationale_short": "Existing certificate already has the fields; success likely if the new station separates PDE estimates from receipt bookkeeping and keeps carrier identification explicit.",
+  "read_only_attestation": true
+}

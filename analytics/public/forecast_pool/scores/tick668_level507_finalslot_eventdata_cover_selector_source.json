@@ -1,0 +1,107 @@
+{
+  "contract_id": "tick668_level507_finalslot_eventdata_cover_selector_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "leave coverEventSelector as a supplied Nat-valued target selector",
+      "counterfactual_action": "derive coverEventSelector from a final-slot indexed eventData assignment and displayed incidence laws"
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd"
+      ],
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "ns_trackb",
+        "level507",
+        "finalslot_eventdata_assignment"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "construct targetSlot and targetSlot_incident from same-tree prefix domination and bad-center event incidence",
+      "old_next_action": "construct coverEventSelector from same-tree fresh-frequency packets, prefix domination, and displayed bad-center incidence geometry",
+      "preconditioner_effect": "prevented free Nat selector and endpoint-capacity laundering; sharpened the next theorem to constructing targetSlot and targetSlot_incident",
+      "preconditioner_source": "G-COVER-EVENT-SELECTOR-FINALSLOT-ASSIGNMENT plus pattern action contract"
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.10889999999999997,
+  "mean_log_score": -0.40047756659712525,
+  "outcome": {
+    "actual_cost_agent_minutes": 86.0,
+    "artifact_hash": "25fd626237cd533c9f774dc519098c04ab8310b19ed57158d7670b20b3162f5a",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "pass",
+    "contract_id": "tick668_level507_finalslot_eventdata_cover_selector_source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "ns_trackb",
+      "level507",
+      "finalslot_eventdata_assignment"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "construct targetSlot and targetSlot_incident from same-tree prefix domination and bad-center event incidence",
+    "old_next_action": "construct coverEventSelector from same-tree fresh-frequency packets, prefix domination, and displayed bad-center incidence geometry",
+    "ordering_override_no_codex": "No live independent forecast channel emitted for this local meso continuation; RD forecast was registered before edits and outcome records the ordering override.",
+    "ordering_override_no_independent_forecaster": "No live independent forecast channel emitted for this local meso continuation; RD forecast was registered before edits and outcome records the ordering override.",
+    "preconditioner_effect": "prevented free Nat selector and endpoint-capacity laundering; sharpened the next theorem to constructing targetSlot and targetSlot_incident",
+    "preconditioner_source": "G-COVER-EVENT-SELECTOR-FINALSLOT-ASSIGNMENT plus pattern action contract",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Level507 compiled: coverEventSelector is now targetSlot.val for a final-slot eventData assignment, with horizon from Fin.isLt and incidence from targetSlot_incident; strict gate, PDE workbench, targeted Lake build, and workbench tests passed.",
+    "resolved_at": "2026-05-27T05:49:01Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T05:49:10Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 86.0,
+      "agent_id": "codex_rd",
+      "brier": 0.10889999999999997,
+      "cost_error_agent_minutes": 34.0,
+      "domain": "ns_trackb",
+      "expected_cost_agent_minutes": 120.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.40047756659712525,
+      "p_buy_yes_max": 0.61,
+      "p_dependency_issue": 0.22,
+      "p_needs_new_lemma": 0.4,
+      "p_regression": 0.17,
+      "p_sell_yes_min": 0.76,
+      "p_success": 0.67,
+      "predicted_brier_hi": 0.28,
+      "predicted_brier_lo": 0.07,
+      "predicted_self_error_ratio": 0.27,
+      "success_bool": true,
+      "tail_downside_worry": 38.0,
+      "tail_upside_surprise": 22.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T05:42:20Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T05:42:30Z",
+        "resolved_at": "2026-05-27T05:49:01Z"
+      },
+      "verbalized_confidence": 0.67
+    }
+  ]
+}

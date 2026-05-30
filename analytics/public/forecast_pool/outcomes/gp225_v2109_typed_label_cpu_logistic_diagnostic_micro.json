@@ -1,0 +1,38 @@
+{
+  "actual_cost_agent_minutes": 6.0,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "compile_status": "diagnostic_not_run_routing_audit_or_explore_only",
+  "contract_id": "gp225_v2109_typed_label_cpu_logistic_diagnostic_micro",
+  "counterfactual_value_bucket": "useful_negative_apparatus_finding",
+  "decision_changed_bool": true,
+  "error_type": "gate_threshold_structurally_unreachable",
+  "externality_tags": [
+    "micro_only_forecast",
+    "gate_shape_finding",
+    "no_diagnostic_run",
+    "no_training",
+    "gnn_blocked"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [
+    "v2090_stop_reason_remains_structurally_in_force",
+    "schema_work_cannot_unsaturate_rank_baseline"
+  ],
+  "new_next_action": "v2110_baseline_unsaturating_row_acquisition_or_operator_gate_redefinition",
+  "old_next_action": "v2109_operator_authorized_cpu_logistic_diagnostic",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "gate_threshold_structurally_unreachable",
+    "rank_baseline_saturated_by_construction",
+    "diagnostic_routed_to_audit_or_explore_only_by_forecast_pool"
+  ],
+  "resolution_note": "Contract voided per its 'void_conditions' clause once the gate threshold was identified as structurally unreachable. Three predictors (Franklin p=0.12, Noether p=0.04, Claude p=0.06) independently flagged that the candidate-rank baseline saturates at top1_rate=1.0 under natural merge on all three typed-label eval rows; a strict-exceed by the logistic requires >1.0, which is impossible. Aggregate p_success=0.0666, expected_value=-0.0750, routing_hint=audit_or_explore_only. Honest action: do NOT spend agent-minutes on the unreachable diagnostic. The true blocker is gate-shape, not data: either acquire a baseline-unsaturating row (rank-1 candidate is a strict same-step negative) or have the operator redefine the model-delta gate to accept dominance under typed-label rankers.",
+  "resolved_at": "2026-05-14T22:51:08Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": true
+}

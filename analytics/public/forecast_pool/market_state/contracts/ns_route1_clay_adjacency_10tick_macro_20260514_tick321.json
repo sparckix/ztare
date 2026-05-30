@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:51:20Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 605.0,
+    "expected_value": -2.4193913414742845,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.5,
+    "p_needs_new_lemma": 0.74,
+    "p_regression": 0.09,
+    "p_success": 0.22632608231571438,
+    "participants": [
+      {
+        "agent_id": "gibbs_market_B",
+        "domain": "ns_route1_pde",
+        "p_success": 0.16,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "herschel_market_A",
+        "domain": "ns_route1_pde",
+        "p_success": 0.31,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "compiled_bookkeeping_not_pde_estimate",
+        "p": 0.17
+      },
+      {
+        "mode": "visibility_requires_new_angular_dominance_estimate",
+        "p": 0.17
+      },
+      {
+        "mode": "kernel_geometry_gap",
+        "p": 0.125
+      },
+      {
+        "mode": "tail_window_projection_normalization_blocks",
+        "p": 0.12
+      },
+      {
+        "mode": "only_wrapper_compression",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_clay_adjacency_10tick_macro_20260514_tick321.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_clay_adjacency_10tick_macro_20260514_tick321.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_clay_adjacency_10tick_macro_20260514_tick321.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_clay_adjacency_10tick_macro_20260514_tick321.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_clay_adjacency_10tick_macro_20260514_tick321.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 300.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:50:29Z",
+    "created_by": "codex:RD",
+    "horizon": "10 proof ticks",
+    "layer": "macro",
+    "objective_resolver": "Resolve true only if an E/F row records a concrete PDE estimate or no-go theorem that a human PDE analyst would recognize as directly adjacent to critical-tail visibility, not merely wrapper compression.",
+    "question": "Will the NS route-1 program reach Clay-proof-adjacent visibility status within the next 10 proof ticks after the 2026-05-14 pressure/Riesz formula split?",
+    "success_threshold": "artifact-backed E/F row plus Lean/proof artifact or no-go note that changes the Route-1 visibility proof frontier",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_clay_adjacency_10tick_macro_20260514_tick321",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gibbs_market_B",
+        "raw_agent_ids": [
+          "gibbs_market_B"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:herschel_market_A",
+        "raw_agent_ids": [
+          "herschel_market_A"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gibbs_market_B",
+      "herschel_market_A"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gibbs_market_B",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_adjacency_10tick_macro_20260514_tick321/gibbs_market_b.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 690.0,
+        "forecasted_at": "2026-05-14T00:51:10Z",
+        "p_success": 0.16,
+        "rationale_short": "Macro remains low because route-1 still needs lower visibility, projection normalization, and PDE realizability.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "herschel_market_A",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_adjacency_10tick_macro_20260514_tick321/herschel_market_a.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 520.0,
+        "forecasted_at": "2026-05-14T00:51:10Z",
+        "p_success": 0.31,
+        "rationale_short": "No-Go likely surfaces necessary hypotheses, but Clay-adjacent status still depends on converting them into carrier/tail-window PDE estimates.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 605.0,
+      "expected_value": -2.4193913414742845,
+      "p_success": 0.22632608231571438,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 2.3251
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 605.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.22632608231571438,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "compiled_bookkeeping_not_pde_estimate",
+        "p": 0.17
+      },
+      {
+        "mode": "visibility_requires_new_angular_dominance_estimate",
+        "p": 0.17
+      },
+      {
+        "mode": "kernel_geometry_gap",
+        "p": 0.125
+      },
+      {
+        "mode": "tail_window_projection_normalization_blocks",
+        "p": 0.12
+      },
+      {
+        "mode": "only_wrapper_compression",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

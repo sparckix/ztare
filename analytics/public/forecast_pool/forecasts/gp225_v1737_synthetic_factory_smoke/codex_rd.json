@@ -1,0 +1,20 @@
+{
+  "agent_id": "codex_RD",
+  "contract_id": "gp225_v1737_synthetic_factory_smoke",
+  "contract_question": "Will v17.37 produce a useful 20-row synthetic residual factory smoke packet with at least 3 domains, at least 5 mutation families, row-schema-complete records, zero wrong accepts, and explicit generator-family holdout metadata, while still not authorizing GNN training?",
+  "domain": "gnn_synthetic_data_factory",
+  "expected_cost_agent_minutes": 28.0,
+  "failure_mode_distribution": {
+    "lean_probe_runtime_noise": 0.2,
+    "public_source_adapter_friction": 0.25,
+    "row_schema_scope_creep": 0.3,
+    "synthetic_overfit_control_too_shallow": 0.25
+  },
+  "forecasted_at": "2026-05-12T18:38:15Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.05,
+  "p_success": 0.78,
+  "rationale_short": "v17.36 already fixed the contract and v17.33/v17.34 supply seed rows/public source map; a 20-row smoke packet is feasible, but likely schema/provenance rather than full replay training data.",
+  "read_only_attestation": true
+}

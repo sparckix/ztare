@@ -1,0 +1,556 @@
+{
+  "experiment": "gp216_pass7_active_killing",
+  "vocabulary_v2": [
+    {
+      "cluster_id": "tb_01",
+      "name": "Foundational Object Redefinition",
+      "structural_mechanism": "Replace the object class the theory studies with a different class that exposes structure invisible in the original (variety\u2192scheme; multivalued function\u2192Riemann surface; commutative C*-algebra\u2192noncommutative C*-algebra).",
+      "panel_status": "core; Gowers/Polya/Gigerenzer support"
+    },
+    {
+      "cluster_id": "tb_02",
+      "name": "Cross-Domain Unification",
+      "structural_mechanism": "Posit a non-trivial isomorphism or correspondence between two previously-separate mathematical domains and use it to transfer theorems (Taniyama-Shimura; Langlands; Galois groups \u2194 field extensions).",
+      "panel_status": "core; strongest single op"
+    },
+    {
+      "cluster_id": "tb_03",
+      "name": "Surrogate Problem Substitution",
+      "structural_mechanism": "Replace the original target with a sufficient-condition target whose proof implies the original (FLT via modularity; CH via forcing; halting via diagonal).",
+      "panel_status": "deployable; Gowers notes shared with problem-solving"
+    },
+    {
+      "cluster_id": "tb_04",
+      "name": "Constraint-Driven Solution Forcing",
+      "structural_mechanism": "Demand that the answer satisfy a list of structural constraints (covariance, conservation, consistency) until the constraints uniquely determine the form (Einstein 1915 field equations; ZF axiomatization).",
+      "panel_status": "core but recognize-only per WorkingMath"
+    },
+    {
+      "cluster_id": "tb_06",
+      "name": "Tacit Pattern Formalization",
+      "structural_mechanism": "Codify an implicit working pattern into an explicit formal apparatus that can be reasoned about (fluxion\u2192derivative; intuitive symmetry\u2192tensor calculus; descriptive scaling\u2192fractal dimension).",
+      "panel_status": "Lakatos says wrong attribution; not the same as monster-barring"
+    },
+    {
+      "cluster_id": "tb_08",
+      "name": "Parameter Space Internalization",
+      "structural_mechanism": "Treat the family of objects (one per parameter value) as itself an object of the theory, so questions about generic / variation properties become first-class (moduli spaces; deformation rings; Mazur deformations).",
+      "panel_status": "core; Gowers strong support; Gigerenzer says collapse with tb_09"
+    },
+    {
+      "cluster_id": "tb_09",
+      "name": "Systematic Vocabulary Lifting",
+      "structural_mechanism": "Re-do an entire existing theory inside a new categorical/structural framework, preserving the moves of the original at each step (Lurie \u221e-categorifying ordinary category theory; Connes redoing geometry over noncommutative algebras).",
+      "panel_status": "core; deployable"
+    },
+    {
+      "cluster_id": "tb_11",
+      "name": "Limitative Theorem Construction",
+      "structural_mechanism": "Establish a structural impossibility within the framework (incompleteness, undecidability, independence). Hofstadter notes this is an OUTCOME not a move; the move is the diagonal self-application that produces it.",
+      "panel_status": "Hofstadter says it's an outcome; should pair with diagonal-self-application op"
+    },
+    {
+      "cluster_id": "tb_12",
+      "name": "Problem Boundary Specification",
+      "structural_mechanism": "Make precise what counts as a solution / member / instance of the central question, fixing the success criterion before the main argument runs.",
+      "panel_status": "Lakatos says wrong temporal direction; Gigerenzer says it's a constant not a category"
+    },
+    {
+      "cluster_id": "tb_NEW_LAK1",
+      "name": "Refutation-Driven Concept Revision",
+      "structural_mechanism": "A concrete counter-example forces revision of the meaning of a core term in the theory; the concept stretches or restricts in response (Lakatos's monster-barring; Russell's paradox forcing ZF separation axiom).",
+      "panel_status": "ADDED per Lakatos panel critique"
+    },
+    {
+      "cluster_id": "tb_NEW_LAK2",
+      "name": "Proof-Analysis Under Counter-Example",
+      "structural_mechanism": "When a proof fails on a counter-example, localize which sub-step failed and absorb the missing condition as an explicit lemma; the proof and the conditions co-evolve (Lakatos's lemma-incorporation).",
+      "panel_status": "ADDED per Lakatos panel critique"
+    },
+    {
+      "cluster_id": "tb_NEW_HOF",
+      "name": "Diagonal Self-Application",
+      "structural_mechanism": "Apply a predicate defined over codes of statements to its own code, producing a fixed point where the level distinction between syntax and semantics collapses non-trivially (G\u00f6del diagonal; Cantor's diagonal; Kleene fixed-point; Quine quotation).",
+      "panel_status": "ADDED per Hofstadter panel critique (split from old tb_10)"
+    },
+    {
+      "cluster_id": "tb_NEW_POLYA",
+      "name": "Strategic Specialization",
+      "structural_mechanism": "Solve a carefully-chosen special case first, then leverage it as the engine for the general result; the special case is selected to break the structural barrier (Wiles's semistable case; Newton's specific curves).",
+      "panel_status": "ADDED per Polya panel critique"
+    }
+  ],
+  "n_ops": 13,
+  "n_killed": 2,
+  "n_disputed": 11,
+  "n_survives": 0,
+  "n_overlap": 0,
+  "results": [
+    {
+      "op": {
+        "cluster_id": "tb_01",
+        "name": "Foundational Object Redefinition",
+        "structural_mechanism": "Replace the object class the theory studies with a different class that exposes structure invisible in the original (variety\u2192scheme; multivalued function\u2192Riemann surface; commutative C*-algebra\u2192noncommutative C*-algebra).",
+        "panel_status": "core; Gowers/Polya/Gigerenzer support"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "category_switch",
+          "dimensional_shift",
+          "vary_the_problem"
+        ],
+        "novel_residue": "The op specifies a precise structural mechanism: systematically replacing the object CLASS a theory studies with a strictly more general or differently-typed class in a way that renders previously invisible structure visible as first-class mathematical objects (e.g., nilpotents, sheets, noncommutativity). This is not merely changing a parameter or coordinate system, nor is it just switching categories in the abstract\u2014it is the act of redefining the ontological base of the theory so that the new objects encode structure that was pathological, degenerate, or absent in the old setting. The existing 'category_switch' primitive describes moving to a different mathematical category but does not specify the directionality (original objects embed into new class as special cases), the visibility criterion (structure invisible in original becomes intrinsic in replacement), or the historical exemplar pattern (the variety\u2192scheme, multivalued\u2192Riemann surface replacements are a specific epistemic move: pathology in the old language becomes geometry in the new). 'Dimensional_shift' and 'vary_the_problem' touch reframing but lack the object-class ontological replacement mechanism entirely.",
+        "reason": "The ZTARE 'category_switch' primitive is the closest match and captures part of the mechanism\u2014moving to a different mathematical category rather than adjusting parameters. However, tb_01 is more specifically about ontological base replacement: the theory's subject matter is redefined to a class where formerly invisible or pathological structure becomes intrinsic and manipulable. This includes the embedding relation (old objects are special cases of new), the visibility criterion (structure invisible before is now first-class), and the theory-founding consequence (the entire apparatus must be rebuilt around the new objects). None of the existing primitives name this directional, visibility-exposing, object-class replacement as a distinct mechanism. 'Dimensional_shift' is about reframing dimensionality, not object ontology. 'Vary_the_problem' is a Polya heuristic about dropping hypotheses, not systematically upgrading object classes. Thus partial overlap with novel residue remains."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "ZTARE category_switch \u2014 different mathematical category, not parameter setting",
+          "ZTARE dimensional_shift \u2014 higher-dimensional reframe",
+          "ZTARE coordinate_compression \u2014 change coordinate system",
+          "Polya generalize",
+          "Polya vary the problem \u2014 drop hypothesis, weaken conclusion, swap roles of given and unknown",
+          "Polya find an analogous problem",
+          "Paper 5 op3 topological pivot recognition \u2014 argument needs different SHAPE"
+        ],
+        "novel_residue": "Only a domain-specific label and examples from mathematics. No independent operation remains once 'replace the studied object class to expose hidden structure' is read as category_switch plus generalization/dimensional reframe.",
+        "reason": "tb_01 is not a new primitive. Its core action is exactly to move from one object category/representation to another so previously invisible structure becomes explicit. That is already ZTARE category_switch. The examples are direct instances: variety\u2192scheme is category_switch plus generalization; multivalued function\u2192Riemann surface is dimensional_shift/geometric re-encoding; commutative C*-algebra\u2192noncommutative C*-algebra is category_switch/generalization. The 'exposes structure invisible in the original' clause adds motivation, not a distinct operation. Paper op3 covers the dependency-graph consequence when the redefinition forces a new argument shape. Therefore tb_01 is a bundled application pattern, not an independent theory-building primitive."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_02",
+        "name": "Cross-Domain Unification",
+        "structural_mechanism": "Posit a non-trivial isomorphism or correspondence between two previously-separate mathematical domains and use it to transfer theorems (Taniyama-Shimura; Langlands; Galois groups \u2194 field extensions).",
+        "panel_status": "core; strongest single op"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "find an analogous problem",
+          "category_switch",
+          "collision_exploit",
+          "dimensional_shift"
+        ],
+        "novel_residue": "The structural mechanism of tb_02 is not merely finding an analogy or switching categories \u2014 it requires establishing a provably rigorous, non-trivial isomorphism (or functorial correspondence) between two independently axiomatized mathematical domains such that theorems proven in one domain are automatically transported as theorems in the other with logical force, not merely heuristic inspiration. The existing primitives capture surface resemblances: 'find an analogous problem' is a heuristic search move with no requirement of formal isomorphism; 'category_switch' changes representational frame within a problem but does not demand cross-domain theorem transfer; 'collision_exploit' identifies f(a)==f(b) as structural identity but operates locally on a function, not across entire axiomatic systems; 'dimensional_shift' reframes dimensionality without requiring a correspondence that preserves proof-theoretic validity. None of these primitives capture the specific mechanism of: (1) identifying two separate mathematical universes with their own axioms, objects, and theorems, (2) constructing a correspondence that is provably structure-preserving at the level of morphisms/functors, and (3) using that correspondence as a theorem-transfer engine with deductive certainty rather than analogical suggestion.",
+        "reason": "tb_02 partially overlaps with several primitives \u2014 most notably 'find an analogous problem' (Polya), 'category_switch' and 'collision_exploit' (ZTARE), and 'dimensional_shift' \u2014 but none of these primitives, individually or jointly, describe the full structural mechanism. The Polya analogy heuristic is a discovery aid, not a formal transfer mechanism. ZTARE's category_switch and collision_exploit are local reframing tools. What tb_02 names is a distinct, well-defined mathematical operation: constructing a non-trivial, provably valid correspondence (isomorphism, equivalence of categories, Galois correspondence, functorial duality) between two autonomous axiomatic domains that enables bidirectional theorem migration with logical necessity. The examples (Taniyama-Shimura, Langlands, Galois) all instantiate this same structural move \u2014 not heuristic analogy but formal bridge-building that collapses the boundary between domains. This theorem-transfer engine with deductive certainty is the novel residue not captured by any existing primitive."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Polya: find an analogous problem",
+          "Polya: generalize",
+          "Polya: decompose and recombine",
+          "Polya: vary the problem",
+          "ZTARE: category_switch",
+          "ZTARE: coordinate_compression",
+          "ZTARE: collision_exploit",
+          "ZTARE: fixed_point_scan",
+          "Paper 5 op3: topological pivot recognition",
+          "Paper 5 op6: basin search",
+          "Tao: causal narrative construction",
+          "Tao: negative results and elimination"
+        ],
+        "novel_residue": "No independent primitive remains. The only residue is domain-specific prestige packaging: calling the analogy an isomorphism/correspondence and emphasizing theorem transfer at large mathematical scale.",
+        "reason": "tb_02 is structurally just analogical transfer plus category/coordinate reframing. 'Previously separate domains' is Polya's analogous problem and generalization. 'Non-trivial isomorphism or correspondence' is ZTARE category_switch, coordinate_compression, collision_exploit, and fixed_point_scan: identify a structure-preserving map, compress two descriptions into one coordinate system, exploit equal outputs or canonical coincidences. 'Use it to transfer theorems' is not a new operation; it is the standard payoff of analogy/generalization after decomposition and recombination. The need to rewire dependencies between domains is already Paper 5 topological pivot recognition. Searching for the right bridge thesis is basin search. Eliminating failed correspondences is Tao negative-results/elimination. Famous examples like Taniyama-Shimura, Langlands, and Galois theory are instances of this composite pattern, not evidence for a new primitive. tb_02 names a high-value mathematical strategy, but its cognitive and structural moves are already covered."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_03",
+        "name": "Surrogate Problem Substitution",
+        "structural_mechanism": "Replace the original target with a sufficient-condition target whose proof implies the original (FLT via modularity; CH via forcing; halting via diagonal).",
+        "panel_status": "deployable; Gowers notes shared with problem-solving"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "find an analogous problem",
+          "vary the problem (drop hypothesis, weaken conclusion, swap roles of given and unknown)",
+          "work backward",
+          "dimensional_shift"
+        ],
+        "novel_residue": "The specific structural mechanism of formally replacing an intractable target problem with a distinct but sufficient-condition problem \u2014 where a proof of the surrogate logically entails the original \u2014 is not captured by any existing primitive. Polya's 'find an analogous problem' is epistemically looser (analogy for guidance, not logical sufficiency). 'Vary the problem' mutates the problem but does not require the variant's solution to imply the original. 'Work backward' operates within the same problem space rather than substituting a formally different problem whose proof certificate transfers. 'Dimensional_shift' is a reframing heuristic without the sufficiency-condition logic. The novel residue is: the deliberate construction or identification of a surrogate problem P' such that Proof(P') \u22a2 Original(P) by logical entailment, combined with the strategic judgment that P' is more tractable than P \u2014 a structured sufficiency-reduction move that none of the primitives name as a first-class operation.",
+        "reason": "Several existing primitives gesture toward related ideas: Polya encourages finding analogous problems and working backward, and dimensional_shift encourages reframing. However, none of these primitives specify the defining structural feature of Surrogate Problem Substitution: that the surrogate is chosen specifically because its proof constitutes a sufficient condition for \u2014 and therefore formally implies \u2014 the truth of the original target. This is a logical-entailment relationship, not mere analogy, variation, or reframing. The mechanism is precise: find P' \u2260 P such that P' \u2192 P, then solve P'. This sufficiency-transfer architecture has no exact counterpart in any of the four primitive sets, leaving genuine novel residue even after accounting for the overlapping heuristics."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Polya: work backward",
+          "Polya: find an analogous problem",
+          "Polya: vary the problem",
+          "Polya: devise a plan",
+          "Polya: decompose and recombine",
+          "Paper 5 op2 controlling claim isolation",
+          "Paper 5 op3 topological pivot recognition",
+          "ZTARE category_switch",
+          "ZTARE dimensional_shift",
+          "ZTARE coordinate_compression",
+          "Lakatos lemma incorporation",
+          "Tao: causal narrative construction",
+          "Tao: negative results and elimination"
+        ],
+        "novel_residue": "None. The only apparent residue is the explicit phrase 'sufficient-condition target whose proof implies the original', but that is just backward chaining from the desired theorem through a load-bearing implication, often implemented by changing category/frame or absorbing the hard step into a stronger lemma.",
+        "reason": "tb_03 is not a new operation; it is a bundled restatement of existing proof-search primitives. Replacing the original target with a stronger/sufficient surrogate is exactly Polya's work backward from the desired conclusion, vary the problem, and find an analogous or more tractable problem. The 'proof implies original' clause is controlling-claim isolation: identify the load-bearing implication S => T. The examples given confirm collapse: FLT via modularity is category_switch/topological pivot recognition; CH via forcing is dimensional_shift/category_switch; halting via diagonal is coordinate/inversion-style reframing plus causal narrative. Lakatos lemma incorporation already covers converting a failed or difficult proof obligation into a localized stronger lemma. Tao's elimination framing covers abandoning the direct route in favor of a surrogate route. No independent mechanism remains beyond the already-listed primitives."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_04",
+        "name": "Constraint-Driven Solution Forcing",
+        "structural_mechanism": "Demand that the answer satisfy a list of structural constraints (covariance, conservation, consistency) until the constraints uniquely determine the form (Einstein 1915 field equations; ZF axiomatization).",
+        "panel_status": "core but recognize-only per WorkingMath"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "work backward",
+          "decompose and recombine",
+          "vary the problem (drop hypothesis, weaken conclusion, swap roles of given and unknown)",
+          "fixed_point_scan",
+          "collision_exploit"
+        ],
+        "novel_residue": "The specific structural mechanism of accumulating a list of hard structural constraints (covariance, conservation, consistency, symmetry) and treating their simultaneous satisfaction as a progressive narrowing funnel that terminates in a unique solution \u2014 i.e., constraint-intersection as a uniqueness proof strategy \u2014 is not captured by any existing primitive. 'Work backward' is directional but doesn't require multi-constraint intersection. 'Fixed_point_scan' looks for where f equals a canonical value, not for where multiple independent constraint classes jointly force a unique form. 'Collision_exploit' identifies structural identities but doesn't describe the accumulation-to-uniqueness forcing mechanism. The op's core novelty is the use of constraint accumulation as a generative engine: constraints are not checks on a candidate solution but the active force that constructs the solution space until only one element remains.",
+        "reason": "Several existing primitives touch adjacent territory: 'work backward' captures reverse-engineering from desired properties; 'fixed_point_scan' looks for canonical intersections; 'collision_exploit' notices structural equalities; Polya's 'vary the problem' and 'decompose and recombine' allow constraint manipulation. But none of these primitives describes the specific mechanism of iteratively imposing independent structural constraints (covariance, conservation laws, internal consistency) such that the constraint set itself progressively collapses the solution space to a unique form \u2014 the Einstein field equations and ZF axiomatization being paradigm cases. This is not verification, not backward reasoning alone, not a fixed-point search, and not a collision detection. The generative forcing structure \u2014 constraints as uniqueness-proving engines rather than filters \u2014 constitutes a genuine novel residue that survives elimination attempts against all four primitive lists."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "ZTARE fixed_point_scan \u2014 search the subset satisfying required invariants/canonical values",
+          "Tao negative results and elimination \u2014 rule out candidate forms until only one remains",
+          "Polya work backward \u2014 begin from required properties of the answer and derive admissible forms",
+          "Polya understand the problem \u2014 translate the task into givens/unknowns/conditions",
+          "Polya specialize/generalize/vary the problem \u2014 tighten, relax, or swap constraints to test determinacy",
+          "ZTARE state_incompatibility \u2014 treat covariance/conservation/consistency as invariants that proposed answers must obey",
+          "ZTARE inversion \u2014 ask what observation or inconsistency would destroy a candidate form",
+          "Paper 5 op1 eigenquestion identification \u2014 identify the decisive constraint-set whose satisfaction determines the rest",
+          "Paper 5 op2 controlling claim isolation \u2014 isolate the load-bearing uniqueness claim",
+          "Paper 5 op10 fail-closed defaulting \u2014 if constraints underdetermine the form, refuse the claimed derivation"
+        ],
+        "novel_residue": "None. The only apparent residue is a domain-specific packaging: use a stacked constraint set as a uniqueness proof. That is not a new operation; it is fixed-point/constraint satisfaction plus elimination and work-backward reasoning.",
+        "reason": "tb_04 does not introduce a distinct cognitive move. It says: encode desiderata as hard constraints, intersect the admissible solution spaces, eliminate noncompliant candidates, and claim success only if the intersection is singleton. That is exactly fixed_point_scan plus negative elimination, with Polya-style work-backward derivation from conditions. The examples, Einstein field equations and ZF axiomatization, are impressive applications but not primitive evidence: covariance/conservation/consistency are just the selected invariants. If the constraints uniquely determine the form, existing primitives already explain the win; if they do not, op10 says the move fails. Therefore the op is a bundled workflow, not an independent primitive."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_06",
+        "name": "Tacit Pattern Formalization",
+        "structural_mechanism": "Codify an implicit working pattern into an explicit formal apparatus that can be reasoned about (fluxion\u2192derivative; intuitive symmetry\u2192tensor calculus; descriptive scaling\u2192fractal dimension).",
+        "panel_status": "Lakatos says wrong attribution; not the same as monster-barring"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "entropy_stripping",
+          "dimensional_shift",
+          "category_switch",
+          "anchor proxy requirement"
+        ],
+        "novel_residue": "The specific structural mechanism of taking an *already-functioning implicit practice* and constructing a *formal apparatus* (notation, axioms, definitions) that makes the practice's logic explicit, inspectable, and transferable \u2014 distinct from merely reframing or changing coordinates. The directionality matters: from tacit working knowledge \u2192 formal symbolic system, with the formal system then enabling reasoning that was previously impossible or unreliable. None of the existing primitives capture the 'codification of implicit competence into a manipulable formalism' move as a distinct operation; they capture reframing, translation of variables, or binding abstractions to observables, but not the act of constructing a new formal apparatus that crystallizes pre-formal intuition.",
+        "reason": "Entropy_stripping (restate in observable transfers) and anchor_proxy_requirement (bind abstract variable to readable observable) both touch the abstraction-to-concrete direction, but they move from abstraction down to observables, not from tacit practice up to formal system. Dimensional_shift and category_switch involve reframing in a different mathematical space, which overlaps with the fluxion\u2192derivative example, but those primitives presuppose you already have a formal object to shift; they do not name the act of constructing the formal object itself from pre-formal intuition. The op's defining mechanism \u2014 identifying an implicit, practiced pattern and erecting a complete formal apparatus (notation, rules, inference procedures) around it so it becomes a first-class mathematical object \u2014 has no primitive in any of the four lists that captures this construction move with that specific directionality and purpose. The overlap is real but the residue survives."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Tao: smell / intuitive assessment",
+          "ZTARE: entropy_stripping",
+          "Paper5 op5: anchor proxy requirement",
+          "ZTARE: coordinate_compression",
+          "ZTARE: category_switch",
+          "ZTARE: dimensional_shift",
+          "Polya: generalize",
+          "Polya: decompose and recombine",
+          "Polya: find an analogous problem",
+          "Polya: look back",
+          "Lakatos: lemma incorporation"
+        ],
+        "novel_residue": "None. The only apparent residue is rhetorical packaging: naming the output as a 'formal apparatus' rather than naming the component moves that produce it.",
+        "reason": "tb_06 is not a distinct primitive. It decomposes cleanly into existing moves: first notice an implicit pattern via smell/intuitive assessment; strip it into observable transfers via entropy_stripping; bind vague abstractions to readable variables via anchor proxy requirement; choose a representation by coordinate_compression, dimensional_shift, or category_switch; then generalize/decompose/recombine and validate by looking back. If counterexamples appear, Lakatos lemma incorporation localizes and repairs the failed subclaim. The examples do not rescue novelty: fluxion\u2192derivative is coordinate/category cleanup plus proxy binding; intuitive symmetry\u2192tensor calculus is dimensional/category shift; descriptive scaling\u2192fractal dimension is anchor proxy plus coordinate compression. 'Codify tacit pattern into formal apparatus' describes the end product of these primitives, not a new structural operation."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_08",
+        "name": "Parameter Space Internalization",
+        "structural_mechanism": "Treat the family of objects (one per parameter value) as itself an object of the theory, so questions about generic / variation properties become first-class (moduli spaces; deformation rings; Mazur deformations).",
+        "panel_status": "core; Gowers strong support; Gigerenzer says collapse with tb_09"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "dimensional_shift",
+          "generalize",
+          "category_switch"
+        ],
+        "novel_residue": "The specific structural mechanism of reifying a parametric family into a single object within the same (or an enriched) theory\u2014so that universal/generic properties, deformation-theoretic questions, and variation phenomena become internal first-class objects rather than meta-level commentary\u2014is not captured by any existing primitive. The existing primitives describe reframing, abstraction, or generalization at a heuristic level, but none prescribes the precise move of constructing a moduli/deformation object that internalizes the parameter itself as a geometric or algebraic datum, enabling theorems about the entire family to be proved by working with one canonical object.",
+        "reason": "dimensional_shift (ZTARE) and generalize (Polya) both gesture toward higher-level reframing or abstraction, and category_switch touches on moving to a different mathematical setting; but all three are purely heuristic prompts with no structural content. None of them specifies the mechanism of internalization: taking a parameterized family {X_t} and building a single object M (moduli space, deformation ring, etc.) within the theory such that points of M correspond to objects, and universal properties of the family become theorems about M. That move\u2014collapsing an index set into an internal geometric/algebraic object so that existential and generic questions become first-order within the theory\u2014has genuine structural specificity that survives contact with all four primitive sets. It is therefore a partial overlap, not a full collapse."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "ZTARE: dimensional_shift",
+          "ZTARE: category_switch",
+          "ZTARE: coordinate_compression",
+          "ZTARE: primary_degree_of_freedom",
+          "Polya: generalize",
+          "Polya: vary the problem",
+          "Polya: decompose and recombine",
+          "Paper5 op3: topological pivot recognition"
+        ],
+        "novel_residue": "None as a theory-building primitive. The only residue is domain-specific implementation detail: proving representability/existence of the moduli object, deformation ring, stack, or universal family. That is technical payload, not a new structural operation.",
+        "reason": "tb_08 says: instead of handling one object per parameter value externally, package the whole parameterized family as an internal object so variation/genericity become first-class. This is exactly dimensional_shift: move from pointwise objects to a higher-dimensional object encoding the family. It is also category_switch: stop treating parameters as external indices and move to the category where families/moduli/deformation functors are objects. It is coordinate_compression: replace many separate cases with one compressed coordinate object. It uses primary_degree_of_freedom by making the parameter the load-bearing variable. Polya generalize/vary already covers passing from a fixed instance to a variable family. Decompose/recombine covers assembling the individual fibers into a global object. Paper5 topological pivot recognition covers the rewired dependency graph: questions about objects become questions about the base/moduli object. Moduli spaces and Mazur deformation rings are examples of this composite move, not evidence of a distinct primitive. The op is a named mathematical instantiation of existing reframing/compression/generalization primitives."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_09",
+        "name": "Systematic Vocabulary Lifting",
+        "structural_mechanism": "Re-do an entire existing theory inside a new categorical/structural framework, preserving the moves of the original at each step (Lurie \u221e-categorifying ordinary category theory; Connes redoing geometry over noncommutative algebras).",
+        "panel_status": "core; deployable"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "dimensional_shift",
+          "category_switch",
+          "generalize"
+        ],
+        "novel_residue": "The specific structural commitment of Systematic Vocabulary Lifting is the move-by-move preservation constraint: every proof step, construction, and theorem in the original theory must be faithfully re-enacted inside the new framework, not merely reframed or analogized. This is stronger than dimensional_shift (which reframes without requiring step-by-step fidelity), stronger than category_switch (which changes mathematical category as a parameter but does not require systematic reconstruction of an entire prior body of theory), and stronger than Polya's generalize (which relaxes or extends conclusions without mandating structural homomorphism across every intermediate move). The novel mechanism is the systematic functorial lifting of an entire theoretical edifice \u2014 preserving all internal moves under translation \u2014 rather than a one-shot reframing or a single generalization step.",
+        "reason": "dimensional_shift, category_switch, and generalize each capture a fragment: changing the ambient framework, switching categorical language, and extending scope. But none of them name the core structural discipline of this op, which is the requirement of a systematic, move-preserving translation \u2014 a kind of theoretical homomorphism \u2014 across a complete body of prior work. The Lurie and Connes examples are not merely reframings or generalizations; they are exhaustive re-derivations in which every lemma, construction, and theorem must be re-proved inside the new framework while tracking its correspondence to the original. That exhaustive fidelity constraint is not captured by any single existing primitive or combination thereof, leaving a genuine residue."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "ZTARE category_switch",
+          "ZTARE dimensional_shift",
+          "ZTARE coordinate_compression",
+          "Polya find an analogous problem",
+          "Polya generalize",
+          "Polya decompose and recombine",
+          "Polya carry out the plan",
+          "Polya look back",
+          "Paper5 op5 anchor proxy requirement",
+          "ZTARE fixed_point_scan",
+          "ZTARE interface_discipline"
+        ],
+        "novel_residue": "None as a primitive. The only residue is scale and packaging: applying already-existing translation/reframing moves across an entire theory rather than at a single lemma, object, or argument.",
+        "reason": "tb_09 is not a new operation; it is a macro-protocol. 'Redo the theory in a new categorical/structural framework' is exactly category_switch plus dimensional_shift/coordinate_compression. 'Preserving the moves of the original at each step' is Polya analogy/generalization plus decompose-and-recombine, with fixed_point_scan checking where the lifted construction agrees with the canonical/original one. Anchor proxy requirement covers the need to bind abstract lifted objects back to readable originals. Interface_discipline covers keeping the mutation at the framework/vocabulary layer rather than changing the theorem-content. The examples do not rescue novelty: Lurie is ordinary category theory under category_switch to infinity-categories; Connes is geometry under category_switch from spaces/commutative algebras to noncommutative algebras. Both are large-scale applications of existing primitives, not evidence for a distinct operator."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_11",
+        "name": "Limitative Theorem Construction",
+        "structural_mechanism": "Establish a structural impossibility within the framework (incompleteness, undecidability, independence). Hofstadter notes this is an OUTCOME not a move; the move is the diagonal self-application that produces it.",
+        "panel_status": "Hofstadter says it's an outcome; should pair with diagonal-self-application op"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "fixed_point_scan",
+          "collision_exploit",
+          "inversion",
+          "negative results and elimination"
+        ],
+        "novel_residue": "The specific structural mechanism of diagonal self-application as the generative move that produces a limitative result (incompleteness, undecidability, independence) is not captured by any existing primitive. Fixed_point_scan finds where f equals a canonical value but does not describe the self-referential diagonal construction that weaponizes that fixed point into a proof of impossibility. Collision_exploit identifies structural identity from f(a)==f(b) but does not encode the self-application loop (encoding a statement about its own provability) that is the engine of G\u00f6delian arguments. Inversion asks what observation destroys a hypothesis\u2014a falsification heuristic\u2014not a constructive impossibility proof from within the system's own syntax. Negative results and elimination names a category of outcome but provides no mechanism. The op's novel content is: the diagonal self-referential construction as a specific, reusable structural move that generates impossibility results from within a formal system, distinct from falsification, fixed-point detection, or collision detection.",
+        "reason": "Several existing primitives touch adjacent territory: fixed_point_scan gestures at self-referential structure, collision_exploit at structural identity through function collapse, inversion at destruction of hypotheses, and negative results at impossible outcomes. However, none of these primitives encodes the precise mechanism: constructing a sentence that refers to its own unprovability (or equivalent diagonal construction), then deriving a formal impossibility from the resulting self-referential loop. This mechanism is architecturally distinct\u2014it is not a search heuristic, not a falsification strategy, not a parameter-variation move, and not merely identifying that two inputs map to the same output. The diagonal self-application that produces the limitative theorem is a specific formal construction technique with no adequate primitive in any of the four lists, leaving a genuine novel residue even after partial overlap is acknowledged."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Tao: negative results and elimination",
+          "ZTARE: inversion",
+          "ZTARE: fixed_point_scan",
+          "ZTARE: collision_exploit",
+          "Paper 5 op1: eigenquestion identification",
+          "Paper 5 op2: controlling claim isolation",
+          "ZTARE: state_incompatibility",
+          "Polya: vary the problem",
+          "Lakatos: lemma incorporation"
+        ],
+        "novel_residue": "None for tb_11 as stated. The alleged op names a class of outcomes: impossibility, incompleteness, undecidability, independence. The actual generative move would be diagonal self-application or self-reference construction, but that is not what tb_11 specifies as the operative primitive.",
+        "reason": "tb_11 collapses because 'construct a limitative theorem' is not a primitive operation; it is the terminal result of existing moves. The negative-result aspect is already Tao's negative results and elimination. The impossibility test is ZTARE inversion plus state_incompatibility: identify what would make the framework fail and promote it to an invariant obstruction. The decisive formal bottleneck is Paper 5 eigenquestion/control-claim isolation: reduce the system to the one proposition, decision procedure, consistency claim, or expressibility claim whose resolution determines the rest. The fixed-point/self-reference flavor is already approximated by fixed_point_scan and collision_exploit: find a point/object where the system's operation loops onto itself or where two supposedly distinct encodings collapse into the same structural identity. The proof-repair/refinement side is Lakatos lemma incorporation and Polya variation: weaken assumptions, localize the failed lemma, or vary the framework until the impossibility boundary is exposed. Therefore tb_11 adds no independent theory-building action; it bundles known reduction, inversion, fixed-point, and negative-result primitives under the name of their successful output."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_12",
+        "name": "Problem Boundary Specification",
+        "structural_mechanism": "Make precise what counts as a solution / member / instance of the central question, fixing the success criterion before the main argument runs.",
+        "panel_status": "Lakatos says wrong temporal direction; Gigerenzer says it's a constant not a category"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "understand the problem",
+          "vary the problem (drop hypothesis, weaken conclusion, swap roles of given and unknown)",
+          "monster-barring",
+          "anchor proxy requirement",
+          "eigenquestion identification"
+        ],
+        "novel_residue": "The specific procedural commitment of fixing the success criterion (what counts as a solution/member/instance) *before* the main argument runs \u2014 i.e., the temporal/logical sequencing of boundary-setting as a precondition to argumentation, not just as a component of understanding or a defensive move against counterexamples. None of the existing primitives encode this as a proactive, pre-argument gate that disciplines what the argument is even trying to prove.",
+        "reason": "Several primitives graze this op: 'understand the problem' (Polya) covers clarifying what is asked but is purely descriptive of a phase, not a structural mechanism; 'monster-barring' (Lakatos) excludes counterexamples by definition but is reactive and post-hoc; 'anchor proxy requirement' (Paper 5) binds abstract variables to observables but is about measurability, not boundary of the solution concept; 'eigenquestion identification' (Paper 5) isolates the central question but does not specify what counts as answering it. The residue is the forward-deployed, pre-argument act of specifying the solution boundary as a logical precondition \u2014 a success-criterion fence erected before inference begins. This is a distinct structural mechanism that none of the primitives fully capture, though it overlaps with several."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Polya: understand the problem",
+          "Paper 5 op1 eigenquestion identification",
+          "Paper 5 op4 charter drift detection",
+          "Paper 5 op5 anchor proxy requirement",
+          "Paper 5 op10 fail-closed defaulting",
+          "ZTARE: entropy_stripping",
+          "ZTARE: interface_discipline",
+          "Lakatos: monster-barring",
+          "Lakatos: exception-barring"
+        ],
+        "novel_residue": "None. The op is just front-loaded problem understanding plus scope/success-condition locking. It adds no distinct transformation, diagnostic, or search procedure beyond existing primitives.",
+        "reason": "tb_12 says: define what counts as a solution/member/instance and fix the success criterion before arguing. Polya's 'understand the problem' already requires identifying the unknown, data, conditions, and satisfiability criteria. Paper 5 op1 covers isolating the central determining question; op4 covers guarding against scope migration; op5 covers binding abstractions to observable criteria; op10 covers refusing ambiguity when boundaries are not fixed. ZTARE entropy_stripping already forces restatement in observable transfers, and interface_discipline keeps changes at the boundary/gate layer. Lakatos monster-barring and exception-barring are the known proof-dialectic versions of redefining membership or admissibility. Therefore tb_12 is not a new theory-building operation; it is a packaging of existing boundary/scope/criterion primitives."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_NEW_LAK1",
+        "name": "Refutation-Driven Concept Revision",
+        "structural_mechanism": "A concrete counter-example forces revision of the meaning of a core term in the theory; the concept stretches or restricts in response (Lakatos's monster-barring; Russell's paradox forcing ZF separation axiom).",
+        "panel_status": "ADDED per Lakatos panel critique"
+      },
+      "sonnet": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "monster-barring",
+          "lemma incorporation"
+        ],
+        "novel_residue": "",
+        "reason": "The op describes exactly the Lakatos Proofs and Refutations operations already enumerated. Monster-barring covers the mechanism of excluding or redefining a counter-example by adjusting the concept's boundary (stretching or restricting the term so the counter-example no longer applies), which is precisely what the OP calls 'Refutation-Driven Concept Revision.' Lemma incorporation covers the complementary move of diagnosing which sub-lemma or definitional component failed and absorbing the failure back into the theory structure \u2014 what the OP illustrates with Russell's paradox forcing the ZF separation axiom. The OP adds no structural mechanism beyond what these two Lakatos primitives already name; the Russell/ZF and Euler/polyhedra examples are merely canonical illustrations of the same operations. There is zero remainder."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Lakatos: monster-barring",
+          "Lakatos: exception-barring",
+          "Lakatos: lemma incorporation",
+          "ZTARE: state_incompatibility",
+          "ZTARE: primary_degree_of_freedom",
+          "ZTARE: inversion",
+          "Paper 5 op3: topological pivot recognition",
+          "Paper 5 op4: charter drift detection",
+          "Paper 5 op7: failure family tagging",
+          "Polya: vary the problem"
+        ],
+        "novel_residue": "None. The proposed op is a named bundle of existing refutation-response moves, not a new primitive.",
+        "reason": "The definition explicitly cites Lakatos monster-barring, which is already an existing primitive. The alleged mechanism, 'a counter-example forces revision of the meaning of a core term,' decomposes cleanly: the counter-example is handled by inversion/state_incompatibility; the revised core term is the primary degree of freedom; restricting the term is monster-barring or exception-barring; stretching the term is varying/generalizing the problem; locating the failed piece is lemma incorporation; recognizing that the theory's dependency graph must be rewired is topological pivot recognition; detecting that the meaning has migrated from the original scope is charter drift detection. Russell-to-ZF separation is likewise exception-barring/lemma incorporation at axiomatic scale, not a distinct operation. The only added content is historical packaging and the word 'concept,' which does no irreducible work."
+      },
+      "combined": "KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_NEW_LAK2",
+        "name": "Proof-Analysis Under Counter-Example",
+        "structural_mechanism": "When a proof fails on a counter-example, localize which sub-step failed and absorb the missing condition as an explicit lemma; the proof and the conditions co-evolve (Lakatos's lemma-incorporation).",
+        "panel_status": "ADDED per Lakatos panel critique"
+      },
+      "sonnet": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "lemma incorporation"
+        ],
+        "novel_residue": "",
+        "reason": "The op under test describes exactly and only Lakatos's lemma-incorporation operation: when a proof fails on a counter-example, localize the failing sub-step and absorb the missing condition as an explicit lemma, causing proof and conditions to co-evolve. The Lakatos primitives list already contains 'lemma incorporation \u2014 localize which sub-lemma failed and absorb,' which is a word-for-word structural match. The op adds no novel mechanism, no additional scope, and no distinct structural residue beyond what lemma-incorporation already names. The parenthetical '(Lakatos's lemma-incorporation)' in the op itself confirms the authors recognize the identity. Nothing survives."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Lakatos: lemma incorporation",
+          "op2 controlling claim isolation",
+          "ZTARE: failure_topology",
+          "Polya: look back",
+          "Polya: vary the problem"
+        ],
+        "novel_residue": "None. The OP is a restatement of Lakatos's lemma incorporation with generic proof-debugging language.",
+        "reason": "The named behavior is exactly already present: given a counter-example to a proof, identify the failed sub-lemma/sub-step and add the missing condition as an explicit lemma. That is Lakatos's lemma incorporation verbatim. 'Localize which sub-step failed' is just controlling claim isolation or failure_topology applied inside a proof. 'Absorb the missing condition' is the incorporation move itself. 'Proof and conditions co-evolve' adds rhetoric, not an operation: it is the standard iterative Proofs and Refutations cycle, also covered by Polya's look back / vary the problem. No independent primitive remains."
+      },
+      "combined": "KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_NEW_HOF",
+        "name": "Diagonal Self-Application",
+        "structural_mechanism": "Apply a predicate defined over codes of statements to its own code, producing a fixed point where the level distinction between syntax and semantics collapses non-trivially (G\u00f6del diagonal; Cantor's diagonal; Kleene fixed-point; Quine quotation).",
+        "panel_status": "ADDED per Hofstadter panel critique (split from old tb_10)"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "fixed_point_scan",
+          "collision_exploit"
+        ],
+        "novel_residue": "The op names a specific structural mechanism: applying a predicate to its own G\u00f6del code (or syntactic self-representation), which forces a level-collapse between syntax and semantics\u2014not merely finding a fixed point f(x)=x within a domain, but constructing one where the object being reasoned *about* is identical to the reasoning apparatus itself, generating undecidability, incompleteness, or paradox as structural consequences. fixed_point_scan finds subsets where f equals a canonical value but does not require the predicate to be defined over codes of the very statements invoking it, and does not capture the syntax/semantics level-collapse. collision_exploit identifies structural identity from f(a)==f(b) but operates on coincidence of outputs, not on self-referential encoding that collapses metalevel into object level. No existing primitive names the mechanism of diagonalization-as-level-collapse: the construction of a statement that refers to its own unprovability/truth via syntactic encoding, producing fixed points that are undecidable rather than merely coincident.",
+        "reason": "Two ZTARE primitives partially touch this op: fixed_point_scan (looks for f(x)=x configurations) and collision_exploit (structural identity via output coincidence). However, both are purely extensional\u2014they describe where a function settles or collides without specifying the mechanism of self-referential encoding across syntactic levels. The Diagonal Self-Application op is specifically about a predicate defined over *codes* of statements being applied to the code of *itself*, producing a fixed point where the metalanguage/object-language distinction is internally collapsed, yielding incompleteness, the liar paradox structure, or recursion-theoretic undecidability. This metalevel-collapse-via-self-encoding is not described by any of the Polya, Lakatos, Tao, or Paper 5 ops either. The op therefore survives with a genuine residue: the structural mechanism of syntactic self-reference that destroys level separation."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "fixed_point_scan",
+          "category_switch",
+          "coordinate_compression",
+          "collision_exploit",
+          "inversion",
+          "adversarial_stress_test",
+          "controlling claim isolation"
+        ],
+        "novel_residue": "None as a theory-building primitive. The mathematical examples are famous instances, but the operational pattern is already covered by existing primitives.",
+        "reason": "tb_NEW_HOF is just fixed_point_scan after coordinate_compression and category_switch. First encode semantic objects as syntactic data; then switch category from statements to codes; then search for x such that the transformed predicate/function re-enters on x's own representation. The alleged syntax/semantics collapse is not a new move: it is the known gate-crossing handled by category_switch plus coordinate_compression. Cantor/G\u00f6del/Kleene/Quine differ in implementation details, not in primitive structure. collision_exploit covers the identity/aliasing aspect where object-code and object-level behavior are forced to coincide. inversion covers the negating/anti-predicate diagonal cases. adversarial_stress_test and controlling claim isolation cover its use as a destructive critique. So the op is a named high-status bundle, not an independent primitive."
+      },
+      "combined": "DISPUTED_KILL"
+    },
+    {
+      "op": {
+        "cluster_id": "tb_NEW_POLYA",
+        "name": "Strategic Specialization",
+        "structural_mechanism": "Solve a carefully-chosen special case first, then leverage it as the engine for the general result; the special case is selected to break the structural barrier (Wiles's semistable case; Newton's specific curves).",
+        "panel_status": "ADDED per Polya panel critique"
+      },
+      "sonnet": {
+        "verdict": "PARTIAL_OVERLAP",
+        "collapses_into": [
+          "specialize",
+          "generalize",
+          "fixed_point_scan",
+          "lemma incorporation"
+        ],
+        "novel_residue": "The op names a specific structural mechanism: deliberate selection of a special case whose solution actively breaks a structural barrier in the general problem, functioning as a load-bearing engine rather than a mere stepping stone. Polya's 'specialize' is a generic heuristic (try simpler values) without the criterion of barrier-breaking selection. 'fixed_point_scan' looks for a subset where a function hits a canonical value, which is topologically adjacent but not the same as choosing a case to demolish a structural obstacle. 'lemma incorporation' absorbs a failed sub-lemma but does not address the strategic selection of a special case as the engine for generalization. The novel residue is: the principle that the special case must be chosen precisely because solving it dissolves the structural impediment to the general case\u2014i.e., the selection criterion is the barrier itself, not just simplicity or analogy.",
+        "reason": "Polya's 'specialize' covers trying a special case, and 'generalize' covers extending results, so the two-step motion is captured. 'fixed_point_scan' partially overlaps in identifying a privileged subset. 'lemma incorporation' covers absorbing a sub-result into a proof. However, none of these primitives encode the strategic selection criterion\u2014that the special case is chosen because its structure is precisely the key that unlocks the general barrier (e.g., semistable elliptic curves as the lever for FLT). That criterion\u2014barrier-targeted case selection as an engine, not just a warm-up\u2014is not described by any existing primitive, leaving a genuine, if narrow, novel residue."
+      },
+      "gpt": {
+        "verdict": "FULL_COLLAPSE",
+        "collapses_into": [
+          "Polya: specialize",
+          "Polya: generalize",
+          "Polya: devise a plan",
+          "Polya: decompose and recombine",
+          "ZTARE: fixed_point_scan",
+          "ZTARE: primary_degree_of_freedom",
+          "ZTARE: failure_topology",
+          "ZTARE: coercive_leverage",
+          "Paper 5 op2: controlling claim isolation",
+          "Lakatos: lemma incorporation"
+        ],
+        "novel_residue": "None. The only apparent residue is the phrase 'carefully-chosen special case selected to break the structural barrier,' but that is just a selection criterion for specialization: identify the load-bearing obstruction, choose a tractable subset where it disappears or becomes controllable, prove there, then use that lemma as leverage for the general case.",
+        "reason": "tb_NEW_POLYA is not a new operation; it is Polya specialization plus generalization with an explicit strategic choice of the special case. 'Solve a special case first' is exactly Polya: specialize. 'Leverage it as the engine for the general result' is Polya: generalize and decompose/recombine. 'Selected to break the structural barrier' collapses into identifying the controlling claim or primary degree of freedom, mapping the failure topology, and choosing a subset/fixed point where the obstruction is neutralized. Wiles's semistable case is a canonical example of proving a load-bearing restricted theorem and then extending via reduction/modularity-lifting machinery; structurally that is lemma incorporation plus coercive leverage, not a distinct primitive. Newton using specific curves likewise is specialization used as a tractable anchor for a broader method. The proposed op names a useful pattern, but every functional component is already present: pick the obstruction, choose a tractable special domain, prove there, convert it into a lemma/engine, then generalize. No independent structural move remains."
+      },
+      "combined": "DISPUTED_KILL"
+    }
+  ],
+  "verdict": "PASS \u2014 2 ops killed; 0 of 13 ops survive active killing. Vocabulary has independent contribution."
+}

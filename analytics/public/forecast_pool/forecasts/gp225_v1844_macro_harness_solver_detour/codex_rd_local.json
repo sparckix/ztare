@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd_local",
+  "contract_id": "gp225_v1844_macro_harness_solver_detour",
+  "contract_question": "Should GP-225 continue the pre-GNN harness-solver detour as the route to a general-purpose Lean/harness solver before returning to NS, rather than stopping at deterministic CPU sidecar work?",
+  "domain": "gp225_harness_solver",
+  "expected_cost_agent_minutes": 35.0,
+  "failure_mode_distribution": {
+    "deterministic_baselines_saturate": 0.18,
+    "local_overfit_not_general_solver": 0.3,
+    "other": 0.1,
+    "replay_substrate_missing": 0.17,
+    "rows_exist_but_labels_not_closure_value": 0.25
+  },
+  "forecasted_at": "2026-05-13T15:16:25Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.08,
+  "p_success": 0.58,
+  "rationale_short": "The detour has already produced real harness mechanics and failure taxonomy, but the strongest evidence is still small/local. Continue only if v18.44 exposes unsaturated closure-value rows; otherwise build replay substrate first and return to NS with advisory artifact only.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,81 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-19T20:50:57Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-19T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Run scripts/public/control/path_c_canary_replay.py --govern-winners on VPS after the transport adapter patch; inspect official governance verdict and STD-only axiom audit.",
+    "question": "Will the bounded Path-C current_scale_0080 transport-adapter pass convert the compiling direct-audit-clean candidate into official authoritative_axioms.govern ratification without changing the theorem statement, weakening the proof body, or adding non-STD axioms?",
+    "success_threshold": "SUCCESS iff unchanged current_scale_0080 source-faithful driver returns authoritative_axioms.govern closure/ratified with STD-only axioms on VPS; FAIL iff unverified/open persists or success requires target weakening, unsafe axioms, or manual semantic edits.",
+    "task_type": "path_c_transport_adapter"
+  },
+  "contract_id": "gp225_path_c_current_scale_0080_transport_adapter_meso_20260519",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 17.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-19T20:54:42Z",
+    "success_bool": true,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

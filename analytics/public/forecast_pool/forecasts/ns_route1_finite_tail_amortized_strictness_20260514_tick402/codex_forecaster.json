@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "Keep the finite-budget theorem and the amortized strictness theorem separate; add an explicit same-carrier scalar bridge only if the large-prefix strictness theorem is introduced.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_finite_tail_amortized_strictness_20260514_tick402",
+  "contract_question": "Will the next NS tick compile Route1FiniteTailAmortizedStrictness and a large-prefix strictness theorem from finite active-tail budget plus X_tail <= C activeTail?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "finite_budget_to_strictness_smuggling": 0.24,
+    "large_prefix_telescoping_friction": 0.18,
+    "missing_same_carrier_tail_bridge": 0.26,
+    "namespace_or_wrapper_mismatch": 0.14,
+    "scalar_bound_not_independent_enough": 0.12,
+    "touched_file_hygiene_or_sorry_scan": 0.06
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioner",
+    "same_carrier_guard",
+    "finite_budget_bridge"
+  ],
+  "forecasted_at": "2026-05-14T18:48:06Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.68,
+  "p_regression": 0.08,
+  "p_success": 0.57,
+  "rationale_short": "The finite-budget ladder is real, but the exact amortized-strictness theorem is not declared in the file and the adapter still blocks strict-subratio smuggling; success looks more like an explicit bridge plus wrapper than a pure reuse of existing lemmas.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "missing_same_carrier_tail_bridge",
+    "finite_budget_to_strictness_smuggling",
+    "large_prefix_telescoping_friction"
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:21:13Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 93.5,
+    "expected_value": -172.7886272378051,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.395,
+    "p_needs_new_lemma": 0.8200000000000001,
+    "p_regression": 0.225,
+    "p_success": 0.5661372762194906,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick338",
+        "domain": "ns_route1_pde",
+        "p_success": 0.63,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_adversarial_tick338",
+        "domain": "ns_route1_pde",
+        "p_success": 0.5,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "build_regression",
+        "p": 0.175
+      },
+      {
+        "mode": "compatibility_split_names_gap_but_does_not_pay",
+        "p": 0.175
+      },
+      {
+        "mode": "split_becomes_too_conditional",
+        "p": 0.15
+      },
+      {
+        "mode": "ckn_tent_scout_needed_first",
+        "p": 0.125
+      },
+      {
+        "mode": "leakage_route_not_available",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 85.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:21:01Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T10:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "Success iff Lean compatibility source feeds FixedWindowPressureConeTentOperatorNormSource, keeps mean/leakage explicit, downstream build passes, no sorry/admit introduced, and GP-233/E rows are written.",
+    "question": "Will we add a useful compatibility primitive splitting pre-summed stress mass into resolved mean-free, Galilean mean, and leakage pieces, with CKN/tent and shard-C payment paths?",
+    "success_threshold": "lean_compatibility_split+build+ledger",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick338",
+        "raw_agent_ids": [
+          "hooke_forecast_tick338"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_adversarial_tick338",
+        "raw_agent_ids": [
+          "rawls_adversarial_tick338"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick338",
+      "rawls_adversarial_tick338"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick338",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338/hooke_forecast_tick338.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 82.0,
+        "forecasted_at": "2026-05-14T03:21:01Z",
+        "p_success": 0.63,
+        "rationale_short": "The sidecar identified the right split; useful if the Lean surface explicitly routes mean/leakage rather than pretending tent excess sees everything.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_adversarial_tick338",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338/rawls_adversarial_tick338.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 105.0,
+        "forecasted_at": "2026-05-14T03:21:13Z",
+        "p_success": 0.5,
+        "rationale_short": "The primitive is likely useful, but the PDE content is still open; there is risk this should be preceded by the deterministic fixed-window CKN/tent scout.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 68.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:26:23Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.13,
+      "p_success": 0.5661372762194906,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "build_regression",
+        "p": 0.175
+      },
+      "voi_proxy": 9.3756
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 93.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5661372762194906,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "build_regression",
+        "p": 0.175
+      },
+      {
+        "mode": "compatibility_split_names_gap_but_does_not_pay",
+        "p": 0.175
+      },
+      {
+        "mode": "split_becomes_too_conditional",
+        "p": 0.15
+      },
+      {
+        "mode": "ckn_tent_scout_needed_first",
+        "p": 0.125
+      },
+      {
+        "mode": "leakage_route_not_available",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.19345,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:26:30Z"
+  }
+}

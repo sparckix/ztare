@@ -1,0 +1,23 @@
+{
+  "agent_id": "codex_skeptic_tick359",
+  "contract_id": "ns_route1_positive_boundary_flux_subadditivity_source_micro_20260514_tick359",
+  "contract_question": "Can we add a Lean-checked positive boundary-flux subadditivity source replacing exact split equality with a PDE-native inequality, while still paying normalized transport by transport plus local/commutator/no-invisible charges?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_surprise": 0.08,
+    "charge_order_mismatch": 0.16,
+    "lean_arithmetic_or_order_issue": 0.14,
+    "not_enough_next_move_change": 0.18,
+    "other": 0.12,
+    "subadditivity_source_still_assumes_hard_estimate": 0.32
+  },
+  "forecasted_at": "2026-05-14T12:29:32Z",
+  "p_dependency_issue": 0.25,
+  "p_needs_new_lemma": 0.42,
+  "p_regression": 0.06,
+  "p_success": 0.61,
+  "rationale_short": "Weaker than exact split and closer to positive-part estimates, but still conditional until the local-energy identity source is proved.",
+  "read_only_attestation": true
+}

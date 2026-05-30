@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 9.0,
+  "artifact_hash": "2ec2c3793e32567f8cd2bdd7b689ebacd0c1dfc99efe2162266c28e9f344e32c",
+  "artifact_path": "analytics/public/leanmill/results/v1924_leanhammer_local_decl_smoke.json",
+  "compile_status": "incompatible_toolchain_headers",
+  "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
+  "error_type": "leanhammer_mathlib_toolchain_mismatch",
+  "goal_delta": null,
+  "resolution_note": "Contract threshold passed at interface level: three LeanHammer invocations and per-row artifacts in external clone, no main project mutation, no heavy training, GNN blocked. Scientific benchmark score remains unavailable because all three rows hit incompatible Mathlib olean headers from Lean 4.29 LeanHammer versus GP-225 Lean 4.30-rc2 Mathlib build.",
+  "resolved_at": "2026-05-13T22:39:17Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

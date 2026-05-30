@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke",
+  "contract_id": "ns_route1_cutoff_cz_branch_meso_20260513_tick308",
+  "contract_question": "Is cutoff/CZ commutator leakage the best next NS Route-1 branch versus recovered-Riesz localCZ, harmonic reserve, child integration, or velocity Caccioppoli?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.1,
+    "carrier_mismatch": 0.18,
+    "lean_plumbing": 0.12,
+    "target_rename": 0.34,
+    "unclean_split": 0.26
+  },
+  "forecasted_at": "2026-05-13T23:14:18Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.1,
+  "p_success": 0.47,
+  "rationale_short": "Ranks cutoff/CZ first over recovered-Riesz and child integration because it attacks suspicious shard-C leakage leg.",
+  "read_only_attestation": true
+}

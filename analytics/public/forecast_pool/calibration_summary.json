@@ -1,0 +1,4373 @@
+{
+  "agents": {
+    "Bayes": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_alignment_policy": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_alignment_policy": {
+          "mean_brier": 0.0529,
+          "mean_cost_error_agent_minutes": 3.0,
+          "median_actual_cost_agent_minutes": 19.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Euler": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_lean_micro": 1.1667,
+        "ns_route1_pde": 1.2857
+      },
+      "evidence": {
+        "ns_lean_micro": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "ns_route1_pde": {
+          "mean_brier": 0.0609,
+          "mean_cost_error_agent_minutes": 7.0,
+          "median_actual_cost_agent_minutes": 26.5,
+          "median_expected_cost_agent_minutes": 33.5,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "Fisher": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_route_selection": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_route_selection": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Gibbs": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_lean_micro": 1.1667,
+        "ns_route1_pde": 1.2857
+      },
+      "evidence": {
+        "ns_lean_micro": {
+          "mean_brier": 0.04,
+          "mean_cost_error_agent_minutes": -2.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 16.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "ns_route1_pde": {
+          "mean_brier": 0.0612,
+          "mean_cost_error_agent_minutes": 3.5,
+          "median_actual_cost_agent_minutes": 15.0,
+          "median_expected_cost_agent_minutes": 18.5,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "Herschel": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 1.1667,
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "ns_route1_pde": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 20.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Hilbert": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_source_discovery": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_source_discovery": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Hooke": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0666
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2123,
+          "mean_cost_error_agent_minutes": 63.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 90.0,
+          "sample_limited": false,
+          "score_rows": 3
+        }
+      }
+    },
+    "Hopper": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_source_contract_correction": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_source_contract_correction": {
+          "mean_brier": 0.0841,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Knuth": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_candidate_static_check": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_candidate_static_check": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": 1.0,
+          "median_actual_cost_agent_minutes": 29.0,
+          "median_expected_cost_agent_minutes": 30.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Kolmogorov": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_route_selection": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_route_selection": {
+          "mean_brier": 0.09,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Lovasz": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_source_discovery": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_source_discovery": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "McClintock": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0022
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.248,
+          "mean_cost_error_agent_minutes": 29.0,
+          "median_actual_cost_agent_minutes": 16.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "Mirzakhani": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_replay_gate": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_replay_gate": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Noether": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_alignment_policy": 1.1667,
+        "gp225_pre_gnn_context_binding": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_alignment_policy": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 7.0,
+          "median_actual_cost_agent_minutes": 17.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_pre_gnn_context_binding": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 21.0,
+          "median_expected_cost_agent_minutes": 23.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Noether2": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_candidate_static_check": 1.1219
+      },
+      "evidence": {
+        "gp225_pre_gnn_candidate_static_check": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 5.0,
+          "median_actual_cost_agent_minutes": 29.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Rawls": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 0.9616,
+        "ns_route1_pde": 1.2857
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.3249,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 40.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "ns_route1_pde": {
+          "mean_brier": 0.0759,
+          "mean_cost_error_agent_minutes": 13.5,
+          "median_actual_cost_agent_minutes": 27.5,
+          "median_expected_cost_agent_minutes": 41.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "Russell": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_replay_gate": 1.1219
+      },
+      "evidence": {
+        "gp225_pre_gnn_replay_gate": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 26.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Shannon": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_alignment_policy": 1.1667,
+        "gp225_pre_gnn_source_contract_correction": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_alignment_policy": {
+          "mean_brier": 0.0841,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 19.0,
+          "median_expected_cost_agent_minutes": 27.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_pre_gnn_source_contract_correction": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "Turing": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_pre_gnn_alignment_policy": 1.1667,
+        "gp225_pre_gnn_context_binding": 1.1667
+      },
+      "evidence": {
+        "gp225_pre_gnn_alignment_policy": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 11.0,
+          "median_actual_cost_agent_minutes": 17.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_pre_gnn_context_binding": {
+          "mean_brier": 0.1089,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 21.0,
+          "median_expected_cost_agent_minutes": 27.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "bernoulli_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 0.953
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.3481,
+          "mean_cost_error_agent_minutes": 55.0,
+          "median_actual_cost_agent_minutes": 20.0,
+          "median_expected_cost_agent_minutes": 75.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "bohr_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.09,
+          "mean_cost_error_agent_minutes": -6.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "carver_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1219
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 12.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 44.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "chandrasekhar_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_live_scalar_hinge": 0.9572
+      },
+      "evidence": {
+        "ns_live_scalar_hinge": {
+          "mean_brier": 0.3364,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 35.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_RD": {
+      "default_weight": 1.0,
+      "domains": {
+        "gnn_synthetic_data_factory": 1.1667
+      },
+      "evidence": {
+        "gnn_synthetic_data_factory": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 20.87,
+          "median_actual_cost_agent_minutes": 7.13,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_empirical_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "meta_prediction_market": 1.1073
+      },
+      "evidence": {
+        "meta_prediction_market": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 17.0,
+          "median_actual_cost_agent_minutes": 28.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_gp230_pro_gp225_route_selector_readonly": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_baseline": 1.1667
+      },
+      "evidence": {
+        "gp225_baseline": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": 17.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_gpt5_readonly_2026_05_13": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_label_source": 1.1667
+      },
+      "evidence": {
+        "gp225_label_source": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 11.8,
+          "median_actual_cost_agent_minutes": 0.2,
+          "median_expected_cost_agent_minutes": 12.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_infra_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp230_forecast_pool_infrastructure": 0.9572
+      },
+      "evidence": {
+        "gp230_forecast_pool_infrastructure": {
+          "mean_brier": 0.3364,
+          "mean_cost_error_agent_minutes": 112.0,
+          "median_actual_cost_agent_minutes": 28.0,
+          "median_expected_cost_agent_minutes": 140.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_local_rd_v1869": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_lean_witness_backfill": 0.9572
+      },
+      "evidence": {
+        "gp225_lean_witness_backfill": {
+          "mean_brier": 0.3364,
+          "mean_cost_error_agent_minutes": 16.92,
+          "median_actual_cost_agent_minutes": 1.08,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_local_rd_v1872": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_lean_witness_backfill": 1.1219
+      },
+      "evidence": {
+        "gp225_lean_witness_backfill": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 6.89,
+          "median_actual_cost_agent_minutes": 1.11,
+          "median_expected_cost_agent_minutes": 8.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_local_rd_v1874": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_lean_witness_backfill": 0.9572
+      },
+      "evidence": {
+        "gp225_lean_witness_backfill": {
+          "mean_brier": 0.3364,
+          "mean_cost_error_agent_minutes": 0.97,
+          "median_actual_cost_agent_minutes": 0.92,
+          "median_expected_cost_agent_minutes": 1.89,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_market_architect": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp230_forecast_pool_infrastructure": 1.1667
+      },
+      "evidence": {
+        "gp230_forecast_pool_infrastructure": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 47.0,
+          "median_actual_cost_agent_minutes": 28.0,
+          "median_expected_cost_agent_minutes": 75.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_market_mechanism": {
+      "default_weight": 1.0,
+      "domains": {
+        "meta_prediction_market": 1.1667
+      },
+      "evidence": {
+        "meta_prediction_market": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 28.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd": {
+      "default_weight": 1.0,
+      "domains": {
+        "meta_prediction_market": 1.1667,
+        "navier_stokes_route1": 1.0638,
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "meta_prediction_market": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 1.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "navier_stokes_route1": {
+          "mean_brier": 0.2265,
+          "mean_cost_error_agent_minutes": 15.5,
+          "median_actual_cost_agent_minutes": 16.5,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": false,
+          "score_rows": 8
+        },
+        "ns_route1_pde": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 16.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_absorption_route": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_countermodel_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0938
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.16,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_event_bridge": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_executor_prior": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_local_energy_measure_split": 1.1667
+      },
+      "evidence": {
+        "ns_route1_local_energy_measure_split": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_graph_basin": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1219
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": -14.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_language_gate": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9094
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.5476,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 10.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_local": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_inventory_gate": 1.0142,
+        "gp225_label_source": 1.1219,
+        "gp225_public_trace_labels": 0.9491,
+        "lean_replay_verification": 0.9453
+      },
+      "evidence": {
+        "gp225_inventory_gate": {
+          "mean_brier": 0.2304,
+          "mean_cost_error_agent_minutes": 1.8,
+          "median_actual_cost_agent_minutes": 0.2,
+          "median_expected_cost_agent_minutes": 2.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_label_source": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 9.8,
+          "median_actual_cost_agent_minutes": 0.2,
+          "median_expected_cost_agent_minutes": 10.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_public_trace_labels": {
+          "mean_brier": 0.36,
+          "mean_cost_error_agent_minutes": 1.7,
+          "median_actual_cost_agent_minutes": 0.3,
+          "median_expected_cost_agent_minutes": 2.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "lean_replay_verification": {
+          "mean_brier": 0.3721,
+          "mean_cost_error_agent_minutes": 3.14,
+          "median_actual_cost_agent_minutes": 0.86,
+          "median_expected_cost_agent_minutes": 4.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_local_micro": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 1.0695
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_micro_pricer": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_micro_probe": 0.9166
+      },
+      "evidence": {
+        "gp225_micro_probe": {
+          "mean_brier": 0.353,
+          "mean_cost_error_agent_minutes": 12.52,
+          "median_actual_cost_agent_minutes": 2.48,
+          "median_expected_cost_agent_minutes": 15.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "codex_rd_no_go_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9638
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2863,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 38.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "codex_rd_no_reuse_prior": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_local_energy_measure_split": 1.1667
+      },
+      "evidence": {
+        "ns_route1_local_energy_measure_split": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 26.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_ns_route1_gowers_prompt": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_live_scalar_hinge": 1.1667
+      },
+      "evidence": {
+        "ns_live_scalar_hinge": {
+          "mean_brier": 0.0256,
+          "mean_cost_error_agent_minutes": 1.0,
+          "median_actual_cost_agent_minutes": 5.0,
+          "median_expected_cost_agent_minutes": 6.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_ns_route1_gp233_decomposer": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_live_scalar_hinge": 1.1667
+      },
+      "evidence": {
+        "ns_live_scalar_hinge": {
+          "mean_brier": 0.0196,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 5.0,
+          "median_expected_cost_agent_minutes": 7.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_ns_route1_intake_gate": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_live_scalar_hinge": 1.1667
+      },
+      "evidence": {
+        "ns_live_scalar_hinge": {
+          "mean_brier": 0.0144,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 6.0,
+          "median_expected_cost_agent_minutes": 8.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_ns_route1_pricer": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_live_scalar_hinge": 1.1667
+      },
+      "evidence": {
+        "ns_live_scalar_hinge": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 3.5,
+          "median_actual_cost_agent_minutes": 4.5,
+          "median_expected_cost_agent_minutes": 8.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_pde_no_go": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0391
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2025,
+          "mean_cost_error_agent_minutes": 23.0,
+          "median_actual_cost_agent_minutes": 17.0,
+          "median_expected_cost_agent_minutes": 40.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_pde_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9572
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.3364,
+          "mean_cost_error_agent_minutes": 16.0,
+          "median_actual_cost_agent_minutes": 10.0,
+          "median_expected_cost_agent_minutes": 26.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_pre": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_reuse_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0069
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2401,
+          "mean_cost_error_agent_minutes": 22.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 40.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_source_route": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0695
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_surface_repair": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 13.0,
+          "median_actual_cost_agent_minutes": 17.0,
+          "median_expected_cost_agent_minutes": 30.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_tick358": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_tick359": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 30.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_tick360": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 7.0,
+          "median_actual_cost_agent_minutes": 29.0,
+          "median_expected_cost_agent_minutes": 36.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_rd_tick361b": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 9.0,
+          "median_actual_cost_agent_minutes": 19.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_readonly_gp230": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_baseline": 1.1667,
+        "gp225_inventory_gate": 1.1667,
+        "gp225_public_trace_labels": 1.0695
+      },
+      "evidence": {
+        "gp225_baseline": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 17.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_inventory_gate": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 1.0,
+          "median_actual_cost_agent_minutes": 0.2,
+          "median_expected_cost_agent_minutes": 1.2,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_public_trace_labels": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 2.7,
+          "median_actual_cost_agent_minutes": 0.3,
+          "median_expected_cost_agent_minutes": 3.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_readonly_gp230_ns_route1_2026_05_13": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.3029
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1383,
+          "mean_cost_error_agent_minutes": 28.3333,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": false,
+          "score_rows": 3
+        }
+      }
+    },
+    "codex_readonly_gp230_skeptical_baseline": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_baseline": 1.1667
+      },
+      "evidence": {
+        "gp225_baseline": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 17.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "meta_prediction_market": 1.1377,
+        "navier_stokes_route1": 0.7761,
+        "ns_route1_pde": 1.0695
+      },
+      "evidence": {
+        "meta_prediction_market": {
+          "mean_brier": 0.1369,
+          "mean_cost_error_agent_minutes": 18.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 52.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "navier_stokes_route1": {
+          "mean_brier": 0.3929,
+          "mean_cost_error_agent_minutes": 27.0,
+          "median_actual_cost_agent_minutes": 16.5,
+          "median_expected_cost_agent_minutes": 48.0,
+          "sample_limited": false,
+          "score_rows": 8
+        },
+        "ns_route1_pde": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 18.0,
+          "median_actual_cost_agent_minutes": 16.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic_no_reuse_prior": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_local_energy_measure_split": 1.1073
+      },
+      "evidence": {
+        "ns_route1_local_energy_measure_split": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 16.0,
+          "median_actual_cost_agent_minutes": 26.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic_pre": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1219
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 23.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic_prior": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_local_energy_measure_split": 1.0695
+      },
+      "evidence": {
+        "ns_route1_local_energy_measure_split": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 26.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 44.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic_tick358": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9935
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2601,
+          "mean_cost_error_agent_minutes": 26.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 60.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic_tick359": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1073
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 16.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 40.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic_tick360": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9935
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2601,
+          "mean_cost_error_agent_minutes": 26.0,
+          "median_actual_cost_agent_minutes": 29.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "codex_skeptic_tick361b": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1219
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 21.0,
+          "median_actual_cost_agent_minutes": 19.0,
+          "median_expected_cost_agent_minutes": 40.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "confucius": {
+      "default_weight": 1.0,
+      "domains": {
+        "GP-225": 1.2857,
+        "gp225_external_baseline_smoke": 1.1667,
+        "gp225_pre_gnn_route_selection": 1.1667
+      },
+      "evidence": {
+        "GP-225": {
+          "mean_brier": 0.0234,
+          "mean_cost_error_agent_minutes": 0.25,
+          "median_actual_cost_agent_minutes": 12.0,
+          "median_expected_cost_agent_minutes": 12.25,
+          "sample_limited": true,
+          "score_rows": 2
+        },
+        "gp225_external_baseline_smoke": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 9.0,
+          "median_actual_cost_agent_minutes": 9.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_pre_gnn_route_selection": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 15.0,
+          "median_expected_cost_agent_minutes": 21.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "copernicus": {
+      "default_weight": 1.0,
+      "domains": {
+        "GP-225": 0.9874
+      },
+      "evidence": {
+        "GP-225": {
+          "mean_brier": 0.2704,
+          "mean_cost_error_agent_minutes": 23.0,
+          "median_actual_cost_agent_minutes": 12.0,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "copernicus_popper_skeptic_v1869": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_lean_witness_backfill": 1.0587
+      },
+      "evidence": {
+        "gp225_lean_witness_backfill": {
+          "mean_brier": 0.1849,
+          "mean_cost_error_agent_minutes": 18.92,
+          "median_actual_cost_agent_minutes": 1.08,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "copernicus_readonly_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_parallel_replay": 1.1667
+      },
+      "evidence": {
+        "gp225_parallel_replay": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 12.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "curry_policy_optimist": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1219
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 5.0,
+          "median_actual_cost_agent_minutes": 6.0,
+          "median_expected_cost_agent_minutes": 11.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "descartes": {
+      "default_weight": 1.0,
+      "domains": {
+        "GP-225": 0.9351
+      },
+      "evidence": {
+        "GP-225": {
+          "mean_brier": 0.4096,
+          "mean_cost_error_agent_minutes": -9.0,
+          "median_actual_cost_agent_minutes": 12.0,
+          "median_expected_cost_agent_minutes": 3.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "dirac_skeptical_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_blended_contract": 1.1667
+      },
+      "evidence": {
+        "gp225_blended_contract": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 12.0,
+          "median_actual_cost_agent_minutes": 12.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "euler_pair_guard_tick346": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0144,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 14.0,
+          "median_expected_cost_agent_minutes": 14.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "faraday_readonly_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "lean_replay_verification": 0.9234
+      },
+      "evidence": {
+        "lean_replay_verification": {
+          "mean_brier": 0.4624,
+          "mean_cost_error_agent_minutes": 34.14,
+          "median_actual_cost_agent_minutes": 0.86,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gibbs_market_B": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1111
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.18,
+          "mean_cost_error_agent_minutes": 63.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 105.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "goodall_readonly_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9262,
+        "gp225_typed_feedback": 0.953
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.4489,
+          "mean_cost_error_agent_minutes": -2.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_typed_feedback": {
+          "mean_brier": 0.3481,
+          "mean_cost_error_agent_minutes": 31.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_ampere_gp225_v1951": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.0486
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1936,
+          "mean_cost_error_agent_minutes": -2.0,
+          "median_actual_cost_agent_minutes": 44.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_babbage_gp225_v1960": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9874
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.2704,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_chandrasekhar_gp225_v2037": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.0938
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.16,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_curie_gp225_v1968": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 24.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_descartes_gp225_v2035": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.1667
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_erdos_gp225_v1949": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.0695
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 20.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_erdos_gp225_v2031": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.1667
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": -15.0,
+          "median_actual_cost_agent_minutes": 27.0,
+          "median_expected_cost_agent_minutes": 12.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_faraday_gp225_v1968": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.0486
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1936,
+          "mean_cost_error_agent_minutes": 18.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 36.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_fermat_gp225_v2022": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_route_selection_meso": 1.1667
+      },
+      "evidence": {
+        "gp225_route_selection_meso": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 20.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_hypatia_gp225_v2035": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.1667
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_kant_gp225_v2022": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_route_selection_meso": 1.1667
+      },
+      "evidence": {
+        "gp225_route_selection_meso": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": -4.0,
+          "median_actual_cost_agent_minutes": 20.0,
+          "median_expected_cost_agent_minutes": 16.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_lamport_gp225_v1973": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.0841,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 16.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_lovelace_gp225_v1960": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9351
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.4096,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_lovelace_gp225_v2030": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.1667
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.0196,
+          "mean_cost_error_agent_minutes": -2.0,
+          "median_actual_cost_agent_minutes": 20.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_maxwell_gp225_v2031": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.1667
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": -9.0,
+          "median_actual_cost_agent_minutes": 27.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_mcclintock_gp225_v1949": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.0938
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.16,
+          "mean_cost_error_agent_minutes": 16.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_mill_gp225_v2037": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.0695
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v1956": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v1978": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1089,
+          "mean_cost_error_agent_minutes": 12.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v1990": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 11.0,
+          "median_actual_cost_agent_minutes": 7.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v1994": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9351
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.4096,
+          "mean_cost_error_agent_minutes": 16.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v2001": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9001
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.6241,
+          "mean_cost_error_agent_minutes": 9.0,
+          "median_actual_cost_agent_minutes": 7.0,
+          "median_expected_cost_agent_minutes": 16.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v2004": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.8924
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.7056,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v2007": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9208
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.4761,
+          "mean_cost_error_agent_minutes": 13.0,
+          "median_actual_cost_agent_minutes": 9.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v2010": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9055
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.5776,
+          "mean_cost_error_agent_minutes": 13.0,
+          "median_actual_cost_agent_minutes": 7.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v2014": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.929
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.4356,
+          "mean_cost_error_agent_minutes": 3.0,
+          "median_actual_cost_agent_minutes": 9.0,
+          "median_expected_cost_agent_minutes": 12.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_noether_gp225_v2020": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9055
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.5776,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 14.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_ohm_skeptical_gp225_v1951": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9262
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.4489,
+          "mean_cost_error_agent_minutes": -13.0,
+          "median_actual_cost_agent_minutes": 44.0,
+          "median_expected_cost_agent_minutes": 31.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_parfit_gp225_v2030": {
+      "default_weight": 1.0,
+      "domains": {
+        "general": 1.1667
+      },
+      "evidence": {
+        "general": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": -6.0,
+          "median_actual_cost_agent_minutes": 20.0,
+          "median_expected_cost_agent_minutes": 14.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_readonly_ns_route1_forecast_2026_05_13": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.2958
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1398,
+          "mean_cost_error_agent_minutes": 36.6667,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 70.0,
+          "sample_limited": false,
+          "score_rows": 3
+        }
+      }
+    },
+    "gp230_shannon_gp225_v1973": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1219
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 16.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v1978": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.022
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.2209,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v1990": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 15.0,
+          "median_actual_cost_agent_minutes": 7.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v1994": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9616
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.3249,
+          "mean_cost_error_agent_minutes": 20.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v2001": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9137
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.5184,
+          "mean_cost_error_agent_minutes": 11.0,
+          "median_actual_cost_agent_minutes": 7.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v2004": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9018
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.6084,
+          "mean_cost_error_agent_minutes": 12.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v2007": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9417
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.3844,
+          "mean_cost_error_agent_minutes": 15.0,
+          "median_actual_cost_agent_minutes": 9.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v2010": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.916
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.5041,
+          "mean_cost_error_agent_minutes": 15.0,
+          "median_actual_cost_agent_minutes": 7.0,
+          "median_expected_cost_agent_minutes": 22.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v2014": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.953
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.3481,
+          "mean_cost_error_agent_minutes": 5.0,
+          "median_actual_cost_agent_minutes": 9.0,
+          "median_expected_cost_agent_minutes": 14.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_tarski_gp225_v2020": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9208
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.4761,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 16.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "gp230_turing_gp225_v1956": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.0302
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.2116,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 44.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "helmholtz": {
+      "default_weight": 1.0,
+      "domains": {
+        "GP-225": 1.2857,
+        "gp225_external_baseline_smoke": 1.0695,
+        "gp225_pre_gnn_route_selection": 1.1667
+      },
+      "evidence": {
+        "GP-225": {
+          "mean_brier": 0.106,
+          "mean_cost_error_agent_minutes": 5.0,
+          "median_actual_cost_agent_minutes": 12.0,
+          "median_expected_cost_agent_minutes": 17.0,
+          "sample_limited": true,
+          "score_rows": 2
+        },
+        "gp225_external_baseline_smoke": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 9.0,
+          "median_actual_cost_agent_minutes": 9.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_pre_gnn_route_selection": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": 9.0,
+          "median_actual_cost_agent_minutes": 15.0,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "herschel": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 16.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "herschel_market_A": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1685
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1573,
+          "mean_cost_error_agent_minutes": 23.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 65.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "herschel_skeptic_tick342": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": -10.0,
+          "median_actual_cost_agent_minutes": 38.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "herschel_skeptic_tick343": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 3.0,
+          "median_actual_cost_agent_minutes": 31.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "herschel_skeptic_tick344": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": -4.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "herschel_skeptic_tick345": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0302
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2116,
+          "mean_cost_error_agent_minutes": 52.0,
+          "median_actual_cost_agent_minutes": 36.0,
+          "median_expected_cost_agent_minutes": 88.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "herschel_skeptic_tick347": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 26.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 58.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "herschel_skeptic_tick348": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1225,
+          "mean_cost_error_agent_minutes": 19.0,
+          "median_actual_cost_agent_minutes": 33.0,
+          "median_expected_cost_agent_minutes": 52.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1976
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1835,
+          "mean_cost_error_agent_minutes": 52.8333,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 72.5,
+          "sample_limited": false,
+          "score_rows": 6
+        }
+      }
+    },
+    "hooke_forecast_tick323": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0587
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1849,
+          "mean_cost_error_agent_minutes": 47.0,
+          "median_actual_cost_agent_minutes": 28.0,
+          "median_expected_cost_agent_minutes": 75.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick324": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9935
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2601,
+          "mean_cost_error_agent_minutes": 52.0,
+          "median_actual_cost_agent_minutes": 38.0,
+          "median_expected_cost_agent_minutes": 90.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick325": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.953
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.3481,
+          "mean_cost_error_agent_minutes": 73.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 105.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick326": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9762
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2916,
+          "mean_cost_error_agent_minutes": 65.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 95.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick327": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 31.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick328": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 27.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick329": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0142
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2304,
+          "mean_cost_error_agent_minutes": 48.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 80.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick330": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9662
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.3136,
+          "mean_cost_error_agent_minutes": 60.0,
+          "median_actual_cost_agent_minutes": 35.0,
+          "median_expected_cost_agent_minutes": 95.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick331": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9874
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2704,
+          "mean_cost_error_agent_minutes": 62.0,
+          "median_actual_cost_agent_minutes": 33.0,
+          "median_expected_cost_agent_minutes": 95.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick332": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1073
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 39.0,
+          "median_actual_cost_agent_minutes": 31.0,
+          "median_expected_cost_agent_minutes": 70.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick333": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 23.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick334": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0695
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 24.0,
+          "median_actual_cost_agent_minutes": 44.0,
+          "median_expected_cost_agent_minutes": 68.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick335": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1548
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1296,
+          "mean_cost_error_agent_minutes": 27.0,
+          "median_actual_cost_agent_minutes": 45.0,
+          "median_expected_cost_agent_minutes": 72.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick336": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1089,
+          "mean_cost_error_agent_minutes": 24.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 58.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick337": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 33.0,
+          "median_actual_cost_agent_minutes": 29.0,
+          "median_expected_cost_agent_minutes": 62.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick338": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1377
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1369,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 68.0,
+          "median_expected_cost_agent_minutes": 82.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick339": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 54.0,
+          "median_expected_cost_agent_minutes": 58.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick340": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.09,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 52.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick341": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": -24.0,
+          "median_actual_cost_agent_minutes": 96.0,
+          "median_expected_cost_agent_minutes": 72.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick342": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 17.0,
+          "median_actual_cost_agent_minutes": 38.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick343": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1548
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1296,
+          "mean_cost_error_agent_minutes": 44.0,
+          "median_actual_cost_agent_minutes": 31.0,
+          "median_expected_cost_agent_minutes": 75.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick344": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1089,
+          "mean_cost_error_agent_minutes": 28.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 70.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick345": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1073
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 38.0,
+          "median_actual_cost_agent_minutes": 36.0,
+          "median_expected_cost_agent_minutes": 74.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick347": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 12.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 44.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick348": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0841,
+          "mean_cost_error_agent_minutes": 7.0,
+          "median_actual_cost_agent_minutes": 33.0,
+          "median_expected_cost_agent_minutes": 40.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick349": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0484,
+          "mean_cost_error_agent_minutes": 7.0,
+          "median_actual_cost_agent_minutes": 27.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick350": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0729,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 36.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_forecast_tick351": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 6.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 36.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_independent_micro": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 1.2089
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 18.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "hooke_meta_darwin_B": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.2857
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0998,
+          "mean_cost_error_agent_minutes": -13.0,
+          "median_actual_cost_agent_minutes": 58.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "hooke_pde_tick352": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1377
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1369,
+          "mean_cost_error_agent_minutes": 16.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 58.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_pde_tick353": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 5.0,
+          "median_actual_cost_agent_minutes": 40.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_pde_tick354": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 1.0,
+          "median_actual_cost_agent_minutes": 31.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_pde_tick355": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 26.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_pde_tick356": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9383
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.3969,
+          "mean_cost_error_agent_minutes": 33.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hooke_pde_tick358": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9874
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2704,
+          "mean_cost_error_agent_minutes": 11.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "hume_readonly_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "lean_replay_verification": 0.9137
+      },
+      "evidence": {
+        "lean_replay_verification": {
+          "mean_brier": 0.5184,
+          "mean_cost_error_agent_minutes": 34.14,
+          "median_actual_cost_agent_minutes": 0.86,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "kant_skeptical_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_parallel_replay": 1.1667
+      },
+      "evidence": {
+        "gp225_parallel_replay": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 2.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "kierkegaard_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 1.1667
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": -1.0,
+          "median_actual_cost_agent_minutes": 19.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "kuhn_adversarial_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_live_scalar_hinge": 0.9874
+      },
+      "evidence": {
+        "ns_live_scalar_hinge": {
+          "mean_brier": 0.2704,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 35.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "lagrange_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0587
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1849,
+          "mean_cost_error_agent_minutes": 20.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 52.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "laplace_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": -6.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "maxwell_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "mcclintock": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0812
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2176,
+          "mean_cost_error_agent_minutes": 21.5,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 40.0,
+          "sample_limited": false,
+          "score_rows": 6
+        }
+      }
+    },
+    "noether_reducer_readonly": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.0961,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 6.0,
+          "median_expected_cost_agent_minutes": 14.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "ohm_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 1.1073
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 70.0,
+          "median_actual_cost_agent_minutes": 20.0,
+          "median_expected_cost_agent_minutes": 90.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "parfit_readonly_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 0.9383,
+        "gp225_typed_feedback": 0.9662
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.3969,
+          "mean_cost_error_agent_minutes": -6.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_typed_feedback": {
+          "mean_brier": 0.3136,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 32.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "pascal_adversarial_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "GP-225": 1.1667,
+        "gp225_repair_micro": 1.0544
+      },
+      "evidence": {
+        "GP-225": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 15.0,
+          "median_actual_cost_agent_minutes": 5.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_repair_micro": {
+          "mean_brier": 0.2228,
+          "mean_cost_error_agent_minutes": 15.25,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 23.0,
+          "sample_limited": false,
+          "score_rows": 4
+        }
+      }
+    },
+    "pauli_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": 0.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "peirce_readonly_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "GP-225": 1.0302,
+        "gp225_repair_micro": 1.0548
+      },
+      "evidence": {
+        "GP-225": {
+          "mean_brier": 0.2116,
+          "mean_cost_error_agent_minutes": 11.0,
+          "median_actual_cost_agent_minutes": 5.0,
+          "median_expected_cost_agent_minutes": 16.0,
+          "sample_limited": true,
+          "score_rows": 1
+        },
+        "gp225_repair_micro": {
+          "mean_brier": 0.2225,
+          "mean_cost_error_agent_minutes": 12.25,
+          "median_actual_cost_agent_minutes": 8.0,
+          "median_expected_cost_agent_minutes": 21.0,
+          "sample_limited": false,
+          "score_rows": 4
+        }
+      }
+    },
+    "plato_operational_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_parallel_replay": 1.1667
+      },
+      "evidence": {
+        "gp225_parallel_replay": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 8.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": 12.0,
+          "median_actual_cost_agent_minutes": 16.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick329": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0587
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1849,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 46.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick330": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9935
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2601,
+          "mean_cost_error_agent_minutes": 23.0,
+          "median_actual_cost_agent_minutes": 35.0,
+          "median_expected_cost_agent_minutes": 58.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick331": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.022
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2209,
+          "mean_cost_error_agent_minutes": 23.0,
+          "median_actual_cost_agent_minutes": 33.0,
+          "median_expected_cost_agent_minutes": 56.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick332": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1073
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 7.0,
+          "median_actual_cost_agent_minutes": 31.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick333": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1156,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick334": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9935
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2601,
+          "mean_cost_error_agent_minutes": 41.0,
+          "median_actual_cost_agent_minutes": 44.0,
+          "median_expected_cost_agent_minutes": 85.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick335": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0302
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2116,
+          "mean_cost_error_agent_minutes": 47.0,
+          "median_actual_cost_agent_minutes": 45.0,
+          "median_expected_cost_agent_minutes": 92.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick336": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0587
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1849,
+          "mean_cost_error_agent_minutes": 42.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 76.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick337": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0486
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1936,
+          "mean_cost_error_agent_minutes": 49.0,
+          "median_actual_cost_agent_minutes": 29.0,
+          "median_expected_cost_agent_minutes": 78.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick338": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.25,
+          "mean_cost_error_agent_minutes": 37.0,
+          "median_actual_cost_agent_minutes": 68.0,
+          "median_expected_cost_agent_minutes": 105.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick339": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9762
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2916,
+          "mean_cost_error_agent_minutes": 38.0,
+          "median_actual_cost_agent_minutes": 54.0,
+          "median_expected_cost_agent_minutes": 92.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick340": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0142
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2304,
+          "mean_cost_error_agent_minutes": 46.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 88.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_adversarial_tick341": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9874
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2704,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 96.0,
+          "median_expected_cost_agent_minutes": 110.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_forecast_tick323": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1219
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1444,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 28.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_forecast_tick324": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0695
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 38.0,
+          "median_expected_cost_agent_minutes": 48.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_forecast_tick325": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0302
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2116,
+          "mean_cost_error_agent_minutes": 20.0,
+          "median_actual_cost_agent_minutes": 32.0,
+          "median_expected_cost_agent_minutes": 52.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_forecast_tick326": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9762
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2916,
+          "mean_cost_error_agent_minutes": 28.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 58.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_forecast_tick327": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0676,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_forecast_tick328": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0361,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 18.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_independent_micro": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 0.9616
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.3249,
+          "mean_cost_error_agent_minutes": 31.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 55.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_meta_darwin_A": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.2857
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.082,
+          "mean_cost_error_agent_minutes": -23.0,
+          "median_actual_cost_agent_minutes": 58.0,
+          "median_expected_cost_agent_minutes": 35.0,
+          "sample_limited": true,
+          "score_rows": 2
+        }
+      }
+    },
+    "rawls_pair_guard_skeptic_tick346": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.0324,
+          "mean_cost_error_agent_minutes": 4.0,
+          "median_actual_cost_agent_minutes": 14.0,
+          "median_expected_cost_agent_minutes": 18.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick349": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.09,
+          "mean_cost_error_agent_minutes": 15.0,
+          "median_actual_cost_agent_minutes": 27.0,
+          "median_expected_cost_agent_minutes": 42.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick350": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1548
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1296,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 36.0,
+          "median_expected_cost_agent_minutes": 50.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick351": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1667
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": 18.0,
+          "median_actual_cost_agent_minutes": 30.0,
+          "median_expected_cost_agent_minutes": 48.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick352": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0302
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.2116,
+          "mean_cost_error_agent_minutes": 40.0,
+          "median_actual_cost_agent_minutes": 42.0,
+          "median_expected_cost_agent_minutes": 82.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick353": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.0695
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1764,
+          "mean_cost_error_agent_minutes": 28.0,
+          "median_actual_cost_agent_minutes": 40.0,
+          "median_expected_cost_agent_minutes": 68.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick354": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1073
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1521,
+          "mean_cost_error_agent_minutes": 17.0,
+          "median_actual_cost_agent_minutes": 31.0,
+          "median_expected_cost_agent_minutes": 48.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick355": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 1.1548
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.1296,
+          "mean_cost_error_agent_minutes": 14.0,
+          "median_actual_cost_agent_minutes": 24.0,
+          "median_expected_cost_agent_minutes": 38.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick356": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9662
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.3136,
+          "mean_cost_error_agent_minutes": 46.0,
+          "median_actual_cost_agent_minutes": 22.0,
+          "median_expected_cost_agent_minutes": 68.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "rawls_skeptic_tick358": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_route1_pde": 0.9616
+      },
+      "evidence": {
+        "ns_route1_pde": {
+          "mean_brier": 0.3249,
+          "mean_cost_error_agent_minutes": 11.0,
+          "median_actual_cost_agent_minutes": 34.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "readonly_euler": {
+      "default_weight": 1.0,
+      "domains": {
+        "gnn_synthetic_data_factory": 1.1667
+      },
+      "evidence": {
+        "gnn_synthetic_data_factory": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 16.87,
+          "median_actual_cost_agent_minutes": 7.13,
+          "median_expected_cost_agent_minutes": 24.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "readonly_pasteur": {
+      "default_weight": 1.0,
+      "domains": {
+        "gnn_synthetic_data_factory": 1.1667
+      },
+      "evidence": {
+        "gnn_synthetic_data_factory": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 26.87,
+          "median_actual_cost_agent_minutes": 7.13,
+          "median_expected_cost_agent_minutes": 34.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "research_director_pl180": {
+      "default_weight": 1.0,
+      "domains": {
+        "ns_live_scalar_hinge": 0.9351
+      },
+      "evidence": {
+        "ns_live_scalar_hinge": {
+          "mean_brier": 0.4096,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 35.0,
+          "median_expected_cost_agent_minutes": 45.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "russell_readonly_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_blended_contract": 1.1667
+      },
+      "evidence": {
+        "gp225_blended_contract": {
+          "mean_brier": 0.1024,
+          "mean_cost_error_agent_minutes": 16.0,
+          "median_actual_cost_agent_minutes": 12.0,
+          "median_expected_cost_agent_minutes": 28.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "singer_independent_forecaster": {
+      "default_weight": 1.0,
+      "domains": {
+        "NS_route1": 1.1667
+      },
+      "evidence": {
+        "NS_route1": {
+          "mean_brier": 0.0784,
+          "mean_cost_error_agent_minutes": 1.0,
+          "median_actual_cost_agent_minutes": 19.0,
+          "median_expected_cost_agent_minutes": 20.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    },
+    "tarski_replay_skeptic": {
+      "default_weight": 1.0,
+      "domains": {
+        "gp225_repair_micro": 1.1667
+      },
+      "evidence": {
+        "gp225_repair_micro": {
+          "mean_brier": 0.0576,
+          "mean_cost_error_agent_minutes": 10.0,
+          "median_actual_cost_agent_minutes": 6.0,
+          "median_expected_cost_agent_minutes": 16.0,
+          "sample_limited": true,
+          "score_rows": 1
+        }
+      }
+    }
+  },
+  "default_weight": 1.0,
+  "domains": {
+    "GP-225": {
+      "expected_cost_agent_minutes_prior": 14.88,
+      "expected_over_actual_ratios": [
+        1.3,
+        1.2,
+        0.9474,
+        1.4737,
+        2.9167,
+        0.25,
+        4.0,
+        3.2
+      ],
+      "median_actual_cost_agent_minutes": 8.5,
+      "median_expected_cost_agent_minutes": 17.0,
+      "median_expected_over_actual": 1.3868,
+      "sample_limited": false,
+      "score_rows": 8
+    },
+    "NS_route1": {
+      "expected_cost_agent_minutes_prior": 42.0,
+      "expected_over_actual_ratios": [
+        1.0,
+        1.1765,
+        0.9474,
+        1.0526,
+        1.75,
+        2.2917,
+        1.1667,
+        1.75,
+        3.75,
+        4.5
+      ],
+      "median_actual_cost_agent_minutes": 24.0,
+      "median_expected_cost_agent_minutes": 41.0,
+      "median_expected_over_actual": 1.4632,
+      "sample_limited": false,
+      "score_rows": 10
+    },
+    "general": {
+      "expected_cost_agent_minutes_prior": 36.75,
+      "expected_over_actual_ratios": [
+        0.9,
+        0.7,
+        0.4444,
+        0.6667,
+        1.2222,
+        1.3333,
+        1.2727,
+        1.4545
+      ],
+      "median_actual_cost_agent_minutes": 21.0,
+      "median_expected_cost_agent_minutes": 20.0,
+      "median_expected_over_actual": 1.0611,
+      "sample_limited": false,
+      "score_rows": 8
+    },
+    "gnn_synthetic_data_factory": {
+      "expected_cost_agent_minutes_prior": 12.48,
+      "expected_over_actual_ratios": [
+        3.9271,
+        3.3661,
+        4.7686
+      ],
+      "median_actual_cost_agent_minutes": 7.13,
+      "median_expected_cost_agent_minutes": 28.0,
+      "median_expected_over_actual": 3.9271,
+      "sample_limited": false,
+      "score_rows": 3
+    },
+    "gp225_baseline": {
+      "expected_cost_agent_minutes_prior": 31.5,
+      "expected_over_actual_ratios": [
+        1.9444,
+        1.9444,
+        1.9444
+      ],
+      "median_actual_cost_agent_minutes": 18.0,
+      "median_expected_cost_agent_minutes": 35.0,
+      "median_expected_over_actual": 1.9444,
+      "sample_limited": false,
+      "score_rows": 3
+    },
+    "gp225_blended_contract": {
+      "expected_cost_agent_minutes_prior": 21.0,
+      "expected_over_actual_ratios": [
+        2.0,
+        2.3333
+      ],
+      "median_actual_cost_agent_minutes": 12.0,
+      "median_expected_cost_agent_minutes": 26.0,
+      "median_expected_over_actual": 2.1666,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_external_baseline_smoke": {
+      "expected_cost_agent_minutes_prior": 15.75,
+      "expected_over_actual_ratios": [
+        2.0,
+        2.0
+      ],
+      "median_actual_cost_agent_minutes": 9.0,
+      "median_expected_cost_agent_minutes": 18.0,
+      "median_expected_over_actual": 2.0,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_inventory_gate": {
+      "expected_cost_agent_minutes_prior": 1.0,
+      "expected_over_actual_ratios": [
+        10.0,
+        6.0
+      ],
+      "median_actual_cost_agent_minutes": 0.2,
+      "median_expected_cost_agent_minutes": 1.6,
+      "median_expected_over_actual": 8.0,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_label_source": {
+      "expected_cost_agent_minutes_prior": 1.0,
+      "expected_over_actual_ratios": [
+        60.0,
+        50.0
+      ],
+      "median_actual_cost_agent_minutes": 0.2,
+      "median_expected_cost_agent_minutes": 11.0,
+      "median_expected_over_actual": 55.0,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_lean_witness_backfill": {
+      "expected_cost_agent_minutes_prior": 1.89,
+      "expected_over_actual_ratios": [
+        16.6667,
+        18.5185,
+        7.2072,
+        2.0543
+      ],
+      "median_actual_cost_agent_minutes": 1.08,
+      "median_expected_cost_agent_minutes": 13.0,
+      "median_expected_over_actual": 11.9369,
+      "sample_limited": false,
+      "score_rows": 4
+    },
+    "gp225_micro_probe": {
+      "expected_cost_agent_minutes_prior": 4.34,
+      "expected_over_actual_ratios": [
+        7.563,
+        4.6512
+      ],
+      "median_actual_cost_agent_minutes": 2.48,
+      "median_expected_cost_agent_minutes": 15.0,
+      "median_expected_over_actual": 6.1071,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_parallel_replay": {
+      "expected_cost_agent_minutes_prior": 52.5,
+      "expected_over_actual_ratios": [
+        1.4,
+        1.0667,
+        1.2667
+      ],
+      "median_actual_cost_agent_minutes": 30.0,
+      "median_expected_cost_agent_minutes": 38.0,
+      "median_expected_over_actual": 1.2667,
+      "sample_limited": false,
+      "score_rows": 3
+    },
+    "gp225_pre_gnn_alignment_policy": {
+      "expected_cost_agent_minutes_prior": 31.5,
+      "expected_over_actual_ratios": [
+        1.4118,
+        1.6471,
+        1.1579,
+        1.4211
+      ],
+      "median_actual_cost_agent_minutes": 18.0,
+      "median_expected_cost_agent_minutes": 25.5,
+      "median_expected_over_actual": 1.4164,
+      "sample_limited": false,
+      "score_rows": 4
+    },
+    "gp225_pre_gnn_candidate_static_check": {
+      "expected_cost_agent_minutes_prior": 50.75,
+      "expected_over_actual_ratios": [
+        1.0345,
+        1.1724
+      ],
+      "median_actual_cost_agent_minutes": 29.0,
+      "median_expected_cost_agent_minutes": 32.0,
+      "median_expected_over_actual": 1.1035,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_pre_gnn_context_binding": {
+      "expected_cost_agent_minutes_prior": 36.75,
+      "expected_over_actual_ratios": [
+        1.0952,
+        1.2857
+      ],
+      "median_actual_cost_agent_minutes": 21.0,
+      "median_expected_cost_agent_minutes": 25.0,
+      "median_expected_over_actual": 1.1905,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_pre_gnn_replay_gate": {
+      "expected_cost_agent_minutes_prior": 42.0,
+      "expected_over_actual_ratios": [
+        1.0,
+        1.0833
+      ],
+      "median_actual_cost_agent_minutes": 24.0,
+      "median_expected_cost_agent_minutes": 25.0,
+      "median_expected_over_actual": 1.0416,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_pre_gnn_route_selection": {
+      "expected_cost_agent_minutes_prior": 28.88,
+      "expected_over_actual_ratios": [
+        1.4,
+        1.6,
+        1.1111,
+        1.3333
+      ],
+      "median_actual_cost_agent_minutes": 16.5,
+      "median_expected_cost_agent_minutes": 22.5,
+      "median_expected_over_actual": 1.3666,
+      "sample_limited": false,
+      "score_rows": 4
+    },
+    "gp225_pre_gnn_source_contract_correction": {
+      "expected_cost_agent_minutes_prior": 31.5,
+      "expected_over_actual_ratios": [
+        1.1111,
+        1.0
+      ],
+      "median_actual_cost_agent_minutes": 18.0,
+      "median_expected_cost_agent_minutes": 19.0,
+      "median_expected_over_actual": 1.0555,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_pre_gnn_source_discovery": {
+      "expected_cost_agent_minutes_prior": 42.0,
+      "expected_over_actual_ratios": [
+        1.1667,
+        1.3333
+      ],
+      "median_actual_cost_agent_minutes": 24.0,
+      "median_expected_cost_agent_minutes": 30.0,
+      "median_expected_over_actual": 1.25,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_public_trace_labels": {
+      "expected_cost_agent_minutes_prior": 1.0,
+      "expected_over_actual_ratios": [
+        6.6667,
+        10.0
+      ],
+      "median_actual_cost_agent_minutes": 0.3,
+      "median_expected_cost_agent_minutes": 2.5,
+      "median_expected_over_actual": 8.3333,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_repair_micro": {
+      "expected_cost_agent_minutes_prior": 14.0,
+      "expected_over_actual_ratios": [
+        2.25,
+        2.25,
+        2.75,
+        2.75,
+        3.4286,
+        2.8571,
+        2.6667,
+        2.0,
+        0.9167,
+        0.75,
+        2.1111,
+        1.8889,
+        0.9545,
+        0.7045,
+        1.2667,
+        1.4667,
+        1.2222,
+        1.0,
+        2.3333,
+        2.0,
+        1.5,
+        1.375,
+        2.5,
+        2.25,
+        2.5714,
+        3.1429,
+        3.0,
+        3.5,
+        2.2857,
+        2.5714,
+        2.25,
+        2.5,
+        2.4444,
+        2.6667,
+        2.8571,
+        3.1429,
+        1.3333,
+        1.5556,
+        1.8333,
+        2.3333,
+        2.6667,
+        1.75,
+        2.0
+      ],
+      "median_actual_cost_agent_minutes": 8.0,
+      "median_expected_cost_agent_minutes": 22.0,
+      "median_expected_over_actual": 2.25,
+      "sample_limited": false,
+      "score_rows": 43
+    },
+    "gp225_route_selection_meso": {
+      "expected_cost_agent_minutes_prior": 35.0,
+      "expected_over_actual_ratios": [
+        1.1,
+        0.8
+      ],
+      "median_actual_cost_agent_minutes": 20.0,
+      "median_expected_cost_agent_minutes": 19.0,
+      "median_expected_over_actual": 0.95,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp225_typed_feedback": {
+      "expected_cost_agent_minutes_prior": 42.0,
+      "expected_over_actual_ratios": [
+        2.2917,
+        1.3333
+      ],
+      "median_actual_cost_agent_minutes": 24.0,
+      "median_expected_cost_agent_minutes": 43.5,
+      "median_expected_over_actual": 1.8125,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "gp230_forecast_pool_infrastructure": {
+      "expected_cost_agent_minutes_prior": 49.0,
+      "expected_over_actual_ratios": [
+        5.0,
+        2.6786
+      ],
+      "median_actual_cost_agent_minutes": 28.0,
+      "median_expected_cost_agent_minutes": 107.5,
+      "median_expected_over_actual": 3.8393,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "lean_replay_verification": {
+      "expected_cost_agent_minutes_prior": 1.5,
+      "expected_over_actual_ratios": [
+        4.6512,
+        40.6977,
+        40.6977
+      ],
+      "median_actual_cost_agent_minutes": 0.86,
+      "median_expected_cost_agent_minutes": 35.0,
+      "median_expected_over_actual": 40.6977,
+      "sample_limited": false,
+      "score_rows": 3
+    },
+    "meta_prediction_market": {
+      "expected_cost_agent_minutes_prior": 54.25,
+      "expected_over_actual_ratios": [
+        1.0294,
+        1.5294,
+        1.6071,
+        1.1429
+      ],
+      "median_actual_cost_agent_minutes": 31.0,
+      "median_expected_cost_agent_minutes": 40.0,
+      "median_expected_over_actual": 1.3361,
+      "sample_limited": false,
+      "score_rows": 4
+    },
+    "navier_stokes_route1": {
+      "expected_cost_agent_minutes_prior": 28.88,
+      "expected_over_actual_ratios": [
+        2.0,
+        2.6667,
+        2.5,
+        3.25,
+        2.625,
+        3.4375,
+        1.125,
+        1.5,
+        2.0,
+        2.8235,
+        1.3333,
+        2.0,
+        2.1111,
+        2.7778,
+        1.8462,
+        2.6923
+      ],
+      "median_actual_cost_agent_minutes": 16.5,
+      "median_expected_cost_agent_minutes": 37.0,
+      "median_expected_over_actual": 2.3056,
+      "sample_limited": false,
+      "score_rows": 16
+    },
+    "ns_lean_micro": {
+      "expected_cost_agent_minutes_prior": 31.5,
+      "expected_over_actual_ratios": [
+        1.2222,
+        0.8889
+      ],
+      "median_actual_cost_agent_minutes": 18.0,
+      "median_expected_cost_agent_minutes": 19.0,
+      "median_expected_over_actual": 1.0555,
+      "sample_limited": true,
+      "score_rows": 2
+    },
+    "ns_live_scalar_hinge": {
+      "expected_cost_agent_minutes_prior": 10.5,
+      "expected_over_actual_ratios": [
+        1.2857,
+        1.2857,
+        1.2857,
+        1.7778,
+        1.2,
+        1.3333,
+        1.4
+      ],
+      "median_actual_cost_agent_minutes": 6.0,
+      "median_expected_cost_agent_minutes": 8.0,
+      "median_expected_over_actual": 1.2857,
+      "sample_limited": false,
+      "score_rows": 7
+    },
+    "ns_route1_local_energy_measure_split": {
+      "expected_cost_agent_minutes_prior": 38.5,
+      "expected_over_actual_ratios": [
+        1.0769,
+        1.6154,
+        1.7778,
+        2.4444
+      ],
+      "median_actual_cost_agent_minutes": 22.0,
+      "median_expected_cost_agent_minutes": 37.0,
+      "median_expected_over_actual": 1.6966,
+      "sample_limited": false,
+      "score_rows": 4
+    },
+    "ns_route1_pde": {
+      "expected_cost_agent_minutes_prior": 54.25,
+      "expected_over_actual_ratios": [
+        1.0,
+        1.2727,
+        1.625,
+        3.5,
+        0.6034,
+        0.431,
+        1.129,
+        1.5484,
+        1.7308,
+        1.8269,
+        1.5758,
+        1.2121,
+        1.2593,
+        1.5556,
+        1.0556,
+        1.3889,
+        3.0556,
+        1.7778,
+        1.0741,
+        1.7037,
+        3.1667,
+        1.9333,
+        3.2812,
+        1.625,
+        4.7222,
+        2.5,
+        4.7222,
+        1.9444,
+        3.8889,
+        2.5,
+        1.7778,
+        2.2222,
+        1.375,
+        2.125,
+        0.9483,
+        0.7759,
+        2.2917,
+        1.5833,
+        1.4545,
+        2.0455,
+        2.5,
+        3.0909,
+        7.1429,
+        3.4286,
+        1.25,
+        1.75,
+        0.7368,
+        1.4474,
+        1.0968,
+        2.4194,
+        0.6667,
+        0.8095,
+        1.8,
+        2.6,
+        1.2353,
+        1.7647,
+        1.3235,
+        1.3235,
+        1.2414,
+        1.8966,
+        0.8235,
+        0.8235,
+        1.0,
+        3.0556,
+        1.9444,
+        2.3529,
+        1.7647,
+        0.9048,
+        1.6667,
+        1.381,
+        1.9524,
+        2.5,
+        1.5556,
+        2.5,
+        1.4375,
+        1.25,
+        1.6667,
+        1.0323,
+        1.5484,
+        1.7188,
+        1.3125,
+        1.6,
+        2.0444,
+        1.7059,
+        2.2353,
+        2.1379,
+        2.6897,
+        1.5455,
+        1.9318,
+        1.375,
+        1.625,
+        1.0,
+        4.1667,
+        2.5,
+        2.2581,
+        1.2258,
+        1.2059,
+        1.5441,
+        2.2917,
+        1.4167,
+        5.0,
+        2.3333,
+        2.0833,
+        2.9167,
+        1.4545,
+        1.0909,
+        1.0833,
+        1.5833,
+        1.2,
+        1.6,
+        1.6176,
+        1.6176,
+        2.1429,
+        1.3095,
+        2.8571,
+        1.7857,
+        1.2381,
+        2.0952,
+        0.75,
+        1.1458,
+        2.6786,
+        1.5,
+        2.3684,
+        1.2632,
+        1.0,
+        1.2857,
+        1.8125,
+        1.375,
+        2.4444,
+        2.0556,
+        1.125,
+        1.7,
+        1.4737,
+        2.1053,
+        2.8788,
+        1.697,
+        2.7143,
+        1.6571,
+        1.2353,
+        1.0
+      ],
+      "median_actual_cost_agent_minutes": 31.0,
+      "median_expected_cost_agent_minutes": 48.0,
+      "median_expected_over_actual": 1.625,
+      "sample_limited": false,
+      "score_rows": 140
+    }
+  },
+  "generated_at": "2026-05-14T17:47:16Z",
+  "mode": "explicit_calibration_from_score_artifacts",
+  "score_rows": 294,
+  "semantics": {
+    "effort_priors_are_advisory_not_vetoes": true,
+    "hidden_auto_mutation_during_score": false,
+    "requires_explicit_calibrate_write": true,
+    "small_sample_shrinkage": true,
+    "weights_are_domain_specific": true
+  }
+}

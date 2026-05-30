@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Lower the caloric-drop/recharge estimate as a dedicated source layer, but keep the annular/cutoff/routing guard explicit instead of folding it into the final active-tail theorem.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_caloric_reserve_drop_recharge_source_20260514_tick399",
+  "contract_question": "Will the next NS tick compile a lower source for caloric dissipation paid by reserve drop plus Duhamel recharge, with an explicit guard for missing annular/cutoff/error routing assumptions?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "annular_frequency_lock_not_explicit": 0.22,
+    "lean_type_mismatch": 0.1,
+    "recharge_paid_by_event_ledger_not_lowered": 0.18,
+    "same_cutoff_guard_underconsumed": 0.27,
+    "wrapper_surface_still_too_abstract": 0.23
+  },
+  "forecast_externality_tags": [
+    "carrier_conversion_guard",
+    "annular_lock",
+    "cutoff_routing_guard"
+  ],
+  "forecasted_at": "2026-05-14T18:27:59Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.06,
+  "p_success": 0.74,
+  "rationale_short": "The file already contains the Duhamel reservoir carrier, the same-cutoff transport source, and a no-QP-compatibility gap guard. The remaining risk is wiring the caloric-dissipation lower source without eliding the annular/cutoff routing assumptions.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "annular_frequency_lock_not_explicit",
+    "same_cutoff_guard_underconsumed",
+    "wrapper_surface_still_too_abstract"
+  ]
+}

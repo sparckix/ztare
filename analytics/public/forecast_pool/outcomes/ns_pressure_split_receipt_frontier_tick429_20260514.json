@@ -1,0 +1,33 @@
+{
+  "actual_cost_agent_minutes": 22.0,
+  "artifact_hash": "c002b849c7bae1bf182ea16ce594f3331762e2b9d16b0f0421e9d7b66d46a21c",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "lean_pass",
+  "contract_id": "ns_pressure_split_receipt_frontier_tick429_20260514",
+  "counterfactual_value_bucket": "positive",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "positive-pressure-source-path",
+    "final-carrier-shortcut-blocked"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 1,
+  "negative_externality_tags": [
+    "visible-branch-only"
+  ],
+  "new_next_action": "Attack the concrete split pre-summed stress receipt source or the remaining no-invisible/stress-coherence side; do not use final projected carrier receipts.",
+  "old_next_action": "Generic pressure pre-summed visibility/coherence attack.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "pressure-visible-branch-only",
+    "no-invisible-still-open"
+  ],
+  "resolution_note": "Lean compiled after adding scalar projections from FixedWindowPreSummedStressMassSplitReceiptSource: pressureRieszConeCharge <= independent pressure receipt sum and visibilityChargeConstant*overflowExcess <= the same receipt sum; guard keeps no-invisible/coherence open.",
+  "resolved_at": "2026-05-14T23:07:10Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2067_bayesRisk_step_index_finite_bound_patch.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2067_bayesRisk_step_index_finite_bound_patch.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2067_bayesRisk_step_index_finite_bound_patch",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2067_bayesRisk_step_index_finite_bound_patch.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2067_bayesRisk_step_index_finite_bound_patch.json"
+  },
+  "baseline_action": "Retry theorem-head bayesRisk candidates at the finite-bound insertion point.",
+  "budget_agent_minutes": 16.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2067_bayesRisk_step_index_finite_bound_patch",
+  "cost_penalty": 0.018,
+  "counterfactual_action": "Generate step-index-aware finite-product candidates before replay.",
+  "created_at": "2026-05-14T18:59:35Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.3636,
+    "expected_cost_agent_minutes_prior": 50.75,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_pre_gnn_step_index_candidate_patch",
+    "score": 0.4444,
+    "selected_domain": "gp225_pre_gnn_candidate_static_check",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4444,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.3636,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.4444,
+        "score_rows": 2,
+        "token_jaccard": 0.4444
+      },
+      {
+        "char_trigram_jaccard": 0.1957,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 4,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.2558,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.3333,
+        "score_rows": 2,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.25,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.3333,
+        "score_rows": 2,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.2,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 4,
+        "token_jaccard": 0.3333
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "explicit finite-product lemmas may still need exact namespace/import shape",
+      "static patch may not compile under bridge"
+    ],
+    "positive": [
+      "fixes insertion-point mismatch",
+      "keeps target-proof-line copy blocked"
+    ]
+  },
+  "horizon": "same session 2026-05-14",
+  "information_value": 0.2,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2067 consumes v20.66, emits at least two bayesRisk finite-product subgoal candidates using explicit source lemmas rather than the Mathlib target proof-line simp tactic, passes static checks, records no replay/training and GNN blocked, and names separate replay pricing.",
+  "question": "Will v20.67 generate a source-safe finite-bound subgoal patch for current_scale_0126/bayesRisk_lt_top that matches the replay insertion point and avoids copying the target proof line?",
+  "risk_penalty": 0.5,
+  "success_threshold": "one row; >=2 finite-bound subgoal candidates; no target proof-line copy; no replay/training; GNN blocked",
+  "task_type": "step_index_candidate_patch",
+  "value_if_success": 0.58,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-06T12:44:00.285904+00:00",
+  "target": "EventRecurrencePricePDEObligation",
+  "field": "raw_recurrence_lower_envelope_proved",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched AUXILIARY evidence in the target/field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

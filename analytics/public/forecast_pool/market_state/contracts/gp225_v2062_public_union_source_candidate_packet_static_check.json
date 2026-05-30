@@ -1,0 +1,208 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:36:00Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 19.0,
+    "expected_value": 0.18333523768435273,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.135,
+    "p_needs_new_lemma": 0.09,
+    "p_regression": 0.07,
+    "p_success": 0.7109228235937116,
+    "participants": [
+      {
+        "agent_id": "Hilbert3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_static_candidate_packet",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2062_public_union_source_candidate_packet_static_check/hilbert3.json",
+        "forecasted_at": "2026-05-14T18:35:56Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Noether3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_static_candidate_packet",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2062_public_union_source_candidate_packet_static_check/noether3.json",
+        "forecasted_at": "2026-05-14T18:35:56Z",
+        "p_success": 0.68,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "radius_row_retains_structural_hole",
+        "p": 0.26
+      },
+      {
+        "mode": "static_gate_too_weak_or_too_strict",
+        "p": 0.235
+      },
+      {
+        "mode": "elliptic_case_split_template_vague",
+        "p": 0.21500000000000002
+      },
+      {
+        "mode": "bayes_bound_context_underhydrated",
+        "p": 0.19
+      },
+      {
+        "mode": "artifact_scope_creep_to_replay",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2062_public_union_source_candidate_packet_static_check.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2062_public_union_source_candidate_packet_static_check.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2062_public_union_source_candidate_packet_static_check.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2062_public_union_source_candidate_packet_static_check.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2062_public_union_source_candidate_packet_static_check.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 22.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:35:43Z",
+    "created_by": "codex:RD",
+    "horizon": "same session 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff the v2062 artifact exists, consumes v2061, excludes solved current_scale_0329, includes four unsolved rows, emits at least six candidate actions, has zero placeholder/sorry/admit/unknown-source/static-forbidden failures, records replay=false, training=false, GNN blocked=true, and names a separate GP-230 replay gate.",
+    "question": "Will v20.62 generate a source-safe candidate packet for the four unsolved v20.61 public/internal source rows, with at least six candidate actions, all passing strict static checks, and no replay/training/GNN promotion?",
+    "success_threshold": "all static checks pass; candidate_actions >= 6; rows == 4; no replay/training; GNN blocked",
+    "task_type": "static_candidate_packet"
+  },
+  "contract_id": "gp225_v2062_public_union_source_candidate_packet_static_check",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Hilbert3",
+        "raw_agent_ids": [
+          "Hilbert3"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Noether3",
+        "raw_agent_ids": [
+          "Noether3"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Hilbert3",
+      "Noether3"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Generate all four rows but require conservative static-only status and a separate replay market before execution.",
+        "agent_id": "Hilbert3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2062_public_union_source_candidate_packet_static_check/hilbert3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_static_candidate_packet",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T18:35:56Z",
+        "p_success": 0.74,
+        "rationale_short": "Four unsolved contracts are available and old candidate seeds exist, so static packet construction is likely; the main risk is accidentally certifying vague templates as replayable.",
+        "specific_failure_mode_ids": [
+          "elliptic_case_split_template_vague",
+          "static_gate_too_weak_or_too_strict"
+        ]
+      },
+      {
+        "action_change_recommendation": "Emit candidates plus row-level replay cautions, and mark underhydrated rows separately instead of claiming replay readiness.",
+        "agent_id": "Noether3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2062_public_union_source_candidate_packet_static_check/noether3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_static_candidate_packet",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T18:35:56Z",
+        "p_success": 0.68,
+        "rationale_short": "The queue and source contracts already exist, but strict placeholder-free candidate text across all four rows is harder than the prior loose v20.44 static packet.",
+        "specific_failure_mode_ids": [
+          "static_gate_too_weak_or_too_strict",
+          "radius_row_retains_structural_hole"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "changed_by_forecast_ids": [
+      "Noether3",
+      "Hilbert3"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:37:53Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.18333523768435273,
+      "forecast_spread": 0.06,
+      "p_success": 0.7109228235937116,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.4655
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 19.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7109228235937116,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "radius_row_retains_structural_hole",
+        "p": 0.26
+      },
+      {
+        "mode": "static_gate_too_weak_or_too_strict",
+        "p": 0.235
+      },
+      {
+        "mode": "elliptic_case_split_template_vague",
+        "p": 0.21500000000000002
+      },
+      {
+        "mode": "bayes_bound_context_underhydrated",
+        "p": 0.19
+      },
+      {
+        "mode": "artifact_scope_creep_to_replay",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.08499999999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:37:56Z"
+  }
+}

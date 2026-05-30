@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_visible_charge_channel_split_micro_20260514_tick331",
+  "mean_brier": 0.24565,
+  "mean_log_score": -0.684423723758085,
+  "outcome": {
+    "actual_cost_agent_minutes": 33.0,
+    "artifact_hash": "af3c11911e95039ab2bdc971e57a9bc650b76bcae877ed6b15648ebf73599fad",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_visible_charge_channel_split_micro_20260514_tick331",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Added channel-level visible overflow charge split with selected numeric charge alternatives for pressure/Riesz cone, local quadratic excess, transport flux, and commutator/Reynolds defect; target and downstream builds passed.",
+    "resolved_at": "2026-05-14T02:41:27Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T02:41:34Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 33.0,
+      "agent_id": "hooke_forecast_tick331",
+      "brier": 0.27040000000000003,
+      "cost_error_agent_minutes": 62.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 95.0,
+      "log_score": -0.7339691750802004,
+      "p_success": 0.48,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T02:38:03Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T02:38:34Z",
+        "resolved_at": "2026-05-14T02:41:27Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 33.0,
+      "agent_id": "rawls_adversarial_tick331",
+      "brier": 0.22089999999999999,
+      "cost_error_agent_minutes": 23.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 56.0,
+      "log_score": -0.6348782724359695,
+      "p_success": 0.53,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T02:38:03Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T02:38:34Z",
+        "resolved_at": "2026-05-14T02:41:27Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": "Codex view: D02/E05 LLM-reachable; D03/D04 need exact library bridges.",
+  "agent_id": "codex_rd",
+  "contract_id": "gp225_v30a_route_c_4_natural_b0_b1_open_rows_meso",
+  "contract_question": "Will Route C (LLM-mediated proof composition) close \u22652 of 4 B0+B1-open natural rows (D02 triangle inequality, D03 n.choose 2 identity, D04 2*inner \u2264 norm^2+norm^2, E05 Finset sum_add_distrib) under strict v30 contract: no oracle proof lines, replay from scratch, 0 manual edits, machinery-OK per relaxed audit?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_statement_shape_mismatch": 0.3225806451612903,
+    "llm_proofs_fail_replay": 0.1935483870967742,
+    "needs_nonobvious_mathlib_bridge": 0.2688172043010753,
+    "strict_audit_rejects_gold_like_step": 0.21505376344086025
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T15:33:52Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.05,
+  "p_success": 0.34,
+  "rationale_short": "Codex_rd: P(>=2)=0.34. D02/E05 look reachable, D03/D04 need exact library bridges. Prior false-breakthrough calibration anchors below even.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

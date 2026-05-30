@@ -1,0 +1,40 @@
+{
+  "action_change_recommendation": "Proceed with Level507 final-slot eventData assignment source; keep the next residual as analytic construction of the assignment/incidence law, not endpoint-capacity or Clay closure.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.175,
+  "b_width": 0.21,
+  "contract_id": "tick668_level507_finalslot_eventdata_cover_selector_source",
+  "contract_question": "Will Level507 compile a Lean source deriving the Level506 coverEventSelector from a final-slot indexed eventData assignment with displayed incidence, and validate it through a strict gate, PDE workbench, and targeted lake build?",
+  "domain": "ns_trackb",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "assignment_surface_too_weak": 0.3,
+    "lean_fin_cast_mismatch": 0.28,
+    "other": 0.2,
+    "workbench_or_gate_wiring": 0.22
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T05:42:30Z",
+  "p_buy_yes_max": 0.61,
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.4,
+  "p_regression": 0.17,
+  "p_sell_yes_min": 0.76,
+  "p_success": 0.67,
+  "predicted_brier_hi": 0.28,
+  "predicted_brier_lo": 0.07,
+  "predicted_self_error_ratio": 0.27,
+  "rationale_short": "Level506 isolated coverEventSelector. A final-slot indexed assignment should compile by taking Fin.val as the selector if horizon and incidence laws are fields; risk is only moving the opaque socket to targetSlot without provenance.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "assignment_surface_too_weak",
+    "lean_fin_cast_mismatch",
+    "workbench_or_gate_wiring"
+  ],
+  "spread": -0.15,
+  "tail_downside_worry": 38.0,
+  "tail_upside_surprise": 22.0,
+  "verbalized_confidence": 0.67
+}

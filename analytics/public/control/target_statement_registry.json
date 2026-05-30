@@ -1,0 +1,6 @@
+{
+  "_README": "DEPRECATED / NOT IN THE TRUST PATH. Cold review bq4z7midf flagged that an agent-writable json registry is forgeable (the agent could self-register its own 'Clay target'). The daemon NO LONGER reads this file. Target statements are now registered via a daemon-signed, hash-chained `target_register` transition (operator-attested: requires close.i_am_operator=true AND env ZTARE_OPERATOR_TARGET=1). To register a target, the OPERATOR submits: propose --type target_register --close '{\"statement_sha256\":\"<hex of canonical Lean statement>\",\"label\":\"<human label>\",\"i_am_operator\":true}' with ZTARE_OPERATOR_TARGET=1. The commit-membrane closure check (R5''') requires the F-row's target_statement_hash to be a member of the CHAIN-VALID signed target_register set. Residual (correctly irreducible): whether a registered statement IS the Clay problem is one-time human mathematical curation. Residual (R2-class, honest): operator-vs-agent gating of target_register is env/flag-attested + ledgered, not cryptographically operator-only (needs keys outside the agent boundary; deploy layer).",
+  "schema_version": "2.0-deprecated",
+  "superseded_by": "daemon target_register transition",
+  "targets": []
+}

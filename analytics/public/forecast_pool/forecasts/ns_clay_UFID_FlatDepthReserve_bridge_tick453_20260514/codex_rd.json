@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship; completes the typed downstream half of the NoSilentFlatDefectProfile -> UFID -> FlatDepthReserveLike chain. Upstream half (compactness extraction) remains Prop-level.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514",
+  "contract_question": "Can a UniformFlatInheritanceDepth structure + FlatDepthReserveLike.ofUFID bridge def + finite radius packing theorem be shipped in a new self-contained Lean file with omega/linarith-discharged verification (no Prop wrappers in the core inequalities, no sorry/admit)?",
+  "domain": "ns_clay_bridge_construction",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T03:30:00Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.78,
+  "rationale_short": "Structural bridge with Nat-arithmetic verification + List induction. omega handles depth subtraction; linarith handles radius packing. Self-contained file follows tick450 pattern. Likely failure mode: depth_child_le requires strict (not weak) depthOf < depthBudget bound for flat-inherited nodes.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

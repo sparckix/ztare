@@ -1,0 +1,22 @@
+{
+  "agent_id": "faraday_readonly_forecaster",
+  "contract_id": "gp225_v1859_recovered_unsat_incremental_replay",
+  "contract_question": "Will v18.59 compile-check at least 3 of 5 recovered baseline-unsaturated public-trace rows as clean residual/closure labels with zero audited false accepts?",
+  "domain": "lean_replay_verification",
+  "expected_cost_agent_minutes": 35.0,
+  "failure_mode_distribution": {
+    "audited_false_accept_detected": 0.08,
+    "compile_check_infra_or_dependency_issue": 0.1,
+    "insufficient_clean_rows_below_threshold": 0.22,
+    "recovered_source_body_match_not_replay_equivalent": 0.18,
+    "show_or_closure_guard_rejects_nested_or_line_contains_rows": 0.34,
+    "unexpected_training_or_gnn_gate_violation": 0.08
+  },
+  "forecasted_at": "2026-05-13T16:31:24Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.12,
+  "p_success": 0.68,
+  "rationale_short": "v18.58 recovered all compatible matches and prior replay has zero false accepts; main risk is guard strictness and clean-row threshold under 3 of 5.",
+  "read_only_attestation": true
+}

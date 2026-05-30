@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_young_bernstein_transport_absorption_20260514_tick397",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_young_bernstein_transport_absorption_20260514_tick397.json"
+  },
+  "baseline_action": "try to prove broad youngBernsteinAbsorption directly",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_young_bernstein_transport_absorption_20260514_tick397",
+  "cost_penalty": 0.18,
+  "counterfactual_action": "first split Young/Bernstein analytic source from QP overflow compatibility and cutoff/frequency guards",
+  "created_at": "2026-05-14T17:10:11Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2414,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.55,
+    "requested_domain": "ns_route1_frequency_localized_pde",
+    "score": 0.6,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.6,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2414,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.6,
+        "score_rows": 136,
+        "token_jaccard": 0.6
+      },
+      {
+        "char_trigram_jaccard": 0.2222,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 10,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.1915,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.2222,
+        "score_rows": 4,
+        "token_jaccard": 0.2222
+      },
+      {
+        "char_trigram_jaccard": 0.1316,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 16,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may reveal activeTail carrier is still too abstract for PDE source"
+    ],
+    "positive": [
+      "prevents hiding local-quadratic overflow",
+      "may lower first analytic PDE field to standard estimate"
+    ]
+  },
+  "horizon": "same RD tick on 2026-05-14",
+  "information_value": 0.91,
+  "layer": "micro",
+  "objective_resolver": "Success iff Lean compiles after adding either a source theorem/interface that lowers youngBernsteinAbsorption to fixed cutoff scale bounds plus local-quadratic overflow, or a guard proving the current fields are insufficient because muQP/cutoff/frequency carrier is missing.",
+  "question": "Can this tick encode a sharper non-tautological source or guard for SameCutoffTransportFluxAbsorption.youngBernsteinAbsorption, including QP overflow compatibility, without broad route-wrapper progress?",
+  "risk_penalty": 0.23,
+  "success_threshold": "lake env lean ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean passes; no new sorry; artifact names the next PDE field or countermodel.",
+  "task_type": "ns_route1_pde",
+  "value_if_success": 0.83,
+  "void_conditions": "void if only documentation or scalar wrapper is added"
+}

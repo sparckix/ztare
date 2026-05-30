@@ -1,0 +1,128 @@
+{
+  "contract_id": "ns_pressure_ckn_to_split_receipt_gap_tick430_20260514",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue from split receipt source as a top-level pressure assumption.",
+      "counterfactual_action": "Attack no-invisible maps before receipt-share routing.",
+      "externality_hypotheses": {
+        "negative": [
+          "risk of another interface layer without PDE content"
+        ],
+        "positive": [
+          "identifies the next pressure sublemma below split receipts"
+        ],
+        "process": [
+          "keeps final-carrier no-go intact and localizes Galilean/leakage routing"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "positive",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "positive-pressure-gap-localization",
+        "final-carrier-shortcut-blocked"
+      ],
+      "negative_externality_tags": [
+        "interface-layer-no-pde-proof-yet"
+      ],
+      "new_next_action": "Source the three receipt-share routings: resolved mean-free to local quadratic receipt, Galilean mean to pressure reserve, frequency leakage to child/tent charge.",
+      "old_next_action": "Attack FixedWindowPreSummedStressMassSplitReceiptSource as a top-level pressure source.",
+      "realized_failure_mode_ids": [
+        "receipt-share-routing-is-next-source",
+        "ckn-tent-alone-insufficient"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.12625000000000003,
+  "mean_log_score": -0.43161200546873146,
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "artifact_hash": "17eff1252ac337fe92c0de40324770d94ad38e12c90a5a135baf2b5be47b60b7",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "lean_pass",
+    "contract_id": "ns_pressure_ckn_to_split_receipt_gap_tick430_20260514",
+    "counterfactual_value_bucket": "positive",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "positive-pressure-gap-localization",
+      "final-carrier-shortcut-blocked"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 1,
+    "negative_externality_tags": [
+      "interface-layer-no-pde-proof-yet"
+    ],
+    "new_next_action": "Source the three receipt-share routings: resolved mean-free to local quadratic receipt, Galilean mean to pressure reserve, frequency leakage to child/tent charge.",
+    "old_next_action": "Attack FixedWindowPreSummedStressMassSplitReceiptSource as a top-level pressure source.",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "receipt-share-routing-is-next-source",
+      "ckn-tent-alone-insufficient"
+    ],
+    "resolution_note": "Lean compiled after adding FixedWindowCKNTentStressSharesRouteToPressureReceipts, a projection from CKN/tent compatibility plus explicit receipt-share routing to FixedWindowPreSummedStressMassSplitReceiptSource, and a guard that CKN/tent compatibility alone does not source split receipts.",
+    "resolved_at": "2026-05-14T23:20:20Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T23:20:24Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "codex_rd",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 9.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:18:41Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:18:51Z",
+        "resolved_at": "2026-05-14T23:20:20Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 19.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 38.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:18:41Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:18:51Z",
+        "resolved_at": "2026-05-14T23:20:20Z"
+      }
+    }
+  ]
+}

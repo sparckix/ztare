@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 7.0,
+  "artifact_hash": "3f07c6b3083d6a70437130e206c9b1c96fa34d919c09165112d8a0fed0687d19",
+  "artifact_path": "analytics/public/leanmill/results/v1941_scope_clean_signature_repair_execution.json",
+  "compile_status": "partial_compiled_candidates",
+  "contract_id": "gp225_v1941_scope_clean_signature_repair_execution",
+  "error_type": "none_scope_clean_pull_forward_passed",
+  "goal_delta": 3,
+  "resolution_note": "v19.41 attempted 5 scope-clean signature primary rows with 15 candidate templates. Metrics: strict_or_pull_forward_rows=3, strict_same_target_rows=0, harmful_compiled_mismatch_rows=0, post_target_same_file_declarations_used_for_primary=false, target_proof_lines_used_for_candidate_generation=false, teacher_oracle_candidates_excluded_from_primary=true, training_now=false, gnn_blocked=true. Pass is repair/pull-forward scale signal, not GNN training clearance.",
+  "resolved_at": "2026-05-14T00:01:13Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,44 @@
+{
+  "contract_id": "gp225_v1844_micro_inventory_pass",
+  "mean_brier": 0.149,
+  "mean_log_score": -0.4775157800952928,
+  "outcome": {
+    "actual_cost_agent_minutes": 0.2,
+    "artifact_hash": "2154765506fa7650fed2288a769486aafb232a1ae50952ebccfc41eb84bf6966",
+    "artifact_path": "analytics/public/leanmill/results/v1844_proof_delta_label_source_inventory.json",
+    "compile_status": "pass",
+    "contract_id": "gp225_v1844_micro_inventory_pass",
+    "error_type": "none",
+    "goal_delta": 0,
+    "resolution_note": "v18.44 passed inventory gate: replayable=162, before/prefix=332, unsaturated=159, unquarantined_false_accepts=0, training_now=false, gnn_blocked=true.",
+    "resolved_at": "2026-05-13T15:19:35Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T15:19:35Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 0.2,
+      "agent_id": "codex_rd_local",
+      "brier": 0.2304,
+      "cost_error_agent_minutes": 1.8,
+      "domain": "gp225_inventory_gate",
+      "expected_cost_agent_minutes": 2.0,
+      "log_score": -0.6539264674066639,
+      "p_success": 0.52,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 0.2,
+      "agent_id": "codex_readonly_gp230",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "gp225_inventory_gate",
+      "expected_cost_agent_minutes": 1.2,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true
+    }
+  ]
+}

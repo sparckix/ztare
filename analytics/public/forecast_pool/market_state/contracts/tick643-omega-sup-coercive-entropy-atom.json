@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick643-omega-sup-coercive-entropy-atom.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick643-omega-sup-coercive-entropy-atom.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick643-omega-sup-coercive-entropy-atom.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick643-omega-sup-coercive-entropy-atom.json",
+    "score": "analytics/public/forecast_pool/scores/tick643-omega-sup-coercive-entropy-atom.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_projected_self_tax_observable_liminf_source",
+    "created_at": "2026-05-19T01:02:46Z",
+    "created_by": "claude:RD",
+    "horizon": "this_tick",
+    "layer": "micro",
+    "objective_resolver": "codex_cold_adversary+MetaDarwin: TRUE iff a dimensionally-valid non-vacuous coercive monotone observable on stretched-vector vorticity controlling limsup norm-omega-Linf is CONSTRUCTED and survives one independent cold adversary as NOT a route-1 recast/Sobolev relabel/forbidden transport; else FALSE",
+    "question": "Can a max-principle OR supercritical-scaling-coercive monotone entropy/observable be CONSTRUCTED for the stretched-vector vorticity controlling limsup_t norm-omega-Linf (route+sibling-invariant manifest:180 atom) via a NEW object algebra OUTSIDE route-1 explored move-space (NOT a faithful-encoding increment, Sobolev-energy relabel, or forbidden Ricci/dispersive transport)?",
+    "success_threshold": "binary: constructed_nonvacuous_coercive_observable_surviving_cold_adversary=1; partial/recast/relabel/recurrence=0",
+    "task_type": "ns_trackb"
+  },
+  "contract_id": "tick643-omega-sup-coercive-entropy-atom",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "forecast_backfill_or_void_no_score"
+    ],
+    "next_action": "resolved_without_forecasts",
+    "state": "resolved_without_forecasts"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-19T01:22:58Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "resolved_without_forecasts",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

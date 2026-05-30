@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:33:42Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 19.0,
+    "expected_value": 0.07174999999999998,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.14500000000000002,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.07500000000000001,
+    "p_success": 0.8200000000000001,
+    "participants": [
+      {
+        "agent_id": "gp230_fermat_gp225_v2022",
+        "domain": "gp225_route_selection_meso",
+        "p_success": 0.82,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_kant_gp225_v2022",
+        "domain": "gp225_route_selection_meso",
+        "p_success": 0.82,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "older_manifest_consumed",
+        "p": 0.11
+      },
+      {
+        "mode": "thresholds_not_executable",
+        "p": 0.11
+      },
+      {
+        "mode": "accidental_replay_or_training_recommendation",
+        "p": 0.1
+      },
+      {
+        "mode": "gnn_readiness_overclaim",
+        "p": 0.1
+      },
+      {
+        "mode": "latest_manifest_not_controlling",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2022_route_selection_adapter_readiness_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2022_route_selection_adapter_readiness_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2022_route_selection_adapter_readiness_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2022_route_selection_adapter_readiness_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2022_route_selection_adapter_readiness_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 14.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:31:11Z",
+    "created_by": "codex_RD_2026_05_14",
+    "horizon": "one bounded no-replay route-selection artifact",
+    "layer": "meso",
+    "objective_resolver": "Success iff analytics/public/leanmill/results/v2022_route_selection_adapter_readiness.json/.md exist, consume LATEST_META_SOLVER_CONSUMPTION_MANIFEST v20.21, cite public/blended benchmark state, choose one next executable bridge with thresholds, run no Lean replay/training, include research_yield_decomposition, and set gnn_blocked=true.",
+    "question": "Will v20.22 produce a no-replay GP-225 route-selection/adapter-readiness artifact that consumes v20.21, cites public/union benchmark state, selects the next executable bridge, includes GP-233 decomposition, and keeps GNN blocked?",
+    "success_threshold": "json_md_exist,uses_v2021_latest_manifest,cites_public_union_benchmark_state,names_next_executable_bridge_with_thresholds,no_replay,no_training,research_yield_decomposition_present,gnn_blocked_true",
+    "task_type": "gp225_route_selection_meso"
+  },
+  "contract_id": "gp225_v2022_route_selection_adapter_readiness_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_fermat_gp225_v2022",
+        "raw_agent_ids": [
+          "gp230_fermat_gp225_v2022"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_kant_gp225_v2022",
+        "raw_agent_ids": [
+          "gp230_kant_gp225_v2022"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_fermat_gp225_v2022",
+      "gp230_kant_gp225_v2022"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_fermat_gp225_v2022",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2022_route_selection_adapter_readiness_meso/gp230_fermat_gp225_v2022.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T13:33:25Z",
+        "p_success": 0.82,
+        "rationale_short": "v20.21 already names external_public_adapter_or_larger_source_safe_strict_label_supply_before_gnn; public/blended artifacts are sufficient for a no-replay selector; best next bridge is executable public tacgen/adapter-backed replay with strict/harm thresholds.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_kant_gp225_v2022",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2022_route_selection_adapter_readiness_meso/gp230_kant_gp225_v2022.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T13:33:25Z",
+        "p_success": 0.82,
+        "rationale_short": "High success because v20.21 fixes strict_rows=15 and GNN blocked; v19.47/v19.48 and adapter-readiness artifacts already define the public blend boundary. Choose executable public tacgen adapter first, larger source-safe strict supply fallback.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:37:46Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.07174999999999998,
+      "forecast_spread": 0.0,
+      "p_success": 0.8200000000000001,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.6476
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 19.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8200000000000001,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "older_manifest_consumed",
+        "p": 0.11
+      },
+      {
+        "mode": "thresholds_not_executable",
+        "p": 0.11
+      },
+      {
+        "mode": "accidental_replay_or_training_recommendation",
+        "p": 0.1
+      },
+      {
+        "mode": "gnn_readiness_overclaim",
+        "p": 0.1
+      },
+      {
+        "mode": "latest_manifest_not_controlling",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.03240000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:37:50Z"
+  }
+}

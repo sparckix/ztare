@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick629-capacity-dichotomy-localizes-to-singular-set.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick629-capacity-dichotomy-localizes-to-singular-set.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick629-capacity-dichotomy-localizes-to-singular-set",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick629-capacity-dichotomy-localizes-to-singular-set.json",
+    "score": "analytics/public/forecast_pool/scores/tick629-capacity-dichotomy-localizes-to-singular-set.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick629-capacity-dichotomy-localizes-to-singular-set",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T02:42:07Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0435,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_closure_pde_lemma",
+    "score": 0.4,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0435,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 140,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick629: the CapacityOrExistingChannelDichotomy is exhaustive (Cap_omega>=c OR already-channeled); by CKN the bad mass sits on the measure-zero parabolic singular set DISJOINT from the eps-regular existing channel \u21d2 theta_n (already-channeled fraction) bounded <1 on the singular set \u21d2 Capacity-branch residual \u224d enstrophy \u03bd||\u03c9||_L2^2 \u21d2 the dichotomy is a faithful Clay-EQUIVALENT RE-EXPRESSION (NOT a reduction), localizing the irreducible core to 'enstrophy control on the CKN singular set'. Correct + honestly non-reductive?",
+  "risk_penalty": 1.0,
+  "success_threshold": "the dichotomy-exhaustiveness + CKN-disjointness \u21d2 theta_n<1 \u21d2 residual\u224denstrophy chain is correct AND the non-reductive (Clay-equivalent, not progress) self-label is right (no hidden easier sub-problem); survives codex adversarial-kill of the CKN-disjointness step + the non-reduction claim",
+  "task_type": "ns_closure_pde_lemma",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

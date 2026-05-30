@@ -1,0 +1,104 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_eligibility_final_reduction_tick428_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_eligibility_final_reduction_tick428_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_beta_eligibility_final_reduction_tick428_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_eligibility_final_reduction_tick428_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_eligibility_final_reduction_tick428_20260514.json"
+  },
+  "baseline_action": "Do not edit Lean while waiting for GPT-5.5 xhigh.",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_beta_eligibility_final_reduction_tick428_20260514",
+  "cost_penalty": 0.4,
+  "counterfactual_action": "Only summarize the beta eligibility compression in chat.",
+  "created_at": "2026-05-14T22:58:48Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1143,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "lean_frontier_reduction",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1143,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 3,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0769,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0513,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 4,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1212,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1212,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1064,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1064,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "risk of wrapper proliferation"
+    ],
+    "positive": [
+      "pins current frontier for future cold agents"
+    ],
+    "process": [
+      "uses existing Lean abstractions and avoids PDE overclaim"
+    ]
+  },
+  "horizon": "same session 2026-05-14",
+  "information_value": 6.0,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff the Lean file compiles and contains a non-tautological conditional theorem deriving critical-increment failure -> flat-radius scale-reserve failure or pressure frontier failure from route/N8 compression plus beta eligibility routing; false if it duplicates an existing theorem without the beta-eligibility compression, fails to compile, or claims unconditional upstream/Clay closure.",
+  "question": "Will tick428 add a compiling Lean theorem that compresses the current N8 frontier after beta eligibility to flat-radius scale reserve or pressure visibility/coherence, without claiming those branches are closed?",
+  "risk_penalty": 4.0,
+  "success_threshold": "lake env lean succeeds for ns_route1_fresh_frequency_coercivity_adapter.lean; theorem is Prop-level and has an explicit guard that pressure and flat-radius remain open.",
+  "task_type": "lean_frontier_reduction",
+  "value_if_success": 9.0,
+  "void_conditions": "Void if GPT-5.5 xhigh result arrives first and makes the planned theorem obsolete."
+}

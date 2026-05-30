@@ -1,0 +1,26 @@
+{
+  "_renamed_from": "claude",
+  "action_change_recommendation": "Run; this is the cleanest test of whether type-aware retrieval can find non-leaky moat-grade candidates. If 0/3 moat-grade, the moat surface is genuinely hammer-resistant at premise-enum-then-exact granularity; pivot to multi-step rw or row-class change.",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",
+  "contract_question": "Will the premise-enum-then-exact strategy (use cloud premises 32 to enumerate top-32 candidates, filter out gold-lemma + @[simp]/@[fun_prop]/@[grind] tagged, try each as 'exact CAND _ _' application) produce AT LEAST 1 moat-grade closure on the 3 single-lemma-exact moat-surface rows (0162, 0163, 0329)?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_top_32_filtered_out_by_attr_check": 0.13793103448275862,
+    "exact_application_fails_due_to_implicit_unification": 0.27586206896551724,
+    "gold_lemma_outside_top_32": 0.20689655172413793,
+    "premise_returned_but_compile_errors": 0.20689655172413793,
+    "premises_cloud_returns_no_useful_candidates": 0.1724137931034483
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T03:19:37Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.05,
+  "p_success": 0.2,
+  "rationale_short": "On single-lemma-exact rows, hammer baseline failed within 240s. The 'premises 32' API queries the same cloud retrieval that hammer uses but exposes top-32 candidates explicitly. Filter removes gold + @[simp]/@[fun_prop]/@[grind] tagged. If a non-leaky candidate from top-32 closes the goal via 'exact CAND _ _', that's clean moat-grade. P(any row) ~0.30 given LeanHammer R@32~72% on Mathlib-test, but conditional on these being hammer's RESIDUAL the rate is much lower.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

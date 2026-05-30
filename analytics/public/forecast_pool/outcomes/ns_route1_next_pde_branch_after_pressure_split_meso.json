@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 34.0,
+  "artifact_hash": "pending_git_worktree",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_constructive_frontier.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_next_pde_branch_after_pressure_split_meso",
+  "error_type": "none",
+  "goal_delta": 1,
+  "resolution_note": "Resolved success: branch A was selected by all three independent forecasters and the pressure-visible Hessian L2 chain remains compiled; the tick also pulled forward the graph-basin Q pressure-small reduced-nu bridge without scalar visibility smuggling or pre-GNN mutation.",
+  "resolved_at": "2026-05-13T19:59:35Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

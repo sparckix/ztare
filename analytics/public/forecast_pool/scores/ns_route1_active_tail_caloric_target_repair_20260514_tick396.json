@@ -1,0 +1,138 @@
+{
+  "contract_id": "ns_route1_active_tail_caloric_target_repair_20260514_tick396",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "leave ActiveTailPaidByCaloricDissipation target with arbitrary function quantification",
+      "counterfactual_action": "repair the target before any proof/falsifier attempt",
+      "externality_hypotheses": {
+        "negative": [
+          "small interface cleanup may not move PDE content"
+        ],
+        "positive": [
+          "prevents impossible theorem target",
+          "sharpens same-carrier proof obligation"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd_absorption_route",
+        "codex_rd_countermodel_skeptic"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "same_carrier_target_repair",
+        "young_bernstein_absorption",
+        "carrier_guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "new_pde_lemma_required"
+      ],
+      "new_next_action": "prove or falsify SameCutoffTransportFluxAbsorption.youngBernsteinAbsorption and QP residual compatibility",
+      "old_next_action": "attack broad ActiveTailPaidByCaloricDissipation surface",
+      "preconditioner_effect": "Prevented arbitrary-function target; isolated SameCutoffTransportFluxAbsorption as first analytic PDE estimate.",
+      "preconditioner_source": "GPT5.5 proof sketch plus local Lean audit",
+      "realized_failure_mode_ids": [
+        "target_still_too_abstract",
+        "qp_residual_not_bound",
+        "young_bernstein_absorption_needed"
+      ]
+    }
+  },
+  "mean_brier": 0.10880000000000001,
+  "mean_log_score": -0.3926312347338755,
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "artifact_hash": "f2d14152102b09e16866c8a5776c447a608d46ec279db6f8c1758aa74aee9cb0",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd_absorption_route",
+      "codex_rd_countermodel_skeptic"
+    ],
+    "compile_status": "passed",
+    "contract_id": "ns_route1_active_tail_caloric_target_repair_20260514_tick396",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "same_carrier_target_repair",
+      "young_bernstein_absorption",
+      "carrier_guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "new_pde_lemma_required"
+    ],
+    "new_next_action": "prove or falsify SameCutoffTransportFluxAbsorption.youngBernsteinAbsorption and QP residual compatibility",
+    "old_next_action": "attack broad ActiveTailPaidByCaloricDissipation surface",
+    "preconditioner_effect": "Prevented arbitrary-function target; isolated SameCutoffTransportFluxAbsorption as first analytic PDE estimate.",
+    "preconditioner_source": "GPT5.5 proof sketch plus local Lean audit",
+    "realized_failure_mode_ids": [
+      "target_still_too_abstract",
+      "qp_residual_not_bound",
+      "young_bernstein_absorption_needed"
+    ],
+    "resolution_note": "Repaired ActiveTailPaidByCaloricDissipation target: added SameCutoffTransportFluxAbsorption and made activeTailPaidByCaloricDissipation_of_sameCarrierTransportAbsorption a Lean theorem from fixed active measure/positive-variation/transport-absorption/QP-residual fields. The remaining analytic field is youngBernsteinAbsorption.",
+    "resolved_at": "2026-05-14T17:08:29Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T17:08:35Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "codex_rd_absorption_route",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.46,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:02:37Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:03:02Z",
+        "resolved_at": "2026-05-14T17:08:29Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "codex_rd_countermodel_skeptic",
+      "brier": 0.16000000000000003,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.56,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5108256237659907,
+      "p_success": 0.6,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:02:37Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:03:02Z",
+        "resolved_at": "2026-05-14T17:08:29Z"
+      }
+    }
+  ]
+}

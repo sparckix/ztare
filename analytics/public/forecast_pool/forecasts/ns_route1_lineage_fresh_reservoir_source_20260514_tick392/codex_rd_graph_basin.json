@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "encode same-tree/Duhamel-to-no-reuse adapter plus guard; do not claim route closure",
+  "agent_id": "codex_rd_graph_basin",
+  "contract_id": "ns_route1_lineage_fresh_reservoir_source_20260514_tick392",
+  "contract_question": "Can the next NS tick connect route-1 event-local defect no-reuse to existing fresh-frequency/profile machinery by encoding or killing a lineage-fresh monotone reservoir source/guard?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_only_no_pde_source": 0.26,
+    "lean_type_mismatch": 0.1,
+    "overabstract_wrapper": 0.2,
+    "recurrent_reuse_countermodel": 0.22,
+    "same_tree_incidence_wrong_layer": 0.22
+  },
+  "forecast_externality_tags": [
+    "graph_basin_connection",
+    "residual_language_feedback"
+  ],
+  "forecasted_at": "2026-05-14T15:21:56Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.08,
+  "p_success": 0.62,
+  "rationale_short": "Graph closure summary ranks self-tax/profile basin, while declaration scan found SameTreeNonadaptiveEventIncidenceCarleson and Duhamel budget sources. Success likely as a useful adapter/guard, not as PDE closure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "adapter_only_no_pde_source",
+    "recurrent_reuse_countermodel"
+  ]
+}

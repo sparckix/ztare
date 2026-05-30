@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1844_meso_label_source_choice.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1844_meso_label_source_choice.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1844_meso_label_source_choice",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1844_meso_label_source_choice.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1844_meso_label_source_choice.json"
+  },
+  "budget_agent_minutes": 20.0,
+  "contract_id": "gp225_v1844_meso_label_source_choice",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-13T15:15:52Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "v18.44 inventory closure",
+  "information_value": 0.6,
+  "layer": "meso",
+  "objective_resolver": "Resolve from v18.44 inventory decision: success iff the selected next lane has the highest usable unsaturated replayable-row count after false-accept quarantine and deterministic/BM25 saturation checks, and the closure artifact names that lane explicitly.",
+  "question": "Which immediate source lane should GP-225 prioritize after v18.43: public before-action-after traces, natural local proof-step replay, target-state witness rows, or more same-factory hard-decoy residuals?",
+  "risk_penalty": 0.5,
+  "success_threshold": "selected_lane=max_usable_unsaturated_replayable_rows AND false_accept_quarantine_explicit=true AND closure_artifact_names_lane=true",
+  "task_type": "gp225_label_source_selection",
+  "value_if_success": 1.2,
+  "void_conditions": "Void only if v18.44 inventory cannot read the source-family artifacts."
+}

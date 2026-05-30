@@ -1,0 +1,138 @@
+{
+  "contract_id": "gp225_v2060_post_charfun_union_heldout_delta_packet",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Assume charFun strict repair implies learned policy improvement.",
+      "counterfactual_action": "Audit whether charFun repair creates an actual heldout policy delta before replay or training.",
+      "externality_hypotheses": {
+        "negative": [
+          "may produce a no-replay packet"
+        ],
+        "positive": [
+          "prevents manifest-count-to-policy Goodhart",
+          "routes to source discovery if no arm delta exists"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Kolmogorov2",
+        "VonNeumann2"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "anti_goodhart",
+        "heldout_delta",
+        "policy_gate"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "no_replayable_arm",
+        "training_deferred"
+      ],
+      "new_next_action": "source additional rows that create candidate-content delta",
+      "old_next_action": "assume charFun strict repair implies heldout policy improvement",
+      "preconditioner_effect": "Forced explicit heldout transfer audit before replay/training.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2059_union_training_readiness_gate_after_charfun_strict.json",
+      "realized_failure_mode_ids": [
+        "no_replayable_policy_delta"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.04500000000000001,
+  "mean_log_score": -0.23644389221279932,
+  "outcome": {
+    "actual_cost_agent_minutes": 15.0,
+    "artifact_hash": "e9449470bd04153dac3df593433c97ab22ea0f6e0df08eccdce3eabafe19e1ee",
+    "artifact_path": "analytics/public/leanmill/results/v2060_post_charfun_union_heldout_delta_packet.json",
+    "changed_by_forecast_ids": [
+      "Kolmogorov2",
+      "VonNeumann2"
+    ],
+    "compile_status": "static_delta_packet_passed_no_replayable_arm",
+    "contract_id": "gp225_v2060_post_charfun_union_heldout_delta_packet",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "anti_goodhart",
+      "heldout_delta",
+      "policy_gate"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "no_replayable_arm",
+      "training_deferred"
+    ],
+    "new_next_action": "source additional rows that create candidate-content delta",
+    "old_next_action": "assume charFun strict repair implies heldout policy improvement",
+    "preconditioner_effect": "Forced explicit heldout transfer audit before replay/training.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "realized_failure_mode_ids": [
+      "no_replayable_policy_delta"
+    ],
+    "resolution_note": "v20.60 passed: it bound the five v20.40 heldout rows, preserved the repaired charFun strict row and no-leakage status, found zero replayable changed policy arms from the charFun repair, ran no replay/training, and routed next work to new source-safe candidate-content discovery rather than forced heldout replay.",
+    "resolved_at": "2026-05-14T18:28:42Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:28:50Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 15.0,
+      "agent_id": "Kolmogorov2",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "gp225_pre_gnn_heldout_delta_packet",
+      "expected_cost_agent_minutes": 15.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:27:23Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:27:24Z",
+        "resolved_at": "2026-05-14T18:28:42Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 15.0,
+      "agent_id": "VonNeumann2",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "gp225_pre_gnn_heldout_delta_packet",
+      "expected_cost_agent_minutes": 17.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:27:23Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:27:34Z",
+        "resolved_at": "2026-05-14T18:28:42Z"
+      }
+    }
+  ]
+}

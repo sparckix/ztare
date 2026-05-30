@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_overflow_critical_profile_eigq_micro_20260514_tick328.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_overflow_critical_profile_eigq_micro_20260514_tick328.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_overflow_critical_profile_eigq_micro_20260514_tick328",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_overflow_critical_profile_eigq_micro_20260514_tick328.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_overflow_critical_profile_eigq_micro_20260514_tick328.json"
+  },
+  "budget_agent_minutes": 45.5,
+  "budget_agent_minutes_source": "domain_effort_prior:exact",
+  "contract_id": "ns_route1_overflow_critical_profile_eigq_micro_20260514_tick328",
+  "cost_penalty": 1.0,
+  "created_at": "2026-05-14T02:22:11Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 45.5,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 45.5,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 56,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1034,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same-session",
+  "information_value": 6.0,
+  "layer": "micro",
+  "objective_resolver": "Success iff a new eigq_2026_05_14_GPT55Pro_* question packet is written under external_prover/questions, cites rows 326-327 and current Lean objects, asks for proof route/no-go/missing hypothesis for overflow maps, and does not restate the prior angular-dominance prompt.",
+  "question": "Will the next NS route-1 tick craft a non-duplicative Gowers-style eigenquestion targeting fixed-window opposite-cone overflow -> no-invisible-critical-profile failure/zero visibility, with exact artifact pointers and anti-tautology guardrails?",
+  "risk_penalty": 1.0,
+  "success_threshold": "true",
+  "task_type": "external_eigenquestion_packet",
+  "value_if_success": 4.0,
+  "void_conditions": "void if it targets angular dominance generally instead of overflow-to-critical-profile maps"
+}

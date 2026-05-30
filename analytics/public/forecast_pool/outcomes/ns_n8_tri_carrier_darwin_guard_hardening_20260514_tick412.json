@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "f060388bb9463bd3c48c62a3e91647fb0f33f343de117b32190eb07a66726829",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "passed",
+  "contract_id": "ns_n8_tri_carrier_darwin_guard_hardening_20260514_tick412",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "tautology-guard",
+    "darwin-falsifier-capture",
+    "fourth-carrier-exclusion"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "guard-only-no-pde-progress",
+    "n8-not-closed"
+  ],
+  "new_next_action": "Replace raw node potential with tri-carrier corona measure and local fresh domination target",
+  "old_next_action": "Attempt raw TriCarrierCriticalIncrementDrop",
+  "preconditioner_effect": "Made the fourth-carrier and telescoping risks explicit before further N8 compression",
+  "preconditioner_source": "Arendt and Socrates Meta-Darwin reports",
+  "realized_failure_mode_ids": [
+    "too_many_wrappers",
+    "supermartingale_gate_too_abstract"
+  ],
+  "resolution_note": "Added compiling Darwin guard surfaces around the tri-carrier target: fourth-carrier exclusion/residual, tri-carrier supermartingale, radius lower bound, pre-summed pressure visibility, beta incidence cofinality, and SourceGatedTriCarrierCriticalIncrementDrop. This records missing gates; it does not close N8.",
+  "resolved_at": "2026-05-14T20:22:13Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

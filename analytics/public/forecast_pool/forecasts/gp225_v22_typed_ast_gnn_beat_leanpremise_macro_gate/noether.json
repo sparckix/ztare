@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": "Decompose AND-of-two-gates: ship Carleson OOD R@1>5% as standalone milestone first (higher base rate via Graph2Tac analogue); treat Mathlib-test R@16>63.5% as the separable stretch bet.",
+  "agent_id": "Noether",
+  "contract_id": "gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate",
+  "contract_question": "Conditional on the v22 design (TypedAST-GNN + dep-DAG online embedding + Lean-verifier-grounded rerank + CoRNStack hard-negative curriculum) passing the CPU validation gate and getting approximately 2 weeks on 3x A6000, will the trained model beat LeanPremise-Large R@16 = 63.5% on Mathlib-test AND lift Carleson OOD R@1 above 5%?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 20160.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "ablation_shows_typed_ast_does_not_help": 0.1,
+    "both_thresholds_met_v22_wins": 0.18,
+    "carleson_r_at_1_below_0p05": 0.18,
+    "cpu_gate_fails_kills_direction": 0.04,
+    "mathlib_test_below_0p635": 0.32,
+    "training_time_overruns_2_week_budget": 0.12,
+    "verifier_rerank_latency_makes_system_unusable": 0.06
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:01:57Z",
+  "p_dependency_issue": 0.25,
+  "p_needs_new_lemma": 0.15,
+  "p_regression": 0.18,
+  "p_success": 0.22,
+  "rationale_short": "Joint AND is the structural killer: at p~0.45 each marginally the joint sits near 0.20-0.25. Mathlib-test bar is harder because ByT5 at 82M may already implicitly recover binder/type structure that explicit typed-AST duplicates not complements. Carleson OOD is more tractable: dep-DAG online embedding mechanism-matches Graph2Tac (17.4-26.1 unseen-package lift) and verifier-rerank adds orthogonal domain-invariant evidence.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

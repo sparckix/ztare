@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tier_2_corrected_escape_route_corpus_10_candidates_validate_genuinely_new_gated_closer_check_fails_in_pinned_v4_29_0_no_",
+  "contract_question": "Tier-2 corrected-escape-route corpus (>=10 candidates, validate_genuinely_new-gated: closer #check-FAILS in pinned v4.29.0, no file-added-later, no equivalent direct theorem, predeclared target_kind, independent pinned compile) run via bundle_run with baselines B0-B3: will it hit the Tier-2 gate (>=2 clean non-control closures OR >=5 exact-gaps/falsifiers, 0 false-ratify, 0 wrong-kind, 0 novelty-gate-fail)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 120.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "exact_gap_falsifiers_insufficient": 0.35,
+    "novelty_gate_miss_or_equivalent_direct_theorem_found": 0.4,
+    "pinned_compile_or_target_kind_mismatch": 0.25
+  },
+  "forecast_externality_tags": [
+    "genuinely-new-gate",
+    "pinned-compile-risk",
+    "closure-vs-gap-routing"
+  ],
+  "forecasted_at": "2026-05-16T22:50:35Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.05,
+  "p_success": 0.43,
+  "rationale_short": "Open contract; no prior codex row exists. The prior RD price is 0.50, but from codex I discount a bit because the hard part is not just finding 10 candidates, it is keeping every row genuinely new while still producing either 2 clean closures or 5 exact-gap/falsifier rows under the pinned compile and target-kind constraints. Main residuals are novelty-gate attrition, exact-gap scarcity, and a wrong-kind or pinned-compile failure that blocks clean closure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

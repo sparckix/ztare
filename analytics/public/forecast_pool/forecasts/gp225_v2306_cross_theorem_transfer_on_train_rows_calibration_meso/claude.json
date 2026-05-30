@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": "If true with positives spread across >=3 rows and >=3 distinct witness signatures, route to LOO+null gate; if false, retire v23 model lane.",
+  "agent_id": "Claude",
+  "contract_id": "gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso",
+  "contract_question": "Will cross-theorem transfer (gold tactics from 14 other train rows applied as candidates on each of the 15 canonical train rows under strict source!=target row/theorem and direct-gold-token leakage exclusion) recover AT LEAST 1 target-equivalent positive (under GPT-5.5 review contract: target_equivalent_closure OR target_equivalent_transition) across the 15 train rows? Threshold: at least 1 row \u00d7 1 distinct witness signature.",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "1plus_same_namespace_family_transfer_lands_target_equivalent": 0.27,
+    "all_210_or_fewer_candidates_zero_positive_paradigm_dead": 0.41,
+    "false_positive_from_compile_but_wrong_target": 0.09,
+    "indirect_simp_set_leakage_produces_false_positive": 0.085,
+    "leakage_event_breaks_packet_build": 0.035,
+    "wrong_state_progress_only_no_target_equivalent": 0.11
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T00:58:25Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.32,
+  "p_regression": 0.05,
+  "p_success": 0.2,
+  "rationale_short": "RD aggregate of Franklin 0.22 (empirical) and Noether 0.18 (structural); both converge that target-equivalent on train rows is at the edge of plausibility, with 0-FP gate the binding constraint.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

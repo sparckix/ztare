@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick605_self_audit_was_tick604_s_kill_a_category_error_it_used_h_n_c_q_n_un_rescaled_summed_enstrophy_but_lei_ren_thm_b_.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick605_self_audit_was_tick604_s_kill_a_category_error_it_used_h_n_c_q_n_un_rescaled_summed_enstrophy_but_lei_ren_thm_b_.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick605_self_audit_was_tick604_s_kill_a_category_error_it_used_h_n_c_q_n_un_rescaled_summed_enstrophy_but_lei_ren_thm_b_",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick605_self_audit_was_tick604_s_kill_a_category_error_it_used_h_n_c_q_n_un_rescaled_summed_enstrophy_but_lei_ren_thm_b_.json",
+    "score": "analytics/public/forecast_pool/scores/tick605_self_audit_was_tick604_s_kill_a_category_error_it_used_h_n_c_q_n_un_rescaled_summed_enstrophy_but_lei_ren_thm_b_.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick605_self_audit_was_tick604_s_kill_a_category_error_it_used_h_n_c_q_n_un_rescaled_summed_enstrophy_but_lei_ren_thm_b_",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T20:42:10Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_tick605_selfaudit_tick604_overkill_20260516",
+    "score": 0.1429,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1429,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 10,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 140,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 7,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 4,
+        "token_jaccard": 0.0909
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "lean_build_plus_honest_residual_isolation_no_laundering",
+  "question": "tick605 self-audit: was tick604's kill a CATEGORY ERROR \u2014 it used H_n=c*q^n (UN-rescaled summed enstrophy, \u2192\u221e) but Lei-Ren Thm B needs the RESCALED per-cylinder dissipation, which Type-I (rescaled ||U||_inf <= C* same constant for-all n) makes cascade-UNIFORM via unit-scale LEI, no summed enstrophy budget. Success = correctly establish/Lean-formalize that tick604 over-killed (rescaled per-cylinder H is Type-I-uniform; the q^n object is un-rescaled, distinct), REVERT the 15th-recurrence kill honestly, AND isolate the 3 GENUINE residuals (Type-I holds on flat-branch cylinders?; parabolic alignment r_n\u224dsqrt(T-t_n)?; is Type-I\u21d2uniformCKNBound\u21d2porosity bound by the tick578-580 machine-refutation of (s_z,Type-I,R1)\u21d2C-axiom?) WITHOUT laundering closure (no AP-013 over-correction). Fail = rescaling argument flawed, OR over-corrects into a closure claim, OR it IS the tick578-580-refuted move (amnesia).",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_tick605_selfaudit_tick604_overkill_20260516",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

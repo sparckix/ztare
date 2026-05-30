@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T12:00:54Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": 0.4327749329343913,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.8502749329343913,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick632-Qcriterion-pressure-hessian-sign-candidate/claude_rd.json",
+        "forecasted_at": "2026-05-17T12:00:54Z",
+        "p_success": 0.84,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick632-Qcriterion-pressure-hessian-sign-candidate/codex.json",
+        "forecasted_at": "2026-05-17T12:00:54Z",
+        "p_success": 0.86,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick632-Qcriterion-pressure-hessian-sign-candidate.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick632-Qcriterion-pressure-hessian-sign-candidate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick632-Qcriterion-pressure-hessian-sign-candidate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick632-Qcriterion-pressure-hessian-sign-candidate.json",
+    "score": "analytics/public/forecast_pool/scores/tick632-Qcriterion-pressure-hessian-sign-candidate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T11:59:53Z",
+    "created_by": "claude:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "manual_rd",
+    "question": "tick632 (new-program probe): does the strain-vorticity / Q-criterion sign structure (Q := (|\u03c9|\u00b2/2 \u2212 |S|\u00b2) = \u00bd\u0394p, the pressure-Laplacian decomposition) supply a GENUINELY-NEW critical-scale-invariant a-priori constraint OUTSIDE the exhausted taxonomy (scale-margin / ESS-rigidity / topological / CKN-energy-covering) \u2014 i.e. is there a positive-definite scale-critical functional whose NS evolution has a SIGN-controlled vortex-stretching term via the pressure-Hessian, OR does it reduce (like everything) to the critical-norm a-priori estimate / a known CF-alignment relabel / energy-level?",
+    "success_threshold": "an HONEST verdict: either (a) a specific scale-critical positive functional with a genuinely sign-controlled stretching term is identified (genuinely-new), or (b) it is DERIVED to reduce to {critical-norm a-priori = Clay re-expression / CF-alignment relabel / energy-level} \u2014 with the reduction explicit, codex-survived, amnesia-checked, NOT laundered as progress",
+    "task_type": "ns_new_mechanism_probe"
+  },
+  "contract_id": "tick632-Qcriterion-pressure-hessian-sign-candidate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick632-Qcriterion-pressure-hessian-sign-candidate/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T12:00:54Z",
+        "p_success": 0.84,
+        "rationale_short": "threshold-(b) met: DERIVED reduction (codex p=0.86) + amnesia manifest:29 (GPT-5.5 already killed pressure-Hessian/sign relabels) \u21d2 NOT genuinely-new; reduces to {omega.S.omega critical a-priori=Clay} \u222a {CF taxonomy-killed}; caveat folded (heuristic not formal-impossibility); non-laundered honest negative+recurrence",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick632-Qcriterion-pressure-hessian-sign-candidate/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T12:00:54Z",
+        "p_success": 0.86,
+        "rationale_short": "Q critical but diagnostic not coercive; Q_+ loses cancellations, reintroduces indefinite stretching; reduces to strain-eigenstructure/alignment depletion = open problem; caveat: heuristic not formal-impossibility over all Q-weighted functionals; no genuinely sign-controlled critical positive functional missed",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T12:00:54Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.4327749329343913,
+      "forecast_spread": 0.02,
+      "p_success": 0.8502749329343913,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.1473
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8502749329343913,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.02260000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:54Z"
+  }
+}

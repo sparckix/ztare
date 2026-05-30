@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Do not claim more than surface repair. If the source still delegates activeTail->caloric dissipation, log the hard theorem and stop.",
+  "agent_id": "codex_rd_pde_no_go",
+  "contract_id": "ns_route1_noncircular_frequency_duhamel_source_20260514_tick395",
+  "contract_question": "Can the next NS tick remove circularity from the frequency-localized Duhamel reservoir surface by encoding a noncircular source for LineageFreshMonotoneReservoirSource and the first active-tail-to-caloric-dissipation sublemma target?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "active_tail_sublemma_underdefined": 0.26,
+    "event_schedule_mismatch": 0.16,
+    "lean_field_refactor_error": 0.14,
+    "no_decision_delta": 0.1,
+    "still_too_wrapper_like": 0.34
+  },
+  "forecast_externality_tags": [
+    "no_go_hygiene",
+    "circularity_repair"
+  ],
+  "forecasted_at": "2026-05-14T15:37:43Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.96,
+  "p_regression": 0.12,
+  "p_success": 0.55,
+  "rationale_short": "Likely compile succeeds, but scientific success depends on clearly isolating the first PDE estimate rather than hiding it in producesLineageReservoir.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "still_too_wrapper_like",
+    "active_tail_sublemma_underdefined",
+    "no_decision_delta"
+  ]
+}

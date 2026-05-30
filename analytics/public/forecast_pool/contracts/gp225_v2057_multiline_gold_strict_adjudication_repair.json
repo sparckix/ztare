@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2057_multiline_gold_strict_adjudication_repair.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2057_multiline_gold_strict_adjudication_repair.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2057_multiline_gold_strict_adjudication_repair",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2057_multiline_gold_strict_adjudication_repair.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2057_multiline_gold_strict_adjudication_repair.json"
+  },
+  "baseline_action": "Leave v20.55 as auxiliary-only under incomplete gold capture.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2057_multiline_gold_strict_adjudication_repair",
+  "cost_penalty": 0.15,
+  "counterfactual_action": "Repair gold multiline adjudication and re-run strict comparison.",
+  "created_at": "2026-05-14T18:10:04Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0833,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_strict_adjudication_repair",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0833,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0851,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1463,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1333,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1064,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "could accidentally use target proof text as generation evidence if not flagged"
+    ],
+    "positive": [
+      "prevents false negative strict label from multiline capture bug",
+      "keeps target proof lines adjudication-only"
+    ]
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.5,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2057 replay artifact has replay_run=true, attempted_candidate_rows>=1, compiled_candidate_actions>=1, new_strict_same_target_rows>=1, harmful_compiled_mismatch_actions=0, target proof lines used for candidate generation false, gold_adjudication_only true, training_now=false, gnn_blocked=true.",
+  "question": "Will v20.57 repair the charFunDual multiline gold adjudication and reclassify at least one v20.55 compiled candidate as strict same-target with zero harmful mismatches?",
+  "risk_penalty": 0.1,
+  "success_threshold": "1.0",
+  "task_type": "pre_gnn_strict_adjudication_repair",
+  "value_if_success": 1.25,
+  "void_conditions": "Void only if v20.55 replay artifact or source target lines are missing."
+}

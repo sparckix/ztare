@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "tick606_gevrey_analyticity_radius_carrier_exponential_weight_not_polynomial_enstrophy_targets_c2_prodi_serrin_via_lambda",
+  "contract_question": "tick606 gevrey analyticity-radius carrier exponential weight not polynomial enstrophy targets C2 Prodi-Serrin via lambda t gtrsim sqrt T minus t structurally absent from all 15 recurrences. Does the Foias-Temam Oliver-Titi analyticity-radius lower-bound differential inequality at NS-critical parabolic scaling supply a STRICT sub-scaling exponent route alive OR is it conformally scale-invariant order r^0 secretly Type-I 16th recurrence but DERIVED. Success equals a derived verdict either direction surviving the mandatory adversarial-survival block no laundering no preconceded pessimism.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T21:16:40Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.62,
+  "rationale_short": "Genuinely structurally-distinct (exponential Gevrey weight not polynomial enstrophy; not in killed set). Strong prior the analyticity-radius diff-ineq is ALSO conformally scale-invariant at NS-criticality so likely 16th recurrence but as a DERIVED negative that is a successful disciplined tick. 0.62 = P(clean derived verdict either way surviving adversary), not P(route alive ~0.1).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

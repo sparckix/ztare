@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_stress_angular_coherence_source_micro_20260514_tick323",
+  "mean_brier": 0.16465000000000002,
+  "mean_log_score": -0.5200773595482706,
+  "outcome": {
+    "actual_cost_agent_minutes": 28.0,
+    "artifact_hash": "34288fd7f13fb226132fdefcaa73c785ab1acc4d8ce601ffc3c8b51c73a70eb4",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "pass",
+    "contract_id": "ns_route1_stress_angular_coherence_source_micro_20260514_tick323",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Resolved true: added FixedWindowStressAngularCoherenceDominance plus constructor Route1FixedWindowAngularDominanceSource.ofStressAngularCoherence and pressureHessianL2_tail_lower_bound_of_stressAngularCoherence; source is stress-level and guarded against final-carrier definition.",
+    "resolved_at": "2026-05-14T01:21:38Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T01:21:42Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 28.0,
+      "agent_id": "hooke_forecast_tick323",
+      "brier": 0.18490000000000004,
+      "cost_error_agent_minutes": 47.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 75.0,
+      "log_score": -0.5621189181535413,
+      "p_success": 0.57,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:18:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:20:24Z",
+        "resolved_at": "2026-05-14T01:21:38Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 28.0,
+      "agent_id": "rawls_forecast_tick323",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 42.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:18:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:20:24Z",
+        "resolved_at": "2026-05-14T01:21:38Z"
+      }
+    }
+  ]
+}

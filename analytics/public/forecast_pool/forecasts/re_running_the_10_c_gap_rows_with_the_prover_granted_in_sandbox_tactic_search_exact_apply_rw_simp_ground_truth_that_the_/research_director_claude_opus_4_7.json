@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_",
+  "contract_question": "Re-running the 10 C-gap rows with the prover granted in-sandbox tactic search (exact?/apply?/rw?/simp?) + ground-truth that the closer exists at the v4.29.0 pin: will >=5/10 now close genuine (compile + not single-lemma-laundered), confirming the research-grade ceiling is RETRIEVAL-bound not reasoning-bound?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:28:27Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.55,
+  "rationale_short": "void-mine says 9/10 are retrieval-not-reasoning; granting in-sandbox exact?/apply? + 'closer exists' should recover most name-resolution gaps (7) but C13 genuine-construction + C02/C11 shape-bridge may resist; >=5/10 plausible-favored but partial-recovery (3-4) also likely",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

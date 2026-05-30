@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "if true, add the new strict label to strict_same_step_positive and re-run union readiness; failure suggests the gold tactic shape is structurally fragile to elaborator-friendly variants",
+  "agent_id": "Noether",
+  "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+  "contract_question": "Can bounded replay of v21.02 add at least one strict same-step heldout label on current_scale_0164 matching the gold intermediate open state, with zero harmful mismatches, no leakage, and no training?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apply_does_not_unify_at_target": 0.05,
+    "auxiliary_overclosure_again_despite_truncation": 0.03,
+    "candidate_rank_baseline_saturates_again": 0.14,
+    "harmful_compiled_mismatch": 0.02,
+    "leakage_or_packet_accounting_gap": 0.01,
+    "new_strict_same_step_label_added": 0.5,
+    "refine_question_mark_metavariable_mismatch": 0.04,
+    "schema_or_timeout_error": 0.03,
+    "truncated_candidate_leaves_wrong_open_state": 0.1,
+    "withDensity_apply_le_implicit_arg_resolution_fails": 0.08
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T22:20:02Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.04,
+  "p_success": 0.68,
+  "rationale_short": "Both explicit-implicit and bare arg forms exist in the v20.99 compile-positive set, so at least one truncated variant should compile to the gold open state; the apply-variant has higher unification risk than refine.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

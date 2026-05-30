@@ -1,0 +1,26 @@
+{
+  "agent_id": "Noether",
+  "agent_name": "Codex GP-230 Meso Forecaster",
+  "contract_id": "gp225_v2093_new_heldout_candidate_replay_meso_gate",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 30,
+  "forecasted_at": "2026-05-14T21:22:01Z",
+  "p_dependency": 0.13,
+  "p_new_lemma": 0.04,
+  "p_regression": 0.05,
+  "p_success": 0.61,
+  "rationale": "This is the right next pre-GNN action after the negative v20.90 CPU diagnostic: expand heldout eval difficulty using new rows rather than salvaging training. The packet is source-safe, bounded to four candidates across two heldout rows, and success allows either a new strict same-target row or a useful non-strict contrast label, so it has more ways to pay off than a strict-only replay. Probability is moderated by local-context and namespace risk for isoSpec/density signatures, plus the chance that failed candidates are uninformative rather than usable hard negatives.",
+  "routing_hint": "run_bounded_replay",
+  "top_failure_modes": {
+    "anti_leakage_metadata_incomplete": 0.05,
+    "candidates_fail_uninformatively_not_useful_contrast": 0.16,
+    "cheap_baseline_saturation_persists_after_new_labels": 0.09,
+    "harmful_compiled_mismatch": 0.04,
+    "isoSpec_or_density_namespace_import_gap": 0.12,
+    "non_strict_contrast_label_adjudication_ambiguous": 0.11,
+    "replay_harness_timeout_or_unclassified_error": 0.07,
+    "scope_clean_signature_still_mismatches_local_context": 0.2,
+    "strict_candidate_compiles_but_not_same_target": 0.13,
+    "target_or_gold_state_leakage_detected": 0.03
+  }
+}

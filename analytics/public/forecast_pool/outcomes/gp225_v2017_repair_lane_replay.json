@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 6.0,
+  "artifact_hash": "9341c47d7a9139325bb6d4abb8bcaf98861da93e22616e7cb591d5af7d6f0b14",
+  "artifact_path": "analytics/public/leanmill/results/v2017_repair_lane_replay.json",
+  "compile_status": "replay_failed_no_compiled_candidates",
+  "contract_id": "gp225_v2017_repair_lane_replay",
+  "error_type": "no_strict_row",
+  "goal_delta": 0,
+  "resolution_note": "v20.17 replay attempted nine source-safe repair-lane candidates across three reduced rows. No candidate compiled closed, no strict same-target row, no harmful compiled mismatch, training=false, GNN blocked=true.",
+  "resolved_at": "2026-05-14T13:15:44Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

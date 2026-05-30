@@ -1,0 +1,23 @@
+{
+  "agent_id": "hooke_forecast_tick323",
+  "contract_id": "ns_route1_stress_angular_coherence_source_micro_20260514_tick323",
+  "contract_question": "Will the next NS route-1 tick add a build-passed fixed-window stress-angular-coherence dominance source that produces angularMomentDominance/Route1FixedWindowAngularDominanceSource without defining the source from the final carrier?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 75.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.04,
+    "fixed_window_binding_mismatch": 0.22,
+    "lean_type_plumbing_overruns_tick": 0.06,
+    "missing_stress_to_angular_moment_comparison": 0.16,
+    "source_defined_from_final_carrier_or_floor": 0.18,
+    "stress_coherence_source_restates_angular_dominance": 0.34
+  },
+  "forecasted_at": "2026-05-14T01:20:24Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.46,
+  "p_regression": 0.06,
+  "p_success": 0.57,
+  "rationale_short": "Moderate compile chance; main risk is tautology rather than typechecking. Coherence must independently control fixed-window core/sheath moments.",
+  "read_only_attestation": true
+}

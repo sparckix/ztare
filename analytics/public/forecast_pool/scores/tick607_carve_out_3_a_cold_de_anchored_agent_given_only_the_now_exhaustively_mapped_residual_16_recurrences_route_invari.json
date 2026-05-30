@@ -1,0 +1,92 @@
+{
+  "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.39005,
+  "mean_log_score": -1.0124766781978831,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Cold carve-out-3 delivered a NEW derived route-invariance theorem (forced-zero-exponent for \u03bd-free critical carriers: any G-rescaling-covariant separator built from {Biot\u2013Savart B deg+1, \u2207 deg\u22121, \u03c9 deg+2} has exponent on a fixed \u03bd-independent rational lattice with no admissible strict-subcritical interior point; the ONLY off-lattice length is the heat \u221a(\u03bdt) which H1 forbids for C3) WITH an explicit falsifier AND the precise non-amnesiac next move: break H1 = abandon the inviscid 0-order separator, work the \u03bd-BEARING algebra = C7-upper. Adversary-grade (it discarded its own helicity candidate as a killed-class 0-order CZ form). Contract criterion (new derived route-invariance argument, adversary-checked, non-laundered, non-pessimistic \u2014 falsifiable) MET \u21d2 success=true. RD p=0.55 \u2248 realized.",
+    "resolved_at": "2026-05-16T21:24:08Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:46Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "claude_rd",
+      "brier": 0.20249999999999996,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 20.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5978370007556204,
+      "p_success": 0.55,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T21:21:40Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T21:21:40Z",
+        "resolved_at": "2026-05-16T21:24:08Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex",
+      "brier": 0.5776,
+      "cost_error_agent_minutes": 12.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 30.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -1.4271163556401458,
+      "p_success": 0.24,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T21:21:40Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T21:23:45Z",
+        "resolved_at": "2026-05-16T21:24:08Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_path_c_current_scale_0080_transport_adapter_meso_20260519.json"
+  },
+  "baseline_action": "continue with local RD transport fix based on scratch self-bet",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": null,
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "gp225_path_c_current_scale_0080_transport_adapter_meso_20260519",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "ask independent forecasters before widening Path-C transport work",
+  "created_at": "2026-05-19T20:50:57Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0541,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "path_c_transport_adapter",
+    "score": 0.0541,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0541,
+        "domain": "gp225_public_trace_labels",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.0541,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0278,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0278,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0238,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.0238,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0196,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0196,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "independent_price_discovery": "forecasters may identify hidden source-faithfulness or gate-semantics risks before scaling",
+    "negative_externality": "forecast latency must not block the already-running bounded transport smoke"
+  },
+  "horizon": "2026-05-19T23:59:00Z",
+  "information_value": 0.7,
+  "layer": "meso",
+  "objective_resolver": "Run scripts/public/control/path_c_canary_replay.py --govern-winners on VPS after the transport adapter patch; inspect official governance verdict and STD-only axiom audit.",
+  "question": "Will the bounded Path-C current_scale_0080 transport-adapter pass convert the compiling direct-audit-clean candidate into official authoritative_axioms.govern ratification without changing the theorem statement, weakening the proof body, or adding non-STD axioms?",
+  "risk_penalty": 1.0,
+  "success_threshold": "SUCCESS iff unchanged current_scale_0080 source-faithful driver returns authoritative_axioms.govern closure/ratified with STD-only axioms on VPS; FAIL iff unverified/open persists or success requires target weakening, unsafe axioms, or manual semantic edits.",
+  "task_type": "path_c_transport_adapter",
+  "value_if_success": 1.2,
+  "void_conditions": "void only if VPS Lean environment becomes unavailable or the source driver artifact is missing"
+}

@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_stress_cone_mass_subordination_micro_20260514_tick324",
+  "mean_brier": 0.21825,
+  "mean_log_score": -0.6290385316595685,
+  "outcome": {
+    "actual_cost_agent_minutes": 38.0,
+    "artifact_hash": "d0992ce0eaf6e33048f49464a6b0badd07654bdeabb55d92c18e375cde424100",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "downstream_build_passed",
+    "contract_id": "ns_route1_stress_cone_mass_subordination_micro_20260514_tick324",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Added FixedWindowStressConeMassSubordination, derived FixedWindowStressAngularCoherenceDominance and pressureHessianL2_tail_lower_bound_of_coneMassSubordination; lake build ZtareProofs.ns_route1_fresh_frequency_coercivity_adapter passed; no sorry/admit introduced in checked files.",
+    "resolved_at": "2026-05-14T01:27:31Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T01:27:34Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 38.0,
+      "agent_id": "hooke_forecast_tick324",
+      "brier": 0.2601,
+      "cost_error_agent_minutes": 52.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 90.0,
+      "log_score": -0.7133498878774648,
+      "p_success": 0.49,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:23:56Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:27:07Z",
+        "resolved_at": "2026-05-14T01:27:31Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 38.0,
+      "agent_id": "rawls_forecast_tick324",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 48.0,
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:23:56Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:27:15Z",
+        "resolved_at": "2026-05-14T01:27:31Z"
+      }
+    }
+  ]
+}

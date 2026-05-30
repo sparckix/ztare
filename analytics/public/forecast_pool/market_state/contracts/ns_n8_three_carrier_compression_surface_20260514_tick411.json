@@ -1,0 +1,214 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T20:15:47Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.0,
+    "expected_value": -1.779625005956765,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.5,
+    "p_needs_new_lemma": 0.57,
+    "p_regression": 0.12000000000000001,
+    "p_success": 0.6130454437149733,
+    "participants": [
+      {
+        "agent_id": "codex-meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns-proof-falsification",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_three_carrier_compression_surface_20260514_tick411/codex_meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T20:15:47Z",
+        "p_success": 0.53,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex-rd-main",
+        "belief_update": false,
+        "domain": "ns-n8-proof-frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_three_carrier_compression_surface_20260514_tick411/codex_rd_main.json",
+        "forecasted_at": "2026-05-14T20:15:47Z",
+        "p_success": 0.69,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "compression_surface_compiles_but_too_abstract",
+        "p": 0.15
+      },
+      {
+        "mode": "tri_carrier_drop_too_broad",
+        "p": 0.15
+      },
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.125
+      },
+      {
+        "mode": "tri_carrier_drop_overclaims",
+        "p": 0.125
+      },
+      {
+        "mode": "beta_incidence_cofinality_missing",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_three_carrier_compression_surface_20260514_tick411.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_three_carrier_compression_surface_20260514_tick411.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_three_carrier_compression_surface_20260514_tick411.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_three_carrier_compression_surface_20260514_tick411.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_three_carrier_compression_surface_20260514_tick411.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T20:15:30Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-14",
+    "layer": "meso",
+    "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles, no sorry/admit is introduced, and the added surfaces distinguish N8 compression from TriCarrierCriticalIncrementDrop proof.",
+    "question": "Will the N8 three-carrier compression tick add compiling Lean surfaces that correctly reduce N8 to CKN/radius, pressure/cone, and beta/incidence plus a tri-carrier drop target, without claiming the drop is proved?",
+    "success_threshold": "Lean compile plus no-sorry scan plus explicit compression/drop surfaces",
+    "task_type": "ns-proof-frontier-formalization"
+  },
+  "contract_id": "ns_n8_three_carrier_compression_surface_20260514_tick411",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd-main"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex-meta-darwin-proxy",
+        "raw_agent_ids": [
+          "codex-meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-meta-darwin-proxy",
+      "codex-rd-main"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "proceed_but_do_not_score_as_closure",
+        "agent_id": "codex-meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_three_carrier_compression_surface_20260514_tick411/codex_meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns-proof-falsification",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T20:15:47Z",
+        "p_success": 0.53,
+        "rationale_short": "Compression is plausible as routing, but the proposed drop is a new PDE/GMT theorem with nonlocal pressure and incidence risks.",
+        "specific_failure_mode_ids": [
+          "tri_carrier_drop_too_broad",
+          "unfresh_reuse_fourth_carrier",
+          "pressure_nonlocality_not_tree_local",
+          "beta_incidence_cofinality_missing",
+          "lean_compile_issue"
+        ]
+      },
+      {
+        "action_change_recommendation": "proceed_as_surface_only",
+        "agent_id": "codex-rd-main",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_three_carrier_compression_surface_20260514_tick411/codex_rd_main.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns-n8-proof-frontier",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T20:15:47Z",
+        "p_success": 0.69,
+        "rationale_short": "The Lean surface should compile if kept as a target theorem. The real risk is confusing compression with proof of the tri-carrier drop.",
+        "specific_failure_mode_ids": [
+          "compression_surface_compiles_but_too_abstract",
+          "tri_carrier_drop_overclaims",
+          "unfresh_reuse_not_reducible",
+          "lean_compile_issue",
+          "duplicate_n8_guard"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T20:19:16Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.16,
+      "p_success": 0.6130454437149733,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "compression_surface_compiles_but_too_abstract",
+        "p": 0.15
+      },
+      "voi_proxy": 0.8172
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6130454437149733,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "compression_surface_compiles_but_too_abstract",
+        "p": 0.15
+      },
+      {
+        "mode": "tri_carrier_drop_too_broad",
+        "p": 0.15
+      },
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.125
+      },
+      {
+        "mode": "tri_carrier_drop_overclaims",
+        "p": 0.125
+      },
+      {
+        "mode": "beta_incidence_cofinality_missing",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1585,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T20:19:21Z"
+  }
+}

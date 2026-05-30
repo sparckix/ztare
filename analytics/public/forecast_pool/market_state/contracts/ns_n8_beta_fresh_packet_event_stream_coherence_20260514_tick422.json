@@ -1,0 +1,207 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T22:00:45Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 24.0,
+    "expected_value": -38.09026430628136,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.44,
+    "p_needs_new_lemma": 0.8400000000000001,
+    "p_regression": 0.15,
+    "p_success": 0.6719471387437276,
+    "participants": [
+      {
+        "agent_id": "codex-rd",
+        "belief_update": false,
+        "domain": "ns_n8_beta",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422/codex_rd.json",
+        "forecasted_at": "2026-05-14T22:00:31Z",
+        "p_success": 0.72,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns_n8_beta",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T22:00:31Z",
+        "p_success": 0.62,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "signature_friction",
+        "p": 0.175
+      },
+      {
+        "mode": "coherence_as_raw_prop",
+        "p": 0.14
+      },
+      {
+        "mode": "event_stream_coherence_still_prop",
+        "p": 0.125
+      },
+      {
+        "mode": "event_stream_defined_posthoc",
+        "p": 0.125
+      },
+      {
+        "mode": "guard_only_no_source",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 25.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T22:00:14Z",
+    "created_by": "codex",
+    "horizon": "2026-05-14T23:59:00-04:00",
+    "layer": "micro",
+    "objective_resolver": "Lean target file compiles; no sorry/admit introduced; added declarations expose same-event-stream coherence between FreshComparablePacketSideConditionAudit and BadCenterEventNodeIdentification/EventRecurrencePriceLedger, without claiming fresh packet existence.",
+    "question": "Will tick422 add a compiling Lean guard/source surface requiring audit-selected fresh packets to embed into the same hEvents/L event stream, preventing event-per-bad-node and beta-defined price smuggling below the fresh-packet audit?",
+    "success_threshold": "true",
+    "task_type": "lean_frontier_guard"
+  },
+  "contract_id": "ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta-darwin-proxy",
+        "raw_agent_ids": [
+          "meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-rd",
+      "meta-darwin-proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed as guard; do not claim source proof.",
+        "agent_id": "codex-rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_n8_beta",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-14T22:00:31Z",
+        "p_success": 0.72,
+        "rationale_short": "Meta-Darwin found a real risk: audit-selected packets may not be the ledger events. A guard is useful before continuing.",
+        "specific_failure_mode_ids": [
+          "event_stream_embedding_unproved",
+          "event_price_independence_unproved",
+          "bad_node_indexed_event_risk"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed only if it labels this as still open and forbids posthoc matching.",
+        "agent_id": "meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns_n8_beta",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T22:00:31Z",
+        "p_success": 0.62,
+        "rationale_short": "This is the first circularity risk below the audit. Guard helps, but source remains unproved.",
+        "specific_failure_mode_ids": [
+          "same_event_stream_unproved",
+          "posthoc_event_matching",
+          "ledger_price_not_independent"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 15.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T22:02:23Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 24.0,
+      "expected_value": -38.09026430628136,
+      "p_success": 0.6719471387437276,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 7.3204
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 24.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6719471387437276,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "signature_friction",
+        "p": 0.175
+      },
+      {
+        "mode": "coherence_as_raw_prop",
+        "p": 0.14
+      },
+      {
+        "mode": "event_stream_coherence_still_prop",
+        "p": 0.125
+      },
+      {
+        "mode": "event_stream_defined_posthoc",
+        "p": 0.125
+      },
+      {
+        "mode": "guard_only_no_source",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1114,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T22:02:23Z"
+  }
+}

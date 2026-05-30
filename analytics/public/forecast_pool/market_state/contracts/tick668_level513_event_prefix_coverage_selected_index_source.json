@@ -1,0 +1,171 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T07:03:24Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.62,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2356
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 80.0,
+    "expected_value": -147.22,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.06,
+    "p_needs_new_lemma": 0.32,
+    "p_regression": 0.06,
+    "p_success": 0.62,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_trackb_formal_bridge",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level513_event_prefix_coverage_selected_index_source/codex_rd.json",
+        "forecasted_at": "2026-05-27T06:57:46Z",
+        "p_success": 0.62,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "coverage_still_prop_level_not_selector",
+        "p": 0.45
+      },
+      {
+        "mode": "target_node_membership_not_explicit_enough",
+        "p": 0.25
+      },
+      {
+        "mode": "gate_or_workbench_integration_regression",
+        "p": 0.15
+      },
+      {
+        "mode": "lean_adapter_field_mismatch",
+        "p": 0.15
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level513_event_prefix_coverage_selected_index_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level513_event_prefix_coverage_selected_index_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level513_event_prefix_coverage_selected_index_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level513_event_prefix_coverage_selected_index_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level513_event_prefix_coverage_selected_index_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T06:57:34Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-27T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve TRUE iff Lean compiles a Level513 coverage-bound selected-prefix index source into Level512, strict receipt/workbench checks pass, active-chain gate audit is clean, and targeted tests pass.",
+    "question": "Can Level513 bind selectedPrefixEventIndex to BadCenterEventPrefixCoversSelectedBadTree coverage fields and package it into Level512 without label-only or adaptive-selection substitutes?",
+    "success_threshold": "A selected-prefix event index source carries BadCenterEventPrefixCoversSelectedBadTree, uses everySelectedBadNodeAppearsInSomePrefix/eventPrefixesExhaustSelectedBadNodes/noShellOnlyEnumerationShortcut/noAdaptiveStoppingFromObservedBetaSquareSum as paid provenance, and packages into Level512 without using endpoint capacity, target deficit, or post-payoff selection.",
+    "task_type": "ns_trackb_formal_bridge"
+  },
+  "contract_id": "tick668_level513_event_prefix_coverage_selected_index_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Attempt Level513 because it can bind the selectedPrefixEventIndex to the BadCenterEventPrefixCoversSelectedBadTree packet and expose the exact remaining finite-choice theorem.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level513_event_prefix_coverage_selected_index_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_trackb_formal_bridge",
+        "expected_cost_agent_minutes": 80.0,
+        "forecasted_at": "2026-05-27T06:57:46Z",
+        "p_success": 0.62,
+        "rationale_short": "The coverage packet is already present as a same-carrier structure with anti-shortcut fields. It is Prop-level, so Level513 likely cannot construct the selector outright, but can remove generic provenance and isolate the finite-choice theorem.",
+        "specific_failure_mode_ids": [
+          "coverage_still_prop_level_not_selector",
+          "target_node_membership_not_explicit_enough"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T07:03:48Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T07:03:41Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.62,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2356
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 80.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.62,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "coverage_still_prop_level_not_selector",
+        "p": 0.45
+      },
+      {
+        "mode": "target_node_membership_not_explicit_enough",
+        "p": 0.25
+      },
+      {
+        "mode": "gate_or_workbench_integration_regression",
+        "p": 0.15
+      },
+      {
+        "mode": "lean_adapter_field_mismatch",
+        "p": 0.15
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1444,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T07:03:47Z"
+  }
+}

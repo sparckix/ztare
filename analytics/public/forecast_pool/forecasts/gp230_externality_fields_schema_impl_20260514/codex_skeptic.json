@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "run smoke and real audit after code patch; do not claim old contracts had structured externality telemetry",
+  "agent_id": "codex_skeptic",
+  "contract_id": "gp230_externality_fields_schema_impl_20260514",
+  "contract_question": "Can we implement optional structured externality fields in forecast_pool.py, update the GP-230 seam/spec, and preserve smoke/audit compatibility?",
+  "domain": "meta_prediction_market",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "argparse_schema_breaks_existing_contracts": 0.3,
+    "audit_script_misses_new_fields": 0.24,
+    "docs_overstate_enforcement": 0.22,
+    "smoke_regression": 0.08,
+    "success_clean_patch": 0.16
+  },
+  "forecast_externality_tags": [
+    "schema_coverage",
+    "legacy_compatibility",
+    "no_overclaim"
+  ],
+  "forecasted_at": "2026-05-14T14:30:08Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.16,
+  "p_success": 0.63,
+  "rationale_short": "Optional fields should be feasible, but code must avoid making old artifacts invalid. The audit should compute structured coverage rather than only prose term counts.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "argparse_schema_breaks_existing_contracts",
+    "audit_script_misses_new_fields",
+    "docs_overstate_enforcement"
+  ]
+}

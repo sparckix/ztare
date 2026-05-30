@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Run only as bounded information replay if EV positive; otherwise source-context adapter should be refined.",
+  "agent_id": "Church",
+  "contract_id": "gp225_v2045_blocked_row_source_candidate_replay_gate",
+  "contract_question": "If we replay the 10 v20.44 blocked-row source candidates, will at least one candidate compile into a strict, solver-closure, or auxiliary head with harmful mismatches zero?",
+  "domain": "gp225_pre_gnn_replay_gate",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "context_variable_mismatch": 0.32558139534883723,
+    "source_contract_wrong_shape": 0.18604651162790697,
+    "timeout_rows_still_timeout": 0.20930232558139533,
+    "zero_compile_like_prior_public_adapter": 0.27906976744186046
+  },
+  "forecast_externality_tags": [
+    "content_source_test",
+    "replay_gate",
+    "candidate_content_bottleneck"
+  ],
+  "forecasted_at": "2026-05-14T17:29:15Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.06,
+  "p_success": 0.34,
+  "rationale_short": "Content changed, but many candidates still depend on guessed local binder names and may fail at Lean elaboration.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "context_variable_mismatch",
+    "zero_compile_like_prior_public_adapter"
+  ]
+}

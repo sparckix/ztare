@@ -1,0 +1,207 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T21:47:23Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 26.5,
+    "expected_value": -42.43171867481909,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.36,
+    "p_needs_new_lemma": 0.73,
+    "p_regression": 0.14,
+    "p_success": 0.6647135541968193,
+    "participants": [
+      {
+        "agent_id": "codex-rd",
+        "belief_update": false,
+        "domain": "ns_n8_beta",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420/codex_rd.json",
+        "forecasted_at": "2026-05-14T21:47:23Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns_n8_beta",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T21:47:23Z",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "signature_friction",
+        "p": 0.185
+      },
+      {
+        "mode": "adapter_only_no_new_source",
+        "p": 0.13
+      },
+      {
+        "mode": "fresh_lock_as_decorative_wrapper",
+        "p": 0.125
+      },
+      {
+        "mode": "tautological_prefix_prop",
+        "p": 0.125
+      },
+      {
+        "mode": "fresh_lock_still_unproved",
+        "p": 0.12
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T21:47:23Z",
+    "created_by": "codex",
+    "horizon": "2026-05-14T23:59:00-04:00",
+    "layer": "micro",
+    "objective_resolver": "Lean target file compiles; no sorry/admit introduced; added declarations expose SameTreePrefixDominationPrimitive.ofFreshFrequencyEventSameTreeLock and the displayed-subprimitive coherence guard as the next beta source target.",
+    "question": "Will tick420 add a compiling Lean surface reducing the N8 beta cofinal prefix-domination gap to the existing FreshFrequencyEventSameTreeLock / SameTreePrefixDominationPrimitive stack, while preserving the warning that the fresh-packet subprimitives remain unproved?",
+    "success_threshold": "true",
+    "task_type": "lean_frontier_adapter"
+  },
+  "contract_id": "ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta-darwin-proxy",
+        "raw_agent_ids": [
+          "meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-rd",
+      "meta-darwin-proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed as DAG sharpening, not closure.",
+        "agent_id": "codex-rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_n8_beta",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T21:47:23Z",
+        "p_success": 0.74,
+        "rationale_short": "L3 already has SameTreePrefixDominationPrimitive.ofFreshFrequencyEventSameTreeLock. A small adapter should expose it as the next beta primitive.",
+        "specific_failure_mode_ids": [
+          "fresh_packet_subprimitives_unproved",
+          "prefix_domination_still_adapter_only",
+          "same_tree_lock_not_constructed"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed only if the patch names the fresh-packet theorem as the next hard node.",
+        "agent_id": "meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns_n8_beta",
+        "expected_cost_agent_minutes": 31.0,
+        "forecasted_at": "2026-05-14T21:47:23Z",
+        "p_success": 0.58,
+        "rationale_short": "Useful if it makes the raw hPrefixDomination impossible to miss; harmful if it repackages it as a decorative lock.",
+        "specific_failure_mode_ids": [
+          "prefix_domination_from_subprimitives_unproved",
+          "coherence_guard_missing",
+          "badness_does_not_create_fresh_event"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T21:48:57Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 26.5,
+      "expected_value": -42.43171867481909,
+      "p_success": 0.6647135541968193,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 7.3829
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 26.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6647135541968193,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "signature_friction",
+        "p": 0.185
+      },
+      {
+        "mode": "adapter_only_no_new_source",
+        "p": 0.13
+      },
+      {
+        "mode": "fresh_lock_as_decorative_wrapper",
+        "p": 0.125
+      },
+      {
+        "mode": "tautological_prefix_prop",
+        "p": 0.125
+      },
+      {
+        "mode": "fresh_lock_still_unproved",
+        "p": 0.12
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.12200000000000003,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T21:49:03Z"
+  }
+}

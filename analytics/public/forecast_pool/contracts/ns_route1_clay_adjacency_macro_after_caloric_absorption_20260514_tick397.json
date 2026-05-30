@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397.json"
+  },
+  "baseline_action": "continue micro wrappers around active-tail accounting",
+  "budget_agent_minutes": 600.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_clay_adjacency_macro_after_caloric_absorption_20260514_tick397",
+  "cost_penalty": 0.31,
+  "counterfactual_action": "attack SameCutoffTransportFluxAbsorption and caloric reserve-drop PDE estimates directly",
+  "created_at": "2026-05-14T17:12:52Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.25,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.6,
+    "requested_domain": "ns_route1_clay_adjacency_macro",
+    "score": 0.4,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.25,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 10,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.2222,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 138,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.1277,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.2222,
+        "score_rows": 4,
+        "token_jaccard": 0.2222
+      },
+      {
+        "char_trigram_jaccard": 0.1429,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 16,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "QP overflow or cutoff commutator compatibility may require another residual channel",
+      "full Clay proof closure remains far beyond this predicate"
+    ],
+    "positive": [
+      "Gowers-style sidecars and forecast scoring have now narrowed the branch to a concrete local frequency-energy estimate",
+      "caloric/Duhamel carrier may convert no-reuse into a standard PDE estimate station"
+    ]
+  },
+  "horizon": "next 10 RD proof ticks after 2026-05-14 tick397",
+  "information_value": 0.95,
+  "layer": "macro",
+  "objective_resolver": "Resolve true only if a build-passed Lean artifact, E/F row, and GP-233 row show route-1 strictness depends on one named externally meaningful PDE estimate station with a non-tautological informal proof skeleton or falsifier surface. Wrapper-only, allocation-only, or Prop-field reshuffling resolves false.",
+  "question": "From the current tick397 state, will the NS route-1 program reach Clay-proof-adjacent status within the next 10 RD proof ticks under the strict predicate: build-passed Lean plus E/F and GP-233 evidence showing route-1 strictness reduced to one externally meaningful Navier-Stokes PDE estimate station with a paper-proof skeleton, not route wiring or scalar oracle?",
+  "risk_penalty": 0.36,
+  "success_threshold": "one named externally meaningful PDE estimate station; build-passed Lean consumer; no new sorry; GP-233 next-lever change; not a scalar strict-budget oracle",
+  "task_type": "ns_route1_clay_adjacency",
+  "value_if_success": 0.92,
+  "void_conditions": "void if branch target changes away from NS route-1 or if no further NS proof ticks occur"
+}

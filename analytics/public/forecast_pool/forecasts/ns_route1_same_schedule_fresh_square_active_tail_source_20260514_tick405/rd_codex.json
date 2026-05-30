@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Use active-or-passive lineage schedule if active-only bridge fails; do not define activeTail from Xtail.",
+  "agent_id": "rd_codex",
+  "contract_id": "ns_route1_same_schedule_fresh_square_active_tail_source_20260514_tick405",
+  "contract_question": "Will the next NS tick produce a usable math-first verdict and Lean-facing source/guard for sourcing the same-schedule prefix comparison sum freshFrequencySquareBudget <= C_A * sum activeTail from route selection?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "active_only_bridge_false": 0.24,
+    "lean_surface_friction": 0.1,
+    "lineage_schedule_wrapper_only": 0.16,
+    "persistence_source_too_broad": 0.18,
+    "prefix_budget_missing": 0.14,
+    "upstream_branch_still_open": 0.18
+  },
+  "forecast_externality_tags": [
+    "gp-233:route1",
+    "active-passive-dichotomy",
+    "gowers-first"
+  ],
+  "forecasted_at": "2026-05-14T19:08:01Z",
+  "p_dependency_issue": 0.29,
+  "p_needs_new_lemma": 0.66,
+  "p_regression": 0.07,
+  "p_success": 0.58,
+  "rationale_short": "The GPT-5.5 note supplies a sharper replacement object: active-only tail control is likely false, while a fresh-frequency persistence plus lineage schedule source is likely mechanizable as a source/guard.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

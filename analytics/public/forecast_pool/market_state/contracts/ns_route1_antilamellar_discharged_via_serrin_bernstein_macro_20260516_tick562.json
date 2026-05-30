@@ -1,0 +1,210 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:27Z",
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.09,
+      "p_success": 0.3537051415930706,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "cascade_geometry_to_hypothesis_mismatch",
+        "p": 0.17
+      },
+      "voi_proxy": 4.8186
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 31.375,
+    "expected_value": 7.324596274337635,
+    "forecast_count": 2,
+    "forecast_history_count": 9,
+    "p_dependency_issue": 0.135,
+    "p_needs_new_lemma": 0.555,
+    "p_regression": 0.045,
+    "p_success": 0.3537051415930706,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": true,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecast_updates/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562/claude_rd/20260516t034307z_claude_rd.json",
+        "forecasted_at": "2026-05-16T03:43:07Z",
+        "p_success": 0.4,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "ns_clay_antilamellar_discharge_macro_20260516",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562/codex.json",
+        "forecasted_at": "2026-05-16T00:41:01Z",
+        "p_success": 0.31,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "cascade_geometry_to_hypothesis_mismatch",
+        "p": 0.17
+      },
+      {
+        "mode": "extra_integrability_hypothesis_needed",
+        "p": 0.145
+      },
+      {
+        "mode": "bernstein_ratio_not_cascade_level",
+        "p": 0.115
+      },
+      {
+        "mode": "statement_drift_or_overclaim",
+        "p": 0.07
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T00:40:12Z",
+    "created_by": "claude_rd",
+    "horizon": "30d",
+    "layer": "macro",
+    "objective_resolver": "PDE verification: do Serrin/Ladyzhenskaya conditional regularity and Bernstein's inequality apply to the Leray-Hopf tangential cascade exactly as composed in tick562 (heat-exclusion of pure shear is elementary; the content is whether the asymptotically-tangential cascade is genuinely Serrin-subcritical with the stated ratio). success iff the classical chain applies and closes; 0.5 if one classical application needs a stated extra integrability hypothesis; fail iff the cascade evades Serrin/Bernstein in the relevant regime",
+    "question": "tick562 DISCHARGES (Tier-3 PASS 2/3, not defer) the anti-lamellar input: PROVED (a) tangentially-coherent zero-helicity shear solves the pure heat equation => globally regular => NOT a singular CKN-bad node; (b) Bernstein composition: nonlinearity/dissipation ratio <= (Cb/cb)*xi_tau*r from CITED Bernstein inequality + proved algebra; (c) CKN-bad + CITED Serrin/Ladyzhenskaya threshold R*>0 => xi_tau >= R**xi_z => s_z >= R*^2/(R*^2+1) > 0 scale-invariant => tick559->558->552->551 => route-1 closure. Every cited input (heat regularity, Serrin, Bernstein) is a real textbook theorem, no Prop placeholder. Does the cited Serrin+Bernstein chain genuinely apply to the actual Leray-Hopf cascade in the precise form used (closing route-1), or is there a gap in the classical-theorem application to the cascade geometry?",
+    "success_threshold": "success iff cited Serrin+Bernstein genuinely close the discharged chain for the Leray-Hopf cascade; 0.5 if one extra standard integrability hypothesis needed; fail iff classical-theorem application gap",
+    "task_type": "ns_clay_antilamellar_discharge_macro_20260516"
+  },
+  "contract_id": "ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 9,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecast_updates/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562/claude_rd/20260516t034307z_claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-16T03:43:07Z",
+        "p_success": 0.4,
+        "rationale_short": "A closed (verified KRZ2017); B = atom (route-invariant); exclusion result",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Audit the exact theorem hypotheses against the Leray-Hopf cascade geometry before treating the route as closed.",
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_antilamellar_discharged_via_serrin_bernstein_macro_20260516_tick562/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_clay_antilamellar_discharge_macro_20260516",
+        "expected_cost_agent_minutes": 26.0,
+        "forecasted_at": "2026-05-16T00:41:01Z",
+        "p_success": 0.31,
+        "rationale_short": "Read-only pricing: the algebraic pieces are plausible, but the main risk is that the asymptotically tangential Leray-Hopf cascade does not satisfy the classical theorem hypotheses in the exact form needed for route-1 closure.",
+        "specific_failure_mode_ids": [
+          "theorem_hypothesis_mismatch",
+          "extra_integrability_needed"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.09,
+      "p_success": 0.3537051415930706,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "cascade_geometry_to_hypothesis_mismatch",
+        "p": 0.17
+      },
+      "voi_proxy": 4.8186
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 31.375,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.3537051415930706,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "cascade_geometry_to_hypothesis_mismatch",
+        "p": 0.17
+      },
+      {
+        "mode": "extra_integrability_hypothesis_needed",
+        "p": 0.145
+      },
+      {
+        "mode": "bernstein_ratio_not_cascade_level",
+        "p": 0.115
+      },
+      {
+        "mode": "statement_drift_or_overclaim",
+        "p": 0.07
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

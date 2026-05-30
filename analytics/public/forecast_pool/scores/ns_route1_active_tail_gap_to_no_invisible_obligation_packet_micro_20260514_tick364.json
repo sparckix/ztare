@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+  "mean_brier": 0.11700000000000002,
+  "mean_log_score": -0.4095820105717162,
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "artifact_hash": "d2e9672fc6544a1ad2a71624d601d1db3c7cb1748501d626d14b4dda2184a7d9",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/route1_active_tail_zero_visibility_profile_work_packet_20260514.md",
+    "compile_status": "not_applicable_math_packet",
+    "contract_id": "ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "Packet produced two explicit maps from active all-channel-invisible gap to no-invisible obligation inputs, plus falsifier stack and next discriminator; no unconditional route closure claimed.",
+    "resolved_at": "2026-05-14T12:51:39Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T12:51:47Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "codex_rd",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "navier_stokes_route1",
+      "expected_cost_agent_minutes": 18.0,
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:50:05Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:50:18Z",
+        "resolved_at": "2026-05-14T12:51:39Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "codex_skeptic",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "navier_stokes_route1",
+      "expected_cost_agent_minutes": 24.0,
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:50:05Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:50:18Z",
+        "resolved_at": "2026-05-14T12:51:39Z"
+      }
+    }
+  ]
+}

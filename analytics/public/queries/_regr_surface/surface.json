@@ -1,0 +1,648 @@
+{
+  "buckets": {
+    "cognitive_reframe": [
+      {
+        "buckets": [
+          "cognitive_reframe",
+          "negative_to_object"
+        ],
+        "description": "Cold-shot dispatch pattern for de-anchored external or cross-family review before expensive commitment or novelty claims.",
+        "id": "PATTERN-014-COLD-SHOT-DISPATCH",
+        "impact_factor_expost": 5.0,
+        "kind": "pattern",
+        "last_used": "2026-05-13",
+        "matched_terms": [],
+        "path": "org/patterns/cold_shot_dispatch.md",
+        "score": 69.0,
+        "why": "bucket cognitive_reframe, negative_to_object; impact 5"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe",
+          "orchestration_compression"
+        ],
+        "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure.",
+        "id": "PATTERN-002-DARWIN-IDEA-KILLER",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "org/patterns/darwin_idea_killer.md",
+        "score": 59.5,
+        "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe",
+          "negative_to_object"
+        ],
+        "description": "Reframe's minimal solver-0 measurement: 10 mixed targets (Lean/NS/falsifier/consequence) scored via gp225_audit vs pre-registered thresholds (>=3 closures, >=3 gaps, >=2 falsifiers, 0 mislabel, 0 false-ratify). Composes ",
+        "id": "SOLVER0-GATE",
+        "impact_factor_expost": 4.0,
+        "kind": "gate",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "scripts/public/control/solver0_gate.py",
+        "score": 59.0,
+        "why": "bucket cognitive_reframe, negative_to_object; impact 4"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe"
+        ],
+        "description": "3-leg verification (invert + compress + adversarial disagreement).",
+        "id": "PATTERN-008-THREE-LEG-VERIFICATION",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "org/patterns/three_leg_verification.md",
+        "score": 54.5,
+        "why": "bucket cognitive_reframe; impact 4; graph_bonus 1.5"
+      }
+    ],
+    "graph_mining": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas",
+          "graph_mining"
+        ],
+        "description": "Tier-0 closure-governance organ: flags vacuous / True-hypothesis / trivial-exists / exists-Prop closures; independent verify via Lean trivial-cascade probe (zero audit verdict). Mechanizes AP-013 vacuous sub-mode.",
+        "id": "V33-PREFLIGHT-RISK-DETECTOR",
+        "impact_factor_expost": 4.0,
+        "kind": "gate",
+        "last_used": "2026-05-15",
+        "matched_terms": [],
+        "path": "scripts/public/control/v33_preflight_risk_detector.py",
+        "score": 65.0,
+        "why": "bucket pde_ns_lean, sympy_cas, graph_mining; impact 4"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Refreshes Lean declaration index, NS artifact graph, closure miner, typed-endpoint bridge, and the L3A concentration workmap for RD ticks.",
+        "id": "NS-GRAPH-TICK-PRECHECK",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [],
+        "path": "src/ztare/research_director/ns_graph_tick.py",
+        "score": 64.5,
+        "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths.",
+        "id": "NS-L3A-CONCENTRATION-WORKMAP",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [],
+        "path": "src/ztare/research_director/ns_l3a_workmap.py",
+        "score": 63.0,
+        "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
+      },
+      {
+        "buckets": [
+          "graph_mining"
+        ],
+        "description": "Capability index + meta-graph used as load-bearing context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired (Verdict B PARTIALLY NOVEL per literature scout 2026-05-08; Spea",
+        "id": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
+        "impact_factor_expost": 5.0,
+        "kind": "reflexive_primitive",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "src/ztare/reflexive_primitives/architecture_index_meta_graph.md",
+        "score": 63.0,
+        "why": "bucket graph_mining; impact 5"
+      }
+    ],
+    "lagrangian_path_b": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "lagrangian_path_b",
+          "orchestration_compression"
+        ],
+        "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
+        "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
+        "score": 65.0,
+        "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
+      },
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "Core ZTARE autoresearch loop (mutator-judge cycle, Newton mode, Path B Lagrangian).",
+        "id": "AUTORESEARCH-LOOP",
+        "impact_factor_expost": 4.0,
+        "kind": "validator",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "src/ztare/validator/autoresearch_loop.py",
+        "score": 53.0,
+        "why": "bucket lagrangian_path_b; impact 4"
+      },
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "GP-180/181 Path B Lagrangian derivation: derives equations of motion from a Lagrangian via Euler-Lagrange.",
+        "id": "LAGRANGIAN-DERIVATION",
+        "impact_factor_expost": 2.0,
+        "kind": "primitive",
+        "last_used": "2026-04-28",
+        "matched_terms": [],
+        "path": "src/ztare/fit/lagrangian_derivation.py",
+        "score": 34.0,
+        "why": "bucket lagrangian_path_b; impact 2; graph_bonus 2.5"
+      },
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "Routes substrate to appropriate primitive (fit / lagrangian / etc).",
+        "id": "PRIMITIVE-ROUTING",
+        "impact_factor_expost": 2.0,
+        "kind": "validator",
+        "last_used": "2026-05-04",
+        "matched_terms": [],
+        "path": "src/ztare/validator/core/primitive_routing.py",
+        "score": 33.0,
+        "why": "bucket lagrangian_path_b; impact 2"
+      }
+    ],
+    "negative_to_object": [
+      {
+        "buckets": [
+          "cognitive_reframe",
+          "negative_to_object"
+        ],
+        "description": "Cold-shot dispatch pattern for de-anchored external or cross-family review before expensive commitment or novelty claims.",
+        "id": "PATTERN-014-COLD-SHOT-DISPATCH",
+        "impact_factor_expost": 5.0,
+        "kind": "pattern",
+        "last_used": "2026-05-13",
+        "matched_terms": [],
+        "path": "org/patterns/cold_shot_dispatch.md",
+        "score": 69.0,
+        "why": "bucket cognitive_reframe, negative_to_object; impact 5"
+      },
+      {
+        "buckets": [
+          "negative_to_object"
+        ],
+        "description": "5-round adversarial 2-role friction debate; produced 2 clean theorems tonight per memory index.",
+        "id": "PATTERN-001-FRICTION-DEBATE",
+        "impact_factor_expost": 5.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "org/patterns/pattern_1_friction_debate.md",
+        "score": 64.75,
+        "why": "bucket negative_to_object; impact 5; graph_bonus 1.75"
+      },
+      {
+        "buckets": [
+          "negative_to_object",
+          "orchestration_compression"
+        ],
+        "description": "Productized Path-B harness interface (GPT-5.5 bundle 'package the minimum useful harness'): thin composition of v33_preflight + ns_governance_gate + residual_to_lever into one audit report (target_kind/verdict/anti-patte",
+        "id": "GP225-AUDIT",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "scripts/public/control/gp225_audit.py",
+        "score": 59.0,
+        "why": "bucket negative_to_object, orchestration_compression; impact 4"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe",
+          "negative_to_object"
+        ],
+        "description": "Reframe's minimal solver-0 measurement: 10 mixed targets (Lean/NS/falsifier/consequence) scored via gp225_audit vs pre-registered thresholds (>=3 closures, >=3 gaps, >=2 falsifiers, 0 mislabel, 0 false-ratify). Composes ",
+        "id": "SOLVER0-GATE",
+        "impact_factor_expost": 4.0,
+        "kind": "gate",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "scripts/public/control/solver0_gate.py",
+        "score": 59.0,
+        "why": "bucket cognitive_reframe, negative_to_object; impact 4"
+      }
+    ],
+    "orchestration_compression": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "lagrangian_path_b",
+          "orchestration_compression"
+        ],
+        "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
+        "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
+        "score": 65.0,
+        "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe",
+          "orchestration_compression"
+        ],
+        "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure.",
+        "id": "PATTERN-002-DARWIN-IDEA-KILLER",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "org/patterns/darwin_idea_killer.md",
+        "score": 59.5,
+        "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5"
+      },
+      {
+        "buckets": [
+          "negative_to_object",
+          "orchestration_compression"
+        ],
+        "description": "Productized Path-B harness interface (GPT-5.5 bundle 'package the minimum useful harness'): thin composition of v33_preflight + ns_governance_gate + residual_to_lever into one audit report (target_kind/verdict/anti-patte",
+        "id": "GP225-AUDIT",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "scripts/public/control/gp225_audit.py",
+        "score": 59.0,
+        "why": "bucket negative_to_object, orchestration_compression; impact 4"
+      },
+      {
+        "buckets": [
+          "orchestration_compression"
+        ],
+        "description": "Meta-arc stall-resolution pattern for detecting local hillclimb saturation and selecting a lane-swap or process-level move.",
+        "id": "PATTERN-020-META-ARC-STALL-RESOLUTION",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-13",
+        "matched_terms": [],
+        "path": "org/patterns/meta_arc_stall_resolution.md",
+        "score": 53.0,
+        "why": "bucket orchestration_compression; impact 4"
+      }
+    ],
+    "pde_ns_lean": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "v1.48: deterministic dimensional/endpoint check on LLM-proposed PDE inequalities BEFORE Lean editing.",
+        "id": "PDE-INEQUALITY-DIMENSIONAL-GATE",
+        "impact_factor_expost": 3.0,
+        "kind": "gate",
+        "last_used": "2026-05-07",
+        "matched_terms": [
+          "pde",
+          "estimate",
+          "inequality"
+        ],
+        "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
+        "score": 74.25,
+        "why": "matched pde, estimate, inequality; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight).",
+        "id": "CAS-W6-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "script",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "scripts/projects/ns/CAS_W6_verification.py",
+        "score": 71.0,
+        "why": "bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean"
+        ],
+        "description": "GP-219 PDE estimate-craft vocabulary (pec_a/b/c/d/e/f + cand_g) covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses.",
+        "id": "PDE-ESTIMATE-CRAFT-OPS",
+        "impact_factor_expost": 4.0,
+        "kind": "op",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "pde",
+          "estimate"
+        ],
+        "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
+        "score": 70.75,
+        "why": "matched pde, estimate; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean"
+        ],
+        "description": "Sequencing pattern for proof frontiers where carrier or observable identity is unstable: run informal theorem-surface proof/countermodel work before Lean, then formalize the surviving primitive and no-go guard.",
+        "id": "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-14",
+        "matched_terms": [
+          "pde",
+          "estimate"
+        ],
+        "path": "org/patterns/gowers_first_formalize_second.md",
+        "score": 69.0,
+        "why": "matched pde, estimate; bucket pde_ns_lean; impact 4"
+      }
+    ],
+    "sympy_cas": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "v1.48: deterministic dimensional/endpoint check on LLM-proposed PDE inequalities BEFORE Lean editing.",
+        "id": "PDE-INEQUALITY-DIMENSIONAL-GATE",
+        "impact_factor_expost": 3.0,
+        "kind": "gate",
+        "last_used": "2026-05-07",
+        "matched_terms": [
+          "pde",
+          "estimate",
+          "inequality"
+        ],
+        "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
+        "score": 74.25,
+        "why": "matched pde, estimate, inequality; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
+      },
+      {
+        "buckets": [
+          "sympy_cas"
+        ],
+        "description": "Independent CAS verification of LLM-proposed inequalities.",
+        "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "inequality"
+        ],
+        "path": "org/patterns/independent_cas_verification.md",
+        "score": 72.75,
+        "why": "matched inequality; bucket sympy_cas; impact 5; graph_bonus 1.75"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight).",
+        "id": "CAS-W6-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "script",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "scripts/projects/ns/CAS_W6_verification.py",
+        "score": 71.0,
+        "why": "bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
+      },
+      {
+        "buckets": [
+          "sympy_cas"
+        ],
+        "description": "CAS verification of atom8 (Newton-mode Reynolds attack, shipped tonight).",
+        "id": "CAS-ATOM8-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "script",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "scripts/projects/ns/CAS_atom8_verification.py",
+        "score": 65.25,
+        "why": "bucket sympy_cas; impact 5; graph_bonus 2.25"
+      }
+    ]
+  },
+  "ok": true,
+  "query_terms": [
+    "navier-stokes",
+    "pde",
+    "C7",
+    "estimate",
+    "inequality"
+  ],
+  "top_hits": [
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "sympy_cas"
+      ],
+      "description": "v1.48: deterministic dimensional/endpoint check on LLM-proposed PDE inequalities BEFORE Lean editing.",
+      "id": "PDE-INEQUALITY-DIMENSIONAL-GATE",
+      "impact_factor_expost": 3.0,
+      "kind": "gate",
+      "last_used": "2026-05-07",
+      "matched_terms": [
+        "pde",
+        "estimate",
+        "inequality"
+      ],
+      "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
+      "score": 74.25,
+      "why": "matched pde, estimate, inequality; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
+    },
+    {
+      "buckets": [
+        "sympy_cas"
+      ],
+      "description": "Independent CAS verification of LLM-proposed inequalities.",
+      "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
+      "impact_factor_expost": 5.0,
+      "kind": "pattern",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "inequality"
+      ],
+      "path": "org/patterns/independent_cas_verification.md",
+      "score": 72.75,
+      "why": "matched inequality; bucket sympy_cas; impact 5; graph_bonus 1.75"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "sympy_cas"
+      ],
+      "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight).",
+      "id": "CAS-W6-VERIFICATION",
+      "impact_factor_expost": 5.0,
+      "kind": "script",
+      "last_used": "2026-05-08",
+      "matched_terms": [],
+      "path": "scripts/projects/ns/CAS_W6_verification.py",
+      "score": 71.0,
+      "why": "bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "GP-219 PDE estimate-craft vocabulary (pec_a/b/c/d/e/f + cand_g) covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses.",
+      "id": "PDE-ESTIMATE-CRAFT-OPS",
+      "impact_factor_expost": 4.0,
+      "kind": "op",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "pde",
+        "estimate"
+      ],
+      "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
+      "score": 70.75,
+      "why": "matched pde, estimate; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
+    },
+    {
+      "buckets": [
+        "cognitive_reframe",
+        "negative_to_object"
+      ],
+      "description": "Cold-shot dispatch pattern for de-anchored external or cross-family review before expensive commitment or novelty claims.",
+      "id": "PATTERN-014-COLD-SHOT-DISPATCH",
+      "impact_factor_expost": 5.0,
+      "kind": "pattern",
+      "last_used": "2026-05-13",
+      "matched_terms": [],
+      "path": "org/patterns/cold_shot_dispatch.md",
+      "score": 69.0,
+      "why": "bucket cognitive_reframe, negative_to_object; impact 5"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Sequencing pattern for proof frontiers where carrier or observable identity is unstable: run informal theorem-surface proof/countermodel work before Lean, then formalize the surviving primitive and no-go guard.",
+      "id": "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
+      "impact_factor_expost": 4.0,
+      "kind": "pattern",
+      "last_used": "2026-05-14",
+      "matched_terms": [
+        "pde",
+        "estimate"
+      ],
+      "path": "org/patterns/gowers_first_formalize_second.md",
+      "score": 69.0,
+      "why": "matched pde, estimate; bucket pde_ns_lean; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Composition meta-pattern linking PATTERN-025 (workflow scaffold) + universal-language JSONL (content moves) + ANTI-PATTERN-012 (per-step verification). Names the structural relationship between the two previously-indepen",
+      "id": "META-PATTERN-022-GOWERS-FIRST-WITH-CONTENT-LAYER-COMPOSITION",
+      "impact_factor_expost": 5.0,
+      "kind": "meta-pattern",
+      "last_used": "2026-05-15",
+      "matched_terms": [
+        "pde"
+      ],
+      "path": "org/patterns/gowers_first_with_content_layer_composition.md",
+      "score": 67.0,
+      "why": "matched pde; bucket pde_ns_lean; impact 5"
+    },
+    {
+      "buckets": [],
+      "description": "GP-216 v5 vocabulary: 6 core + 8 broad + 4 specific universal research ops covering ~58-95% of mathematical structural moves.",
+      "id": "UNIVERSAL-RESEARCH-OPS",
+      "impact_factor_expost": 4.0,
+      "kind": "op",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "pde",
+        "estimate"
+      ],
+      "path": "src/ztare/research_director/universal_research_ops.py",
+      "score": 65.75,
+      "why": "matched pde, estimate; impact 4; graph_bonus 2.75"
+    },
+    {
+      "buckets": [
+        "sympy_cas"
+      ],
+      "description": "CAS verification of atom8 (Newton-mode Reynolds attack, shipped tonight).",
+      "id": "CAS-ATOM8-VERIFICATION",
+      "impact_factor_expost": 5.0,
+      "kind": "script",
+      "last_used": "2026-05-08",
+      "matched_terms": [],
+      "path": "scripts/projects/ns/CAS_atom8_verification.py",
+      "score": 65.25,
+      "why": "bucket sympy_cas; impact 5; graph_bonus 2.25"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "lagrangian_path_b",
+        "orchestration_compression"
+      ],
+      "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
+      "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+      "impact_factor_expost": 4.0,
+      "kind": "primitive",
+      "last_used": "2026-05-16",
+      "matched_terms": [],
+      "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
+      "score": 65.0,
+      "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "sympy_cas",
+        "graph_mining"
+      ],
+      "description": "Tier-0 closure-governance organ: flags vacuous / True-hypothesis / trivial-exists / exists-Prop closures; independent verify via Lean trivial-cascade probe (zero audit verdict). Mechanizes AP-013 vacuous sub-mode.",
+      "id": "V33-PREFLIGHT-RISK-DETECTOR",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-15",
+      "matched_terms": [],
+      "path": "scripts/public/control/v33_preflight_risk_detector.py",
+      "score": 65.0,
+      "why": "bucket pde_ns_lean, sympy_cas, graph_mining; impact 4"
+    },
+    {
+      "buckets": [
+        "negative_to_object"
+      ],
+      "description": "5-round adversarial 2-role friction debate; produced 2 clean theorems tonight per memory index.",
+      "id": "PATTERN-001-FRICTION-DEBATE",
+      "impact_factor_expost": 5.0,
+      "kind": "pattern",
+      "last_used": "2026-05-08",
+      "matched_terms": [],
+      "path": "org/patterns/pattern_1_friction_debate.md",
+      "score": 64.75,
+      "why": "bucket negative_to_object; impact 5; graph_bonus 1.75"
+    }
+  ],
+  "total_index_rows": 230,
+  "warnings": []
+}

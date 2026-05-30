@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_pressure_split_receipt_frontier_tick429_20260514",
+  "contract_question": "Will tick429 add a compiling Lean pressure-frontier theorem that identifies split pre-summed stress receipts as the actionable pressure/coherence source path, without claiming pressure branch closure?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:05:59Z",
+  "p_dependency_issue": 0.55,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.22,
+  "p_success": 0.49,
+  "rationale_short": "Risk: adding summaries after Ptolemy explicitly warned against wrapper surfaces. Only worthwhile if we expose existing scalar receipt inequalities and pressure/no-invisible boundary.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,21 @@
+{
+  "agent_id": "hooke_forecast_tick338",
+  "contract_id": "ns_route1_presummed_stress_ckn_compat_split_micro_20260514_tick338",
+  "contract_question": "Will we add a useful compatibility primitive splitting pre-summed stress mass into resolved mean-free, Galilean mean, and leakage pieces, with CKN/tent and shard-C payment paths?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 82.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.2,
+    "leakage_route_not_available": 0.25,
+    "mean_piece_not_payable": 0.25,
+    "split_becomes_too_conditional": 0.3
+  },
+  "forecasted_at": "2026-05-14T03:21:01Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.2,
+  "p_success": 0.63,
+  "rationale_short": "The sidecar identified the right split; useful if the Lean surface explicitly routes mean/leakage rather than pretending tent excess sees everything.",
+  "read_only_attestation": true
+}

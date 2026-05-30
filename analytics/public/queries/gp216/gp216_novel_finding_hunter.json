@@ -1,0 +1,134 @@
+{
+  "experiment": "gp216_novel_finding_hunter",
+  "category_A_novel_ops": {
+    "error": "'list' object has no attribute 'get'"
+  },
+  "category_B_predictive_power": {
+    "n_turns": 14,
+    "op_distribution": {
+      "core_07": 9,
+      "core_03": 1,
+      "core_02": 2,
+      "core_05": 2
+    },
+    "mode_op": "core_07",
+    "accuracy_random": 0.16666666666666666,
+    "accuracy_mode": 0.6428571428571429,
+    "accuracy_markov1": 0.5384615384615384,
+    "verdict": "HIGH MODE + LOW MARKOV-1 = corpus is dominated by one op; little predictive structure"
+  },
+  "category_C_folk_knowledge": {
+    "folk_tests": [
+      {
+        "claim_id": "C1",
+        "subfield": "theory_building",
+        "folk_claim_op": "Generalization & Abstraction",
+        "actual_top_3": [
+          [
+            "Axiomatization & Foundational Repair",
+            18.5
+          ],
+          [
+            "Iterative Refinement",
+            14.2
+          ],
+          [
+            "Problem Reformulation & Reduction",
+            14.0
+          ]
+        ],
+        "match": false,
+        "folk_in_top3": false,
+        "verdict": "FOLK CONTRADICTED \u2014 folk-claim op not in top 3"
+      },
+      {
+        "claim_id": "C2",
+        "subfield": "additive_combinatorics",
+        "folk_claim_op": "Iterative Refinement",
+        "actual_top_3": [
+          [
+            "Iterative Refinement",
+            14.2
+          ],
+          [
+            "Problem Reformulation & Reduction",
+            14.0
+          ],
+          [
+            "Constraint Imposition & Propagation",
+            13.8
+          ]
+        ],
+        "match": true,
+        "folk_in_top3": true,
+        "verdict": "FOLK CONFIRMED"
+      },
+      {
+        "claim_id": "C3",
+        "subfield": "logic_set_theory",
+        "folk_claim_op": "Internalization & Self-Reference",
+        "actual_top_3": [
+          [
+            "Controlled Universe Extension",
+            29.0
+          ],
+          [
+            "Internalization & Self-Reference",
+            20.0
+          ],
+          [
+            "Axiomatization & Foundational Repair",
+            18.5
+          ]
+        ],
+        "match": false,
+        "folk_in_top3": true,
+        "verdict": "PARTIAL \u2014 folk in top 3 but not dominant"
+      },
+      {
+        "claim_id": "C4",
+        "subfield": "geometric_flow_pde",
+        "folk_claim_op": "Local-to-Global Assembly",
+        "actual_top_3": [
+          [
+            "Iterative Refinement",
+            14.2
+          ],
+          [
+            "Problem Reformulation & Reduction",
+            14.0
+          ],
+          [
+            "Constraint Imposition & Propagation",
+            13.8
+          ]
+        ],
+        "match": false,
+        "folk_in_top3": false,
+        "verdict": "FOLK CONTRADICTED \u2014 folk-claim op not in top 3"
+      },
+      {
+        "claim_id": "C5",
+        "subfield": "algebraic_topology",
+        "folk_claim_op": "Decomposition & Recomposition",
+        "actual_top_3": [
+          [
+            "Problem Reformulation & Reduction",
+            14.0
+          ],
+          [
+            "Cross-Domain Translation",
+            13.6
+          ],
+          [
+            "Canonical Form & Invariance",
+            11.1
+          ]
+        ],
+        "match": false,
+        "folk_in_top3": false,
+        "verdict": "FOLK CONTRADICTED \u2014 folk-claim op not in top 3"
+      }
+    ]
+  }
+}

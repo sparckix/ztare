@@ -1,0 +1,22 @@
+{
+  "agent_id": "Euler",
+  "contract_id": "ns_route1_angular_carrier_identification_split_micro_20260514_tick316",
+  "contract_question": "Will this tick add a build-passed route-independent carrier-identification station below Route1PressureAngularCarrierEstimate, splitting l2Carrier_identifies_totalAngularMoment into projected Riesz kernel match, recovered pressure-Hessian tail-window projection, and normalization/anti-tautology fields, plus constructor into Route1PressureAngularCarrierEstimate, with no new sorry/admit?",
+  "domain": "ns_lean_micro",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "field_order_or_constructor_drift": 0.18,
+    "graph_overread": 0.08,
+    "missing_compositional_equality": 0.35,
+    "normalization_underspecified": 0.14,
+    "tautological_rename": 0.25
+  },
+  "forecasted_at": "2026-05-14T00:12:14Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.24,
+  "p_regression": 0.08,
+  "p_success": 0.74,
+  "rationale_short": "Compile-favorable because current station exposes the ingredients; risk is carrying only Prop guards without equality strong enough to construct the estimate.",
+  "read_only_attestation": true
+}

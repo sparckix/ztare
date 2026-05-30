@@ -1,0 +1,58 @@
+{
+  "contract_id": "gp225_v1973_lane_specific_small_replay",
+  "mean_brier": 0.11424999999999999,
+  "mean_log_score": -0.4102630549448879,
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "artifact_hash": "6ee9e926e08d579ccccdb18c7235a76a164e824677f082b7c5b844586c8f6cf0",
+    "artifact_path": "analytics/public/leanmill/results/v1973_lane_specific_small_replay.json",
+    "compile_status": "lane_specific_replay_completed",
+    "contract_id": "gp225_v1973_lane_specific_small_replay",
+    "error_type": null,
+    "goal_delta": 0,
+    "resolution_note": "Replay attempted 38 candidate actions across 16 rows. compiled_candidate_action_rate=0.0526 below the 0.08 gate; fresh strict rows=0; pull-forward auxiliary closures=2 on current_scale_0137; harmful mismatches=0; GNN blocked. Useful auxiliary signal but full success threshold false.",
+    "resolved_at": "2026-05-14T03:45:41Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:45:44Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "gp230_lamport_gp225_v1973",
+      "brier": 0.0841,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 24.0,
+      "log_score": -0.342490308946776,
+      "p_success": 0.29,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:42:49Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:43:00Z",
+        "resolved_at": "2026-05-14T03:45:41Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 16.0,
+      "agent_id": "gp230_shannon_gp225_v1973",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 22.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.38,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:42:49Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:43:00Z",
+        "resolved_at": "2026-05-14T03:45:41Z"
+      }
+    }
+  ]
+}

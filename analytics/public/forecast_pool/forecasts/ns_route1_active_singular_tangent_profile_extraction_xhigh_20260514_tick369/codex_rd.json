@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_active_singular_tangent_profile_extraction_xhigh_20260514_tick369",
+  "contract_question": "Can xhigh pull forward ActiveSingularTangentProfileExtraction by producing a proof route, route-native no-go, or exact mass-persistence sublemma for mu_A_perp tangent blowups?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "fifth_channel_confirmed": 0.18,
+    "mass_persistence_sublemma": 0.3,
+    "profile_realization_topology_missing": 0.24,
+    "proof_route_actual": 0.1,
+    "route_native_no_go": 0.18
+  },
+  "forecasted_at": "2026-05-14T13:17:51Z",
+  "p_dependency_issue": 0.55,
+  "p_needs_new_lemma": 0.96,
+  "p_regression": 0.07,
+  "p_success": 0.39,
+  "rationale_short": "Feynman already localized the gap; next sidecar likely splits mass persistence/profile realization or fifth-channel, less likely proof.",
+  "read_only_attestation": true
+}

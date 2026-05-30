@@ -1,0 +1,33 @@
+{
+  "contract_id": "gp225_v1874_remaining_8_witness_backfill",
+  "mean_brier": 0.3364,
+  "mean_log_score": -0.867500567704723,
+  "outcome": {
+    "actual_cost_agent_minutes": 0.92,
+    "artifact_hash": "9ac08d223b9f83e1adb59ce39ab860fa4a687dcb0e3ac6b0c1d295393938dfc0",
+    "artifact_path": "analytics/public/leanmill/results/v1874_remaining_8_witness_backfill_runner.json",
+    "compile_status": "gnn_blocked_static_prefilter_sentinel",
+    "contract_id": "gp225_v1874_remaining_8_witness_backfill",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "Literal contract failed because one row was correctly typed as not_run_static_prefilter; 7/7 attempted rows produced clean labels with zero ambiguity, so scientific value positive but forecast threshold too strict.",
+    "resolved_at": "2026-05-13T17:42:01Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T17:42:06Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 0.92,
+      "agent_id": "codex_local_rd_v1874",
+      "brier": 0.3364,
+      "cost_error_agent_minutes": 0.9699999999999999,
+      "domain": "gp225_lean_witness_backfill",
+      "expected_cost_agent_minutes": 1.89,
+      "log_score": -0.867500567704723,
+      "p_success": 0.58,
+      "success_bool": false
+    }
+  ]
+}

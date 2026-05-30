@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_skeptic_tick361",
+  "contract_id": "ns_route1_four_channel_visibility_cover_micro_20260514_tick361",
+  "contract_question": "Can we add a compiled Route1CriticalTailVisibilityCover with individual channel charges/losses and visibility cover that constructs the existing Route1ChannelVisibilityProducer, without claiming the PDE visibility theorem is proved?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "algebra_compile": 0.25,
+    "success": 0.3,
+    "tautology_risk": 0.25,
+    "wrong_channel_mapping": 0.2
+  },
+  "forecasted_at": "2026-05-14T12:39:20Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.45,
+  "p_regression": 0.06,
+  "p_success": 0.58,
+  "rationale_short": "Useful if it is clearly a producer surface, not a proof of visibility. Main risk is smuggling no-invisible residual as a channel without an independent visibility field.",
+  "read_only_attestation": true
+}

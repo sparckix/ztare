@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T04:19:56Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 46.0,
+    "expected_value": -6.3178212530589954,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.28500000000000003,
+    "p_needs_new_lemma": 0.38,
+    "p_regression": 0.07500000000000001,
+    "p_success": 0.6807480420953195,
+    "participants": [
+      {
+        "agent_id": "herschel_skeptic_tick348",
+        "domain": "ns_route1_pde",
+        "p_success": 0.65,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "hooke_forecast_tick348",
+        "domain": "ns_route1_pde",
+        "p_success": 0.71,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "only_adds_wrapper_not_estimate",
+        "p": 0.17
+      },
+      {
+        "mode": "other",
+        "p": 0.16999999999999998
+      },
+      {
+        "mode": "source_remains_conditional",
+        "p": 0.16
+      },
+      {
+        "mode": "boundary_receipt_too_weak",
+        "p": 0.12
+      },
+      {
+        "mode": "receipt_matching_not_enough",
+        "p": 0.095
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T04:19:41Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14 current tick",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean file contains named boundary tent-truncation lower-payment source, theorem into bookkeeping boundary charge, undercharge guard/no-go, lake env lean and downstream build pass, and touched-file sorry/admit scan is clean",
+    "question": "Can we add a compile-checked boundary-specific lower-payment source/guard tying normalizedBoundaryLeakagePart to FreshFrequencyTentBoundaryTruncationReceipt.boundaryLeakageCharge, without confusing boundaryCharge \u2264 tentBoundaryError with lower payment?",
+    "success_threshold": "compiled boundary lower-payment source plus guard",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:herschel_skeptic_tick348",
+        "raw_agent_ids": [
+          "herschel_skeptic_tick348"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick348",
+        "raw_agent_ids": [
+          "hooke_forecast_tick348"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "herschel_skeptic_tick348",
+      "hooke_forecast_tick348"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "herschel_skeptic_tick348",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348/herschel_skeptic_tick348.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 52.0,
+        "forecasted_at": "2026-05-14T04:19:52Z",
+        "p_success": 0.65,
+        "rationale_short": "Likely to compile as a source/guard; PDE value depends on whether the boundary lower-payment field becomes the next actual estimate rather than another wrapper.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick348",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_boundary_tent_lower_payment_source_micro_20260514_tick348/hooke_forecast_tick348.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T04:19:52Z",
+        "p_success": 0.71,
+        "rationale_short": "The boundary leg is simpler than transport, but the useful theorem must preserve the direction: normalized boundary part to boundary charge, not charge to tent error.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 33.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T04:21:09Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 46.0,
+      "expected_value": -6.3178212530589954,
+      "p_success": 0.6807480420953195,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.8973
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 46.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6807480420953195,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "only_adds_wrapper_not_estimate",
+        "p": 0.17
+      },
+      {
+        "mode": "other",
+        "p": 0.16999999999999998
+      },
+      {
+        "mode": "source_remains_conditional",
+        "p": 0.16
+      },
+      {
+        "mode": "boundary_receipt_too_weak",
+        "p": 0.12
+      },
+      {
+        "mode": "receipt_matching_not_enough",
+        "p": 0.095
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1033,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T04:21:19Z"
+  }
+}

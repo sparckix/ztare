@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v30a_route_c_4_natural_b0_b1_open_rows_macro",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T15:32:25Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1111,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "route_c_calibration_on_natural_slice",
+    "score": 0.1111,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1111,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.1064,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.1064,
+        "score_rows": 4,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0938,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0938,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0857,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0857,
+        "score_rows": 140,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0741,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0741,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "macro",
+  "objective_resolver": "Each row: Lean compile via lake env lean + replay-from-scratch verify + grep no-gold-name + DAG fingerprint distinct from gold + 0 human edits. Count closures across 4 rows; check threshold.",
+  "question": "Will Route C (LLM-mediated proof composition) close \u22653 of 4 B0+B1-open natural rows (D02 triangle inequality, D03 n.choose 2 identity, D04 2*inner \u2264 norm^2+norm^2, E05 Finset sum_add_distrib) under strict v30 contract: no oracle proof lines, replay from scratch, 0 manual edits, machinery-OK per relaxed audit?",
+  "risk_penalty": 1.0,
+  "success_threshold": "at-least-3-of-4-natural-closes",
+  "task_type": "route_c_calibration_on_natural_slice",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

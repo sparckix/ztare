@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 539,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level538 selectedBadNodeEventRank is still abstract",
+    "check": "instantiate the rank by coverageAppearanceEventIndex and isolate no-late-repeat as the only new event-order obligation"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level539_appearance_index_no_late_repeat_rank_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level539_provenance_acyclic_edge_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level539_appearance_index_no_late_repeat_rank"
+  },
+  "anti_pattern_guards": [
+    "no Level538 rank-boundary assumption",
+    "no bounded representative without no-late-repeat",
+    "no endpoint capacity-only support boundary",
+    "no post-payoff rank selection"
+  ],
+  "positive_forecast": "If selected-node images cannot recur after their bounded appearance index, Level538's selected-node rank boundary follows by using that appearance index as the rank."
+}

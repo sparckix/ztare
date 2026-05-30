@@ -1,0 +1,104 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/eg_v51_v52_hard_discriminators_meso_20260520.json",
+    "contract": "analytics/public/forecast_pool/contracts/eg_v51_v52_hard_discriminators_meso_20260520.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/eg_v51_v52_hard_discriminators_meso_20260520",
+    "outcome": "analytics/public/forecast_pool/outcomes/eg_v51_v52_hard_discriminators_meso_20260520.json",
+    "score": "analytics/public/forecast_pool/scores/eg_v51_v52_hard_discriminators_meso_20260520.json"
+  },
+  "baseline_action": "Continue broad naturalistic family-mapping/check-shop experiments",
+  "budget_agent_minutes": 120.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": null,
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "eg_v51_v52_hard_discriminators_meso_20260520",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Concentrate on hard-slice consequence/allocation and MM revision-quality endpoints",
+  "created_at": "2026-05-20T22:43:34Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0909,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "experiment_plan",
+    "score": 0.0909,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0909,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0667,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0667,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.037,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.037,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0357,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.0357,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0333,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.0333,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "constructed hard slices may overfit to prior case families"
+    ],
+    "positive": [
+      "clarifies where primitive operators have agent-facing value",
+      "reduces wasted spend on ceiling endpoints"
+    ]
+  },
+  "horizon": "2026-05-20T23:59:00-04:00",
+  "information_value": 2.0,
+  "layer": "meso",
+  "objective_resolver": "Inspect the next two closed experiment score JSONs and research_log entries. Success if at least one run yields target-over-generic >=3 paired wins with zero losses, or structural-completeness target-over-generic mean delta >=0.5 with no more than one paired loss, and neither run is invalidated by parser/check-order leakage.",
+  "question": "Will the next two non-duplicative primitive experiments, focused on hard-slice consequence/allocation and MM revision-quality endpoints, produce useful scientific signal beyond the already-known naturalistic family-mapping ceilings?",
+  "risk_penalty": 1.0,
+  "success_threshold": "At least one of the two runs meets the resolver success criterion; transparent naturalistic family-mapping or check-shop reruns do not count.",
+  "task_type": "experiment_plan",
+  "value_if_success": 2.0,
+  "void_conditions": "runner/parser failure that prevents scoring, duplicate endpoint from V47/V48/V49b/MM-V4, or score invalidated by leakage"
+}

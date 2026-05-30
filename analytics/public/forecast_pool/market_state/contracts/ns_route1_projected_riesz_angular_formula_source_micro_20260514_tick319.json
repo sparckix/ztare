@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:39:57Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 43.59530791788857,
+    "expected_value": -73.97293661215691,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.11483033095936324,
+    "p_needs_new_lemma": 0.34741516547968165,
+    "p_regression": 0.07086161150677281,
+    "p_success": 0.6964984101442625,
+    "participants": [
+      {
+        "agent_id": "Hooke",
+        "domain": "ns_route1_pde",
+        "p_success": 0.68,
+        "weight": 0.9816
+      },
+      {
+        "agent_id": "Rawls",
+        "domain": "ns_route1_pde",
+        "p_success": 0.71,
+        "weight": 1.1667
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "anti_tautology_guards_too_weak_for_gp233",
+        "p": 0.1520625610948192
+      },
+      {
+        "mode": "formula_source_restates_existing_equality",
+        "p": 0.14621421589163525
+      },
+      {
+        "mode": "new_source_is_only_certificate_reshuffling",
+        "p": 0.13033933808127357
+      },
+      {
+        "mode": "equality_orientation_or_rewrite_friction",
+        "p": 0.11947772657450079
+      },
+      {
+        "mode": "tail_window_and_projected_kernel_values_do_not_align_cleanly",
+        "p": 0.10966066191872643
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:36:48Z",
+    "created_by": "codex:RD",
+    "horizon": "same tick 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Success iff Lean builds after adding a formula-source structure and constructor for Route1ProjectedRieszAngularMomentStation, preserving explicit equality chain and anti-tautology guards, no sorry/admit, GP-233 row.",
+    "question": "Can this tick lower Route1ProjectedRieszAngularMomentStation into a fixed projected-Riesz kernel/angular-moment formula source, without merely restating the l2 carrier equality?",
+    "success_threshold": "lake env lean pass; lake build pass; no sorry/admit; new source splits carrier equality into fixed tail-window carrier, projected kernel moment, and total angular moment equality",
+    "task_type": "lean_pde_frontier_lowering"
+  },
+  "contract_id": "ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Hooke",
+        "raw_agent_ids": [
+          "Hooke"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Rawls",
+        "raw_agent_ids": [
+          "Rawls"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Hooke",
+      "Rawls"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Hooke",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319/hooke.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T00:39:52Z",
+        "p_success": 0.68,
+        "rationale_short": "likely compile-passing source split; risk is that it compiles while still looking like renamed equality unless provenance guards are strong.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Rawls",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319/rawls.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T00:39:52Z",
+        "p_success": 0.71,
+        "rationale_short": "favorable micro: split opaque equality into carrier value, projected kernel moment, and angular total equality; main risk is semantic not Lean.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T00:40:05Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 43.59530791788857,
+      "expected_value": -73.97293661215691,
+      "p_success": 0.6964984101442625,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 8.2414
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 43.59530791788857,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6964984101442625,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "anti_tautology_guards_too_weak_for_gp233",
+        "p": 0.1520625610948192
+      },
+      {
+        "mode": "formula_source_restates_existing_equality",
+        "p": 0.14621421589163525
+      },
+      {
+        "mode": "new_source_is_only_certificate_reshuffling",
+        "p": 0.13033933808127357
+      },
+      {
+        "mode": "equality_orientation_or_rewrite_friction",
+        "p": 0.11947772657450079
+      },
+      {
+        "mode": "tail_window_and_projected_kernel_values_do_not_align_cleanly",
+        "p": 0.10966066191872643
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09325,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T00:40:15Z"
+  }
+}

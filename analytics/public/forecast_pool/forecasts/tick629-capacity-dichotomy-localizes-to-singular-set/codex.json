@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick629-capacity-dichotomy-localizes-to-singular-set",
+  "contract_question": "tick629: the CapacityOrExistingChannelDichotomy is exhaustive (Cap_omega>=c OR already-channeled); by CKN the bad mass sits on the measure-zero parabolic singular set DISJOINT from the eps-regular existing channel \u21d2 theta_n (already-channeled fraction) bounded <1 on the singular set \u21d2 Capacity-branch residual \u224d enstrophy \u03bd||\u03c9||_L2^2 \u21d2 the dichotomy is a faithful Clay-EQUIVALENT RE-EXPRESSION (NOT a reduction), localizing the irreducible core to 'enstrophy control on the CKN singular set'. Correct + honestly non-reductive?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T02:42:54Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.06,
+  "rationale_short": "dichotomy not exhaustive (3rd case: low-capacity not-yet-channeled); CKN set-disjointness gives NO quantitative bound (mass near not on S, channels accumulate onto S); self-label wrong \u2014 smuggled an unproven quantitative covering/absorption theorem = a real hard target not a re-expression",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

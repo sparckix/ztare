@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick623-minimal-property-reexpression",
+  "contract_question": "tick623: is the minimal-property characterization (Clay-sufficient mechanism \u27fa a scale-critical positive-definite a-priori-monotone/conserved quantity) correctly self-assessed as a faithful RE-EXPRESSION of the open problem (Clay-equivalent), NOT a reduction/progress?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T01:51:54Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.8,
+  "rationale_short": "a scale-critical positive-definite a-priori monotone \u2248 the Clay solution itself; taxonomy exhaustion re-expresses, isolates no easier sub-problem; honest non-reductive label correct (tick582 anti-laundering discipline); codex concurs",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

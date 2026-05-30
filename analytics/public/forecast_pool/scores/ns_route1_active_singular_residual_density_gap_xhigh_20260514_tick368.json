@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+  "mean_brier": 0.40745,
+  "mean_log_score": -1.0239714373102324,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "4918f7018a0058b9a015c614cc4bfd965c8d7036a7cb42d40e8fe89998ca40ee",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/xhigh_active_singular_residual_density_gap_feynman_verdict_20260514.md",
+    "compile_status": "not_applicable",
+    "contract_id": "ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+    "error_type": null,
+    "goal_delta": 0,
+    "resolution_note": "Feynman isolated ActiveSingularTangentProfileExtraction and mass persistence under blowup as the exact missing sublemma below RN density failure; also preserved fifth-channel fallback.",
+    "resolved_at": "2026-05-14T13:16:31Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T13:16:38Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_rd",
+      "brier": 0.3249000000000001,
+      "cost_error_agent_minutes": 18.0,
+      "domain": "navier_stokes_route1",
+      "expected_cost_agent_minutes": 36.0,
+      "log_score": -0.843970070294529,
+      "p_success": 0.43,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T13:10:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T13:12:33Z",
+        "resolved_at": "2026-05-14T13:16:31Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_skeptic",
+      "brier": 0.48999999999999994,
+      "cost_error_agent_minutes": 30.0,
+      "domain": "navier_stokes_route1",
+      "expected_cost_agent_minutes": 48.0,
+      "log_score": -1.2039728043259361,
+      "p_success": 0.3,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T13:10:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T13:12:33Z",
+        "resolved_at": "2026-05-14T13:16:31Z"
+      }
+    }
+  ]
+}

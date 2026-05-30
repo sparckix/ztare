@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_vorticity_decoherence_charge_construction_tick447_20260514",
+  "contract_question": "Will Claude RD-extension produce a clean-compiling Lean construction of VorticityDecoherenceChargeReplacement from a ConstantinFeffermanDirectionDecoherenceHypothesis carrier (with finite-root-budget + r-linear charge theorem), appended below PDE-A's L3-endpoint additions inside ns_silent_flat_defect_observability.lean, with no new sorry/admit?",
+  "domain": "lean_pde_primitive_construction",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T01:54:36Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.15,
+  "p_regression": 0.08,
+  "p_success": 0.78,
+  "rationale_short": "tick442 (ESS/CF dichotomy) and tick445 (charge structure surface) already shipped; this tick mirrors tick443's residual_of_not_ess_not_cf_from_ESS pattern \u2014 abstract carrier + iff-defined predicate + Real-field budget; PDE-A on sibling L3-endpoint primitive so collision risk low if append-below respected",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

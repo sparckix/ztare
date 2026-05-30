@@ -1,0 +1,268 @@
+{
+  "experiment": "gp216_test3_oos_corpus",
+  "n_arcs": 4,
+  "results": [
+    {
+      "arc_id": "robertson_seymour",
+      "ps_coverage": 50.0,
+      "tb_coverage": 20.0,
+      "ps_ops_used": [
+        "ps_01",
+        "ps_05",
+        "ps_04"
+      ],
+      "tb_ops_used": [
+        "tb_03",
+        "tb_04"
+      ],
+      "moves": [
+        {
+          "name": "Asserting a Fundamental Order",
+          "signature": "Positing that a seemingly chaotic set of objects possesses an inherent, non-obvious ordering principle.",
+          "anchor": "graphs are well-quasi-ordered under minor relation"
+        },
+        {
+          "name": "Committing to a Grand Program",
+          "signature": "Undertaking a long-term, multi-stage project to construct a proof of monumental scale, rather than seeking a single, compact insight.",
+          "anchor": "spanned 20 papers over two decades"
+        },
+        {
+          "name": "Imposing a Simpler Topology",
+          "signature": "Mapping a complex object onto a simpler, more manageable structural template to analyze its components.",
+          "anchor": "decompose graphs into tree-like structures"
+        },
+        {
+          "name": "Constraining Component Complexity",
+          "signature": "Ensuring that the constituent parts of a decomposition are themselves simple enough to be analyzed by limiting a key parameter.",
+          "anchor": "pieces of bounded complexity"
+        },
+        {
+          "name": "Defining Structure by Absence",
+          "signature": "Characterizing an object's structure by what it lacks, revealing a constrained and predictable form in the absence of a specific feature.",
+          "anchor": "any graph excluding a fixed minor decomposes"
+        },
+        {
+          "name": "Layering Structural Insights",
+          "signature": "Building a complex proof incrementally, where each stage establishes a foundational piece for subsequent stages.",
+          "anchor": "Each paper added a layer of structure theorem"
+        },
+        {
+          "name": "Propagating Proof via Recursion",
+          "signature": "Establishing a base case and then using a recursive argument on the components of a decomposed structure to prove a universal property.",
+          "anchor": "induction on decomposition depth"
+        },
+        {
+          "name": "Leveraging an External Engine",
+          "signature": "Importing a powerful, pre-existing formal mechanism from another domain to solve a central part of the problem.",
+          "anchor": "well-quasi-ordering arguments via Higman's lemma"
+        },
+        {
+          "name": "Elevating via Analogy",
+          "signature": "Reframing the significance of a result by drawing a parallel to a well-established, powerful theorem in a different field.",
+          "anchor": "structure theorems comparable to those in algebra"
+        },
+        {
+          "name": "Unlocking Downstream Applications",
+          "signature": "Demonstrating the utility of a new theoretical structure by showing how it resolves or simplifies a range of practical problems.",
+          "anchor": "Applications: linkage problems, graph drawing, parameterized algorithms"
+        }
+      ]
+    },
+    {
+      "arc_id": "cook_levin_npc",
+      "ps_coverage": 50.0,
+      "tb_coverage": 50.0,
+      "ps_ops_used": [
+        "ps_03",
+        "ps_06"
+      ],
+      "tb_ops_used": [
+        "tb_03",
+        "tb_06",
+        "tb_01",
+        "tb_04"
+      ],
+      "moves": [
+        {
+          "name": "Establish Universal Target",
+          "signature": "Select a single, representative problem to serve as a universal target for reduction from an entire class of problems.",
+          "anchor": "SAT (Boolean satisfiability) is NP-complete"
+        },
+        {
+          "name": "Formalize Class Model",
+          "signature": "Define a class of problems through a shared, formal computational model to enable a general argument.",
+          "anchor": "any nondeterministic Turing machine accepting a language in NP"
+        },
+        {
+          "name": "Propose Constructive Mapping",
+          "signature": "Assert that a mapping can be explicitly constructed from any member of a class to a target instance.",
+          "anchor": "constructed an explicit polynomial-time reduction"
+        },
+        {
+          "name": "Reify Process as Object",
+          "signature": "Convert a dynamic process or computation into a static, declarative representation.",
+          "anchor": "encoding the machine's computation"
+        },
+        {
+          "name": "Decompose State into Variables",
+          "signature": "Break down a complex system state into a set of discrete, primitive indicator variables.",
+          "anchor": "indicator variables for (time, position, symbol, state) tuples"
+        },
+        {
+          "name": "Encode Dynamics as Constraints",
+          "signature": "Represent the rules governing a system's evolution as a set of logical constraints on its state variables.",
+          "anchor": "clauses for transition rules + consistency"
+        },
+        {
+          "name": "Equate Solution Conditions",
+          "signature": "Demonstrate that a successful outcome in the original system corresponds directly and exclusively to a solution in the translated representation.",
+          "anchor": "the formula is satisfiable iff there exists an accepting computation path"
+        },
+        {
+          "name": "Bound Transformation Cost",
+          "signature": "Analyze the resource cost of the transformation process itself to ensure it meets a required efficiency bound.",
+          "anchor": "polynomial-time reduces to SAT"
+        },
+        {
+          "name": "Establish Foundational Instance",
+          "signature": "Provide a seminal result that serves as a template and starting point for a new field of inquiry.",
+          "anchor": "motivated Karp's 21 subsequent NP-completeness results"
+        },
+        {
+          "name": "Frame a Core Dichotomy",
+          "signature": "Structure a field of inquiry around a central, unresolved question of equivalence between two major classes.",
+          "anchor": "established the P vs NP framework"
+        }
+      ]
+    },
+    {
+      "arc_id": "perelman_ricci_flow",
+      "ps_coverage": 30.0,
+      "tb_coverage": 10.0,
+      "ps_ops_used": [
+        "ps_02",
+        "ps_06",
+        "ps_01"
+      ],
+      "tb_ops_used": [
+        "tb_04"
+      ],
+      "moves": [
+        {
+          "name": "Adopt Incomplete Framework",
+          "signature": "Adopt a promising but stalled methodology to pursue a long-standing objective.",
+          "anchor": "completed Hamilton's Ricci flow program"
+        },
+        {
+          "name": "Isolate Systemic Failure",
+          "signature": "Identify the specific, recurring points of failure that halt the established process.",
+          "anchor": "Hamilton showed singularities form along the flow but couldn't classify them"
+        },
+        {
+          "name": "Introduce Monotonic Quantity",
+          "signature": "Define a new variable that changes predictably throughout the process, providing a measure of control.",
+          "anchor": "entropy formulas (W-functional and reduced volume) establishing monotonicity along the flow"
+        },
+        {
+          "name": "Classify Failure Modes",
+          "signature": "Develop a systematic taxonomy of the ways in which the process can break down.",
+          "anchor": "classification of singularities"
+        },
+        {
+          "name": "Model Local Breakdown",
+          "signature": "Analyze the behavior of the system in the immediate vicinity of a failure point to understand its fundamental structure.",
+          "anchor": "tangent flow analysis"
+        },
+        {
+          "name": "Impose Structural Constraint",
+          "signature": "Introduce a condition that prevents the system from degenerating into unmanageable states.",
+          "anchor": "\u03ba-non-collapsed estimates"
+        },
+        {
+          "name": "Devise Corrective Procedure",
+          "signature": "Create a standardized procedure to excise a localized failure and resume the overall process.",
+          "anchor": "Ricci flow with surgery (cut and resume the flow at singularities...)"
+        },
+        {
+          "name": "Guarantee Process Termination",
+          "signature": "Demonstrate that the corrective procedure can only be applied a finite number of times, ensuring the overall process concludes.",
+          "anchor": "quantitative control ensuring finiteness of surgeries"
+        },
+        {
+          "name": "Achieve Global Continuation",
+          "signature": "Integrate new mechanisms to allow a previously stalled process to run to its conclusion without catastrophic failure.",
+          "anchor": "The combination yielded a flow that runs globally"
+        },
+        {
+          "name": "Decompose into Primitives",
+          "signature": "Show that the final state of the object can be broken down into a set of fundamental, well-understood components.",
+          "anchor": "decomposes any 3-manifold into pieces matching Thurston's geometric decomposition"
+        }
+      ]
+    },
+    {
+      "arc_id": "appel_haken_4ct",
+      "ps_coverage": 11.11111111111111,
+      "tb_coverage": 11.11111111111111,
+      "ps_ops_used": [
+        "ps_05"
+      ],
+      "tb_ops_used": [
+        "tb_06",
+        "tb_03"
+      ],
+      "moves": [
+        {
+          "name": "Target Longstanding Problem",
+          "signature": "Focus efforts on resolving a well-known, historically significant open question within a domain.",
+          "anchor": "The proof had been open for 124 years."
+        },
+        {
+          "name": "Assume Minimal Counterexample",
+          "signature": "Postulate the existence of a smallest object that violates the central claim to enable a proof by contradiction.",
+          "anchor": "every minimal counterexample"
+        },
+        {
+          "name": "Define Reduction Operator",
+          "signature": "Specify a property that, if present, allows a problem's solution to be derived from the solution of a smaller instance.",
+          "anchor": "a map can be 4-colored if a smaller map can"
+        },
+        {
+          "name": "Establish Necessary Inclusion",
+          "signature": "Assert that any minimal counterexample must exhibit at least one property from a finite, specified collection.",
+          "anchor": "every minimal counterexample must contain at least one configuration from the list"
+        },
+        {
+          "name": "Unify Operative Sets",
+          "signature": "Demonstrate that a set of properties enabling problem reduction is the same set guaranteed to be present in any counterexample.",
+          "anchor": "The list of unavoidable reducible configurations"
+        },
+        {
+          "name": "Partition The Problem Space",
+          "signature": "Decompose a complex proof into a large but finite number of discrete, independent sub-proofs.",
+          "anchor": "contained 1936 configurations"
+        },
+        {
+          "name": "Delegate Exhaustive Analysis",
+          "signature": "Employ computational power to systematically verify a large set of discrete cases that is intractable for manual analysis.",
+          "anchor": "computer-assisted case analysis"
+        },
+        {
+          "name": "Introduce Novel Instrument",
+          "signature": "Leverage a new type of tool or methodology to overcome a previously insurmountable barrier in the problem space.",
+          "anchor": "first major theorem proved with essential computer assistance"
+        },
+        {
+          "name": "Synthesize Methodological Stack",
+          "signature": "Combine multiple distinct techniques into a single, coherent strategy to address the core problem.",
+          "anchor": "combinatorial reduction + exhaustive case analysis + computer verification"
+        }
+      ]
+    }
+  ],
+  "mean_ps_coverage": 35.27777777777778,
+  "mean_tb_coverage": 22.77777777777778,
+  "in_subfield_baseline": 65.9,
+  "ps_drop_from_baseline_pp": -30.622222222222227,
+  "verdict": "OUT-OF-SUBFIELD FAILS \u2014 PS vocabulary covers OOS arcs at only 35%, approaching cross-cultural baseline (19.1%). Vocabulary is largely additive-combinatorics-specific, not general problem-solving. Reframe: 'Additive Combinatorics Vocabulary' not 'Problem-Solving Vocabulary'."
+}

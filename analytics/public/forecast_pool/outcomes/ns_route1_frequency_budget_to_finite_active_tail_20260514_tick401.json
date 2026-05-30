@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 12.0,
+  "artifact_hash": "1df0d78dd8039107ec4e6972a552ab6ee5943b9c17abe1386658e5c530abdaa3",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd_tick401"
+  ],
+  "compile_status": "pass",
+  "contract_id": "ns_route1_frequency_budget_to_finite_active_tail_20260514_tick401",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_route1",
+    "lean_positive",
+    "finite_budget_bridge",
+    "forecast_preconditioner"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "Use finite active-tail budget only with a separate route-failure divergent-prefix theorem",
+  "old_next_action": "Try to telescope all reservoir pieces directly into strict subratio",
+  "preconditioner_effect": "Used prefix-level source comparison and explicit no-pointwise-strict guard instead of hand-proving telescoping inside this tick",
+  "preconditioner_source": "GP-230 forecast flagged prefix-sum/telescoping and overclaim risks",
+  "realized_failure_mode_ids": [
+    "prefix_sum_telescoping_friction"
+  ],
+  "resolution_note": "Compiled FrequencyLocalizedFiniteActiveTailBudgetSource, constructor into Route1FiniteActiveTailBudget, and guard that finite budget does not imply pointwise strict subratio.",
+  "resolved_at": "2026-05-14T18:40:21Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

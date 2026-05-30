@@ -1,0 +1,89 @@
+{
+  "contract_id": "ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "(a) demote tick451 narrative to 'typed bridge from three named carriers'; (b) keep tick452 TypingHalfClosed_AnalyticHalfOpen permanent; (c) label tick453 HONEST downstream half + Prop-only upstream; (d) session 20-primitive tally 3 HONEST + 16 WRAPPER + 0 LAUNDERED + 1 PURE_NAMING; (e) priority remains real NS data FlatDepthReserve construction OR tangent-profile compactness extraction OR Track-B switch",
+      "old_next_action": "(a) demote tick446 narrative; (b) re-label tick449 compression as renaming; (c) extend tick450 charge fields and replace clone with original; (d) construct FlatDepthReserve from real NS data"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.0494,
+  "mean_log_score": -0.2526,
+  "outcome": {
+    "actual_cost_agent_minutes": 26.0,
+    "artifact_hash": "n/a_read_only_audit_no_lean_modifications",
+    "artifact_path": "analytics/public/audits/meta_darwin_tick455_audit_tick451_to_453.md",
+    "changed_by_forecast_ids": [],
+    "compile_status": "n/a_no_lean_edits",
+    "contract_id": "ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": ["self_meta_darwin_load_bearing", "deferred_audit_closure", "wrapper_inflation_round_3", "honest_combinatorial_scope_restricted_no_charge_fields"],
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "(a) demote tick451 narrative; (b) keep tick452 TypingHalfClosed permanent; (c) tick453 HONEST downstream + Prop upstream; (d) session 3 HONEST + 16 WRAPPER + 0 LAUNDERED + 1 PURE_NAMING across 20 primitives; (e) real NS data construction or Track-B",
+    "old_next_action": "(a) demote tick446 narrative; (b) re-label tick449 compression as renaming; (c) extend tick450 charge fields and replace clone with original; (d) construct FlatDepthReserve from real NS data",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Tick455 audit shipped; 1 HONEST (tick453) + 2 WRAPPER (tick451, tick452) + 0 LAUNDERED + 0 PURE_NAMING. Three demotions. Session tally across tick432-tick453: 3 HONEST + 16 WRAPPER + 0 LAUNDERED + 1 PURE_NAMING. NO Lean modifications.",
+    "resolved_at": "2026-05-15T03:56:00Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-15T03:57:00Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 26.0,
+      "agent_id": "codex_rd",
+      "brier": 0.0256,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "meta_darwin_lean_audit",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.1744,
+      "p_success": 0.84,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T03:30:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T03:30:30Z",
+        "resolved_at": "2026-05-15T03:56:00Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 26.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.0484,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "meta_darwin_lean_audit",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2485,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T03:30:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T03:56:00Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": "tick668_level497_target_finalslot_injection",
+    "created_at": "2026-05-27T03:44:17Z",
+    "created_by": "codex",
+    "horizon": "2026-05-27T10:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "checked Lean source plus target-indexed assignment gate and PDE workbench receipts",
+    "question": "TICK668 Level498: derive an explicit targetSlot injection from current same-tree incidence geometry, or prove the current incidence/prefix fields do not expose the data needed for targetSlot construction",
+    "success_threshold": "TRUE iff Lean compiles either a general incidence-derived TargetPrefixToFinalSlotInjectionSource constructor from concrete map/injectivity fields, or a sharp no-current-field obstruction showing the present incidence/prefix/fanout props cannot construct targetSlot without adding finite map data",
+    "task_type": "construct_or_refute"
+  },
+  "contract_id": "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex:RD",
+        "raw_agent_ids": [
+          "codex:RD"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex:RD"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed with a construct-or-refute split: accept a positive constructor only if targetSlot and injectivity are concrete fields; otherwise bank the no-current-field obstruction and add the missing incidence-targetSlot source schema.",
+        "agent_id": "codex:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction/codex_rd.json",
+        "canonical_agent_id": null,
+        "domain": "ns_millennium_hunt",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-27T03:45:05Z",
+        "p_success": 0.66,
+        "rationale_short": "Level497 shows finite injection is enough; current incidence/prefix objects look Prop-level, so success is likely as either a sharp obstruction or a new source schema, while true construction from existing fields is lower probability.",
+        "specific_failure_mode_ids": [
+          "current_fields_prop_only_obstruction",
+          "constructive_incidence_source_compiles"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "aggregate_ready"
+    ],
+    "next_action": "aggregate_when_rd_releases",
+    "state": "forecast_fulfilled"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T04:12:40Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "aggregate_when_rd_releases",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11559999999999998,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T04:12:46Z"
+  }
+}

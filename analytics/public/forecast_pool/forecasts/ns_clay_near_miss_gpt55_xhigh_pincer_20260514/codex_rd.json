@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "Dispatch one xhigh agent, but score it as frontier audit, not proof evidence.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_near_miss_gpt55_xhigh_pincer_20260514",
+  "contract_question": "Will a GPT-5.5 xhigh near-miss pincer attempt produce a concrete next proof move beyond the current frontier: beta audit eligibility, pressure no-invisible/coherence, or flat radius scale reserve, without overclaiming Clay closure?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "flat_radius_no_go_only": 0.22,
+    "new_branch_compression": 0.08,
+    "overclaim_clay_closure": 0.14,
+    "pressure_branch_no_go_only": 0.18,
+    "repeats_current_map": 0.28,
+    "useful_beta_eligibility_move": 0.1
+  },
+  "forecast_externality_tags": [
+    "ns_clay_near_miss",
+    "gpt55_xhigh",
+    "branch_frontier",
+    "anti_overclaim"
+  ],
+  "forecasted_at": "2026-05-14T22:56:56Z",
+  "p_dependency_issue": 0.7,
+  "p_needs_new_lemma": 0.96,
+  "p_regression": 0.2,
+  "p_success": 0.46,
+  "rationale_short": "High reasoning may clarify the deepest branch, but current evidence says flat radius reserve and pressure rigidity are independent hard nodes. Best likely output is a sharper obstruction, not closure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "repeats_current_map",
+    "flat_radius_no_go_only",
+    "pressure_branch_no_go_only",
+    "overclaim_clay_closure",
+    "useful_beta_eligibility_move",
+    "new_branch_compression"
+  ]
+}

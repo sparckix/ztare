@@ -1,0 +1,22 @@
+{
+  "agent_id": "readonly_pasteur",
+  "contract_id": "gp225_v1737_synthetic_factory_smoke",
+  "contract_question": "Will v17.37 produce a useful 20-row synthetic residual factory smoke packet with at least 3 domains, at least 5 mutation families, row-schema-complete records, zero wrong accepts, and explicit generator-family holdout metadata, while still not authorizing GNN training?",
+  "domain": "gnn_synthetic_data_factory",
+  "expected_cost_agent_minutes": 34.0,
+  "failure_mode_distribution": {
+    "accidental_training_authorization_or_metadata_omission": 0.04,
+    "insufficient_domain_or_mutation_family_diversity": 0.08,
+    "lean_replay_or_probe_runtime_noise": 0.14,
+    "overfit_controls_too_shallow_for_useful_packet": 0.22,
+    "public_source_adapter_or_download_friction": 0.24,
+    "row_schema_complete_ceremonial_or_scope_creep": 0.28
+  },
+  "forecasted_at": "2026-05-12T18:41:33Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.06,
+  "p_success": 0.72,
+  "rationale_short": "The smoke target is mechanically reachable, but value quality is the risk: only 3 runtime-complete rows exist and the packet can pass by schema construction without real Lean replay or strong anti-overfit validation.",
+  "read_only_attestation": true
+}

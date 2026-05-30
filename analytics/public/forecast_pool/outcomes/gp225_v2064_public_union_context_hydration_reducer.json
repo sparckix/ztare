@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "172d8010103fdcbdc838d0ee03c5fa7d77dc3c104f1ec42dc761ffce892b5aa2",
+  "artifact_path": "analytics/public/leanmill/results/v2064_public_union_context_hydration_reducer.json",
+  "changed_by_forecast_ids": [
+    "Church3",
+    "Curry4"
+  ],
+  "compile_status": "static_context_hydration_reducer_passed",
+  "contract_id": "gp225_v2064_public_union_context_hydration_reducer",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "context_hydration",
+    "replay_preconditioner",
+    "anti_goodhart"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "static_reducer_only",
+    "replay_deferred"
+  ],
+  "new_next_action": "patch bayesRisk finite-bound binder hydration first",
+  "old_next_action": "reopen replay pricing against underhydrated packet",
+  "preconditioner_effect": "Converted replay abort and binder_context_underhydrated into concrete row-level hydration obligations.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2063_public_union_source_candidate_replay_market_gate.json",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "v20.64 passed: consumed v20.63 market abort, classified four rows, emitted sixteen hydration obligations, linked typed gold tactics, no replay/training, GNN blocked; next is hydrated top-row patch for bayesRisk.",
+  "resolved_at": "2026-05-14T18:44:49Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

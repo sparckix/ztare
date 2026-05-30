@@ -1,0 +1,29 @@
+{
+  "actual_cost_agent_minutes": null,
+  "artifact_hash": null,
+  "artifact_path": null,
+  "changed_by_forecast_ids": [],
+  "codex_bet_present": true,
+  "compile_status": null,
+  "contract_id": "tick638-mega-trackB-measurevalued-compactness-provenance",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": "laundering_by_restatement_C_eigenquestion",
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "same_atom_claim_is_vague_restatement_not_reduction"
+  ],
+  "resolution_note": "FALSE, conceded (codex p=0.18, verdict FLAWED). Success required ALL of (i)-(iv); (iv) FAILS. Codex-confirmed SALVAGE: (D) 'alias #22 of C5' classification CORRECT (not false-amnesia); named target axiom PSL_global_extension (Prodi-Serrin, Lean axiom 2) CORRECT; \u03c3-defect derivation Steps1-3 SOUND. (C) power-count DIRECTION correct (supercritical, NOT inverted like tick637's degree-0 error) but 'exactly one scaling power' is an OVERCLAIM \u2014 it is a fixed criticality gap on the scale-invariant Shinbrot line, not a clean parabolic-lattice one-power. KILL (B): [C]'s DiPerna-Majda oscillation/concentration paired-\u03c3 decomposition is laundering-by-restatement = the tick582 category-error trap in DM clothing; the DM split is KINEMATIC (no \u03bd) \u21d2 both measures conformally scale-invariant \u21d2 \u03b1=\u03b2=0 degenerate same-rate pair = exactly the tick595/596 C3-non-transfer outcome, PREDICTED-DEGENERATE by existing manifest theorems. NOT a structurally-absent move. Honest net: tick638 is alias #22 (a recurrence, NOT a finding); the only manifest-open door tick595/596 leaves is an explicitly \u03bd-coupled carrier in the defect-measure DEFINITION, and tick596 already closed the \u03bd-injection class. NOT a closure, NOT pessimism, NOT laundered.",
+  "resolved_at": "2026-05-17T13:32:02Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

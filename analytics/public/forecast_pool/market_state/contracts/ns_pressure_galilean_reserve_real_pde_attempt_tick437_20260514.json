@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T00:06:30Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 60.0,
+    "expected_value": -0.14999999999999997,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.5,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "lean_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-15T00:06:25Z",
+        "p_success": 0.55,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "meta_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-15T00:06:26Z",
+        "p_success": 0.45,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T00:06:08Z",
+    "created_by": "claude_rd_extension",
+    "horizon": "2026-05-14T23:59:59Z",
+    "layer": "micro",
+    "objective_resolver": "(1) ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean compiles via lake env lean; (2) touched-file rg sorry|admit clean; (3) new lemma references at least one Mathlib measure-theory/conditional-expectation lemma by name; (4) honest scope note inside the lemma docstring distinguishing the Mathlib-grounded sub-step from the still-unconstructed Galilean primitive.",
+    "question": "Will tick437 produce a Mathlib-grounded sub-lemma (using eLpNorm_condExp_le or analog) that supplies non-vacuous analytic content backing FixedWindowGalileanQuotientReserveIdentity, compiled clean, with no new sorries/admits on the touched file?",
+    "success_threshold": "0.5",
+    "task_type": "lean_proof_attempt_pde"
+  },
+  "contract_id": "ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "lean_pde",
+        "expected_cost_agent_minutes": 60.0,
+        "forecasted_at": "2026-05-15T00:06:25Z",
+        "p_success": 0.55,
+        "rationale_short": "eLpNorm_condExp_le supplies real Mathlib L2-contraction content for the spatial-mean / Galilean compensator; integration risk is namespace/instance plumbing on first compile against an unfamiliar amplitude API.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_reserve_real_pde_attempt_tick437_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "meta_audit",
+        "expected_cost_agent_minutes": 60.0,
+        "forecasted_at": "2026-05-15T00:06:26Z",
+        "p_success": 0.45,
+        "rationale_short": "Principal session has shipped 5+ named layers over tick432-436 without Mathlib-grounded analytic content; bias is toward another wrapper; honest negative or partial scaffold is the more likely productive outcome.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 50.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T00:15:20Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 60.0,
+      "expected_value": -0.14999999999999997,
+      "p_success": 0.5,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.35
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 60.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.2525,
+    "score_rows": 2,
+    "scored_at": "2026-05-15T00:15:20Z"
+  }
+}

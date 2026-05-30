@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_transport_boundary_pair_guard_micro_20260514_tick346",
+  "mean_brier": 0.02340000000000001,
+  "mean_log_score": -0.1631421551168616,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "23c5845e675833c0cfdf6d3506332a45ffe3f4014534c3eb4fedf414cf726e30",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_transport_boundary_pair_guard_micro_20260514_tick346",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Added no_transportBoundaryChannelPairPayment_of_receiptUpperBoundOnlyGap tied to FixedWindowTransportBoundaryReceiptUpperBoundOnlyGap. File-level lean check, downstream lake build, and touched-file sorry/admit scan passed.",
+    "resolved_at": "2026-05-14T04:15:27Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T04:15:32Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "euler_pair_guard_tick346",
+      "brier": 0.0144,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 14.0,
+      "log_score": -0.12783337150988489,
+      "p_success": 0.88,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T04:13:05Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T04:13:17Z",
+        "resolved_at": "2026-05-14T04:15:27Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "rawls_pair_guard_skeptic_tick346",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": 4.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 18.0,
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T04:13:05Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T04:13:17Z",
+        "resolved_at": "2026-05-14T04:15:27Z"
+      }
+    }
+  ]
+}

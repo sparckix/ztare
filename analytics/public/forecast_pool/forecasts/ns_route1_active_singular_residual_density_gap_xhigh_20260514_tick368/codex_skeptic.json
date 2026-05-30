@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+  "contract_question": "Can xhigh pull forward ActiveSingularResidualDensityGap by proving the RN density route, killing it with a route-native countermodel, or isolating the exact compactness/lsc sublemma below density failure?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 48.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "V_A_perp_unavoidable": 0.22,
+    "no_route_native_countermodel": 0.14,
+    "requires_new_measure_topology": 0.34,
+    "restates_density_argument": 0.2,
+    "useful_sublemma_split": 0.1
+  },
+  "forecasted_at": "2026-05-14T13:12:33Z",
+  "p_dependency_issue": 0.58,
+  "p_needs_new_lemma": 0.97,
+  "p_regression": 0.1,
+  "p_success": 0.3,
+  "rationale_short": "RN density gap is equivalent to desired domination; useful progress likely requires new compactness/profile topology.",
+  "read_only_attestation": true
+}

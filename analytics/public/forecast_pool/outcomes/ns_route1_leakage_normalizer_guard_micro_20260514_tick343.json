@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 31.0,
+  "artifact_hash": "ed8cb8b37370cf04c405d688866940d9f6c7dfddbe4fa687184084ba3b2e5a16",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_leakage_normalizer_guard_micro_20260514_tick343",
+  "error_type": null,
+  "goal_delta": 3,
+  "resolution_note": "Added FixedWindowLeakageNormalizerCompatibilitySource, scalar bridge frequencyLeakageWeightedStress_le_shardCCharges_of_normalizerCompatibility, and guard FixedWindowLeakageNormalizerMismatchGap/no_leakageNormalizerCompatibility_of_mismatchGap. lake env lean and lake build passed; touched-file sorry/admit scan clean.",
+  "resolved_at": "2026-05-14T03:59:07Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

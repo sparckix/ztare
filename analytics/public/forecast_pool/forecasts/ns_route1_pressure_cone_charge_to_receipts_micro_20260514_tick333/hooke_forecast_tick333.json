@@ -1,0 +1,24 @@
+{
+  "agent_id": "hooke_forecast_tick333",
+  "contract_id": "ns_route1_pressure_cone_charge_to_receipts_micro_20260514_tick333",
+  "contract_question": "Will real tick 3 add a compiled bridge from pressure/Riesz cone charge to existing route1 pressure visibility receipts?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "downstream_regression": 0.1,
+    "namespace_plumbing": 0.06,
+    "nonnegativity_extra_fields": 0.11,
+    "pressureObligation_formula_mismatch": 0.15,
+    "raw_field_forwarding": 0.32,
+    "receiptSum_bound_carrier_dependent": 0.18,
+    "strict_subratio_smuggling": 0.08
+  },
+  "forecasted_at": "2026-05-14T02:50:26Z",
+  "p_dependency_issue": 0.21,
+  "p_needs_new_lemma": 0.36,
+  "p_regression": 0.07,
+  "p_success": 0.66,
+  "rationale_short": "Constructor surface is close; quality risk is that receiptSum bound remains an assumed source field unless fixed-kernel/no-carrier guards are explicit.",
+  "read_only_attestation": true
+}

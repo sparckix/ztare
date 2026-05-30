@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Three demotions: (1) tick451 is the same wrapper pattern as tick446/447 with 3 carriers instead of 1 — do not call it 'NS-data construction'; (2) tick452 closes typing half only — Carleson bound is hypothesis-asserted via cube_measure_le_rM3 field; (3) tick453 is HONEST but at the same restricted scope as tick450 — zero charges, upstream half deferred. The post-tick441 chain has shipped two combinatorial witnesses (tick450 + tick453) on the depth+radius skeleton with no charge content and five typed bridges around the same open PDE obligations.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_clay_meta_darwin_v3_audit_tick451_to_453_tick455_20260514",
+  "contract_question": "Will the tick455 Meta-Darwin v3 audit of the tick451-tick453 Lean files (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) confirm or refute tick451's self-report that it is structurally indistinguishable from tick450 without carrier inhabitation, (c) confirm or refute tick452's self-report that only the typing half is closed and that cube_measure_toReal_le_rM3 is a derived (not tautological) Mathlib step, (d) confirm or refute tick453's self-report that the omega + List-induction are substantive (not directly projectable) and that the upstream half is Prop-only, (e) produce a session-level 20-primitive tally across tick432-tick453, and (f) leave Lean files unmodified?",
+  "domain": "meta_darwin_lean_audit",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": ["anti_laundering_discipline", "deferred_audit_closure", "wrapper_inflation_round_3", "honest_combinatorial_scope_restricted_no_charge_fields"],
+  "forecasted_at": "2026-05-15T03:30:45Z",
+  "p_dependency_issue": 0.02,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.78,
+  "rationale_short": "Adversarial second pass on parallel-shipped tick451/452/453. Risk: agents' self-reports are unusually candid, which is good evidence but also could anchor the auditor. Specific load-bearing checks: (i) tick451's NS-construction claim is the riskiest framing — the file literally projects three carrier fields and the *_charge_supports_positivity theorems are := h (the hypothesis IS the conclusion); this is the same wrapper pattern as tick446 but with 3 carriers instead of 1; (ii) tick452's cube_measure_toReal_le_rM3 chain MUST go through ENNReal.toReal_mono with the ≠⊤ side condition, otherwise the step would be vacuous — the audit should verify this is a real Mathlib invocation, not tautological; the substance is corollary-extraction from a carrier-asserted Carleson bound, so even with a real Mathlib lemma, the file is a WRAPPER with one honest derived inequality; (iii) tick453's omega step genuinely uses strict depthOf_lt_depthBudget — without strictness, Nat subtraction truncates and the bound fails; List induction is real linarith composition of per-step bound + chain.length bound — this IS substantive enough to be HONEST in the tick450 sense. Expected verdict: 1 HONEST (tick453) + 2 WRAPPER (tick451, tick452). Session tally: 3 HONEST + 16 WRAPPER + 0 LAUNDERED + 1 PURE_NAMING. Wrapper inflation continues — 16/20 = 80%. Risk of audit failure: missing the distinction between tick452's derived corollary (real Mathlib) and tick451's pure carrier projection (just :=).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

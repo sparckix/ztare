@@ -1,0 +1,198 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:22Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 75.0,
+      "expected_value": -0.45499999999999996,
+      "p_success": 0.4,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.24
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 75.0,
+    "expected_value": -0.45499999999999996,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.07500000000000001,
+    "p_needs_new_lemma": 0.08499999999999999,
+    "p_regression": 0.065,
+    "p_success": 0.4,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun/codex.json",
+        "forecasted_at": "2026-05-16T23:14:12Z",
+        "p_success": 0.4,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T23:10:22Z",
+        "p_success": 0.4,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "assembly_dependency",
+        "p": 0.225
+      },
+      {
+        "mode": "compile_or_error_read_noise",
+        "p": 0.125
+      },
+      {
+        "mode": "name_harvest_or_exact_apply_gap",
+        "p": 0.1
+      },
+      {
+        "mode": "bounded_retry_insufficient",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json",
+    "contract": "analytics/public/forecast_pool/contracts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json",
+    "score": "analytics/public/forecast_pool/scores/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 75.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T23:10:08Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "automated scaffold vs canonical v4.29.0 on C10/C15/C06; >=2/3 genuine = deterministic-lever; <2/3 = LLM-assembly load-bearing",
+    "question": "A DETERMINISTIC automated grounded-iterative scaffold (auto #check/exact?/apply?/hammer name-harvest + compile + error-read + bounded retry, NO human iteration, LLM-assembly held fixed) re-run on the n=3 ground truth C10/C15/C06: does it reproduce >=2/3 genuine closures \u2014 i.e. is the automatable-deterministic part the lever, or is the LLM-assembly step load-bearing?",
+    "success_threshold": "0.5",
+    "task_type": "automated_grounded_iterative_scaffold"
+  },
+  "contract_id": "a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 75.0,
+        "forecasted_at": "2026-05-16T23:14:12Z",
+        "p_success": 0.4,
+        "rationale_short": "Deterministic exact/apply/check steps should recover C10 more readily than C15/C06, but the fixed assembly still looks necessary for the harder composition and reindex/iff-chain cases; I price the contract below 50% because the remaining failures are more likely to be assembly gaps than runtime noise.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 75.0,
+        "forecasted_at": "2026-05-16T23:10:22Z",
+        "p_success": 0.4,
+        "rationale_short": "n=3 hand-driven worked but the LLM-assembly step was likely load-bearing for C15/C06 (reindex/iff-chain needed real composition, not just name-harvest+ladder); deterministic-only scaffold likely reproduces C10 (single lemma apply) but not C15/C06 -> expect ~1/3, i.e. LLM-assembly IS load-bearing (honest negative is the informative outcome)",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T23:29:17Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 75.0,
+      "expected_value": -0.45499999999999996,
+      "p_success": 0.4,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.24
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 75.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.4,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "assembly_dependency",
+        "p": 0.225
+      },
+      {
+        "mode": "compile_or_error_read_noise",
+        "p": 0.125
+      },
+      {
+        "mode": "name_harvest_or_exact_apply_gap",
+        "p": 0.1
+      },
+      {
+        "mode": "bounded_retry_insufficient",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.16000000000000003,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:38:58Z"
+  }
+}

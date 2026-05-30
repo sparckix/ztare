@@ -1,0 +1,23 @@
+{
+  "agent_id": "pascal_adversarial_forecaster",
+  "contract_id": "gp225_v1935_context_enriched_repair_execution",
+  "contract_question": "Will v19.35 context-enriched Lean repair execution improve beyond v19.33 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, while excluding teacher/oracle candidates from primary evidence?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "context_templates_too_generic": 0.24,
+    "dependency_or_namespace_issue": 0.14,
+    "harmful_compiled_mismatch": 0.07,
+    "local_lemma_name_hallucination": 0.3,
+    "overclosure_not_target_relevant": 0.17,
+    "static_prefilter_or_hydration_gap": 0.08
+  },
+  "forecasted_at": "2026-05-13T23:35:46Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.51,
+  "p_regression": 0.12,
+  "p_success": 0.31,
+  "rationale_short": "Prior anchored by v19.33: one of five pull-forward and no harmful mismatch. v19.34 improves candidate shape but mostly with inferred templates, not mined exact local lemmas, so the second success is plausible but below even odds.",
+  "read_only_attestation": true
+}

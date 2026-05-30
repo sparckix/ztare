@@ -1,0 +1,183 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-16T16:24:24Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 35.0,
+    "expected_value": -5.280000000000001,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.85,
+    "p_regression": 0.02,
+    "p_success": 0.13,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594/claude_rd.json",
+        "forecasted_at": "2026-05-16T16:05:28Z",
+        "p_success": 0.13,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594/codex.json",
+        "forecasted_at": "2026-05-16T16:06:26Z",
+        "p_success": 0.13,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "no_positive_cd_or_hypocoercive_gap",
+        "p": 0.35
+      },
+      {
+        "mode": "operator_or_renormalization_mismatch",
+        "p": 0.1
+      },
+      {
+        "mode": "missing_negative_case_or_stale_evidence",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T16:05:28Z",
+    "created_by": "claude_rd",
+    "horizon": "7d",
+    "layer": "micro",
+    "objective_resolver": "Generative-diversity triad + adversarial kill (closure-adjacent): does the drift-diffusion (\u2202t+u\u00b7\u2207\u2212\u03bd\u0394)q=Vq admit a Bakry-Emery \u03932 \u2265 \u03c1\u0393 with \u03c1>0 (or a hypocoercive H1-Lyapunov gap a la Villani/DMS) that is NOT conformally scale-invariant \u21d2 exponent gain \u21d2 closes; OR is the Bakry-Emery curvature of the NS-rescaled OU+drift operator \u22640 / scale-degenerate (the likely catch \u2014 NS has no Ricci-type lower bound) \u21d2 reduces to the atom (11th). success iff a strict-positive-curvature/hypocoercive exponent-gain survives the kill; 0.5 partial; fail iff rho\u22640/scale-degenerate \u21d2 11th recurrence.",
+    "question": "PATTERN-027 alien recast NEVER tried + specifically immune to the conformally-scale-invariant\u21d2borderline mechanism that killed all 10 recurrences: recast the perennial scale-critical atom via Bakry-Emery curvature-dimension CD(rho,infty) / hypocoercivity \u2014 a curvature lower bound rho>0 BREAKS scale-invariance and yields an EXPONENTIAL spectral gap (an exponent, NOT a borderline log). Does the NS vorticity-magnitude / ground-state OU operator admit a strict positive Bakry-Emery curvature (or a hypocoercive Lyapunov/Villani-Dolbeault-Mouhot structure) on the inherited-bad cascade giving the strict sub-scaling r^-eps gain, or does NS provably have NO positive CD(rho,infty) (rho<=0, curvature catch) \u21d2 11th recurrence?",
+    "success_threshold": "success iff strict positive Bakry-Emery/hypocoercive exponent-gain survives adversarial kill; 0.5 partial-new-residual; fail iff rho<=0/scale-degenerate (11th recurrence)",
+    "task_type": "ns_clay_bakry_emery_curvature_dimension_20260516"
+  },
+  "contract_id": "ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-16T16:05:28Z",
+        "p_success": 0.13,
+        "rationale_short": "Honest RD conditional odds: Bakry-Emery curvature is the RIGHT object class (genuinely NOT conformally scale-invariant \u2014 a CD(rho,infty) rho>0 gives an exponential/exponent gap, immune to the borderline mechanism that killed 10 prior recurrences) \u21d2 materially higher than the 0.06 I gave scale-invariant L_summable. BUT strong prior NS has no positive Bakry-Emery/Ricci lower bound (the drift u\u00b7\u2207 is critical, curvature likely \u22640/scale-degenerate) \u21d2 ~0.13 genuine escape. Effort ~35min one generative-diversity-triad round.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-16T16:06:26Z",
+        "p_success": 0.13,
+        "rationale_short": "Bakry-Emery/hypocoercivity is the right non-scale-invariant class, but the NS-rescaled OU+drift operator still looks curvature-degenerate absent an explicit Gamma2 or Lyapunov construction; odds remain low without a concrete new lemma. Effort ~35 min.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T16:24:36Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 35.0,
+      "expected_value": -5.280000000000001,
+      "p_success": 0.13,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 7.6131
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 35.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.13,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "no_positive_cd_or_hypocoercive_gap",
+        "p": 0.35
+      },
+      {
+        "mode": "operator_or_renormalization_mismatch",
+        "p": 0.1
+      },
+      {
+        "mode": "missing_negative_case_or_stale_evidence",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.016900000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-16T16:24:36Z"
+  }
+}

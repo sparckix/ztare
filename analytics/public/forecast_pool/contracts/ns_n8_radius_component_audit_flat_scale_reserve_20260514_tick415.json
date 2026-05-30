@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415.json"
+  },
+  "baseline_action": "Continue with generic RadiusComponentPaysRadiusScale",
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415",
+  "cost_penalty": 0.06,
+  "counterfactual_action": "Record no-go and sharpen radius branch to flat scale reserve",
+  "created_at": "2026-05-14T20:48:13Z",
+  "created_by": "codex-rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns-proof-frontier-negative-theorem",
+    "score": 0.1667,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 10,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 140,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0238,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 7,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 4,
+        "token_jaccard": 0.1
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "negative_result_no_closure",
+      "new_flat_reserve_primitive_unproved"
+    ],
+    "positive": [
+      "kills_false_radius_component",
+      "sharpens_n8_frontier"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.44,
+  "layer": "meso",
+  "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles, no sorry/admit is introduced, and the added surface records flat multiscale reuse/radius-scale reserve as the surviving radius obstruction without claiming closure.",
+  "question": "Will the radius component audit add a compiling Lean surface showing RadiusComponentPaysRadiusScale is not sourced by current tri-carrier data and sharpening CKNRadiusFailure to FlatRadiusScaleReserveFailure?",
+  "risk_penalty": 0.1,
+  "success_threshold": "Lean compile plus flat radius scale reserve obstruction surface",
+  "task_type": "ns-proof-frontier-negative-theorem",
+  "value_if_success": 0.48,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

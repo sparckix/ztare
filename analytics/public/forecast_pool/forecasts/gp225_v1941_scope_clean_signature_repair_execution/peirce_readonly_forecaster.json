@@ -1,0 +1,24 @@
+{
+  "agent_id": "peirce_readonly_forecaster",
+  "contract_id": "gp225_v1941_scope_clean_signature_repair_execution",
+  "contract_question": "Will v19.41 scope-clean signature-driven primary repair execution improve beyond v19.37 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, using only pre-target scope-available declaration signatures?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "available_signatures_need_argument_shapes_not_names": 0.24,
+    "harmful_compiled_mismatch": 0.04,
+    "namespace_or_import_resolution_failure": 0.12,
+    "other": 0.04,
+    "overclosure_not_target_relevant": 0.1,
+    "scope_cleanup_removed_best_candidates": 0.28,
+    "templates_repeat_existing_1_of_5_ceiling": 0.18
+  },
+  "forecasted_at": "2026-05-13T23:59:14Z",
+  "p_dependency_issue": 0.46,
+  "p_needs_new_lemma": 0.48,
+  "p_regression": 0.08,
+  "p_success": 0.27,
+  "rationale_short": "v19.41 is cleaner and more valid because it blocks post-target leakage, but cleanup likely removes high-signal repair hints. Nineteen scope-available signatures may not supply rewrite orientation or argument shape.",
+  "read_only_attestation": true
+}

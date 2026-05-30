@@ -1,0 +1,21 @@
+{
+  "agent_id": "goodall_readonly_forecaster",
+  "contract_id": "gp225_typed_feedback_meso_20260513_v1945",
+  "contract_question": "Typed elaborator feedback produces at least 2 compiled candidates with zero harmful compiled mismatches within the next 2 executable GP-225 ticks",
+  "domain": "gp225_typed_feedback",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "domain_arguments_missing": 0.3,
+    "filters_too_many": 0.25,
+    "irrelevant_auxiliary_closure": 0.2,
+    "teacher_oracle_slip": 0.25
+  },
+  "forecasted_at": "2026-05-14T00:28:11Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.1,
+  "p_success": 0.41,
+  "rationale_short": "v19.44 gives concrete error taxonomy over 46 failed candidates, but jumping from zero compiled to two compiled remains nontrivial.",
+  "read_only_attestation": true
+}

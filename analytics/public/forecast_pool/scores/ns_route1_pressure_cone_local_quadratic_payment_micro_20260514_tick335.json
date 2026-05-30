@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335",
+  "mean_brier": 0.17059999999999997,
+  "mean_log_score": -0.5312366210261182,
+  "outcome": {
+    "actual_cost_agent_minutes": 45.0,
+    "artifact_hash": "74d739a598c32ff057d66291121b75eab253cafd45bf78aa06f29415d0824e8a",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/pressure_cone_local_quadratic_payment_scout_20260514.json",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Scout produced LOCAL_QUADRATIC_OPERATOR_NORM_PAYMENT for 128/128 packets; Lean source constructs pressure receipt bridge from local quadratic receipt plus nonnegative reserve/child receipts; target and downstream builds passed.",
+    "resolved_at": "2026-05-14T03:07:45Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:07:45Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 45.0,
+      "agent_id": "hooke_forecast_tick335",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 27.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 72.0,
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:02:47Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:02:47Z",
+        "resolved_at": "2026-05-14T03:07:45Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 45.0,
+      "agent_id": "rawls_adversarial_tick335",
+      "brier": 0.21159999999999995,
+      "cost_error_agent_minutes": 47.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 92.0,
+      "log_score": -0.616186139423817,
+      "p_success": 0.54,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:02:47Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:02:59Z",
+        "resolved_at": "2026-05-14T03:07:45Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_tarski_gp225_v1978",
+  "contract_id": "gp225_v1978_targeted_dual_head_replay",
+  "contract_question": "Will v19.78 replay of the v19.77 targeted dual-head packet add at least one fresh strict-step or solver-closure row, with harmful mismatches zero and source-policy flags clean?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "forall_and_left_exact_candidate_closes": 0.18,
+    "lean_syntax_or_elab_breaks_hand_candidates": 0.24,
+    "other": 0.19,
+    "other_logic_or_arithmetic_candidate_closes": 0.16,
+    "source_name_guesses_underpowered": 0.23
+  },
+  "forecasted_at": "2026-05-14T04:06:25Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.04,
+  "p_success": 0.47,
+  "rationale_short": "The packet contains one plausible exact logical closure and several low-cost closure probes. Probability is still under 50 because source-name guesses remain weak and strict-step alignment is hard.",
+  "read_only_attestation": true
+}

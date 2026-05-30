@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_forecast_tick324",
+  "contract_id": "ns_route1_stress_cone_mass_subordination_micro_20260514_tick324",
+  "contract_question": "Will the next NS route-1 tick add a build-passed stress-cone mass subordination source that derives FixedWindowStressAngularCoherenceDominance without final-carrier smuggling?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 48.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cone_geometry_props_are_too_opaque_for_gp233_credit": 0.13,
+    "final_pressure_carrier_or_angular_dominance_smuggled_into_source": 0.2,
+    "import_or_constructor_drift": 0.06,
+    "lean_nonnegativity_and_abs_algebra_friction": 0.1,
+    "mass_subordination_source_restates_stress_coherence_target": 0.27,
+    "same_window_sheath_mass_control_not_strong_enough_for_angular_coherence": 0.24
+  },
+  "forecasted_at": "2026-05-14T01:27:15Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.63,
+  "p_regression": 0.08,
+  "p_success": 0.58,
+  "rationale_short": "Plausible if the source exposes cone mass and sheath mass separately; main risk is another opaque bridge.",
+  "read_only_attestation": true
+}

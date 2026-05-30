@@ -1,0 +1,120 @@
+{
+  "schema": "leanmill-solver-lane-typed-exits-v1",
+  "exits": [
+    {
+      "schema": "leanmill-typed-proof-exit-v1",
+      "generated_at_epoch": 1780013056,
+      "source_kind": "auto_prover_harness",
+      "source_path": "/Users/daalami/figs_activist_loop/analytics/public/queries/leanmill_solver_lane_results.json",
+      "run_id": "solver_lane",
+      "credit_status": "not_credit_ready",
+      "credit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+      "proof_credit": "none_typed_exit_is_advisory",
+      "attempt_id": "APN_hilbert_1_sorried",
+      "target_name": "APN_hilbert_1_sorried",
+      "target_kind": "c_pool_no_template",
+      "outcome": "closed",
+      "exit_code": 0,
+      "typed_exit_kind": "unratified_closure_candidate",
+      "residual_class": "none_closed",
+      "next_lever": "ratify_closure",
+      "next_target_statement": "Route `APN_hilbert_1_sorried` closure candidate to governance",
+      "candidate_lemmas": [],
+      "semantic_premise_shelf": {
+        "schema": null,
+        "query_sha256": null,
+        "enabled": false,
+        "source_counts": {},
+        "skip_reasons": []
+      },
+      "stderr_excerpt": null,
+      "proof_compiler_contract": {
+        "schema": "leanmill-proof-compiler-contract-v1",
+        "contract_status": "accepted_for_shadow_execution",
+        "source_facts": {
+          "source_kind": "auto_prover_harness",
+          "source_path": "/Users/daalami/figs_activist_loop/analytics/public/queries/leanmill_solver_lane_results.json",
+          "run_id": "solver_lane",
+          "attempt_id": "APN_hilbert_1_sorried",
+          "closure_verdict": "closed",
+          "compiled_any": null,
+          "candidate_lemmas": [],
+          "semantic_premise_shelf": {
+            "schema": null,
+            "query_sha256": null,
+            "enabled": false,
+            "source_counts": {},
+            "skip_reasons": []
+          }
+        },
+        "selected_residual_edge": {
+          "residual_class": "none_closed",
+          "typed_exit_kind": "unratified_closure_candidate",
+          "next_lever": "ratify_closure"
+        },
+        "rejected_nearest_confuser_edge": "raw_closure_candidate_laundered_as_factory_credit",
+        "action_program": [
+          {
+            "id": "route_to_governance_gate",
+            "requires": [
+              "compiled_candidate_artifact"
+            ],
+            "produces": [
+              "governance_receipt"
+            ]
+          },
+          {
+            "id": "run_matched_negative_control",
+            "requires": [
+              "governance_receipt"
+            ],
+            "produces": [
+              "matched_negative_control_receipt"
+            ]
+          },
+          {
+            "id": "credit_only_if_all_receipts_pass",
+            "requires": [
+              "governance_receipt",
+              "matched_negative_control_receipt"
+            ],
+            "produces": [
+              "credit_ready_decision_or_rejection"
+            ]
+          }
+        ],
+        "current_action_index": 0,
+        "required_next_action": "route_to_governance_gate",
+        "program_counter_rule": "Advance only after the required action has a concrete artifact_ref or typed terminal outcome; do not convert advisory exits into proof credit.",
+        "deterministic_invariants": [
+          {
+            "id": "no_credit_without_governance",
+            "status": "pass",
+            "detail": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status"
+          },
+          {
+            "id": "source_or_attempt_bound",
+            "status": "pass",
+            "detail": "/Users/daalami/figs_activist_loop/analytics/public/queries/leanmill_solver_lane_results.json"
+          },
+          {
+            "id": "nearest_confuser_named",
+            "status": "pass",
+            "detail": "raw_closure_candidate_laundered_as_factory_credit"
+          },
+          {
+            "id": "action_program_nonempty",
+            "status": "pass",
+            "detail": "3"
+          }
+        ],
+        "shadow_outcome_trace": {
+          "status": "pending",
+          "later_outcome_ref": null,
+          "cost_or_regret_signal": null
+        },
+        "credit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status"
+      }
+    }
+  ]
+}

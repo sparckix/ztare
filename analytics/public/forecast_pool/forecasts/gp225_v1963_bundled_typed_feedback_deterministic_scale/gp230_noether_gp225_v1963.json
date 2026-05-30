@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_noether_gp225_v1963",
+  "contract_id": "gp225_v1963_bundled_typed_feedback_deterministic_scale",
+  "contract_question": "Will bundled typed-feedback plus deterministic-template scale execution produce at least 4 new unique strict target-state rows and at least 1 target-state-to-full-closure conversion across at least 40 clean candidates, with harmful mismatches zero and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_generation_schema_not_ready": 0.16,
+    "closure_conversion_does_not_follow_target_state": 0.22,
+    "other": 0.12,
+    "row_distribution_shift": 0.12,
+    "runtime_or_hydration_regression": 0.08,
+    "strict_label_threshold_too_high_for_current_generators": 0.3
+  },
+  "forecasted_at": "2026-05-14T03:02:15Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.14,
+  "p_regression": 0.07,
+  "p_success": 0.31,
+  "rationale_short": "v19.61 shows clean but sparse labels. The bundled route is correct directionally, but 4 fresh strict rows plus one closure conversion in a 40-candidate replay is an ambitious threshold for current generators.",
+  "read_only_attestation": true
+}

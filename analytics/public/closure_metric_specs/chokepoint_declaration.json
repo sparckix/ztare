@@ -1,0 +1,13 @@
+{
+  "metric_name": "chokepoint_declaration",
+  "gate_class_name": "ChokepointDeclarationGate",
+  "metric_description": "Closure attempt must declare which betweenness-centrality chokepoint(s) it targets",
+  "threshold_type": "top_n",
+  "threshold_value": 5,
+  "rubric_field_to_check": "target_chokepoints",
+  "rubric_field_type": "list",
+  "graph_extraction_function": "compute_chokepoint_ranking",
+  "violation_type": "chokepoint_not_declared",
+  "advisory_default": true,
+  "reliability_note": "Betweenness centrality is computed on the import-edge graph; reliable. Chokepoint identification does not depend on classify_status, only on graph topology."
+}

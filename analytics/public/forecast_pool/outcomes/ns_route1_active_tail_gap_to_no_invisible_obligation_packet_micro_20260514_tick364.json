@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "d2e9672fc6544a1ad2a71624d601d1db3c7cb1748501d626d14b4dda2184a7d9",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/route1_active_tail_zero_visibility_profile_work_packet_20260514.md",
+  "compile_status": "not_applicable_math_packet",
+  "contract_id": "ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "Packet produced two explicit maps from active all-channel-invisible gap to no-invisible obligation inputs, plus falsifier stack and next discriminator; no unconditional route closure claimed.",
+  "resolved_at": "2026-05-14T12:51:39Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

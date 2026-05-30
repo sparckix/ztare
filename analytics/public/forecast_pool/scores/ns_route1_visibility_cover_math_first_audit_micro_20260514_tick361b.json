@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b",
+  "mean_brier": 0.0964,
+  "mean_log_score": -0.3632485801207497,
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "artifact_hash": null,
+    "artifact_path": "projects/ns_millennium_hunt/workspace/route1_critical_tail_visibility_cover_gowers_audit_20260514.md",
+    "compile_status": "not_applicable",
+    "contract_id": "ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Wrote math-first Gowers audit for route-1 active-tail visibility cover, with verdict conditional closure/missing PDE theorem, allocation-only failure model, active carrier restriction, corrected theorem surface, and next discriminator. No Lean edits for this tick.",
+    "resolved_at": "2026-05-14T12:42:08Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T12:42:24Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "codex_rd_tick361b",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 9.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 28.0,
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:40:15Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:40:15Z",
+        "resolved_at": "2026-05-14T12:42:08Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "codex_skeptic_tick361b",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 21.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 40.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:40:15Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:40:15Z",
+        "resolved_at": "2026-05-14T12:42:08Z"
+      }
+    }
+  ]
+}

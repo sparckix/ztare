@@ -1,0 +1,371 @@
+{
+  "clusters": [
+    {
+      "cluster_id": "core_01",
+      "name": "Problem Domain Translation",
+      "structural_mechanism": "An intractable problem is mapped to an equivalent one in a different formal system where more powerful tools or a simpler structure are available.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 5,
+      "n_moves": 68,
+      "example_moves": [
+        "M0000",
+        "M0219",
+        "M0375",
+        "M0538",
+        "M0650"
+      ]
+    },
+    {
+      "cluster_id": "core_02",
+      "name": "Iterative Refinement Loop",
+      "structural_mechanism": "A solution is constructed not at once, but by repeatedly applying a procedure that monotonically improves a quality metric, converging towards a desired state.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 5,
+      "n_moves": 59,
+      "example_moves": [
+        "M0166",
+        "M0284",
+        "M0344",
+        "M0679",
+        "M0066"
+      ]
+    },
+    {
+      "cluster_id": "core_03",
+      "name": "Canonical Decomposition",
+      "structural_mechanism": "A complex object is partitioned into a collection of well-understood components, allowing its global properties to be inferred from the properties and interactions of its parts.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory"
+      ],
+      "n_subfields": 4,
+      "n_moves": 45,
+      "example_moves": [
+        "M0164",
+        "M0200",
+        "M0327",
+        "M0480",
+        "M0528"
+      ]
+    },
+    {
+      "cluster_id": "core_04",
+      "name": "Local-to-Global Inference",
+      "structural_mechanism": "A global property is established by first proving it on local patches and then using a consistency or gluing argument to assemble the local facts into a global conclusion.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 5,
+      "n_moves": 38,
+      "example_moves": [
+        "M0004",
+        "M0016",
+        "M0187",
+        "M0510",
+        "M0755"
+      ]
+    },
+    {
+      "cluster_id": "core_05",
+      "name": "Extremal Case Analysis",
+      "structural_mechanism": "A general claim is proven by reducing it to the analysis of extremal objects (e.g., minimal counterexamples, maximal configurations), where additional structure can be exploited.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 5,
+      "n_moves": 41,
+      "example_moves": [
+        "M0203",
+        "M0328",
+        "M0409",
+        "M0571",
+        "M0651"
+      ]
+    },
+    {
+      "cluster_id": "core_06",
+      "name": "External Framework Importation",
+      "structural_mechanism": "A problem is solved by importing a major theorem or a complete methodological toolkit from an entirely different mathematical domain, rather than developing tools internally.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory"
+      ],
+      "n_subfields": 4,
+      "n_moves": 35,
+      "example_moves": [
+        "M0010",
+        "M0064",
+        "M0163",
+        "M0226",
+        "M0331"
+      ]
+    },
+    {
+      "cluster_id": "core_07",
+      "name": "Framework Generalization",
+      "structural_mechanism": "The fundamental definitions of a theory are broadened to encompass more phenomena, unifying disparate concepts or resolving paradoxes by creating a more expressive container.",
+      "tier": "shared_core",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 4,
+      "n_moves": 52,
+      "example_moves": [
+        "M0011",
+        "M0097",
+        "M0109",
+        "M0391",
+        "M0685"
+      ]
+    },
+    {
+      "cluster_id": "broad_01",
+      "name": "Duality Framing",
+      "structural_mechanism": "A problem is reframed as an equivalence between two opposing perspectives (e.g., maximization vs. minimization, prover vs. verifier), allowing the easier of the two to be solved.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory"
+      ],
+      "n_subfields": 3,
+      "n_moves": 33,
+      "example_moves": [
+        "M0201",
+        "M0346",
+        "M0424",
+        "M0489",
+        "M0564"
+      ]
+    },
+    {
+      "cluster_id": "broad_02",
+      "name": "Probabilistic Existence Proof",
+      "structural_mechanism": "The existence of an object is proven by showing that a randomly selected candidate has a non-zero probability of having the desired properties, bypassing explicit construction.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory"
+      ],
+      "n_subfields": 3,
+      "n_moves": 29,
+      "example_moves": [
+        "M0236",
+        "M0330",
+        "M0411",
+        "M0518",
+        "M0592"
+      ]
+    },
+    {
+      "cluster_id": "broad_03",
+      "name": "Dimensional Lifting",
+      "structural_mechanism": "A problem is solved by embedding it into a higher-dimensional or more abstract space where geometric or algebraic constraints become simpler, then projecting the solution back.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 3,
+      "n_moves": 24,
+      "example_moves": [
+        "M0211",
+        "M0286",
+        "M0499",
+        "M0629",
+        "M0706"
+      ]
+    },
+    {
+      "cluster_id": "broad_04",
+      "name": "Bounding via Surrogate",
+      "structural_mechanism": "An intractable object is controlled by constructing a simpler, tractable object that serves as a uniform upper or lower bound, allowing properties to be inferred indirectly.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 3,
+      "n_moves": 28,
+      "example_moves": [
+        "M0175",
+        "M0253",
+        "M0478",
+        "M0622",
+        "M0700"
+      ]
+    },
+    {
+      "cluster_id": "broad_05",
+      "name": "Forcing via Constraint",
+      "structural_mechanism": "A unique solution is isolated by imposing a set of strong, independent constraints (e.g., symmetries, conservation laws) that collectively eliminate most possibilities.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "theory_building",
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 3,
+      "n_moves": 31,
+      "example_moves": [
+        "M0062",
+        "M0105",
+        "M0142",
+        "M0483",
+        "M0644"
+      ]
+    },
+    {
+      "cluster_id": "broad_06",
+      "name": "Property Bootstrapping",
+      "structural_mechanism": "A weak initial property is leveraged through a recursive or iterative argument to establish a slightly stronger version of the same property, which then serves as the input for the next iteration.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "complexity_theory",
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 2,
+      "n_moves": 20,
+      "example_moves": [
+        "M0512",
+        "M0683",
+        "M0687",
+        "M0753",
+        "M0757"
+      ]
+    },
+    {
+      "cluster_id": "broad_07",
+      "name": "Systematic Cataloging",
+      "structural_mechanism": "A field is organized by creating a comprehensive, systematic inventory of key objects, problems, or transformations, establishing a shared language and reference point.",
+      "tier": "broadly_shared",
+      "subfield_spread": [
+        "theory_building",
+        "graph_theory",
+        "complexity_theory"
+      ],
+      "n_subfields": 3,
+      "n_moves": 26,
+      "example_moves": [
+        "M0075",
+        "M0149",
+        "M0335",
+        "M0472",
+        "M0553"
+      ]
+    },
+    {
+      "cluster_id": "sub_01",
+      "name": "Characterization by Exclusion",
+      "structural_mechanism": "A class of graphs is characterized not by its positive properties, but by the mandatory absence of a finite set of 'forbidden' minor or subgraph structures.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "graph_theory"
+      ],
+      "n_subfields": 1,
+      "n_moves": 22,
+      "example_moves": [
+        "M0318",
+        "M0319",
+        "M0356",
+        "M0362",
+        "M0396"
+      ]
+    },
+    {
+      "cluster_id": "sub_02",
+      "name": "Evolution to Equilibrium",
+      "structural_mechanism": "A static object is found by modeling it as the stable endpoint of a geometric flow designed to minimize an energy or curvature functional over time.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "geometric_flow_pde"
+      ],
+      "n_subfields": 1,
+      "n_moves": 34,
+      "example_moves": [
+        "M0616",
+        "M0631",
+        "M0640",
+        "M0705",
+        "M0712"
+      ]
+    },
+    {
+      "cluster_id": "sub_03",
+      "name": "Hardness Propagation",
+      "structural_mechanism": "The intractability of a problem is proven by devising a resource-bounded transformation that maps any instance of a known-hard problem to an instance of the target problem.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "complexity_theory"
+      ],
+      "n_subfields": 1,
+      "n_moves": 27,
+      "example_moves": [
+        "M0469",
+        "M0474",
+        "M0523",
+        "M0549",
+        "M0550"
+      ]
+    },
+    {
+      "cluster_id": "sub_04",
+      "name": "Universal Regularity Partition",
+      "structural_mechanism": "It is asserted that any large combinatorial object can be decomposed into a collection of random-like pieces and a negligible remainder, providing a universal structural template.",
+      "tier": "subfield_specific",
+      "subfield_spread": [
+        "additive_combinatorics"
+      ],
+      "n_subfields": 1,
+      "n_moves": 19,
+      "example_moves": [
+        "M0167",
+        "M0184",
+        "M0191",
+        "M0267",
+        "M0299"
+      ]
+    }
+  ],
+  "n_outliers": 78,
+  "n_shared_core_clusters": 7,
+  "n_broadly_shared_clusters": 7,
+  "n_subfield_specific_clusters": 4,
+  "auditor_notes": "The analysis revealed a larger-than-hypothesized set of shared-core operations, with 7 distinct structural mechanisms appearing in at least 4 of the 5 subfields. This suggests a robust, universal toolkit for mathematical research. Conversely, the number of genuinely subfield-specific operations was smaller than anticipated, with only one dominant idiom identified for each of the four non-theory-building subfields. The initial hypothesis of 3-5 core operations and 5-10 specific idioms per subfield was therefore inverted; the shared core is broad and foundational, while subfields are distinguished more by their choice of object and motivating questions than by a large, private arsenal of structural moves. The subfields are far from irreducibly distinct, drawing heavily from a common well of operational patterns."
+}

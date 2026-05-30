@@ -1,0 +1,24 @@
+{
+  "agent_id": "hooke_forecast_tick327",
+  "contract_id": "ns_route1_fixed_window_packet_scout_micro_20260514_tick327",
+  "contract_question": "Will a deterministic fixed-window trace-free tensor packet scout produce a clear geometry-only same-window cancellation/overflow obstruction artifact for the cone-mass branch?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_pre_gnn_or_harness_mutation": 0.04,
+    "artifact_not_clear_enough_to_drive_cone_mass_branch": 0.21,
+    "markdown_json_emitted_but_resolution_predicate_underjustified": 0.14,
+    "offline_script_runtime_or_path_issue": 0.08,
+    "orientation_parameterization_has_degenerate_or_zero_tensor_cases": 0.17,
+    "result_is_negative_or_ambiguous": 0.12,
+    "script_finds_only_tautological_scalar_cancellation_not_trace_free_tensor_geometry": 0.24
+  },
+  "forecasted_at": "2026-05-14T01:41:50Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.04,
+  "p_success": 0.74,
+  "rationale_short": "High execution odds because this is an offline deterministic scout; main risk is interpretive usefulness for the cone-mass branch.",
+  "read_only_attestation": true
+}

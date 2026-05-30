@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_forecast_tick349",
+  "contract_id": "ns_route1_boundary_tent_payment_scout_micro_20260514_tick349",
+  "contract_question": "Can we add and run a boundary-only deterministic scout that separates same-tent-family boundary payment from cutoff/tent-family undercharge, without final-carrier magnitude or overflow-excess sizing?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "not_discriminating": 0.23,
+    "other": 0.16,
+    "redundant_with_joint_scout": 0.28,
+    "schema_bug": 0.15,
+    "verdict_too_synthetic": 0.18
+  },
+  "forecasted_at": "2026-05-14T04:22:33Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.04,
+  "p_success": 0.78,
+  "rationale_short": "The joint scout already has boundary gaps, but a boundary-only scout can isolate tent-family and cutoff mismatch as the next estimate surface.",
+  "read_only_attestation": true
+}

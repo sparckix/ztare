@@ -1,0 +1,33 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "df39418b6542da64aaf3e0f292992002f7dd061244b0d62da5217f2a85967e2d",
+  "artifact_path": "analytics/public/leanmill/results/v2035_filtered_source_aligned_repair_candidates.json",
+  "changed_by_forecast_ids": [
+    "gp230_hypatia_gp225_v2035",
+    "gp230_descartes_gp225_v2035"
+  ],
+  "compile_status": "pass",
+  "contract_id": "gp225_v2035_filtered_source_aligned_repair_candidates",
+  "counterfactual_value_bucket": "medium_positive",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "general_purpose_lean_harness",
+    "public_adapter_repair_packet",
+    "pre_replay_filter",
+    "pre_gnn"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "Run a separate pre-replay static check or GP-230 replay gate over v20.35; do not train or count labels.",
+  "old_next_action": "Stop at v20.34 seed packet or replay existing candidates.",
+  "preconditioner_effect": "Kept v20.35 static-only and preserved blocked rows instead of replaying weak raw beams.",
+  "preconditioner_source": "v20.34 repair seed packet plus GP-230 forecasts",
+  "realized_failure_mode_ids": [],
+  "resolution_note": "v20.35 emitted deterministic static repair candidates from v20.34: repair_rows=6, candidate_actions=20, blocked_rows_preserved=5, source-policy booleans clean, replay=false, training=false, GNN blocked.",
+  "resolved_at": "2026-05-14T15:24:45Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

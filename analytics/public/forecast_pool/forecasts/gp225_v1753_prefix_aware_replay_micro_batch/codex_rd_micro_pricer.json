@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd_micro_pricer",
+  "contract_id": "gp225_v1753_prefix_aware_replay_micro_batch",
+  "contract_question": "Will v17.53 prefix-aware source replay over v17.51 selected public SLT rows produce at least 8 executable target-guarded labels, at least 5 action-unique or closure-contribution candidate rows, and zero true false accepts within 20 wall minutes?",
+  "domain": "gp225_micro_probe",
+  "expected_cost_agent_minutes": 12.0,
+  "failure_mode_distribution": {
+    "lean_probe_timeout_cost": 0.15,
+    "process_noise": 0.15,
+    "selected_tactics_are_nested_not_matchable": 0.25,
+    "source_prefix_duplicate_or_namespace_issue": 0.25,
+    "target_guard_pretty_print_parse_friction": 0.2
+  },
+  "forecasted_at": "2026-05-12T21:00:23Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.06,
+  "p_success": 0.66,
+  "rationale_short": "v17.52 failed mostly because block-only replay lost source prefix context; full prefix replay should fix typeclass/variable gaps but nested tactic matching remains a risk.",
+  "read_only_attestation": true
+}

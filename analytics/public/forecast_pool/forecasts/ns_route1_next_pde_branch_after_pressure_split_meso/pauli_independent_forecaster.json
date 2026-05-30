@@ -1,0 +1,23 @@
+{
+  "agent_id": "pauli_independent_forecaster",
+  "contract_id": "ns_route1_next_pde_branch_after_pressure_split_meso",
+  "contract_question": "Which next NS route1 PDE branch is most likely to produce a compiled non-tautological Lean bridge within the next bounded proof tick: pressure-visible Hessian L2 certificate, pressure-small Q local quadratic one-third channel, pressure-small T transport, or pressure-small C commutator?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compiled_bridge_only_wraps_existing_pressure_branch_api": 0.16,
+    "hessian_l2_certificate_restates_tail_visibility_without_real_pressure_recovery": 0.24,
+    "lean_import_or_tactic_staleness": 0.1,
+    "other": 0.18,
+    "pressure_tail_mass_lower_bound_not_derivable_in_one_tick": 0.2,
+    "route1_payment_still_requires_nonpressure_channel_after_pressure_visible_case": 0.12
+  },
+  "forecasted_at": "2026-05-13T19:54:45Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.52,
+  "p_regression": 0.08,
+  "p_success": 0.68,
+  "rationale_short": "chosen_branch=A; exact pressure-visible path is compiled, and anti-tautology guard is pressure recovery plus L2 tail-window identification instead of visibility := rho*X-S; B gives only one-third pigeonhole until a Q-specific lower bound is added.",
+  "read_only_attestation": true
+}

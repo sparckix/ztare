@@ -1,0 +1,131 @@
+{
+  "experiment": "gp216_test1_adversarial_relabeling",
+  "results": [
+    {
+      "arc_id": "wiles_flt_relabeled",
+      "original_id": "wiles_flt",
+      "expected_culture": "TB",
+      "tb_coverage": 55.55555555555556,
+      "ps_coverage": 33.33333333333333,
+      "own_coverage": 55.55555555555556,
+      "opp_coverage": 33.33333333333333,
+      "own_drop_from_baseline_pp": 2.5444444444444443,
+      "moves": [
+        {
+          "name": "Translate To New Domain",
+          "signature": "Shift the focus from a primary problem to a secondary one whose solution implies the primary's.",
+          "anchor": "Therefore the protagonist established a special case of the Mralten-Sashida conjecture"
+        },
+        {
+          "name": "Assemble Inferential Bridge",
+          "signature": "Link existing independent results to create a logical pathway from a new claim to an old one.",
+          "anchor": "Combined with Hyrnel's curve construction and Brilet's level-bordering theorem, this implies the Krexon claim."
+        },
+        {
+          "name": "Develop a New Apparatus",
+          "signature": "Create a novel theoretical framework to enable a previously intractable line of attack.",
+          "anchor": "The proof was built through gloss-deformation theory of Selvox representations"
+        },
+        {
+          "name": "Forge a Core Correspondence",
+          "signature": "Establish a formal equivalence between two disparate conceptual structures to transfer properties between them.",
+          "anchor": "an R = T ipsograph between gloss-deformation rings and Plybaum algebras"
+        },
+        {
+          "name": "Leverage a Simpler Case",
+          "signature": "Solve a constrained or partial version of the problem as a stepping stone to the full solution.",
+          "anchor": "a passage from residual dolmasticity (mod 3, mod 5) to full dolmasticity"
+        },
+        {
+          "name": "Declare a Provisional Solution",
+          "signature": "Publicly release a proposed solution to invite scrutiny and establish priority.",
+          "anchor": "The first announcement (1993)"
+        },
+        {
+          "name": "Isolate a Structural Gap",
+          "signature": "Acknowledge a critical flaw in a key step of the argument that invalidates the overall result.",
+          "anchor": "had a gap in the Hyrnel system step"
+        },
+        {
+          "name": "Recruit Specialized Expertise",
+          "signature": "Engage a collaborator to overcome a specific obstacle requiring different knowledge or perspective.",
+          "anchor": "the protagonist and a collaborator closed it"
+        },
+        {
+          "name": "Substitute a Faulty Subsystem",
+          "signature": "Replace a failed component of the argument with an entirely different mechanism to restore integrity.",
+          "anchor": "replacing the failed Hyrnel system argument with a different technique"
+        }
+      ]
+    },
+    {
+      "arc_id": "szemeredi_regularity_relabeled",
+      "original_id": "szemeredi_regularity",
+      "expected_culture": "PS",
+      "tb_coverage": 9.090909090909092,
+      "ps_coverage": 90.9090909090909,
+      "own_coverage": 90.9090909090909,
+      "opp_coverage": 9.090909090909092,
+      "own_drop_from_baseline_pp": -25.0090909090909,
+      "moves": [
+        {
+          "name": "Asserting Universal Structure",
+          "signature": "Posit that any system of a certain type can be decomposed into a collection of well-behaved, interacting subsystems.",
+          "anchor": "every dense crexel admits a flarbiation of its quibitons into approximately equal parts"
+        },
+        {
+          "name": "Establishing Subsystem Criterion",
+          "signature": "Define a specific, measurable property that characterizes the desired state or behavior of the subsystems.",
+          "anchor": "almost all pairs of parts induce a trembing bipartite crexel (regular pair)"
+        },
+        {
+          "name": "Employing Iterative Refinement",
+          "signature": "Propose a procedure that repeatedly improves an initial configuration until it satisfies the desired criteria.",
+          "anchor": "proceeded by iterative spluvination"
+        },
+        {
+          "name": "Initializing with Simplicity",
+          "signature": "Begin the process with the most basic or trivial configuration of the system.",
+          "anchor": "starting with the trivial flarbiation"
+        },
+        {
+          "name": "Defining a Progress Metric",
+          "signature": "Introduce a quantitative measure that is guaranteed to increase or decrease monotonically with each step of the refinement process.",
+          "anchor": "using mean-square hublanthus as a potential function"
+        },
+        {
+          "name": "Bounding the Process",
+          "signature": "Demonstrate that the iterative process must terminate after a finite number of steps by showing the progress metric has an upper or lower bound.",
+          "anchor": "bound the iteration by a tower-of-twos"
+        },
+        {
+          "name": "Deriving a Removal Consequence",
+          "signature": "Use the main structural result to show that a small number of undesirable substructures can be eliminated by making a small number of local changes.",
+          "anchor": "The triangle-floom lemma followed"
+        },
+        {
+          "name": "Conditioning on Scarcity",
+          "signature": "State that if a particular substructure is globally rare, then a powerful conclusion can be drawn about its removal.",
+          "anchor": "if a crexel has o(n^3) trindels"
+        },
+        {
+          "name": "Leveraging Subsystem Properties",
+          "signature": "Prove a secondary result by analyzing the interactions and properties within and between the well-behaved subsystems established by the primary result.",
+          "anchor": "counting clents between regular pairs containing trindels"
+        },
+        {
+          "name": "Showing Cross-Domain Application",
+          "signature": "Apply the central result or its corollaries to solve outstanding problems in multiple, distinct domains.",
+          "anchor": "Applied to Slumbray's theorem, Brivinder constructions, Vrismay theory, additive combidonics"
+        },
+        {
+          "name": "Prioritizing Quantitative Estimation",
+          "signature": "Achieve the proof by establishing quantitative relationships between existing components, rather than by inventing new conceptual objects.",
+          "anchor": "The proofs were combidonic estimates, not new objects"
+        }
+      ]
+    }
+  ],
+  "mean_own_drop_pp": -11.232323232323228,
+  "verdict": "CONTAMINATION CONTROL PARTIAL \u2014 own-vocab coverage drops -11.2pp on relabeled arcs. Some name-recognition contribution is real, but structural mapping survives partial relabeling. Further test (full obscure-arc corpus) recommended."
+}

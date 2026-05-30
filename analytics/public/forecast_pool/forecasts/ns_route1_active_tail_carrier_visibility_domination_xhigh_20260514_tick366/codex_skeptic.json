@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_active_tail_carrier_visibility_domination_xhigh_20260514_tick366",
+  "contract_question": "Can Feynman/xhigh pull forward ActiveTailCarrierVisibilityDomination by proving it, producing a V_A_perp countermodel, or identifying the exact missing topology/submeasure split?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "V_A_perp_not_independent": 0.2,
+    "fresh_frequency_unrelated": 0.12,
+    "requires_real_measure_theory": 0.36,
+    "too_abstract_to_progress": 0.22,
+    "useful_countermodel": 0.1
+  },
+  "forecasted_at": "2026-05-14T13:00:06Z",
+  "p_dependency_issue": 0.55,
+  "p_needs_new_lemma": 0.96,
+  "p_regression": 0.1,
+  "p_success": 0.29,
+  "rationale_short": "Active-carrier domination is a real PDE measure/topology theorem; a same-session sidecar may only identify missing definitions.",
+  "read_only_attestation": true
+}

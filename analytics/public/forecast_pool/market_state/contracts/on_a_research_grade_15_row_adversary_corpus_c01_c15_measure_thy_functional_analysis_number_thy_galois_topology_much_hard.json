@@ -1,0 +1,206 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:34Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 72.0,
+      "expected_value": -0.5157695510152907,
+      "p_success": 0.3049769988055404,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.222
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 72.0,
+    "expected_value": -0.5157695510152907,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.065,
+    "p_needs_new_lemma": 0.1,
+    "p_regression": 0.055,
+    "p_success": 0.3049769988055404,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard/codex.json",
+        "forecasted_at": "2026-05-16T20:12:06Z",
+        "p_success": 0.31,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T20:11:18Z",
+        "p_success": 0.3,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "corpus_hardness_limits_genuine_closures",
+        "p": 0.17
+      },
+      {
+        "mode": "mathlib_or_api_misname_at_pinned_v4_29_0",
+        "p": 0.11
+      },
+      {
+        "mode": "false_ratification_guard_suppresses_apparent_wins",
+        "p": 0.08
+      },
+      {
+        "mode": "hidden_provenance_coupling_or_routing_drift",
+        "p": 0.08
+      },
+      {
+        "mode": "sandbox_pin_or_resolver_artifact_issue",
+        "p": 0.06
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json",
+    "contract": "analytics/public/forecast_pool/contracts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json",
+    "score": "analytics/public/forecast_pool/scores/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 70.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T20:11:18Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "gp233_adversary_yield_decomp.py --result /tmp/adv_verify_C/result.txt",
+    "question": "On a RESEARCH-GRADE 15-row adversary corpus C01-C15 (measure thy/functional analysis/number thy/Galois/topology \u2014 much harder than textbook B), verified through the canonical pinned v4.29.0 sandbox, will genuine novel closures be >=5/15 with 0 false ratifications?",
+    "success_threshold": "0.5",
+    "task_type": "path_a_research_grade_hard_corpus"
+  },
+  "contract_id": "on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 74.0,
+        "forecasted_at": "2026-05-16T20:12:06Z",
+        "p_success": 0.31,
+        "rationale_short": "Research-grade C01-C15 is materially harder than textbook B; 5/15 is reachable but not favored. Main risks are API/name mismatch, false-ratification guard, and corpus hardness rather than a missing resolver path.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 70.0,
+        "forecasted_at": "2026-05-16T20:11:18Z",
+        "p_success": 0.3,
+        "rationale_short": "research-grade is MUCH harder than textbook B(45%); many C-rows need deep Mathlib API (legendreSym/padic/Brouwer/euler-mascheroni) provers often misname at v4.29.0 pin; expect 3-6 genuine, >=5 plausible but not favored; honest near-zero acceptable",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 65.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T20:21:12Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 72.0,
+      "expected_value": -0.5157695510152907,
+      "p_success": 0.3049769988055404,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.222
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 72.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3049769988055404,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "corpus_hardness_limits_genuine_closures",
+        "p": 0.17
+      },
+      {
+        "mode": "mathlib_or_api_misname_at_pinned_v4_29_0",
+        "p": 0.11
+      },
+      {
+        "mode": "false_ratification_guard_suppresses_apparent_wins",
+        "p": 0.08
+      },
+      {
+        "mode": "hidden_provenance_coupling_or_routing_drift",
+        "p": 0.08
+      },
+      {
+        "mode": "sandbox_pin_or_resolver_artifact_issue",
+        "p": 0.06
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09305,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:39:17Z"
+  }
+}

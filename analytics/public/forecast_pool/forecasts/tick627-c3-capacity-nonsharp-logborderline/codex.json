@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick627-c3-capacity-nonsharp-logborderline",
+  "contract_question": "tick627 LEMMA (falsification of the obstruction): at the EXACT C3 (ESS L^inf_t L^3_x) critical scaling the \u03c9-capacity lower bound is the BORDERLINE Riesz-capacity case (p\u00b7s=d), so Cap degrades from a power to a LOGARITHM \u2014 the capacity lower bound the whole killed route-1 program assumed is NON-SHARP at criticality. Closure via this route \u27fa \u03a3_n 1/log(scale_n) summable; for an exact self-similar cascade scale_n~\u03bb^n this is (1/log\u03bb)\u03a31/n = DIVERGENT (=atom in log-capacity vocab) \u2014 BUT summable iff the active-scale count per epoch is bounded (a concrete NEW falsifiable target, not the capacity atom, not previously attempted).",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T02:07:49Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.22,
+  "rationale_short": "ps=d omega-capacity identification for ESS L3 is a major unproved leap; bounded-active-scales 'iff' is wrong (needs harmonic-summable active index set, no precise epoch measure)",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

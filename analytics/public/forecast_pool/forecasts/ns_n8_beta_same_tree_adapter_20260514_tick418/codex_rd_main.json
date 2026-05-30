@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "proceed_minimal",
+  "agent_id": "codex-rd-main",
+  "contract_id": "ns_n8_beta_same_tree_adapter_20260514_tick418",
+  "contract_question": "Will the beta same-tree adapter tick add compiling Lean glue from existing SameTreeNonadaptiveEventIncidenceCarleson and BadCenterBetaSquareCarlesonDrop source objects to the N8 beta reduced frontier, without claiming the same-tree incidence primitive is proved?",
+  "domain": "ns-n8-beta-incidence",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_only_no_source_proof": 0.26,
+    "lean_compile_issue": 0.15,
+    "next_action_unchanged": 0.25,
+    "overclaims_beta_closure": 0.1,
+    "type_mismatch_with_existing_L3": 0.24
+  },
+  "forecast_externality_tags": [
+    "beta-adapter",
+    "reuse-existing-source"
+  ],
+  "forecasted_at": "2026-05-14T21:27:13Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.57,
+  "p_regression": 0.06,
+  "p_success": 0.74,
+  "rationale_short": "The imports already expose same-tree incidence and beta Carleson constructors; a small adapter should compile if it stays boundary-only.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "type_mismatch_with_existing_L3",
+    "adapter_only_no_source_proof",
+    "lean_compile_issue",
+    "overclaims_beta_closure",
+    "next_action_unchanged"
+  ]
+}

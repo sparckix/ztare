@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Run bounded replay; agent-effort estimate aggregates Franklin/Noether spread and accounts for v21.04 wiring overhead beyond the raw replay time.",
+  "agent_id": "ClaudeRD",
+  "contract_id": "gp225_v2103_strict_same_step_candidate_replay_meso_gate",
+  "contract_question": "Can bounded replay of v21.02 add at least one strict same-step heldout label on current_scale_0164 matching the gold intermediate open state, with zero harmful mismatches, no leakage, and no training?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "apply_does_not_unify_at_target": 0.02985074626865672,
+    "auxiliary_overclosure_again_despite_truncation": 0.04975124378109454,
+    "candidate_rank_baseline_saturates_again": 0.019900497512437814,
+    "harmful_compiled_mismatch": 0.01492537313432836,
+    "leakage_or_packet_accounting_gap": 0.009950248756218907,
+    "new_strict_same_step_label_added": 0.6965174129353234,
+    "refine_question_mark_metavariable_mismatch": 0.03482587064676618,
+    "schema_or_timeout_error": 0.02487562189054727,
+    "truncated_candidate_leaves_wrong_open_state": 0.07960199004975126,
+    "withDensity_apply_le_implicit_arg_resolution_fails": 0.03980099502487563
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T22:22:05Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.7,
+  "rationale_short": "RD aggregate of Franklin p=0.62 (empirical, 28min) and Noether p=0.82 (structural, 18min); split the difference but weight slightly toward Franklin given calibration anchor. Effort accounts for replay-bridge wiring plus v21.05 union readiness re-check, not raw Lean compile alone.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

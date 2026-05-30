@@ -1,0 +1,36 @@
+{
+  "tick": "tick668",
+  "target": "L3AFilteredRangeEventPreimageFromLateExclusionSource.toFilteredRangeEventPreimageFromPreimageBoundSource",
+  "pattern_chain": [
+    "Gowers-First-Formalize-Second",
+    "PATTERN-028 recursive tool-depth loop",
+    "PATTERN-011 hard mathematical residual swarm lane"
+  ],
+  "positive_forecast_phrasing": "A successful step should expose the lower live source and keep the filtered finite-prefix support concrete.",
+  "residual_to_check_edges": [
+    {
+      "residual": "filtered final-prefix support still stopped at selectedBadNodePreimage_bound",
+      "check": "derive Level546 source from lateEvent_not_selectedBadNode through the existing Level537-to-Level536 constructor",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    },
+    {
+      "residual": "gate semantics could count advisory weak substitutes as blockers or pass prefix falsey strings",
+      "check": "run gate_semantics_audit over src/ztare/gates with fail-on medium",
+      "artifact": "src/ztare/gates/gate_semantics_audit.py"
+    }
+  ],
+  "anti_pattern_guards": [
+    "no endpoint-capacity-only finite support",
+    "no post-payoff event selection",
+    "no weak-substitute completeness blocking unless promoted to a hard violation",
+    "no prefix falsey matching"
+  ],
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level547_late_exclusion_to_filtered_range_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level547_finite_support_extraction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level547_finite_image_support_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level547_provenance_edge_direction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level547_provenance_acyclic_edge_receipt.json"
+  ]
+}
+

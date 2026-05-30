@@ -1,0 +1,25 @@
+{
+  "agent_id": "helmholtz",
+  "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
+  "contract_question": "Will a bounded LeanHammer smoke benchmark over v19.22 mapped rows run in the external LeanHammer clone without mutating the main project and produce per-row pass/fail/suggestion artifacts?",
+  "domain": "gp225_external_baseline_smoke",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_main_project_mutation_or_heavy_run_boundary_violation": 0.04,
+    "external_clone_invocation_path_or_environment_friction": 0.2,
+    "fewer_than_three_rows_attempted_due_to_mapping_or_timeout": 0.12,
+    "leanhammer_outputs_not_parseable_into_per_row_suggestion_artifacts": 0.16,
+    "mapped_rows_are_medium_or_low_confidence_and_do_not_resolve_to_leanhammer_inputs": 0.24,
+    "other": 0.04,
+    "schema_mismatch_between_gp225_rows_and_external_declaration_names": 0.1,
+    "smoke_runs_but_artifact_records_are_too_thin_for_contract": 0.1
+  },
+  "forecasted_at": "2026-05-13T22:32:07Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.05,
+  "p_success": 0.58,
+  "rationale_short": "Bounded run is plausible because LeanHammer is built, but v19.22 has zero high-confidence mappings. The primary risk is converting medium/low mapping candidates into valid LeanHammer inputs and usable artifacts.",
+  "read_only_attestation": true
+}

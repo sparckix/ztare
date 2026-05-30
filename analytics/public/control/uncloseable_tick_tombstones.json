@@ -1,0 +1,38 @@
+[
+ {
+  "owner": "research_director_claude_opus_4_7",
+  "tick_row": "F-NS-ROUTE1-BKM-FAITHFULNESS-COLDREVIEWED-SPEC-20260517",
+  "event_type": "admin_retire_uncloseable_tick",
+  "reason": "legacy_raw_propose_no_forecast_contract",
+  "rd_lifecycle_valid": false,
+  "counts_as_tick_close": false,
+  "unblocks_next_tick": true,
+  "not_creditable_for": [
+   "micro_forecast",
+   "GP-230",
+   "GP-233",
+   "surfaced_consumption"
+  ],
+  "created_by": "operator_attested",
+  "requires_operator": true,
+  "ts": "2026-05-18T03:29:20+00:00"
+ },
+ {
+  "owner": "claude:RD",
+  "tick_row": "F-NS-TICK638-MEGA-SURFACING-DRIVEN-RC3-MEASUREVALUED-CUT-ALIAS22-C-EIGENQ-KILLED-FALSE-CONCEDED-REAL-20260517",
+  "event_type": "admin_retire_uncloseable_tick",
+  "reason": "pre_lifecycle_bypass_debt",
+  "rd_lifecycle_valid": false,
+  "counts_as_tick_close": false,
+  "unblocks_next_tick": true,
+  "not_creditable_for": [
+   "micro_forecast",
+   "GP-230",
+   "GP-233",
+   "surfaced_consumption"
+  ],
+  "created_by": "operator_attested",
+  "requires_operator": true,
+  "ts": "2026-05-18T15:55:23+00:00"
+ }
+]

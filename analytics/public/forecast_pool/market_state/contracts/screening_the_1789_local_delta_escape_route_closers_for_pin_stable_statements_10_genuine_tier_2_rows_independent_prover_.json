@@ -1,0 +1,212 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:40Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 91.0,
+      "expected_value": -0.5343020601981888,
+      "p_success": 0.49493875270801324,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.36
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 91.0,
+    "expected_value": -0.5343020601981888,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.11499999999999999,
+    "p_needs_new_lemma": 0.11000000000000001,
+    "p_regression": 0.045,
+    "p_success": 0.49493875270801324,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "tier2_mined_corpus_run",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_/codex.json",
+        "forecasted_at": "2026-05-17T02:18:20Z",
+        "p_success": 0.44,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-17T02:17:05Z",
+        "p_success": 0.55,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "insufficient_clean_non_control_closures",
+        "p": 0.14
+      },
+      {
+        "mode": "exact_gap_falsifier_shortfall",
+        "p": 0.12
+      },
+      {
+        "mode": "false_ratify_contamination",
+        "p": 0.09
+      },
+      {
+        "mode": "wrong_kind_capture",
+        "p": 0.08
+      },
+      {
+        "mode": "resolver_or_bundle_drift",
+        "p": 0.07
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json",
+    "contract": "analytics/public/forecast_pool/contracts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json",
+    "score": "analytics/public/forecast_pool/scores/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 130.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T02:17:05Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "screener (statement typechecks in pinned v4.29.0) + bundle_run + tier_scoreboard tier2; consequence-exposure by hand-judgment (organ FLAWED-until-rereview, caveat stated)",
+    "question": "Screening the 1789 local-delta escape-route closers for pin-stable statements -> >=10 genuine Tier-2 rows -> independent prover -> bundle_run through canonical v4.29.0: does it hit the Tier-2 gate (>=2 clean non-control closures OR >=5 exact-gaps/falsifiers, 0 false-ratify, 0 wrong-kind)?",
+    "success_threshold": "0.5",
+    "task_type": "tier2_mined_corpus_run"
+  },
+  "contract_id": "screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "tier2_mined_corpus_run",
+        "expected_cost_agent_minutes": 52.0,
+        "forecasted_at": "2026-05-17T02:18:20Z",
+        "p_success": 0.44,
+        "rationale_short": "Large candidate pool makes a pass plausible, but the gate is brittle: clean non-control closures and exact-gap/falsifier counts can get derailed by row typing, wrong-kind contamination, or resolver/bundle drift before the underlying screening quality is decisive.",
+        "specific_failure_mode_ids": [
+          "insufficient_clean_non_control_closures",
+          "exact_gap_falsifier_shortfall",
+          "false_ratify_contamination",
+          "wrong_kind_capture",
+          "resolver_or_bundle_drift"
+        ]
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 130.0,
+        "forecasted_at": "2026-05-17T02:17:05Z",
+        "p_success": 0.55,
+        "rationale_short": "1789 closers >> enough; main attrition = added lemmas whose STATEMENT needs post-pin vocab (HARNESS-FAIL) \u2014 but a 60-sample of 1789 should yield >=10 pin-stable; gaps-route to gate plausible, genuine-closure uncertain (grounded-iterative not automated); 0-false-ratify caveated (CE hand-judged)",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 70.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": false,
+    "exists": true,
+    "resolved_at": "2026-05-17T02:57:59Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 91.0,
+      "expected_value": -0.5343020601981888,
+      "p_success": 0.49493875270801324,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.36
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 91.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.49493875270801324,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "insufficient_clean_non_control_closures",
+        "p": 0.14
+      },
+      {
+        "mode": "exact_gap_falsifier_shortfall",
+        "p": 0.12
+      },
+      {
+        "mode": "false_ratify_contamination",
+        "p": 0.09
+      },
+      {
+        "mode": "wrong_kind_capture",
+        "p": 0.08
+      },
+      {
+        "mode": "resolver_or_bundle_drift",
+        "p": 0.07
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.24805000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:39:22Z"
+  }
+}

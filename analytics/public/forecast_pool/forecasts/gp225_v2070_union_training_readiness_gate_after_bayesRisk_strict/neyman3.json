@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Emit a distance-to-GNN statement: 15 strict rows, one new strict row, but heldout candidate-policy delta still required.",
+  "agent_id": "Neyman3",
+  "contract_id": "gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict",
+  "contract_question": "After v20.69 raises GP-225 to 15 strict rows with bayesRisk, is the public/internal union ready to unblock any GNN or cross-encoder training?",
+  "domain": "gp225_pre_gnn_union_training_gate",
+  "expected_cost_agent_minutes": 19.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bayesRisk_row_not_in_consumer_count": 0.16,
+    "heldout_delta_overclaimed": 0.31,
+    "manifest_count_mismatch": 0.22,
+    "prior_quarantine_lost": 0.12,
+    "training_boundary_ambiguous": 0.19
+  },
+  "forecast_externality_tags": [
+    "distance_to_gnn",
+    "heldout_delta",
+    "no_training"
+  ],
+  "forecasted_at": "2026-05-14T19:06:57Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.07,
+  "p_regression": 0.06,
+  "p_success": 0.79,
+  "rationale_short": "The gate is likely to pass as a control artifact; it should block training and name the heldout delta as the remaining requirement.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "heldout_delta_overclaimed",
+    "training_boundary_ambiguous"
+  ]
+}

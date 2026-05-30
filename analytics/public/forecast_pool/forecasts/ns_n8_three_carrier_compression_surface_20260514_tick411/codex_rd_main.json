@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "proceed_as_surface_only",
+  "agent_id": "codex-rd-main",
+  "contract_id": "ns_n8_three_carrier_compression_surface_20260514_tick411",
+  "contract_question": "Will the N8 three-carrier compression tick add compiling Lean surfaces that correctly reduce N8 to CKN/radius, pressure/cone, and beta/incidence plus a tri-carrier drop target, without claiming the drop is proved?",
+  "domain": "ns-n8-proof-frontier",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compression_surface_compiles_but_too_abstract": 0.3,
+    "duplicate_n8_guard": 0.1,
+    "lean_compile_issue": 0.15,
+    "tri_carrier_drop_overclaims": 0.25,
+    "unfresh_reuse_not_reducible": 0.2
+  },
+  "forecast_externality_tags": [
+    "n8-compression",
+    "tri-carrier-target",
+    "overclaim-guard"
+  ],
+  "forecasted_at": "2026-05-14T20:15:47Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.1,
+  "p_success": 0.69,
+  "rationale_short": "The Lean surface should compile if kept as a target theorem. The real risk is confusing compression with proof of the tri-carrier drop.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "compression_surface_compiles_but_too_abstract",
+    "tri_carrier_drop_overclaims",
+    "unfresh_reuse_not_reducible",
+    "lean_compile_issue",
+    "duplicate_n8_guard"
+  ]
+}

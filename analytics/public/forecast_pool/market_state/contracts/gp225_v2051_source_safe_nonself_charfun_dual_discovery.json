@@ -1,0 +1,200 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:49:00Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 20.0,
+    "expected_value": 0.3752138082348401,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.060000000000000005,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.025,
+    "p_success": 0.7915862405218668,
+    "participants": [
+      {
+        "agent_id": "Curry2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2051_source_safe_nonself_charfun_dual_discovery/curry2.json",
+        "forecasted_at": "2026-05-14T17:48:56Z",
+        "p_success": 0.82,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Lovelace2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2051_source_safe_nonself_charfun_dual_discovery/lovelace2.json",
+        "forecasted_at": "2026-05-14T17:48:56Z",
+        "p_success": 0.76,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "source_contract_copies_target_proof",
+        "p": 0.315
+      },
+      {
+        "mode": "import_chain_not_verified",
+        "p": 0.275
+      },
+      {
+        "mode": "nonself_source_too_low_level",
+        "p": 0.26
+      },
+      {
+        "mode": "drop_decision_underjustified",
+        "p": 0.15000000000000002
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2051_source_safe_nonself_charfun_dual_discovery.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 24.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:48:42Z",
+    "created_by": "Codex",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Artifact analytics/public/leanmill/results/v2051_source_safe_nonself_charfun_dual_discovery_or_drop_row.json has status passed, cites before-target non-self source availability or explicit drop, replay_run=false, training_now=false, gnn_blocked=true.",
+    "question": "Will v20.51 decide whether current_scale_0329 has a before-target non-self charFunDual source after v20.50, and route either to a source-safe contract or row drop without replay/training?",
+    "success_threshold": "source-safe non-self discovery or drop decision completed",
+    "task_type": "pre_gnn_source_discovery"
+  },
+  "contract_id": "gp225_v2051_source_safe_nonself_charfun_dual_discovery",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Curry2",
+        "raw_agent_ids": [
+          "Curry2"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Lovelace2",
+        "raw_agent_ids": [
+          "Lovelace2"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Curry2",
+      "Lovelace2"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed as static discovery; do not emit replay candidates from target proof lines.",
+        "agent_id": "Curry2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2051_source_safe_nonself_charfun_dual_discovery/curry2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T17:48:56Z",
+        "p_success": 0.82,
+        "rationale_short": "Local source scan already shows Gaussian.Basic non-self charFunDual lemmas imported via HasGaussianLaw.Def; the main risk is source-contract hygiene.",
+        "specific_failure_mode_ids": [
+          "import_chain_not_verified",
+          "source_contract_copies_target_proof"
+        ]
+      },
+      {
+        "action_change_recommendation": "Continue if artifact separates source discovery from candidate generation and forbids target proof line copying.",
+        "agent_id": "Lovelace2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2051_source_safe_nonself_charfun_dual_discovery/lovelace2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T17:48:56Z",
+        "p_success": 0.76,
+        "rationale_short": "Finding a non-self source is likely, but the artifact must not launder the target proof as a candidate.",
+        "specific_failure_mode_ids": [
+          "source_contract_copies_target_proof",
+          "nonself_source_too_low_level"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "Curry2",
+      "Lovelace2"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:50:17Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.3752138082348401,
+      "forecast_spread": 0.06,
+      "p_success": 0.7915862405218668,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.445
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 20.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7915862405218668,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "source_contract_copies_target_proof",
+        "p": 0.315
+      },
+      {
+        "mode": "import_chain_not_verified",
+        "p": 0.275
+      },
+      {
+        "mode": "nonself_source_too_low_level",
+        "p": 0.26
+      },
+      {
+        "mode": "drop_decision_underjustified",
+        "p": 0.15000000000000002
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.04500000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:50:24Z"
+  }
+}

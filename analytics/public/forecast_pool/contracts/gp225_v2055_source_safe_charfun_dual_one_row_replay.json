@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2055_source_safe_charfun_dual_one_row_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2055_source_safe_charfun_dual_one_row_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2055_source_safe_charfun_dual_one_row_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2055_source_safe_charfun_dual_one_row_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2055_source_safe_charfun_dual_one_row_replay.json"
+  },
+  "baseline_action": "Do not run the source-safe packet.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2055_source_safe_charfun_dual_one_row_replay",
+  "cost_penalty": 0.16,
+  "counterfactual_action": "Run a one-row, two-candidate Lean bridge replay.",
+  "created_at": "2026-05-14T18:05:04Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.375,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_lean_replay",
+    "score": 0.5,
+    "selected_domain": "gp225_pre_gnn_replay_gate",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.375,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.3077,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 3,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.1176,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1212,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1212,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "can produce another zero-compile negative"
+    ],
+    "positive": [
+      "first compile signal after source-safety repair",
+      "separates static packet success from verifier yield"
+    ]
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.42,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2055_source_safe_charfun_dual_one_row_replay.json exists, replay_run=true, attempted_candidate_rows>=1, compiled_candidate_actions>=1, harmful_compiled_mismatch_actions=0, training_now=false, gnn_blocked=true. Resolve false if replay runs but compiled_candidate_actions=0 or harmful_compiled_mismatch_actions>0. Void only if replay cannot launch for infrastructure reasons.",
+  "question": "Will v20.55 replay the v20.54 source-safe charFunDual one-row packet and produce at least one compiled candidate with zero harmful mismatches?",
+  "risk_penalty": 0.1,
+  "success_threshold": "1.0",
+  "task_type": "pre_gnn_lean_replay",
+  "value_if_success": 1.15,
+  "void_conditions": "Void only for infrastructure/toolchain launch failure before any candidate is attempted."
+}

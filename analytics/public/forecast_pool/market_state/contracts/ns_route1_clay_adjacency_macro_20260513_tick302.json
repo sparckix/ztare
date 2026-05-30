@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T22:44:54Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 510.0,
+    "expected_value": -2028.623851241645,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.48,
+    "p_needs_new_lemma": 0.75,
+    "p_regression": 0.09,
+    "p_success": 0.3240165287061081,
+    "participants": [
+      {
+        "agent_id": "codex_rd_local_macro",
+        "domain": "NS_route1",
+        "p_success": 0.36,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_independent_macro",
+        "domain": "NS_route1",
+        "p_success": 0.29,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "estimate_requires_new_compactness_or_CZ_lemma",
+        "p": 0.19
+      },
+      {
+        "mode": "pde_estimate_false_or_too_weak",
+        "p": 0.17
+      },
+      {
+        "mode": "other",
+        "p": 0.14
+      },
+      {
+        "mode": "ten_ticks_only_surface_compression",
+        "p": 0.14
+      },
+      {
+        "mode": "wrapper_progress_only",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_clay_adjacency_macro_20260513_tick302.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_clay_adjacency_macro_20260513_tick302.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_clay_adjacency_macro_20260513_tick302.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_clay_adjacency_macro_20260513_tick302.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_clay_adjacency_macro_20260513_tick302.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 420.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T22:44:13Z",
+    "created_by": "codex_rd_ns_20260513",
+    "horizon": "10_ticks",
+    "layer": "macro",
+    "objective_resolver": "Resolve true only if E/F rows show a non-tautological PDE estimate station below route-1 that a human PDE analyst would recognize as Caccioppoli, pressure decomposition, compactness, or no-invisible-profile content; wrapper-only Lean stations resolve false.",
+    "question": "Will the next ten NS route-1 ticks move from compiled proof-surface compression to a genuinely Clay-adjacent PDE estimate with a recognizable Caccioppoli/pressure-decomposition proof route?",
+    "success_threshold": "at least one non-tautological PDE estimate station below route-1 with build-passed Lean consumer and GP-233 lever change",
+    "task_type": "ns_route1_clay_adjacency"
+  },
+  "contract_id": "ns_route1_clay_adjacency_macro_20260513_tick302",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_local_macro",
+        "raw_agent_ids": [
+          "codex_rd_local_macro"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_independent_macro",
+        "raw_agent_ids": [
+          "rawls_independent_macro"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_local_macro",
+      "rawls_independent_macro"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_local_macro",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_adjacency_macro_20260513_tick302/codex_rd_local_macro.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 420.0,
+        "forecasted_at": "2026-05-13T22:44:37Z",
+        "p_success": 0.36,
+        "rationale_short": "We are compressing faster, but a genuine Caccioppoli/pressure-decomposition/no-invisible-profile estimate is still mathematically hard; ten ticks can reach proof vicinity but not guarantee the estimate.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_independent_macro",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_adjacency_macro_20260513_tick302/rawls_independent_macro.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 600.0,
+        "forecasted_at": "2026-05-13T22:44:54Z",
+        "p_success": 0.29,
+        "rationale_short": "Macro Clay-adjacency remains hard: current route is better organized, but the decisive step likely requires a new PDE lemma rather than more Lean assembly.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 510.0,
+      "expected_value": -2028.623851241645,
+      "p_success": 0.3240165287061081,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 9.289
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 510.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.3240165287061081,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "estimate_requires_new_compactness_or_CZ_lemma",
+        "p": 0.19
+      },
+      {
+        "mode": "pde_estimate_false_or_too_weak",
+        "p": 0.17
+      },
+      {
+        "mode": "other",
+        "p": 0.14
+      },
+      {
+        "mode": "ten_ticks_only_surface_compression",
+        "p": 0.14
+      },
+      {
+        "mode": "wrapper_progress_only",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

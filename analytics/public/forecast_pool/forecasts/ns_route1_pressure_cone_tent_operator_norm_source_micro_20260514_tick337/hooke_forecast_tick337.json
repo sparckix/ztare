@@ -1,0 +1,21 @@
+{
+  "agent_id": "hooke_forecast_tick337",
+  "contract_id": "ns_route1_pressure_cone_tent_operator_norm_source_micro_20260514_tick337",
+  "contract_question": "Will we lower pressureRieszConeCharge \u2264 tentExcess into fixed-kernel operator norm plus CKN/tent stress-mass domination and compile the bridge?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 62.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.25,
+    "constant_direction_mismatch": 0.3,
+    "order_or_namespace_issue": 0.2,
+    "source_still_conditional": 0.25
+  },
+  "forecasted_at": "2026-05-14T03:16:26Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.16,
+  "p_success": 0.69,
+  "rationale_short": "This is likely scalar decomposition: cone charge <= kernelNorm*stressMass and kernelNorm*stressMass <= tentExcess; main risk is adding another conditional layer without enough PDE specificity.",
+  "read_only_attestation": true
+}

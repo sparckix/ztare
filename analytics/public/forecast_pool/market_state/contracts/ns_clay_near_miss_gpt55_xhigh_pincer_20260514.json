@@ -1,0 +1,216 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T22:57:01Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 112.5,
+    "expected_value": -90.53809562227472,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.76,
+    "p_needs_new_lemma": 0.97,
+    "p_regression": 0.25,
+    "p_success": 0.39847617510901084,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_proof_frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_near_miss_gpt55_xhigh_pincer_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-14T22:56:56Z",
+        "p_success": 0.46,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "ns_proof_frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_near_miss_gpt55_xhigh_pincer_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T22:56:56Z",
+        "p_success": 0.34,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "ckn_radius_gap_survives",
+        "p": 0.14
+      },
+      {
+        "mode": "repeats_current_map",
+        "p": 0.14
+      },
+      {
+        "mode": "narrative_overclaim",
+        "p": 0.12
+      },
+      {
+        "mode": "flat_radius_no_go_only",
+        "p": 0.11
+      },
+      {
+        "mode": "pressure_coherence_unsourced",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_near_miss_gpt55_xhigh_pincer_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_near_miss_gpt55_xhigh_pincer_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_clay_near_miss_gpt55_xhigh_pincer_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_near_miss_gpt55_xhigh_pincer_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_near_miss_gpt55_xhigh_pincer_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 120.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T22:56:40Z",
+    "created_by": "codex_rd",
+    "horizon": "same session 2026-05-14",
+    "layer": "meso",
+    "objective_resolver": "Resolve true iff the dispatched GPT-5.5 xhigh agent returns a concrete theorem surface, proof route, or decisive obstruction that changes the next RD action beyond the current tick427 frontier; false if it repeats the current map, overclaims closure, or fails to identify a source theorem.",
+    "question": "Will a GPT-5.5 xhigh near-miss pincer attempt produce a concrete next proof move beyond the current frontier: beta audit eligibility, pressure no-invisible/coherence, or flat radius scale reserve, without overclaiming Clay closure?",
+    "success_threshold": "Actionable output: exact theorem fields or no-go with first illegal inference; explicitly handles beta eligibility, pressure rigidity/coherence, and flat radius scale reserve; no claim of full Clay closure without branch proof.",
+    "task_type": "ns_clay_near_miss_xhigh_dispatch"
+  },
+  "contract_id": "ns_clay_near_miss_gpt55_xhigh_pincer_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Dispatch one xhigh agent, but score it as frontier audit, not proof evidence.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_near_miss_gpt55_xhigh_pincer_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_proof_frontier",
+        "expected_cost_agent_minutes": 95.0,
+        "forecasted_at": "2026-05-14T22:56:56Z",
+        "p_success": 0.46,
+        "rationale_short": "High reasoning may clarify the deepest branch, but current evidence says flat radius reserve and pressure rigidity are independent hard nodes. Best likely output is a sharper obstruction, not closure.",
+        "specific_failure_mode_ids": [
+          "repeats_current_map",
+          "flat_radius_no_go_only",
+          "pressure_branch_no_go_only",
+          "overclaim_clay_closure",
+          "useful_beta_eligibility_move",
+          "new_branch_compression"
+        ]
+      },
+      {
+        "action_change_recommendation": "Dispatch only with explicit instruction to kill the idea and name first illegal inference.",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_near_miss_gpt55_xhigh_pincer_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns_proof_frontier",
+        "expected_cost_agent_minutes": 130.0,
+        "forecasted_at": "2026-05-14T22:56:56Z",
+        "p_success": 0.34,
+        "rationale_short": "The likely result is not closure. The value is adversarial: prevent laundering radius or pressure gaps into route-1/beta progress.",
+        "specific_failure_mode_ids": [
+          "narrative_overclaim",
+          "ckn_radius_gap_survives",
+          "pressure_coherence_unsourced",
+          "repeats_beta_map",
+          "actionable_no_go",
+          "actual_new_route"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 45.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T23:01:30Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.12,
+      "p_success": 0.39847617510901084,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "ckn_radius_gap_survives",
+        "p": 0.14
+      },
+      "voi_proxy": 15.3597
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 112.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.39847617510901084,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "ckn_radius_gap_survives",
+        "p": 0.14
+      },
+      {
+        "mode": "repeats_current_map",
+        "p": 0.14
+      },
+      {
+        "mode": "narrative_overclaim",
+        "p": 0.12
+      },
+      {
+        "mode": "flat_radius_no_go_only",
+        "p": 0.11
+      },
+      {
+        "mode": "pressure_coherence_unsourced",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.16360000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T23:01:39Z"
+  }
+}

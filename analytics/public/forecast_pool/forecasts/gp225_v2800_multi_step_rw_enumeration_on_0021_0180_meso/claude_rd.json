@@ -1,0 +1,25 @@
+{
+  "_renamed_from": "claude",
+  "action_change_recommendation": "Run with combinations: rw [A, B], rw [A]; rw [B], simp_rw [A, B] (latter machinery-flagged but worth seeing if it closes literally). Include also rw [A, B, C] 3-chains for 0180 since gold is 3-step. Parallel 8 workers.",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v2800_multi_step_rw_enumeration_on_0021_0180_meso",
+  "contract_question": "Will multi-step rw enumeration on the 2 multi-step-rw moat-surface rows (0021 interior_sInter gold simp_rw [sInter_eq_biInter, interior_iInter], 0180 comp_right_injective gold rw [comp_assoc, self_comp_symm, comp_refl]) close AT LEAST 1 row at moat-grade via  or  chain of non-gold, non-@[simp]/@[fun_prop]/@[grind] tagged candidates from cloud top-32?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_top_32_pairs_after_filter_yield_no_chain": 0.1764705882352941,
+    "gold_chain_is_unique_and_blind_excludes_all_members": 0.3235294117647059,
+    "interior_sInter_gold_uses_simp_rw_not_rw_so_pure_rw_chain_insufficient": 0.2647058823529412,
+    "rw_chain_does_not_close_to_rfl": 0.23529411764705882
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T03:36:48Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.05,
+  "p_success": 0.12,
+  "rationale_short": "Multi-step rw is structurally closer to gold than single-exact, but gold members ARE @[simp]/@[grind] tagged (interior_iInter is @[simp]; comp_assoc is @[simp]). Blind exclusion removes them. Surviving 2-chain pairs unlikely to compose into a goal-closing rewrite.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

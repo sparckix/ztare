@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick625-monotonicity-variational-obstruction.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick625-monotonicity-variational-obstruction.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick625-monotonicity-variational-obstruction",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick625-monotonicity-variational-obstruction.json",
+    "score": "analytics/public/forecast_pool/scores/tick625-monotonicity-variational-obstruction.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick625-monotonicity-variational-obstruction",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T02:02:28Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_closure_directed_tick",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0435,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick625: does the monotonicity-formula route toward 3D-NS closure yield a genuinely-new (non-trichotomy) mechanism, or does it reduce to CKN almost-monotonicity = class(1) with the ADDED structural reason that the remainder is unsigned BECAUSE of skew-transport + nonlocal-pressure (no gradient/variational structure) \u2014 a derived deepening of tick623's missing-object characterization?",
+  "risk_penalty": 1.0,
+  "success_threshold": "a DERIVED verdict: monotonicity route \u2192 class(1) CKN-almost-monotone WITH the variational-obstruction WHY (new content, not a recast), surviving self-Meta-Darwin + independent codex bet; closure-directed (states what non-variational technique closure needs), not pessimism",
+  "task_type": "ns_closure_directed_tick",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

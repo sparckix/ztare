@@ -1,0 +1,128 @@
+{
+  "contract_id": "ns_n8_beta_eligibility_final_reduction_tick428_20260514",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Do not edit Lean while waiting for GPT-5.5 xhigh.",
+      "counterfactual_action": "Only summarize the beta eligibility compression in chat.",
+      "externality_hypotheses": {
+        "negative": [
+          "risk of wrapper proliferation"
+        ],
+        "positive": [
+          "pins current frontier for future cold agents"
+        ],
+        "process": [
+          "uses existing Lean abstractions and avoids PDE overclaim"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "positive",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "positive-frontier-compression",
+        "no-closure-overclaim"
+      ],
+      "negative_externality_tags": [
+        "wrapper-risk-contained-by-guard"
+      ],
+      "new_next_action": "Treat beta as conditionally compressed by eligibility; next attack is beta eligibility source itself or the two remaining carriers: pressure no-invisible/coherence and flat radius scale reserve.",
+      "old_next_action": "Continue treating N8 as flat-radius, pressure, and beta-incidence branches after tick427.",
+      "realized_failure_mode_ids": [
+        "frontier-reduction-only",
+        "pressure-radius-open"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.1274,
+  "mean_log_score": -0.43661562120685415,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "8857041f4b0732f6d32231a33484cc41e5533c7706cc82576c83efc6daa9dbd0",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "lean_pass",
+    "contract_id": "ns_n8_beta_eligibility_final_reduction_tick428_20260514",
+    "counterfactual_value_bucket": "positive",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "positive-frontier-compression",
+      "no-closure-overclaim"
+    ],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 1,
+    "negative_externality_tags": [
+      "wrapper-risk-contained-by-guard"
+    ],
+    "new_next_action": "Treat beta as conditionally compressed by eligibility; next attack is beta eligibility source itself or the two remaining carriers: pressure no-invisible/coherence and flat radius scale reserve.",
+    "old_next_action": "Continue treating N8 as flat-radius, pressure, and beta-incidence branches after tick427.",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "frontier-reduction-only",
+      "pressure-radius-open"
+    ],
+    "resolution_note": "Lean compiled after adding a conditional N8 frontier theorem: beta eligibility compression reduces critical-increment failure to flat-radius scale reserve or pressure visibility/rigidity; guard states this is not closure.",
+    "resolved_at": "2026-05-14T23:01:30Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T23:01:39Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_rd",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 12.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 30.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:58:48Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:59:06Z",
+        "resolved_at": "2026-05-14T23:01:30Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 22.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 40.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:58:48Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:59:06Z",
+        "resolved_at": "2026-05-14T23:01:30Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "experiment": "gp216_cross_distribution_full",
+  "tb_vocab_per_op": {
+    "tb_01": {
+      "on_tb": 5,
+      "on_ps": 1,
+      "tier": "TB-mostly"
+    },
+    "tb_02": {
+      "on_tb": 3,
+      "on_ps": 1,
+      "tier": "TB-mostly"
+    },
+    "tb_03": {
+      "on_tb": 0,
+      "on_ps": 4,
+      "tier": "shared-core"
+    },
+    "tb_04": {
+      "on_tb": 7,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    },
+    "tb_06": {
+      "on_tb": 1,
+      "on_ps": 2,
+      "tier": "shared-core"
+    },
+    "tb_08": {
+      "on_tb": 0,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    },
+    "tb_09": {
+      "on_tb": 1,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    },
+    "tb_11": {
+      "on_tb": 2,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    },
+    "tb_NEW_HOF": {
+      "on_tb": 0,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    },
+    "tb_NEW_POLYA": {
+      "on_tb": 0,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    },
+    "tb_LAK1": {
+      "on_tb": 0,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    },
+    "tb_LAK2": {
+      "on_tb": 0,
+      "on_ps": 0,
+      "tier": "TB-specific"
+    }
+  },
+  "ps_vocab_per_op": {
+    "ps_01": {
+      "on_tb": 2,
+      "on_ps": 7,
+      "tier": "shared-core"
+    },
+    "ps_02": {
+      "on_tb": 0,
+      "on_ps": 11,
+      "tier": "PS-specific"
+    },
+    "ps_03": {
+      "on_tb": 7,
+      "on_ps": 16,
+      "tier": "shared-core"
+    },
+    "ps_04": {
+      "on_tb": 3,
+      "on_ps": 5,
+      "tier": "shared-core"
+    },
+    "ps_05": {
+      "on_tb": 0,
+      "on_ps": 4,
+      "tier": "PS-specific"
+    },
+    "ps_06": {
+      "on_tb": 0,
+      "on_ps": 9,
+      "tier": "PS-specific"
+    }
+  },
+  "two_direction_summary": {
+    "tb_vocab_on_tb_corpus": 58.1,
+    "tb_vocab_on_ps_corpus": 20.7,
+    "ps_vocab_on_tb_corpus": 19.116161616161616,
+    "ps_vocab_on_ps_corpus": 65.89646464646465
+  }
+}

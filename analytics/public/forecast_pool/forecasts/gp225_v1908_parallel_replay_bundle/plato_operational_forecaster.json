@@ -1,0 +1,24 @@
+{
+  "agent_id": "plato_operational_forecaster",
+  "contract_id": "gp225_v1908_parallel_replay_bundle",
+  "contract_question": "Will the next GP-225 parallel replay bundle over the v19.07 PDE+functional shard and v19.06 non-PDE variety shard complete cleanly, keep false accepts at zero, and produce at least one validated high-density holdout shard while keeping GNN blocked?",
+  "domain": "gp225_parallel_replay",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "non_pde_lane_density_low_but_not_decisive": 0.08,
+    "one_or_both_lanes_clean_replay_rows_below_90": 0.24,
+    "other": 0.03,
+    "pde_functional_density_below_0_50": 0.3,
+    "runner_or_manifest_integration_issue": 0.07,
+    "selected_true_false_accept_or_post_quarantine_false_accept": 0.1,
+    "worker_contention_or_timeout": 0.18
+  },
+  "forecasted_at": "2026-05-13T20:57:59Z",
+  "p_dependency_issue": 0.26,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.12,
+  "p_success": 0.34,
+  "rationale_short": "Both lanes are independent and static-ready; use capped parallel, but density and clean replay thresholds remain fragile under broader PDE+functional selection.",
+  "read_only_attestation": true
+}

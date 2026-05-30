@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T02:09:36Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": 0.39270164242195427,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.8102016424219542,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick628-noreuse-budget-discharged/claude_rd.json",
+        "forecasted_at": "2026-05-17T02:09:36Z",
+        "p_success": 0.8,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick628-noreuse-budget-discharged/codex.json",
+        "forecasted_at": "2026-05-17T02:09:36Z",
+        "p_success": 0.82,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick628-noreuse-budget-discharged.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick628-noreuse-budget-discharged.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick628-noreuse-budget-discharged.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick628-noreuse-budget-discharged.json",
+    "score": "analytics/public/forecast_pool/scores/tick628-noreuse-budget-discharged.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T02:08:49Z",
+    "created_by": "claude:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "manual_rd",
+    "question": "tick628 LEMMA (composing on the precheck-surfaced endpoint, NOT a new recast): the VorticityCapacityNoReuseBudget half of the Cap_omega separator dichotomy is dischargeable by a real bounded-overlap estimate Sum_j Cap_omega(Q_j) <= N^2 * nu ||omega||_{L2}^2 (Vitali family, |grad phi_j|<=1/r_Qj, bounded overlap N) \u2014 is this estimate CORRECT, and is it honestly framed as CONDITIONAL on enstrophy (= the known supercritical hard core, manifest:180), NOT as progress/closure?",
+    "success_threshold": "the bounded-overlap estimate is correct AND honestly conditional-on-enstrophy (cleanly isolates the genuinely-hard CapacityOrExistingChannel dichotomy, discharges only the standard-shaped half) \u2014 survives codex adversarial-kill of the ESTIMATE and the AP-014/laundering check",
+    "task_type": "ns_closure_pde_lemma"
+  },
+  "contract_id": "tick628-noreuse-budget-discharged",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick628-noreuse-budget-discharged/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T02:09:36Z",
+        "p_success": 0.8,
+        "rationale_short": "elementary bounded-overlap estimate, codex-confirmed correct; sharpening folded (constant N, overlap on cutoff dilates); honestly conditional-on-enstrophy, cleanly isolates the hard CapacityOrExistingChannel dichotomy; first real composed PDE estimate this run that survived",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick628-noreuse-budget-discharged/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T02:09:36Z",
+        "p_success": 0.82,
+        "rationale_short": "estimate correct (sharpen N^2->N; overlap on cutoff dilates, Vitali-dim constant); framing honest non-laundered: not closure/gain, only prevents separator-reuse supercritical loss if limitation explicit",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T02:09:36Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.39270164242195427,
+      "forecast_spread": 0.02,
+      "p_success": 0.8102016424219542,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.1738
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8102016424219542,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.036199999999999996,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:52Z"
+  }
+}

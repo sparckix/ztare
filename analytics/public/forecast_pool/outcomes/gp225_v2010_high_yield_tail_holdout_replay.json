@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 7.0,
+  "artifact_hash": "7fac8dbd97c44363e5f0a5046b7ec2ec96f2229e452ef1f7652becf8ab5595c3",
+  "artifact_path": "analytics/public/leanmill/results/v2010_high_yield_tail_holdout_replay.json",
+  "compile_status": "replay_completed_tail_holdout_strict_win",
+  "contract_id": "gp225_v2010_high_yield_tail_holdout_replay",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Replay attempted 6 candidates across 2 frozen tail-holdout source-safe rows. compiled_candidate_actions=1, fresh primary strict rows=1, auxiliary pull-forward actions=0, harmful mismatches=0, source-policy flags clean, training_now=false, gnn_blocked=true. Contract resolved true on current_scale_0017/isInitial_one.",
+  "resolved_at": "2026-05-14T12:47:44Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

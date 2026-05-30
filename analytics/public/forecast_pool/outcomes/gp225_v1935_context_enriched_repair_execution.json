@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 8.0,
+  "artifact_hash": "ae1c6d28491411bdc1ce0ab3f34e608395beed3be2b19e902055568318072175",
+  "artifact_path": "analytics/public/leanmill/results/v1935_context_enriched_repair_execution.json",
+  "compile_status": "partial_compiled_candidates",
+  "contract_id": "gp225_v1935_context_enriched_repair_execution",
+  "error_type": "context_templates_insufficient_without_named_local_lemma_mining",
+  "goal_delta": 0,
+  "resolution_note": "v19.35 attempted 5 context-enriched primary rows with 15 candidate templates. Metrics: strict_or_pull_forward_rows=1, harmful_compiled_mismatch_rows=0, teacher_oracle_candidates_excluded_from_primary=true, training_now=false, gnn_blocked=true. The micro contract failed; next lever is source-indexed local lemma mining or teacher/oracle mining under separate label.",
+  "resolved_at": "2026-05-13T23:37:07Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

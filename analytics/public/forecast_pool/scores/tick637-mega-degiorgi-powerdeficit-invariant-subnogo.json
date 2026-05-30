@@ -1,0 +1,92 @@
+{
+  "contract_id": "tick637-mega-degiorgi-powerdeficit-invariant-subnogo",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.0842,
+  "mean_log_score": -0.34258950545538425,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick637-mega-degiorgi-powerdeficit-invariant-subnogo",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "FALSE (honest, conceded to codex). My v=|\u03c9|^{(p+1)/2} 'CZ degree-0 \u21d2 source scales like any v \u21d2 p-invariant' derivation was ERRONEOUS: CZ is degree-0 in space but LINEAR in \u03c9, so S scales like \u03c9 (not like the renormalized power v); the source homogeneity was off-by-one (\u03a6 vs \u03a6'). The contract required the invariance argument to be correct \u2014 it was not. CORRECTED SALVAGE (codex-supplied, the honest takeaway): stretching is always exactly ONE extra unrenormalized \u03c9-factor beyond the tested energy density \u21d2 in v-variables a p-dependent L^q demand whose critical point is the CRITICAL VORTICITY EXPONENT L^{3/2}; NO scalar renormalization \u03a6(|\u03c9|) (power, log, exponential) moves the demand off-critical (logs don't change the scaling class; exponentials worsen high-amplitude); the ONLY thing that could rebalance the cubic stretching is \u03be-anisotropic/alignment structure = the separate, open C5/C7 geometric route \u2014 NOT a scalar test-function fix. Net honest: the De-Giorgi-vorticity scalar-renormalization sub-route is stuck at L^{3/2}; the live lever remains C5/C7 alignment (already the documented open node). NOT laundered, NOT inflated \u2014 conceded error + codex-corrected sharp statement.",
+    "resolved_at": "2026-05-17T12:33:33Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:56Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "claude:RD",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.28,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T12:31:13Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T12:33:33Z",
+        "resolved_at": "2026-05-17T12:33:33Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "codex",
+      "brier": 0.09,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.35667494393873245,
+      "p_success": 0.3,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T12:31:13Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T12:33:33Z",
+        "resolved_at": "2026-05-17T12:33:33Z"
+      }
+    }
+  ]
+}

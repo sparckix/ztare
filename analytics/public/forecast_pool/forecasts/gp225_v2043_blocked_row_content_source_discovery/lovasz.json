@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Proceed only if the packet makes replay predicates and source names explicit per row.",
+  "agent_id": "Lovasz",
+  "contract_id": "gp225_v2043_blocked_row_content_source_discovery",
+  "contract_question": "Will v20.43 emit a no-replay blocked-row content source-discovery packet that names concrete non-timeout source contracts for the v20.42 selected rows and keeps replay/training blocked?",
+  "domain": "gp225_pre_gnn_source_discovery",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_schema_mismatch": 0.10526315789473684,
+    "elliptic_or_probability_rows_underresolved": 0.2894736842105263,
+    "non_timeout_candidate_family_not_checkable": 0.23684210526315788,
+    "source_contracts_too_abstract": 0.368421052631579
+  },
+  "forecast_externality_tags": [
+    "candidate_content_bottleneck",
+    "row_level_contracts",
+    "no_training_credit"
+  ],
+  "forecasted_at": "2026-05-14T17:21:08Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.07,
+  "p_regression": 0.04,
+  "p_success": 0.66,
+  "rationale_short": "Five-row static packet is feasible, but the harder rows can easily become prose unless each row has a checkable non-timeout family.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "source_contracts_too_abstract",
+    "non_timeout_candidate_family_not_checkable"
+  ]
+}

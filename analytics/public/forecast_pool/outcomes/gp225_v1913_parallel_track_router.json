@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 5.0,
+  "artifact_hash": "5d7cbbb35819be01fe72eb007dea8d5c94cf1fdca957b44b493a797329be17af",
+  "artifact_path": "analytics/public/leanmill/results/v1913_parallel_track_router.json",
+  "compile_status": null,
+  "contract_id": "gp225_v1913_parallel_track_router",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "v19.13 static router passed and PL identifier was corrected to PL-GP225-1913 after detecting concurrent numeric PL collision; three concrete next tracks, thresholds, effort estimates, GP-233 decomposition block, training_now=false, gnn_blocked=true.",
+  "resolved_at": "2026-05-13T21:58:27Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

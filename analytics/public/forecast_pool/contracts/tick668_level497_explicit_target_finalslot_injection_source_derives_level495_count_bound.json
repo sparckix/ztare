@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json"
+  },
+  "baseline_action": "continue searching directly for an incidence-derived Nat inequality",
+  "budget_agent_minutes": 120.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "tick668_level496_target_count_bound_refute",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound",
+  "cost_penalty": 0.18,
+  "counterfactual_action": "split the count theorem into explicit finite injection provenance before trying to derive that injection from incidence",
+  "created_at": "2026-05-27T03:02:15Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.129,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "construct",
+    "score": 0.129,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.129,
+        "domain": "gp230_forecast_pool_infrastructure",
+        "expected_cost_agent_minutes_prior": 49.0,
+        "sample_limited": true,
+        "score": 0.129,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0417,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.0345,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0256,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0256,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "could still be another socket if no actual incidence construction follows",
+    "positive": "turns the C5-adjacent count debt into a concrete map/injectivity source law"
+  },
+  "horizon": "2026-05-27T08:00:00Z",
+  "information_value": 0.82,
+  "layer": "meso",
+  "objective_resolver": "checked Lean source plus target-indexed assignment gate and PDE workbench receipts",
+  "question": "TICK668 Level497: construct an explicit target-prefix to final-slot injection source that derives the Level495 target-count final-slot bound and composes to the canonical eventData assignment",
+  "risk_penalty": 0.24,
+  "success_threshold": "TRUE iff Lean compiles a general source deriving targetPrefixCount finalSlot <= finalSlot from an explicit injective Fin target -> Fin finalSlot map and feeds the Level495 canonical assignment without endpoint restatement",
+  "task_type": "construct",
+  "value_if_success": 0.68,
+  "void_conditions": "void if no Lean/gate/workbench artifact is attempted"
+}

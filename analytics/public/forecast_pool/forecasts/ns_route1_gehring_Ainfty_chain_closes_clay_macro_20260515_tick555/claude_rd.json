@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_gehring_Ainfty_chain_closes_clay_macro_20260515_tick555",
+  "contract_question": "tick555 assembles a gate-bound candidate Clay-closure chain (narrow Track-B route-1): GPT-5.5 P1 Young-Bernstein (PROOF_ROUTE) \u2192 [OPEN: same-cube reverse-Holder structure, gate C*(q-1)<gehringThreshold] \u2192 Gehring self-improvement \u2192 A_inf weight \u2192 weighted-Vitali beta>0 \u2192 tick554 \u2192 tick458 disjoint radius-packing \u2192 tick551 freshness \u2192 closure. Every link proved-Lean or cited-textbook except the gated open link. Does the GPT-5.5 P1 bound, reorganized over the same cube (plausibly via a Caccioppoli + Sobolev-Poincare precondition), satisfy the reverse-Holder pass-gate \u2014 closing Clay route-1 \u2014 or is it only a cross-quantity bound (Gehring inapplicable; tick554 beta=0 flux-anti-aligned residual)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T23:52:31Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.03,
+  "p_success": 0.26,
+  "rationale_short": "Strongest honest state: full gate-bound chain, all links proved-Lean or textbook (Gehring/A-inf-Vitali), Tier-3-validated PASS 2/3 after MD-fix. Open link sharpens to Caccioppoli+Sobolev-Poincare for the positive same-carrier flux \u2014 the most classical PDE precondition for Gehring. p_success 0.26 (macro Clay-adjacency): Caccioppoli for a POSITIVE-PART localized flux (not the velocity) is non-standard \u2014 the positive part is not a weak solution, so the classical Caccioppoli route may not apply directly; that is the genuine 20-page open. p_needs_new_lemma 0.78.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

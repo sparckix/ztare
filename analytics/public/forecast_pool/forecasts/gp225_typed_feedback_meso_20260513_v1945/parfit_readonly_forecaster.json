@@ -1,0 +1,21 @@
+{
+  "agent_id": "parfit_readonly_forecaster",
+  "contract_id": "gp225_typed_feedback_meso_20260513_v1945",
+  "contract_question": "Typed elaborator feedback produces at least 2 compiled candidates with zero harmful compiled mismatches within the next 2 executable GP-225 ticks",
+  "domain": "gp225_typed_feedback",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "filters_too_many": 0.24,
+    "namespace_typeclass_stuck": 0.26,
+    "rewrite_syntax_only": 0.2,
+    "row_specific_hypotheses_missing": 0.3
+  },
+  "forecasted_at": "2026-05-14T00:28:11Z",
+  "p_dependency_issue": 0.4,
+  "p_needs_new_lemma": 0.46,
+  "p_regression": 0.09,
+  "p_success": 0.44,
+  "rationale_short": "Useful failure taxonomy and only a >=2 compiled target, but typed argument synthesis is still the bottleneck.",
+  "read_only_attestation": true
+}

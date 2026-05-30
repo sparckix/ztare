@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "Attack same-carrier tail control with proof and no-go agents before adding a positive Lean source.",
+  "agent_id": "codex_rd_tick403",
+  "contract_id": "ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+  "contract_question": "Will a 3-agent swarm plus local work produce a usable proof route or decisive no-go for same-carrier tail control X_tail <= C_A * activeTail in route 1?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 75.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "activeTail_too_narrow_for_Xtail": 0.26,
+    "lean_surface_friction": 0.08,
+    "proof_route_only_conditional": 0.12,
+    "route_tail_raw_energy_countermodel": 0.14,
+    "same_carrier_definition_missing": 0.23,
+    "tautological_tail_control": 0.17
+  },
+  "forecast_externality_tags": [
+    "swarm_dispatch",
+    "failure_mode_preconditioner",
+    "same_carrier_guard",
+    "ns_route1"
+  ],
+  "forecasted_at": "2026-05-14T18:53:23Z",
+  "p_dependency_issue": 0.62,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.08,
+  "p_success": 0.46,
+  "rationale_short": "This is the central remaining adapter after prefix strictness. It is likely to need a new same-carrier definition or produce a no-go if X_tail is broader than active local-energy tail.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "activeTail_too_narrow_for_Xtail",
+    "same_carrier_definition_missing",
+    "tautological_tail_control"
+  ]
+}

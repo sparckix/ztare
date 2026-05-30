@@ -1,0 +1,39 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "04b1530835153b97a3f356d5868e60d86541815f4f865694364fc1149fb9bd05",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd_event_bridge",
+    "codex_rd_reuse_skeptic"
+  ],
+  "compile_status": "passed",
+  "contract_id": "ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "gowers_style_replacement_carrier",
+    "carrier_conversion_guard",
+    "graph_basin_connection"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no_unconditional_route_closure",
+    "new_pde_lemma_required"
+  ],
+  "new_next_action": "prove or falsify FrequencyLocalizedDuhamelLineageReservoirEstimate, especially activeTailPaidByCaloricDissipation and caloricDissipationPaidByReserveDropPlusRecharge",
+  "old_next_action": "prove abstract LineageFreshMonotoneReservoirSource directly",
+  "preconditioner_effect": "Replaced abstract lineage reservoir target with concrete frequency-localized caloric/Duhamel reserve estimate; avoided claiming same-tree fanout closure.",
+  "preconditioner_source": "GPT5.5 Gowers-style closure attempt plus local event-recurrence/L3 declaration scan",
+  "realized_failure_mode_ids": [
+    "event_price_not_omega_reserve",
+    "lineage_reservoir_missing_theorem",
+    "caloric_reserve_source_needed"
+  ],
+  "resolution_note": "Encoded the GPT5.5/Gowers-style replacement object as FrequencyLocalizedDuhamelLineageReservoirEstimate under LineageFreshMonotoneReservoirSource. The surface names the concrete carrier conversion: active tail -> caloric dissipation -> reserve drop plus Duhamel recharge/cutoff error -> event ledger/residual channels. Added guard SameTreeFanoutDoesNotSourceFrequencyDuhamelReservoir to block closure from same-tree incidence/bounded fanout alone.",
+  "resolved_at": "2026-05-14T15:35:56Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

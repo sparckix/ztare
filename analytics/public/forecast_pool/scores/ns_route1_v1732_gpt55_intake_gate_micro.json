@@ -1,0 +1,33 @@
+{
+  "contract_id": "ns_route1_v1732_gpt55_intake_gate_micro",
+  "mean_brier": 0.0144,
+  "mean_log_score": -0.12783337150988489,
+  "outcome": {
+    "actual_cost_agent_minutes": 6.0,
+    "artifact_hash": "b3aba3ddb6b8796f7593ec83e9381fcb0c1a44d840c086e927fe485a8b92765d",
+    "artifact_path": "analytics/public/leanmill/results/v1732_ns_route1_gpt55_intake_gate.json",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_v1732_gpt55_intake_gate_micro",
+    "error_type": null,
+    "goal_delta": 0,
+    "resolution_note": "Built executable GPT-5.5 response intake gate for route-1: binds rewritten Gowers prompt to v17.30/v17.31 evidence and rejects tautological restatements unless the response supplies a PDE object, proof skeleton, or obstruction.",
+    "resolved_at": "2026-05-13T18:34:25Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T18:34:27Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 6.0,
+      "agent_id": "codex_rd_ns_route1_intake_gate",
+      "brier": 0.0144,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "ns_live_scalar_hinge",
+      "expected_cost_agent_minutes": 8.0,
+      "log_score": -0.12783337150988489,
+      "p_success": 0.88,
+      "success_bool": true
+    }
+  ]
+}

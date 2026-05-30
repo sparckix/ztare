@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:51:20Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 72.5,
+    "expected_value": 5.7756822457689285,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.375,
+    "p_needs_new_lemma": 0.625,
+    "p_regression": 0.045,
+    "p_success": 0.5451137076281548,
+    "participants": [
+      {
+        "agent_id": "gibbs_market_B",
+        "domain": "ns_route1_pde",
+        "p_success": 0.52,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "herschel_market_A",
+        "domain": "ns_route1_pde",
+        "p_success": 0.57,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "rediscovers_existing_cancellation_warning",
+        "p": 0.12
+      },
+      {
+        "mode": "restates_existing_guard",
+        "p": 0.12
+      },
+      {
+        "mode": "scalar_toy_not_pde_realizable",
+        "p": 0.105
+      },
+      {
+        "mode": "abstract_countermodel",
+        "p": 0.095
+      },
+      {
+        "mode": "hypothesis_too_strong",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 31.5,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:50:29Z",
+    "created_by": "codex:RD",
+    "horizon": "one No-Go dispatch",
+    "layer": "micro",
+    "objective_resolver": "Resolve true if the No-Go result gives a concrete counter-model or missing condition that blocks projectedKernelMoment_eq_totalAngularMoment or carrier-to-abs-kernel equality under current hypotheses.",
+    "question": "Will the No-Go analysis find a genuine counter-model or missing hypothesis for same-scale sheath cancellation in the pressure/Riesz angular formula branch?",
+    "success_threshold": "specific obstruction with named defeated equality or required extra hypothesis",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gibbs_market_B",
+        "raw_agent_ids": [
+          "gibbs_market_B"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:herschel_market_A",
+        "raw_agent_ids": [
+          "herschel_market_A"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gibbs_market_B",
+      "herschel_market_A"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gibbs_market_B",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321/gibbs_market_b.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-14T00:51:10Z",
+        "p_success": 0.52,
+        "rationale_short": "A missing hypothesis is more likely than a PDE-shaped countermodel; same-scale cancellation is known but may only be scalar unless tightened.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "herschel_market_A",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_sheath_cancellation_countermodel_micro_20260514_tick321/herschel_market_a.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T00:51:10Z",
+        "p_success": 0.57,
+        "rationale_short": "Known same-scale cancellation mechanism is likely to produce a genuine missing hypothesis for the projected angular formula.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T00:56:55Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.05,
+      "p_success": 0.5451137076281548,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "rediscovers_existing_cancellation_warning",
+        "p": 0.12
+      },
+      "voi_proxy": 4.298
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 72.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5451137076281548,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "rediscovers_existing_cancellation_warning",
+        "p": 0.12
+      },
+      {
+        "mode": "restates_existing_guard",
+        "p": 0.12
+      },
+      {
+        "mode": "scalar_toy_not_pde_realizable",
+        "p": 0.105
+      },
+      {
+        "mode": "abstract_countermodel",
+        "p": 0.095
+      },
+      {
+        "mode": "hypothesis_too_strong",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.20765,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T00:56:55Z"
+  }
+}

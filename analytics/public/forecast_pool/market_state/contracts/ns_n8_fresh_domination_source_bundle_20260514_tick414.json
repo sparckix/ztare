@@ -1,0 +1,209 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T20:27:29Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 19.0,
+    "expected_value": -0.24109560431067228,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.31,
+    "p_needs_new_lemma": 0.53,
+    "p_regression": 0.08,
+    "p_success": 0.7483479856310927,
+    "participants": [
+      {
+        "agent_id": "codex-meta-darwin-proxy",
+        "belief_update": false,
+        "domain": "ns-proof-falsification",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_fresh_domination_source_bundle_20260514_tick414/codex_meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T20:27:29Z",
+        "p_success": 0.66,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex-rd-main",
+        "belief_update": false,
+        "domain": "ns-n8-component-sources",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_fresh_domination_source_bundle_20260514_tick414/codex_rd_main.json",
+        "forecasted_at": "2026-05-14T20:27:29Z",
+        "p_success": 0.82,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "bundle_is_names_not_sources",
+        "p": 0.175
+      },
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.16499999999999998
+      },
+      {
+        "mode": "does_not_change_next_action",
+        "p": 0.15
+      },
+      {
+        "mode": "too_abstract",
+        "p": 0.15
+      },
+      {
+        "mode": "pressure_beta_sources_still_missing",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_fresh_domination_source_bundle_20260514_tick414.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_fresh_domination_source_bundle_20260514_tick414.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_fresh_domination_source_bundle_20260514_tick414.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_fresh_domination_source_bundle_20260514_tick414.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_fresh_domination_source_bundle_20260514_tick414.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T20:27:14Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles, no sorry/admit is introduced, and the surface explicitly names radius-scale, pre-summed pressure, beta incidence, no-double-counting, and nonadaptive corona fresh-overlap sources.",
+    "question": "Will the component-estimate source-bundle tick add a compiling Lean surface that names the required sources for TriCarrierFreshDomination without adding a closure claim?",
+    "success_threshold": "Lean compile plus source bundle names the five gates",
+    "task_type": "ns-proof-frontier-source-bundle"
+  },
+  "contract_id": "ns_n8_fresh_domination_source_bundle_20260514_tick414",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex-rd-main"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex-meta-darwin-proxy",
+        "raw_agent_ids": [
+          "codex-meta-darwin-proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex-meta-darwin-proxy",
+      "codex-rd-main"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "proceed_only_if_logged_as_guard",
+        "agent_id": "codex-meta-darwin-proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_fresh_domination_source_bundle_20260514_tick414/codex_meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns-proof-falsification",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T20:27:29Z",
+        "p_success": 0.66,
+        "rationale_short": "This can prevent tautology, but it should be scored as naming missing source theorems, not progress on them.",
+        "specific_failure_mode_ids": [
+          "bundle_is_names_not_sources",
+          "radius_source_still_false",
+          "pressure_beta_sources_still_missing",
+          "lean_compile_issue"
+        ]
+      },
+      {
+        "action_change_recommendation": "proceed_once",
+        "agent_id": "codex-rd-main",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_fresh_domination_source_bundle_20260514_tick414/codex_rd_main.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns-n8-component-sources",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T20:27:29Z",
+        "p_success": 0.82,
+        "rationale_short": "A small source-bundle surface should compile and prevent local fresh domination from being used as an opaque theorem. It remains guard work.",
+        "specific_failure_mode_ids": [
+          "lean_compile_issue",
+          "source_bundle_duplicate",
+          "too_abstract",
+          "does_not_change_next_action"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T20:28:41Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 19.0,
+      "expected_value": -0.24109560431067228,
+      "p_success": 0.7483479856310927,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.6483
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 19.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7483479856310927,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "bundle_is_names_not_sources",
+        "p": 0.175
+      },
+      {
+        "mode": "lean_compile_issue",
+        "p": 0.16499999999999998
+      },
+      {
+        "mode": "does_not_change_next_action",
+        "p": 0.15
+      },
+      {
+        "mode": "too_abstract",
+        "p": 0.15
+      },
+      {
+        "mode": "pressure_beta_sources_still_missing",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.074,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T20:29:01Z"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json",
+    "contract": "analytics/public/forecast_pool/contracts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro",
+    "outcome": "analytics/public/forecast_pool/outcomes/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json",
+    "score": "analytics/public/forecast_pool/scores/scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 75.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T21:32:27Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0889,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "scale_grounded_iterative_remaining_cgaps",
+    "score": 0.0889,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0889,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0889,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.05,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.05,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.04,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.04,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0385,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0385,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0357,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.0357,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "verify 6 grounded-iterative proofs through canonical v4.29.0 + exact?; C08/C13 outcome classifies reasoning-ceiling vs grounding",
+  "question": "Scaling the validated grounded-iterative lever across the 6 remaining C-gaps (C02,C04,C05,C14 retrieval-class + C08,C13 prover-called-genuine-construction): will >=4/6 close GENUINE in canonical v4.29.0, and will C08/C13 reveal whether a TRUE reasoning ceiling exists or also fall to grounding?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "scale_grounded_iterative_remaining_cgaps",
+  "value_if_success": 0.9,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

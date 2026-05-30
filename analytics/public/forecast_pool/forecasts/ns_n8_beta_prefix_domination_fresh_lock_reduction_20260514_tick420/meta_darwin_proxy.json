@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed only if the patch names the fresh-packet theorem as the next hard node.",
+  "agent_id": "meta-darwin-proxy",
+  "contract_id": "ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420",
+  "contract_question": "Will tick420 add a compiling Lean surface reducing the N8 beta cofinal prefix-domination gap to the existing FreshFrequencyEventSameTreeLock / SameTreePrefixDominationPrimitive stack, while preserving the warning that the fresh-packet subprimitives remain unproved?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 31.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "fresh_lock_as_decorative_wrapper": 0.25,
+    "overclaim": 0.15,
+    "signature_friction": 0.17,
+    "subprimitive_coherence_missing": 0.18,
+    "tautological_prefix_prop": 0.25
+  },
+  "forecast_externality_tags": [
+    "darwin_guard",
+    "cofinality_gap",
+    "fresh_packet_risk"
+  ],
+  "forecasted_at": "2026-05-14T21:47:23Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.18,
+  "p_success": 0.58,
+  "rationale_short": "Useful if it makes the raw hPrefixDomination impossible to miss; harmful if it repackages it as a decorative lock.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "prefix_domination_from_subprimitives_unproved",
+    "coherence_guard_missing",
+    "badness_does_not_create_fresh_event"
+  ]
+}

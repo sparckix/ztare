@@ -1,0 +1,25 @@
+{
+  "agent_id": "helmholtz",
+  "contract_id": "gp225_v1919_external_baseline_bootstrap",
+  "contract_question": "Will GP-225 external baseline bootstrap clone/inspect LeanHammer and ReProver plus prepare a safe install/run plan without mutating the Lean project or launching heavy training?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "REAL_Prover_availability_or_identity_unclear": 0.08,
+    "accidental_heavy_training_or_project_mutation": 0.04,
+    "benchmark_repo_install_instructions_are_stale_or_heavy": 0.18,
+    "install_plan_too_generic_to_count_as_safe_run_plan": 0.14,
+    "network_or_git_clone_failure": 0.22,
+    "only_one_repo_cloned_or_inspectable_within_budget": 0.14,
+    "other": 0.08,
+    "schema_mapping_bottleneck_not_named_sharply_from_v1918_exact_coverage_zero": 0.12
+  },
+  "forecasted_at": "2026-05-13T22:14:12Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.62,
+  "rationale_short": "Likely if kept to clone/inspect plus static install planning; main risks are dependency/network friction and heavy install paths. Schema mapping from v19.18 remains the benchmark bottleneck.",
+  "read_only_attestation": true
+}

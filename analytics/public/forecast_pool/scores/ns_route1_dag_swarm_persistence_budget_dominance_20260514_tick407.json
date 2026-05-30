@@ -1,0 +1,141 @@
+{
+  "contract_id": "ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue local N1 persistence work only",
+      "counterfactual_action": "parallel DAG swarm on N1/N2/N7 plus Darwin pressure and local integration",
+      "externality_hypotheses": {
+        "darwin_pressure": "may prevent persistence/schedule wrappers from being mistaken for proof",
+        "parallel_dag": "may expose upstream branch gap sooner than sequential Lean work"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "rd_codex",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "gp-233:positive:dag-swarm-next-nodes",
+        "gowers-first-dag",
+        "sidecar-reuse",
+        "darwin-pressure"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "persistence-unproved",
+        "schedule-budget-unproved",
+        "branch-dominance-open"
+      ],
+      "new_next_action": "attack FixedCutoffAnnularPacketEnergyPersistenceSource first, then LineageScheduleAggregateBudgetSource and branch dominance",
+      "old_next_action": "continue local N1 persistence work only",
+      "preconditioner_effect": "Prevented stopping at route1 wrapper; identified N1 fixed-cutoff annular packet persistence, N2 aggregate schedule budget, and N7 branch dominance as the next proof nodes.",
+      "preconditioner_source": "orchestration menu PATTERN-025 dependency DAG, GP-230 forecasts, reused sidecar swarm, Darwin pressure",
+      "realized_failure_mode_ids": [
+        "n1_persistence_missing_side_condition",
+        "n2_schedule_budget_reuse_gap",
+        "n7_branch_dominance_open"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.12259999999999999,
+  "mean_log_score": -0.43090127329504263,
+  "outcome": {
+    "actual_cost_agent_minutes": 68.0,
+    "artifact_hash": "1d2d27b417cb764cf9ee6bee0f7278acb15f10129315192b56035d64970216c3",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/route1_dag_swarm_integrated_report_20260514.md",
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "compile_status": "lean_pass",
+    "contract_id": "ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "gp-233:positive:dag-swarm-next-nodes",
+      "gowers-first-dag",
+      "sidecar-reuse",
+      "darwin-pressure"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "persistence-unproved",
+      "schedule-budget-unproved",
+      "branch-dominance-open"
+    ],
+    "new_next_action": "attack FixedCutoffAnnularPacketEnergyPersistenceSource first, then LineageScheduleAggregateBudgetSource and branch dominance",
+    "old_next_action": "continue local N1 persistence work only",
+    "preconditioner_effect": "Prevented stopping at route1 wrapper; identified N1 fixed-cutoff annular packet persistence, N2 aggregate schedule budget, and N7 branch dominance as the next proof nodes.",
+    "preconditioner_source": "orchestration menu PATTERN-025 dependency DAG, GP-230 forecasts, reused sidecar swarm, Darwin pressure",
+    "realized_failure_mode_ids": [
+      "n1_persistence_missing_side_condition",
+      "n2_schedule_budget_reuse_gap",
+      "n7_branch_dominance_open"
+    ],
+    "resolution_note": "DAG swarm returned MISSING_HYPOTHESIS with useful proof-route nodes. Added FixedCutoffAnnularPacketEnergyPersistenceSource below FreshFrequencyTailSquarePersistenceSource, LineageScheduleAggregateBudgetSource below LineageTailScheduleFiniteBudgetSource, and saved integrated report. Upstream branch dominance remains open. Lean compiles; no new sorry/admit.",
+    "resolved_at": "2026-05-14T19:22:54Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:23:00Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 68.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": -28.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 40.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:18:02Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:19:38Z",
+        "resolved_at": "2026-05-14T19:22:54Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 68.0,
+      "agent_id": "rd_codex",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 70.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.64,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:18:02Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:18:23Z",
+        "resolved_at": "2026-05-14T19:22:54Z"
+      }
+    }
+  ]
+}

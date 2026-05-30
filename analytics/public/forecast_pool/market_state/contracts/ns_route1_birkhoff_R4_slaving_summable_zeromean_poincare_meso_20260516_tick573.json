@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 50.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T13:01:42Z",
+    "created_by": "claude_rd",
+    "horizon": "21d",
+    "layer": "meso",
+    "objective_resolver": "Objective scaling test: standard NS parabolic rescaling x\u21a6(x\u2212x0)/r_n scales ALL 3 space coords equally \u21d2 rescaled cylinder unit in x\u2083 \u21d2 zero-x\u2083-mean Poincar\u00e9 \u03bb\u2081=\u03c0\u00b2 fixed (no r_n). Steelman (ii) assumed anisotropic rescaling (wrong). (iv) is the standard Raugel-Sell coupled bootstrap not an independent kill. success iff engine proved AND (ii) objectively overturned AND residual=(iii)-order localized bootstrap (R1-controlled); 0.5 if the localized coupled bootstrap needs a genuine new estimate; fail iff \u03bb\u2081 truly degenerates or Mu equation uncloseable.",
+    "question": "tick573: Mu/Nu decomposition + skew-symmetry (transport \u222b(U\u00b7\u2207)W\u00b7W=0) + zero-x\u2083-mean Poincar\u00e9 gap \u03bb\u2081=\u03c0\u00b2 (FIXED O(1) under isotropic-in-space NS parabolic rescaling, NOT thin-domain, NOT degenerating) \u21d2 s_{n+1}\u00b2\u2264e^{\u2212\u03bd\u03bb\u2081/2}s_n\u00b2+C'\u039b_n\u207b\u00b9M \u21d2 \u03a3 s_n<\u221e. Engine (contractive+summable forcing\u21d2summable orbit) PROVED in Lean (Tier-3 PASS). Steelman 'fatal (ii) \u03bb\u2081 degenerates' OVERTURNED by objective test: NS rescaling is isotropic-in-space \u21d2 rescaled cylinder unit-x\u2083 \u21d2 \u03bb\u2081=\u03c0\u00b2 n-independent. Residual: does the Raugel-Sell COUPLED bootstrap (damped osc\u21d2small Reynolds\u21d22D-safe avg) close on the LOCALIZED cutoff cascade at R1/(iii) order?",
+    "success_threshold": "0.5: engine PROVED + (ii) overturned objectively + residual = localized Raugel-Sell coupled bootstrap at R1/(iii) order (single steelman only, needs 2nd independent for full)",
+    "task_type": "ns_clay_birkhoff_R4_zeromean_poincare_20260516"
+  },
+  "contract_id": "ns_route1_birkhoff_R4_slaving_summable_zeromean_poincare_meso_20260516_tick573",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "forecast_backfill_or_void_no_score"
+    ],
+    "next_action": "resolved_without_forecasts",
+    "state": "resolved_without_forecasts"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T13:01:42Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "resolved_without_forecasts",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

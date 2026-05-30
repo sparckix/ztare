@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed only if it labels this as still open and forbids posthoc matching.",
+  "agent_id": "meta-darwin-proxy",
+  "contract_id": "ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422",
+  "contract_question": "Will tick422 add a compiling Lean guard/source surface requiring audit-selected fresh packets to embed into the same hEvents/L event stream, preventing event-per-bad-node and beta-defined price smuggling below the fresh-packet audit?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "beta_price_smuggling": 0.2,
+    "coherence_as_raw_prop": 0.28,
+    "event_stream_defined_posthoc": 0.25,
+    "overclaim": 0.12,
+    "signature_friction": 0.15
+  },
+  "forecast_externality_tags": [
+    "darwin_guard",
+    "posthoc_matching_risk",
+    "ledger_coherence"
+  ],
+  "forecasted_at": "2026-05-14T22:00:31Z",
+  "p_dependency_issue": 0.52,
+  "p_needs_new_lemma": 0.9,
+  "p_regression": 0.18,
+  "p_success": 0.62,
+  "rationale_short": "This is the first circularity risk below the audit. Guard helps, but source remains unproved.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_event_stream_unproved",
+    "posthoc_event_matching",
+    "ledger_price_not_independent"
+  ]
+}

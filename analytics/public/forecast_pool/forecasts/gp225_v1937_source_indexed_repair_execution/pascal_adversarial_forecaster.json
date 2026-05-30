@@ -1,0 +1,24 @@
+{
+  "agent_id": "pascal_adversarial_forecaster",
+  "contract_id": "gp225_v1937_source_indexed_repair_execution",
+  "contract_question": "Will v19.37 source-indexed primary repair execution improve beyond v19.35 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, using non-target mined local declaration packets and excluding teacher/oracle candidates from primary evidence?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "harmful_compiled_mismatch": 0.05,
+    "mined_name_noise_or_namespace_mismatch": 0.15,
+    "other": 0.07,
+    "overclosure_not_target_relevant": 0.17,
+    "source_index_names_still_insufficient": 0.25,
+    "target_proof_contamination_or_audit_failure": 0.18,
+    "templates_compile_but_do_not_reach_threshold": 0.13
+  },
+  "forecasted_at": "2026-05-13T23:44:16Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.29,
+  "p_regression": 0.1,
+  "p_success": 0.43,
+  "rationale_short": "Source-indexed packets improve the prior, but v19.33/v19.35 were stuck at one of five and source names can still fail on exact rewrite orientation, namespace qualification, or proof-local structure.",
+  "read_only_attestation": true
+}

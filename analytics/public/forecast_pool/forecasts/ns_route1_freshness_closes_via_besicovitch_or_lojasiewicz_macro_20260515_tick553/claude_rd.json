@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553",
+  "contract_question": "TERMINAL: the whole route-1 strict-margin edifice provably (tick544-553) localizes to ONE combinatorial core (scale-freshness/bounded-overlap of positive same-carrier cutoff-flux event tents) with TWO orthogonal solved-elsewhere attack channels. Does the route-1 event-tent construction satisfy EITHER (G) the Besicovitch controlled-eccentricity condition (\u21d2 dimension-only bounded multiplicity \u21d2 freshness) OR (A) a localized \u0141ojasiewicz-Simon strict scale-invariant entropy-dissipation debit per reversal (\u03b3>0)? Either \u21d2 Clay flat-radius cascade closure (narrow Track-B route-1 sense); neither \u21d2 the P4 reuse-cascade fixed point is the irreducible residual.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T23:39:27Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.8,
+  "p_regression": 0.03,
+  "p_success": 0.22,
+  "rationale_short": "Recursion terminus: edifice provably localized to ONE combinatorial core + TWO orthogonal solved-elsewhere channels (Besicovitch geometric / \u0141ojasiewicz analytic), either sufficient, both falsifiable. Discipline held (Tier-2/3 3/3 validated the Caloric kill). p_success 0.22 (macro Clay-adjacency, not closure): Besicovitch likely fails (cascade nesting is engineered non-Besicovitch by the reuse mechanism), \u0141ojasiewicz \u03b3>0 scale-invariance is the genuine 20-page open. p_needs_new_lemma 0.80 \u2014 but the targets are now NAMED solved-elsewhere objects, the strongest honest state this route has reached.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

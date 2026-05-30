@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:29Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 2.850443430312183,
+      "forecast_spread": 0.02,
+      "p_success": 0.18979835757804575,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.6738
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 36.875,
+    "expected_value": 2.850443430312183,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.08499999999999999,
+    "p_needs_new_lemma": 0.89,
+    "p_regression": 0.04,
+    "p_success": 0.18979835757804575,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552/claude_rd.json",
+        "forecasted_at": "2026-05-15T23:32:20Z",
+        "p_success": 0.2,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552/codex.json",
+        "forecasted_at": "2026-05-15T23:34:06Z",
+        "p_success": 0.18,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "gamma_n_to_zero_for_high_frequency_reversal",
+        "p": 0.25
+      },
+      {
+        "mode": "localized_lojasiewicz_channel_requires_new_lemma",
+        "p": 0.15
+      },
+      {
+        "mode": "hidden_coupling_or_stale_assumption_in_entropy_dissipation",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T23:32:20Z",
+    "created_by": "claude_rd",
+    "horizon": "7d",
+    "layer": "micro",
+    "objective_resolver": "PDE judgment: a localized \u0141ojasiewicz-Simon / entropy-dissipation inequality yields scale-invariant \u03b3>0 for a high-freq reversing wave (closure), vs \u03b3_n\u21920 countermodel (fixed point persists). NOT resolvable by asserting the penalty (that = laundering, tick552 forbids inhabiting kills_ghost_configuration)",
+    "question": "Caloric-Deficit MD-verdict: tick552 PROVES the viscous-reflection-penalty L(n+1)\u2264(1-\u03b3)L_n is a SPECIAL CASE of the already-open tick551 positiveFluxScaleFresh reserve-drop (R_n=L_n/\u03b3) and its geometric closure IS tick551 telescoping \u2014 so it adds no new closure; \u03b3>0 scale-invariant-strict \u2261 the perennial atom. Forward question: can the reversal\u21d2enstrophy-toll mechanism (\u0141ojasiewicz-Simon localized inequality channel) actually deliver \u03b3>0 scale-invariant for a high-frequency reversing wave, or does \u03b3_n\u21920 (mechanism fails, P4 reuse-cascade fixed point persists)?",
+    "success_threshold": "success if \u0141ojasiewicz channel gives scale-invariant \u03b3>0 from standard Sobolev-trace+heat-operator; fail if \u03b3_n\u21920 or only assertable not provable",
+    "task_type": "ns_clay_caloric_deficit_gamma_micro_20260515"
+  },
+  "contract_id": "ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-15T23:32:20Z",
+        "p_success": 0.2,
+        "rationale_short": "Caloric-Deficit PROVED (tick552) to be a \u03a6-vocabulary-iterate landing on the perennial atom: penalty \u2286 tick551 open reserve-drop, geometric closure = tick551 telescoping. \u03b3>0 scale-invariant-strict IS the strict-margin atom (tick545: dimensional cancellation to scale-invariant const is homogeneity-locked-critical; strict<1 is the unproven gain). \u0141ojasiewicz-Simon is a genuine candidate channel but \u03b3_n\u21920 (toll not scale-invariant for high-freq reversal) is the live failure = P4 fixed point. p_success 0.20, p_needs_new_lemma 0.88.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 37.0,
+        "forecasted_at": "2026-05-15T23:34:06Z",
+        "p_success": 0.18,
+        "rationale_short": "Calibrated below claude_rd because tick552 only shows the penalty branch is a special case of tick551; the live question is whether the localized Lojasiewicz/entropy channel can remain scale-invariant under high-frequency reversal without collapsing to gamma_n->0. Mass stays on a fixed-point reuse obstruction or one new localization lemma, not on a clean scale-invariant gain.",
+        "specific_failure_mode_ids": [
+          "gamma_n_to_zero_for_high_frequency_reversal",
+          "localized_lojasiewicz_channel_requires_new_lemma"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T00:06:49.521722+00:00",
+    "success_bool": null,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 2.850443430312183,
+      "forecast_spread": 0.02,
+      "p_success": 0.18979835757804575,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 2.6738
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.875,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.18979835757804575,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "gamma_n_to_zero_for_high_frequency_reversal",
+        "p": 0.25
+      },
+      {
+        "mode": "localized_lojasiewicz_channel_requires_new_lemma",
+        "p": 0.15
+      },
+      {
+        "mode": "hidden_coupling_or_stale_assumption_in_entropy_dissipation",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

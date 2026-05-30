@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_next_pde_branch_after_pressure_split_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_next_pde_branch_after_pressure_split_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_next_pde_branch_after_pressure_split_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_next_pde_branch_after_pressure_split_meso.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_next_pde_branch_after_pressure_split_meso.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "contract_id": "ns_route1_next_pde_branch_after_pressure_split_meso",
+  "cost_penalty": 0.2,
+  "created_at": "2026-05-13T19:51:31Z",
+  "created_by": "codex_rd_ns_2026_05_13",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-13T23:59:00Z",
+  "information_value": 0.9,
+  "layer": "meso",
+  "objective_resolver": "Resolve success if the selected branch yields a compiled Lean structure/theorem that advances Route1PressureBranchChannelPayment without defining visibility from rho*X-S, with route1 still building and no pre-GNN mutation.",
+  "question": "Which next NS route1 PDE branch is most likely to produce a compiled non-tautological Lean bridge within the next bounded proof tick: pressure-visible Hessian L2 certificate, pressure-small Q local quadratic one-third channel, pressure-small T transport, or pressure-small C commutator?",
+  "risk_penalty": 0.2,
+  "success_threshold": "Compiled Lean bridge plus GP-233 next-lever update; no scalar visibility smuggling; no pre-GNN artifacts generated.",
+  "task_type": "branch_choice",
+  "value_if_success": 0.8,
+  "void_conditions": "Void if user redirects away from NS route1 or if repo build becomes blocked by unrelated dependency failure before branch work."
+}

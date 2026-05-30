@@ -1,0 +1,233 @@
+[
+  {
+    "cycle_idx": 0,
+    "start_iteration": 2,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 13,
+    "weakest_points_in_cycle": [
+      "The operational comparability of the \u2018x\u2019 feature (acceleration) across classes A, B, C is explicitly named as the potential catastrophic failure mode. If the cross-class x audit fails (i.e., class-specific residuals or offsets in x are found), then all physical claims collapse to schema artifact. The thesis cannot physically attribute bridge behavior until the cross-class x audit passes. Until then, farther-tail operational success is not sufficient for physics claim.",
+      "The thesis's ability to make a physical cross-class (not just operational) claim depends on the assumption that the cross-class 'x' audit, which seeks to ensure that input features (in particular, the acceleration proxy x) are constructed, calibrated, and defined identically across classes, is actually sufficient to detect any and all schema-dependent artifacts. If there exist unrecorded, unobservable, or insufficiently documented differences in 'x' construction\u2014especially in withheld B/C classes\u2014the audit may miss a critical convention or transformation, leading to a silent confounding of a schema artifact with a genuine physical law. This limits the physical claim to only as strong as the completeness and visibility of source-level feature provenance.",
+      "The thesis gates its physical cross-class claim on the closure of feature-producing provenance across all classes. This is structurally rigorous but usually fails in practice: in most real-world, legacy, and multi-survey data, provenance is incomplete, unreplayable, or contains undocumented pipeline/class-dependent artifacts. Thus, while operational bridging is well-defended, the physical claim is functionally moot unless perfect provenance is established \u2014 a condition rarely attainable even in principle.",
+      "The thesis\u2019s single catastrophic vulnerability is its unacknowledged assumption that the continuous features (mass_log10, radius_log10) fully capture all physically relevant cross-class variation, with no hidden regime discontinuity. If B/C behavior contains a true regime-break not encoded in those axes, systematic prediction failures will be misattributed to calibration, not fundamental structure error. The thesis cannot detect or diagnose this possibility without access to B/C or richer features\u2014making its physical claim conditional and non-falsifiable for regime difference.",
+      "The regime-completeness assumption: all regime-defining physics relevant to the B/C class break is captured by (x, mass_log10, radius_log10). If any class-specific effect survives conditioning on these, the thesis is catastrophically falsified; the law cannot absorb such a break without explicit class or unobservable features."
+    ],
+    "final_score": 100,
+    "final_weakest": "The catastrophic assumption is the 'Acceleration Provenance Equivalence Gate': that the operational acceleration feature 'x' is constructed in a completely provenance-equivalent, SI-consistent, non-artificial, non-class-dependent way across all classes. If this is violated, all cross-class physical claims collapse into mere operational fit.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the 'Acceleration Provenance Equivalence Gate' being structurally absent: the cross-class physical claim rested on an unverified assumption that feature 'x' (acceleration proxy) was constructed identically across classes A, B, C.",
+    "resolution_move": "Elevated the cross-class acceleration provenance audit from an implicit assumption to an explicit named gate ('Acceleration Provenance Equivalence Gate') that must be closed before any cross-class physical claim is licensed.",
+    "what_survived": "The conditional physical law relating acceleration proxy x, mass_log10, and radius_log10 across classes survived, provided the provenance gate is satisfied.",
+    "what_opened": "Whether the provenance gate can ever be formally closed on legacy or multi-survey data where pipeline steps are undocumented or unreplayable.",
+    "proof_object_delta": {
+      "before": "No explicit gate governing cross-class feature-construction equivalence; provenance equivalence was an unacknowledged assumption embedded in the schema.",
+      "after": "Named 'Acceleration Provenance Equivalence Gate' as a required closure condition that must be audited and passed before cross-class physical claims are asserted.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 1,
+    "start_iteration": 2,
+    "end_iteration": 3,
+    "n_iters_in_cycle": 2,
+    "weakest_points_in_cycle": [
+      "All physical claims for B and C (Newton-step/bridge) rest on the unprovable-internal assumption that the x variable (input acceleration) is physically constructed the same way in all classes. If a hidden schema or convention difference exists (unseen by the thesis because B/C are withheld), not only are all farther-tail generalizations reduced to operational 'success' with zero causal content, but the entire physical law claim collapses.",
+      "The thesis relies critically on the assumption that the 'x' (acceleration) variable is constructed equivalently\u2014i.e., truly in SI units without hidden convention offsets, fudge factors, or class-dependent construction\u2014across all classes (A, B, and C). Until a direct source and dimensional closure audit is performed on Class B and Class C, the physical claim of cross-class universality or scale-dependent law remains at risk of being merely operational (i.e., a fit to conventions, not a law of nature)."
+    ],
+    "final_score": 100,
+    "final_weakest": "The thesis relies critically on the assumption that the 'x' (acceleration) variable is constructed equivalently\u2014i.e., truly in SI units without hidden convention offsets, fudge factors, or class-dependent construction\u2014across all classes (A, B, and C). Until a direct source and dimensional closure audit is performed on Class B and Class C, the physical claim of cross-class universality or scale-dependent law remains at risk of being merely operational (i.e., a fit to conventions, not a law of nature).",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the unverified cross-class equivalence of the 'x' (acceleration) variable, which lacked a dimensional closure audit confirming SI-unit construction was identical across Class A, B, and C.",
+    "resolution_move": "Added a dimensional closure audit obligation as a charter constraint requiring direct source verification of the 'x' variable's construction across all classes before any cross-class universality claim could be promoted.",
+    "what_survived": "The structural claim that a scale-dependent physical law could be extracted from the dataset survived, conditioned on the audit gate being satisfied.",
+    "what_opened": "Whether the dimensional closure audit, once performed, would reveal hidden convention offsets or class-dependent construction differences that would demote the law from physical to merely operational.",
+    "proof_object_delta": {
+      "before": "No mechanism to verify that 'x' was constructed equivalently across classes; cross-class universality rested on an unexamined internal assumption.",
+      "after": "A dimensional closure audit obligation gating cross-class physical claims, requiring direct source confirmation of SI-unit construction for Class B and Class C.",
+      "delta_type": "charter_constraint"
+    },
+    "structural_move_class": "tighten charter",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 2,
+    "start_iteration": 4,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 4,
+    "weakest_points_in_cycle": [
+      "The entire cross-class physical law claim is contingent upon the unproven assumption that the acceleration variable `x` is constructed and scaled identically (in SI units) in classes A, B, and C; if this provenance equivalence fails in future source-ledger audit or dimensional closure, the core physical claim collapses and only an operational bridge remains.",
+      "The thesis's physical law claim is absolutely contingent on the assumption that the input acceleration variable 'x' is constructed in the same SI-convention physical units across all classes (A/B/C). If this is not true (if, for example, x in Class B/C is computed with hidden class-specific normalization, offset, or transformation), any operational success is a schema artifact and NOT a physical law. The thesis guards against this by making the cross-class law claim conditional on a 'source-provenance audit' of x, but this is currently unresolved for B/C.",
+      "The weakest (catastrophic) point is the assumption that the acceleration variable `x` is constructed in the exact same SI units\u2014without normalization, offset, log/proxy encoding, or other hidden class-specific differences\u2014across all classes (A/B/C). The entire physical cross-class law claim vetoes itself if SI-closure of `x` fails.",
+      "The single catastrophic vulnerability is dependence on the unprovable\u2014at submission time\u2014assumption that input variable 'x' (acceleration) for classes B and C is constructed using the same SI source-level convention as for class A, with no hidden transformations, normalization, or proxying. Until B/C source ledgers are public, this is an unhedgeable operational risk. All cross-class physical law claims are instantly demoted to 'operational schema fit' if future audits reveal hidden class-specific construction of x."
+    ],
+    "final_score": 0,
+    "final_weakest": "The single catastrophic vulnerability is dependence on the unprovable\u2014at submission time\u2014assumption that input variable 'x' (acceleration) for classes B and C is constructed using the same SI source-level convention as for class A, with no hidden transformations, normalization, or proxying. Until B/C source ledgers are public, this is an unhedgeable operational risk. All cross-class physical law claims are instantly demoted to 'operational schema fit' if future audits reveal hidden class-specific construction of x.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the absence of a source-ledger provenance gate for the acceleration variable 'x', whose cross-class SI-unit equivalence was assumed but structurally unverifiable at submission time.",
+    "resolution_move": "Demoted the cross-class physical law claim to 'operational schema fit' by installing an explicit provenance-contingency hedge that conditions all cross-class physical assertions on future B/C source-ledger audit confirmation.",
+    "what_survived": "The within-class-A physical law relationship between acceleration 'x' and the target variable survived as an auditable, dimensionally grounded claim.",
+    "what_opened": "The cycle opened the question of whether a source-ledger audit apparatus for B/C variable construction can be specified as a formal gate prior to any cross-class physical law promotion.",
+    "proof_object_delta": {
+      "before": "No provenance gate existed for cross-class variable construction equivalence; the arc treated SI-unit identity of 'x' across A/B/C as a silent assumption.",
+      "after": "An explicit provenance-contingency constraint that demotes cross-class physical law claims to operational schema fit absent confirmed B/C source-ledger equivalence for 'x'.",
+      "delta_type": "charter_constraint"
+    },
+    "structural_move_class": "tighten charter",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 3,
+    "start_iteration": 3,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 4,
+    "weakest_points_in_cycle": [
+      "The thesis does not (and cannot on current substrate exposure) prove SI-closure of acceleration x for Class B and Class C. This is explicitly declared as a veto risk and correctly handled as a conditional claim rather than an unexamined assumption, but as long as SI-closure is unproven, no physical law has been established\u2014only an operational (schema) cross-class bridge. This is not a computational/logic deficiency, but rather an external provenance evidence gap.",
+      "Catastrophic dependence on unproven SI-equivalence of the acceleration variable `x` across Classes A, B, and C. Without rigorous, source-level verification that `x` is constructed identically (in SI units, with no hidden class-specific normalization, offset, or encoding), the entire cross-class physical law claim collapses. This iteration formally elevates the provenance-veto from an implicit assumption to an explicit conditional, but that does not resolve the fundamental evidentiary gap.",
+      "The core and catastrophic vulnerability is that the cross-class physical-bridge claim (Class A \u2014> B/C) is valid only if 'x' (acceleration) is truly constructed and interpreted as the SAME SI acceleration across all system classes, with no hidden offsets, normalizations, or proxies. If this is falsified, the entire physical-law claim collapses to a mere operational bridge (artifactual scheme fit). This dependency is now explicit as a critical veto gate, rather than a hidden assumption, but it is unresolved until a substrate audit is completed.",
+      "The thesis's single weakest point\u2014so catastrophic it is explicitly elevated to an absolute veto\u2014is the unproven and currently unprovable equivalence of the acceleration variable 'x' across Class A, B, and C. Without transparent out-of-band provenance demonstrating 'x' is constructed as the same SI acceleration, any operational or numerical bridge 'success' could be an artifact of a hidden class-specific transformation, rendering the physical interpretation void."
+    ],
+    "final_score": 0,
+    "final_weakest": "The thesis's single weakest point\u2014so catastrophic it is explicitly elevated to an absolute veto\u2014is the unproven and currently unprovable equivalence of the acceleration variable 'x' across Class A, B, and C. Without transparent out-of-band provenance demonstrating 'x' is constructed as the same SI acceleration, any operational or numerical bridge 'success' could be an artifact of a hidden class-specific transformation, rendering the physical interpretation void.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the absence of a verified SI-equivalence proof for the acceleration variable 'x' across Class A, B, and C, which left the cross-class physical-bridge claim structurally ungrounded.",
+    "resolution_move": "Elevated the unresolvable SI-equivalence requirement to an explicit absolute veto gate, converting the unprovable assumption into a declared conditional boundary that quarantines the physical-bridge claim rather than asserting it.",
+    "what_survived": "The structural recognition that cross-class numerical agreement is insufficient to establish physical equivalence without out-of-band provenance for 'x' construction.",
+    "what_opened": "The question of what out-of-band provenance mechanism or source-level audit protocol would be required to satisfy the SI-closure gate and re-enable the physical-bridge claim.",
+    "proof_object_delta": {
+      "before": "No gate existed to block promotion of cross-class physical claims when SI-equivalence of 'x' was unverified; the gap was treated as a risk rather than a structural veto.",
+      "after": "An explicit absolute veto gate keyed to unproven SI-equivalence of 'x' across all three system classes, rendering the physical-bridge claim conditionally void until provenance is supplied.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 4,
+    "start_iteration": 2,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 14,
+    "weakest_points_in_cycle": [
+      "Catastrophic: The physical interpretation of the cross-class law entirely hinges on the Constructive SI-Closure Certificate \u2014 i.e., whether the acceleration variable `x` has identical SI construction in all system classes. Currently, this is not proven for withheld classes. If this equivalence fails, all physical claims collapse and the result is demoted to an operational schema bridge.",
+      "The cross-class SI Construction Certificate is unresolved. The thesis's major claim (scale-dependent physical bridge) rests on the assumption that the hidden Class B and Class C measurements use the same SI acceleration convention as visible Class A. If the apparatus audit exposes any undocumented proxy or transform, all physical interpretation collapses to 'operational bridge only.' This is acknowledged but unresolved and is thus the single irreducible epistemic weakness.",
+      "The critical bottleneck is the SI-Triangulation Certificate: the entire physical claim that the same continuous-feature law governs all system classes is gated on whether withheld classes' 'x' fields are constructed in strict SI terms, without classwise normalization, proxying, or sign conventions. Until provenance and dimensional closure are audited and passed, the bridge is operational only.",
+      "Physical interpretation is fatally dependent on 'x' being truly SI-consistent and identically constructed in all classes; this cannot be verified until withheld ledger/closure data are released. If SI Closure fails, all physical claims collapse to operational schema bridging.",
+      "The critical weak point is the thesis's reliance on the Closure-Sentinel (\u0394) diagnostic as a sufficient check against hidden, class-dependent differences in the construction of x, mass_log10, or radius_log10. As the panel identified, if adversarial or undocumented redefinitions of these fields can yield closure-residual overlap between classes without preserving the true physical meaning, then the entire physical-law interpretation collapses. The thesis recognizes hidden class-conditional construction of x as its rival, but the chosen diagnostic is not strictly foolproof."
+    ],
+    "final_score": 0,
+    "final_weakest": "The single most catastrophic vulnerability is the reliance on the future Blind SI-Closure Certificate. If the provenance audit reveals even a hidden per-class offset or transform in the construction of `x`, all physical claims in this thesis are retroactively voided. The thesis itself addresses this by pre-committing to the certificate as a veto, but this is a forward gap that cannot be closed with current data.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the unverified SI-Closure Certificate \u2014 the proof-object lacked any mechanical gate that could bind or veto physical claims contingent on whether the acceleration variable `x` is identically constructed across all system classes.",
+    "resolution_move": "Replaced the unresolved forward dependency on the SI-Closure Certificate with a pre-committed veto apparatus: a Blind SI-Closure Certificate obligation was installed as a charter constraint that retroactively voids all physical claims if provenance audit reveals any per-class offset or transform in `x`.",
+    "what_survived": "The cross-class scale-dependent law structure (the continuous-feature bridge across system classes) survived as an operational schema, conditioned on the veto gate holding.",
+    "what_opened": "Whether the Blind SI-Closure Certificate veto is itself auditable before withheld-class data are released \u2014 i.e., whether the pre-commitment is mechanically enforceable or merely declarative.",
+    "proof_object_delta": {
+      "before": "No gate existed to handle retroactive collapse of physical claims if SI construction of `x` proved non-uniform across classes; the certificate was a forward gap with no binding mechanism.",
+      "after": "A Blind SI-Closure Certificate pre-commitment veto installed as a charter constraint, making physical claim validity formally conditional on a named audit event.",
+      "delta_type": "charter_constraint"
+    },
+    "structural_move_class": "install veto pre-commitment",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 5,
+    "start_iteration": 2,
+    "end_iteration": 3,
+    "n_iters_in_cycle": 2,
+    "weakest_points_in_cycle": [
+      "The single most catastrophic and load-bearing vulnerability is the unprovable (at this time) assumption that the observable acceleration `x` is constructed, reported, and processed identically in SI units in classes B and C as in visible class A. The entire physics claim, even if numerically validated, collapses if a hidden class-dependent offset or fudge is ever found. This SI-closure assumption is a veto, not a pillar: until the ledger shows closure, any physical claim is strictly conditional.",
+      "The thesis's entire physical claim is absolutely contingent on the future SI-closure audit\u2014that the observed acceleration 'x' is constructed identically (in SI) across all system classes (A, B, C), with no hidden class-dependent offset or fudge factor. If this assumption fails, all law claims collapse into class-blind curve fitting; thus, the most catastrophic failure mode is undisclosed non-SI (or per-class) fudge in 'x'."
+    ],
+    "final_score": 100,
+    "final_weakest": "The thesis's entire physical claim is absolutely contingent on the future SI-closure audit\u2014that the observed acceleration 'x' is constructed identically (in SI) across all system classes (A, B, C), with no hidden class-dependent offset or fudge factor. If this assumption fails, all law claims collapse into class-blind curve fitting; thus, the most catastrophic failure mode is undisclosed non-SI (or per-class) fudge in 'x'.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the unverified SI-unit construction assumption for observable acceleration 'x' across system classes A, B, and C, which left all law claims contingent on an undisclosed audit.",
+    "resolution_move": "Elevated the SI-closure audit from an implicit background assumption to an explicit named obligation gate that must be satisfied before any cross-class law claim is asserted, making the contingency structurally visible rather than hidden.",
+    "what_survived": "The core claim that observed acceleration 'x' is the load-bearing primitive unifying classes A, B, and C survived, conditioned on the SI-closure gate.",
+    "what_opened": "Whether the SI-closure audit, once formalized as a gate, can itself be discharged by a constructive verification procedure or remains an irreducible empirical obligation.",
+    "proof_object_delta": {
+      "before": "No explicit gate on SI-unit construction consistency for 'x' across system classes; the assumption was implicit and untracked.",
+      "after": "A named SI-closure audit gate conditioning all cross-class law assertions on verified identical construction of 'x' in SI units across classes A, B, and C.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 6,
+    "start_iteration": 4,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 4,
+    "weakest_points_in_cycle": [
+      "The thesis\u2019s single catastrophic vulnerability is its dependence on the unproven assumption that the observable acceleration 'x' is identically constructed in SI units for all system classes (A, B, C). This 'Blind SI-Closure' is a forward-looking veto: if not upheld by future ledger/provenance audits, the entire physical claim fails, and any apparent cross-class law may be a data artifact. All physical scale-dependent inferences are thus provisional.",
+      "Absolute dependence on the future SI-closure/provenance audit confirming x is constructed consistently (in the same SI units and conventions) across all classes. If this fails, the physical bridge claim collapses. The thesis is honest about this, but its entire Newton-step claim is vetoed by this one audit.",
+      "The thesis does not currently demonstrate or audit SI equivalence of x across all system classes (A, B, C). All physical bridge law claims are strictly conditional on a future provenance/residuals audit showing that class B and C 'x' share the same SI definition as class A. Until then, the result is only an operational cross-table regularity, not a universal law\u2014a catastrophic risk if the SI closure fails.",
+      "The thesis is DISPROVEN by its own unit tests: farther-tail validation failed (the model does not pass the Newton-step bridge test on withheld class B or C). However, the pre-commitment to Hypothesis S is explicit and correct, as is full structural compliance with substrate, so the failure is honest and still publishable as a null (scale-dependent law is not as modeled). The most catastrophic assumption remains that 'x' is the same SI quantity across classes\u2014a failure here renders any claimed bridge operational only, never physical."
+    ],
+    "final_score": 0,
+    "final_weakest": "The thesis is DISPROVEN by its own unit tests: farther-tail validation failed (the model does not pass the Newton-step bridge test on withheld class B or C). However, the pre-commitment to Hypothesis S is explicit and correct, as is full structural compliance with substrate, so the failure is honest and still publishable as a null (scale-dependent law is not as modeled). The most catastrophic assumption remains that 'x' is the same SI quantity across classes\u2014a failure here renders any claimed bridge operational only, never physical.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by 'Blind SI-Closure'\u2014the unaudited assumption that observable acceleration 'x' is identically constructed in SI units across all system classes (A, B, C), which left the Newton-step bridge claim physically ungrounded.",
+    "resolution_move": "Replaced the unresolved SI-closure assumption with an explicit null-result publication gate: the champion iteration formally records disproof via its own unit tests and strips all thesis primitives, converting the cycle's output from a physical bridge claim to a documented honest null.",
+    "what_survived": "The pre-commitment to Hypothesis S and full structural compliance with the substrate survived as publishable scaffolding, establishing that the failure mode is scale-dependent and not a protocol error.",
+    "what_opened": "Whether a provenance/residuals audit confirming SI-unit equivalence of 'x' across classes A, B, and C can rehabilitate the Newton-step bridge claim in a subsequent cycle.",
+    "proof_object_delta": {
+      "before": "An unaudited SI-closure assumption functioning as a forward-looking veto with no mechanism to resolve or falsify it within the cycle",
+      "after": "A null-result gate that converts disproof-by-own-unit-tests into a publishable honest null, with the SI-closure failure explicitly named as the collapse condition",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "install null-result gate",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 7,
+    "start_iteration": 2,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 3,
+    "weakest_points_in_cycle": [
+      "Catastrophic dependence on unverified cross-class SI closure of x: The entire physical claim hinges on the unproven assumption that x (acceleration) is constructed in true SI units for withheld classes B and C, without hidden offsets or transformations. There is currently no way, from provided data, to verify or falsify this. If a future provenance audit shows hidden class-dependent normalizations or construction artifacts, the bridge collapses to a table regularity with no physical meaning. This is the numerically most consequential and conceptually catastrophic vulnerability.",
+      "The single most catastrophic assumption is that the acceleration variable 'x' is constructed in a genuinely SI-invariant, class-independent way, with no hidden classwise or instrument-specific offsets. The full physical-bridge claim is absolutely vetoed unless future source-ledger audits confirm this. Current status: all numerical gates pass, but the SI closure audit is pending future release."
+    ],
+    "final_score": 100,
+    "final_weakest": "The single most catastrophic assumption is that the acceleration variable 'x' is constructed in a genuinely SI-invariant, class-independent way, with no hidden classwise or instrument-specific offsets. The full physical-bridge claim is absolutely vetoed unless future source-ledger audits confirm this. Current status: all numerical gates pass, but the SI closure audit is pending future release.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by unverifiable SI-invariance of the acceleration variable 'x', which lacked any cross-class closure audit mechanism at cycle start.",
+    "resolution_move": "Added a pending-audit gate that conditionally passes numerical claims while explicitly flagging the SI closure of 'x' as an unresolved obligation requiring future source-ledger confirmation.",
+    "what_survived": "All numerical gates on the acceleration variable passed and were retained as structurally valid conditional on the pending SI closure audit.",
+    "what_opened": "The question of how to formally discharge the source-ledger audit obligation for cross-class SI invariance of 'x' in withheld classes B and C.",
+    "proof_object_delta": {
+      "before": "No mechanism to distinguish numerically-passing claims from physically-grounded claims; SI closure of 'x' was assumed without apparatus to flag or track its unverified status.",
+      "after": "A conditional-pass audit gate that separates numerical gate satisfaction from physical-bridge certification, with an explicit pending-obligation marker on SI closure of 'x'.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp163d_unified_accel"
+  },
+  {
+    "cycle_idx": 8,
+    "start_iteration": 2,
+    "end_iteration": 3,
+    "n_iters_in_cycle": 8,
+    "weakest_points_in_cycle": [
+      "The catastrophic assumption is that SI closure holds for all classes; if a hidden classwise offset in x is discovered in the withheld classes (B, C), the physical law claim collapses and the result is demoted to a data artifact. Until the SI provenance ledger for class B and C is published and audited, this is the structural veto point. The thesis is otherwise fully compliant and explicitly foregrounds this risk.",
+      "Reliance on the cross-class SI provenance ledger as the absolute veto for physical meaning. If the ledger is incomplete or cannot surface classwise construction offsets, the scale-dependent interpretation could be a false positive.",
+      "The thesis\u2019s absolute weakest point is the reliance on the SI provenance ledger for the acceleration variable 'x'. If an undocumented classwise offset in x exists in the withheld (B or C) system classes, then all physical/scale-dependent bridge claims collapse: the thesis expresses only a regularity of a table, not a multi-scale physical law. The audit candidly acknowledges this as a catastrophic single-point-of-failure, yet the submitted logic has correctly foregrounded it with absolute veto power.",
+      "The entire cross-class physical law depends on the unproven assumption that the `x` (input acceleration) variable is constructed and recorded identically \u2014 with no hidden convention or offset \u2014 across all system classes. If any undocumented class-dependent offset or aggregation exists in the definition of `x` (as tabulated in class B, C), the dual-closure logic and resulting scale-law become table regularities, not physical bridges. This is an acknowledged, absolute veto point in the thesis, and future discoveries here can fully invalidate the physical claim.",
+      "The entire physical-claim structure critically depends on the assumption that the mass_log10 and radius_log10 fields used to construct g_proxy (the closure balance discriminator) are themselves of independent provenance and not contaminated by hidden classwise convention jumps in x. If this assumption fails, a joint classwise offset in x and its proxy can evade detection and let a non-physical artifact masquerade as a scale-bridging law."
+    ],
+    "final_score": 0,
+    "final_weakest": "The single most catastrophic assumption is that the tabulated 'x' acceleration is constructed on a truly homologous SI physical basis across all system classes. If this is violated by any undocumented classwise convention or hidden transformation, the entire physical interpretation collapses to table regularity, regardless of numerical success.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the SI provenance ledger for the acceleration variable 'x' being unverifiable across withheld system classes B and C, leaving the cross-class physical law claim structurally ungrounded.",
+    "resolution_move": "Collapsed the physical law claim entirely by emptying the thesis primitives list, accepting that without a published and audited SI provenance ledger for 'x' across all classes, no structural primitive could be defended as more than table regularity.",
+    "what_survived": "The identification of the SI provenance ledger for 'x' as the necessary and sufficient veto gate for any cross-class physical interpretation claim.",
+    "what_opened": "Whether a minimal audit protocol or partial provenance certificate for 'x' in the observable classes (A) could serve as a conditional primitive, deferring the cross-class claim rather than abandoning it.",
+    "proof_object_delta": {
+      "before": "A cross-class physical law claim resting on an unaudited assumption of homologous SI construction of 'x' across all system classes",
+      "after": "An empty thesis primitive set with the SI provenance ledger for 'x' established as the mandatory precondition gate before any physical primitive can be asserted",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "collapse to precondition gate",
+    "project": "gp163d_unified_accel"
+  }
+]

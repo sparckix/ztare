@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2040_heldout_dual_head_delta_packet.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2040_heldout_dual_head_delta_packet.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2040_heldout_dual_head_delta_packet",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2040_heldout_dual_head_delta_packet.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2040_heldout_dual_head_delta_packet.json"
+  },
+  "baseline_action": "Stop after v20.39 and leave auxiliary signal untested",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2040_heldout_dual_head_delta_packet",
+  "cost_penalty": 0.02,
+  "counterfactual_action": "Replay or train directly on the ofScalars auxiliary signal",
+  "created_at": "2026-05-14T17:08:07Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 29.75,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_pre_gnn_alignment_policy",
+    "score": 1.0,
+    "selected_domain": "gp225_pre_gnn_alignment_policy",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 29.75,
+        "sample_limited": true,
+        "score": 1.0,
+        "score_rows": 2,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2368,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.4286,
+        "score_rows": 2,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.0938,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0769,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "static packet could be mistaken for replay evidence"
+    ],
+    "positive": [
+      "prevents single-theorem overfit",
+      "turns auxiliary signal into a heldout delta test"
+    ]
+  },
+  "horizon": "45m",
+  "information_value": 0.5,
+  "layer": "micro",
+  "objective_resolver": "success iff v2040 JSON exists, consumes v2035/v2037/v2039, excludes current_scale_0224 from heldout rows, has >=4 heldout rows and >=8 actions, defines baseline and auxiliary-conditioned arms, requires separate strict/solver/auxiliary/harmful deltas, replay_run=false, training_now=false, gnn_blocked=true",
+  "question": "Will v20.40 emit a no-replay heldout dual-head delta packet that excludes ofScalars, defines baseline vs auxiliary-conditioned replay arms, and blocks training until strict/auxiliary head deltas are measured separately?",
+  "risk_penalty": 1.1,
+  "success_threshold": "all objective resolver clauses true",
+  "task_type": "gp225_pre_gnn_alignment_policy",
+  "value_if_success": 1.7,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

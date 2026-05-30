@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level522_cofinal_event_selector_final_prefix_bound_source",
+  "contract_question": "Will Level522 construct the Level521 explicit cofinal event witness source from a named cofinal event selector plus selector equality and same-selector final-prefix bound, with Lean/workbench/gate/tests passing?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 82.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lake_build_regression": 0.16,
+    "lean_dependent_field_mismatch": 0.22,
+    "provenance_direction_gate_regression": 0.16,
+    "selector_projection_mismatch": 0.3,
+    "workbench_arg_gap": 0.16
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T08:30:52Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.7,
+  "rationale_short": "Level521 already fixed the subtype target shape; residual risks are dependent projection mismatch, workbench wiring, and the new provenance direction gate.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

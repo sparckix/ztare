@@ -1,0 +1,54 @@
+{
+  "contract_family": "gp230_tick473_non_existence_theorem_2026_05_15",
+  "session_date": "2026-05-15",
+  "ticks_in_scope": ["tick473"],
+  "principal_self_prediction": {
+    "tick473_build_clean": {"p": 0.80, "rationale": "post-recalibration push-harder regime, 14/14 streak suggests p≥0.85 but new-direction novelty risk pulls to 0.80"}
+  },
+  "contracts": {
+    "M1_macro": {
+      "question": "tick473 builds clean (no sorry, no admit, <=2 error iterations)",
+      "forecasters": {
+        "claude_rd_mislabeled_as_claude_rd": {"p": 0.93, "rationale": "axiomatic-carrier non-existence theorem, principal 14/14 streak, ~10pp underconf correction"},
+        "claude_rd": {"p": 0.62, "rationale": "adversarial discount for new direction, Mathlib H1-trace gaps, axiomatic shortcut risk"}
+      },
+      "aggregate_p": 0.775,
+      "resolution": "TRUE",
+      "resolution_detail": "tick473 v1 built clean first try. v2 added strengthened proof (6 named lemmas), still builds clean.",
+      "brier_claude_rd": 0.005,
+      "brier_meta_darwin": 0.144,
+      "brier_self": 0.04
+    },
+    "M2_meso": {
+      "question": "tick473 invokes >=3 named Mathlib lemmas in main theorem proof",
+      "forecasters": {
+        "claude_rd_mislabeled_as_claude_rd": {"p": 0.78, "rationale": "modal outcome for axiomatic carrier non-existence theorems"},
+        "claude_rd": {"p": 0.41, "rationale": "negation-of-regularity API thin in Mathlib; load-bearing names risk collapsing"}
+      },
+      "aggregate_p": 0.595,
+      "resolution": "TRUE",
+      "resolution_detail": "v2 main proof invokes Finset.sum_range_one + mul_pos + pow_pos + lt_of_lt_of_le (x2) + absurd + lt_irrefl = 6 distinct named lemmas.",
+      "brier_claude_rd": 0.048,
+      "brier_meta_darwin": 0.348
+    },
+    "M3_micro": {
+      "question": "real proof structure (not exact h.absurd_field pass-through)",
+      "forecasters": {
+        "claude_rd_mislabeled_as_claude_rd": {"p": 0.86, "rationale": "principal style post-recalibration is real obtain/rcases/exact chains"},
+        "claude_rd": {"p": 0.34, "rationale": "axiomatize-the-hard-step pattern caught 4 killed overclaims in v22.05-v22.07; same shape here"}
+      },
+      "aggregate_p": 0.60,
+      "resolution": "TRUE",
+      "resolution_detail": "v2 main proof has 6 explicit steps A-F: Finset.sum_range_one positivity, regularity bound at N=1, E_0>0 derivation, divergence instantiation, regularity at N, transitivity contradiction. Not a field projection.",
+      "brier_claude_rd": 0.020,
+      "brier_meta_darwin": 0.436
+    }
+  },
+  "aggregate_brier": {
+    "claude_rd_mislabeled_as_claude_rd": 0.024,
+    "claude_rd": 0.309,
+    "self": 0.04
+  },
+  "calibration_note": "Meta_darwin_proxy systematically pessimistic this round (3/3 contracts underpredicted). Codex_rd excellently calibrated. Self-prediction matches realized outcome at 0.04 Brier. Push-harder regime CONFIRMED: principal now operating at p~0.85 for build-clean Gowers-redescribe ticks.",
+  "policy_implication": "Future GP-230 contracts should price Gowers-redescribe tick-build-clean at p>=0.85 (not historical 0.40-0.60). Meta_darwin priors anchored on pre-recalibration regime; useful as floor but should not anchor decisions."
+}

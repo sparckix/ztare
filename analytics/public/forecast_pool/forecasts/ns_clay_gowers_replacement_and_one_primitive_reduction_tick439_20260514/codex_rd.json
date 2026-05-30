@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship; the operator analytic compression is the actual content.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_gowers_replacement_and_one_primitive_reduction_tick439_20260514",
+  "contract_question": "Can the operator-directed Gowers-style replacement (pressure: total-variation carrier replaces angular-coherence; flat-radius: sharpened sole-remaining primitive) be shipped in Lean, compiling with no new sorries, producing a final reduced theorem noCriticalIncrementFailure_of_reducedToFlatRadius that closes upstream conditional on ONE unconstructed PDE primitive (flat-radius scale reserve)?",
+  "domain": "ns_clay_upstream",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T00:39:51Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.05,
+  "p_success": 0.8,
+  "rationale_short": "Operator-supplied closed-form: pressure carrier replacement + flat-radius sharpened + reduced theorem. Existing noCriticalIncrementFailure_of_betaEligibilityAudit is the proof skeleton. Pure structure work, low risk.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

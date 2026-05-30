@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json"
+  },
+  "budget_agent_minutes": 40.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318",
+  "cost_penalty": 2.0,
+  "created_at": "2026-05-14T00:31:41Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 31.5,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 34,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 8,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1034,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same tick 2026-05-14",
+  "information_value": 8.0,
+  "layer": "micro",
+  "objective_resolver": "Success iff Lean builds after adding a non-tautological constructor/source station in ns_route1_fresh_frequency_coercivity_adapter.lean or ns_pressure_hessian_l2_bridge.lean that links recovered Riesz/Helmholtz pressure recovery to the tail-window projection station, with no sorry/admit and GP-233 row.",
+  "question": "Can this tick connect the existing recovered-Riesz/local-pressure source machinery to the new Route1PressureHessianTailWindowProjectionStation without claiming the older source upper-bound arc proves pressure visibility?",
+  "risk_penalty": 5.0,
+  "success_threshold": "lake env lean pass; lake build pass; no sorry/admit; source station distinguishes upper/control source from lower visibility carrier",
+  "task_type": "lean_pde_frontier_lowering",
+  "value_if_success": 8.0,
+  "void_conditions": "If existing imports would create circular dependency, success may be via a separate lower bridge in the importing adapter file rather than pressure file."
+}

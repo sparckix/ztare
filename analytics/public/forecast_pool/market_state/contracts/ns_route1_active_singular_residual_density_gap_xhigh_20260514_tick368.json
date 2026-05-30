@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:12:40Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 41.26987951807229,
+    "expected_value": 0.6302119873859212,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.5126987951807229,
+    "p_needs_new_lemma": 0.947566265060241,
+    "p_regression": 0.07756626506024096,
+    "p_success": 0.3704770476268851,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.43,
+        "weight": 1.2103
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.3,
+        "weight": 0.9477
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "compactness_lsc_sublemma_found",
+        "p": 0.15703614457831327
+      },
+      {
+        "mode": "requires_new_measure_topology",
+        "p": 0.1493132530120482
+      },
+      {
+        "mode": "fifth_channel_formalized",
+        "p": 0.1233855421686747
+      },
+      {
+        "mode": "density_gap_restated",
+        "p": 0.11216867469879518
+      },
+      {
+        "mode": "route_native_countermodel",
+        "p": 0.10095180722891567
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:10:45Z",
+    "created_by": "codex:RD",
+    "horizon": "same session",
+    "layer": "meso",
+    "objective_resolver": "success iff sidecar returns nontrivial proof route/countermodel/sublemma split for d mu_I / d mu_A_perp >= c; not success for restating the density gap",
+    "question": "Can xhigh pull forward ActiveSingularResidualDensityGap by proving the RN density route, killing it with a route-native countermodel, or isolating the exact compactness/lsc sublemma below density failure?",
+    "success_threshold": "new proof route, route-native no-go, or sharper compactness/lsc sublemma",
+    "task_type": "xhigh_math_pullforward"
+  },
+  "contract_id": "ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-14T13:12:33Z",
+        "p_success": 0.43,
+        "rationale_short": "GPT gives exact RN density route; sidecar likely reduces to compactness/LSC sublemmas or fifth-channel criterion, not proof.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 48.0,
+        "forecasted_at": "2026-05-14T13:12:33Z",
+        "p_success": 0.3,
+        "rationale_short": "RN density gap is equivalent to desired domination; useful progress likely requires new compactness/profile topology.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:16:31Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.13,
+      "p_success": 0.3704770476268851,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "compactness_lsc_sublemma_found",
+        "p": 0.15703614457831327
+      },
+      "voi_proxy": 1.1132
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 41.26987951807229,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3704770476268851,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "compactness_lsc_sublemma_found",
+        "p": 0.15703614457831327
+      },
+      {
+        "mode": "requires_new_measure_topology",
+        "p": 0.1493132530120482
+      },
+      {
+        "mode": "fifth_channel_formalized",
+        "p": 0.1233855421686747
+      },
+      {
+        "mode": "density_gap_restated",
+        "p": 0.11216867469879518
+      },
+      {
+        "mode": "route_native_countermodel",
+        "p": 0.10095180722891567
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.40745,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:16:38Z"
+  }
+}

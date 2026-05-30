@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_local_rd",
+  "contract_id": "gp225_v1866_current_toolchain_witness_backfill_pilot",
+  "contract_question": "Will v18.66 backfill closure/target witnesses for at least 3 of 6 selected current-toolchain hard-residual packet rows with zero audited false accepts?",
+  "domain": "gp225_witness_backfill",
+  "expected_cost_agent_minutes": 8.0,
+  "failure_mode_distribution": {
+    "current_toolchain_driver_lacks_poststate_capture": 0.3,
+    "gold_driver_compile_failures": 0.18,
+    "normalizer_or_decoy_absorption": 0.12,
+    "other": 0.1,
+    "pilot_row_selection_mismatch": 0.08,
+    "witness_guard_too_weak_or_too_strong": 0.22
+  },
+  "forecasted_at": "2026-05-13T16:55:48Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.03,
+  "p_success": 0.44,
+  "rationale_short": "The selected rows are real hard residuals, but v18.64 has no current-toolchain witness fields, so the main risk is driver-schema backfill rather than label quality.",
+  "read_only_attestation": true
+}

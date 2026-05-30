@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_",
+  "contract_question": "Re-running the 10 C-gap rows with the prover granted in-sandbox tactic search (exact?/apply?/rw?/simp?) + ground-truth that the closer exists at the v4.29.0 pin: will >=5/10 now close genuine (compile + not single-lemma-laundered), confirming the research-grade ceiling is RETRIEVAL-bound not reasoning-bound?",
+  "domain": "tooled_retrieval_ablation_c_gaps",
+  "expected_cost_agent_minutes": 44.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compile_or_plumbing_blocks_genuine_close": 0.22,
+    "retrieval_miss_of_true_closer": 0.34,
+    "single_lemma_laundering_detected": 0.18,
+    "tactic_search_local_minima_or_timeout": 0.16,
+    "v4290_pin_or_dependency_mismatch": 0.1
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:29:58Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.06,
+  "p_success": 0.56,
+  "rationale_short": "Sandbox tactic search plus the asserted ground-truth closer should lift the floor above the prior 3/10, but the main residuals are still retrieval miss, compile/plumbing failure, and laundering rather than pure reasoning.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

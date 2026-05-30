@@ -1,0 +1,33 @@
+{
+  "actual_cost_agent_minutes": 20.0,
+  "artifact_hash": "2c346ef6d5dee2dd9c35ef510e9d813f527350ebd2d5be2c96eed80cabb535fd",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level501_least_hit_incidence_pencil.md",
+  "changed_by_forecast_ids": [
+    "codex:RD"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "lake_build_pass",
+  "contract_id": "tick668_level501_least_hit_incidence_selector_source",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": "warm forecaster publishing produced zero channel events after contract overwrite; RD refreshed forecast before this resolution and strict gate/workbench/Lake evidence decides the positive source result",
+  "ordering_override_no_independent_forecaster": "warm forecaster publishing produced zero channel events after contract overwrite; RD refreshed forecast before this resolution and strict gate/workbench/Lake evidence decides the positive source result",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Positive Level501 result: least-hit bounded incidence selector formalized; Nat.find constructs targetEventIndex, bound and injectivity are derived, strict least-hit gate, workbench, and lake build passed.",
+  "resolved_at": "2026-05-27T04:45:54Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

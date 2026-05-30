@@ -1,0 +1,206 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T19:26:33Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 50.0,
+    "expected_value": -4.367393330825717,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.35,
+    "p_needs_new_lemma": 0.475,
+    "p_regression": 0.045,
+    "p_success": 0.5301939439532432,
+    "participants": [
+      {
+        "agent_id": "codex_forecaster",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408/codex_forecaster.json",
+        "forecasted_at": "2026-05-14T19:26:21Z",
+        "p_success": 0.49,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rd_codex",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408/rd_codex.json",
+        "forecasted_at": "2026-05-14T19:26:21Z",
+        "p_success": 0.57,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "trace_or_sup_tail_square_not_paid",
+        "p": 0.18
+      },
+      {
+        "mode": "persistence_trace_too_broad",
+        "p": 0.17
+      },
+      {
+        "mode": "same_packet_identity_missing",
+        "p": 0.12
+      },
+      {
+        "mode": "annular_packet_not_same_carrier",
+        "p": 0.115
+      },
+      {
+        "mode": "cutoff_commutator_unrouted",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 70.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T19:26:06Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "artifact-backed: success iff a N1 persistence proof/no-go packet is saved, Lean route1 adapter compiles after any source/guard refinement, no sorry/admit is introduced in the touched Lean file, and the outcome preserves remaining N2/N7 obligations",
+    "question": "Can this tick produce a math-first N1 fixed-cutoff annular packet-energy persistence proof attempt plus a compiled Lean source/guard refinement, without claiming full route-1 or upstream closure?",
+    "success_threshold": "proof_or_no_go_packet_saved_and_lean_passes_no_sorry_no_overclaim",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_fixed_cutoff_annular_persistence_20260514_tick408",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_forecaster",
+          "rd_codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_forecaster",
+      "rd_codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "codex_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408/codex_forecaster.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-14T19:26:21Z",
+        "p_success": 0.49,
+        "rationale_short": "The averaged version should be sourceable; the time-slice version may need a nontrivial parabolic trace inequality or a new residual for inherited packet energy.",
+        "specific_failure_mode_ids": [
+          "trace_or_sup_tail_square_not_paid",
+          "same_packet_identity_missing"
+        ]
+      },
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "rd_codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_fixed_cutoff_annular_persistence_20260514_tick408/rd_codex.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T19:26:21Z",
+        "p_success": 0.57,
+        "rationale_short": "N1 has a plausible localized frequency-energy route, but pointwise tailSquare persistence may need an explicit trace/average hypothesis and same-carrier packet lock.",
+        "specific_failure_mode_ids": [
+          "persistence_trace_too_broad",
+          "cutoff_commutator_unrouted"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T19:34:50Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.08,
+      "p_success": 0.5301939439532432,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "trace_or_sup_tail_square_not_paid",
+        "p": 0.18
+      },
+      "voi_proxy": 0.6791
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 50.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.5301939439532432,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "trace_or_sup_tail_square_not_paid",
+        "p": 0.18
+      },
+      {
+        "mode": "persistence_trace_too_broad",
+        "p": 0.17
+      },
+      {
+        "mode": "same_packet_identity_missing",
+        "p": 0.12
+      },
+      {
+        "mode": "annular_packet_not_same_carrier",
+        "p": 0.115
+      },
+      {
+        "mode": "cutoff_commutator_unrouted",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.22250000000000003,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T19:34:55Z"
+  }
+}

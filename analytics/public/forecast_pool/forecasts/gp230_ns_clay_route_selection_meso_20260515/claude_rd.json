@@ -1,0 +1,24 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "gp230_ns_clay_route_selection_meso_20260515",
+  "contract_question": "Which of 5 NS Clay flat-branch closure routes is most likely to yield a NEW PEER-REVIEWED-CITABLE PDE result in 60min of pencil + Lean work, given recent results Tao 2019 / Buckmaster-Vicol 2019 / Palasek 2022 / Vasseur-Yang 2023? Routes: X1=stochastic-Lagrangian-CI2008, X2=sumset-additive-combinatorics, X3=weighted-CZ-pressure, X4=CCFS-flux-ladder-2008, X5=Tao-quant-L3-+-Palasek-min-rate-+-VY2023-bridge.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "exponent_gap_too_wide": 0.18749999999999997,
+    "lean_scaffold_recurrence": 0.25,
+    "non_peer_reviewed_bridge": 0.21874999999999997,
+    "reduces_to_existing_literature": 0.34375
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T16:04:49Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.92,
+  "p_regression": 0.05,
+  "p_success": 0.18,
+  "rationale_short": "Posterior after 2 KILL passes this session: route X5 (Tao 2019 + Palasek 2022 + VY 2023 bridge) is highest-prior; X1-X4 reduce to literature. p_success low (0.18) given two consecutive KILLs.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

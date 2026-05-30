@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_empirical_skeptic",
+  "contract_id": "meta_prediction_market_externalities_review_20260514",
+  "contract_question": "Can a two-agent expert review plus local artifact audit identify concrete improvements to ex-post positive/negative externality analysis for the forecast-pool/prediction-market seam?",
+  "domain": "meta_prediction_market",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "actionable_report_possible": 0.2,
+    "correlated_forecasters_hard": 0.18,
+    "data_scattered": 0.26,
+    "externalities_in_prose_only": 0.3,
+    "overhead_risk": 0.06
+  },
+  "forecasted_at": "2026-05-14T13:42:41Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.48,
+  "p_regression": 0.08,
+  "p_success": 0.61,
+  "rationale_short": "We can identify improvements, but current artifacts likely lack counterfactual and causality fields needed for robust externality measurement.",
+  "read_only_attestation": true
+}

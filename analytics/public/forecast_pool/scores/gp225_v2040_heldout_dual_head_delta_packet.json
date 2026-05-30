@@ -1,0 +1,129 @@
+{
+  "contract_id": "gp225_v2040_heldout_dual_head_delta_packet",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Stop after v20.39 and leave auxiliary signal untested",
+      "counterfactual_action": "Replay or train directly on the ofScalars auxiliary signal",
+      "externality_hypotheses": {
+        "negative": [
+          "static packet could be mistaken for replay evidence"
+        ],
+        "positive": [
+          "prevents single-theorem overfit",
+          "turns auxiliary signal into a heldout delta test"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Bayes",
+        "Shannon"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "single_theorem_overfit_guard",
+        "heldout_delta_gate",
+        "anti_laundering"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "static_packet_not_replay_evidence"
+      ],
+      "new_next_action": "GP-230-priced bounded heldout dual-head delta replay or static abort",
+      "old_next_action": "direct replay or training from ofScalars auxiliary signal",
+      "preconditioner_effect": "blocked single-theorem ofScalars signal from acting as benchmark or training evidence",
+      "preconditioner_source": "analytics/public/leanmill/results/v2039_ofScalars_target_alignment_or_auxiliary_head_gate.json"
+    }
+  },
+  "mean_brier": 0.0685,
+  "mean_log_score": -0.3019275365405918,
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "artifact_hash": "2bdc0a6c33aca491f6e3f0dbbd2d571c2fbeda10d45a7cfd02b611aec7379d4c",
+    "artifact_path": "analytics/public/leanmill/results/v2040_heldout_dual_head_delta_gate_packet.json",
+    "changed_by_forecast_ids": [
+      "Bayes",
+      "Shannon"
+    ],
+    "compile_status": "passed_static_packet",
+    "contract_id": "gp225_v2040_heldout_dual_head_delta_packet",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "single_theorem_overfit_guard",
+      "heldout_delta_gate",
+      "anti_laundering"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "static_packet_not_replay_evidence"
+    ],
+    "new_next_action": "GP-230-priced bounded heldout dual-head delta replay or static abort",
+    "old_next_action": "direct replay or training from ofScalars auxiliary signal",
+    "preconditioner_effect": "blocked single-theorem ofScalars signal from acting as benchmark or training evidence",
+    "preconditioner_source": "analytics/public/leanmill/results/v2039_ofScalars_target_alignment_or_auxiliary_head_gate.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.40 emitted the no-replay heldout dual-head delta packet: excluded current_scale_0224/ofScalars_add, selected 5 heldout rows, defined baseline and auxiliary-conditioned top2 arms with 10 actions each, separated strict/solver/auxiliary/harmful deltas, replay=false, training=false, GNN blocked=true.",
+    "resolved_at": "2026-05-14T17:10:00Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T17:10:05Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "Bayes",
+      "brier": 0.05289999999999999,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "gp225_pre_gnn_alignment_policy",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2613647641344075,
+      "p_success": 0.77,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:08:07Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:08:21Z",
+        "resolved_at": "2026-05-14T17:10:00Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 19.0,
+      "agent_id": "Shannon",
+      "brier": 0.08410000000000002,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "gp225_pre_gnn_alignment_policy",
+      "expected_cost_agent_minutes": 27.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.342490308946776,
+      "p_success": 0.71,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:08:07Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:08:21Z",
+        "resolved_at": "2026-05-14T17:10:00Z"
+      }
+    }
+  ]
+}

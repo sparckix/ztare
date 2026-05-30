@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "3edb932edb3c3aa28596c214fbc96942168f221689f2b8140acc7a33b51fc866",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_fixed_cutoff_signed_identity_source_20260514_tick372",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Added FixedCutoffLocalEnergySignedMeasureIdentitySource with signed alpha pieces, fixed cutoff identity, positive-variation domination, residual provenance, and constructor into LocalEnergySignedMeasurePositiveVariationSource; Lean file passed.",
+  "resolved_at": "2026-05-14T13:54:48Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

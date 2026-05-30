@@ -1,0 +1,148 @@
+{
+  "contract_id": "ns_n8_beta_coherent_event_selection_surface_20260514_tick423",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue informal N8 beta audit without editing Lean.",
+      "counterfactual_action": "Formalize a smaller anti-tautology guard only.",
+      "externality_hypotheses": {
+        "negative": [
+          "may add another adapter if residual-routing fields are not tied to existing source objects"
+        ],
+        "positive": [
+          "narrows beta branch to coherent event-selection theorem"
+        ],
+        "process": [
+          "tests structural catalog Gowers-first/Formalize-second discipline"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd",
+        "meta_darwin_proxy"
+      ],
+      "counterfactual_value_bucket": "high_info_bounded_adapter",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "ns_n8_beta",
+        "coherent_event_selection",
+        "anti_tautology",
+        "gp233_positive"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "selection_theorem_still_open",
+        "pressure_visibility_separate",
+        "inherited_flat_branch_separate"
+      ],
+      "new_next_action": "Attack residual branch event selection: prove residual fresh excess creates an audit event in the same hEvents/L stream, while inherited/flat and pressure-only cases route to their separate N8 branches.",
+      "old_next_action": "Prove coherent event-stream selection directly or continue informal N8 beta audit.",
+      "preconditioner_effect": "Prevented claiming event selection from coherence; forced explicit residual routing and no-closure guard.",
+      "preconditioner_source": "scientific amnesia precheck + structural_language_catalog_20260514 + Meta-Darwin tick422 residual",
+      "realized_failure_mode_ids": [
+        "event_selection_still_unsourced",
+        "pressure_visibility_smuggling_guarded",
+        "inherited_flat_branch_still_separate"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.14799999999999996,
+  "mean_log_score": -0.48274048803246333,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "7113fc47a22aa5cb53eaf367df981226e5bdafa53e39cd03f4b58d1254f2c00b",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ],
+    "compile_status": "lean_passed_no_sorry",
+    "contract_id": "ns_n8_beta_coherent_event_selection_surface_20260514_tick423",
+    "counterfactual_value_bucket": "high_info_bounded_adapter",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "ns_n8_beta",
+      "coherent_event_selection",
+      "anti_tautology",
+      "gp233_positive"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "selection_theorem_still_open",
+      "pressure_visibility_separate",
+      "inherited_flat_branch_separate"
+    ],
+    "new_next_action": "Attack residual branch event selection: prove residual fresh excess creates an audit event in the same hEvents/L stream, while inherited/flat and pressure-only cases route to their separate N8 branches.",
+    "old_next_action": "Prove coherent event-stream selection directly or continue informal N8 beta audit.",
+    "preconditioner_effect": "Prevented claiming event selection from coherence; forced explicit residual routing and no-closure guard.",
+    "preconditioner_source": "scientific amnesia precheck + structural_language_catalog_20260514 + Meta-Darwin tick422 residual",
+    "realized_failure_mode_ids": [
+      "event_selection_still_unsourced",
+      "pressure_visibility_smuggling_guarded",
+      "inherited_flat_branch_still_separate"
+    ],
+    "resolution_note": "Added CoherentFreshPacketAuditResidualRoutingSource, projection to BetaNonflatFreshPacketCoherentSourceSplit, and no-closure guard. Lean passed; no sorry/admit; git diff check clean. The tick narrows coherent event selection to residual-fresh-excess routing plus inherited/flat skeleton and pressure same-carrier obligations, but leaves the actual event-selection theorem open.",
+    "resolved_at": "2026-05-14T22:26:42Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T22:26:46Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_rd",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": 7.0,
+      "domain": "ns_proof_frontier",
+      "expected_cost_agent_minutes": 25.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.27,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:24:49Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:25:07Z",
+        "resolved_at": "2026-05-14T22:26:42Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns_proof_frontier",
+      "expected_cost_agent_minutes": 34.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T22:24:49Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T22:25:07Z",
+        "resolved_at": "2026-05-14T22:26:42Z"
+      }
+    }
+  ]
+}

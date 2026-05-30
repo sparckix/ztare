@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2600_leanhammer_baseline_on_12_open_rows_meso.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2600_leanhammer_baseline_on_12_open_rows_meso",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T03:14:44Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.2857,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "baseline_measurement",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 3,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.1765,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.125,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0526,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0526,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "gp230_forecast_pool_infrastructure",
+        "expected_cost_agent_minutes_prior": 49.0,
+        "sample_limited": true,
+        "score": 0.0476,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "meso",
+  "objective_resolver": "Bridge-verified via Lean compile in v4.29.0 sandbox + v24.01-style indirect-leakage scan + tautology detection (premise = original theorem name) + automation-machinery detection (simp/aesop/fun_prop/measurability/grind in suggestion).",
+  "question": "On 12 canonical-train OPEN rows, how many does LeanHammer baseline (cloud premise selection + Duper + Aesop + Zipperposition) close moat-cleanly (not tautological-original-theorem-apply, not @[simp]/@[fun_prop]/@[grind]/automation-machinery indirect leakage, not gold-name overlap)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "moat-surface-decisive-result-measured",
+  "task_type": "baseline_measurement",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

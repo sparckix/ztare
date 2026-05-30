@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "4467b08ecbfd7ee248764a8d15f7c1c87d7016f63055305f5457af60efaca790",
+  "artifact_path": "analytics/public/leanmill/results/v2051_source_safe_nonself_charfun_dual_discovery_or_drop_row.json",
+  "changed_by_forecast_ids": [
+    "Curry2",
+    "Lovelace2"
+  ],
+  "compile_status": "static_source_discovery_passed",
+  "contract_id": "gp225_v2051_source_safe_nonself_charfun_dual_discovery",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "source_safety",
+    "anti_leakage",
+    "historic_workspace"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "no_compile_evidence"
+  ],
+  "new_next_action": "build source-safe nonself candidate synthesis gate from IsGaussian.charFunDual_eq without target proof copying",
+  "old_next_action": "drop current_scale_0329 or retry corrected post-target helper canary",
+  "preconditioner_effect": "Forced a source-safety search instead of dropping the row or retrying post-target helper candidates.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2050_charfun_dual_replay_failure_reducer.json",
+  "realized_failure_mode_ids": [
+    "source_contract_copies_target_proof",
+    "nonself_source_too_low_level"
+  ],
+  "resolution_note": "v20.51 found before-target non-self charFunDual sources via Gaussian.Basic/MeasureTheory and quarantined two post-target same-file helpers; no candidate generation, replay, or training ran.",
+  "resolved_at": "2026-05-14T17:50:17Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

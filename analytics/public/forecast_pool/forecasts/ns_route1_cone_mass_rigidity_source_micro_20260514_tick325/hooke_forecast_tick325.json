@@ -1,0 +1,23 @@
+{
+  "agent_id": "hooke_forecast_tick325",
+  "contract_id": "ns_route1_cone_mass_rigidity_source_micro_20260514_tick325",
+  "contract_question": "Will the next NS route-1 tick add a build-passed opposite-cone no-escape / rigidity source that derives FixedWindowStressConeMassSubordination without final-carrier smuggling?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 105.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_or_no_sorry_check_regression": 0.07,
+    "downstream_adapter_type_plumbing_overruns_tick": 0.09,
+    "fixed_window_and_opposite_cone_geometry_do_not_align": 0.14,
+    "no_countermodel_branch_smuggles_final_carrier_or_angular_floor": 0.17,
+    "opposite_cone_source_restates_cone_mass_subordination": 0.31,
+    "overflow_to_countermodel_primitive_is_too_abstract_to_count": 0.22
+  },
+  "forecasted_at": "2026-05-14T01:32:11Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.08,
+  "p_success": 0.41,
+  "rationale_short": "Recent source lowerings raise compile odds, but this asks for cone subordination from an opposite-cone no-escape/countermodel primitive rather than passing it through.",
+  "read_only_attestation": true
+}

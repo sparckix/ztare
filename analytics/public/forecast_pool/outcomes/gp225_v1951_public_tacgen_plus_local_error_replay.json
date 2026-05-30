@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 44.0,
+  "artifact_hash": "c2658caca57be7f088cb6c6fc1739a2632fdce7be4e55201cb54003e43167be5",
+  "artifact_path": "analytics/public/leanmill/results/v1953_reprover_candidate_replay_bridge.json",
+  "compile_status": "public_tacgen_strict_target_state_passed_no_compiled_closures",
+  "contract_id": "gp225_v1951_public_tacgen_plus_local_error_replay",
+  "error_type": "none",
+  "goal_delta": 1,
+  "resolution_note": "v19.51 local error-packet replay produced 0 new strict rows and 1 pull-forward closure. v19.52 public ReProver direct tacgen staged the uncached model and emitted 96 candidates across 12 rows. v19.53 replayed top-4 per row: new_strict_same_target_rows=1 via current_scale_0256/rw [normThreshold_zero], harmful_compiled_mismatch_actions=0, forbidden generation fields absent, training_now=false, gnn_blocked=true.",
+  "resolved_at": "2026-05-14T01:18:48Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

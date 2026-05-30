@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/meta_prediction_market_externalities_review_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/meta_prediction_market_externalities_review_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/meta_prediction_market_externalities_review_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/meta_prediction_market_externalities_review_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/meta_prediction_market_externalities_review_20260514.json"
+  },
+  "budget_agent_minutes": 50.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "meta_prediction_market_externalities_review_20260514",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-14T13:41:47Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0345,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "meta_market_review",
+    "score": 0.0345,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0345,
+        "score_rows": 12,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same session",
+  "information_value": 0.68,
+  "layer": "meso",
+  "objective_resolver": "success iff review produces specific code/spec/process recommendations grounded in current forecast outputs, calibration artifacts, and GP-233 evidence, not generic prediction-market advice",
+  "question": "Can a two-agent expert review plus local artifact audit identify concrete improvements to ex-post positive/negative externality analysis for the forecast-pool/prediction-market seam?",
+  "risk_penalty": 1.0,
+  "success_threshold": "actionable recommendations with artifact pointers and at least one proposed metric/schema/rule change",
+  "task_type": "meta_market_review",
+  "value_if_success": 1.0,
+  "void_conditions": "agents unavailable or operator redirects"
+}

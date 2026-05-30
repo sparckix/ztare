@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Emit a reducer that names exact missing binders/source spellings and chooses one row for the next hydration patch.",
+  "agent_id": "Curry4",
+  "contract_id": "gp225_v2064_public_union_context_hydration_reducer",
+  "contract_question": "Will v20.64 reduce the v20.63 replay abort into row-level binder/context hydration obligations that can reopen replay pricing without running Lean replay or training?",
+  "domain": "gp225_pre_gnn_context_hydration_reducer",
+  "expected_cost_agent_minutes": 19.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bayes_bound_witness_not_named": 0.18,
+    "elliptic_orientation_underclassified": 0.15,
+    "historic_target_context_sparse": 0.27,
+    "row_obligations_too_abstract": 0.29,
+    "source_name_normalization_not_resolved": 0.11
+  },
+  "forecast_externality_tags": [
+    "hydration_reducer",
+    "source_discovery",
+    "replay_deferred"
+  ],
+  "forecasted_at": "2026-05-14T18:43:21Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.09,
+  "p_regression": 0.06,
+  "p_success": 0.72,
+  "rationale_short": "Static reduction is likely; the risk is producing prose that does not constrain the next candidate patch enough.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "row_obligations_too_abstract",
+    "historic_target_context_sparse"
+  ]
+}

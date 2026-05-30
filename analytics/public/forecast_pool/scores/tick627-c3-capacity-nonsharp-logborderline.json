@@ -1,0 +1,92 @@
+{
+  "contract_id": "tick627-c3-capacity-nonsharp-logborderline",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.0442,
+  "mean_log_score": -0.23580245530635466,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick627-c3-capacity-nonsharp-logborderline",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "LEMMA FAILED (honest, conceded to codex p=0.22): the omega-capacity=ps=d-borderline identification was ASSERTED not derived (major unproved leap); the bounded-active-scales 'iff' was overclaimed. Meta: the pre-mechanization (ns_scientific_amnesia_precheck fleet pre-hard-claim gate) WAS working and surfaced the real target (manifest:180 enstrophy-budget terminal + line2209 Cap_omega(Q)=nu r^2 int_sep|w|^2|grad phi|^2 separator dichotomy + closeable no-reuse budget); I GLOSSED the precheck output (grep to 2 lines) and invented recast/flawed lemmas instead of composing on the surfaced endpoint. tick628 = compose the no-reuse budget on the SURFACED Cap_omega endpoint.",
+    "resolved_at": "2026-05-17T02:07:49Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:51Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "claude:RD",
+      "brier": 0.04000000000000001,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2231435513142097,
+      "p_success": 0.2,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T02:06:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T02:07:49Z",
+        "resolved_at": "2026-05-17T02:07:49Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "codex",
+      "brier": 0.0484,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.22,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T02:06:45Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T02:07:49Z",
+        "resolved_at": "2026-05-17T02:07:49Z"
+      }
+    }
+  ]
+}

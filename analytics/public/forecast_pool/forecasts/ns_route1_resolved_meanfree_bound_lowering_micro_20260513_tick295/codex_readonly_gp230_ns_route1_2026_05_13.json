@@ -1,0 +1,23 @@
+{
+  "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+  "contract_id": "ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295",
+  "contract_question": "Can the local tick add a compiling non-tautological Lean object lowering FreshFrequencyResolvedMeanFreeTentSquareEstimate.resolvedMeanFreeTentSquare_bound into fresh-energy/Poincare plus CKN-excess comparison sub-estimates without strictness oracle or pre-GNN mutation?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 50.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "existing_l3_primitives_are_too_abstract_to_pay_numeric_bound": 0.27,
+    "fresh_energy_to_ckn_excess_comparison_needs_new_constant_bookkeeping": 0.19,
+    "lean_namespace_or_import_friction": 0.08,
+    "new_object_lowers_bound_but_leaves_same_core_inequality_unpaid": 0.24,
+    "poincare_geometry_fields_do_not_align_with_current_resolved_square_station": 0.15,
+    "strictness_oracle_smuggling_detected_and_rejected": 0.07
+  },
+  "forecasted_at": "2026-05-13T22:02:25Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.48,
+  "p_regression": 0.07,
+  "p_success": 0.67,
+  "rationale_short": "A lower audit object under resolvedMeanFreeTentSquareEstimate is likely; fully paying the numeric bound probably needs one new comparison lemma or constant-normalization surface.",
+  "read_only_attestation": true
+}

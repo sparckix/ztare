@@ -1,0 +1,24 @@
+{
+  "agent_id": "hooke_forecast_tick343",
+  "contract_id": "ns_route1_leakage_normalizer_guard_micro_20260514_tick343",
+  "contract_question": "Will we add and verify a Lean guard/source for fixed-window leakage normalizer compatibility below the shard-C leakage source?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 75.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_sorry_or_downstream_regression": 0.04,
+    "compatibility_source_restates_shard_C_charge_payment": 0.28,
+    "lean_arithmetic_or_namespace_plumbing_breaks_build": 0.07,
+    "mismatch_gap_guard_too_weak_or_not_connected_to_weighted_stress": 0.2,
+    "no_final_carrier_guard_only_prop_level": 0.1,
+    "normalizer_fresh_leakage_terms_do_not_align_existing_bookkeeping": 0.18,
+    "scalar_bridge_requires_extra_nonnegativity_or_constant_assumptions": 0.13
+  },
+  "forecasted_at": "2026-05-14T03:57:14Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.34,
+  "p_regression": 0.05,
+  "p_success": 0.64,
+  "rationale_short": "Compile chance is moderate-high because bookkeeping exposes scalar leakage and charges, but source must connect weighted stress, normalizer, and fresh leakage rather than rename the payment inequality.",
+  "read_only_attestation": true
+}

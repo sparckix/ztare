@@ -1,0 +1,229 @@
+{
+  "tests_run": 3,
+  "test1_ood_compression": {
+    "verdict": "PASSES OOD test (1% unmapped < 30%) \u2014 vocabulary widens",
+    "result": {
+      "mappings": [
+        {
+          "move_name": "Reframing the target problem",
+          "best_op": "op3_topological_pivot_recognition",
+          "confidence": "medium",
+          "reason": "This move is a pivot in the shape of the entire problem, replacing the original goal with a deeper one from which the original follows as a corollary."
+        },
+        {
+          "move_name": "Translating geometry into representation theory",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This is a theory-building move of translation and unification, creating a common language; no verification op captures this creative act."
+        },
+        {
+          "move_name": "Adopting a deformation-theoretic framework",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This is a move of framework-invention, moving from a single object to a parameter space of objects, which is a generative act not covered by the verification vocabulary."
+        },
+        {
+          "move_name": "Reducing isomorphism to numerical coincidence",
+          "best_op": "op5_anchor_proxy_requirement",
+          "confidence": "high",
+          "reason": "This move perfectly matches the op by making an abstract claim (isomorphism) dependent on a concrete, computable numerical proxy."
+        },
+        {
+          "move_name": "Importing an external bounding machine",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This is a tool-transplantation move based on recognizing a deep analogy, a creative step for which there is no corresponding verification op."
+        },
+        {
+          "move_name": "Acknowledging and isolating the gap",
+          "best_op": "op2_controlling_claim_isolation",
+          "confidence": "medium",
+          "reason": "This move involved isolating the precise failing claim that, once identified, became the new focus and whose failure caused the argument to fall."
+        },
+        {
+          "move_name": "Retreating to a simpler tool that suffices",
+          "best_op": "op3_topological_pivot_recognition",
+          "confidence": "medium",
+          "reason": "This represents recognizing that the current proof strategy's shape was unworkable and required rewiring with a different combination of tools."
+        },
+        {
+          "move_name": "Using level-lowering to constrain the problem",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This is a specific, powerful mathematical proof technique (extremal descent) rather than a general structural pattern of verification or failure."
+        },
+        {
+          "move_name": "Bootstrapping from residual to full result",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This is a domain-specific 'lifting' technique to extend a result from a simple case, a constructive method not described by the audit vocabulary."
+        },
+        {
+          "move_name": "Conducting the proof in secret isolation",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This is a move in the sociology of mathematical practice, entirely outside the scope of the vocabulary, which concerns logical/argumentative structure."
+        },
+        {
+          "move_name": "Verifying the framework fits the specific case",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This is a fundamental due diligence step of checking a theorem's hypotheses, which is more basic than the specialized structural flaws the vocabulary identifies."
+        }
+      ],
+      "summary": {
+        "total_moves": 11,
+        "mapped_high": 1,
+        "mapped_medium": 3,
+        "mapped_low": 0,
+        "unmapped": 7,
+        "unmapped_pct": 0.64
+      },
+      "audit_judgment": "The verification vocabulary is poorly suited to the observed mathematical moves. The vocabulary, designed to audit weight-bearing claims for structural flaws, lives in a different conceptual space from the moves of mathematical discovery, which are about theory-building, framework invention, and creative problem transformation. The few successful mappings occur where a constructive move has a direct analogue in verification (e.g., making a claim concrete). However, the majority of moves are unmapped because they represent generative acts like framework translation, tool importation, and the application of domain-specific proof techniques. The vocabulary lacks concepts to describe these creative and foundational activities, focusing instead on a narrow set of failure modes in a static argument."
+    },
+    "arc_moves": {
+      "arc_chosen": "B",
+      "structural_moves": [
+        {
+          "move_name": "Reframing the target problem",
+          "what_happened": "Wiles did not attack Fermat's Last Theorem directly. Instead, he accepted Ribet's 1986 result that FLT would follow from proving a special case of the Taniyama-Shimura conjecture, and redirected all effort toward that conjecture. The original problem became a corollary of a deeper structural claim about elliptic curves.",
+          "why_it_was_a_move": "This is a substitution of target: the mathematician replaces an ancient isolated puzzle with a modern structural conjecture, making the problem tractable by embedding it in a richer theory."
+        },
+        {
+          "move_name": "Translating geometry into representation theory",
+          "what_happened": "Wiles reformulated the problem in terms of Galois representations \u2014 continuous homomorphisms from the absolute Galois group of the rationals into matrix groups \u2014 rather than working with elliptic curves or modular forms directly. Each elliptic curve and each modular form produces such a representation, and the conjecture becomes the claim that these two sources produce the same representations.",
+          "why_it_was_a_move": "This is a language-change move: by passing to a common representational currency, two seemingly different mathematical objects become directly comparable, and the problem becomes one of proving an equality of abstract structures."
+        },
+        {
+          "move_name": "Adopting a deformation-theoretic framework",
+          "what_happened": "Wiles imported Mazur's deformation theory of Galois representations, which studies not a single representation but the entire family of representations that 'deform' a given one over varying coefficient rings. The strategy became: show that the universal deformation ring and the relevant Hecke algebra are isomorphic.",
+          "why_it_was_a_move": "This is a move from a point to a space: instead of proving a single object has a property, the mathematician studies the entire parameter space of nearby objects, gaining structural leverage unavailable at any single point."
+        },
+        {
+          "move_name": "Reducing isomorphism to numerical coincidence",
+          "what_happened": "Wiles reduced the ring isomorphism R = T (deformation ring equals Hecke algebra) to a numerical criterion: it suffices to show that a certain ideal has the same length on both sides, or equivalently that a particular integer (the order of a Selmer group) matches a value computable from L-functions. A structural algebraic question became a quantitative one.",
+          "why_it_was_a_move": "This is a dimensionality-reduction move: a hard qualitative statement (two rings are isomorphic) is shown to follow from a single computable numerical invariant, making the problem finite and checkable in principle."
+        },
+        {
+          "move_name": "Importing an external bounding machine",
+          "what_happened": "To bound the Selmer group (the key numerical object), Wiles imported the Euler system technique developed by Kolyvagin and others, which constructs an elaborate system of cohomology classes indexed by primes that collectively force the Selmer group to be small. This machinery had been developed for other purposes and was transplanted wholesale.",
+          "why_it_was_a_move": "This is a tool-transplantation move: a bounding mechanism built in one context is recognized as applicable in a structurally analogous situation, and the mathematician's skill lies in identifying the analogy and verifying the transplant conditions."
+        },
+        {
+          "move_name": "Acknowledging and isolating the gap",
+          "what_happened": "After announcing a proof in 1993, Wiles identified a specific flaw in the Kolyvagin-Flach argument he had used to control the Selmer group. Rather than abandoning the project, he precisely located where the argument broke down and treated the gap as a new, well-posed sub-problem.",
+          "why_it_was_a_move": "This is a move of honest decomposition: by refusing to paper over the error and instead making the gap explicit and bounded, the mathematician converts a catastrophic failure into a targeted repair problem."
+        },
+        {
+          "move_name": "Retreating to a simpler tool that suffices",
+          "what_happened": "After a year of failed attempts to fix the Kolyvagin-Flach method, Wiles returned to Iwasawa theory \u2014 an older, more classical approach he had initially set aside as insufficient. He realized that while Iwasawa theory alone was too weak, it was strong enough when combined with the residual structure already established, and the combination succeeded where either alone had failed.",
+          "why_it_was_a_move": "This is a move of strategic retreat and recombination: the mathematician abandons a sophisticated tool for a simpler one, but exploits the partial results already in hand to make the simpler tool adequate."
+        },
+        {
+          "move_name": "Using level-lowering to constrain the problem",
+          "what_happened": "Ribet's earlier work showed that if a Frey curve (built from a hypothetical FLT counterexample) were modular, its associated Galois representation could be 'lowered' to a modular form of much smaller level \u2014 eventually level 2, where no such forms exist. This contradiction is the logical engine that connects FLT to modularity.",
+          "why_it_was_a_move": "This is a move of extremal descent: by showing that a hypothetical object can be repeatedly simplified until it reaches a level where it provably cannot exist, the mathematician derives a contradiction without ever directly attacking the original object."
+        },
+        {
+          "move_name": "Bootstrapping from residual to full result",
+          "what_happened": "Wiles first established modularity for the residual representation (the Galois representation modulo a prime, a much simpler finite object), then used the deformation-theoretic framework to lift this residual result to the full p-adic representation. The hard work at the residual level propagated upward automatically through the algebraic structure.",
+          "why_it_was_a_move": "This is a lifting move: the mathematician proves a result in a simplified or reduced setting, then invokes a general principle that guarantees the result extends to the full, more complex setting, avoiding the need to redo the hard work at every level."
+        },
+        {
+          "move_name": "Conducting the proof in secret isolation",
+          "what_happened": "Wiles worked almost entirely alone for seven years, sharing progress with almost no one, to avoid the social and competitive pressures that might have forced premature disclosure or distorted his research path. He revealed the work only when he believed it was complete.",
+          "why_it_was_a_move": "This is a structural move in the sociology of mathematical practice: the choice of isolation was itself a strategic decision that shaped what kinds of risks and long detours were possible, and it is inseparable from the mathematical arc."
+        },
+        {
+          "move_name": "Verifying the framework fits the specific case",
+          "what_happened": "The general deformation-theoretic machinery required certain technical conditions on the Galois representation to be verified for the specific representations arising from elliptic curves over the rationals. Wiles had to check that the abstract framework's hypotheses were satisfied in the concrete case, a non-trivial compatibility verification.",
+          "why_it_was_a_move": "This is a grounding move: after importing powerful abstract machinery, the mathematician must confirm that the specific objects of interest actually live inside the domain where the machinery applies, closing the gap between generality and application."
+        }
+      ]
+    }
+  },
+  "test2_lakatos": {
+    "verdict": "PASSES Lakatos test (4 distinct ops; framework has dialectical resolution)",
+    "result": {
+      "mappings": [
+        {
+          "move": "Monster-barring",
+          "best_op": "op4_charter_drift_detection",
+          "confidence": "high",
+          "reason": "This move defends a theorem by narrowing the definition of the objects it applies to (e.g., 'that's not a real polyhedron'). This is a direct instance of an argument migrating from its stated, broader scope to an adjacent, more comfortable, narrower scope to avoid a counterexample."
+        },
+        {
+          "move": "Monster-adjustment",
+          "best_op": "unmapped",
+          "confidence": "high",
+          "reason": "This move involves re-interpreting the features of the counterexample itself to make it fit the theorem (e.g., 'the hollow cube actually has 12 faces'). The vocabulary lacks an operation for this semantic re-description of an object; its focus is on the argument's structure and scope, not the mapping of terms to phenomena."
+        },
+        {
+          "move": "Lemma-incorporation",
+          "best_op": "op3_topological_pivot_recognition",
+          "confidence": "high",
+          "reason": "This move repairs a proof by making an implicit assumption explicit, adding it as a new hypothesis to the theorem. This fundamentally changes the logical dependency graph of the argument, which is precisely what recognizing the need for a change in the 'SHAPE of the argument' describes."
+        },
+        {
+          "move": "Exception-barring",
+          "best_op": "op9_quarantine_move_detection",
+          "confidence": "high",
+          "reason": "This move handles counterexamples by explicitly listing them as exceptions, saving the theorem for all other cases. This perfectly matches the description of isolating a risk (the counterexamples) into a labeled section (the list of exceptions) and proceeding as if the labeling itself were a sufficient mitigation for the theorem's claim to generality."
+        },
+        {
+          "move": "Proof-stretching",
+          "best_op": "op6_basin_search",
+          "confidence": "high",
+          "reason": "This move occurs when a proof is found to support a more general theorem than originally stated. This is a direct match for a 'structured exploration of whether a better thesis exists within the current framing,' where the 'framing' is the existing proof structure and the 'better thesis' is the more powerful, generalized theorem."
+        }
+      ],
+      "n_distinct_ops_used": 4,
+      "n_unmapped": 1,
+      "verdict": "full_resolution",
+      "judgment": "The vocabulary demonstrates high dialectical resolution, successfully assigning distinct structural operations to 4 of the 5 Lakatosian moves. It preserves the crucial distinctions between modifying an argument by changing its scope (Monster-barring), altering its logical shape (Lemma-incorporation), patching it by isolating failures (Exception-barring), and generalizing it by finding a better thesis (Proof-stretching). The vocabulary's primary blind spot is 'Monster-adjustment,' a move that operates not on the argument's structure but on the semantic interpretation of the objects under discussion. The vocabulary is oriented toward the logic and scope of the argument itself, not the act of describing the world to which the argument is applied."
+    }
+  },
+  "test3_blind_validation": {
+    "verdict": "PARTIAL FAIL (1/3 judged Chinese Room; not all generated outputs survive blind review)",
+    "result": {
+      "evaluations": [
+        {
+          "stall_id": "low_high",
+          "coherence": 5,
+          "concreteness": 5,
+          "distinctness_from_filler": 5,
+          "mean_score": 5.0,
+          "verdict": "actual research direction",
+          "verdict_reason": "The move directly proposes to construct the missing analytic object (a computable bound), and the first step is a precise, non-trivial formalization of this goal."
+        },
+        {
+          "stall_id": "high_high",
+          "coherence": 5,
+          "concreteness": 5,
+          "distinctness_from_filler": 5,
+          "mean_score": 5.0,
+          "verdict": "actual research direction",
+          "verdict_reason": "The move correctly identifies a powerful strategy for resolving an open inequality (finding a numeric counterexample) and specifies a concrete, modern workflow to achieve it."
+        },
+        {
+          "stall_id": "remainder_cross",
+          "coherence": 2,
+          "concreteness": 2,
+          "distinctness_from_filler": 2,
+          "mean_score": 2.0,
+          "verdict": "Chinese Room",
+          "verdict_reason": "The proposed 'first concrete step' is a mathematical tautology that merely redefines the problem, failing to engage with the actual analytic difficulty of finding a bound."
+        }
+      ],
+      "aggregate": {
+        "mean_coherence": 4.0,
+        "mean_concreteness": 4.0,
+        "mean_distinctness": 4.0,
+        "n_chinese_room": 1,
+        "n_useful_prompt": 0,
+        "n_actual_research": 2
+      },
+      "overall_judgment": "There is a sharp divide in quality. The first two candidates ('low_high' and 'high_high') are coherent and actionable research directions. They propose specific, non-obvious structural moves (constructing a computable witness, finding a numeric counterexample) that directly address the stated stalls. In contrast, the third candidate ('remainder_cross') appears to be a 'Chinese Room' output. While it uses appropriate terminology, its proposed first concrete step is a mathematical triviality that completely sidesteps the analytic challenge, suggesting a syntactic pattern-match without semantic understanding of the problem."
+    }
+  }
+}

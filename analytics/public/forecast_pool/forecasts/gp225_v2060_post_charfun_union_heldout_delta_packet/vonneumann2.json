@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Treat no replayable policy arm as a valid negative packet; do not force a replay.",
+  "agent_id": "VonNeumann2",
+  "contract_id": "gp225_v2060_post_charfun_union_heldout_delta_packet",
+  "contract_question": "Will v20.60 build a post-charFun union heldout-delta packet that honestly decides whether the repaired charFun strict row creates a replayable heldout policy arm or only an adjudication/accounting update?",
+  "domain": "gp225_pre_gnn_heldout_delta_packet",
+  "expected_cost_agent_minutes": 17.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "heldout_rows_not_bound": 0.19,
+    "packet_schema_vague": 0.23,
+    "policy_delta_overclaimed": 0.38,
+    "training_boundary_missing": 0.2
+  },
+  "forecast_externality_tags": [
+    "anti_goodhart",
+    "no_training",
+    "heldout_delta"
+  ],
+  "forecasted_at": "2026-05-14T18:27:34Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.03,
+  "p_success": 0.76,
+  "rationale_short": "charFun repair is likely an adjudication correction, not a general candidate policy feature. The packet should say so if true.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "policy_delta_overclaimed",
+    "training_boundary_missing"
+  ]
+}

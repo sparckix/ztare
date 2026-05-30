@@ -1,0 +1,150 @@
+{
+  "generated_utc": "2026-05-17T12:15:30.699178+00:00",
+  "spec": "research_areas/private/seams/apparatus/instrumentation/GP-237_scope_evolution_seam.md",
+  "axis_caveat": "Clock = seam frontmatter authored/discovered date (95% coverage), NOT mtime. Monthly granularity. Honestly starts ~April \u2014 0 seams dated March; the small-vision seed predates seams (early commits/code). This measures the POST-crystallization sprawl.",
+  "dateless_excluded": 11,
+  "n_seams_with_gp": 161,
+  "by_month": [
+    {
+      "month": "2026-04",
+      "seams_born": 106,
+      "new_concept_tokens": 393,
+      "new_cabinets": 19,
+      "refinement": 15,
+      "orphan": 91,
+      "orphan_share": 0.858
+    },
+    {
+      "month": "2026-05",
+      "seams_born": 44,
+      "new_concept_tokens": 141,
+      "new_cabinets": 1,
+      "refinement": 0,
+      "orphan": 44,
+      "orphan_share": 1.0
+    }
+  ],
+  "lineage_graph": {
+    "n_nodes": 161,
+    "n_explicit_parent_edges": 18,
+    "explicit_edges": [
+      [
+        "GP-088",
+        "GP-050"
+      ],
+      [
+        "GP-134",
+        "GP-131"
+      ],
+      [
+        "GP-023",
+        "GP-061"
+      ],
+      [
+        "GP-062",
+        "GP-061"
+      ],
+      [
+        "GP-130",
+        "GP-129"
+      ],
+      [
+        "GP-131",
+        "GP-128"
+      ],
+      [
+        "GP-131",
+        "GP-105"
+      ],
+      [
+        "GP-133",
+        "GP-096"
+      ],
+      [
+        "GP-135",
+        "GP-134"
+      ],
+      [
+        "GP-136",
+        "GP-135"
+      ],
+      [
+        "GP-141",
+        "GP-140"
+      ],
+      [
+        "GP-166",
+        "GP-129"
+      ],
+      [
+        "GP-166",
+        "GP-164"
+      ],
+      [
+        "GP-167",
+        "GP-166"
+      ],
+      [
+        "GP-167",
+        "GP-128"
+      ],
+      [
+        "GP-072",
+        "GP-061"
+      ],
+      [
+        "GP-079",
+        "GP-072"
+      ],
+      [
+        "GP-173",
+        "GP-168"
+      ]
+    ],
+    "n_concept_families_explicit_dag": 143,
+    "max_refinement_chain_depth": 5,
+    "ancestral_top_by_implicit_indegree": [
+      [
+        "GP-023",
+        24
+      ],
+      [
+        "GP-072",
+        18
+      ],
+      [
+        "GP-088",
+        15
+      ],
+      [
+        "GP-035",
+        15
+      ],
+      [
+        "GP-037",
+        13
+      ],
+      [
+        "GP-086",
+        11
+      ],
+      [
+        "GP-030",
+        10
+      ],
+      [
+        "GP-070",
+        10
+      ]
+    ],
+    "edge_caveat": "explicit-parent edges are clean but sparse (~15% of seams); implicit GP-ref in-degree is noisy (a ref can be 'contrast with', not lineage)."
+  },
+  "tiers": {
+    "concept_introduction": "B",
+    "cabinet_spread": "B",
+    "coherence_ratio": "C (orphan-rate biased HIGH \u2014 implicit refinements undercounted)",
+    "ancestral_core": "C",
+    "families/chain_depth": "B"
+  },
+  "note": "Deterministic. The sprawl-vs-coherent-speciation VERDICT is authored in graph_sowhat panel 'scope_evolution', grounded in these numbers, tied to recursive_over_architecting. Numbers here never self-verdict (GP-236 discipline)."
+}

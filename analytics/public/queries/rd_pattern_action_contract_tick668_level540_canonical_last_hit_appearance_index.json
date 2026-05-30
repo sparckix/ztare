@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 540,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level539 no-late-repeat is still a direct order axiom",
+    "check": "derive no-late-repeat from canonical last-hit identity and last-hit order domination"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level540_canonical_last_hit_appearance_index_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level540_provenance_acyclic_edge_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level540_canonical_last_hit_appearance_index"
+  },
+  "anti_pattern_guards": [
+    "no Level539 no-late-repeat assumption",
+    "no arbitrary-hit witness",
+    "no endpoint capacity-only replacement",
+    "no post-payoff canonical index selection"
+  ],
+  "positive_forecast": "If the coverage appearance index is the canonical last-hit event for each selected bad node, no-late-repeat follows by last-hit order domination."
+}

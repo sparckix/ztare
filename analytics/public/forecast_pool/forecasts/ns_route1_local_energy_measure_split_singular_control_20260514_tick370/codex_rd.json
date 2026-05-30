@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_local_energy_measure_split_singular_control_20260514_tick370",
+  "contract_question": "Can the GPT-5.5 measure-local split route be encoded as a non-tautological route-1 theorem surface: LocalEnergyPositiveBoundaryFluxMeasureSplitSource -> mu_A_perp <= mu_I, with scalar-only guard?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compiled_abstract_measure_surface": 0.24,
+    "lean_signed_measure_too_heavy": 0.18,
+    "needs_gpt55_followup": 0.2,
+    "scalar_guard_clear": 0.2,
+    "surface_too_wrapper_like": 0.18
+  },
+  "forecasted_at": "2026-05-14T13:29:16Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.68,
+  "p_regression": 0.05,
+  "p_success": 0.72,
+  "rationale_short": "Pure measure proof can be abstracted safely; PDE content is sourcing Borel-local split, not singular control itself.",
+  "read_only_attestation": true
+}

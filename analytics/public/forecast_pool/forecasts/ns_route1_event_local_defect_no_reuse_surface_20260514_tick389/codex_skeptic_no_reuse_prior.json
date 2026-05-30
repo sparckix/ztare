@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Add a guard model for repeated events reusing the same \u03a9 mass; require fresh subregions and finite root budget before amortized closure.",
+  "agent_id": "codex_skeptic_no_reuse_prior",
+  "contract_id": "ns_route1_event_local_defect_no_reuse_surface_20260514_tick389",
+  "contract_question": "Can this tick encode the next no-reuse/fresh-event defect-drop theorem surface after tick388 without claiming global closure?",
+  "domain": "ns_route1_local_energy_measure_split",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bounded_overlap_unpaid": 0.1,
+    "lean_type_breakage": 0.11,
+    "local_domination_mistaken_for_global_closure": 0.21,
+    "no_reuse_surface_too_abstract": 0.25,
+    "recurrent_same_mass_reuse_countermodel": 0.33
+  },
+  "forecast_externality_tags": [
+    "countermodel_preconditioning",
+    "missing_hypothesis_discriminator"
+  ],
+  "forecasted_at": "2026-05-14T14:55:19Z",
+  "p_dependency_issue": 0.48,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.2,
+  "p_success": 0.61,
+  "rationale_short": "The theorem surface is right only if it keeps recurrent reuse as the blocker. Any field deriving global summability from local domination would be false.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "recurrent_same_mass_reuse_countermodel",
+    "bounded_overlap_unpaid"
+  ]
+}

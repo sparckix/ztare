@@ -1,0 +1,667 @@
+{
+  "experiment": "gp216_paper5c_pass3d_sister_on_own_corpus",
+  "n_sister_ops": 6,
+  "results": [
+    {
+      "arc": "erdos_discrepancy",
+      "n_moves": 11,
+      "by_conf": {
+        "high": 4,
+        "medium": 4,
+        "low": 0,
+        "unmapped": 3
+      },
+      "h_m_pct": 72.72727272727273,
+      "un_pct": 27.27272727272727,
+      "ops_used": [
+        "ps_03",
+        "ps_02",
+        "ps_01"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Conjecture Age Suspension",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Collective Reduction Pass",
+            "best_op": "ps_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Cross-Domain Import",
+            "best_op": "ps_03",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Modular Decomposition",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Surrogate Quantity Introduction",
+            "best_op": "ps_02",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Iterative Amplification",
+            "best_op": "ps_02",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Structural Dichotomy Theorem",
+            "best_op": "ps_01",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Discrete-Continuous Bridge",
+            "best_op": "ps_03",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Incremental Combinatorial Descent",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Energy Finiteness Constraint",
+            "best_op": "ps_02",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 11,
+            "move_name": "Surrogate Problem Closure",
+            "best_op": "ps_03",
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "green_tao",
+      "n_moves": 9,
+      "by_conf": {
+        "high": 3,
+        "medium": 3,
+        "low": 2,
+        "unmapped": 1
+      },
+      "h_m_pct": 66.66666666666666,
+      "un_pct": 11.11111111111111,
+      "ops_used": [
+        "ps_04",
+        "ps_06",
+        "ps_01",
+        "ps_03"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Scope Relaxation",
+            "best_op": "ps_04",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Proxy Environment Construction",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Property Axiomatization",
+            "best_op": "ps_04",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Bounding Function Lift",
+            "best_op": "ps_06",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Result Transplantation",
+            "best_op": "ps_04",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Interference Excision",
+            "best_op": "ps_01",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Load Redistribution",
+            "best_op": "ps_06",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Density Inheritance",
+            "best_op": "ps_04",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Modular Obstacle Bypass",
+            "best_op": "ps_03",
+            "confidence": "low"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "hales_jewett_polymath",
+      "n_moves": 10,
+      "by_conf": {
+        "high": 3,
+        "medium": 1,
+        "low": 1,
+        "unmapped": 5
+      },
+      "h_m_pct": 40.0,
+      "un_pct": 50.0,
+      "ops_used": [
+        "ps_02",
+        "ps_01",
+        "ps_05",
+        "ps_06"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Proof Path Substitution",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Distributed Incremental Search",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Energy Accumulation Loop",
+            "best_op": "ps_02",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Regularity Partition",
+            "best_op": "ps_01",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Density Preservation Reduction",
+            "best_op": "ps_05",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Richness Inheritance",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Local-to-Global Gluing",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Increment Step Isolation",
+            "best_op": "ps_02",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Estimate Accumulation",
+            "best_op": "ps_06",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Complexity Offloading",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "szemeredi_regularity",
+      "n_moves": 9,
+      "by_conf": {
+        "high": 5,
+        "medium": 2,
+        "low": 1,
+        "unmapped": 1
+      },
+      "h_m_pct": 77.77777777777779,
+      "un_pct": 11.11111111111111,
+      "ops_used": [
+        "ps_01",
+        "ps_02",
+        "ps_04",
+        "ps_06"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Universal Structure Claim",
+            "best_op": "ps_01",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Pseudorandomness Surrogate",
+            "best_op": "ps_01",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Trivial Seed Initialization",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Potential Function Governance",
+            "best_op": "ps_02",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Bounded Iteration Argument",
+            "best_op": "ps_02",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Structural Decomposition Transfer",
+            "best_op": "ps_04",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Counting Lemma Bridge",
+            "best_op": "ps_06",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Implication Cascade",
+            "best_op": "ps_04",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Methodological Restraint",
+            "best_op": "ps_06",
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "roth_3ap",
+      "n_moves": 10,
+      "by_conf": {
+        "high": 4,
+        "medium": 5,
+        "low": 0,
+        "unmapped": 1
+      },
+      "h_m_pct": 90.0,
+      "un_pct": 10.0,
+      "ops_used": [
+        "ps_01",
+        "ps_03",
+        "ps_06",
+        "ps_02"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Signal-Residual Decomposition",
+            "best_op": "ps_01",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Counting Via Dual Space",
+            "best_op": "ps_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Assumption-Forced Consequence",
+            "best_op": "ps_06",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Extremal Witness Extraction",
+            "best_op": "ps_06",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Concentration Localization",
+            "best_op": "ps_03",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Sub-Domain Restriction",
+            "best_op": "ps_02",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Parameter Increment Guarantee",
+            "best_op": "ps_02",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Bounded-Resource Termination",
+            "best_op": "ps_02",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Contrapositive Reframing",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Recursive Self-Application",
+            "best_op": "ps_02",
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "behrend_construction",
+      "n_moves": 9,
+      "by_conf": {
+        "high": 3,
+        "medium": 3,
+        "low": 0,
+        "unmapped": 3
+      },
+      "h_m_pct": 66.66666666666666,
+      "un_pct": 33.33333333333333,
+      "ops_used": [
+        "ps_03",
+        "ps_06"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Bound Gap Exposure",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Dimensional Lift",
+            "best_op": "ps_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Constraint Geometry Import",
+            "best_op": "ps_03",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Property Inheritance Check",
+            "best_op": "ps_03",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Encoding as Embedding",
+            "best_op": "ps_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Parameter Optimization",
+            "best_op": "ps_06",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Existence-via-Construction",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Barrier Demonstration",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Cross-Domain Translation",
+            "best_op": "ps_03",
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "furstenberg_ergodic_szemeredi",
+      "n_moves": 10,
+      "by_conf": {
+        "high": 5,
+        "medium": 3,
+        "low": 0,
+        "unmapped": 2
+      },
+      "h_m_pct": 80.0,
+      "un_pct": 20.0,
+      "ops_used": [
+        "ps_03",
+        "ps_01",
+        "ps_05"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Domain Bridge Construction",
+            "best_op": "ps_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Problem Reformulation",
+            "best_op": "ps_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Structural Decomposition Theorem",
+            "best_op": "ps_01",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Complexity Stratification",
+            "best_op": "ps_05",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Inductive Ladder Ascent",
+            "best_op": "ps_05",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Case Bifurcation",
+            "best_op": "ps_01",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Invariant Quantity Introduction",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Cross-Domain Machinery Import",
+            "best_op": "ps_03",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Generalization Before Proof",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Correspondence Preservation Check",
+            "best_op": "ps_03",
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "arc": "ramsey_erdos_szekeres",
+      "n_moves": 12,
+      "by_conf": {
+        "high": 3,
+        "medium": 1,
+        "low": 1,
+        "unmapped": 7
+      },
+      "h_m_pct": 33.33333333333333,
+      "un_pct": 58.333333333333336,
+      "ops_used": [
+        "ps_05",
+        "ps_03",
+        "ps_06"
+      ],
+      "mapping": {
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Threshold Existence Claim",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Partition Forcing",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Scale Amplification",
+            "best_op": "ps_05",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Domain Transplant",
+            "best_op": "ps_03",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Narrative Reframing",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Recursive Depth Argument",
+            "best_op": "ps_05",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Bound Bracketing",
+            "best_op": "ps_06",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Probabilistic Witness",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Extremal Construction",
+            "best_op": "unmapped",
+            "confidence": "high"
+          },
+          {
+            "move_idx": 10,
+            "move_name": "Dual Counting Bridge",
+            "best_op": "unmapped",
+            "confidence": "medium"
+          },
+          {
+            "move_idx": 11,
+            "move_name": "Pattern Orientation Encoding",
+            "best_op": "ps_03",
+            "confidence": "low"
+          },
+          {
+            "move_idx": 12,
+            "move_name": "Named Problem Crystallization",
+            "best_op": "unmapped",
+            "confidence": "high"
+          }
+        ]
+      }
+    }
+  ],
+  "mean_h_m_coverage": 65.89646464646465,
+  "mean_unmapped": 27.64520202020202,
+  "n_distinct_ops_used": 6,
+  "two_direction_table": {
+    "tb_vocab_on_tb_corpus": 58.1,
+    "tb_vocab_on_ps_corpus": 20.7,
+    "ps_vocab_on_ps_corpus": 65.89646464646465,
+    "ps_vocab_on_tb_corpus": null
+  },
+  "verdict": ""
+}

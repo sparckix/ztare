@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "flag pure-naming structures and field-projection theorems explicitly; do not let future summaries inflate WRAPPER count into HONEST count",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_clay_meta_darwin_audit_tick432_to_445_tick448_20260514",
+  "contract_question": "Will the tick448 Meta-Darwin audit of the tick432-tick445 Lean primitive chain (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE-NAMING verdicts using the 6-point checklist, (b) identify at least one PURE-NAMING or LAUNDERED structure if any exists, (c) confirm or retract the in-artifact scope guards, and (d) leave Lean files unmodified?",
+  "domain": "meta_darwin_lean_audit",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": ["anti_laundering_discipline", "wrapper_inflation_risk"],
+  "forecasted_at": "2026-05-15T01:00:00Z",
+  "p_dependency_issue": 0.02,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.74,
+  "rationale_short": "Adversarial pass: chain shipped 13+ named structures in one session, the floor-satisfiable smoke_ofDirectBound pattern is exactly the laundering shape the 2026-05-14 GP-225 memory warns about. Expected verdict distribution: 1 HONEST (flatDepthReserve_drop), 11 WRAPPER, 1 PURE_NAMING (TwoRouteComposition), 0 LAUNDERED with one mild support-localization flag inside NoConcentrationLemmaAxiom bundle. Main risk for audit failure: missing the support-localization obligation as separately-named, or under-flagging tick445 field-projection inequalities as 'r-linear theorems' in any summary.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

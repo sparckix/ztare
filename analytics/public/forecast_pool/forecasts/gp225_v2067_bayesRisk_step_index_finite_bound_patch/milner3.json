@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Generate source-lemma candidates but do not claim they compile until the bridge replay says so.",
+  "agent_id": "Milner3",
+  "contract_id": "gp225_v2067_bayesRisk_step_index_finite_bound_patch",
+  "contract_question": "Will v20.67 generate a source-safe finite-bound subgoal patch for current_scale_0126/bayesRisk_lt_top that matches the replay insertion point and avoids copying the target proof line?",
+  "domain": "gp225_pre_gnn_step_index_candidate_patch",
+  "expected_cost_agent_minutes": 17.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_accidentally_copies_gold_simp": 0.18,
+    "explicit_measure_lt_top_identifier_wrong": 0.32,
+    "finite_product_associativity_shape_mismatch": 0.24,
+    "scope_creep_to_replay": 0.12,
+    "static_gate_underchecks_namespace": 0.14
+  },
+  "forecast_externality_tags": [
+    "finite_bound_patch",
+    "calibration_hygiene",
+    "no_training"
+  ],
+  "forecasted_at": "2026-05-14T18:59:50Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.06,
+  "p_success": 0.7,
+  "rationale_short": "The finite-product goal is concrete, but exact Lean names and associativity can still break replay.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "explicit_measure_lt_top_identifier_wrong",
+    "candidate_accidentally_copies_gold_simp"
+  ]
+}

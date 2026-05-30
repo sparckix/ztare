@@ -1,0 +1,40 @@
+{
+  "actual_cost_agent_minutes": 42.0,
+  "artifact_hash": "549c8857a39204d7534ab13fd5a4780c6f7c61b1bb035b678c6b45127d216cc1",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_forecaster",
+    "codex_rd_tick403",
+    "peirce",
+    "lovelace",
+    "arendt"
+  ],
+  "compile_status": "pass",
+  "contract_id": "ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "ns_route1",
+    "swarm_dispatch",
+    "same_carrier_guard",
+    "darwin_no_go"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "Prove/source same-carrier X_tail control and upstream finite-residual route1 dominance separately",
+  "old_next_action": "Treat finite-tail amortized strictness as enough for route closure",
+  "preconditioner_effect": "Added same-carrier source and branch-dominance guard instead of claiming unconditional upstream closure",
+  "preconditioner_source": "3-agent proof/interface/Darwin swarm plus GP-230 forecast",
+  "realized_failure_mode_ids": [
+    "same_carrier_definition_missing",
+    "activeTail_too_narrow_for_Xtail",
+    "tautological_tail_control"
+  ],
+  "resolution_note": "Swarm produced mixed but usable result: proof/interface agents identified same-carrier tail prefix control as missing source; Darwin killed only the stronger pointwise/channel-loss shortcut. Lean now compiles SameCarrierRouteTailActiveTailControlSource, constructor into Route1FiniteTailAmortizedStrictness, SameCarrierTailControlGap, and CriticalIncrementFiniteResidualRoute1Dominance with non-route branch guard.",
+  "resolved_at": "2026-05-14T18:58:07Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

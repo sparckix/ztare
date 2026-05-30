@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_noether_gp225_v2007",
+  "contract_id": "gp225_v2007_high_yield_next3_replay",
+  "domain": "gp225_repair_micro",
+  "forecasted_at": "2026-05-14T12:37:30Z",
+  "p_success": 0.31,
+  "expected_cost_agent_minutes": 22.0,
+  "p_regression": 0.05,
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.18,
+  "failure_mode_distribution": {
+    "fresh_strict_success": 0.27,
+    "generic_candidates_do_not_compile": 0.27,
+    "progress_only_no_strict": 0.22,
+    "source_policy_or_schema_issue": 0.05,
+    "other": 0.19
+  },
+  "rationale": "v20.06 raises the prior for high-yield/reducer-informed packets, and these rows have small proof-step surfaces. The main risk remains candidate specificity for affine definitions and gamma support."
+  ,
+  "rationale_short": "High-yield replay prior rises after v20.06, but affine/gamma candidate specificity remains the bottleneck.",
+  "read_only_attestation": true
+}

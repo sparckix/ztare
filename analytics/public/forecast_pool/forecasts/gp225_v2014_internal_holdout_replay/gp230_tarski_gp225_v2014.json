@@ -1,0 +1,21 @@
+{
+  "agent_id": "gp230_tarski_gp225_v2014",
+  "contract_id": "gp225_v2014_internal_holdout_replay",
+  "domain": "gp225_repair_micro",
+  "forecasted_at": "2026-05-14T12:55:30Z",
+  "p_success": 0.41,
+  "expected_cost_agent_minutes": 14.0,
+  "p_regression": 0.05,
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.18,
+  "failure_mode_distribution": {
+    "fresh_strict_success": 0.36,
+    "generic_candidates_do_not_compile": 0.23,
+    "progress_only_no_strict": 0.21,
+    "source_policy_or_schema_issue": 0.04,
+    "other": 0.16
+  },
+  "rationale": "Four rows gives more chances than the tail holdout, and topology/probability definitional rows may close by simp. Still, randomized selection and Analysis/RingTheory rows make the gate materially harder.",
+  "rationale_short": "More rows and definitional surfaces raise odds, but randomized selection keeps uncertainty high.",
+  "read_only_attestation": true
+}

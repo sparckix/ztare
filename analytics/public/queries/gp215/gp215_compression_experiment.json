@@ -1,0 +1,139 @@
+{
+  "experiment": "compression_to_depth2",
+  "n_input_cycles": 40,
+  "n_substrates": 3,
+  "result": {
+    "depth2_classes": [
+      {
+        "class_name": "Constraint to Artifact",
+        "structural_signature": "A prose or implicit constraint is reified into a named, mechanically-checkable artifact (gate, skeleton, or predicate) that blocks downstream progress until the constraint is satisfied.",
+        "instances": [
+          20,
+          22,
+          23,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          35,
+          36,
+          37,
+          39,
+          40
+        ],
+        "substrates_present": [
+          "ns",
+          "aqual",
+          "neural"
+        ]
+      },
+      {
+        "class_name": "Obligation Skeleton Installation",
+        "structural_signature": "A structured placeholder is introduced that names and partitions the obligations that must be discharged, without yet providing proofs or implementations, so that the proof or audit state is made explicit and enumerable.",
+        "instances": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          11,
+          12,
+          16,
+          21,
+          34,
+          38
+        ],
+        "substrates_present": [
+          "ns",
+          "neural"
+        ]
+      },
+      {
+        "class_name": "Branch Decomposition Isolation",
+        "structural_signature": "A monolithic obligation or claim is split into exhaustive, mutually-exclusive sub-cases, each assigned its own named obligation or apparatus, so that case coverage becomes structurally verifiable.",
+        "instances": [
+          7,
+          9,
+          10,
+          11,
+          16,
+          18,
+          19,
+          21
+        ],
+        "substrates_present": [
+          "ns"
+        ]
+      },
+      {
+        "class_name": "Charter Tightening",
+        "structural_signature": "An existing governing specification is amended by adding an explicit precondition or demotion rule that narrows the scope of valid claims, converting a permissive regime into a more restrictive one.",
+        "instances": [
+          24,
+          25,
+          27
+        ],
+        "substrates_present": [
+          "aqual"
+        ]
+      },
+      {
+        "class_name": "Interface Bridge Theorem",
+        "structural_signature": "A connector lemma or adapter is introduced that formally links two previously separate modules, frameworks, or obligation layers, making their interface a first-class certified object.",
+        "instances": [
+          8,
+          13,
+          14,
+          15,
+          17
+        ],
+        "substrates_present": [
+          "ns"
+        ]
+      },
+      {
+        "class_name": "Falsifier Injection",
+        "structural_signature": "A counterexample, null-result, or disproof witness is installed as a formal object that actively kills or demotes a candidate claim, converting absence-of-proof into presence-of-refutation.",
+        "instances": [
+          19,
+          29,
+          34
+        ],
+        "substrates_present": [
+          "ns",
+          "aqual",
+          "neural"
+        ]
+      },
+      {
+        "class_name": "Apparatus Replacement Upgrade",
+        "structural_signature": "An existing computational or measurement apparatus is swapped for a strictly stronger or more precise one, preserving the structural role while improving the bound or coverage guarantee.",
+        "instances": [
+          35,
+          36,
+          37
+        ],
+        "substrates_present": [
+          "neural"
+        ]
+      }
+    ],
+    "unmapped_count": 0,
+    "compression_quality": {
+      "total_classes": 7,
+      "total_instances_mapped": 40,
+      "cross_substrate_classes": 2,
+      "max_class_size": 16,
+      "min_class_size": 3
+    },
+    "overall_assessment": "The 40 cycles compress reasonably but not perfectly to a small set of universal classes. Two classes \u2014 'Constraint to Artifact' and 'Falsifier Injection' \u2014 genuinely span all three substrates and capture the deepest structural universals: the move of making implicit constraints mechanical, and the move of installing a refutation witness. The remaining classes are structurally coherent but are dominated by the ns (Lean proof) substrate, which contributes the majority of cycles and whose internal variety (branch decomposition, interface bridging, obligation skeletons, charter tightening) resists full collapse into cross-substrate universals. The aqual and neural substrates are smaller and their cycles map cleanly onto the two cross-substrate classes plus a few ns-dominated classes. Overall, roughly 50% of the structural vocabulary is genuinely universal at depth-2, while the other 50% reflects substrate-specific elaboration of the same underlying move shapes \u2014 particularly the ns substrate's fine-grained obligation management idioms."
+  },
+  "verdict": "FAIL \u2014 most classes are single-substrate; compression does not unify across domains"
+}

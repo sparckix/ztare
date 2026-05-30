@@ -1,0 +1,25 @@
+{
+  "agent_id": "helmholtz",
+  "contract_id": "gp225_v1913_parallel_track_router",
+  "contract_question": "Will v19.13 convert the v19.12 external benchmark packet into three concrete parallel next-track specs (external adapters, density generator, repair-loop canary), each with success thresholds, effort estimates, GP-233 block, and no GNN/training launch?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 6.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_gnn_training_or_unblock_language": 0.04,
+    "artifact_schema_or_saved_packet_mismatch": 0.04,
+    "density_generator_thresholds_do_not_address_low_density_breadth_failure": 0.16,
+    "external_adapter_track_lacks_runnable_adapter_thresholds": 0.2,
+    "gp233_blocks_missing_or_not_per_track": 0.1,
+    "other": 0.06,
+    "repair_loop_canary_under_specifies_success_or_false_accept_controls": 0.14,
+    "track_specs_too_abstract_or_not_actionable": 0.26
+  },
+  "forecasted_at": "2026-05-13T21:57:31Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.74,
+  "rationale_short": "Static routing task with enough saved context from v1908/v1911/v1912; main risk is spec concreteness, not dependencies or GNN launch.",
+  "read_only_attestation": true
+}

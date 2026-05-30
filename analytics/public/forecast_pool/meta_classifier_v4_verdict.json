@@ -1,0 +1,118 @@
+{
+  "schema": "forecast-meta-classifier-v4-verdict",
+  "generated_at": "2026-05-26",
+  "design_changes_vs_v3": [
+    "DROP question_len (was 54% importance in v3, corpus-bias proxy)",
+    "ADD fam_balance_combo categorical (agent_family \u00d7 balance_instruction)",
+    "ADD fam_tail_combo categorical (agent_family \u00d7 tail_format)"
+  ],
+  "n_combined": 2283,
+  "n_features": 72,
+  "combined_cv_r2_mean": 0.1445840661307164,
+  "combined_cv_mae_mean": 0.1324360832845973,
+  "held_out_v22plus_r2": -0.12149631554671769,
+  "held_out_v22plus_mae": 0.17662667848649932,
+  "held_out_v22plus_baseline_mae": 0.17178324045713494,
+  "held_out_v22plus_lift": -0.0048434380293643775,
+  "v3_baseline_cv_mae": 0.1002,
+  "v3_baseline_held_mae": 0.1525,
+  "delta_cv_mae_vs_v3": -0.0322360832845973,
+  "delta_held_mae_vs_v3": -0.024126678486499326,
+  "verdict": "v4-regresses",
+  "interpretation": "REGRESSION: v4 underperforms v3. question_len had real signal worth keeping.",
+  "top_features": [
+    [
+      "p_success",
+      0.476529524879146
+    ],
+    [
+      "rationale_len",
+      0.12655836563644385
+    ],
+    [
+      "rationale_word_count",
+      0.06272444094040844
+    ],
+    [
+      "tail_insurance_premium",
+      0.0553514437199703
+    ],
+    [
+      "expected_cost",
+      0.035999732467412275
+    ],
+    [
+      "fam_tail_combo_codex_5mini_family__magnitude",
+      0.028168023673975234
+    ],
+    [
+      "agent_family_gemini_family",
+      0.019398582599437893
+    ],
+    [
+      "tail_signed_skew",
+      0.019171749006301825
+    ],
+    [
+      "fam_tail_combo_claude_family__unknown",
+      0.018169241521163133
+    ],
+    [
+      "fam_balance_combo_claude_family__unknown",
+      0.017557741344838795
+    ],
+    [
+      "failure_mention_count",
+      0.014302564775836088
+    ],
+    [
+      "p_lem",
+      0.013291189714161095
+    ],
+    [
+      "p_reg",
+      0.01259916993337688
+    ],
+    [
+      "domain_family_lean_family",
+      0.012094657486432172
+    ],
+    [
+      "agent_family_codex_5mini_family",
+      0.010759365812864788
+    ],
+    [
+      "domain_family_other_family",
+      0.00977455007387362
+    ],
+    [
+      "agent_family_claude_family",
+      0.0092792668031076
+    ],
+    [
+      "fam_balance_combo_claude_family__off",
+      0.009084917744027646
+    ],
+    [
+      "fam_balance_combo_codex_5large_family__unknown",
+      0.008314848899948891
+    ],
+    [
+      "fam_tail_combo_codex_5large_family__unknown",
+      0.007755244271672427
+    ]
+  ],
+  "per_source_mae": {
+    "pool": 0.06388856449590398,
+    "v10": 0.15770068060995224,
+    "v10_1": 0.14195472885786742,
+    "v11": 0.09745368042389833,
+    "v6_1": 0.12850213620776374,
+    "v22": 0.12339006756242325,
+    "v22b": 0.11886188081017261,
+    "v22c": 0.12331960917114695,
+    "v22d": 0.09007401781644321,
+    "v23": 0.15916839101826674,
+    "v24": 0.14578590320403595
+  }
+}

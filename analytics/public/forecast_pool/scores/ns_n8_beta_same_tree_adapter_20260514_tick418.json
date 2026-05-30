@@ -1,0 +1,134 @@
+{
+  "contract_id": "ns_n8_beta_same_tree_adapter_20260514_tick418",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Leave beta branch at generic BadCenterWeightedSquareIncidenceFailure",
+      "counterfactual_action": "Connect beta branch to existing L3 same-tree incidence/carleson constructors",
+      "externality_hypotheses": {
+        "negative": [
+          "adapter_only_no_source_proof",
+          "type_mismatch_with_generic_surface"
+        ],
+        "positive": [
+          "reuses_existing_L3_source",
+          "smaller_beta_next_theorem"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "beta-adapter",
+        "reuse-existing-L3-source",
+        "eventized-constructive-data",
+        "frontier-sharpening"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "adapter-only-no-source-proof",
+        "beta-not-closed"
+      ],
+      "new_next_action": "Source EventizedParabolicBetaCarlesonQuantStratConstructiveData: scale truncations, incidence geometry, monotone beta carrier, cofinal prefixes, same-carrier pressure/Duhamel, and no post-hoc matching",
+      "old_next_action": "Attack generic BadCenterWeightedSquareIncidenceFailure",
+      "preconditioner_effect": "Moved beta next theorem from generic weighted-square incidence to sourcing EventizedParabolicBetaCarlesonQuantStratConstructiveData and its same-carrier inputs",
+      "preconditioner_source": "Scientific-amnesia precheck found existing L3 same-tree incidence, eventized constructive data, and beta Carleson constructors",
+      "realized_failure_mode_ids": [
+        "adapter_only_no_source_proof"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.12200000000000003,
+  "mean_log_score": -0.4229161341127969,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "45348813bcb679a4c2cbfafc631ca2753e20ffcd44d947a5d62fd4e44fe972aa",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passed",
+    "contract_id": "ns_n8_beta_same_tree_adapter_20260514_tick418",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "beta-adapter",
+      "reuse-existing-L3-source",
+      "eventized-constructive-data",
+      "frontier-sharpening"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "adapter-only-no-source-proof",
+      "beta-not-closed"
+    ],
+    "new_next_action": "Source EventizedParabolicBetaCarlesonQuantStratConstructiveData: scale truncations, incidence geometry, monotone beta carrier, cofinal prefixes, same-carrier pressure/Duhamel, and no post-hoc matching",
+    "old_next_action": "Attack generic BadCenterWeightedSquareIncidenceFailure",
+    "preconditioner_effect": "Moved beta next theorem from generic weighted-square incidence to sourcing EventizedParabolicBetaCarlesonQuantStratConstructiveData and its same-carrier inputs",
+    "preconditioner_source": "Scientific-amnesia precheck found existing L3 same-tree incidence, eventized constructive data, and beta Carleson constructors",
+    "realized_failure_mode_ids": [
+      "adapter_only_no_source_proof"
+    ],
+    "resolution_note": "Added BadCenterBetaSameTreeIncidenceAdapterSource, projections betaWeightedSquareDomination_of_sameTreeIncidence and betaCarlesonDrop_of_sameTreeEventBudgetedPrefixData, plus the stronger projection sameTreeIncidence_of_eventizedConstructiveData and BetaBranchReducedToEventizedConstructiveData. Lean passed; no sorry/admit introduced. This reuses existing L3 same-tree/eventized constructors and reduces the beta next theorem to EventizedParabolicBetaCarlesonQuantStratConstructiveData, not beta closure.",
+    "resolved_at": "2026-05-14T21:38:23Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T21:38:27Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "codex-meta-darwin-proxy",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns-proof-falsification",
+      "expected_cost_agent_minutes": 30.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.35,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:26:58Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:27:13Z",
+        "resolved_at": "2026-05-14T21:38:23Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "codex-rd-main",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "ns-n8-beta-incidence",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.26,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:26:58Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:27:13Z",
+        "resolved_at": "2026-05-14T21:38:23Z"
+      }
+    }
+  ]
+}

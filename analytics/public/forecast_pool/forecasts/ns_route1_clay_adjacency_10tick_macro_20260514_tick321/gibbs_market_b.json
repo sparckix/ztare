@@ -1,0 +1,21 @@
+{
+  "agent_id": "gibbs_market_B",
+  "contract_id": "ns_route1_clay_adjacency_10tick_macro_20260514_tick321",
+  "contract_question": "Will the NS route-1 program reach Clay-proof-adjacent visibility status within the next 10 proof ticks after the 2026-05-14 pressure/Riesz formula split?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 690.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "compiled_bookkeeping_not_pde_estimate": 0.34,
+    "hypothesis_too_strong": 0.21,
+    "kernel_geometry_gap": 0.25,
+    "normalization_not_sheath": 0.2
+  },
+  "forecasted_at": "2026-05-14T00:51:10Z",
+  "p_dependency_issue": 0.55,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.1,
+  "p_success": 0.16,
+  "rationale_short": "Macro remains low because route-1 still needs lower visibility, projection normalization, and PDE realizability.",
+  "read_only_attestation": true
+}

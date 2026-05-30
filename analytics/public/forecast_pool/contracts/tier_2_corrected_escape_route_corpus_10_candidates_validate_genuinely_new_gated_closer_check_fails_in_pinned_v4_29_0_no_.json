@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tier_2_corrected_escape_route_corpus_10_candidates_validate_genuinely_new_gated_closer_check_fails_in_pinned_v4_29_0_no_.json",
+    "contract": "analytics/public/forecast_pool/contracts/tier_2_corrected_escape_route_corpus_10_candidates_validate_genuinely_new_gated_closer_check_fails_in_pinned_v4_29_0_no_.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tier_2_corrected_escape_route_corpus_10_candidates_validate_genuinely_new_gated_closer_check_fails_in_pinned_v4_29_0_no_",
+    "outcome": "analytics/public/forecast_pool/outcomes/tier_2_corrected_escape_route_corpus_10_candidates_validate_genuinely_new_gated_closer_check_fails_in_pinned_v4_29_0_no_.json",
+    "score": "analytics/public/forecast_pool/scores/tier_2_corrected_escape_route_corpus_10_candidates_validate_genuinely_new_gated_closer_check_fails_in_pinned_v4_29_0_no_.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 120.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tier_2_corrected_escape_route_corpus_10_candidates_validate_genuinely_new_gated_closer_check_fails_in_pinned_v4_29_0_no_",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T22:48:35Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "tier2_corrected_escape_route",
+    "score": 0.1429,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1429,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0952,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.1154,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1154,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1143,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.1143,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1034,
+        "score_rows": 140,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "bundle_run verbatim verify + gp233 decomposition + validate_genuinely_new per row vs Tier-2 gate",
+  "question": "Tier-2 corrected-escape-route corpus (>=10 candidates, validate_genuinely_new-gated: closer #check-FAILS in pinned v4.29.0, no file-added-later, no equivalent direct theorem, predeclared target_kind, independent pinned compile) run via bundle_run with baselines B0-B3: will it hit the Tier-2 gate (>=2 clean non-control closures OR >=5 exact-gaps/falsifiers, 0 false-ratify, 0 wrong-kind, 0 novelty-gate-fail)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "tier2_corrected_escape_route",
+  "value_if_success": 0.9,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

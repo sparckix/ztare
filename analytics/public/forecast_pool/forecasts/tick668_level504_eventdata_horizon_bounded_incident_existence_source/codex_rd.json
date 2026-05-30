@@ -1,0 +1,40 @@
+{
+  "action_change_recommendation": "Proceed with Level504 eventData/horizon source and strict receipt; do not claim PDE closure.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.135,
+  "b_width": 0.17,
+  "contract_id": "tick668_level504_eventdata_horizon_bounded_incident_existence_source",
+  "contract_question": "Will Level504 introduce a compiled Lean source deriving boundedIncidentEventExists from an explicit eventData/horizon incidence candidate and validate it through strict gate, PDE workbench, and lake build?",
+  "domain": "ns_trackb",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_implicit_mismatch": 0.35,
+    "other": 0.2,
+    "receipt_field_semantics": 0.25,
+    "workbench_wiring": 0.2
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T05:06:33Z",
+  "p_buy_yes_max": 0.68,
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.13,
+  "p_sell_yes_min": 0.8,
+  "p_success": 0.74,
+  "predicted_brier_hi": 0.22,
+  "predicted_brier_lo": 0.05,
+  "predicted_self_error_ratio": 0.22,
+  "rationale_short": "Level503 leaves a single existence socket; adding explicit targetEventCandidate/horizon/incidence fields should compile and increase theorem-interface coverage while preserving the live PDE obligation.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "lean_implicit_mismatch",
+    "receipt_field_semantics",
+    "workbench_wiring"
+  ],
+  "spread": -0.12,
+  "tail_downside_worry": 31.0,
+  "tail_upside_surprise": 18.0,
+  "verbalized_confidence": 0.74
+}

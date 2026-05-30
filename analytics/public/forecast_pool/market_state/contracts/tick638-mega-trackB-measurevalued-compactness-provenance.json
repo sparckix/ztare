@@ -1,0 +1,86 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick638-mega-trackB-measurevalued-compactness-provenance.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick638-mega-trackB-measurevalued-compactness-provenance.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick638-mega-trackB-measurevalued-compactness-provenance.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick638-mega-trackB-measurevalued-compactness-provenance.json",
+    "score": "analytics/public/forecast_pool/scores/tick638-mega-trackB-measurevalued-compactness-provenance.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_branch_projected_compactness_measure_valued_output_source",
+    "created_at": "2026-05-17T13:24:05Z",
+    "created_by": "codex:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "depth-n in-thread derivation adjudicated by ONE codex adversarial-kill (PATTERN-011); SOUND iff the Reynolds-stress-defect-measure disposition (zero vs irreducible concentration-defect) survives codex; success_bool from that verdict",
+    "question": "tick638 MEGA (void-audit-DRIVEN, RC3): dominating min-vertex-cut of clay_continuation_endpoint = selected_branch_projected_compactness_measure_valued_output_source; status open: selected projected branch needs numeric compactness/liminf provenance from a FIXED approximation family; heavy open sub-atom = 8c Reynolds-stress defect (Clay-open). Depth-n: does the fixed approximation family (Galerkin/vanishing-viscosity) for 3D Leray-Hopf admit measure-valued-output compactness provenance with the Reynolds-stress defect measure provably ZERO (strong L2_t,x subsequential compactness \u21d2 energy equality, no anomalous dissipation in the regularization limit), or is a nontrivial DiPerna-Majda/Alibert-Bouchitt\u00e9 concentration-defect measure the irreducible Track-B obstruction at this cut?",
+    "success_threshold": "0.5",
+    "task_type": "ns_mega_portfolio"
+  },
+  "contract_id": "tick638-mega-trackB-measurevalued-compactness-provenance",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "repair_forecast_json"
+    ],
+    "next_action": "malformed_forecast_skipped",
+    "state": "malformed_forecast",
+    "warnings": [
+      "forecast /Users/daalami/figs_activist_loop/analytics/public/forecast_pool/forecasts/tick638-mega-trackB-measurevalued-compactness-provenance/codex.json missing required fields: domain, expected_cost_agent_minutes, p_dependency_issue, p_needs_new_lemma, p_regression"
+    ]
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T13:32:02Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "market artifacts malformed; repair or replace pricing input first",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "malformed_forecast_skipped",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

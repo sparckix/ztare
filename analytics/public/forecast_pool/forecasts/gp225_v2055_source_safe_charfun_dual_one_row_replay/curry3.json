@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Run one-row replay because packet is source-safe and cheap; score false if zero compile.",
+  "agent_id": "Curry3",
+  "contract_id": "gp225_v2055_source_safe_charfun_dual_one_row_replay",
+  "contract_question": "Will v20.55 replay the v20.54 source-safe charFunDual one-row packet and produce at least one compiled candidate with zero harmful mismatches?",
+  "domain": "gp225_pre_gnn_lean_replay",
+  "expected_cost_agent_minutes": 14.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bridge_multiline_format_issue": 0.24,
+    "candidate_closes_wrong_shape": 0.16,
+    "normalizer_tactic_elaboration_fails": 0.36,
+    "typed_context_missing_notation_or_instance": 0.24
+  },
+  "forecast_externality_tags": [
+    "lean_replay",
+    "anti_goodhart",
+    "compile_signal"
+  ],
+  "forecasted_at": "2026-05-14T18:05:14Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.06,
+  "p_success": 0.42,
+  "rationale_short": "The proof shape is close to Mathlib's theorem but intentionally not a copied full rw line; two multiline candidates may still hit elaboration or bridge formatting.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "normalizer_tactic_elaboration_fails",
+    "bridge_multiline_format_issue"
+  ]
+}

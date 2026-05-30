@@ -1,0 +1,32 @@
+{
+  "actual_cost_agent_minutes": 19.0,
+  "artifact_hash": "3c13da52dc857ae86c84005065d6657c16752b6819f9f65cdbccaaca02d1d460",
+  "artifact_path": "analytics/public/leanmill/results/v2075_heldout_changed_arm_replay_meso_gate.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": "py_compile_passed",
+  "contract_id": "gp225_v2075_heldout_changed_arm_replay_meso_gate",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "meso_only_forecast",
+    "anti_goodhart",
+    "low_ev_replay_abort"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [],
+  "new_next_action": "abort replay and build v2076 slope changed-arm context hydration reducer",
+  "old_next_action": "run one-row heldout changed-arm replay immediately",
+  "preconditioner_effect": "v20.74 supplied one changed heldout arm but exposed context and namespace blockers before replay.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2074_heldout_source_candidate_content_discovery.json",
+  "realized_failure_mode_ids": [
+    "branch_context_validation_fails",
+    "hydration_missing_source_block"
+  ],
+  "resolution_note": "v20.75 meso gate aborted replay. v20.74 found one changed heldout arm, but aggregate p_success=0.3896, EV=-0.1123, and routing=audit_or_explore_only; no replay/training ran. Next is context hydration reducer before repricing.",
+  "resolved_at": "2026-05-14T19:28:28Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

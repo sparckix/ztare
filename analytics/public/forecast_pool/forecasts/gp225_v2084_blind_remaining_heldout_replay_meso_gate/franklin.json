@@ -1,0 +1,26 @@
+{
+  "agent_id": "Franklin",
+  "contract_id": "gp225_v2084_blind_remaining_heldout_replay_meso_gate",
+  "domain": "lean_gnn_harness",
+  "expected_cost_agent_minutes": 34.0,
+  "failure_mode_distribution": {
+    "changed_arm_compiles_but_not_strict_same_target": 0.1,
+    "direction_eq_vectorSpan_orientation_or_binder_mismatch": 0.24,
+    "dist_lt_shape_or_dist_comm_orientation_mismatch": 0.2,
+    "harmful_mismatch": 0.03,
+    "leakage_guard_overconstrains_candidate_credit": 0.05,
+    "linarith_cannot_close_metric_order_subgoal": 0.14,
+    "other": 0.04,
+    "replay_bridge_schema_or_insertion_friction": 0.07,
+    "source_name_namespace_or_implicit_arg_failure": 0.13
+  },
+  "forecasted_at": "2026-05-14T20:15:10Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.1,
+  "p_success": 0.44,
+  "question": "Should GP-225 run bounded replay for v20.83 blind changed arms across map_direction and dist_map_map_zero_lt?",
+  "rationale": "Four clean blind changed arms over two heldout rows are worth bounded replay; likely failures are binder/orientation and distance-shape friction. No training should unlock from this gate.",
+  "routing_hint": "run_or_continue",
+  "weight": 1.0
+}

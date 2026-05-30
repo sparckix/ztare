@@ -1,0 +1,111 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level509_sametree_eventdata_index_bounded_existence_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level509_sametree_eventdata_index_bounded_existence_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level509_sametree_eventdata_index_bounded_existence_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level509_sametree_eventdata_index_bounded_existence_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level509_sametree_eventdata_index_bounded_existence_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T06:06:53Z",
+    "created_by": "codex-rd",
+    "horizon": "2026-05-27T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve TRUE iff Lean compiles the Level509 bridge into Level508, strict receipt/workbench checks pass, active-chain gate audit is high-severity clean, and targeted tests pass.",
+    "question": "Can Level509 derive boundedIncidentEventExists from a same-tree eventData index cover source, with explicit targetEventDataIndex, eventData binding, final-slot bound, and displayed incidence law?",
+    "success_threshold": "A same-tree eventData index cover source constructs boundedIncidentEventExists without endpoint-capacity-only, incidence-label-only, or post-payoff selection substitutes.",
+    "task_type": "ns_trackb_formal_bridge"
+  },
+  "contract_id": "tick668_level509_sametree_eventdata_index_bounded_existence_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed because sameTreeLock.eventData is an actual carrier; require an explicit targetEventDataIndex and incidence law so this is not a same-tree label promotion.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level509_sametree_eventdata_index_bounded_existence_source/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_trackb_formal_bridge",
+        "expected_cost_agent_minutes": 110.0,
+        "forecasted_at": "2026-05-27T06:07:08Z",
+        "p_success": 0.64,
+        "rationale_short": "Level509 should be a faithful wrapper: witness bounded existence by the targetEventDataIndex value and bind it to sameTreeLock.eventData before packaging into Level508.",
+        "specific_failure_mode_ids": [
+          "eventData_type_namespace_mismatch",
+          "level508_field_coverage_gap",
+          "workbench_schema_gap"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T06:13:51Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "aggregate_ready"
+    ],
+    "next_action": "aggregate_when_rd_releases",
+    "state": "forecast_fulfilled"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 69.0,
+    "changed_by_forecast_ids": [
+      "codex_rd"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-27T06:13:34Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "aggregate_when_rd_releases",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1296,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T06:13:45Z"
+  }
+}

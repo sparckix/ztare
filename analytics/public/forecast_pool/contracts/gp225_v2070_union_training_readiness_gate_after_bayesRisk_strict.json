@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict.json"
+  },
+  "baseline_action": "Treat the new strict row as enough to start training.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict",
+  "cost_penalty": 0.018,
+  "counterfactual_action": "Run union training-readiness gate and hold GNN blocked unless heldout delta exists.",
+  "created_at": "2026-05-14T19:06:39Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.3235,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_pre_gnn_union_training_gate",
+    "score": 0.5714,
+    "selected_domain": "gp225_pre_gnn_replay_gate",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5714,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.3235,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.5714,
+        "score_rows": 2,
+        "token_jaccard": 0.5714
+      },
+      {
+        "char_trigram_jaccard": 0.2195,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2895,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2564,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2195,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "static gate may defer useful small-model training",
+      "heldout delta may need a separate artifact"
+    ],
+    "positive": [
+      "prevents row-count Goodharting",
+      "updates distance-to-GNN from 15 strict rows plus heldout delta missing"
+    ]
+  },
+  "horizon": "same session 2026-05-14",
+  "information_value": 0.22,
+  "layer": "meso",
+  "objective_resolver": "Resolve true iff v2070 consumes the v20.69 manifest, v20.68 replay, prior union/heldout gates, and emits an explicit training decision: strict rows counted correctly, bayesRisk row included, replay/training not run inside the gate, prior no-policy-delta caveats preserved, and GNN remains blocked unless a heldout/union candidate-policy delta is demonstrated.",
+  "question": "After v20.69 raises GP-225 to 15 strict rows with bayesRisk, is the public/internal union ready to unblock any GNN or cross-encoder training?",
+  "risk_penalty": 0.55,
+  "success_threshold": "manifest strict rows == 15; bayesRisk included; training_now false unless heldout delta evidence exists; GNN blocked reason explicit; next artifact named",
+  "task_type": "union_training_readiness_gate",
+  "value_if_success": 0.72,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

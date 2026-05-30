@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_skeptic_tick354",
+  "contract_id": "ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354",
+  "contract_question": "Can we compile the corrected positive-localized-flux transport receipt source and constructor into the route-1 transport lower-payment source without adding a signed/global defect shortcut?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 48.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adds_more_wrapper_without_shear_guard": 0.3,
+    "lean_context_unavailable": 0.18,
+    "misses_functional_mismatch": 0.25,
+    "other": 0.27
+  },
+  "forecasted_at": "2026-05-14T12:03:01Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.38,
+  "p_regression": 0.05,
+  "p_success": 0.61,
+  "rationale_short": "The correction is right only if it records the functional mismatch/shear no-go and does not merely rename transportLeakageCharge.",
+  "read_only_attestation": true
+}

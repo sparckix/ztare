@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 8.0,
+  "artifact_hash": "e0f29a3433af490cdb57cf1d08f05d46a6daf73a44edfe49527d78c60dca3cb4",
+  "artifact_path": "analytics/public/leanmill/results/v2045_blocked_row_source_candidate_replay_market_abort.json",
+  "changed_by_forecast_ids": [
+    "Church",
+    "Curry"
+  ],
+  "compile_status": "static_market_abort",
+  "contract_id": "gp225_v2045_blocked_row_source_candidate_replay_gate",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "no_run_market_abort",
+  "externality_tags": [
+    "replay_budget_guard",
+    "context_binding_bottleneck",
+    "candidate_content_bottleneck"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "unobserved_replay_success_probability"
+  ],
+  "new_next_action": "abort full replay and build v20.46 context-binding adapter before any canary/full replay",
+  "old_next_action": "run full bounded replay of v20.44 static-passed source candidates",
+  "preconditioner_effect": "Prevented full replay spend on static candidates before context-variable binding was audited.",
+  "preconditioner_source": "analytics/public/forecast_pool/aggregates/gp225_v2045_blocked_row_source_candidate_replay_gate.json",
+  "realized_failure_mode_ids": [
+    "context_variable_mismatch",
+    "zero_compile_like_prior_public_adapter"
+  ],
+  "resolution_note": "Full replay aborted because two-agent GP-230 aggregate had negative expected value and audit_or_explore_only routing; next move is context-binding adapter before canary/full replay.",
+  "resolved_at": "2026-05-14T17:31:39Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": true
+}

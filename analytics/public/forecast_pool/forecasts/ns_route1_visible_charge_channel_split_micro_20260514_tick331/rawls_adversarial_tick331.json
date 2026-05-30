@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_adversarial_tick331",
+  "contract_id": "ns_route1_visible_charge_channel_split_micro_20260514_tick331",
+  "contract_question": "Will the current NS route-1 tick add a compiled channel-level surface lowering visibleOverflowCharge into pressure/Riesz, local quadratic, transport, or commutator/Reynolds visibility alternatives?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 56.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_or_subratio_smuggling": 0.21,
+    "channel_charges_do_not_route_cleanly": 0.18,
+    "downstream_adapter_breaks": 0.11,
+    "lean_disjunction_algebra_exceeds_budget": 0.1,
+    "overlaps_dead_zero_visibility_route": 0.1,
+    "renamed_visibleOverflowCharge_prop": 0.3
+  },
+  "forecasted_at": "2026-05-14T02:38:34Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.64,
+  "p_regression": 0.11,
+  "p_success": 0.53,
+  "rationale_short": "Useful if it lowers the branch flag into channel-specific charge sources; risky if it only restates the visible branch.",
+  "read_only_attestation": true
+}

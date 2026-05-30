@@ -1,0 +1,22 @@
+{
+  "agent_id": "noether_reducer_readonly",
+  "contract_id": "gp225_v2017_repair_lane_replay",
+  "contract_question": "Will v20.17 repair-lane replay produce at least one new strict same-target row from the three v20.16 reduced holdout failures, with zero harmful compiled mismatches and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 14.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "betaPDF_support_source_missing": 0.25,
+    "map_ext_branch_context_missing": 0.25,
+    "ofScalars_normalizer_names_wrong": 0.22,
+    "other": 0.16,
+    "strict_witness_too_narrow": 0.12
+  },
+  "forecasted_at": "2026-05-14T13:14:14Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.42,
+  "p_regression": 0.04,
+  "p_success": 0.31,
+  "rationale_short": "Reducer lanes are sharper than v20.14 generic candidates, but the rows are the v20.14 failures and likely require context or theorem supply beyond tactic reshuffling.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1919_mixed_density_replay_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1919_mixed_density_replay_gate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1919_mixed_density_replay_gate",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1919_mixed_density_replay_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1919_mixed_density_replay_gate.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "contract_id": "gp225_v1919_mixed_density_replay_gate",
+  "cost_penalty": 0.4,
+  "created_at": "2026-05-13T22:06:55Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "before any GP-225 GNN training launch",
+  "information_value": 1.0,
+  "layer": "meso",
+  "objective_resolver": "Resolve from future v19.19 mixed-density replay artifact metrics.",
+  "question": "Will a GP-225 mixed-density replay run generated from v19.15 pass a bounded replay gate without false accepts and without unblocking GNN training?",
+  "risk_penalty": 0.5,
+  "success_threshold": "rows_attempted between 80 and 140 AND clean_replay_rows>=72 AND selected_true_false_accepts=0 AND all_post_quarantine_false_accepts=0 AND no_rescue_density>=0.45 AND source_packets>=4 AND top_areas>=8 AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_mixed_density_replay",
+  "value_if_success": 2.2,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

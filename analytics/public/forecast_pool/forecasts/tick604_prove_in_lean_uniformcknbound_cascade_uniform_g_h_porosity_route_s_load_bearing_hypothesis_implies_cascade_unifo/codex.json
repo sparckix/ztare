@@ -1,0 +1,27 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick604_prove_in_lean_uniformcknbound_cascade_uniform_g_h_porosity_route_s_load_bearing_hypothesis_implies_cascade_unifo",
+  "contract_question": "tick604: prove in Lean uniformCKNBound (cascade-uniform G+H, porosity route's load-bearing hypothesis) IMPLIES cascade-uniform H = the tick600-killed enstrophy-budget object (Kolmogorov constant \u224d\u03bb^{4N/3}, not cascade-uniform). Success=hypothesis CLOSED negatively (porosity folded into route-invariant terminus, alias#15 formalized), Lean builds, no escape, not laundered. Fail=escape exists or close is circular.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "alias15_formalization_gap": 0.25,
+    "circular_or_laundered_close": 0.5,
+    "lean_build_or_import_failure": 0.25
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:26:18Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.05,
+  "p_success": 0.82,
+  "rationale_short": "Evidence points to a bookkeeping close rather than new theorem discovery: the contract asks to formalize the implication and fold porosity into alias#15; main risks are a circular Lean encoding or a missing alias#15 bridge, not substantive refutation.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "circular_or_laundered_close",
+    "alias15_formalization_gap",
+    "lean_build_or_import_failure"
+  ]
+}

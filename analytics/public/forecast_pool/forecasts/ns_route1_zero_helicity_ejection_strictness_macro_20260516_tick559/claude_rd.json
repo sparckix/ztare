@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559",
+  "contract_question": "Gemini-Pro channel binds the unique-survivor Lojasiewicz theta<1 to the Pressure-Hessian Parametric Ejection: flat zero-helicity Ghost's rank-one kinetic load forces partial_z^2 p<0 (Pressure Poisson) ejecting z-noise => energy functional strictly convex in z => theta<1 => gamma>0 => tick558->552->551 closure (chain PROVED given the gate). Decisive sharpened question: is the 2D->3D pressure-Hessian ejection of a ZERO-HELICITY flat cascade scale-invariant-STRICT (s0>0 uniform => theta<1 => Ghost broken => route-1 closure) OR scale-CRITICAL (s0->0, the Ghost is engineered-marginal by zero helicity => theta=1 => criticality fixed point in pressure-Hessian vocabulary)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T00:14:02Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.03,
+  "p_success": 0.2,
+  "rationale_short": "Gemini channel is the strongest physical binding yet (theta<1 tied to a concrete classical mechanism: Pressure-Poisson rank-one => partial_z^2 p<0 ejection), chain PROVED given the gate, Tier-3 PASS (proactive pre-flight gate-binding held). But pre-flight MD (not pre-conceded): scaling shows ejection rate ~ nu/r^2 = parabolic frequency = scale-MATCHED/critical; the strict surplus is classically helicity-driven and the Ghost has ZERO helicity by construction => plausibly s0->0 scale-critical (theta=1). p_success 0.20 macro; if it degenerates, that is the precise Clay-hardness localization (atom invariant across geometric/maximal-fn/entropy/pressure-Hessian).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

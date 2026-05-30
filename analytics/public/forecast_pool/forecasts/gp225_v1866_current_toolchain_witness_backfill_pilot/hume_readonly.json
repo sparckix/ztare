@@ -1,0 +1,23 @@
+{
+  "agent_id": "hume_readonly",
+  "contract_id": "gp225_v1866_current_toolchain_witness_backfill_pilot",
+  "contract_question": "Will v18.66 backfill closure/target witnesses for at least 3 of 6 selected current-toolchain hard-residual packet rows with zero audited false accepts?",
+  "domain": "gp225_witness_backfill",
+  "expected_cost_agent_minutes": 45.0,
+  "failure_mode_distribution": {
+    "audited_true_false_accept_detected": 0.05,
+    "closure_or_target_witness_emission_below_3_rows": 0.24,
+    "current_toolchain_trace_shape_mismatch": 0.14,
+    "dependency_or_environment_issue": 0.1,
+    "other": 0.04,
+    "regression_in_existing_replay_guards": 0.13,
+    "witness_driver_compile_below_4_of_6": 0.3
+  },
+  "forecasted_at": "2026-05-13T16:56:05Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.16,
+  "p_success": 0.56,
+  "rationale_short": "Focused six-row pilot is plausible, but witness-emission threshold dominates because v18.64 had zero closure/target witnesses.",
+  "read_only_attestation": true
+}

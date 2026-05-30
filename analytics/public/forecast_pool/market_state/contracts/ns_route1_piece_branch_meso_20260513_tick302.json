@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T22:44:54Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 48.5,
+    "expected_value": -134.16842821200632,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.275,
+    "p_needs_new_lemma": 0.56,
+    "p_regression": 0.07,
+    "p_success": 0.5259388268562374,
+    "participants": [
+      {
+        "agent_id": "hooke_independent_micro",
+        "domain": "NS_route1",
+        "p_success": 0.62,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_independent_micro",
+        "domain": "NS_route1",
+        "p_success": 0.43,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "pressure_receipts_not_bound_to_fresh_pressure_piece",
+        "p": 0.18
+      },
+      {
+        "mode": "pressure_nonlocality_forces_shard_c",
+        "p": 0.15
+      },
+      {
+        "mode": "harmonic_tail_or_child_collar_remainder",
+        "p": 0.14
+      },
+      {
+        "mode": "velocity_branch_would_have_been_cleaner",
+        "p": 0.13
+      },
+      {
+        "mode": "lean_mismatch",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_piece_branch_meso_20260513_tick302.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_piece_branch_meso_20260513_tick302.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_piece_branch_meso_20260513_tick302.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_piece_branch_meso_20260513_tick302.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_piece_branch_meso_20260513_tick302.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 55.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T22:44:13Z",
+    "created_by": "codex_rd_ns_20260513",
+    "horizon": "next_tick",
+    "layer": "meso",
+    "objective_resolver": "Resolve true if the next compiled lower station is pressure-piece decomposition or if pressure scout output changes the next lever; false if velocity branch is chosen and compiles first; void if no Lean proof-surface work occurs.",
+    "question": "Should the next bounded NS route-1 proof tick attack pressure-piece decomposition before velocity-piece Caccioppoli?",
+    "success_threshold": "pressure branch selected and produces build-passed non-tautological lower station or decisive no-go routing to shard C",
+    "task_type": "ns_route1_branch_choice"
+  },
+  "contract_id": "ns_route1_piece_branch_meso_20260513_tick302",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_independent_micro",
+        "raw_agent_ids": [
+          "hooke_independent_micro"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_independent_micro",
+        "raw_agent_ids": [
+          "rawls_independent_micro"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_independent_micro",
+      "rawls_independent_micro"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_independent_micro",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_piece_branch_meso_20260513_tick302/hooke_independent_micro.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-13T22:44:37Z",
+        "p_success": 0.62,
+        "rationale_short": "Velocity branch may be cleaner, but pressure branch can still succeed if harmonic/child/cutoff terms are explicitly booked outside shard B.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_independent_micro",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_piece_branch_meso_20260513_tick302/rawls_independent_micro.json",
+        "canonical_agent_id": null,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-13T22:44:37Z",
+        "p_success": 0.43,
+        "rationale_short": "Pressure branch has nearby receipt machinery but high risk that local CZ/fresh pressure energy is not yet connected to pressureExcessBound.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T22:47:45Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.19,
+      "p_success": 0.5259388268562374,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "pressure_receipts_not_bound_to_fresh_pressure_piece",
+        "p": 0.18
+      },
+      "voi_proxy": 8.4393
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 48.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5259388268562374,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "pressure_receipts_not_bound_to_fresh_pressure_piece",
+        "p": 0.18
+      },
+      {
+        "mode": "pressure_nonlocality_forces_shard_c",
+        "p": 0.15
+      },
+      {
+        "mode": "harmonic_tail_or_child_collar_remainder",
+        "p": 0.14
+      },
+      {
+        "mode": "velocity_branch_would_have_been_cleaner",
+        "p": 0.13
+      },
+      {
+        "mode": "lean_mismatch",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.23465000000000003,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T22:47:52Z"
+  }
+}

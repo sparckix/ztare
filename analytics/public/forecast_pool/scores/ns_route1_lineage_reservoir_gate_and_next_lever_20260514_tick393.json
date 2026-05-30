@@ -1,0 +1,134 @@
+{
+  "contract_id": "ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue directly from LineageFreshMonotoneReservoirSource without gate residual audit",
+      "counterfactual_action": "run ns_gate_check and use the residual to choose source theorem versus fifth-channel guard",
+      "externality_hypotheses": {
+        "negative": [
+          "gate may merely confirm known residual without changing action"
+        ],
+        "positive": [
+          "tests whether GP-216/219 gates add decision value after Lean surface exists",
+          "prevents overclaiming a language route as PDE proof"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd_language_gate",
+        "codex_rd_pde_skeptic"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "gate_stop_signal",
+        "residual_language_feedback"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "gate_no_decision_delta"
+      ],
+      "new_next_action": "do not extend language now; attack the PDE source theorem or recurrent-reuse fifth channel",
+      "old_next_action": "possibly extend language/gates after LineageFreshMonotoneReservoirSource",
+      "preconditioner_effect": "Confirmed the local contract is crisp and prevented further language/gate work; next action stays PDE source/falsifier.",
+      "preconditioner_source": "GP-216/219 ns_gate_check on tick393 lineage-reservoir rubric",
+      "realized_failure_mode_ids": [
+        "gate_no_decision_delta",
+        "lineage_reservoir_missing_theorem"
+      ]
+    }
+  },
+  "mean_brier": 0.44199999999999995,
+  "mean_log_score": -1.107287107835666,
+  "outcome": {
+    "actual_cost_agent_minutes": 10.0,
+    "artifact_hash": "f00b80115e955b57d80cad4cf5d195fb8886518b110d46f46529f43e8422e077",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/gate_reports/tick393_lineage_reservoir_gate_report.json",
+    "changed_by_forecast_ids": [
+      "codex_rd_language_gate",
+      "codex_rd_pde_skeptic"
+    ],
+    "compile_status": "not_applicable",
+    "contract_id": "ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "gate_stop_signal",
+      "residual_language_feedback"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": null,
+    "negative_externality_tags": [
+      "gate_no_decision_delta"
+    ],
+    "new_next_action": "do not extend language now; attack the PDE source theorem or recurrent-reuse fifth channel",
+    "old_next_action": "possibly extend language/gates after LineageFreshMonotoneReservoirSource",
+    "preconditioner_effect": "Confirmed the local contract is crisp and prevented further language/gate work; next action stays PDE source/falsifier.",
+    "preconditioner_source": "GP-216/219 ns_gate_check on tick393 lineage-reservoir rubric",
+    "realized_failure_mode_ids": [
+      "gate_no_decision_delta",
+      "lineage_reservoir_missing_theorem"
+    ],
+    "resolution_note": "ns_gate_check passed all crisp structural gates and emitted residual_language_feedback, but it did not change the next proof action beyond tick392. The residual remains the PDE theorem LineageFreshMonotoneReservoirSource or recurrent-reuse fifth channel. Treat as a useful stop signal for gate work, not a successful decision-changing tick.",
+    "resolved_at": "2026-05-14T15:30:36Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T15:30:40Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 10.0,
+      "agent_id": "codex_rd_language_gate",
+      "brier": 0.5476,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.3,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -1.3470736479666092,
+      "p_success": 0.74,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:28:52Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:29:11Z",
+        "resolved_at": "2026-05-14T15:30:36Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 10.0,
+      "agent_id": "codex_rd_pde_skeptic",
+      "brier": 0.3364,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 26.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.42,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.867500567704723,
+      "p_success": 0.58,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:28:52Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:29:11Z",
+        "resolved_at": "2026-05-14T15:30:36Z"
+      }
+    }
+  ]
+}

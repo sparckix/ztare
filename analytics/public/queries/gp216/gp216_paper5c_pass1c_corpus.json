@@ -1,0 +1,893 @@
+{
+  "experiment": "gp216_paper5c_pass1c_corpus",
+  "n_arcs": 8,
+  "total_moves": 152,
+  "arcs": [
+    {
+      "id": "erdos_discrepancy",
+      "title": "Erd\u0151s discrepancy problem resolution (Tao, 2015)",
+      "description": "Erd\u0151s conjectured (1932): for any \u00b11 sequence x_1, x_2, ... and any C, there exist d, n such that |x_d + x_{2d} + ... + x_{nd}| > C. The polymath project (Gowers, 2010) reduced this to the Elliott conjecture. Tao (2015) proved Elliott using an entropy decrement argument from his Liouville function work. Three components: a multiplicative-function decrement bound, an ergodic-theoretic structure theorem for completely multiplicative functions, a finite-energy argument tying structure theorem to discrepancy. Small-step combinatorial reductions, careful amplification of entropy decrement, gluing discrete and continuous estimates."
+    },
+    {
+      "id": "green_tao",
+      "title": "Green-Tao theorem (primes in arithmetic progression, 2004)",
+      "description": "Green and Tao proved primes contain arithmetic progressions of every length k. Combinatorial transference: Szemer\u00e9di's theorem on dense subsets of integers extended to subsets of a 'pseudorandom' set, then primes shown to sit inside a pseudorandom envelope (W-trick + von Mangoldt \u03bb-function). Define pseudorandomness via correlation conditions; construct majorant function for prime density; transfer Szemer\u00e9di from dense integer subsets to dense pseudorandom subsets; remove small primes by sifting. Most load borne by combinatorial estimates, not new objects."
+    },
+    {
+      "id": "hales_jewett_polymath",
+      "title": "Hales-Jewett density via polymath1 (Gowers, 2009)",
+      "description": "Density Hales-Jewett (Furstenberg-Katznelson 1991): any positive-density subset of [k]^n contains a combinatorial line for n large. Original proof used ergodic theory and was long. Polymath1 (Gowers 2009) found purely combinatorial proof. Energy-increment iteration in Szemer\u00e9di-regularity spirit, partition regularity for the increment step, reduction to dense subset of IP-rich set, finite combinatorial gluing. Polymath produced moves through public blog with Gowers as moderator. Mathematical core was a sequence of specific combinatorial estimates rather than a new framework."
+    },
+    {
+      "id": "szemeredi_regularity",
+      "title": "Szemer\u00e9di regularity lemma + triangle removal (1975-78)",
+      "description": "Every dense graph admits partition into approximately equal parts where almost all pairs are pseudorandom (regular). Triangle removal: graph with o(n^3) triangles can be made triangle-free by removing o(n^2) edges. Iterative refinement: trivial partition, find regular refinement using mean-square energy as potential function, bound iteration by tower-of-twos. Triangle removal followed from regularity by counting triangle-containing edges. Applied to Roth, Behrend, Ramsey, additive combinatorics. Combinatorial estimates, not new objects."
+    },
+    {
+      "id": "roth_3ap",
+      "title": "Roth's theorem on 3-term APs in dense subsets (1953)",
+      "description": "Roth proved: any subset of {1..N} with density \u2265 C / log log N contains a 3-term arithmetic progression. Method: Fourier analysis. If A has density \u03b1, write 1_A as \u03b1 + f where f has small mean. Number of 3-APs in A is \u03b1^3 N^2 + (corrections involving Fourier coefficients of f). If A has no 3-APs, the Fourier corrections must absorb the main term, forcing some Fourier coefficient of 1_A to be large; this means A concentrates on an arithmetic progression. Iterate: pass to denser subset on a sub-progression, get density-increment, recurse. Iteration terminates because density is bounded by 1."
+    },
+    {
+      "id": "behrend_construction",
+      "title": "Behrend's construction of dense AP-free sets (1946)",
+      "description": "Behrend constructed subsets of {1..N} of density 1/exp(O(\u221alog N)) containing no 3-AP \u2014 much denser than the trivial 1/3 lower bound and showing Roth's theorem cannot be improved beyond a polynomial-of-log factor. Construction: lift integers to Z^d via base-d expansion; consider points whose coordinates have fixed Euclidean norm (a sphere in Z^d); spheres are AP-free in Z^d and project to dense AP-free subsets of integers. Optimization over d gives the exponential density. Construction is geometric, applied via specific integer-arithmetic embedding."
+    },
+    {
+      "id": "furstenberg_ergodic_szemeredi",
+      "title": "Furstenberg's ergodic proof of Szemer\u00e9di (1977)",
+      "description": "Szemer\u00e9di's theorem: any positive-density subset of integers contains k-term APs for every k. Furstenberg's correspondence: density-A statements about integer subsets correspond to multiple-recurrence statements about measure-preserving systems. Reduces Szemer\u00e9di to proving SZ ergodic theorem: for any measure-preserving T and measurable A with \u03bc(A) > 0, lim_{N\u2192\u221e} (1/N) \u03a3 \u03bc(A \u2229 T^{-n}A \u2229 ... \u2229 T^{-(k-1)n}A) > 0. Furstenberg structure theorem: any system decomposes as a tower of compact and weak-mixing extensions. SZ ergodic theorem proved by induction on tower height. Different machinery (ergodic theory, structure theorems) than original combinatorial proof."
+    },
+    {
+      "id": "ramsey_erdos_szekeres",
+      "title": "Ramsey theory and Erd\u0151s-Szekeres (1935 onwards)",
+      "description": "Ramsey's theorem (1930): any 2-coloring of edges of large enough complete graph contains monochromatic complete subgraph of any fixed size. Erd\u0151s-Szekeres (1935): among any sufficiently many points in general position, some k of them form a convex polygon. Both proofs combinatorial: pigeonhole at scale, induction on depth, careful counting of color/orientation patterns. Erd\u0151s reformulated as 'happy ending problem' about 4-points in convex position. Quantitative bounds: r(k,k) ~ 2^k upper, r(k,k) \u2265 2^{k/2} lower (Erd\u0151s probabilistic method 1947). Methods: pigeonhole, induction, probabilistic arguments, double-counting, extremal constructions. Specific named problems with combinatorial proofs."
+    }
+  ],
+  "results": {
+    "sonnet": {
+      "erdos_discrepancy": {
+        "arc_id": "erdos_discrepancy",
+        "moves": [
+          {
+            "name": "Conjecture Age Suspension",
+            "signature": "A long-standing open claim is held in abeyance while structural prerequisites accumulate across decades.",
+            "anchor": "Erd\u0151s conjectured (1932)"
+          },
+          {
+            "name": "Collective Reduction Pass",
+            "signature": "A distributed group reformulates the target problem into an equivalent but more tractable surrogate claim.",
+            "anchor": "polymath project reduced this to the Elliott conjecture"
+          },
+          {
+            "name": "Cross-Domain Import",
+            "signature": "A method developed for a structurally analogous problem in a different context is transplanted wholesale into the current setting.",
+            "anchor": "entropy decrement argument from his Liouville function work"
+          },
+          {
+            "name": "Modular Decomposition",
+            "signature": "The proof obligation is partitioned into distinct, independently verifiable sub-components that are later assembled.",
+            "anchor": "three components: a multiplicative-function decrement bound, an ergodic-theoretic structure theorem, a finite-energy argument"
+          },
+          {
+            "name": "Surrogate Quantity Introduction",
+            "signature": "An auxiliary measurable quantity is defined whose monotone behavior under iteration drives the main argument forward.",
+            "anchor": "entropy decrement argument"
+          },
+          {
+            "name": "Iterative Amplification",
+            "signature": "A weak or local gain is repeatedly applied so that cumulative effect yields a globally significant bound.",
+            "anchor": "careful amplification of entropy decrement"
+          },
+          {
+            "name": "Structural Dichotomy Theorem",
+            "signature": "Objects under study are classified into two exhaustive regimes \u2014 structured and pseudorandom \u2014 enabling case-split treatment.",
+            "anchor": "ergodic-theoretic structure theorem for completely multiplicative functions"
+          },
+          {
+            "name": "Discrete-Continuous Bridge",
+            "signature": "Estimates native to a discrete combinatorial setting are reconciled with continuous or measure-theoretic counterparts to close a gap.",
+            "anchor": "gluing discrete and continuous estimates"
+          },
+          {
+            "name": "Incremental Combinatorial Descent",
+            "signature": "The problem is reduced through a sequence of small, individually elementary logical steps rather than a single large leap.",
+            "anchor": "small-step combinatorial reductions"
+          },
+          {
+            "name": "Energy Finiteness Constraint",
+            "signature": "A boundedness or integrability condition on an auxiliary quantity is imposed to force convergence of an otherwise open-ended argument.",
+            "anchor": "finite-energy argument tying structure theorem to discrepancy"
+          },
+          {
+            "name": "Surrogate Problem Closure",
+            "signature": "The originally introduced surrogate claim is fully resolved, and its resolution is cashed back into a solution of the original target.",
+            "anchor": "Tao proved Elliott\u2026 [resolving the discrepancy conjecture]"
+          }
+        ]
+      },
+      "green_tao": {
+        "arc_id": "green_tao",
+        "moves": [
+          {
+            "name": "Scope Relaxation",
+            "signature": "Reframe a result proven for a restricted class as potentially applicable to a broader, structurally analogous class.",
+            "anchor": "Szemer\u00e9di's theorem on dense subsets of integers extended"
+          },
+          {
+            "name": "Proxy Environment Construction",
+            "signature": "Build an artificial containing structure that mimics the properties of the target environment well enough to inherit known results.",
+            "anchor": "primes shown to sit inside a pseudorandom envelope"
+          },
+          {
+            "name": "Property Axiomatization",
+            "signature": "Replace an intuitive or informal notion with a precise, checkable set of formal conditions that can be verified independently.",
+            "anchor": "Define pseudorandomness via correlation conditions"
+          },
+          {
+            "name": "Bounding Function Lift",
+            "signature": "Introduce a tractable upper-bound object that dominates the target object, enabling estimates on the target via the bound.",
+            "anchor": "construct majorant function for prime density"
+          },
+          {
+            "name": "Result Transplantation",
+            "signature": "Carry a theorem proven in one setting into a new setting by showing the new setting satisfies the theorem's structural preconditions.",
+            "anchor": "transfer Szemer\u00e9di from dense integer subsets to dense pseudorandom subsets"
+          },
+          {
+            "name": "Interference Excision",
+            "signature": "Remove a subset of problematic elements from the domain before analysis to prevent them from distorting the structural argument.",
+            "anchor": "remove small primes by sifting"
+          },
+          {
+            "name": "Load Redistribution",
+            "signature": "Deliberately concentrate the proof burden on an existing, well-developed component rather than constructing new machinery.",
+            "anchor": "Most load borne by combinatorial estimates, not new objects"
+          },
+          {
+            "name": "Density Inheritance",
+            "signature": "Establish that a sparse target set is dense relative to a containing structured set, so density-dependent results apply.",
+            "anchor": "dense subsets\u2026 dense pseudorandom subsets"
+          },
+          {
+            "name": "Modular Obstacle Bypass",
+            "signature": "Apply a systematic transformation to neutralize periodic or local obstructions before invoking a global argument.",
+            "anchor": "W-trick"
+          }
+        ]
+      },
+      "hales_jewett_polymath": {
+        "arc_id": "hales_jewett_polymath",
+        "moves": [
+          {
+            "name": "Proof Path Substitution",
+            "signature": "An existing result proved via one methodological route is re-derived through an entirely different structural pathway, preserving the conclusion while replacing the machinery.",
+            "anchor": "purely combinatorial proof replacing ergodic theory"
+          },
+          {
+            "name": "Distributed Incremental Search",
+            "signature": "A problem is opened to parallel, asynchronous contribution by many agents, with a moderator integrating partial moves toward a shared target.",
+            "anchor": "public blog with Gowers as moderator"
+          },
+          {
+            "name": "Energy Accumulation Loop",
+            "signature": "Progress is structured as repeated small gains in a measurable quantity, where each gain either terminates the search or sets up the next iteration.",
+            "anchor": "energy-increment iteration"
+          },
+          {
+            "name": "Regularity Partition",
+            "signature": "A complex object is decomposed into structured and pseudo-random parts so that the structured parts carry the essential argument.",
+            "anchor": "Szemer\u00e9di-regularity spirit"
+          },
+          {
+            "name": "Density Preservation Reduction",
+            "signature": "The original problem is reformulated so that attention shifts to a sub-object that inherits sufficient density, allowing the same argument to apply recursively.",
+            "anchor": "reduction to dense subset of IP-rich set"
+          },
+          {
+            "name": "Richness Inheritance",
+            "signature": "A structural property of the ambient space is transferred to a restricted sub-object, ensuring the sub-object retains enough combinatorial complexity for the argument to proceed.",
+            "anchor": "dense subset of IP-rich set"
+          },
+          {
+            "name": "Local-to-Global Gluing",
+            "signature": "Locally verified combinatorial pieces are assembled into a globally valid structure by explicit compatibility conditions.",
+            "anchor": "finite combinatorial gluing"
+          },
+          {
+            "name": "Increment Step Isolation",
+            "signature": "The core difficulty of an iterative argument is isolated into a single self-contained sub-lemma whose repeated application drives the whole proof.",
+            "anchor": "partition regularity for the increment step"
+          },
+          {
+            "name": "Estimate Accumulation",
+            "signature": "A proof is built not around a unifying conceptual framework but through a chain of quantitative bounds whose composition yields the desired conclusion.",
+            "anchor": "sequence of specific combinatorial estimates rather than a new framework"
+          },
+          {
+            "name": "Complexity Offloading",
+            "signature": "Difficulty embedded in a sophisticated external theory is replaced by elementary but more numerous internal steps, trading depth for transparency.",
+            "anchor": "long ergodic proof replaced by combinatorial argument"
+          }
+        ]
+      },
+      "szemeredi_regularity": {
+        "arc_id": "szemeredi_regularity",
+        "moves": [
+          {
+            "name": "Universal Structure Claim",
+            "signature": "Assert that every instance of a broad class admits a canonical decomposition with controlled approximation error.",
+            "anchor": "every dense graph admits partition into approximately equal parts"
+          },
+          {
+            "name": "Pseudorandomness Surrogate",
+            "signature": "Replace an intractable global property with a local, measurable proxy that captures the essential behavior for downstream use.",
+            "anchor": "almost all pairs are pseudorandom (regular)"
+          },
+          {
+            "name": "Trivial Seed Initialization",
+            "signature": "Begin an iterative construction from the simplest possible starting configuration, deferring all complexity to the refinement process.",
+            "anchor": "trivial partition"
+          },
+          {
+            "name": "Potential Function Governance",
+            "signature": "Introduce a monotone scalar quantity that strictly increases at each refinement step, guaranteeing termination without specifying the path.",
+            "anchor": "mean-square energy as potential function"
+          },
+          {
+            "name": "Bounded Iteration Argument",
+            "signature": "Prove that a refinement loop must halt within a computable (if large) number of steps by bounding the potential function's range.",
+            "anchor": "bound iteration by tower-of-twos"
+          },
+          {
+            "name": "Structural Decomposition Transfer",
+            "signature": "Derive a new result by applying a previously established decomposition theorem as a black box to a different problem.",
+            "anchor": "triangle removal followed from regularity by counting"
+          },
+          {
+            "name": "Counting Lemma Bridge",
+            "signature": "Connect a structural partition result to a combinatorial conclusion by establishing that pseudorandom parts support accurate substructure counts.",
+            "anchor": "counting triangle-containing edges"
+          },
+          {
+            "name": "Implication Cascade",
+            "signature": "Show that a single core result propagates as a sufficient condition into multiple independent problem domains.",
+            "anchor": "applied to Roth, Behrend, Ramsey, additive combinatorics"
+          },
+          {
+            "name": "Methodological Restraint",
+            "signature": "Deliberately avoid introducing new mathematical objects, achieving results purely through combinatorial estimates within existing structures.",
+            "anchor": "combinatorial estimates, not new objects"
+          }
+        ]
+      },
+      "roth_3ap": {
+        "arc_id": "roth_3ap",
+        "moves": [
+          {
+            "name": "Signal-Residual Decomposition",
+            "signature": "Split an object into a structured mean component and a fluctuation remainder to isolate where complexity lives.",
+            "anchor": "write 1_A as \u03b1 + f where f has small mean"
+          },
+          {
+            "name": "Counting Via Dual Space",
+            "signature": "Translate a combinatorial quantity into an expression in a transformed representation to make hidden dependencies explicit.",
+            "anchor": "Number of 3-APs in A is \u03b1^3 N^2 + corrections involving Fourier coefficients"
+          },
+          {
+            "name": "Assumption-Forced Consequence",
+            "signature": "Derive that a hypothesis (absence of a pattern) logically compels an extreme structural condition in the dual representation.",
+            "anchor": "If A has no 3-APs, the Fourier corrections must absorb the main term"
+          },
+          {
+            "name": "Extremal Witness Extraction",
+            "signature": "From a forced extreme value, extract a concrete structural certificate that localizes the object.",
+            "anchor": "forcing some Fourier coefficient of 1_A to be large"
+          },
+          {
+            "name": "Concentration Localization",
+            "signature": "Interpret a large spectral or dual-space value as evidence that the object clusters within a constrained sub-domain.",
+            "anchor": "A concentrates on an arithmetic progression"
+          },
+          {
+            "name": "Sub-Domain Restriction",
+            "signature": "Pass attention from the full domain to a structured sub-domain where the object's relative density is higher.",
+            "anchor": "pass to denser subset on a sub-progression"
+          },
+          {
+            "name": "Parameter Increment Guarantee",
+            "signature": "Show that each restriction step strictly increases a tracked scalar parameter, ensuring progress is real and measurable.",
+            "anchor": "get density-increment"
+          },
+          {
+            "name": "Bounded-Resource Termination",
+            "signature": "Conclude that a recursion must halt because the incrementing parameter cannot exceed a fixed ceiling.",
+            "anchor": "Iteration terminates because density is bounded by 1"
+          },
+          {
+            "name": "Contrapositive Reframing",
+            "signature": "Recast a positive existence claim as: if the object lacks the target structure, derive a contradiction or forced alternative.",
+            "anchor": "If A has no 3-APs \u2026 forcing"
+          },
+          {
+            "name": "Recursive Self-Application",
+            "signature": "Apply the same analytic procedure to the restricted sub-problem, inheriting the structure of the original argument.",
+            "anchor": "recurse"
+          }
+        ]
+      },
+      "behrend_construction": {
+        "arc_id": "behrend_construction",
+        "moves": [
+          {
+            "name": "Bound Gap Exposure",
+            "signature": "Identify a known bound and reveal the unexplored space between it and the theoretical limit.",
+            "anchor": "much denser than the trivial 1/3 lower bound"
+          },
+          {
+            "name": "Dimensional Lift",
+            "signature": "Embed a problem from a lower-dimensional space into a higher-dimensional one where desired structural properties become easier to enforce.",
+            "anchor": "lift integers to Z^d via base-d expansion"
+          },
+          {
+            "name": "Constraint Geometry Import",
+            "signature": "Import a geometric object whose intrinsic constraints automatically satisfy the combinatorial property required.",
+            "anchor": "consider points whose coordinates have fixed Euclidean norm"
+          },
+          {
+            "name": "Property Inheritance Check",
+            "signature": "Verify that the structural property holding in the lifted space is preserved under the projection back to the original space.",
+            "anchor": "spheres are AP-free in Z^d and project to dense AP-free subsets"
+          },
+          {
+            "name": "Encoding as Embedding",
+            "signature": "Use a representational encoding (e.g., digit expansion) as the mechanism for the structural embedding itself.",
+            "anchor": "lift integers to Z^d via base-d expansion"
+          },
+          {
+            "name": "Parameter Optimization",
+            "signature": "Treat a free structural parameter as a variable and optimize it to maximize the desired quantitative outcome.",
+            "anchor": "optimization over d gives the exponential density"
+          },
+          {
+            "name": "Existence-via-Construction",
+            "signature": "Prove an existence claim by explicitly constructing the object rather than by non-constructive argument.",
+            "anchor": "construction is geometric, applied via specific integer-arithmetic embedding"
+          },
+          {
+            "name": "Barrier Demonstration",
+            "signature": "Show that a known theorem cannot be improved beyond a certain quantitative threshold by exhibiting a near-extremal example.",
+            "anchor": "showing Roth's theorem cannot be improved beyond a polynomial-of-log factor"
+          },
+          {
+            "name": "Cross-Domain Translation",
+            "signature": "Solve a problem in one domain by translating it into the language and tools of a structurally richer domain.",
+            "anchor": "construction is geometric, applied via specific integer-arithmetic embedding"
+          }
+        ]
+      },
+      "furstenberg_ergodic_szemeredi": {
+        "arc_id": "furstenberg_ergodic_szemeredi",
+        "moves": [
+          {
+            "name": "Domain Bridge Construction",
+            "signature": "A statement in one representational domain is shown to be equivalent to a statement in a structurally richer domain, enabling import of that domain's tools.",
+            "anchor": "density-A statements about integer subsets correspond to multiple-recurrence statements about measure-preserving systems"
+          },
+          {
+            "name": "Problem Reformulation",
+            "signature": "The original target claim is replaced by a formally distinct but logically equivalent claim that is more tractable under available machinery.",
+            "anchor": "Reduces Szemer\u00e9di to proving SZ ergodic theorem"
+          },
+          {
+            "name": "Structural Decomposition Theorem",
+            "signature": "An arbitrary object in a class is shown to be constructible from a small set of canonical building-block types, reducing general analysis to analysis of those types.",
+            "anchor": "any system decomposes as a tower of compact and weak-mixing extensions"
+          },
+          {
+            "name": "Complexity Stratification",
+            "signature": "Objects are ordered by a well-founded measure of internal complexity, so that each object can be related to simpler predecessors.",
+            "anchor": "tower of compact and weak-mixing extensions"
+          },
+          {
+            "name": "Inductive Ladder Ascent",
+            "signature": "A property is established for the simplest stratum and then propagated upward through each successive level of a complexity ordering.",
+            "anchor": "SZ ergodic theorem proved by induction on tower height"
+          },
+          {
+            "name": "Case Bifurcation",
+            "signature": "The space of objects is split into exhaustive complementary types, each handled by a dedicated argument.",
+            "anchor": "compact and weak-mixing extensions"
+          },
+          {
+            "name": "Invariant Quantity Introduction",
+            "signature": "A numerical or measure-theoretic quantity is defined whose positivity or boundedness encodes the desired conclusion.",
+            "anchor": "lim_{N\u2192\u221e} (1/N) \u03a3 \u03bc(A \u2229 T^{-n}A \u2229 ... \u2229 T^{-(k-1)n}A) > 0"
+          },
+          {
+            "name": "Cross-Domain Machinery Import",
+            "signature": "Techniques developed in an unrelated field are applied to a problem that was not originally formulated in that field's language.",
+            "anchor": "Different machinery (ergodic theory, structure theorems) than original combinatorial proof"
+          },
+          {
+            "name": "Generalization Before Proof",
+            "signature": "The claim to be proved is deliberately cast in a more general form so that the inductive or recursive argument has a strong enough hypothesis to close.",
+            "anchor": "for any measure-preserving T and measurable A with \u03bc(A) > 0"
+          },
+          {
+            "name": "Correspondence Preservation Check",
+            "signature": "After a domain translation, one confirms that the structural properties relevant to the conclusion are faithfully mirrored across the bridge.",
+            "anchor": "density-A statements\u2026 correspond to multiple-recurrence statements"
+          }
+        ]
+      },
+      "ramsey_erdos_szekeres": {
+        "arc_id": "ramsey_erdos_szekeres",
+        "moves": [
+          {
+            "name": "Threshold Existence Claim",
+            "signature": "Assert that beyond some critical scale, a target structure must appear, converting a local property into a global guarantee.",
+            "anchor": "large enough complete graph contains monochromatic complete subgraph"
+          },
+          {
+            "name": "Partition Forcing",
+            "signature": "Divide a large collection into exhaustive cases and argue that at least one case must contain the desired pattern, regardless of how the division was made.",
+            "anchor": "any 2-coloring of edges"
+          },
+          {
+            "name": "Scale Amplification",
+            "signature": "Show that a local regularity, when iterated or applied at sufficient scale, produces a globally structured outcome.",
+            "anchor": "pigeonhole at scale, induction on depth"
+          },
+          {
+            "name": "Domain Transplant",
+            "signature": "Restate a result from one setting into a structurally analogous but distinct domain, preserving the logical skeleton while changing the objects.",
+            "anchor": "Erd\u0151s-Szekeres: among any sufficiently many points in general position"
+          },
+          {
+            "name": "Narrative Reframing",
+            "signature": "Rename or re-describe an abstract problem using concrete, memorable language to make it tractable and communicable.",
+            "anchor": "Erd\u0151s reformulated as 'happy ending problem'"
+          },
+          {
+            "name": "Recursive Depth Argument",
+            "signature": "Establish a result by reducing it to a smaller instance of itself, building the full conclusion through layered self-reference.",
+            "anchor": "induction on depth"
+          },
+          {
+            "name": "Bound Bracketing",
+            "signature": "Establish both an upper and a lower limit on a quantity, creating a sandwich that constrains where the true value must lie.",
+            "anchor": "r(k,k) ~ 2^k upper, r(k,k) \u2265 2^{k/2} lower"
+          },
+          {
+            "name": "Probabilistic Witness",
+            "signature": "Prove existence of a desired object by showing a randomly chosen candidate has positive probability of satisfying the required properties.",
+            "anchor": "Erd\u0151s probabilistic method 1947"
+          },
+          {
+            "name": "Extremal Construction",
+            "signature": "Build an explicit example that saturates or nearly saturates a bound, demonstrating that the bound cannot be substantially improved.",
+            "anchor": "extremal constructions"
+          },
+          {
+            "name": "Dual Counting Bridge",
+            "signature": "Count the same combinatorial quantity in two different ways and equate the results to extract a non-obvious relationship.",
+            "anchor": "double-counting"
+          },
+          {
+            "name": "Pattern Orientation Encoding",
+            "signature": "Assign discrete labels or orientations to relational configurations so that structural regularity becomes detectable through label uniformity.",
+            "anchor": "careful counting of color/orientation patterns"
+          },
+          {
+            "name": "Named Problem Crystallization",
+            "signature": "Isolate a specific open question, give it a stable identity, and use that identity to organize subsequent research effort.",
+            "anchor": "specific named problems with combinatorial proofs"
+          }
+        ]
+      }
+    },
+    "gemini": {
+      "erdos_discrepancy": {
+        "arc_id": "erdos_discrepancy",
+        "moves": [
+          {
+            "name": "Problem Equivalence Transformation",
+            "signature": "A difficult problem is reformulated as a consequence of a different, potentially more tractable, conjecture in another domain.",
+            "anchor": "reduced this to the Elliott conjecture"
+          },
+          {
+            "name": "Cross-Context Method Transfer",
+            "signature": "A technique developed for one problem is successfully adapted and applied to a different, seemingly unrelated problem.",
+            "anchor": "using an entropy decrement argument from his Liouville function work"
+          },
+          {
+            "name": "Deconstruct Into Subproblems",
+            "signature": "A complex proof is broken down into a small number of distinct, major components that can be tackled independently.",
+            "anchor": "Three components"
+          },
+          {
+            "name": "Establish Quantitative Boundary",
+            "signature": "A key quantitative limit or constraint is established for a central object of study.",
+            "anchor": "a multiplicative-function decrement bound"
+          },
+          {
+            "name": "Reveal Underlying Structure",
+            "signature": "A theorem is established that describes the fundamental organization or behavior of a class of objects, often by connecting them to a different theoretical framework.",
+            "anchor": "an ergodic-theoretic structure theorem"
+          },
+          {
+            "name": "Synthesize Disparate Components",
+            "signature": "A specific argument is constructed to bridge the gap between two previously separate components of the overall proof.",
+            "anchor": "tying structure theorem to discrepancy"
+          },
+          {
+            "name": "Incremental Problem Simplification",
+            "signature": "A complex problem is systematically simplified through a series of small, manageable, and logically sound transformations.",
+            "anchor": "Small-step combinatorial reductions"
+          },
+          {
+            "name": "Signal Amplification",
+            "signature": "A small, but significant, quantitative effect is iteratively or carefully magnified to produce a decisive result.",
+            "anchor": "careful amplification of entropy decrement"
+          },
+          {
+            "name": "Bridge Disparate Regimes",
+            "signature": "Techniques are developed to connect and reconcile results from two different mathematical domains, such as the discrete and the continuous.",
+            "anchor": "gluing discrete and continuous estimates"
+          }
+        ]
+      },
+      "green_tao": {
+        "arc_id": "green_tao",
+        "moves": [
+          {
+            "name": "Extend Known Theorem",
+            "signature": "Adapt a powerful result from a simpler domain to a more complex or structured one where it does not originally apply.",
+            "anchor": "Szemer\u00e9di's theorem on dense subsets of integers extended to subsets of a 'pseudorandom' set"
+          },
+          {
+            "name": "Construct Tractable Envelope",
+            "signature": "Embed a difficult-to-analyze object within a larger, more regular structure whose properties are easier to control.",
+            "anchor": "primes shown to sit inside a pseudorandom envelope"
+          },
+          {
+            "name": "Formalize Key Property",
+            "signature": "Establish a rigorous, quantitative definition for a crucial concept to make it usable in a formal argument.",
+            "anchor": "Define pseudorandomness via correlation conditions"
+          },
+          {
+            "name": "Substitute Bounding Proxy",
+            "signature": "Replace a complex or irregular function with a simpler, smoother one that uniformly bounds it.",
+            "anchor": "construct majorant function for prime density"
+          },
+          {
+            "name": "Synthesize Operative Tools",
+            "signature": "Combine multiple existing techniques or functions to construct a new object with specifically desired properties.",
+            "anchor": "W-trick + von Mangoldt \u03bb-function"
+          },
+          {
+            "name": "Establish Transference Principle",
+            "signature": "Prove that a structural property holding in a source domain can be systematically mapped to a target domain.",
+            "anchor": "transfer Szemer\u00e9di from dense integer subsets to dense pseudorandom subsets"
+          },
+          {
+            "name": "Filter Technical Artifacts",
+            "signature": "Apply a secondary process to remove known sources of interference introduced by the primary construction.",
+            "anchor": "remove small primes by sifting"
+          },
+          {
+            "name": "Leverage Quantitative Bounds",
+            "signature": "Focus the main effort on developing and applying powerful quantitative estimates rather than on inventing new conceptual entities.",
+            "anchor": "Most load borne by combinatorial estimates"
+          }
+        ]
+      },
+      "hales_jewett_polymath": {
+        "arc_id": "hales_jewett_polymath",
+        "moves": [
+          {
+            "name": "Paradigm Translation",
+            "signature": "Re-proving an existing result using a fundamentally different conceptual toolkit to gain new insights or simplify the argument.",
+            "anchor": "found purely combinatorial proof"
+          },
+          {
+            "name": "Massively Open Collaboration",
+            "signature": "Structuring the research process around a public, many-to-many communication platform to solicit and integrate contributions from a wide audience.",
+            "anchor": "Polymath produced moves through public blog"
+          },
+          {
+            "name": "Moderated Knowledge Synthesis",
+            "signature": "Appointing a central agent to guide, filter, and integrate contributions within a distributed collaborative effort.",
+            "anchor": "with Gowers as moderator"
+          },
+          {
+            "name": "Cross-Domain Tool Adaptation",
+            "signature": "Importing and modifying a successful method from a related but distinct problem area to apply it to the current context.",
+            "anchor": "in Szemer\u00e9di-regularity spirit"
+          },
+          {
+            "name": "Incremental Quality Improvement",
+            "signature": "Establishing a procedure that repeatedly applies a transformation to an object to monotonically improve a specific quantitative measure.",
+            "anchor": "Energy-increment iteration"
+          },
+          {
+            "name": "Sub-Process Property Guarantee",
+            "signature": "Proving that a key property is preserved or established during a critical step of a larger iterative or recursive process.",
+            "anchor": "partition regularity for the increment step"
+          },
+          {
+            "name": "Reduction to a Rich Subspace",
+            "signature": "Simplifying a problem by demonstrating that a solution within a more structured or well-behaved subset implies a solution for the general case.",
+            "anchor": "reduction to dense subset of IP-rich set"
+          },
+          {
+            "name": "Modular Solution Construction",
+            "signature": "Assembling a global solution by systematically combining or connecting partial results or components.",
+            "anchor": "finite combinatorial gluing"
+          },
+          {
+            "name": "Aggregation of Estimates",
+            "signature": "Achieving a final result not by introducing a new conceptual framework, but by chaining together a series of precise technical calculations or bounds.",
+            "anchor": "sequence of specific combinatorial estimates rather than a new framework"
+          }
+        ]
+      },
+      "szemeredi_regularity": {
+        "arc_id": "szemeredi_regularity",
+        "moves": [
+          {
+            "name": "Assert Universal Decomposability",
+            "signature": "Posit that any large, complex object within a given class can be broken down into a collection of simpler, well-behaved components.",
+            "anchor": "Every dense graph admits partition"
+          },
+          {
+            "name": "Define Approximate Structure",
+            "signature": "Relax the conditions for a structural property to hold 'almost everywhere' or within a specified tolerance, rather than perfectly.",
+            "anchor": "approximately equal parts where almost all pairs are pseudorandom"
+          },
+          {
+            "name": "Link Scarcity to Removability",
+            "signature": "Demonstrate that if a specific substructure is globally rare, the entire object can be made free of that substructure by making a proportionally small set of local alterations.",
+            "anchor": "graph with o(n^3) triangles can be made triangle-free by removing o(n^2) edges"
+          },
+          {
+            "name": "Employ Iterative Refinement",
+            "signature": "Begin with a simple initial state and repeatedly apply a transformation to progressively approach a desired complex structure.",
+            "anchor": "Iterative refinement: trivial partition, find regular refinement"
+          },
+          {
+            "name": "Guide with Potential Function",
+            "signature": "Define a bounded, monotonic quantity to prove that an iterative process must terminate after a finite number of steps.",
+            "anchor": "using mean-square energy as potential function"
+          },
+          {
+            "name": "Quantify Constructive Complexity",
+            "signature": "Determine the computational or descriptive cost of a constructive procedure, even if that cost is extremely large.",
+            "anchor": "bound iteration by tower-of-twos"
+          },
+          {
+            "name": "Leverage Structural Decomposition",
+            "signature": "Use a general decomposition theorem to simplify a complex counting problem into a manageable analysis of interactions between well-behaved components.",
+            "anchor": "Triangle removal followed from regularity by counting"
+          },
+          {
+            "name": "Generalize The Core Tool",
+            "signature": "Adapt a powerful result developed for one context into a versatile technique applicable across a range of different problem domains.",
+            "anchor": "Applied to Roth, Behrend, Ramsey, additive combinatorics"
+          },
+          {
+            "name": "Develop Quantitative Lens",
+            "signature": "Focus on establishing new quantitative relationships and bounds for existing objects rather than defining new categories of objects.",
+            "anchor": "Combinatorial estimates, not new objects"
+          }
+        ]
+      },
+      "roth_3ap": {
+        "arc_id": "roth_3ap",
+        "moves": [
+          {
+            "name": "Establishing Quantitative Threshold",
+            "signature": "Defining a minimum condition, expressed numerically, for a desired property to manifest within a system.",
+            "anchor": "density \u2265 C / log log N"
+          },
+          {
+            "name": "Cross-Domain Tool Importation",
+            "signature": "Applying a methodology from one field to solve a problem in a seemingly unrelated field.",
+            "anchor": "Method: Fourier analysis."
+          },
+          {
+            "name": "Decomposition into Uniformity and Fluctuation",
+            "signature": "Representing an object as the sum of a simple, average component and a complex, variable component.",
+            "anchor": "write 1_A as \u03b1 + f"
+          },
+          {
+            "name": "Translating Configuration to Expression",
+            "signature": "Converting a search for a discrete configuration into the evaluation of an algebraic expression involving the system's components.",
+            "anchor": "Number of 3-APs in A is \u03b1^3 N^2 + (corrections...)"
+          },
+          {
+            "name": "Argument from Assumed Absence",
+            "signature": "Assuming the non-existence of a target property to deduce necessary consequences about the system's structure.",
+            "anchor": "If A has no 3-APs"
+          },
+          {
+            "name": "Forcing a Structural Dichotomy",
+            "signature": "Demonstrating that the absence of one type of local order necessitates the presence of a different, more global type of order.",
+            "anchor": "forcing some Fourier coefficient of 1_A to be large"
+          },
+          {
+            "name": "Interpreting Abstract Signal",
+            "signature": "Translating an abstract quantitative measure back into a concrete structural property of the original object.",
+            "anchor": "this means A concentrates on an arithmetic progression"
+          },
+          {
+            "name": "Recursive Subproblem Refinement",
+            "signature": "Applying the same analytical procedure to a smaller, more structured sub-part of the original problem.",
+            "anchor": "Iterate: pass to denser subset on a sub-progression"
+          },
+          {
+            "name": "Monotonic Parameter Improvement",
+            "signature": "Designing an iterative process where a key parameter is guaranteed to improve at each step, driving the system toward a conclusion.",
+            "anchor": "get density-increment"
+          },
+          {
+            "name": "Bounding the Iteration",
+            "signature": "Proving that an iterative process must terminate by showing that its driving parameter is confined within a finite range.",
+            "anchor": "Iteration terminates because density is bounded by 1"
+          }
+        ]
+      },
+      "behrend_construction": {
+        "arc_id": "behrend_construction",
+        "moves": [
+          {
+            "name": "Domain Shift",
+            "signature": "Translate a problem from its native domain into a different, more structured one where new tools are available.",
+            "anchor": "lift integers to Z^d"
+          },
+          {
+            "name": "Representational Mapping",
+            "signature": "Define a specific rule for converting elements from the source domain into the target domain's representation.",
+            "anchor": "via base-d expansion"
+          },
+          {
+            "name": "Structure Importation",
+            "signature": "Identify a configuration within the new domain that inherently possesses the desired property sought in the original domain.",
+            "anchor": "spheres are AP-free in Z^d"
+          },
+          {
+            "name": "Solution Locus Definition",
+            "signature": "Isolate a subset of the target domain by a simple, shared property to serve as the core of the solution.",
+            "anchor": "consider points whose coordinates have fixed Euclidean norm"
+          },
+          {
+            "name": "Reverse Projection",
+            "signature": "Map the structured solution found in the auxiliary domain back into the original problem space.",
+            "anchor": "project to dense AP-free subsets of integers"
+          },
+          {
+            "name": "Dimensional Generalization",
+            "signature": "Introduce a free parameter into the construction that controls a key structural aspect, such as dimensionality.",
+            "anchor": "a sphere in Z^d"
+          },
+          {
+            "name": "Parameter Optimization",
+            "signature": "Systematically adjust a free parameter in the model to maximize a desired outcome or performance metric.",
+            "anchor": "Optimization over d gives the exponential density"
+          },
+          {
+            "name": "Cross-Disciplinary Synthesis",
+            "signature": "Apply methods and concepts from one field to solve a problem situated in an entirely different one.",
+            "anchor": "Construction is geometric, applied via specific integer-arithmetic embedding"
+          },
+          {
+            "name": "Establishing a New Benchmark",
+            "signature": "Demonstrate that the achieved result establishes a new performance bound, constraining the potential for future improvements.",
+            "anchor": "showing Roth's theorem cannot be improved beyond a polynomial-of-log factor"
+          }
+        ]
+      },
+      "furstenberg_ergodic_szemeredi": {
+        "arc_id": "furstenberg_ergodic_szemeredi",
+        "moves": [
+          {
+            "name": "Formal Equivalence Bridge",
+            "signature": "Establish a rigorous mapping that translates statements, objects, and properties from a source domain to a target domain, preserving truth.",
+            "anchor": "Furstenberg's correspondence: density-A statements about integer subsets correspond to multiple-recurrence statements about measure-preserving systems."
+          },
+          {
+            "name": "Static to Dynamic Reframing",
+            "signature": "Convert a problem about the existence of a static configuration into a problem about the long-term behavior of a dynamic process.",
+            "anchor": "multiple-recurrence statements about measure-preserving systems"
+          },
+          {
+            "name": "Target Problem Substitution",
+            "signature": "Replace the original problem with a newly formulated, equivalent problem in the target domain.",
+            "anchor": "Reduces Szemer\u00e9di to proving SZ ergodic theorem"
+          },
+          {
+            "name": "Establish Non-triviality Condition",
+            "signature": "Frame the target problem as proving that a key limiting quantity is strictly greater than zero, confirming a persistent phenomenon.",
+            "anchor": "lim_{N\u2192\u221e} (1/N) \u03a3 \u03bc(A \u2229 T^{-n}A \u2229 ... \u2229 T^{-(k-1)n}A) > 0"
+          },
+          {
+            "name": "Canonical Structure Theorem",
+            "signature": "Establish a general principle that any object in a class can be broken down into a structured arrangement of simpler, canonical components.",
+            "anchor": "any system decomposes as a tower of compact and weak-mixing extensions"
+          },
+          {
+            "name": "Isolate Behavioral Components",
+            "signature": "Identify and separate the fundamental, distinct types of behavior that constitute the building blocks in a structural decomposition.",
+            "anchor": "compact and weak-mixing extensions"
+          },
+          {
+            "name": "Parameterize by Complexity",
+            "signature": "Use the layered structure from a decomposition theorem to define a discrete measure of complexity for any object in the class.",
+            "anchor": "tower of compact and weak-mixing extensions"
+          },
+          {
+            "name": "Inductive Structural Ascent",
+            "signature": "Use the complexity parameter derived from a structural decomposition as the basis for an inductive proof strategy.",
+            "anchor": "proved by induction on tower height"
+          },
+          {
+            "name": "Toolset Transplantation",
+            "signature": "Import and apply a set of methods and concepts from a different field to solve a problem.",
+            "anchor": "Different machinery (ergodic theory, structure theorems)"
+          }
+        ]
+      },
+      "ramsey_erdos_szekeres": {
+        "arc_id": "ramsey_erdos_szekeres",
+        "moves": [
+          {
+            "name": "Principle of Inevitable Structure",
+            "signature": "Demonstrating that a specific type of order must emerge within any sufficiently large or complex system of a given class.",
+            "anchor": "Ramsey's theorem (1930): any 2-coloring of edges of large enough complete graph contains monochromatic complete subgraph of any fixed size."
+          },
+          {
+            "name": "Cross-Domain Structural Analogy",
+            "signature": "Applying a core structural principle, proven in one domain, to a seemingly unrelated domain to reveal a parallel phenomenon.",
+            "anchor": "Erd\u0151s-Szekeres (1935): among any sufficiently many points in general position, some k of them form a convex polygon."
+          },
+          {
+            "name": "Codifying Core Mechanisms",
+            "signature": "Identifying and repeatedly applying a small set of fundamental proof techniques to establish initial results in a new area.",
+            "anchor": "Both proofs combinatorial: pigeonhole at scale, induction on depth, careful counting of color/orientation patterns."
+          },
+          {
+            "name": "Narrative Problem Reframing",
+            "signature": "Recasting a formal problem into a more intuitive or memorable narrative to attract attention and focus inquiry on a core case.",
+            "anchor": "Erd\u0151s reformulated as 'happy ending problem' about 4-points in convex position."
+          },
+          {
+            "name": "Transition to Quantitative Bounds",
+            "signature": "Moving beyond proving the existence of a phenomenon to determining the specific quantitative thresholds at which it occurs.",
+            "anchor": "Quantitative bounds: r(k,k) ~ 2^k upper, r(k,k) \u2265 2^{k/2} lower"
+          },
+          {
+            "name": "Methodological Innovation for Bounds",
+            "signature": "Developing and introducing a new, non-constructive method to establish limits or bounds that were inaccessible with existing techniques.",
+            "anchor": "Erd\u0151s probabilistic method 1947"
+          },
+          {
+            "name": "Bounding the Zone of Ignorance",
+            "signature": "Establishing distinct upper and lower bounds for a quantity, thereby precisely defining the range where the true value must lie.",
+            "anchor": "r(k,k) ~ 2^k upper, r(k,k) \u2265 2^{k/2} lower"
+          },
+          {
+            "name": "Diversifying the Proof Toolkit",
+            "signature": "Accumulating and integrating a variety of distinct proof strategies to address a growing class of related problems.",
+            "anchor": "Methods: pigeonhole, induction, probabilistic arguments, double-counting, extremal constructions."
+          },
+          {
+            "name": "Generating Concrete Exemplars",
+            "signature": "Creating a family of specific, named problems that serve as test cases and applications of a general underlying principle.",
+            "anchor": "Specific named problems with combinatorial proofs."
+          }
+        ]
+      }
+    }
+  }
+}

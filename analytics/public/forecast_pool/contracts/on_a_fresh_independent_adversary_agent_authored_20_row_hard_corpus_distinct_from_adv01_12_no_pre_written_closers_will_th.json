@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json",
+    "contract": "analytics/public/forecast_pool/contracts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th",
+    "outcome": "analytics/public/forecast_pool/outcomes/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json",
+    "score": "analytics/public/forecast_pool/scores/on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T16:32:14Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0488,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "adversary_corpus_scale_solver_yield",
+    "score": 0.0488,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0488,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0488,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.04,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.04,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0364,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0364,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0233,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0233,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0213,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.0213,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "gp233_adversary_yield_decomp.py on the 20-row result file",
+  "question": "On a fresh INDEPENDENT adversary-agent-authored 20-row hard corpus (distinct from ADV01-12, no pre-written closers), will the frozen clean-prover + pinned-v4.29.0+exact? governance yield >=8 genuine novel closures (compile + exact? cannot single-close) with 0 false ratifications?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "adversary_corpus_scale_solver_yield",
+  "value_if_success": 0.8,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

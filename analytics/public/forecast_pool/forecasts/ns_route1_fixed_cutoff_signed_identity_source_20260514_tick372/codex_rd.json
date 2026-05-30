@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_fixed_cutoff_signed_identity_source_20260514_tick372",
+  "contract_question": "Can we pull the route-1 local-energy measure source one layer lower by encoding a fixed-cutoff signed-measure identity source with actual signed pieces and a constructor into LocalEnergySignedMeasurePositiveVariationSource, without adding new sorry/admit?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructor_duplicates_existing_source": 0.24,
+    "identity_source_still_too_prop_like": 0.38,
+    "lean_name_or_simp_regression": 0.14,
+    "success_clean_source_ladder": 0.24
+  },
+  "forecasted_at": "2026-05-14T13:52:46Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.52,
+  "p_regression": 0.08,
+  "p_success": 0.72,
+  "rationale_short": "The existing measure split already compiles; a lower signed-piece source should be a conservative structure+constructor edit. Main risk is cosmetic wrapper rather than a real source ladder.",
+  "read_only_attestation": true
+}

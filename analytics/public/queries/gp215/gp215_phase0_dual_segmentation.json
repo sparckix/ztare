@@ -1,0 +1,129 @@
+{
+  "phase_slice": [
+    "phase5fa_sparse_psd_pricing_certificate.md",
+    "phase5fb_shift_quartic_pricing_certificate.md",
+    "phase5fc_constrained_participation_optimizer.md",
+    "phase5fd_pricing_kernel_limit_passage_bridge.md",
+    "phase5fe_profile_decoupling_pricing_audit.md",
+    "phase5fi_countable_limit_pricing_bridge.md",
+    "phase5fj_countable_prefix_pricing_audit.md",
+    "phase5fk_prefix_weight_optimizer.md",
+    "phase5fl_null_profile_cap_branch.md",
+    "phase5fm_trackb_branch_killer_grid.md",
+    "phase5fn_concentration_impact_branch_audit.md",
+    "phase5fo_vanishing_branch_audit.md"
+  ],
+  "n_cycles_a": 6,
+  "n_cycles_b": 7,
+  "jaccard": 0.625,
+  "tolerance": 1,
+  "verdict": "FAIL",
+  "cycles_a": [
+    {
+      "start_phase": "5FA",
+      "end_phase": "5FB",
+      "failure": "Finite fixed-support certificates covered only linear Leray observables, leaving nonlinear W-shift/quartic observables uncertified.",
+      "resolution_move": "Phase 5FB extended the PSD certificate audit to lifted quartic W-shift observables, finding zero failures and zero rank-one sample hits across 636 certificates.",
+      "what_survived": "Both linear and nonlinear fixed-support no-arbitrage certificates passed, establishing a two-tier finite certificate base.",
+      "what_opened": "Global promotion still required a closure theorem over all supports and modes, and the constrained multimode participation channel remained untested."
+    },
+    {
+      "start_phase": "5FC",
+      "end_phase": "5FC",
+      "failure": "Constrained multimode coefficient participation was a potential escape route not covered by the sparse single-support audits.",
+      "resolution_move": "Phase 5FC forced multimode participation constraints on fixed-support optimizers and found zero survivors above 2/3, with best feasible profit near 0.0097.",
+      "what_survived": "The no-arbitrage wall held even under adversarially constrained multimode participation across 245 deterministic supports.",
+      "what_opened": "The question of whether finite certificates could be promoted to global regularity via a limit-passage topology was now the controlling open problem."
+    },
+    {
+      "start_phase": "5FD",
+      "end_phase": "5FE",
+      "failure": "No mechanism existed to carry finite fixed-support certificates to the global smooth divergence-free class without changing the state space or observable class at the limit.",
+      "resolution_move": "Phase 5FD mapped the limit-passage theorem burden into five branch clauses (vanishing, dichotomy, concentration, null profile, cross-profile recombination), and Phase 5FE audited finite two-profile recombinations as a concrete falsifier for the cross-profile loophole, finding no survivor.",
+      "what_survived": "The five-branch limit-passage obligation was named and the obvious two-profile recombination escape was closed at the finite level.",
+      "what_opened": "Each of the five branches required its own analytic proof or falsifier, beginning with the countable-prefix approximation and price lower-semicontinuity obligations."
+    },
+    {
+      "start_phase": "5FI",
+      "end_phase": "5FK",
+      "failure": "The infinite-execution loophole \u2014 that a singularity route could execute profitable trades infinitely often without moving its own price \u2014 had no formal abstract barrier.",
+      "resolution_move": "Phase 5FI proved a Lean countable-limit bridge theorem reducing the infinite branch to two analytic hypotheses (finite-prefix payoff approximation and price lower-semicontinuity), and Phases 5FJ\u20135FK stress-tested dyadic finite prefixes and level-weight adversaries, finding zero survivors or certificate warnings.",
+      "what_survived": "The countable-limit bridge theorem and the finding that no finite-prefix or weight-optimized cascade escaped the pricing kernel.",
+      "what_opened": "The analytic proofs of price lower-semicontinuity and finite-prefix payoff approximation for the declared Leray/Sobolev observable class remained open."
+    },
+    {
+      "start_phase": "5FL",
+      "end_phase": "5FM",
+      "failure": "The null-profile branch (self-tax-free / Leray-invisible profiles) lacked an isolated proof routing and a clear falsifier criterion, leaving it as an unstructured residual obligation.",
+      "resolution_move": "Phase 5FL isolated the null-profile cap as a standalone Lean branch-killer with exact finite evidence from prior phases, and Phase 5FM organized all seven branches into a falsification grid with named artifacts, falsifiers, and open statuses.",
+      "what_survived": "A structured seven-branch falsification grid with Lean routing theorems and local finite evidence for each branch, replacing the open-ended packet search.",
+      "what_opened": "Each branch still required a global analytic closure theorem (Leray/Sobolev profile decomposition, concentration coercivity, vanishing compactness, cross-profile charging) before Track B could promote to a global regularity claim."
+    },
+    {
+      "start_phase": "5FN",
+      "end_phase": "5FO",
+      "failure": "The concentration-impact and vanishing branches each lacked concrete falsifier sweeps over predeclared hostile packet families to confirm the pricing kernel charged these routes.",
+      "resolution_move": "Phase 5FN scored 388 predeclared localized Fourier packets (tubes, lines, caps) finding zero survivors and showing concentrated rows collapsed to near-zero payoff, and Phase 5FO scored 1488 high-participation low-concentration packets finding zero vanishing-like survivors.",
+      "what_survived": "Both the concentration-impact and vanishing branches showed no finite escape, with the most concentrated and most delocalized rows producing the smallest full-ledger payoffs.",
+      "what_opened": "The actual PDE lower-semicontinuity and concentration-compactness vanishing theorems for the declared pricing kernel remained unproved at the global level."
+    }
+  ],
+  "cycles_b": [
+    {
+      "start_phase": "5FA",
+      "end_phase": "5FC",
+      "failure": "The finite Track B certificates could still be dismissed as fixed-support artifacts or as optimizer loopholes that fail once nonlinear observables or multimode participation are enforced.",
+      "resolution_move": "The run built direct PSD certificates for fixed Leray observables, lifted quartic PSD certificates for W-shift observables, and constrained-participation optimizers with no survivors.",
+      "what_survived": "Finite fixed-support no-arbitrage for the tested linear, nonlinear, and multimode hostile classes survived with zero certificate failures or above-wall survivors.",
+      "what_opened": "The remaining question became how to promote finite certificates to a predeclared infinite/profile theorem without changing the observable or pricing rule after seeing the sequence."
+    },
+    {
+      "start_phase": "5FD",
+      "end_phase": "5FE",
+      "failure": "The live stall was the infinite limit-passage loophole in which separately harmless profiles might recombine across scales and cancel price while retaining payoff.",
+      "resolution_move": "The bridge named the required profile-decomposition clauses and the audit stress-tested two-profile recombinations as a concrete falsifier for decoupling failure.",
+      "what_survived": "No finite two-profile decoupling escape or certificate warning was found, so the obvious recombination channel did not break the current pricing kernel.",
+      "what_opened": "The result opened the need for an exact countable-limit formulation of payoff approximation and price lower-semicontinuity."
+    },
+    {
+      "start_phase": "5FI",
+      "end_phase": "5FK",
+      "failure": "The stall mechanism was countable infinite execution: a cascade might realize profit only in the limit while every finite prefix remains safely priced.",
+      "resolution_move": "The Lean countable bridge reduced the issue to finite-prefix payoff approximation and price lower-semicontinuity, then dyadic prefix and prefix-weight audits found no local survivor.",
+      "what_survived": "The abstract implication from pointwise profile no-arbitrage plus prefix approximation and lower-semicontinuity to global no-arbitrage survived.",
+      "what_opened": "The remaining burden became analytic proof of the declared prefix approximation and lower-semicontinuity properties in an actual Leray/Sobolev profile topology."
+    },
+    {
+      "start_phase": "5FL",
+      "end_phase": "5FL",
+      "failure": "The null-profile branch remained a distinct loophole because Leray-invisible or self-tax-free profiles might evade the interacting price while preserving above-wall payoff.",
+      "resolution_move": "The phase isolated a Lean routing theorem for null-profile capping and attached exact finite evidence from null-charge replay and single-mode audits.",
+      "what_survived": "The local null branch retained below-wall structure except for known coordinate/eigenflow saturators at the wall.",
+      "what_opened": "It opened the global obligation to prove that every independently declared null profile in the chosen topology is capped and cannot recombine into unpriced payoff."
+    },
+    {
+      "start_phase": "5FM",
+      "end_phase": "5FM",
+      "failure": "The proof search stalled as an unbounded packet-search surface rather than a finite list of falsifiable analytic branch obligations.",
+      "resolution_move": "The phase reorganized Track B into a seven-branch killer grid with fixed anti-tautology data, artifacts, statuses, and explicit falsifiers.",
+      "what_survived": "The state-pricing-kernel program survived as a branch-bounded proof architecture rather than as a claim of global closure.",
+      "what_opened": "It opened separate branch audits for concentration impact, vanishing, finite-prefix approximation, price lower-semicontinuity, dichotomy, cross-profile charging, and null caps."
+    },
+    {
+      "start_phase": "5FN",
+      "end_phase": "5FN",
+      "failure": "The concentration-impact branch could fail if spatial or frequency concentration preserved payoff while the defect or self-tax price lost lower-semicontinuity.",
+      "resolution_move": "The audit scored predeclared localized Fourier caps, tubes, and lines under the exact full ledger and found no concentration-impact escape.",
+      "what_survived": "Local concentrated and high-participation packets collapsed to tiny full-ledger profit with zero above-wall survivors.",
+      "what_opened": "The global concentration-coercivity theorem still had to show that actual concentrating profiles pay impact in the declared PDE topology."
+    },
+    {
+      "start_phase": "5FO",
+      "end_phase": "5FO",
+      "failure": "The vanishing branch could fail if high-participation low-concentration profiles retained nonvanishing signed nonlinear payoff below the visibility of the pricing kernel.",
+      "resolution_move": "The audit tested predeclared vanishing-like Fourier packets with exact full-ledger charging and found no above-wall survivor.",
+      "what_survived": "The local vanishing proxy produced only very small profits, including among the vanishing-like rows.",
+      "what_opened": "The remaining task became proving the genuine concentration-compactness vanishing theorem for the fixed observable and price class."
+    }
+  ]
+}

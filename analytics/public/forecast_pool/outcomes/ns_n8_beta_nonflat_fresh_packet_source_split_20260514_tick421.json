@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "6b38b442d419d6f119914228711a9daba3841e61ba673e4d07eb9ca98887d0b1",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "pass",
+  "contract_id": "ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "fresh_packet_gate_sharpened",
+    "anti_tautology_guard",
+    "lean_reuse"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 5,
+  "negative_externality_tags": [
+    "fresh_packet_audit_unproved",
+    "beta_still_open"
+  ],
+  "new_next_action": "Attack FreshComparablePacketSideConditionAudit: nonflat/inherited/flat partition, fresh event selection rule, payment/carrier locks, and no event-price definition from beta-radius target.",
+  "old_next_action": "Attack NonflatNonInheritedBadCenterForcesFreshFrequencyPacket as a single theorem.",
+  "preconditioner_effect": "Prevented a generic fresh-packet theorem from hiding event selection and beta price independence.",
+  "preconditioner_source": "scientific amnesia scan + sidecar Darwin prompt + Gowers-first classifier",
+  "realized_failure_mode_ids": [
+    "fresh_packet_side_condition_audit_unproved",
+    "event_selection_rule_unproved",
+    "payment_carrier_locks_unproved"
+  ],
+  "resolution_note": "Added BetaNonflatFreshPacketSourceSplit, assembly def nonflatFreshPacket_of_betaSourceSplit, and guard BetaNonflatFreshPacketSourceSplitIsNotClosure. Lean passes; no sorry/admit. The patch reduces NonflatNonInheritedBadCenterForcesFreshFrequencyPacket to FreshComparablePacketSideConditionAudit plus pressure same-carrier, square-budget, and bounded-fanout locks, while keeping partition/selection/payment audit open.",
+  "resolved_at": "2026-05-14T21:58:07Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,308 @@
+{
+  "audit_timestamp_utc": "2026-05-09T23:24:02.302603+00:00",
+  "n_miners_audited": 21,
+  "by_verdict": {
+    "alive_load_bearing": 11,
+    "alive": 7,
+    "dormant": 1,
+    "dead_no_output": 2
+  },
+  "miners": [
+    {
+      "script": "scripts/public/mining/mine_climb_triggers.py",
+      "description": "When did substrates climb past plateaus",
+      "outputs": [
+        "analytics/public/queries/trajectory/climb_triggers_2026-04-24.json"
+      ],
+      "canonical_output": "analytics/public/queries/trajectory/climb_triggers_2026-04-24.json",
+      "last_run_utc": "2026-05-09T22:44:16.117587+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 19341,
+      "downstream_references": 2,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/mining/mine_pivot_effectiveness.py",
+      "description": "Does pivot logic actually help",
+      "outputs": [
+        "analytics/public/queries/trajectory/pivot_effectiveness_2026-04-24.json"
+      ],
+      "canonical_output": "analytics/public/queries/trajectory/pivot_effectiveness_2026-04-24.json",
+      "last_run_utc": "2026-05-09T22:44:15.721427+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 226078,
+      "downstream_references": 2,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/mining/mine_score_ceilings.py",
+      "description": "Qualitative-ceiling diagnosis",
+      "outputs": [
+        "analytics/public/queries/trajectory/score_ceilings_2026-04-24.json"
+      ],
+      "canonical_output": "analytics/public/queries/trajectory/score_ceilings_2026-04-24.json",
+      "last_run_utc": "2026-05-09T22:44:16.126403+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 40743,
+      "downstream_references": 2,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/mining/mine_lollapalooza_hypothesis.py",
+      "description": "Multi-cause score breakthroughs",
+      "outputs": [
+        "analytics/public/queries/classification/lollapalooza_test_2026-04-24.json"
+      ],
+      "canonical_output": "analytics/public/queries/classification/lollapalooza_test_2026-04-24.json",
+      "last_run_utc": "2026-05-09T22:44:16.121085+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 2272,
+      "downstream_references": 2,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/mining/mine_trajectories.py",
+      "description": "Score trajectories per substrate",
+      "outputs": [
+        "analytics/public/ledgers/trajectory/trajectory_archive.jsonl"
+      ],
+      "canonical_output": "analytics/public/ledgers/trajectory/trajectory_archive.jsonl",
+      "last_run_utc": "2026-05-09T01:14:12.805216+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 4042486,
+      "downstream_references": 3,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/utilities/failure_cluster_analyzer.py",
+      "description": "Cluster typed_endpoint_failure_log events",
+      "outputs": [
+        "analytics/public/queries/audits/failure_clusters.md"
+      ],
+      "canonical_output": "analytics/public/queries/audits/failure_clusters.md",
+      "last_run_utc": "2026-05-09T23:23:47.986084+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 3462,
+      "downstream_references": 3,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/audits/audit_gate_effectiveness.py",
+      "description": "Cage gate effectiveness audit",
+      "outputs": [
+        "analytics/public/queries/audits/cross_audit_dashboard.json"
+      ],
+      "canonical_output": "analytics/public/queries/audits/cross_audit_dashboard.json",
+      "last_run_utc": "2026-05-09T23:24:02.297115+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 23359,
+      "downstream_references": 3,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/audits/audit_gate_engagement.py",
+      "description": "Cage gate engagement audit",
+      "outputs": [
+        "analytics/public/queries/audits/cross_audit_dashboard.json"
+      ],
+      "canonical_output": "analytics/public/queries/audits/cross_audit_dashboard.json",
+      "last_run_utc": "2026-05-09T23:24:02.297115+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 23359,
+      "downstream_references": 3,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/audits/audit_judge_drift.py",
+      "description": "Judge calibration drift",
+      "outputs": [
+        "analytics/public/queries/audits/cross_audit_dashboard.json"
+      ],
+      "canonical_output": "analytics/public/queries/audits/cross_audit_dashboard.json",
+      "last_run_utc": "2026-05-09T23:24:02.297115+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 23359,
+      "downstream_references": 3,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/lean/endpoint_type_compression_audit.py",
+      "description": "GP-223 Layer 3 post-hoc compression audit",
+      "outputs": [
+        "analytics/public/queries/lean/endpoint_compression_audit.json"
+      ],
+      "canonical_output": "analytics/public/queries/lean/endpoint_compression_audit.json",
+      "last_run_utc": "2026-05-07T06:44:31.551704+00:00",
+      "last_run_age_days": 2,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 1457,
+      "downstream_references": 2,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/audits/seam_health_audit.py",
+      "description": "GP-221 seam-corpus health audit (today)",
+      "outputs": [
+        "analytics/public/queries/audits/seam_health_report.json"
+      ],
+      "canonical_output": "analytics/public/queries/audits/seam_health_report.json",
+      "last_run_utc": "2026-05-06T17:13:41.019922+00:00",
+      "last_run_age_days": 3,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 71756,
+      "downstream_references": 3,
+      "verdict": "alive_load_bearing"
+    },
+    {
+      "script": "scripts/public/mining/mine_cap_kind_distribution.py",
+      "description": "Cross-substrate cap-kind distribution",
+      "outputs": [
+        "analytics/public/queries/classification/cap_kind_distribution.json",
+        "analytics/public/queries/classification/cap_kind_distribution.md"
+      ],
+      "canonical_output": "analytics/public/queries/classification/cap_kind_distribution.md",
+      "last_run_utc": "2026-05-09T23:23:48.149490+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 10888,
+      "downstream_references": 0,
+      "verdict": "alive"
+    },
+    {
+      "script": "scripts/public/lean/cannot_patch_harvester.py",
+      "description": "CANNOT-PATCH event harvester",
+      "outputs": [
+        "projects/ns_millennium_hunt/workspace/queries/typed_endpoint_failure_log.jsonl",
+        "projects/ns_millennium_hunt/workspace/queries/missing_primitives_backlog.md"
+      ],
+      "canonical_output": "projects/ns_millennium_hunt/workspace/queries/missing_primitives_backlog.md",
+      "last_run_utc": "2026-05-09T22:20:45.746008+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 18959,
+      "downstream_references": 1,
+      "verdict": "alive"
+    },
+    {
+      "script": "scripts/public/audits/audit_gate_coverage.py",
+      "description": "Cage gate coverage audit",
+      "outputs": [
+        "analytics/public/queries/audits/gate_telemetry_diagnosis.json"
+      ],
+      "canonical_output": "analytics/public/queries/audits/gate_telemetry_diagnosis.json",
+      "last_run_utc": "2026-05-09T23:23:48.109682+00:00",
+      "last_run_age_days": 0,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 10637,
+      "downstream_references": 1,
+      "verdict": "alive"
+    },
+    {
+      "script": "scripts/public/mining/mine_champion_trajectory_sequence.py",
+      "description": "Champion-sequence analysis",
+      "outputs": [
+        "analytics/public/queries/trajectory/champion_trajectory_sequences_2026-05-08.json"
+      ],
+      "canonical_output": "analytics/public/queries/trajectory/champion_trajectory_sequences_2026-05-08.json",
+      "last_run_utc": "2026-05-08T18:33:18.594416+00:00",
+      "last_run_age_days": 1,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 64850,
+      "downstream_references": 0,
+      "verdict": "alive"
+    },
+    {
+      "script": "scripts/public/mining/mine_ztare_pairs_for_training.py",
+      "description": "ZTARE-internal training pairs (today)",
+      "outputs": [
+        "analytics/public/leanmill/gnn_ranker/ztare_pairs.jsonl"
+      ],
+      "canonical_output": "analytics/public/leanmill/gnn_ranker/ztare_pairs.jsonl",
+      "last_run_utc": "2026-05-06T15:47:57.060440+00:00",
+      "last_run_age_days": 3,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 730788,
+      "downstream_references": 1,
+      "verdict": "alive"
+    },
+    {
+      "script": "scripts/public/models/v2_production_hit10_falsifier.py",
+      "description": "Production hit@k falsifier on v2",
+      "outputs": [
+        "analytics/public/leanmill/results/v2_production_hit_at_k.json"
+      ],
+      "canonical_output": "analytics/public/leanmill/results/v2_production_hit_at_k.json",
+      "last_run_utc": "2026-05-06T15:21:09.631256+00:00",
+      "last_run_age_days": 3,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 29935,
+      "downstream_references": 0,
+      "verdict": "alive"
+    },
+    {
+      "script": "scripts/public/mining/mine_cross_provider_classifier_agreement.py",
+      "description": "Mutator/judge cross-family agreement",
+      "outputs": [
+        "analytics/public/queries/classification/cross_provider_classifier_agreement_2026-05-04.json"
+      ],
+      "canonical_output": "analytics/public/queries/classification/cross_provider_classifier_agreement_2026-05-04.json",
+      "last_run_utc": "2026-05-04T18:20:14.761853+00:00",
+      "last_run_age_days": 5,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 60055,
+      "downstream_references": 1,
+      "verdict": "alive"
+    },
+    {
+      "script": "scripts/public/mining/mine_judge_stratified.py",
+      "description": "Judge calibration by substrate class",
+      "outputs": [
+        "analytics/public/queries/classification/judge_stratified_analysis_2026-04-24.json"
+      ],
+      "canonical_output": "analytics/public/queries/classification/judge_stratified_analysis_2026-04-24.json",
+      "last_run_utc": "2026-04-24T19:40:14.208974+00:00",
+      "last_run_age_days": 15,
+      "run_frequency_28d": 1,
+      "output_size_bytes": 12006,
+      "downstream_references": 1,
+      "verdict": "dormant"
+    },
+    {
+      "script": "scripts/public/lean/typed_endpoint_agent_panel_harvest.py",
+      "description": "Codex agent panel artifact harvest",
+      "outputs": [
+        "projects/ns_millennium_hunt/workspace/queries/typed_endpoint_agent_panel/"
+      ],
+      "canonical_output": null,
+      "last_run_utc": null,
+      "last_run_age_days": null,
+      "run_frequency_28d": 0,
+      "output_size_bytes": 0,
+      "downstream_references": 0,
+      "verdict": "dead_no_output"
+    },
+    {
+      "script": "src/ztare/composition/reflexive_audit.py",
+      "description": "GP-102 reflexive primitive discovery audit",
+      "outputs": [
+        "research_areas/private/seams/reflexive/reflexive_audit_report.json"
+      ],
+      "canonical_output": null,
+      "last_run_utc": null,
+      "last_run_age_days": null,
+      "run_frequency_28d": 0,
+      "output_size_bytes": 0,
+      "downstream_references": 0,
+      "verdict": "dead_no_output"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2060_post_charfun_union_heldout_delta_packet.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2060_post_charfun_union_heldout_delta_packet.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2060_post_charfun_union_heldout_delta_packet",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2060_post_charfun_union_heldout_delta_packet.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2060_post_charfun_union_heldout_delta_packet.json"
+  },
+  "baseline_action": "Assume charFun strict repair implies learned policy improvement.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2060_post_charfun_union_heldout_delta_packet",
+  "cost_penalty": 0.1,
+  "counterfactual_action": "Audit whether charFun repair creates an actual heldout policy delta before replay or training.",
+  "created_at": "2026-05-14T18:27:23Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0952,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_heldout_delta_packet",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0952,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0976,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1081,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.125,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0952,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may produce a no-replay packet"
+    ],
+    "positive": [
+      "prevents manifest-count-to-policy Goodhart",
+      "routes to source discovery if no arm delta exists"
+    ]
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.38,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2060 artifact exists with status passed, consumes v2059/v2058/v2040, preserves training_now=false and gnn_blocked=true, either emits a replayable changed heldout arm with explicit policy delta or records no replayable policy delta with a concrete next non-training action.",
+  "question": "Will v20.60 build a post-charFun union heldout-delta packet that honestly decides whether the repaired charFun strict row creates a replayable heldout policy arm or only an adjudication/accounting update?",
+  "risk_penalty": 0.08,
+  "success_threshold": "1.0",
+  "task_type": "pre_gnn_heldout_delta_packet",
+  "value_if_success": 0.7,
+  "void_conditions": "Void only if v2059 or v2040 artifacts are missing."
+}

@@ -1,0 +1,55 @@
+{
+  "contract_id": "gp225_v1713_route1_scalar_subcriticality_margin_split",
+  "mean_brier": 0.33880000000000005,
+  "mean_log_score": -0.8743736634389684,
+  "outcome": {
+    "actual_cost_agent_minutes": 35.0,
+    "artifact_hash": "a239ec53d33d62cd1d23dfaed6e53a23aea25acdb1d3b4066a73eecccc981860",
+    "artifact_path": "analytics/public/leanmill/results/v1713_route1_scalar_subcriticality_margin_split.json",
+    "compile_status": "lean_compiled",
+    "contract_id": "gp225_v1713_route1_scalar_subcriticality_margin_split",
+    "error_type": "none",
+    "goal_delta": 0,
+    "resolution_note": "Resolved success: strict-margin guard compiled; source_obligation_closed remains 0; unpaid scalar inequalities named explicitly.",
+    "resolved_at": "2026-05-12T15:26:11Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-12T15:26:16Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 35.0,
+      "agent_id": "chandrasekhar_forecaster",
+      "brier": 0.3364000000000001,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_live_scalar_hinge",
+      "expected_cost_agent_minutes": 45.0,
+      "log_score": -0.8675005677047231,
+      "p_success": 0.42,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 35.0,
+      "agent_id": "kuhn_adversarial_forecaster",
+      "brier": 0.27040000000000003,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_live_scalar_hinge",
+      "expected_cost_agent_minutes": 45.0,
+      "log_score": -0.7339691750802004,
+      "p_success": 0.48,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 35.0,
+      "agent_id": "research_director_pl180",
+      "brier": 0.4096,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_live_scalar_hinge",
+      "expected_cost_agent_minutes": 45.0,
+      "log_score": -1.0216512475319814,
+      "p_success": 0.36,
+      "success_bool": true
+    }
+  ]
+}

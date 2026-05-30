@@ -1,0 +1,96 @@
+{
+  "contract_id": "running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "CONFIRMED grounding-bound + mechanism real (C10 recovered by grounded name-resolution) but name-resolution INSUFFICIENT alone; the validated lever is a grounded ITERATIVE agentic prover loop (name-find + typed assembly iteration against the pinned checker); static memory index is dead; this is the Path-A research-tier build question, scoped and de-risked by n=3",
+      "old_next_action": "open: is research-tier grounding-bound and recoverable"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.34819999999999995,
+  "mean_log_score": -0.891895649789439,
+  "outcome": {
+    "actual_cost_agent_minutes": 50.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "CONFIRMED grounding-bound + mechanism real (C10 recovered by grounded name-resolution) but name-resolution INSUFFICIENT alone; the validated lever is a grounded ITERATIVE agentic prover loop (name-find + typed assembly iteration against the pinned checker); static memory index is dead; this is the Path-A research-tier build question, scoped and de-risked by n=3",
+    "old_next_action": "open: is research-tier grounding-bound and recoverable",
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "FALSE (1/3 < 2 threshold) but DECISIVE positive mechanism: grounded #check/exact? in the canonical pinned v4.29.0 sandbox resolved the name-drift for ALL 3 (lemmas exist; stale-memory prover had wrong names). C10 (IsLocallyConstant.apply_eq_of_preconnectedSpace) went prover-gap->ablation-FAIL->COMPILE_OK purely via grounded name-resolution. C15/C06: name found but residual H2 shape-assembly step remains (Basel reindex; chi4 iff-chain). => name-resolution alone recovers some (1/3 vs prior 0/10) but is insufficient; research-tier needs grounded ITERATIVE typed assembly (the agentic verify-loop), not a static name index nor one-shot. RD0.6/codex0.58 over-optimistic; codex bet present (ORDERING guard satisfied).",
+    "resolved_at": "2026-05-16T21:21:39Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 50.0,
+      "agent_id": "codex",
+      "brier": 0.3364,
+      "cost_error_agent_minutes": -26.0,
+      "domain": "grounded_search_validation_h1",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.867500567704723,
+      "p_success": 0.58,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T21:10:26Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T21:11:49Z",
+        "resolved_at": "2026-05-16T21:21:39Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 50.0,
+      "agent_id": "research_director_claude_opus_4_7",
+      "brier": 0.36,
+      "cost_error_agent_minutes": -5.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.916290731874155,
+      "p_success": 0.6,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T21:10:26Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T21:10:26Z",
+        "resolved_at": "2026-05-16T21:21:39Z"
+      }
+    }
+  ]
+}

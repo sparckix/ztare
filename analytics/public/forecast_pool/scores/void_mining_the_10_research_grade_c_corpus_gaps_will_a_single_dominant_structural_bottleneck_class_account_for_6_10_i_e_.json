@@ -1,0 +1,70 @@
+{
+  "contract_id": "void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "improve Path A = pinned-v4.29.0 premise name+shape retrieval index over the canonical carleson sandbox (LeanPremise/LeanHammer-class problem, see project_premise_selection_sota_survey); proof-search is NOT the bottleneck",
+      "old_next_action": "improve Path A solver = better prover / proof search"
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.0625,
+  "mean_log_score": -0.2876820724517809,
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "compile_status": null,
+    "contract_id": "void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "improve Path A = pinned-v4.29.0 premise name+shape retrieval index over the canonical carleson sandbox (LeanPremise/LeanHammer-class problem, see project_premise_selection_sota_survey); proof-search is NOT the bottleneck",
+    "old_next_action": "improve Path A solver = better prover / proof search",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "TRUE: single dominant bottleneck = name-resolution-at-pin 7/10 (C04,C05,C06,C08,C10,C14,C15); +2 API-shape-bridging (C02,C11) => 9/10 are RETRIEVAL/MATCHING failures (theorem exists in v4.29.0 Mathlib, prover cannot name/shape-match at pin); only C13 is genuine multi-step construction. Research-grade ceiling = pinned premise retrieval, NOT proof-search/LLM-reasoning.",
+    "resolved_at": "2026-05-16T20:23:18Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:24Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "research_director_claude_opus_4_7",
+      "brier": 0.0625,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 25.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2876820724517809,
+      "p_success": 0.75,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T20:22:47Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T20:22:47Z",
+        "resolved_at": "2026-05-16T20:23:18Z"
+      }
+    }
+  ]
+}

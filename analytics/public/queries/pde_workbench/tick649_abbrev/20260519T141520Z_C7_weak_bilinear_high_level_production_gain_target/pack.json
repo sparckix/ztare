@@ -1,0 +1,48 @@
+{
+  "generated_utc": "2026-05-19T14:15:21.803143+00:00",
+  "target": "C7_weak_bilinear_high_level_production_gain",
+  "field": null,
+  "tool_scope": "RD caller over existing ZTARE primitives; not a second autoresearch loop or replacement workbench",
+  "target_context": {
+    "found": false,
+    "target": "C7_weak_bilinear_high_level_production_gain",
+    "field": null,
+    "reason": "target not found in workmap"
+  },
+  "gap_classification": {
+    "gap_type": "UNKNOWN",
+    "confidence": "low",
+    "rationale": "No field supplied.",
+    "classifier": "pde_estimate_workbench"
+  },
+  "mathlib_lemmas": [],
+  "auxiliary_families": [],
+  "inequality_checks": [
+    {
+      "name": "G-PDE-INEQ-DIM",
+      "passed": true,
+      "lhs": "P_n",
+      "op": "<=",
+      "rhs": "eps * D_n + C * Y_n^(1+beta)",
+      "violations": [],
+      "dim_check": {
+        "consistent": true,
+        "warning": "no dimensional categories detected",
+        "lhs_cats": [],
+        "rhs_cats": [
+          "constant"
+        ]
+      },
+      "endpoint_check": {
+        "all_bound": true,
+        "unbound": []
+      },
+      "hard_fail": false,
+      "severity": "advisory",
+      "source": "pde_inequality_dimensional_gate",
+      "RELIABILITY_NOTE": "Advisory v0.1. Catches dimensional + endpoint-exposure violations on LLM-proposed inequalities. Does NOT verify mathematical correctness \u2014 passes inequalities that are well-typed but mathematically false. Use as a CHEAP PRE-FILTER before lake build."
+    }
+  ],
+  "curriculum_variants": [],
+  "next_step_rule": "Codex chooses a patch/falsifier route. Feed only verified snippets or summarized failure categories back into ZTARE briefing memory."
+}

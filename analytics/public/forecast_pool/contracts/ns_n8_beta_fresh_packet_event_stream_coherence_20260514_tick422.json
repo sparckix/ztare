@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422.json"
+  },
+  "baseline_action": "Proceed with FreshComparablePacketSideConditionAudit as the next target without event-stream coherence.",
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422",
+  "cost_penalty": 2.0,
+  "counterfactual_action": "Add event-stream coherence guard before further fresh packet work.",
+  "created_at": "2026-05-14T22:00:14Z",
+  "created_by": "codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0606,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "lean_frontier_guard",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0606,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 3,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0909,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0571,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 4,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0333,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0333,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0312,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14T23:59:00-04:00",
+  "information_value": 7.0,
+  "layer": "micro",
+  "objective_resolver": "Lean target file compiles; no sorry/admit introduced; added declarations expose same-event-stream coherence between FreshComparablePacketSideConditionAudit and BadCenterEventNodeIdentification/EventRecurrencePriceLedger, without claiming fresh packet existence.",
+  "question": "Will tick422 add a compiling Lean guard/source surface requiring audit-selected fresh packets to embed into the same hEvents/L event stream, preventing event-per-bad-node and beta-defined price smuggling below the fresh-packet audit?",
+  "risk_penalty": 3.0,
+  "success_threshold": "true",
+  "task_type": "lean_frontier_guard",
+  "value_if_success": 5.0,
+  "void_conditions": "Do not count as success if the patch defines the event stream from the audit after the fact, or fails to require independence from the target beta-radius sum."
+}

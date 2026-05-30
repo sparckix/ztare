@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_forecast_tick325",
+  "contract_id": "ns_route1_cone_mass_rigidity_source_micro_20260514_tick325",
+  "contract_question": "Will the next NS route-1 tick add a build-passed opposite-cone no-escape / rigidity source that derives FixedWindowStressConeMassSubordination without final-carrier smuggling?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "downstream_adapter_import_or_build_regression": 0.08,
+    "final_carrier_or_angular_dominance_smuggled_into_lower_source": 0.15,
+    "lean_inequality_algebra_for_cone_mass_split": 0.06,
+    "no_countermodel_primitive_is_too_opaque_for_gp233_credit": 0.18,
+    "opposite_cone_overflow_countermodel_not_formalized_enough_to_derive_subordination": 0.24,
+    "rigidity_source_restates_cone_mass_subordination": 0.29
+  },
+  "forecasted_at": "2026-05-14T01:32:21Z",
+  "p_dependency_issue": 0.11,
+  "p_needs_new_lemma": 0.68,
+  "p_regression": 0.09,
+  "p_success": 0.54,
+  "rationale_short": "Likely successful shape is an explicit dichotomy: opposite-cone overflow yields cancellation countermodel, and no-countermodel forces subordination; main risk is a renamed subordination assumption.",
+  "read_only_attestation": true
+}

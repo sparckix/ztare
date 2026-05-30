@@ -1,0 +1,24 @@
+{
+  "agent_id": "Noether",
+  "contract_id": "gp225_v2099_non_target_signature_hydrated_new_heldout_replay_meso_gate",
+  "domain": "gp225_pre_gnn",
+  "forecasted_at": "2026-05-14T21:49:00Z",
+  "p_success": 0.7,
+  "p_regression": 0.04,
+  "p_dependency_issue": 0.11,
+  "p_needs_new_lemma": 0.03,
+  "expected_cost_agent_minutes": 28,
+  "failure_mode_distribution": {
+    "all_candidates_fail_without_useful_contrast": 0.09,
+    "affine_opens_orientation_or_simp_shape_wrong": 0.16,
+    "density_implicit_argument_or_measure_namespace_mismatch": 0.11,
+    "strict_compiles_but_wrong_target": 0.07,
+    "non_strict_label_not_discriminating": 0.1,
+    "harmful_compiled_mismatch": 0.025,
+    "schema_or_timeout_error": 0.035,
+    "leakage_or_packet_accounting_gap": 0.02,
+    "new_strict_or_useful_contrast": 0.39
+  },
+  "resolution_predicate": "Replay of v20.98 with bounded per-row candidates adds at least one new strict heldout row or useful heldout contrast label, with zero harmful mismatches and no leakage/training.",
+  "routing_hint": "run_bounded_replay"
+}

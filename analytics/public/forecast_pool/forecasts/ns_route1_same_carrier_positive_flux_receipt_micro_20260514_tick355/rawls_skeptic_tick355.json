@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_skeptic_tick355",
+  "contract_id": "ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355",
+  "contract_question": "Can we compile a same-carrier positive cutoff-flux transport receipt source that constructs the positive localized transport lower-payment source, while preserving the shear/functional-mismatch no-go?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "invisible_tail_unpaid": 0.2,
+    "just_another_wrapper": 0.36,
+    "needs_route_to_Q_not_T": 0.24,
+    "other": 0.2
+  },
+  "forecasted_at": "2026-05-14T12:07:43Z",
+  "p_dependency_issue": 0.29,
+  "p_needs_new_lemma": 0.35,
+  "p_regression": 0.05,
+  "p_success": 0.64,
+  "rationale_short": "Useful only if it preserves the visible/invisible alternative and does not pretend the positive flux receipt has been analytically sourced.",
+  "read_only_attestation": true
+}

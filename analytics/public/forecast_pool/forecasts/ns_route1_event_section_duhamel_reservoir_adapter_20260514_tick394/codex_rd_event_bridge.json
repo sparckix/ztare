@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Name the carrier-conversion theorem explicitly: eventWeightedGainPrice/reciprocal budget must become omega(freshRegion) reserve drop before LineageFreshMonotoneReservoirSource can be used.",
+  "agent_id": "codex_rd_event_bridge",
+  "contract_id": "ns_route1_event_section_duhamel_reservoir_adapter_20260514_tick394",
+  "contract_question": "Can the next NS tick encode the exact adapter/guard between event-section Duhamel recurrence machinery and LineageFreshMonotoneReservoirSource without claiming PDE content?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_price_not_omega_reserve": 0.26,
+    "lean_type_mismatch": 0.14,
+    "lineage_schedule_index_mismatch": 0.18,
+    "sidecar_contradicts_local_read": 0.14,
+    "wrapper_too_prop_valued": 0.28
+  },
+  "forecast_externality_tags": [
+    "carrier_conversion_guard",
+    "graph_basin_connection"
+  ],
+  "forecasted_at": "2026-05-14T15:33:40Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.84,
+  "p_regression": 0.06,
+  "p_success": 0.69,
+  "rationale_short": "Existing event-section and Duhamel declarations are close, but they live on event price/reciprocal ledgers; route-1 no-reuse needs omega fresh-region reserve drop. A good adapter should make that gap explicit.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "event_price_not_omega_reserve",
+    "wrapper_too_prop_valued",
+    "lineage_schedule_index_mismatch"
+  ]
+}

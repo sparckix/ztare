@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_L3_endpoint_charge_construction_tick446_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_L3_endpoint_charge_construction_tick446_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_L3_endpoint_charge_construction_tick446_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_L3_endpoint_charge_construction_tick446_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_L3_endpoint_charge_construction_tick446_20260514.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_L3_endpoint_charge_construction_tick446_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T01:54:17Z",
+  "created_by": "claude_rd_extension",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0571,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "lean_proof_attempt_pde",
+    "score": 0.1667,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0571,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0833,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.04,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0541,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 4,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.0345,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-14T23:59:59Z",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "(1) ztare_proofs/ZtareProofs/ns_silent_flat_defect_observability.lean compiles via lake env lean; (2) touched-file rg sorry|admit clean on additions; (3) at minimum ESSEndpointL3Hypothesis carrier + L3EndpointBlowupChargeReplacement.ofESSEndpointL3Hypothesis def + r-linear inequality theorem shipped; (4) existing tick442/443/444/445 structures untouched; (5) honest scope note distinguishing classical-input ESS regularity from full Clay closure",
+  "question": "Will tick446 ship a real Lean construction of L3EndpointBlowupChargeReplacement.ofESSEndpointL3Hypothesis: a named ESS endpoint L^infty_t L^3_x hypothesis carrier (LocalESSL\u221eL3RegularityHypothesis), a real def producing the charge replacement from that hypothesis (not a Prop wrapper), and a theorem proving the r-linear inequality (radiusChargeCoeff * radiusCharge <= L3DefectMeasureValue) from the ESS hypothesis via scaling \u2014 appended inside the existing namespace before the end, compiling clean with no new sorry/admit on the touched file?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "lean_proof_attempt_pde",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

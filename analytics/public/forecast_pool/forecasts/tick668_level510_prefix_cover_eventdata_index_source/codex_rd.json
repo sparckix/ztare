@@ -1,0 +1,40 @@
+{
+  "action_change_recommendation": "Add a meta-semantics audit pass before the Level510 gate and keep weak substitutes advisory unless escalated to hard violations.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.225,
+  "b_width": 0.13,
+  "contract_id": "tick668_level510_prefix_cover_eventdata_index_source",
+  "contract_question": "Can Level510 construct the same-tree eventData index from a prefix-cover relation whose selected index is bound to sameTreeLock.eventData and displayed incidence?",
+  "domain": "ns_trackb_formal_bridge",
+  "expected_cost_agent_minutes": 92.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "gate_semantics_regression": 0.15384615384615385,
+    "lean_field_dependency_mismatch": 0.3076923076923077,
+    "prefix_cover_relation_still_supplied_not_derived": 0.5384615384615384
+  },
+  "forecast_externality_tags": [
+    "positive_source_ladder",
+    "gate_semantics_meta_darwin"
+  ],
+  "forecasted_at": "2026-05-27T06:19:47Z",
+  "p_buy_yes_max": 0.45,
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.33,
+  "p_regression": 0.07,
+  "p_sell_yes_min": 0.56,
+  "p_success": 0.61,
+  "predicted_brier_hi": 0.29,
+  "predicted_brier_lo": 0.16,
+  "rationale_short": "Level509 already exposes the exact targetEventDataIndex socket. The next positive reduction is structurally narrow: selectedIndex plus cover relation plus cover-to-incidence transport should package cleanly, with main risk that cover totality remains a named source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "prefix_cover_relation_still_supplied_not_derived",
+    "lean_field_dependency_mismatch",
+    "gate_semantics_regression"
+  ],
+  "spread": -0.11,
+  "tail_downside_worry": 16.0,
+  "tail_upside_surprise": 12.0
+}

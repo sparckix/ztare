@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_pde_tick355",
+  "contract_id": "ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355",
+  "contract_question": "Can we compile a same-carrier positive cutoff-flux transport receipt source that constructs the positive localized transport lower-payment source, while preserving the shear/functional-mismatch no-go?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 26.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_syntax_issue": 0.14,
+    "constructor_name_conflict": 0.12,
+    "hides_invisible_tail": 0.22,
+    "other": 0.24,
+    "too_wrapper_like": 0.28
+  },
+  "forecasted_at": "2026-05-14T12:07:42Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.03,
+  "p_success": 0.76,
+  "rationale_short": "The no-go already named the corrected object; a local source/constructor should compile if it keeps the PDE estimate conditional.",
+  "read_only_attestation": true
+}

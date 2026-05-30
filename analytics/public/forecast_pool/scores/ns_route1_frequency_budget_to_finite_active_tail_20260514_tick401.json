@@ -1,0 +1,127 @@
+{
+  "contract_id": "ns_route1_frequency_budget_to_finite_active_tail_20260514_tick401",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "leave source objects disconnected",
+      "counterfactual_action": "price and implement finite active-tail budget bridge",
+      "externality_hypotheses": {
+        "failure_mode_preconditioner": "forecast may catch prefix-sum/telescoping or overclaiming strict-subratio risks"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_forecaster",
+        "codex_rd_tick401"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "ns_route1",
+        "lean_positive",
+        "finite_budget_bridge",
+        "forecast_preconditioner"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Use finite active-tail budget only with a separate route-failure divergent-prefix theorem",
+      "old_next_action": "Try to telescope all reservoir pieces directly into strict subratio",
+      "preconditioner_effect": "Used prefix-level source comparison and explicit no-pointwise-strict guard instead of hand-proving telescoping inside this tick",
+      "preconditioner_source": "GP-230 forecast flagged prefix-sum/telescoping and overclaim risks",
+      "realized_failure_mode_ids": [
+        "prefix_sum_telescoping_friction"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.15665,
+  "mean_log_score": -0.5033813175191154,
+  "outcome": {
+    "actual_cost_agent_minutes": 12.0,
+    "artifact_hash": "1df0d78dd8039107ec4e6972a552ab6ee5943b9c17abe1386658e5c530abdaa3",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd_tick401"
+    ],
+    "compile_status": "pass",
+    "contract_id": "ns_route1_frequency_budget_to_finite_active_tail_20260514_tick401",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "ns_route1",
+      "lean_positive",
+      "finite_budget_bridge",
+      "forecast_preconditioner"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "negative_externality_tags": [],
+    "new_next_action": "Use finite active-tail budget only with a separate route-failure divergent-prefix theorem",
+    "old_next_action": "Try to telescope all reservoir pieces directly into strict subratio",
+    "preconditioner_effect": "Used prefix-level source comparison and explicit no-pointwise-strict guard instead of hand-proving telescoping inside this tick",
+    "preconditioner_source": "GP-230 forecast flagged prefix-sum/telescoping and overclaim risks",
+    "realized_failure_mode_ids": [
+      "prefix_sum_telescoping_friction"
+    ],
+    "resolution_note": "Compiled FrequencyLocalizedFiniteActiveTailBudgetSource, constructor into Route1FiniteActiveTailBudget, and guard that finite budget does not imply pointwise strict subratio.",
+    "resolved_at": "2026-05-14T18:40:21Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:40:25Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.1369,
+      "cost_error_agent_minutes": 26.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 38.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.3,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4620354595965587,
+      "p_success": 0.63,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:37:07Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:38:58Z",
+        "resolved_at": "2026-05-14T18:40:21Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "codex_rd_tick401",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 30.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 42.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.26,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:37:07Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:37:19Z",
+        "resolved_at": "2026-05-14T18:40:21Z"
+      }
+    }
+  ]
+}

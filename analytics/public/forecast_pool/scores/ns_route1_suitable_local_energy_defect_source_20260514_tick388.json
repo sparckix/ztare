@@ -1,0 +1,124 @@
+{
+  "contract_id": "ns_route1_suitable_local_energy_defect_source_20260514_tick388",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Directly assert FixedCutoffLocalEnergySignedMeasureIdentitySource fields.",
+      "counterfactual_action": "Add a lower suitable-local-energy defect/residual source and constructor into the signed identity.",
+      "externality_hypotheses": {
+        "decision_change": "if source stays scalar/prefix-only, stop and add a no-go guard instead",
+        "failure_mode_preconditioning": "alphaI may be final-route slack renamed as a defect"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd_executor_prior",
+        "codex_skeptic_prior"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "failure_mode_preconditioning",
+        "anti_tautology",
+        "ns_source_ladder"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Add lower suitable-local-energy defect/residual source plus anti-slack guard before consuming signed identity.",
+      "old_next_action": "Directly assert fixed signed identity source fields.",
+      "preconditioner_effect": "Added defectGeneratedBeforePositiveVariation, defectIsLocalEnergyResidual, noPostHocResidualChoice, noFinalBudgetSlackDefinition, and a final-route-slack no-go guard.",
+      "preconditioner_source": "codex_rd_executor_prior,codex_skeptic_prior",
+      "realized_failure_mode_ids": [
+        "alphaI_final_slack_smuggling"
+      ]
+    }
+  },
+  "mean_brier": 0.1274,
+  "mean_log_score": -0.43661562120685415,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "647c50d0f8f0e1ba7738e684201853cd8c778a799a67999c0dcab847565d521b",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd_executor_prior",
+      "codex_skeptic_prior"
+    ],
+    "compile_status": "passed",
+    "contract_id": "ns_route1_suitable_local_energy_defect_source_20260514_tick388",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "failure_mode_preconditioning",
+      "anti_tautology",
+      "ns_source_ladder"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "Add lower suitable-local-energy defect/residual source plus anti-slack guard before consuming signed identity.",
+    "old_next_action": "Directly assert fixed signed identity source fields.",
+    "preconditioner_effect": "Added defectGeneratedBeforePositiveVariation, defectIsLocalEnergyResidual, noPostHocResidualChoice, noFinalBudgetSlackDefinition, and a final-route-slack no-go guard.",
+    "preconditioner_source": "codex_rd_executor_prior,codex_skeptic_prior",
+    "realized_failure_mode_ids": [
+      "alphaI_final_slack_smuggling"
+    ],
+    "resolution_note": "Added SuitableLocalEnergyDefectMeasureSource plus constructor into FixedCutoffLocalEnergySignedMeasureIdentitySource and guard FinalRouteSlackDoesNotSourceSuitableLocalEnergyDefect. lake env lean passed and no new sorry/admit. Forecast preconditioner changed execution by forcing explicit no-final-route-slack/provenance fields and no full route-closure claim.",
+    "resolved_at": "2026-05-14T14:43:59Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T14:44:05Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_rd_executor_prior",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_route1_local_energy_measure_split",
+      "expected_cost_agent_minutes": 32.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.356322,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T14:41:26Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T14:41:41Z",
+        "resolved_at": "2026-05-14T14:43:59Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "codex_skeptic_prior",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 26.0,
+      "domain": "ns_route1_local_energy_measure_split",
+      "expected_cost_agent_minutes": 44.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.39,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T14:41:26Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T14:41:41Z",
+        "resolved_at": "2026-05-14T14:43:59Z"
+      }
+    }
+  ]
+}

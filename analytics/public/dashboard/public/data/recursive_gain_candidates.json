@@ -1,0 +1,196 @@
+{
+  "audit_timestamp_utc": "2026-05-16T21:37:33.341411+00:00",
+  "n_candidates": 18,
+  "by_source": {
+    "structural_analogies": 9,
+    "cross_audit": 8,
+    "synthesis": 1
+  },
+  "by_mechanism": {
+    "wire_one_shot_as_loop": 9,
+    "retire_or_widen_can_handle": 8,
+    "strange_loop_ZTARE_substrate": 1
+  },
+  "candidates": [
+    {
+      "source": "cross_audit",
+      "entity": "R10",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R10 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=dead engagement=0.00% engaged=0 refused=444; gate_telemetry alias of cross_class_extrapolation \u2192 R10_cross_class_extrapolation (count=552); gate_telemetry alias of per_class_farther_tail \u2192 R10_cross_class_extrapolation (count=552)"
+    },
+    {
+      "source": "cross_audit",
+      "entity": "R11",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R11 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=dead engagement=0.00% engaged=0 refused=294; gate_telemetry alias of cross_class_extrapolation \u2192 R11_per_class_mre_ceiling (count=552); gate_telemetry alias of per_class_farther_tail \u2192 R11_per_class_mre_ceiling (count=552)"
+    },
+    {
+      "source": "cross_audit",
+      "entity": "R13",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R13 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=decorative_candidate engagement=38.24% engaged=663 refused=226; gate_telemetry alias of substrate_critic \u2192 R13_substrate_critic_post_fit (count=552); gate_telemetry alias of substrate_critic \u2192 R13_substrate_critic_preflight (count=552)"
+    },
+    {
+      "source": "cross_audit",
+      "entity": "R14",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R14 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=decorative_candidate engagement=38.24% engaged=663 refused=226; gate_telemetry alias of noise_profile \u2192 R14_noise_profile_post_fit (count=552); gate_telemetry alias of noise_profile \u2192 R14_noise_profile_preflight (count=552)"
+    },
+    {
+      "source": "cross_audit",
+      "entity": "R15",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R15 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=dead engagement=0.00% engaged=0 refused=325; gate_telemetry alias of analogy \u2192 R15_analogy (count=552)"
+    },
+    {
+      "source": "cross_audit",
+      "entity": "R16",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R16 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=dead engagement=0.00% engaged=0 refused=280; gate_telemetry alias of framer_1d \u2192 R16_framer_pre_fit (count=552)"
+    },
+    {
+      "source": "cross_audit",
+      "entity": "R22",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R22 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=dead engagement=0.00% engaged=0 refused=444; gate_telemetry alias of apparatus_meta_runner \u2192 R22_apparatus_meta_runner (count=552)"
+    },
+    {
+      "source": "cross_audit",
+      "entity": "R23",
+      "kind": "primitive",
+      "mechanism": "retire_or_widen_can_handle",
+      "cost": "day",
+      "confidence": "high",
+      "rationale": "Cross-audit (2 independent scorecards) flagged R23 as warn. Either retire (low cost) or widen its can_handle predicate so it engages on more substrates (medium cost).",
+      "details": "verdict=dead engagement=0.00% engaged=0 refused=444; gate_telemetry alias of sparse_cell_exclusion \u2192 R23_sparse_cell_exclusion (count=552)"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-075 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "high",
+      "rationale": "Structural-analogy miner: GP-075 (internal seam) (one-shot) is structurally analogous to GP-189 (internal seam) (loop). Score 0.32. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: GP-189 (internal seam) | path-class kinship = 0.5; lexical-token Jaccard = 0.40"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-030 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-030 (internal seam) (one-shot) is structurally analogous to GP-189 (internal seam) (loop). Score 0.288. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: GP-189 (internal seam) | path-class kinship = 0.5; lexical-token Jaccard = 0.29"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-154 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-154 (internal seam) (one-shot) is structurally analogous to [internal-ref] (loop). Score 0.286. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: [internal-ref] | path-class kinship = 0.5; lexical-token Jaccard = 0.29"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-075 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-075 (internal seam) (one-shot) is structurally analogous to [internal-ref] (loop). Score 0.286. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: [internal-ref] | path-class kinship = 0.5; lexical-token Jaccard = 0.29"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-154 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-154 (internal seam) (one-shot) is structurally analogous to GP-157 (internal seam) (loop). Score 0.28. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: GP-157 (internal seam) | path-class kinship = 0.5; lexical-token Jaccard = 0.27"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-030 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-030 (internal seam) (one-shot) is structurally analogous to [internal-ref] (loop). Score 0.28. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: [internal-ref] | path-class kinship = 0.5; lexical-token Jaccard = 0.27"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-075 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-075 (internal seam) (one-shot) is structurally analogous to GP-157 (internal seam) (loop). Score 0.28. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: GP-157 (internal seam) | path-class kinship = 0.5; lexical-token Jaccard = 0.27"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-030 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-030 (internal seam) (one-shot) is structurally analogous to GP-157 (internal seam) (loop). Score 0.275. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: GP-157 (internal seam) | path-class kinship = 0.5; lexical-token Jaccard = 0.25"
+    },
+    {
+      "source": "structural_analogies",
+      "entity": "GP-154 (internal seam)",
+      "kind": "one_shot_artifact",
+      "mechanism": "wire_one_shot_as_loop",
+      "cost": "week",
+      "confidence": "medium",
+      "rationale": "Structural-analogy miner: GP-154 (internal seam) (one-shot) is structurally analogous to GP-189 (internal seam) (loop). Score 0.271. Wiring the one-shot as a recursive loop would mirror the apparatus's existing closure pattern. GP-226 charter-critic is the canonical example of this move.",
+      "details": "analogous to: GP-189 (internal seam) | path-class kinship = 0.5; lexical-token Jaccard = 0.24"
+    },
+    {
+      "source": "synthesis",
+      "entity": "ZTARE-on-ZTARE-with-external-evidence",
+      "kind": "meta_substrate",
+      "mechanism": "strange_loop_ZTARE_substrate",
+      "cost": "month",
+      "confidence": "high",
+      "rationale": "The Research Director agents (Codex on NS, Claude on gravity, etc.) generate substrate-level findings OUTSIDE the ZTARE evaluation loop. Those findings sit in projects/*/workspace/, papers/*, and the F-row table \u2014 visible to the apparatus but never evaluated by it. A ZTARE-on-ZTARE substrate that ingests these external findings as INPUT \u2014 and asks the apparatus to evaluate / refine / extend them \u2014 closes the strange loop. See GP-134 ZTARE-on-ZTARE seam for the strange-loop proposal added 2026-05-06.",
+      "details": "meta-recursive bet. See GP-134."
+    }
+  ]
+}

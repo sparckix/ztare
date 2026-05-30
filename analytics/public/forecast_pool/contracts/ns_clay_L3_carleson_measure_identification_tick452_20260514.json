@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_L3_carleson_measure_identification_tick452_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_L3_carleson_measure_identification_tick452_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_L3_carleson_measure_identification_tick452_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_L3_carleson_measure_identification_tick452_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_L3_carleson_measure_identification_tick452_20260514.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 50.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_L3_carleson_measure_identification_tick452_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T02:26:44Z",
+  "created_by": "claude_rd_extension",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0571,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.3,
+    "requested_domain": "lean_proof_attempt_pde",
+    "score": 0.1667,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0571,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0833,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.04,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0541,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 4,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.0345,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-15T23:59:59Z",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "(1) NEW FILE ztare_proofs/ZtareProofs/ns_L3_endpoint_carleson_identification.lean compiles via lake env lean; (2) rg sorry|admit clean on new file; (3) imports honest Mathlib MeasureTheory.Measure; (4) ships L3CarlesonMeasureFromESS structure + L3DefectMeasure : MeasureTheory.Measure SpaceTime field + identification theorem connecting ESS hypothesis fields with the typed measure + concrete cube bound mu(Q_r).toReal <= r * M^3 as a REAL Lean theorem (not Prop field); (5) does NOT touch tick432-449 structures; (6) honest scope guard naming what is external (ESS theorem, full Carleson embedding) vs derived (the cube bound, identification)",
+  "question": "Will tick452 ship a NEW Lean file ns_L3_endpoint_carleson_identification.lean closing the tick448 Meta-Darwin audit gap on tick446's L3DefectMeasureValue: build an honest MeasureTheory.Measure SpaceTime + L3CarlesonMeasureFromESS structure tying the ESS hypothesis to that measure + identification theorem (L3DefectMeasureValue Real equals (L3DefectMeasure Q).toReal under field choices) + a concrete parabolic-cube measure inequality mu(Q_r).toReal <= r * M^3 derived (not asserted as Prop), compiling clean with no sorry/admit on the new file?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "lean_proof_attempt_pde",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, lake env lean unavailable, Mathlib import fails on this Lean toolchain"
+}

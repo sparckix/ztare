@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg.json",
+    "contract": "analytics/public/forecast_pool/contracts/rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg",
+    "outcome": "analytics/public/forecast_pool/outcomes/rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg.json",
+    "score": "analytics/public/forecast_pool/scores/rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg.json"
+  },
+  "baseline_action": "no kernel-grounded selection; text/random ordering only",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": null,
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "rung1_kernel_grounded_rerank_beats_text_AND_random_null_on_pin_delta_soeg",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "abandon Path-A wedge, governance-only product",
+  "created_at": "2026-05-17T15:49:52Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pathA_wedge",
+    "score": 0.0,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-19",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "rung1 firstbite/scaled report.json pass_gate.PASS (B7 vs max(B0,B5)); exact_gap_ledger on non-closures; governance arm authoritative",
+  "question": "On the scaled Rung-1 (T2P pin_delta + controls, STRONG statement-BM25 pools, dedicated/quiet sandbox), does B7 (kernel-grounded rerank + governance) beat the STRONGER of B0(text-BM25) and B5(random NULL) by >=5pp closed_or_exact_gap@budget OR <=0.8x probes-to-verdict, AND 0 false-ratify, with all closures replaying?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "pathA_wedge",
+  "value_if_success": 0.8,
+  "void_conditions": "CPU-contention confound (non-dedicated sandbox); all pin_delta rows honest-gap for EVERY arm (no separation = inconclusive not fail); >50% T2P rows single-lemma-closable at pin (corpus invalid, rebuild)"
+}

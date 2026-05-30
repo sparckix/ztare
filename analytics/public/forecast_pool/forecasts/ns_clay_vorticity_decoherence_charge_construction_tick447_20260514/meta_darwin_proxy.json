@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_clay_vorticity_decoherence_charge_construction_tick447_20260514",
+  "contract_question": "Will Claude RD-extension produce a clean-compiling Lean construction of VorticityDecoherenceChargeReplacement from a ConstantinFeffermanDirectionDecoherenceHypothesis carrier (with finite-root-budget + r-linear charge theorem), appended below PDE-A's L3-endpoint additions inside ns_silent_flat_defect_observability.lean, with no new sorry/admit?",
+  "domain": "lean_pde_primitive_construction",
+  "expected_cost_agent_minutes": 50.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T01:54:37Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.2,
+  "p_regression": 0.12,
+  "p_success": 0.7,
+  "rationale_short": "Meta-Darwin discount on codex_rd: VorticityDecoherenceChargeReplacement is the harder of the two charges (gradient of unit-sphere-valued field has a removable-singularity caveat); ConstantinFefferman direction-coherence seminorm is real but bundling it as a Prop carrier risks vocabulary smuggling (CF seminorm vs. local-energy is a real distinction); append-below convention may race PDE-A on namespace end marker",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

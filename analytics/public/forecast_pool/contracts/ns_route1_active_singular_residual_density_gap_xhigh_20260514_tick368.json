@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368.json"
+  },
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_active_singular_residual_density_gap_xhigh_20260514_tick368",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-14T13:10:45Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "xhigh_math_pullforward",
+    "score": 0.0,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same session",
+  "information_value": 0.75,
+  "layer": "meso",
+  "objective_resolver": "success iff sidecar returns nontrivial proof route/countermodel/sublemma split for d mu_I / d mu_A_perp >= c; not success for restating the density gap",
+  "question": "Can xhigh pull forward ActiveSingularResidualDensityGap by proving the RN density route, killing it with a route-native countermodel, or isolating the exact compactness/lsc sublemma below density failure?",
+  "risk_penalty": 1.0,
+  "success_threshold": "new proof route, route-native no-go, or sharper compactness/lsc sublemma",
+  "task_type": "xhigh_math_pullforward",
+  "value_if_success": 1.0,
+  "void_conditions": "agent unavailable, operator redirects, or no sidecar response"
+}

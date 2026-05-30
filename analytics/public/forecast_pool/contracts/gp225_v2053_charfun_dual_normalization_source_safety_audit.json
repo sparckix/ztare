@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2053_charfun_dual_normalization_source_safety_audit.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2053_charfun_dual_normalization_source_safety_audit.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2053_charfun_dual_normalization_source_safety_audit",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2053_charfun_dual_normalization_source_safety_audit.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2053_charfun_dual_normalization_source_safety_audit.json"
+  },
+  "baseline_action": "Proceed directly from v20.52 to replay.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2053_charfun_dual_normalization_source_safety_audit",
+  "cost_penalty": 0.12,
+  "counterfactual_action": "Audit normalizer source-safety before replay.",
+  "created_at": "2026-05-14T17:58:24Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.3448,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_source_audit",
+    "score": 0.5,
+    "selected_domain": "gp225_pre_gnn_source_discovery",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.3448,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.2632,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.4286,
+        "score_rows": 2,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.1143,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1176,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1333,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may defer replay another tick"
+    ],
+    "positive": [
+      "reduces proof-line leakage risk",
+      "distinguishes source-safe normalizers from target proof reuse"
+    ]
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.34,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2053_charfun_dual_normalization_source_safety_audit.json has status passed, verifies integral_map, variance_map, integral_complex_ofReal, Function.comp_def as imported/non-target normalizers, records target proof copy blocked, replay_run=false, training_now=false, gnn_blocked=true.",
+  "question": "Will v20.53 verify the charFunDual normalization lemmas as source-safe non-target inputs for a future one-row replay, without copying the target proof line or running training?",
+  "risk_penalty": 0.08,
+  "success_threshold": "1.0",
+  "task_type": "pre_gnn_source_audit",
+  "value_if_success": 0.55,
+  "void_conditions": "Void only if v20.52 artifact is missing or source files are unavailable."
+}

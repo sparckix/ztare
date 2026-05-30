@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_noether_gp225_v1956",
+  "contract_id": "gp225_v1956_context_enriched_reprover_tacgen_replay",
+  "contract_question": "Will GP-225 v19.56 context/scope-enriched ReProver candidate emission plus top-4 replay produce at least one new strict same-target row on fresh/eligible PDE holdout candidates, with harmful mismatches zero and forbidden gold fields absent?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "context_prompt_distribution_shift_hurts_reprover": 0.28,
+    "fresh_rows_lack_normThreshold_like_direct_rewrite": 0.24,
+    "harmful_or_policy_guard_blocks_positive": 0.04,
+    "other": 0.2,
+    "replay_adapter_join_bug": 0.08,
+    "selector_overfits_single_positive": 0.16
+  },
+  "forecasted_at": "2026-05-14T02:26:21Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.24,
+  "p_regression": 0.06,
+  "p_success": 0.34,
+  "rationale_short": "Context can help if it exposes scope names, but ReProver was trained on proof states and v19.55 has only one strict positive; price below even odds.",
+  "read_only_attestation": true
+}

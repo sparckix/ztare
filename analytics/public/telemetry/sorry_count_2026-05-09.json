@@ -1,0 +1,48 @@
+{
+  "computed_at": "2026-05-09",
+  "root": "ztare_proofs/ZtareProofs",
+  "total_sorries": 44,
+  "files_with_sorries": 21,
+  "top_files": [
+    {
+      "count": 5,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mathlib_pr_ready.lean"
+    },
+    {
+      "count": 4,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_master_assembly.lean"
+    },
+    {
+      "count": 3,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000959.lean"
+    },
+    {
+      "count": 3,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mollifier_rate.lean"
+    },
+    {
+      "count": 3,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_ess_l3_endpoint.lean"
+    },
+    {
+      "count": 3,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_aubin_lions_stub.lean"
+    },
+    {
+      "count": 3,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_redefine_space_track.lean"
+    },
+    {
+      "count": 3,
+      "path": "ztare_proofs/ZtareProofs/mathlib_pr_drafts/PR_1b_minkowski_rate.lean"
+    },
+    {
+      "count": 2,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000607.lean"
+    },
+    {
+      "count": 2,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000009.lean"
+    }
+  ]
+}

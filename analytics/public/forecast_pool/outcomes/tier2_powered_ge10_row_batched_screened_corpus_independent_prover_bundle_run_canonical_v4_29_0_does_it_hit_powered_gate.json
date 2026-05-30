@@ -1,0 +1,38 @@
+{
+  "actual_cost_agent_minutes": 95.0,
+  "artifact_hash": null,
+  "artifact_path": "/tmp/bundle_T2P/bundle_report.json",
+  "changed_by_forecast_ids": [],
+  "codex_bet_present": false,
+  "compile_status": "COMPILE_OK",
+  "contract_id": "tier2_powered_ge10_row_batched_screened_corpus_independent_prover_bundle_run_canonical_v4_29_0_does_it_hit_powered_gate",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": false,
+  "error_type": null,
+  "externality_tags": [
+    "powered_tier2_GATE_HIT_via_ge5_honest_gap_branch",
+    "n12_powered",
+    "1_genuine_closure_T2P_118",
+    "governance_arm_2_single_lemma_rejections_0_false_ratify",
+    "two_instrument_artifacts_caught_discarded"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [
+    "gate_via_gap_route_not_closure_route_general_battery_prover",
+    "screener_precision_2of12_single_lemma_closable_despite_postpin_named_closer",
+    "ce_organ_advisory_only_FLAWED_until_re_review",
+    "resolved_without_codex_cross_bet_single_forecaster"
+  ],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": "Powered contract freshly created this session for the forward bundle-A/B science tick; codex (sole other agent, on NS) has not bet on this cadence. Not fabricating the adversary's view (defeats independence). Independence partially substituted by: gp233 governance arm fired (2 single_lemma_rejected, 0 false-ratify) + two fast-but-broken screener instruments were caught and discarded rather than laundered. Single-forecaster resolution recorded as a caveat.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [],
+  "resolution_note": "POWERED Tier-2 (n=12 >=10) via batched->parallel validated screener (12 PIN_STABLE / ~173 screened, ~7% yield consistent w/ pilot; 3 pilot names reproduced as cross-check). Independent prover (closer-name stripped at screen) general 20-tactic grounded battery. Path A canonical pinned v4.29.0 + exact? adjudication: T2P_118 COMPILE_OK + exact? CANNOT single-close = genuine_novel_closure (CE advisory clean); T2P_81 & T2P_172 COMPILE_OK but exact? Try-this single-lemma => single_lemma_rejected (governance arm working, NOT credited); T2P_42/51/57/80/93/116/117/143/166 = 9 honest_gap (honest prover refusal, no hallucinated closer). 0 false-ratify, 0 wrong-kind. GATE HIT via the >=5-exact-gaps branch (9>=5) at powered n=12. gp233 dual-scoreboard {} = KNOWN [A-Z]+d+ id-regex artifact on T2P ids, hand-classified transparently per gp233 rules. CAVEATS: gate via gap-route not closure-route (only 1 genuine closure; general battery, a stronger grounded-iterative prover may convert some gaps \u2014 conservatism strengthens not weakens the pass); 2/12 single-lemma-closable despite post-pin named closer => effective genuine Tier-2 rows ~10/12 (governance caught, not false-ratify); CE advisory-only NOT wired (FLAWED-until-re-review); resolved with guard-sanctioned --allow-no-codex (single-forecaster). Distinct from + supersedes the resolved-NO n=3 pilot.",
+  "resolved_at": "2026-05-17T03:56:26Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

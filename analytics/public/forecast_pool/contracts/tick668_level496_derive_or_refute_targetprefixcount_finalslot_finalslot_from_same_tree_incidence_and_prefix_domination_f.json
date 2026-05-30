@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json"
+  },
+  "baseline_action": "continue local scratch-only reductions",
+  "budget_agent_minutes": 180.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "tick668_level495_canonical_target_assignment",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f",
+  "cost_penalty": 0.24,
+  "counterfactual_action": "bind the next target-bound commitment to a meso forecast contract before extending the bridge",
+  "created_at": "2026-05-27T02:34:12Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.129,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "construct",
+    "score": 0.129,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.129,
+        "domain": "gp230_forecast_pool_infrastructure",
+        "expected_cost_agent_minutes_prior": 49.0,
+        "sample_limited": true,
+        "score": 0.129,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0417,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0345,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.0345,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0256,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0256,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "could reveal the incidence fields are too weak and require a new premise",
+    "positive": "forces the next step to attack the actual target-count bound rather than another wrapper"
+  },
+  "horizon": "2026-05-27T06:00:00Z",
+  "information_value": 0.86,
+  "layer": "meso",
+  "objective_resolver": "checked Lean artifact or validated hostile witness plus gate/workbench receipts",
+  "question": "TICK668 Level496: derive or refute targetPrefixCount finalSlot <= finalSlot from same-tree incidence and prefix domination for the canonical eventData target assignment",
+  "risk_penalty": 0.36,
+  "success_threshold": "TRUE iff the next step produces a checked Lean theorem/source or a validated hostile witness that materially settles the target-count final-slot bound surface without endpoint restatement",
+  "task_type": "construct",
+  "value_if_success": 0.72,
+  "void_conditions": "void if no Lean/gate/workbench artifact is attempted"
+}

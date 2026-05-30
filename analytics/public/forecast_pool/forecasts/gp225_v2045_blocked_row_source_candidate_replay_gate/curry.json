@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Prefer one-row canary or abort if aggregate EV is negative; static hygiene is weaker than Lean replay.",
+  "agent_id": "Curry",
+  "contract_id": "gp225_v2045_blocked_row_source_candidate_replay_gate",
+  "contract_question": "If we replay the 10 v20.44 blocked-row source candidates, will at least one candidate compile into a strict, solver-closure, or auxiliary head with harmful mismatches zero?",
+  "domain": "gp225_pre_gnn_replay_gate",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "context_variable_mismatch": 0.3409090909090909,
+    "source_contract_wrong_shape": 0.25,
+    "static_check_not_semantic": 0.18181818181818182,
+    "zero_compile_like_prior_public_adapter": 0.2272727272727273
+  },
+  "forecast_externality_tags": [
+    "content_source_test",
+    "canary_preferred",
+    "replay_budget_guard"
+  ],
+  "forecasted_at": "2026-05-14T17:29:15Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.05,
+  "p_success": 0.31,
+  "rationale_short": "At least one compile is possible, especially source-copied rows, but strict/safe head success across guessed contexts remains under even odds.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "context_variable_mismatch",
+    "source_contract_wrong_shape"
+  ]
+}

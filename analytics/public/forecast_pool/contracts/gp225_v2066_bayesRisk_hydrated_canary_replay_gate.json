@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json"
+  },
+  "baseline_action": "Stop after hydrated static patch.",
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2066_bayesRisk_hydrated_canary_replay_gate",
+  "cost_penalty": 0.015,
+  "counterfactual_action": "Price and possibly run one-row hydrated bayesRisk canary replay.",
+  "created_at": "2026-05-14T18:57:10Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.4118,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_pre_gnn_hydrated_canary_replay",
+    "score": 0.5714,
+    "selected_domain": "gp225_pre_gnn_replay_gate",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5714,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.4118,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.5714,
+        "score_rows": 2,
+        "token_jaccard": 0.5714
+      },
+      {
+        "char_trigram_jaccard": 0.2045,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2093,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2093,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2045,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may still fail on branch-local hypothesis names",
+      "canary compile does not imply training readiness"
+    ],
+    "positive": [
+      "first compile-yield test after context hydration",
+      "directly measures whether static hydration improved replayability"
+    ]
+  },
+  "horizon": "same session 2026-05-14",
+  "information_value": 0.35,
+  "layer": "micro",
+  "objective_resolver": "This is a replay-yield market, not a gate-validity market. If the canary replay is run, resolve true iff at least one v20.65 bayesRisk candidate action compiles, harmful compiled mismatches are zero, target proof lines were not used for generation, training remains false, and GNN remains blocked. If the market gate aborts before replay, void as no-run and do not score as success.",
+  "question": "If GP-225 runs the v20.65 hydrated one-row bayesRisk canary replay, will at least one candidate compile with zero harmful mismatches, without using target proof lines for generation?",
+  "risk_penalty": 0.6,
+  "success_threshold": "run case: compiled_candidate_actions >= 1 and harmful_compiled_mismatch_actions == 0; no training; GNN blocked",
+  "task_type": "hydrated_canary_replay_gate",
+  "value_if_success": 1.1,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

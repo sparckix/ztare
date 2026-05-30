@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 7.0,
+  "artifact_hash": "ce8c68758cd75332d42c577943a2de2f714a86364f9d40d44bc975ee7ddc7c9d",
+  "artifact_path": "analytics/public/leanmill/results/v2001_fresh_clean_topology_replay.json",
+  "compile_status": "replay_completed_one_clean_strict_win",
+  "contract_id": "gp225_v2001_fresh_clean_topology_replay",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Replay attempted 6 candidates across 2 fresh clean primary strict rows. compiled_candidate_actions=1, fresh primary strict rows=1, auxiliary pull-forward actions=0, harmful mismatches=0, source-policy flags clean, training_now=false, gnn_blocked=true. Contract resolved true on current_scale_0076/image_symm_eq_preimage rank-3 aesop.",
+  "resolved_at": "2026-05-14T12:12:53Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

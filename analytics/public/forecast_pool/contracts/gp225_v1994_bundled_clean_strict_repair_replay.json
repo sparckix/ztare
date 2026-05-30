@@ -1,0 +1,35 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1994_bundled_clean_strict_repair_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1994_bundled_clean_strict_repair_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1994_bundled_clean_strict_repair_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1994_bundled_clean_strict_repair_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1994_bundled_clean_strict_repair_replay.json"
+  },
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1994_bundled_clean_strict_repair_replay",
+  "cost_penalty": 3.0,
+  "created_at": "2026-05-14T09:20:00Z",
+  "created_by": "codex_worker_c_gp230_2026_05_14",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "next GP-225 strict replay session after v1992 and v1993 candidate packets are available",
+  "information_value": 8.5,
+  "layer": "micro",
+  "objective_resolver": "Conditional on v1992 and v1993 clean strict repair candidate packets existing at replay time, run a bundled strict replay over both packets with the clean source-policy gates used by v1990. Success if the replay verifies at least one fresh primary strict target-state row, harmful_compiled_mismatch_actions=0, source-policy flags clean, training_now=false, and gnn_blocked=true. Solver-only, auxiliary-only, known prior wins, or rows using target proof lines/gold tactic text do not satisfy this contract.",
+  "packet_prerequisites": [
+    "analytics/public/leanmill/results/v1992_*candidate*packet*.json or equivalent v1992 candidate packet",
+    "analytics/public/leanmill/results/v1993_*candidate*packet*.json or equivalent v1993 candidate packet"
+  ],
+  "question": "Conditional on v1992 and v1993 candidate packets existing, will v19.94 bundled clean strict repair replay add at least one fresh primary strict row, with harm zero, source-policy clean, no training, and GNN still blocked?",
+  "risk_penalty": 2.5,
+  "success_threshold": "fresh_primary_strict_rows >= 1; harmful=0; source_policy_clean=true; training_now=false; gnn_blocked=true",
+  "task_type": "bundled_clean_strict_repair_replay",
+  "value_if_success": 13.0,
+  "void_conditions": "void if v1992 or v1993 candidate packets are unavailable at replay time, replay uses target proof lines/gold tactic text for generation, known prior wins are counted as fresh primary strict rows, source-policy audit is omitted, or any model is trained"
+}

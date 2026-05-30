@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json",
+    "contract": "analytics/public/forecast_pool/contracts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven",
+    "outcome": "analytics/public/forecast_pool/outcomes/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json",
+    "score": "analytics/public/forecast_pool/scores/route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_compactness_measure_valued_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_compactness_measure_valued_source' is an EXACT match of surfaced id 'selected_projected_compactness_measure_valued_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "route_1_clay_continuation_endpoint_is_open_because_the_selected_projected_branch_needs_numeric_compactness_liminf_proven",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-18T03:33:35Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.15,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_compactness_measure_valued_provenance",
+    "score": 0.3333,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.3333,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.15,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 10,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.1897,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.3333,
+        "score_rows": 4,
+        "token_jaccard": 0.3333
+      },
+      {
+        "char_trigram_jaccard": 0.1395,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 140,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.098,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 16,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "short",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "PATTERN-009 independent verification artifact: a single-fixed-family numeric compactness/liminf check (sympy/numeric, in-loop primitive) demonstrating the measure-valued defect liminf provenance is supplied from one approximation family; artifact written, family-switch credit-launder absent",
+  "question": "Route-1 clay_continuation_endpoint is OPEN because the selected projected branch needs numeric compactness/liminf provenance from a SINGLE FIXED approximation family (no family-switching credit launder). Can a mechanized independent numeric/CAS verification (PATTERN-009) exhibit a fixed Galerkin-family compactness/liminf certificate that supplies selected_projected_compactness_measure_valued_source WITHOUT the banned forget_numeric_provenance_after_source_credit pattern?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_route1_compactness_measure_valued_provenance",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

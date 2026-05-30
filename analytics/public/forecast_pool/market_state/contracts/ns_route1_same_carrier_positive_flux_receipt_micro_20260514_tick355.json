@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:07:43Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 32.0,
+    "expected_value": -2.614749829268252,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.235,
+    "p_needs_new_lemma": 0.285,
+    "p_regression": 0.04,
+    "p_success": 0.703500243902497,
+    "participants": [
+      {
+        "agent_id": "hooke_pde_tick355",
+        "domain": "ns_route1_pde",
+        "p_success": 0.76,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_skeptic_tick355",
+        "domain": "ns_route1_pde",
+        "p_success": 0.64,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.22
+      },
+      {
+        "mode": "just_another_wrapper",
+        "p": 0.18
+      },
+      {
+        "mode": "too_wrapper_like",
+        "p": 0.14
+      },
+      {
+        "mode": "needs_route_to_Q_not_T",
+        "p": 0.12
+      },
+      {
+        "mode": "hides_invisible_tail",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 32.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:07:28Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T16:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "lake env lean and downstream lake build pass; no sorry/admit; source explicitly defines receipt charge as containing positive cutoff flux and does not use DR/pressure-l2 substitution",
+    "question": "Can we compile a same-carrier positive cutoff-flux transport receipt source that constructs the positive localized transport lower-payment source, while preserving the shear/functional-mismatch no-go?",
+    "success_threshold": "build passed and source constructor exists and no sorry delta",
+    "task_type": "lean_pde_source_surface"
+  },
+  "contract_id": "ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_pde_tick355",
+        "raw_agent_ids": [
+          "hooke_pde_tick355"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_skeptic_tick355",
+        "raw_agent_ids": [
+          "rawls_skeptic_tick355"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_pde_tick355",
+      "rawls_skeptic_tick355"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_pde_tick355",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355/hooke_pde_tick355.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 26.0,
+        "forecasted_at": "2026-05-14T12:07:42Z",
+        "p_success": 0.76,
+        "rationale_short": "The no-go already named the corrected object; a local source/constructor should compile if it keeps the PDE estimate conditional.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_skeptic_tick355",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355/rawls_skeptic_tick355.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 38.0,
+        "forecasted_at": "2026-05-14T12:07:43Z",
+        "p_success": 0.64,
+        "rationale_short": "Useful only if it preserves the visible/invisible alternative and does not pretend the positive flux receipt has been analytically sourced.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:11:32Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 32.0,
+      "expected_value": -2.614749829268252,
+      "p_success": 0.703500243902497,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.0686
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 32.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.703500243902497,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.22
+      },
+      {
+        "mode": "just_another_wrapper",
+        "p": 0.18
+      },
+      {
+        "mode": "too_wrapper_like",
+        "p": 0.14
+      },
+      {
+        "mode": "needs_route_to_Q_not_T",
+        "p": 0.12
+      },
+      {
+        "mode": "hides_invisible_tail",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09359999999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T12:13:04Z"
+  }
+}

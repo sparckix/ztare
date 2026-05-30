@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Do only if the fork explicitly returns named residual failures and keeps the analytic event-selection theorem open.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424",
+  "contract_question": "Will tick424 add a compiling Lean fork surface for residual fresh excess creating a same-ledger audit event, or routing the obstruction to flat/inherited scale reserve, pressure visibility, or beta incidence residuals, without claiming analytic event selection?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_bloat": 0.2,
+    "flat_radius_scale_reuse_unpaid": 0.18,
+    "pressure_visibility_smuggling": 0.18,
+    "self_referential_event_selection": 0.28,
+    "signature_mismatch": 0.16
+  },
+  "forecast_externality_tags": [
+    "darwin",
+    "no_self_reference",
+    "ns_n8_beta",
+    "residuals"
+  ],
+  "forecasted_at": "2026-05-14T22:28:30Z",
+  "p_dependency_issue": 0.62,
+  "p_needs_new_lemma": 0.94,
+  "p_regression": 0.22,
+  "p_success": 0.5,
+  "rationale_short": "The fork is useful only if it refuses to manufacture a same-ledger event from the need for one. The main obstruction is flat/inherited and pressure-only cases masquerading as fresh residual excess.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "self_referential_event_selection",
+    "adapter_bloat",
+    "pressure_visibility_smuggling",
+    "flat_radius_scale_reuse_unpaid",
+    "signature_mismatch"
+  ]
+}

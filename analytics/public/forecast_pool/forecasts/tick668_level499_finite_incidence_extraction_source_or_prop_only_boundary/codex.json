@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "If current fields are Prop-only, add a minimal extraction source object with selectable map/collision fields rather than weakening incidence-derived gate.",
+  "agent_family": "codex",
+  "agent_id": "codex",
+  "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+  "contract_question": "Can Level499 add a positive finite incidence extraction source that isolates the exact data needed to construct targetSlot and injectivity from same-tree incidence, while proving current Prop-only fields remain insufficient?",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 78.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "existing_incidence_fields_prop_only": 0.46,
+    "lean_dependency_shape_mismatch": 0.24,
+    "new_schema_only_not_c5_progress": 0.3
+  },
+  "forecast_externality_tags": [
+    "positive_extraction_interface",
+    "c5_facing_source_law"
+  ],
+  "forecasted_at": "2026-05-27T04:24:52Z",
+  "p_dependency_issue": 0.26,
+  "p_needs_new_lemma": 0.48,
+  "p_regression": 0.13,
+  "p_success": 0.64,
+  "predicted_self_error_ratio": 0.27,
+  "rationale_short": "Level498 already exposes the boundary; Level499 is a narrower extraction/interface step, but the remaining risk is that the new source only repackages Prop-only data or misses the exact C5-facing law.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "existing_incidence_fields_prop_only",
+    "lean_dependency_shape_mismatch"
+  ],
+  "tail_downside_worry": 34.0,
+  "tail_upside_surprise": 18.0,
+  "verbalized_confidence": 0.64
+}

@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 0.86,
+  "artifact_hash": "f6f719c4a36b0e86658ac40d342c5cbb9032e26b29d1d7640e941e0e5e7c1681",
+  "artifact_path": "analytics/public/leanmill/results/v1859_recovered_unsat_incremental_replay_verifier.json",
+  "compile_status": "partial_gold_3_of_5_clean_0_of_5",
+  "contract_id": "gp225_v1859_recovered_unsat_incremental_replay",
+  "error_type": "clean_residual_gate_failed_normalizer_or_nonatomic",
+  "goal_delta": 0,
+  "resolution_note": "v18.59 attempted 5 recovered baseline-unsaturated rows; 3 gold transitions compiled, but 0 clean residual/closure labels counted because one compile was non-atomic line_contains and two closure rows had normalizer decoy compiles; audited true false accepts stayed 0; GNN/training blocked.",
+  "resolved_at": "2026-05-13T16:33:48Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

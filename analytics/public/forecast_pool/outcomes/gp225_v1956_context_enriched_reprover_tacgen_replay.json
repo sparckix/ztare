@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 30.0,
+  "artifact_hash": "6731d38b7f30b8b07f24433964341d4392b2b57946ffb8f08407eb5bb76ca49a",
+  "artifact_path": "analytics/public/leanmill/results/v1956_context_enriched_replay_resolution_packet.json",
+  "compile_status": "replay_completed_duplicate_strict_only",
+  "contract_id": "gp225_v1956_context_enriched_reprover_tacgen_replay",
+  "error_type": "duplicate_strict_no_additional_label",
+  "goal_delta": 0,
+  "resolution_note": "v19.56 emitted 96 context-enriched public ReProver candidates, 80 new vs v19.52 top4, and replayed top4 over 12 rows. It rediscovered the known current_scale_0256 strict target-state row at rank1 but added 0 additional strict rows; harmful mismatches were 0 and forbidden fields were absent. Contract required an additional strict row, so resolve false.",
+  "resolved_at": "2026-05-14T02:34:12Z",
+  "sorry_delta": 0,
+  "success_bool": false,
+  "voided": false
+}

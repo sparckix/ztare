@@ -1,0 +1,218 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-12T14:48:34Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 35.0,
+    "expected_value": 1.214673030213961,
+    "forecast_count": 3,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.11333333333333333,
+    "p_needs_new_lemma": 0.05000000000000001,
+    "p_regression": 0.17333333333333334,
+    "p_success": 0.7940031817736473,
+    "participants": [
+      {
+        "agent_id": "codex_gp230_pro_gp225_route_selector_readonly",
+        "domain": "gp225_baseline",
+        "p_success": 0.82,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_readonly_gp230",
+        "domain": "gp225_baseline",
+        "p_success": 0.78,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_readonly_gp230_skeptical_baseline",
+        "domain": "gp225_baseline",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "baseline_action_sweep_underimplements_site_aware_branch_insertion",
+        "p": 0.12666666666666668
+      },
+      {
+        "mode": "baseline_candidate_accessibility_underextracts_row15_or_row20",
+        "p": 0.11333333333333334
+      },
+      {
+        "mode": "site_aware_or_prefix_context_not_recovered_by_baseline",
+        "p": 0.11333333333333334
+      },
+      {
+        "mode": "deterministic_action_sweep_lacks_named_implicit_or_tuple_body_templates",
+        "p": 0.09666666666666666
+      },
+      {
+        "mode": "named_implicit_or_multiline_template_builder_missing",
+        "p": 0.08
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1710_bm25_action_sweep_baseline.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1710_bm25_action_sweep_baseline.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1710_bm25_action_sweep_baseline.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1710_bm25_action_sweep_baseline.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1710_bm25_action_sweep_baseline.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-12T14:46:03Z",
+    "created_by": "codex:RD",
+    "horizon": "next local GP-225 baseline audit",
+    "layer": "macro",
+    "objective_resolver": "artifact analytics/public/leanmill/results/v1710_bm25_action_sweep_baseline.json exists; success if metrics.baseline_closed_rows>=20 or metrics.gp225_mean_failed / max(metrics.baseline_mean_failed,0.001) <= 2.0; void on script failure before producing metrics",
+    "question": "Will v17.10 show that a strong BM25/accessibility + deterministic action-sweep baseline closes at least 20/23 natural replay rows or comes within 2x of GP-225 mean failed probes, keeping GNN blocked?",
+    "success_threshold": "baseline_closed_rows >= 20 OR gp225_vs_baseline_mean_failed_ratio <= 2.0",
+    "task_type": "gnn_launch_gate"
+  },
+  "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_gp230_pro_gp225_route_selector_readonly",
+        "raw_agent_ids": [
+          "codex_gp230_pro_gp225_route_selector_readonly"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230",
+        "raw_agent_ids": [
+          "codex_readonly_gp230"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230_skeptical_baseline",
+        "raw_agent_ids": [
+          "codex_readonly_gp230_skeptical_baseline"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_gp230_pro_gp225_route_selector_readonly",
+      "codex_readonly_gp230",
+      "codex_readonly_gp230_skeptical_baseline"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_gp230_pro_gp225_route_selector_readonly",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1710_bm25_action_sweep_baseline/codex_gp230_pro_gp225_route_selector_readonly.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-12T14:48:34Z",
+        "p_success": 0.82,
+        "rationale_short": "High success: v17.9 has zero GNN residuals and prior BM25/action-sweep nearly saturates related packets; risk is stricter natural replay templates for rows 15 and 20.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1710_bm25_action_sweep_baseline/codex_readonly_gp230.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-12T14:48:06Z",
+        "p_success": 0.78,
+        "rationale_short": "v1709 shows deterministic saturation; v1704 alone reached 20/23 if strong baseline implements site-aware branch/action sweep faithfully. Main risk is baseline implementation scope, not GNN need.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230_skeptical_baseline",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1710_bm25_action_sweep_baseline/codex_readonly_gp230_skeptical_baseline.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-12T14:48:34Z",
+        "p_success": 0.78,
+        "rationale_short": "v17.9 deterministic saturation and prior BM25/action-sweep near-saturation make success likely; risks are site-aware prefix context and row 15/20 template completeness.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-12T14:51:42Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 1.214673030213961,
+      "forecast_spread": 0.04,
+      "p_success": 0.7940031817736473,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.7036
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 35.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7940031817736473,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "baseline_action_sweep_underimplements_site_aware_branch_insertion",
+        "p": 0.12666666666666668
+      },
+      {
+        "mode": "baseline_candidate_accessibility_underextracts_row15_or_row20",
+        "p": 0.11333333333333334
+      },
+      {
+        "mode": "site_aware_or_prefix_context_not_recovered_by_baseline",
+        "p": 0.11333333333333334
+      },
+      {
+        "mode": "deterministic_action_sweep_lacks_named_implicit_or_tuple_body_templates",
+        "p": 0.09666666666666666
+      },
+      {
+        "mode": "named_implicit_or_multiline_template_builder_missing",
+        "p": 0.08
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.04306666666666667,
+    "score_rows": 3,
+    "scored_at": "2026-05-12T14:51:48Z"
+  }
+}

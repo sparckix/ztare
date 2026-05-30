@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_v1733_yield_decomposition_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_v1733_yield_decomposition_micro.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_v1733_yield_decomposition_micro",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_v1733_yield_decomposition_micro.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_v1733_yield_decomposition_micro.json"
+  },
+  "budget_agent_minutes": 10.0,
+  "contract_id": "ns_route1_v1733_yield_decomposition_micro",
+  "cost_penalty": 0.2,
+  "created_at": "2026-05-13T18:35:08Z",
+  "created_by": "codex:RD",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "1h",
+  "information_value": 1.9,
+  "layer": "micro",
+  "objective_resolver": "Resolve success if an artifact emits research_yield_decomposition for the route-1 chain, cites v17.30-v17.32, distinguishes not-run from zero, names current bottleneck and next lever, and generates at least three typed insights without claiming theorem progress.",
+  "question": "Will applying GP-233 research-yield decomposition to the NS route-1 v17.30-v17.32 chain produce a decision-changing insight about the actual bottleneck and next lever?",
+  "risk_penalty": 0.2,
+  "success_threshold": "0.75",
+  "task_type": "gp233_yield_decomposition",
+  "value_if_success": 2.2,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

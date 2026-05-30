@@ -1,0 +1,96 @@
+{
+  "contract_id": "a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "deterministic scaffold INSUFFICIENT (0/3); a real automated grounded-iterative prover REQUIRES an LLM-in-loop assembly step with grounded tool feedback (not a deterministic ladder) \u2014 that is the actual build, scoped honestly; the hand-role at n=3 was the load-bearing LLM composition",
+      "old_next_action": "build automated grounded-iterative loop as a deterministic scaffold"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.16000000000000003,
+  "mean_log_score": -0.5108256237659907,
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "deterministic scaffold INSUFFICIENT (0/3); a real automated grounded-iterative prover REQUIRES an LLM-in-loop assembly step with grounded tool feedback (not a deterministic ladder) \u2014 that is the actual build, scoped honestly; the hand-role at n=3 was the load-bearing LLM composition",
+    "old_next_action": "build automated grounded-iterative loop as a deterministic scaffold",
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "NO (hypothesis false) but DECISIVE experiment: deterministic scaffold closed 0/3 of C10/C15/C06 (hand+LLM-assembly = 3/3). 0 harvested suggestions (exact? on these bare goals = 'could not close', not one-liner). => the automatable-deterministic grounding (ladder+#check/exact?-harvest+bounded retry) is NOT the lever; the LLM proof-COMPOSITION step in the loop is LOAD-BEARING. Directly answers the cold-GPT-5.5 eigenquestion. RD p=0.4 calibrated (predicted ~1/3, LLM-assembly load-bearing).",
+    "resolved_at": "2026-05-16T23:29:17Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:38:58Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "codex",
+      "brier": 0.16000000000000003,
+      "cost_error_agent_minutes": 45.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 75.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5108256237659907,
+      "p_success": 0.4,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T23:10:08Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T23:14:12Z",
+        "resolved_at": "2026-05-16T23:29:17Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 30.0,
+      "agent_id": "research_director_claude_opus_4_7",
+      "brier": 0.16000000000000003,
+      "cost_error_agent_minutes": 45.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 75.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5108256237659907,
+      "p_success": 0.4,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T23:10:08Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T23:10:22Z",
+        "resolved_at": "2026-05-16T23:29:17Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "Proceed as a small fork incorporating Banach no-go; stop before PDE proof.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_n8_beta_audit_eligibility_or_residual_fork_20260514_tick427",
+  "contract_question": "Will tick427 add a compiling Lean fork that states residual-fresh audit eligibility or explicit routing to flat-radius, pressure-visibility, or beta-incidence residuals, incorporating Banach's no-go without claiming eligibility proof?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dependent_type_constructor_issue": 0.18,
+    "logging_gap": 0.1,
+    "no_new_decision_change": 0.15,
+    "overclaim_eligibility": 0.18,
+    "redundant_with_tick424": 0.22,
+    "residual_branches_too_abstract": 0.17
+  },
+  "forecast_externality_tags": [
+    "ns_n8_beta",
+    "eligibility_fork",
+    "banach_nogo",
+    "anti_overclaim"
+  ],
+  "forecasted_at": "2026-05-14T22:45:22Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.12,
+  "p_success": 0.72,
+  "rationale_short": "Useful if it converts the negative xhigh audit into a formal branch boundary. Main risk is redundancy with earlier fork unless eligibility data is the target type.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "redundant_with_tick424",
+    "dependent_type_constructor_issue",
+    "overclaim_eligibility",
+    "residual_branches_too_abstract",
+    "logging_gap",
+    "no_new_decision_change"
+  ]
+}

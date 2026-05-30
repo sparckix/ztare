@@ -1,0 +1,37 @@
+{
+  "generated_utc": "2026-05-17T12:55:48.150163+00:00",
+  "spec": "research_areas/private/seams/apparatus/instrumentation/GP-237_scope_evolution_seam.md \u00a70d-KILL-b",
+  "status": "ok",
+  "frame": "NOT a sophistication score (v1/v3/v4 killed). (1) binary laundering tripwire; (2) non-accumulation regression/rework rate (two-sided, bad=UP, CAN say 'treadmilling').",
+  "honest_limit": "STRUCTURAL proxy, no Lean re-run: a green decl silently broken by an UPSTREAM change with no local sorry is NOT caught. Decl-name regex; conceptual triviality not detected (adversary's known limit, stated not hidden).",
+  "n_decls_scanned": 2674,
+  "n_clean": 2434,
+  "laundering_tripwire": {
+    "laundering_introduced": true,
+    "n_laundered_decls": 240,
+    "by_kind": {
+      "trivial-closer-only": 4,
+      "sorry/admit/axiom": 236
+    },
+    "n_duplicate_fp_groups": 16,
+    "examples": {
+      "norm_bohrCharacter_translate_diff": "sorry/admit/axiom",
+      "bohrCharacter_isAP": "sorry/admit/axiom",
+      "cubeAverage_norm_bound": "sorry/admit/axiom",
+      "measurableSet_cube": "sorry/admit/axiom",
+      "cube_shift_negligible": "sorry/admit/axiom",
+      "continuous_bohrCharacter": "sorry/admit/axiom",
+      "mul_unimodular_of_joint_density": "sorry/admit/axiom",
+      "hasBohrMean_mul_bohrCharacter": "sorry/admit/axiom",
+      "forwardChar_mul_conj_self_eq_one": "sorry/admit/axiom",
+      "tendsto_translate_eLpNorm_zero": "sorry/admit/axiom"
+    }
+  },
+  "regression_rework": {
+    "prev_clean": 2434,
+    "regressed": 0,
+    "rate": 0.0,
+    "examples": [],
+    "verdict": "no-regression"
+  }
+}

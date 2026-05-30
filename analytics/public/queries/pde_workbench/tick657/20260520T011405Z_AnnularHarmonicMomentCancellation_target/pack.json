@@ -1,0 +1,94 @@
+{
+  "generated_utc": "2026-05-20T01:14:08.822852+00:00",
+  "target": "AnnularHarmonicMomentCancellation",
+  "field": null,
+  "tool_scope": "RD caller over existing ZTARE primitives; not a second autoresearch loop or replacement workbench",
+  "target_context": {
+    "found": true,
+    "target": "AnnularHarmonicMomentCancellation",
+    "field": null,
+    "target_file": "ns_route1_fresh_frequency_coercivity_adapter",
+    "endpoint_exposure": null,
+    "n_downstream_users": null,
+    "priority": null,
+    "n_fields": 9,
+    "fields": [
+      {
+        "name": "complementTestsUseFixedPressureGauge",
+        "type": "hPressure.pressureTailLocalizedToFreshEventTents"
+      },
+      {
+        "name": "constantAndLinearGaugeModesRemoved",
+        "type": "Prop"
+      },
+      {
+        "name": "quadraticHarmonicCollarModesCancelledOrCharged",
+        "type": "\u2200 (Q : DyadicParabolicCube) (_hQ : Q \u2208 hCarrier.selectedBadNodes) (_hResidual : hElig.residualOrInherited.residualFreshExcess Q), Prop"
+      },
+      {
+        "name": "exteriorPressureProjectionSummableOffParentInvoice",
+        "type": "\u2200 (Q : DyadicParabolicCube) (_hQ : Q \u2208 hCarrier.selectedBadNodes) (_hResidual : hElig.residualOrInherited.residualFreshExcess Q), Prop"
+      },
+      {
+        "name": "eventTentCollarIsTestedModuloHarmonicGauge",
+        "type": "\u2200 (_e : \u2115), Prop"
+      },
+      {
+        "name": "noPostHocDualTestClassTuning",
+        "type": "Prop"
+      },
+      {
+        "name": "notConstantinFeffermanAlignment",
+        "type": "Prop"
+      },
+      {
+        "name": "notDegreeZeroSingularIntegralBookkeeping",
+        "type": "Prop"
+      },
+      {
+        "name": "notParabolicRateSlavedScalar",
+        "type": "Prop"
+      }
+    ],
+    "field_info": null,
+    "constructors": [],
+    "type_producers": [],
+    "nearby_theorems": []
+  },
+  "gap_classification": {
+    "gap_type": "UNKNOWN",
+    "confidence": "low",
+    "rationale": "No field supplied.",
+    "classifier": "pde_estimate_workbench"
+  },
+  "mathlib_lemmas": [],
+  "auxiliary_families": [],
+  "inequality_checks": [
+    {
+      "name": "G-PDE-INEQ-DIM",
+      "passed": true,
+      "lhs": "QuadraticHarmonicPairing_Q",
+      "op": "<=",
+      "rhs": "C * (TraceFreeSecondMomentDefect_Q + HarmonicBoundaryReserve_Q + TestClassProjectionLoss_Q)",
+      "violations": [],
+      "dim_check": {
+        "consistent": true,
+        "warning": "no dimensional categories detected",
+        "lhs_cats": [],
+        "rhs_cats": [
+          "constant"
+        ]
+      },
+      "endpoint_check": {
+        "all_bound": true,
+        "unbound": []
+      },
+      "hard_fail": false,
+      "severity": "advisory",
+      "source": "pde_inequality_dimensional_gate",
+      "RELIABILITY_NOTE": "Advisory v0.1. Catches dimensional + endpoint-exposure violations on LLM-proposed inequalities. Does NOT verify mathematical correctness \u2014 passes inequalities that are well-typed but mathematically false. Use as a CHEAP PRE-FILTER before lake build."
+    }
+  ],
+  "curriculum_variants": [],
+  "next_step_rule": "Codex chooses a patch/falsifier route. Feed only verified snippets or summarized failure categories back into ZTARE briefing memory."
+}

@@ -1,0 +1,32 @@
+{
+  "contract_id": "rd_pattern_action_contract_tick668_level535_level520_direct_selector_bridge",
+  "tick_id": "TICK668",
+  "level": 535,
+  "selected_patterns": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018",
+    "GP-219:pde_estimate_craft_ops"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level520 carries the same cofinal witness bound but previously fed the Level519 adapter branch.",
+      "check": "Construct a direct Level520-to-Level534 bridge with explicit non-enumeration exclusions and explicit ordinary coverage proof fields.",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean:L3ACofinalWitnessBoundNonenumerativeSelectorSource"
+    },
+    {
+      "residual": "The bridge could launder ordinary coverage Props as proof terms.",
+      "check": "Require eventPrefixesExhaustSelectedBadNodes_proof, everySelectedBadNodeAppearsInSomePrefix_proof, prefixDominatesFiniteSelectedBadTreeBetaSum_proof, and duplicateEventsChargeMultiplicityRatherThanEraseIt_proof as wrapper fields.",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level535_level520_direct_selector_bridge_receipt.json"
+    }
+  ],
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level535_level520_direct_selector_bridge_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level535_provenance_edge_direction_receipt.json",
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level535_provenance_acyclic_edge_receipt.json"
+  ],
+  "nearest_universal_op": "cofinal-bound direct packaging with anti-adapter exclusions",
+  "nearest_confuser": "Level520 routed through Level519 before constructing the final-prefix selector branch",
+  "status": "implemented"
+}

@@ -1,0 +1,97 @@
+{
+  "contract_id": "ns_pressure_invisible_and_stress_coherence_frontier_split_tick434_20260514",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Split the field into two named-primitive structures + composite layout.",
+      "counterfactual_action": "Record gap + leave the field unsplit; mark as architectural documentation needed before PDE construction."
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "Run ns_graph_tick BEFORE each tick to route work to highest-leverage closure target. Per current ranking: prioritize LeraySelfTaxProfilePriceStream and LowFrequencyLipschitzBridge Track-B closures over more route-1 pressure layout. Save a feedback memory codifying this pre-check discipline.",
+      "old_next_action": "Continue pressure-side primitive construction or invisible-branch audit."
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.0634,
+  "mean_log_score": -0.28848271313526785,
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "artifact_hash": "e3d9c2394f927d6cc16d304dd340abfb25ae03ec57689d6cdeb0dd63d4e3fd1b",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passing",
+    "contract_id": "ns_pressure_invisible_and_stress_coherence_frontier_split_tick434_20260514",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "Run ns_graph_tick BEFORE each tick to route work to highest-leverage closure target. Per current ranking: prioritize LeraySelfTaxProfilePriceStream and LowFrequencyLipschitzBridge Track-B closures over more route-1 pressure layout. Save a feedback memory codifying this pre-check discipline.",
+    "old_next_action": "Continue pressure-side primitive construction or invisible-branch audit.",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Split shipped: FixedWindowInvisibleRemainderCompactnessExtractionPrimitive + FixedWindowPositiveSideStressAngularCoherenceDominancePrimitive + composite FixedWindowPressureFrontierAfterShareLayout + ofClosureGuardAndShareLayout projection. Lean compiles, no sorries/admits, diff --check clean. **CRITICAL pre-check finding (post-hoc, apparatus catch)**: ran src/ztare/research_director/ns_graph_tick after shipping \u2014 top closure-miner targets are Track-B objects (LeraySelfTaxProfilePriceStream:1095, LowFrequencyLipschitzBridge:762, FullLedgerNoSurvivor:591, TrackBProfileLipschitzControlObligation:537), NOT route-1 pressure-share work. The session's tick432/433/434 sequence was less Clay-adjacent than a Track-B closure attempt would have been. The numerical pre-check should run BEFORE selecting the surface for each tick, not after. Structural progress was real but lower-leverage than the closure-miner ranking implied.",
+    "resolved_at": "2026-05-14T23:48:01Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T23:48:01Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "codex_rd",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": -6.0,
+      "domain": "ns_clay_pressure",
+      "expected_cost_agent_minutes": 16.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:43:31Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:43:31Z",
+        "resolved_at": "2026-05-14T23:48:01Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": -4.0,
+      "domain": "ns_clay_pressure",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T23:43:31Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T23:43:32Z",
+        "resolved_at": "2026-05-14T23:48:01Z"
+      }
+    }
+  ]
+}

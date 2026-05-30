@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 40.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577",
+  "cost_penalty": 0.5,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T13:28:22Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1296,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_CF_alignment_sign_irreducible_20260516",
+    "score": 0.1296,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0909,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1296,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.1296,
+        "score_rows": 4,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "14d",
+  "information_value": 9.0,
+  "layer": "meso",
+  "objective_resolver": "PDE check: (a) is the CF depletion mechanism governed by the omega-strain-eigenvector alignment sign (compressing\u21d2depleted\u21d2regular; stretching+fast-rotation\u21d2blowup-prone); (b) does s_z=\u03be\u03c4\u00b2/(\u03be\u03c4\u00b2+\u03bez\u00b2)\u2265c determine that sign, or only the ejection magnitude; (c) do Type-I(|u| only)/CKN/R1 add any control on \u2207\u03be or the alignment sign. success iff s_z+Type-I+R1 provably do NOT discharge CF AND the irreducible core is exactly the omega-strain alignment-sign/direction-coherence (named, classical-open, shared dual-channel discriminator); 0.5 if they partially constrain it; fail iff s_z+Type-I+R1 actually discharge CF (regularity) OR alignment-sign is not the right irreducible quantity.",
+  "question": "Does s_z>=c (tick562 PROVED ejection-steepness) + Type-I + R1 (tick570) discharge the Constantin-Fefferman vorticity-direction-Lipschitz Clay-equivalent criterion on the non-tangential inherited bad cascade? Claim: NO \u2014 s_z is ejection MAGNITUDE; CF depletion needs the SIGN of the omega-strain alignment (omega vs compressing/stretching strain eigenvector) + direction-Lipschitz, which is undetermined by Type-I/CKN/R1/s_z. So the irreducible open core sharpens to: the vorticity-strain alignment sign / CF direction-coherence on the s_z>=c cascade \u2014 the shared falsifiable discriminator for BOTH the regularity channel and the inversion/blowup-construction channel.",
+  "risk_penalty": 0.7,
+  "success_threshold": "success iff s_z+TypeI+R1 do NOT discharge CF and irreducible core = omega-strain alignment-sign/CF-direction-coherence (shared discriminator); 0.5 partial; fail iff CF discharged or wrong quantity",
+  "task_type": "ns_clay_CF_alignment_sign_irreducible_20260516",
+  "value_if_success": 8.5,
+  "void_conditions": "tick562 s_z>=c or tick570 R1 refactored"
+}

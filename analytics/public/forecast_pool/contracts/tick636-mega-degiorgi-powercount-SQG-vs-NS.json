@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick636-mega-degiorgi-powercount-SQG-vs-NS.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick636-mega-degiorgi-powercount-SQG-vs-NS.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick636-mega-degiorgi-powercount-SQG-vs-NS",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick636-mega-degiorgi-powercount-SQG-vs-NS.json",
+    "score": "analytics/public/forecast_pool/scores/tick636-mega-degiorgi-powercount-SQG-vs-NS.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick636-mega-degiorgi-powercount-SQG-vs-NS",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T12:20:55Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_mega_portfolio",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick636 MEGA: power-count the (B3-isolated) vortex-stretching source in the |\u03c9| De-Giorgi level-set energy. S=sym\u2207u=CZ(\u03c9) order-0 \u21d2 \u2016S\u2016_{Lp}\u2272\u2016\u03c9\u2016_{Lp} \u21d2 source \u222b(\u03be\u00b7S\u03be)|\u03c9|(|\u03c9|-k)_+ is CUBIC-homogeneous in \u03c9 on {|\u03c9|>k}, vs the QUADRATIC dissipation \u03bd\u222b|\u2207(|\u03c9|-k)_+|\u00b2 \u21d2 De Giorgi closure fails by exactly ONE \u03c9-power (supercritical) at the NS-critical scaling. Mechanistic CV\u2194NS dichotomy: CV closes critical SQG precisely because SQG's level-set energy has NO vortex-stretching source (only a critical, div-free-and-\u039b^{-1}-smoother commutator); 3D NS HAS the cubic stretching source. Honest scope: the supercriticality itself IS the known route-invariant atom (manifest:180) \u2014 the deliverable is the PRECISE De-Giorgi-power-count + the SQG-no-stretching mechanistic WHY, a sharpening/explanation, NOT a new route.",
+  "risk_penalty": 1.0,
+  "success_threshold": "the power-count (source cubic-in-\u03c9 vs quadratic dissipation \u21d2 one-power supercritical at NS scaling) is correct AND the CV/SQG-vs-NS mechanistic contrast (SQG has no stretching source \u21d2 CV closes; NS does \u21d2 fails) is accurate; honestly scoped as a sharpening of the known supercriticality atom NOT a new handle; survives ONE codex adversarial-kill",
+  "task_type": "ns_mega_portfolio",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

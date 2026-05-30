@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Expect a guard or lower interface rather than a true analytic proof because packet/cutoff definitions are still Prop-level.",
+  "agent_id": "codex_rd_no_go_skeptic",
+  "contract_id": "ns_route1_young_bernstein_transport_absorption_20260514_tick397",
+  "contract_question": "Can this tick encode a sharper non-tautological source or guard for SameCutoffTransportFluxAbsorption.youngBernsteinAbsorption, including QP overflow compatibility, without broad route-wrapper progress?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cutoff_commutator_not_summable": 0.18,
+    "guard_only": 0.15,
+    "muQP_overflow_not_sourceable": 0.34,
+    "need_real_packet_definitions": 0.25,
+    "proof_succeeds": 0.08
+  },
+  "forecast_externality_tags": [
+    "countermodel_skeptic",
+    "packet_definition_gap",
+    "qp_overflow_audit"
+  ],
+  "forecasted_at": "2026-05-14T17:10:29Z",
+  "p_dependency_issue": 0.58,
+  "p_needs_new_lemma": 0.98,
+  "p_regression": 0.12,
+  "p_success": 0.46,
+  "rationale_short": "The Young inequality is easy on paper, but current Lean objects may lack enough analytic structure to source it without another interface.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "muQP_overflow_not_sourceable",
+    "need_real_packet_definitions"
+  ]
+}

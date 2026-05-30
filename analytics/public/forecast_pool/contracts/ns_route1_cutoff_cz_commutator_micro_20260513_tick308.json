@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_cutoff_cz_commutator_micro_20260513_tick308.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_cutoff_cz_commutator_micro_20260513_tick308.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_cutoff_cz_commutator_micro_20260513_tick308",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_cutoff_cz_commutator_micro_20260513_tick308.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_cutoff_cz_commutator_micro_20260513_tick308.json"
+  },
+  "budget_agent_minutes": 85.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_cutoff_cz_commutator_micro_20260513_tick308",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-13T23:13:56Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 38.5,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "NS_route1",
+    "score": 1.0,
+    "selected_domain": "NS_route1",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 8,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 59.5,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 12,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 7,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.1154,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1154,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 4,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-13T23:59:00Z",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "lake_build_route1_adapter",
+  "question": "Can a cutoff/CZ pressure commutator leakage source object compile, splitting cutoff pressure error into endpoint commutator and tent-boundary charges without double counting?",
+  "risk_penalty": 1.0,
+  "success_threshold": "Lean check and build pass for new source station; no shard-C double-counting guard omitted",
+  "task_type": "lean_source_station",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

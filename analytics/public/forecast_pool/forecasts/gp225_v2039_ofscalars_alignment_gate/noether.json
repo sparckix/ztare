@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Proceed with static alignment gate only; do not replay or train.",
+  "agent_id": "Noether",
+  "contract_id": "gp225_v2039_ofscalars_alignment_gate",
+  "contract_question": "Will v20.39 emit a source-backed ofScalars target-alignment gate that classifies the v20.37 compiled actions into strict, solver-closure, and auxiliary heads without replay/training or source-policy leakage?",
+  "domain": "gp225_pre_gnn_alignment_policy",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_schema_drift": 0.17857142857142858,
+    "missed_leakage_field": 0.10714285714285712,
+    "overfit_to_ofScalars": 0.39285714285714285,
+    "policy_too_weak_to_change_next_action": 0.3214285714285714
+  },
+  "forecast_externality_tags": [
+    "anti_laundering",
+    "label_head_split",
+    "public_repo_union_policy"
+  ],
+  "forecasted_at": "2026-05-14T17:03:19Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.74,
+  "rationale_short": "Inputs already show exactly two compiled pull-forward actions and zero strict labels; the main risk is writing a descriptive artifact that does not sharpen the next gate.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "policy_too_weak_to_change_next_action",
+    "overfit_to_ofScalars"
+  ]
+}

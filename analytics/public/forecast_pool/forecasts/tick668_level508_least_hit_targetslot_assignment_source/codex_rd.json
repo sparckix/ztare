@@ -1,0 +1,43 @@
+{
+  "action_change_recommendation": "Proceed with Level508 because the existing Level503 source already carries boundedIncidentEventExists and no-reuse collision provenance; verify by strict gate and Lean before ledger credit.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.125,
+  "b_width": 0.11,
+  "contract_id": "tick668_level508_least_hit_targetslot_assignment_source",
+  "contract_question": "Can Level508 derive the Level507 final-slot targetSlot assignment from a bounded-incidence least-hit/no-reuse source, with strict gate/workbench/Lean validation and no endpoint-capacity substitution?",
+  "domain": "ns_trackb_formal_bridge",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_nat_find_incidence_transport": 0.34,
+    "level507_field_coverage_gap": 0.33,
+    "workbench_pack_schema_gap": 0.33
+  },
+  "forecast_externality_tags": [
+    "positive_bridge",
+    "least_hit_selector",
+    "pde_workbench"
+  ],
+  "forecasted_at": "2026-05-27T05:54:12Z",
+  "p_buy_yes_max": 0.62,
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.12,
+  "p_sell_yes_min": 0.7,
+  "p_success": 0.67,
+  "predicted_brier_hi": 0.18,
+  "predicted_brier_lo": 0.07,
+  "predicted_self_error_ratio": 0.18,
+  "rationale_short": "Existing Level501/503 already prove least-hit bound and incidence. The new work should mostly be a faithful package into Level507 plus a narrow anti-laundering gate.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "lean_nat_find_incidence_transport",
+    "level507_field_coverage_gap",
+    "workbench_pack_schema_gap"
+  ],
+  "spread": -0.08,
+  "tail_downside_worry": 18.0,
+  "tail_upside_surprise": 16.0,
+  "verbalized_confidence": 0.67
+}

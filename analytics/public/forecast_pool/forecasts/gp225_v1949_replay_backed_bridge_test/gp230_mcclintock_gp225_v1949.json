@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_mcclintock_gp225_v1949",
+  "contract_id": "gp225_v1949_replay_backed_bridge_test",
+  "contract_question": "Will GP-225 v19.49 produce at least one new strict same-target row beyond v19.45's two strict rows on the v19.42/v19.45 PDE holdout, with harmful_compiled_mismatch_rows=0 and no teacher/oracle primary inputs?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "harmful_mismatch_or_source_quarantine_regression": 0.05,
+    "instrument_or_adapter_friction": 0.09,
+    "public_static_support_does_not_translate_to_executable_tactic": 0.22,
+    "residual_rows_are_harder_than_v19_45_successes": 0.3,
+    "strict_same_target_fails_even_when_candidate_compiles": 0.14,
+    "typed_feedback_expansion_still_misses_local_arguments": 0.2
+  },
+  "forecasted_at": "2026-05-14T00:52:42Z",
+  "p_dependency_issue": 0.27,
+  "p_needs_new_lemma": 0.46,
+  "p_regression": 0.11,
+  "p_success": 0.4,
+  "rationale_short": "Incremental strict yield is harder after the two easiest v19.45 wins; public/static support should help route but not by itself generate proof terms. Low threshold keeps this worth running.",
+  "read_only_attestation": true
+}

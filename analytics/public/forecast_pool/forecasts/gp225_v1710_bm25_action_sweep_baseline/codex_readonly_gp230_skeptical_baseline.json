@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_readonly_gp230_skeptical_baseline",
+  "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
+  "contract_question": "Will v17.10 show that a strong BM25/accessibility + deterministic action-sweep baseline closes at least 20/23 natural replay rows or comes within 2x of GP-225 mean failed probes, keeping GNN blocked?",
+  "domain": "gp225_baseline",
+  "expected_cost_agent_minutes": 35.0,
+  "failure_mode_distribution": {
+    "candidate_accessibility_index_gap": 0.16,
+    "named_implicit_or_multiline_template_builder_missing": 0.24,
+    "probe_budget_ordering_worse_than_gp225_by_more_than_2x": 0.14,
+    "script_or_schema_dependency_issue": 0.12,
+    "site_aware_or_prefix_context_not_recovered_by_baseline": 0.34
+  },
+  "forecasted_at": "2026-05-12T14:48:34Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.18,
+  "p_success": 0.78,
+  "rationale_short": "v17.9 deterministic saturation and prior BM25/action-sweep near-saturation make success likely; risks are site-aware prefix context and row 15/20 template completeness.",
+  "read_only_attestation": true
+}

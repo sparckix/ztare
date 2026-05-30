@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 0.2,
+  "artifact_hash": "2154765506fa7650fed2288a769486aafb232a1ae50952ebccfc41eb84bf6966",
+  "artifact_path": "analytics/public/leanmill/results/v1844_proof_delta_label_source_inventory.json",
+  "compile_status": "pass",
+  "contract_id": "gp225_v1844_meso_label_source_choice",
+  "error_type": "none",
+  "goal_delta": 0,
+  "resolution_note": "v18.44 selected public_trace_v1739 as best bulk state/action source; natural replay and target-state witness rows are supplements; same-factory hard-decoy lane remains paused.",
+  "resolved_at": "2026-05-13T15:19:35Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

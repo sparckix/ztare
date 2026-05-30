@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_carrier_identification_next_branch_meso_20260514_tick317",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_carrier_identification_next_branch_meso_20260514_tick317.json"
+  },
+  "budget_agent_minutes": 40.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_carrier_identification_next_branch_meso_20260514_tick317",
+  "cost_penalty": 0.12,
+  "created_at": "2026-05-14T00:23:51Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.4286,
+    "expected_cost_agent_minutes_prior": 31.5,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde_branch_choice",
+    "score": 0.6,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.6,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.4286,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.6,
+        "score_rows": 34,
+        "token_jaccard": 0.6
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 8,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 7,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0732,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.0732,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same RD tick",
+  "information_value": 0.7,
+  "layer": "meso",
+  "objective_resolver": "Resolution by RD-selected branch plus compile-passed Lean proof-surface progress and GP-233 E/F row; success if selected branch yields a non-tautological lower station or theorem with no new sorry/admit.",
+  "question": "Which next route-1 pressure-visibility branch should this tick prioritize after Route1PressureAngularCarrierIdentification: A) split/prove pressure-Hessian tail-window projection, B) split/prove projected Riesz kernel to angular moment, or C) split/prove radial-grade carrier normalization?",
+  "risk_penalty": 0.1,
+  "success_threshold": "success=true iff selected branch produces build-passed Lean progress below Route1PressureAngularCarrierIdentification and changes the next PDE lever",
+  "task_type": "ns_route1_pde_branch_choice",
+  "value_if_success": 0.68,
+  "void_conditions": "Void if branch choice is based on pre-GNN as theorem oracle, if builder mutates GP-225 artifacts, or if outcome is only route receipt reshuffling."
+}

@@ -1,0 +1,20 @@
+{
+  "agent_id": "Rawls",
+  "contract_id": "ns_route1_carrier_identification_next_branch_meso_20260514_tick317",
+  "contract_question": "Which next route-1 pressure-visibility branch should this tick prioritize after Route1PressureAngularCarrierIdentification: A) split/prove pressure-Hessian tail-window projection, B) split/prove projected Riesz kernel to angular moment, or C) split/prove radial-grade carrier normalization?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "analytic_identity_too_large": 0.3,
+    "branch_B_collapses_to_provenance_field": 0.5,
+    "compile_surface_churn": 0.2
+  },
+  "forecasted_at": "2026-05-14T00:26:57Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.1,
+  "p_success": 0.43,
+  "rationale_short": "branch=B; highest-information route because it attacks projected Riesz to angular moment; lower success odds but strongest Clay-adjacent bottleneck exposure.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed as DAG sharpening, not closure.",
+  "agent_id": "codex-rd",
+  "contract_id": "ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420",
+  "contract_question": "Will tick420 add a compiling Lean surface reducing the N8 beta cofinal prefix-domination gap to the existing FreshFrequencyEventSameTreeLock / SameTreePrefixDominationPrimitive stack, while preserving the warning that the fresh-packet subprimitives remain unproved?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_only_no_new_source": 0.26,
+    "fresh_lock_still_unproved": 0.24,
+    "logging_overhead": 0.12,
+    "overclaim_guard_needed": 0.18,
+    "signature_friction": 0.2
+  },
+  "forecast_externality_tags": [
+    "beta_prefix_gap_sharpening",
+    "anti_tautology_guard",
+    "lean_reuse"
+  ],
+  "forecasted_at": "2026-05-14T21:47:23Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.64,
+  "p_regression": 0.1,
+  "p_success": 0.74,
+  "rationale_short": "L3 already has SameTreePrefixDominationPrimitive.ofFreshFrequencyEventSameTreeLock. A small adapter should expose it as the next beta primitive.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "fresh_packet_subprimitives_unproved",
+    "prefix_domination_still_adapter_only",
+    "same_tree_lock_not_constructed"
+  ]
+}

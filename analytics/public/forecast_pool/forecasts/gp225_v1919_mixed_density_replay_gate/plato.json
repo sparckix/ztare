@@ -1,0 +1,24 @@
+{
+  "agent_id": "plato",
+  "contract_id": "gp225_v1919_mixed_density_replay_gate",
+  "contract_question": "Will a GP-225 mixed-density replay run generated from v19.15 pass a bounded replay gate without false accepts and without unblocking GNN training?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "clean_replay_rows_below_72": 0.11,
+    "false_accept_control_regression": 0.09,
+    "no_rescue_density_below_0_45": 0.38,
+    "other": 0.05,
+    "runner_or_manifest_integration_issue": 0.13,
+    "top_area_or_source_packet_breadth_gate_fails": 0.16,
+    "worker_contention_or_timeout": 0.08
+  },
+  "forecasted_at": "2026-05-13T22:11:46Z",
+  "p_dependency_issue": 0.21,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.09,
+  "p_success": 0.54,
+  "rationale_short": "v19.15 is within row bounds and preserves controls; prior replay had clean rows and zero false accepts but missed density, so the question is whether mixed slices lift no-rescue density above 0.45.",
+  "read_only_attestation": true
+}

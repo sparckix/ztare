@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "proceed_only_as_boundary",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417",
+  "contract_question": "Will the pressure/beta sharpening tick add compiling Lean structures and a theorem reducing CriticalIncrementFailure to FlatRadiusScaleReserveFailure or sharpened pressure/beta source failures, without claiming pressure, beta, or upstream closure?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 31.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_compile_issue": 0.12,
+    "names_not_sources": 0.35,
+    "pressure_beta_still_open": 0.25,
+    "sidecar_contradiction": 0.1,
+    "smuggles_radius_failure": 0.18
+  },
+  "forecast_externality_tags": [
+    "darwin-boundary",
+    "n8-not-closed"
+  ],
+  "forecasted_at": "2026-05-14T21:19:47Z",
+  "p_dependency_issue": 0.47,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.08,
+  "p_success": 0.64,
+  "rationale_short": "The tick can probably compile, but it likely remains boundary recording unless it names independent pressure/beta failure primitives cleanly.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "names_not_sources",
+    "pressure_beta_still_open",
+    "smuggles_radius_failure",
+    "lean_compile_issue",
+    "sidecar_contradiction"
+  ]
+}

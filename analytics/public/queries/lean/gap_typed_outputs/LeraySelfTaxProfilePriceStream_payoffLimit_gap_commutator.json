@@ -1,0 +1,73 @@
+{
+  "ts": "2026-05-06T12:05:52.154650+00:00",
+  "target": "LeraySelfTaxProfilePriceStream",
+  "field": "payoffLimit",
+  "classification": {
+    "gap_type": "COMMUTATOR",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched COMMUTATOR evidence in the target/field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": [
+    {
+      "name": "convolution_integrand_bound_right_of_le_of_subset",
+      "file": "Analysis/Convolution.lean",
+      "preview": "theorem convolution_integrand_bound_right_of_le_of_subset {C : \u211d} (hC : \u2200 i, \u2016g i\u2016 \u2264 C) {x t : G}     {s u : Set G} (hx : x \u2208 s) (hu : -tsupport g + s \u2286 u) :     \u2016L (f t) (g (x - t))\u2016 \u2264 u.indicator (f"
+    },
+    {
+      "name": "norm_sub_map_le_sub",
+      "file": "Analysis/Seminorm.lean",
+      "preview": "theorem norm_sub_map_le_sub (p : Seminorm \ud835\udd5c E) (x y : E) : \u2016p x - p y\u2016 \u2264 p (x - y) :=   abs_sub_map_le_sub p x y  end Module  end SeminormedRing  section SeminormedCommRing  variable [SeminormedRing \ud835\udd5c"
+    },
+    {
+      "name": "rescale_to_shell_zpow",
+      "file": "Analysis/Seminorm.lean",
+      "preview": "lemma rescale_to_shell_zpow [NormedAddCommGroup F] [NormedSpace \ud835\udd5c F] {c : \ud835\udd5c} (hc : 1 < \u2016c\u2016)     {\u03b5 : \u211d} (\u03b5pos : 0 < \u03b5) {x : F} (hx : x \u2260 0) :     \u2203 n : \u2124, c ^ n \u2260 0 \u2227 \u2016c ^ n \u2022 x\u2016 < \u03b5 \u2227 (\u03b5 / \u2016c\u2016 \u2264 \u2016c ^"
+    },
+    {
+      "name": "rescale_to_shell",
+      "file": "Analysis/Seminorm.lean",
+      "preview": "lemma rescale_to_shell [NormedAddCommGroup F] [NormedSpace \ud835\udd5c F] {c : \ud835\udd5c} (hc : 1 < \u2016c\u2016)     {\u03b5 : \u211d} (\u03b5pos : 0 < \u03b5) {x : F} (hx : x \u2260 0) :     \u2203 d : \ud835\udd5c, d \u2260 0 \u2227 \u2016d \u2022 x\u2016 < \u03b5 \u2227 (\u03b5 / \u2016c\u2016 \u2264 \u2016d \u2022 x\u2016) \u2227 (\u2016d\u2016\u207b\u00b9"
+    },
+    {
+      "name": "bound_of_shell",
+      "file": "Analysis/Normed/Module/Alternating/Basic.lean",
+      "preview": "theorem bound_of_shell (f : F [\u22c0^\u03b9]\u2192\u2097[\ud835\udd5c] E) {\u03b5 : \u03b9 \u2192 \u211d} {C : \u211d} {c : \u03b9 \u2192 \ud835\udd5c}     (h\u03b5 : \u2200 i, 0 < \u03b5 i) (hc : \u2200 i, 1 < \u2016c i\u2016)     (hf : \u2200 m : \u03b9 \u2192 F, (\u2200 i, \u03b5 i / \u2016c i\u2016 \u2264 \u2016m i\u2016) \u2192 (\u2200 i, \u2016m i\u2016 < \u03b5 i) \u2192 \u2016f m\u2016"
+    },
+    {
+      "name": "bound_of_shell_smul",
+      "file": "Analysis/Seminorm.lean",
+      "preview": "lemma bound_of_shell_smul     (p q : Seminorm \ud835\udd5c E) {\u03b5 : \u211d} {C : \u211d\u22650} (\u03b5_pos : 0 < \u03b5) {c : \ud835\udd5c} (hc : 1 < \u2016c\u2016)     (hf : \u2200 x, \u03b5 / \u2016c\u2016 \u2264 p x \u2192 p x < \u03b5 \u2192 q x \u2264 (C \u2022 p) x) {x : E} (hx : p x \u2260 0) :     q x \u2264"
+    },
+    {
+      "name": "bound_of_shell_sup",
+      "file": "Analysis/Seminorm.lean",
+      "preview": "lemma bound_of_shell_sup (p : \u03b9 \u2192 Seminorm \ud835\udd5c E) (s : Finset \u03b9)     (q : Seminorm \ud835\udd5c E) {\u03b5 : \u211d} {C : \u211d\u22650} (\u03b5_pos : 0 < \u03b5) {c : \ud835\udd5c} (hc : 1 < \u2016c\u2016)     (hf : \u2200 x, (\u2200 i \u2208 s, p i x < \u03b5) \u2192 \u2200 j \u2208 s, \u03b5 / \u2016c\u2016 \u2264 "
+    },
+    {
+      "name": "rescale_to_shell_semi_normed_zpow",
+      "file": "Analysis/Seminorm.lean",
+      "preview": "lemma rescale_to_shell_semi_normed_zpow {c : \ud835\udd5c} (hc : 1 < \u2016c\u2016) {\u03b5 : \u211d} (\u03b5pos : 0 < \u03b5) {x : E}     (hx : \u2016x\u2016 \u2260 0) :     \u2203 n : \u2124, c ^ n \u2260 0 \u2227 \u2016c ^ n \u2022 x\u2016 < \u03b5 \u2227 (\u03b5 / \u2016c\u2016 \u2264 \u2016c ^ n \u2022 x\u2016) \u2227       (\u2016c ^ n\u2016\u207b\u00b9"
+    },
+    {
+      "name": "rescale_to_shell_semi_normed",
+      "file": "Analysis/Seminorm.lean",
+      "preview": "lemma rescale_to_shell_semi_normed {c : \ud835\udd5c} (hc : 1 < \u2016c\u2016) {\u03b5 : \u211d} (\u03b5pos : 0 < \u03b5)     {x : E} (hx : \u2016x\u2016 \u2260 0) :     \u2203 d : \ud835\udd5c, d \u2260 0 \u2227 \u2016d \u2022 x\u2016 < \u03b5 \u2227 (\u03b5 / \u2016c\u2016 \u2264 \u2016d \u2022 x\u2016) \u2227 (\u2016d\u2016\u207b\u00b9 \u2264 \u03b5\u207b\u00b9 * \u2016c\u2016 * \u2016x\u2016) :=   (n"
+    },
+    {
+      "name": "Nat",
+      "file": "Analysis/Normed/Ring/Basic.lean",
+      "preview": "theorem Nat.norm_cast_le : \u2200 n : \u2115, \u2016(n : \u03b1)\u2016 \u2264 n * \u2016(1 : \u03b1)\u2016   | 0 => by simp   | n + 1 => by     rw [n.cast_succ, n.cast_succ, add_mul, one_mul]     exact norm_add_le_of_le (Nat.norm_cast_le n) le_r"
+    },
+    {
+      "name": "LinearMap",
+      "file": "Analysis/Normed/Module/RCLike/Basic.lean",
+      "preview": "theorem LinearMap.bound_of_ball_bound' {r : \u211d} (r_pos : 0 < r) (c : \u211d) (f : E \u2192\u2097[\ud835\udd5c] \ud835\udd5c)     (h : \u2200 z \u2208 closedBall (0 : E) r, \u2016f z\u2016 \u2264 c) (z : E) : \u2016f z\u2016 \u2264 c / r * \u2016z\u2016 :=   f.bound_of_sphere_bound r_pos "
+    },
+    {
+      "name": "norm_kernel_le",
+      "file": "Analysis/InnerProductSpace/Reproducing.lean",
+      "preview": "lemma norm_kernel_le (x y) : \u2016kernel H x y\u2016 \u2264 \u221a\u2016kernel H x x\u2016 * \u221a\u2016kernel H y y\u2016 := by   grw [kernel_apply, opNorm_comp_le]   simp [norm_kerFun_eq_sqrt_norm_kernel]"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "contract_id": "tick668_level503_no_reuse_collision_free_incidence_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "carry incidentEventCollisionFree directly on Level502",
+      "counterfactual_action": "derive collision-free incidence from displayed noRepeatedDescendantCharging via an explicit theorem",
+      "externality_hypotheses": {
+        "negative": "still requires the no-reuse-to-collision implication as an analytic theorem field",
+        "positive": "removes the collision-free socket and leaves bounded incident existence as the main selector theorem"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex:RD"
+      ]
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.05289999999999999,
+  "mean_log_score": -0.2613647641344075,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "dc3a759cb99c8e91dec13cebecaec071474de235e7e2badc18ca9d6b7feb6cd9",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level503_no_reuse_collision_pencil.md",
+    "changed_by_forecast_ids": [
+      "codex:RD"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "lake_build_pass",
+    "contract_id": "tick668_level503_no_reuse_collision_free_incidence_source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": "no warm forecaster was emitted for this local meso contract; RD forecast predates resolution and strict gate/workbench/Lake evidence decides the source result",
+    "ordering_override_no_independent_forecaster": "no warm forecaster was emitted for this local meso contract; RD forecast predates resolution and strict gate/workbench/Lake evidence decides the source result",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Positive Level503 result: collision-free incidence is derived from displayed noRepeatedDescendantCharging via an explicit theorem and packaged into Level502; strict receipt, workbench, and Lake build passed.",
+    "resolved_at": "2026-05-27T05:01:15Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T05:01:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex:RD",
+      "brier": 0.05289999999999999,
+      "cost_error_agent_minutes": 21.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2613647641344075,
+      "p_buy_yes_max": 0.69,
+      "p_dependency_issue": 0.1,
+      "p_needs_new_lemma": 0.2,
+      "p_regression": 0.08,
+      "p_sell_yes_min": 0.85,
+      "p_success": 0.77,
+      "predicted_brier_hi": 0.17,
+      "predicted_brier_lo": 0.06,
+      "predicted_self_error_ratio": 0.16,
+      "success_bool": true,
+      "tail_downside_worry": 16.0,
+      "tail_upside_surprise": 10.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T05:00:09Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T05:00:26Z",
+        "resolved_at": "2026-05-27T05:01:15Z"
+      },
+      "verbalized_confidence": 0.77
+    }
+  ]
+}

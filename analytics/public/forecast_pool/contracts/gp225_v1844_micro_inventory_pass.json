@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1844_micro_inventory_pass.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1844_micro_inventory_pass.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1844_micro_inventory_pass",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1844_micro_inventory_pass.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1844_micro_inventory_pass.json"
+  },
+  "budget_agent_minutes": 5.0,
+  "contract_id": "gp225_v1844_micro_inventory_pass",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-13T15:15:52Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "single v18.44 saved-artifact script run",
+  "information_value": 0.5,
+  "layer": "micro",
+  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1844_proof_delta_label_source_inventory.json metrics.",
+  "question": "Will v18.44, using saved artifacts only, pass the proof-delta label source inventory gate: >=50 natural/replayable before-action-after or prefix-state rows, >=20 rows not saturated by deterministic/BM25/action-sweep baselines, and zero unquarantined false accepts?",
+  "risk_penalty": 0.4,
+  "success_threshold": "natural_or_replayable_rows>=50 AND before_action_after_or_prefix_rows>=50 AND unsaturated_or_not_deterministically_absorbed_rows>=20 AND unquarantined_false_accepts=0 AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_proof_delta_inventory_gate",
+  "value_if_success": 1.0,
+  "void_conditions": "Void only if source JSON artifacts are absent before v18.44 runs."
+}

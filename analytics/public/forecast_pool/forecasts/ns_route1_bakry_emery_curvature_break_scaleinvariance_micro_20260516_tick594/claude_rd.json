@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594",
+  "contract_question": "PATTERN-027 alien recast NEVER tried + specifically immune to the conformally-scale-invariant\u21d2borderline mechanism that killed all 10 recurrences: recast the perennial scale-critical atom via Bakry-Emery curvature-dimension CD(rho,infty) / hypocoercivity \u2014 a curvature lower bound rho>0 BREAKS scale-invariance and yields an EXPONENTIAL spectral gap (an exponent, NOT a borderline log). Does the NS vorticity-magnitude / ground-state OU operator admit a strict positive Bakry-Emery curvature (or a hypocoercive Lyapunov/Villani-Dolbeault-Mouhot structure) on the inherited-bad cascade giving the strict sub-scaling r^-eps gain, or does NS provably have NO positive CD(rho,infty) (rho<=0, curvature catch) \u21d2 11th recurrence?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T16:05:28Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.85,
+  "p_regression": 0.02,
+  "p_success": 0.13,
+  "rationale_short": "Honest RD conditional odds: Bakry-Emery curvature is the RIGHT object class (genuinely NOT conformally scale-invariant \u2014 a CD(rho,infty) rho>0 gives an exponential/exponent gap, immune to the borderline mechanism that killed 10 prior recurrences) \u21d2 materially higher than the 0.06 I gave scale-invariant L_summable. BUT strong prior NS has no positive Bakry-Emery/Ricci lower bound (the drift u\u00b7\u2207 is critical, curvature likely \u22640/scale-degenerate) \u21d2 ~0.13 genuine escape. Effort ~35min one generative-diversity-triad round.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,51 @@
+{
+  "recomputed": [
+    {
+      "arc": "galois_theory",
+      "n_mappings": 8,
+      "by_confidence": {
+        "high": 4,
+        "medium": 1,
+        "low": 0,
+        "unmapped": 3
+      },
+      "high_med_coverage_pct": 62.5,
+      "unmapped_pct": 37.5,
+      "pass_70_30": false,
+      "n_distinct_ops": 1
+    },
+    {
+      "arc": "godel_incompleteness",
+      "n_mappings": 9,
+      "by_confidence": {
+        "high": 2,
+        "medium": 1,
+        "low": 0,
+        "unmapped": 6
+      },
+      "high_med_coverage_pct": 33.33333333333333,
+      "unmapped_pct": 66.66666666666666,
+      "pass_70_30": false,
+      "n_distinct_ops": 2
+    },
+    {
+      "arc": "turing_universal_machine",
+      "n_mappings": 8,
+      "by_confidence": {
+        "high": 1,
+        "medium": 2,
+        "low": 0,
+        "unmapped": 5
+      },
+      "high_med_coverage_pct": 37.5,
+      "unmapped_pct": 62.5,
+      "pass_70_30": false,
+      "n_distinct_ops": 3
+    }
+  ],
+  "verdict": "FAIL \u2014 0/3 held-out arcs pass; vocabulary in-room or insufficient.",
+  "mean_h_m_coverage": 44.444444444444436,
+  "mean_unmapped": 55.55555555555555,
+  "n_pass": 0,
+  "n_total": 3
+}

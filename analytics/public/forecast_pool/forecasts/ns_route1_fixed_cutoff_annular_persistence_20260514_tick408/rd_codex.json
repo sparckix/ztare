@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "run_or_continue",
+  "agent_id": "rd_codex",
+  "contract_id": "ns_route1_fixed_cutoff_annular_persistence_20260514_tick408",
+  "contract_question": "Can this tick produce a math-first N1 fixed-cutoff annular packet-energy persistence proof attempt plus a compiled Lean source/guard refinement, without claiming full route-1 or upstream closure?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "annular_packet_not_same_carrier": 0.23,
+    "cutoff_commutator_unrouted": 0.18,
+    "lean_surface_wrapper_only": 0.15,
+    "persistence_trace_too_broad": 0.34,
+    "schedule_budget_distraction": 0.1
+  },
+  "forecast_externality_tags": [
+    "gp-233:positive:n1-proof-surface",
+    "gowers-first-dag"
+  ],
+  "forecasted_at": "2026-05-14T19:26:21Z",
+  "p_dependency_issue": 0.31,
+  "p_needs_new_lemma": 0.43,
+  "p_regression": 0.04,
+  "p_success": 0.57,
+  "rationale_short": "N1 has a plausible localized frequency-energy route, but pointwise tailSquare persistence may need an explicit trace/average hypothesis and same-carrier packet lock.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "persistence_trace_too_broad",
+    "cutoff_commutator_unrouted"
+  ]
+}

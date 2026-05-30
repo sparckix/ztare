@@ -1,0 +1,33 @@
+{
+  "contract_id": "ns_route1_v1732_gowers_eigenq_micro",
+  "mean_brier": 0.02560000000000001,
+  "mean_log_score": -0.1743533871447778,
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "artifact_hash": "61e7d86f3cbaff0fc08b18a186c574bff16d31a828de00977d1dba531ed767ee",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/external_prover/questions/eigq_2026_05_13_GPT55Pro_route1_tail_visibility_strict_subratio.md",
+    "compile_status": "n/a",
+    "contract_id": "ns_route1_v1732_gowers_eigenq_micro",
+    "error_type": null,
+    "goal_delta": 0,
+    "resolution_note": "Rewrote the GPT-5.5 eigenquestion in Gowers style: known route, inefficient strict-budget oracle, request for a replacement PDE object or obstruction, grounded in v17.30/v17.31 evidence.",
+    "resolved_at": "2026-05-13T18:32:25Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T18:32:28Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "codex_rd_ns_route1_gowers_prompt",
+      "brier": 0.02560000000000001,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "ns_live_scalar_hinge",
+      "expected_cost_agent_minutes": 6.0,
+      "log_score": -0.1743533871447778,
+      "p_success": 0.84,
+      "success_bool": true
+    }
+  ]
+}

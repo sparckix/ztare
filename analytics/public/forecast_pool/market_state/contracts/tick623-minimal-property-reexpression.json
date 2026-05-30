@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T01:51:54Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": 0.3726749630729934,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.7901749630729934,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick623-minimal-property-reexpression/claude_rd.json",
+        "forecasted_at": "2026-05-17T01:51:54Z",
+        "p_success": 0.8,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick623-minimal-property-reexpression/codex.json",
+        "forecasted_at": "2026-05-17T01:51:54Z",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick623-minimal-property-reexpression.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick623-minimal-property-reexpression.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick623-minimal-property-reexpression.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick623-minimal-property-reexpression.json",
+    "score": "analytics/public/forecast_pool/scores/tick623-minimal-property-reexpression.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T01:51:25Z",
+    "created_by": "claude:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "manual_rd",
+    "question": "tick623: is the minimal-property characterization (Clay-sufficient mechanism \u27fa a scale-critical positive-definite a-priori-monotone/conserved quantity) correctly self-assessed as a faithful RE-EXPRESSION of the open problem (Clay-equivalent), NOT a reduction/progress?",
+    "success_threshold": "the honest non-reductive self-label is correct iff the characterized object is provably Clay-equivalent (no strictly-easier sub-problem isolated); success = the anti-laundering self-assessment survives an independent adversary trying to argue it IS a reduction",
+    "task_type": "ns_out_of_route1_tick"
+  },
+  "contract_id": "tick623-minimal-property-reexpression",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick623-minimal-property-reexpression/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T01:51:54Z",
+        "p_success": 0.8,
+        "rationale_short": "a scale-critical positive-definite a-priori monotone \u2248 the Clay solution itself; taxonomy exhaustion re-expresses, isolates no easier sub-problem; honest non-reductive label correct (tick582 anti-laundering discipline); codex concurs",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick623-minimal-property-reexpression/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T01:51:54Z",
+        "p_success": 0.78,
+        "rationale_short": "codex adversary: no strictly-easier sub-problem isolated; non-reductive self-label correct (faithful Clay-equivalent re-expression)",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T01:51:54Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.3726749630729934,
+      "forecast_spread": 0.02,
+      "p_success": 0.7901749630729934,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.1858
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7901749630729934,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.04419999999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:49Z"
+  }
+}

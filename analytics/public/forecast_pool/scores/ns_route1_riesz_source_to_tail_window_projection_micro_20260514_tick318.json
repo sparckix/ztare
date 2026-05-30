@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318",
+  "mean_brier": 0.09305000000000002,
+  "mean_log_score": -0.3638693126647823,
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "artifact_hash": "d028966c9f6091457c812c1aa7018324f56655e1311592fab722170e763e4576",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "lake env lean pass; lake build pass",
+    "contract_id": "ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318",
+    "error_type": "none",
+    "goal_delta": 3,
+    "resolution_note": "success=true. Added FreshFrequencyRecoveredRieszTailWindowProjectionSource, Route1PressureHessianTailWindowProjectionStation.ofRecoveredRieszTailWindow, and recoveredRiesz_tailWindowCarrier_eq. This answers the history-overlap concern by feeding the new lower-bound tail-window station from old recovered-Riesz machinery without treating upper pressure-excess control as visibility. Forecasts were dispatched before edit but filed after build; use calibration with timing caveat.",
+    "resolved_at": "2026-05-14T00:35:32Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T00:35:37Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "Euler",
+      "brier": 0.09610000000000003,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 32.0,
+      "log_score": -0.37106368139083207,
+      "p_success": 0.69,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:31:41Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:35:17Z",
+        "resolved_at": "2026-05-14T00:35:32Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "Gibbs",
+      "brier": 0.09000000000000002,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 24.0,
+      "log_score": -0.35667494393873245,
+      "p_success": 0.7,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:31:41Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:35:17Z",
+        "resolved_at": "2026-05-14T00:35:32Z"
+      }
+    }
+  ]
+}

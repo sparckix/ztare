@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick633-randomdata-as-mechanism-not-deterministic",
+  "contract_question": "tick633 (fork-2, genuinely-DISTINCT non-deterministic probe): does random-data/measure-valued probabilistic-smoothing (Burq-Tzvetkov/Nahmod-type a.s. global regularity for randomized supercritical NS data) constitute a genuinely-new MECHANISM transportable to the DETERMINISTIC critical a-priori (Clay, \u2200-data), or is a.s.\u2260\u2200 the honest structural wall \u2014 the probabilistic gain (independence/Wiener-chaos cancellation in the random Fourier series) being by construction UNAVAILABLE for the worst-case deterministic datum (which lies in the measure-zero complement the method discards)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T12:04:28Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.82,
+  "rationale_short": "threshold-(b) met: genuinely-distinct (codex+amnesia-clean, NOT a recurrence unlike 631/632) AND structurally non-transportable (a.s.\u2260\u2200; gain randomization-intrinsic). caveat folded (exceptional set MAY contain bad data, not provably IS blowup set). honest distinct-probe negative, non-laundered",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

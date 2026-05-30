@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T04:09:41Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 81.0,
+    "expected_value": -18.316312798108328,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.365,
+    "p_needs_new_lemma": 0.515,
+    "p_regression": 0.105,
+    "p_success": 0.5753778972258832,
+    "participants": [
+      {
+        "agent_id": "herschel_skeptic_tick345",
+        "domain": "ns_route1_pde",
+        "p_success": 0.54,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "hooke_forecast_tick345",
+        "domain": "ns_route1_pde",
+        "p_success": 0.61,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "receipt_object_too_weak",
+        "p": 0.16
+      },
+      {
+        "mode": "boundary_receipt_has_only_upper_charge_bound",
+        "p": 0.14
+      },
+      {
+        "mode": "transport_boundary_split_restates_charge_sum",
+        "p": 0.135
+      },
+      {
+        "mode": "transport_source_not_aligned_to_normalized_part",
+        "p": 0.13
+      },
+      {
+        "mode": "guard_compiles_but_no_new_pde_content",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 70.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T04:08:56Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14 current tick",
+    "layer": "micro",
+    "objective_resolver": "success iff lake env lean on ns_route1_fresh_frequency_coercivity_adapter.lean and lake build ZtareProofs.ns_route1_fresh_frequency_coercivity_adapter pass, touched-file sorry/admit scan is clean, and artifact includes named transport/boundary undercharge source or guard tied to existing FreshFrequencyRouteFluxTransportReceiptSource and FreshFrequencyTentBoundaryTruncationReceipt",
+    "question": "Within the current tick, can we add a compile-checked Lean bridge/guard that lowers normalized shard-C transport/boundary undercharge into existing route-flux and tent-boundary receipt objects, with no new sorry/admit and no final-carrier magnitude input?",
+    "success_threshold": "compiled Lean source plus verified build",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:herschel_skeptic_tick345",
+        "raw_agent_ids": [
+          "herschel_skeptic_tick345"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick345",
+        "raw_agent_ids": [
+          "hooke_forecast_tick345"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "herschel_skeptic_tick345",
+      "hooke_forecast_tick345"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "herschel_skeptic_tick345",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345/herschel_skeptic_tick345.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 88.0,
+        "forecasted_at": "2026-05-14T04:09:08Z",
+        "p_success": 0.54,
+        "rationale_short": "Boundary and transport receipts currently bound charges above, while the normalized split needs payment from parts into charges; the tick is useful only if it names the missing lower comparison or undercharge no-go.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick345",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345/hooke_forecast_tick345.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 74.0,
+        "forecasted_at": "2026-05-14T04:09:08Z",
+        "p_success": 0.61,
+        "rationale_short": "The declarations exist, but the useful version must tie normalized transport/boundary parts to route-flux and tent-truncation receipts without simply assuming their charge inequalities again.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 36.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T04:11:41Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.07,
+      "p_success": 0.5753778972258832,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "receipt_object_too_weak",
+        "p": 0.16
+      },
+      "voi_proxy": 1.0343
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 81.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5753778972258832,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "receipt_object_too_weak",
+        "p": 0.16
+      },
+      {
+        "mode": "boundary_receipt_has_only_upper_charge_bound",
+        "p": 0.14
+      },
+      {
+        "mode": "transport_boundary_split_restates_charge_sum",
+        "p": 0.135
+      },
+      {
+        "mode": "transport_source_not_aligned_to_normalized_part",
+        "p": 0.13
+      },
+      {
+        "mode": "guard_compiles_but_no_new_pde_content",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.18184999999999998,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T04:11:47Z"
+  }
+}

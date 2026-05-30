@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_readonly_gp230",
+  "contract_id": "gp225_v1710_bm25_action_sweep_baseline",
+  "contract_question": "Will v17.10 show that a strong BM25/accessibility + deterministic action-sweep baseline closes at least 20/23 natural replay rows or comes within 2x of GP-225 mean failed probes, keeping GNN blocked?",
+  "domain": "gp225_baseline",
+  "expected_cost_agent_minutes": 35.0,
+  "failure_mode_distribution": {
+    "baseline_action_sweep_underimplements_site_aware_branch_insertion": 0.38,
+    "bm25_accessibility_retrieval_misses_required_helper_or_local_source": 0.18,
+    "gap_templates_not_included_in_baseline_policy": 0.1,
+    "lean_environment_or_compile_driver_failure": 0.12,
+    "metric_schema_or_ratio_resolver_mismatch": 0.14,
+    "row_set_drift_or_artifact_path_mismatch": 0.08
+  },
+  "forecasted_at": "2026-05-12T14:48:06Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.16,
+  "p_success": 0.78,
+  "rationale_short": "v1709 shows deterministic saturation; v1704 alone reached 20/23 if strong baseline implements site-aware branch/action sweep faithfully. Main risk is baseline implementation scope, not GNN need.",
+  "read_only_attestation": true
+}

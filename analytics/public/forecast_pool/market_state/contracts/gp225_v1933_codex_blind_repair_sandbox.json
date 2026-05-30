@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:25:24Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 18.0,
+    "expected_value": -2.6518405023146814,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.12,
+    "p_needs_new_lemma": 0.29,
+    "p_regression": 0.065,
+    "p_success": 0.39847617510901084,
+    "participants": [
+      {
+        "agent_id": "pascal_adversarial_forecaster",
+        "domain": "GP-225",
+        "p_success": 0.34,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "peirce_readonly_forecaster",
+        "domain": "GP-225",
+        "p_success": 0.46,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "strict_or_pull_forward_rows_below_2",
+        "p": 0.18
+      },
+      {
+        "mode": "blind_candidates_too_generic_after_known_success_rows_excluded",
+        "p": 0.16
+      },
+      {
+        "mode": "candidate_tactics_compile_but_do_not_match_gold_state_or_close",
+        "p": 0.105
+      },
+      {
+        "mode": "needs_specific_named_mathlib_rewrites_or_extensionality_lemmas",
+        "p": 0.09
+      },
+      {
+        "mode": "overclosure_counts_as_success_but_is_weak_self_licking_signal",
+        "p": 0.085
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1933_codex_blind_repair_sandbox.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1933_codex_blind_repair_sandbox.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1933_codex_blind_repair_sandbox.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1933_codex_blind_repair_sandbox.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1933_codex_blind_repair_sandbox.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:22:42Z",
+    "created_by": "codex_rd",
+    "horizon": "same-session bounded repair sandbox",
+    "layer": "micro",
+    "objective_resolver": "Resolve from v1933_codex_blind_repair_sandbox artifact metrics.",
+    "question": "Will a Codex-blind repair sandbox over uncontaminated v19.16 repair-canary rows produce at least two Lean-verified strict-target or pull-forward repair rows with zero harmful compiled mismatches?",
+    "success_threshold": "attempted_rows>=4 AND strict_or_pull_forward_rows>=2 AND harmful_compiled_mismatch_rows=0 AND gold_tactic_used_for_candidate_generation=false AND training_now=false AND gnn_blocked=true",
+    "task_type": "gp225_codex_blind_repair_sandbox"
+  },
+  "contract_id": "gp225_v1933_codex_blind_repair_sandbox",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:pascal_adversarial_forecaster",
+        "raw_agent_ids": [
+          "pascal_adversarial_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:peirce_readonly_forecaster",
+        "raw_agent_ids": [
+          "peirce_readonly_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "pascal_adversarial_forecaster",
+      "peirce_readonly_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "pascal_adversarial_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1933_codex_blind_repair_sandbox/pascal_adversarial_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-13T23:25:18Z",
+        "p_success": 0.34,
+        "rationale_short": "Five uncontaminated candidate rows should attempt, but the threshold is vulnerable to overclosure/self-licking and may need named Mathlib rewrites rather than generic Codex tactics.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "peirce_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1933_codex_blind_repair_sandbox/peirce_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-13T23:25:18Z",
+        "p_success": 0.46,
+        "rationale_short": "v19.32 makes the lane credible because 2/9 rows become strict-or-pull-forward with zero harmful mismatches after split, but v19.33 removes the known pull-forward row and relies on blind tactics over harder uncontaminated rows.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:26:42Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.12,
+      "p_success": 0.39847617510901084,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "strict_or_pull_forward_rows_below_2",
+        "p": 0.18
+      },
+      "voi_proxy": 1.5597
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 18.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.39847617510901084,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "strict_or_pull_forward_rows_below_2",
+        "p": 0.18
+      },
+      {
+        "mode": "blind_candidates_too_generic_after_known_success_rows_excluded",
+        "p": 0.16
+      },
+      {
+        "mode": "candidate_tactics_compile_but_do_not_match_gold_state_or_close",
+        "p": 0.105
+      },
+      {
+        "mode": "needs_specific_named_mathlib_rewrites_or_extensionality_lemmas",
+        "p": 0.09
+      },
+      {
+        "mode": "overclosure_counts_as_success_but_is_weak_self_licking_signal",
+        "p": 0.085
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.16360000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:26:47Z"
+  }
+}

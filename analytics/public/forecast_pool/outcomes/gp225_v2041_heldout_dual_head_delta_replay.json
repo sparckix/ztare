@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 9.0,
+  "artifact_hash": "f443b4aaea76becf4784367828b99bbf924172883b6a29f10acb1aaaccb5476c",
+  "artifact_path": "analytics/public/leanmill/results/v2041_heldout_dual_head_delta_replay_market_abort.json",
+  "changed_by_forecast_ids": [
+    "Popper",
+    "Lakatos"
+  ],
+  "compile_status": "static_market_abort",
+  "contract_id": "gp225_v2041_heldout_dual_head_delta_replay",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "no_run_market_abort",
+  "externality_tags": [
+    "replay_budget_guard",
+    "market_abort",
+    "candidate_content_bottleneck"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "unobserved_replay_success_probability"
+  ],
+  "new_next_action": "abort replay and seek new candidate content source",
+  "old_next_action": "run bounded heldout dual-head replay",
+  "preconditioner_effect": "prevented replay spend on rank-policy-only heldout arms",
+  "preconditioner_source": "analytics/public/forecast_pool/aggregates/gp225_v2041_heldout_dual_head_delta_replay.json",
+  "realized_failure_mode_ids": [
+    "zero_compile_like_v2031",
+    "auxiliary_conditioning_not_transferable"
+  ],
+  "resolution_note": "Replay contract voided by pre-registered market abort: aggregate p_success=0.2642, EV=-0.3075, routing=audit_or_explore_only. No replay was run; v20.41 records static abort and redirects to candidate-content source discovery or a new external adapter.",
+  "resolved_at": "2026-05-14T17:13:43Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": true
+}

@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_v1732_gpt55_intake_gate_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_v1732_gpt55_intake_gate_micro.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_v1732_gpt55_intake_gate_micro",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_v1732_gpt55_intake_gate_micro.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_v1732_gpt55_intake_gate_micro.json"
+  },
+  "budget_agent_minutes": 10.0,
+  "contract_id": "ns_route1_v1732_gpt55_intake_gate_micro",
+  "cost_penalty": 0.2,
+  "created_at": "2026-05-13T18:33:08Z",
+  "created_by": "codex:RD",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "1h",
+  "information_value": 1.8,
+  "layer": "micro",
+  "objective_resolver": "Resolve success if an executable artifact exists, reads the rewritten eigenquestion and v17.30/v17.31 evidence, emits criteria for replacement-object/proof-skeleton/obstruction classes, and can evaluate a response path without Lean mutation.",
+  "question": "Will building a local GPT-5.5 response intake gate improve NS route-1 progress by making the returned answer immediately triageable for non-tautological PDE content?",
+  "risk_penalty": 0.3,
+  "success_threshold": "0.70",
+  "task_type": "local_gate_builder",
+  "value_if_success": 2.4,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_bakry_emery_curvature_break_scaleinvariance_micro_20260516_tick594",
+  "cost_penalty": 0.4,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T16:05:28Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_bakry_emery_curvature_dimension_20260516",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0147,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 4,
+        "token_jaccard": 0.0833
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "7d",
+  "information_value": 7.5,
+  "layer": "micro",
+  "objective_resolver": "Generative-diversity triad + adversarial kill (closure-adjacent): does the drift-diffusion (\u2202t+u\u00b7\u2207\u2212\u03bd\u0394)q=Vq admit a Bakry-Emery \u03932 \u2265 \u03c1\u0393 with \u03c1>0 (or a hypocoercive H1-Lyapunov gap a la Villani/DMS) that is NOT conformally scale-invariant \u21d2 exponent gain \u21d2 closes; OR is the Bakry-Emery curvature of the NS-rescaled OU+drift operator \u22640 / scale-degenerate (the likely catch \u2014 NS has no Ricci-type lower bound) \u21d2 reduces to the atom (11th). success iff a strict-positive-curvature/hypocoercive exponent-gain survives the kill; 0.5 partial; fail iff rho\u22640/scale-degenerate \u21d2 11th recurrence.",
+  "question": "PATTERN-027 alien recast NEVER tried + specifically immune to the conformally-scale-invariant\u21d2borderline mechanism that killed all 10 recurrences: recast the perennial scale-critical atom via Bakry-Emery curvature-dimension CD(rho,infty) / hypocoercivity \u2014 a curvature lower bound rho>0 BREAKS scale-invariance and yields an EXPONENTIAL spectral gap (an exponent, NOT a borderline log). Does the NS vorticity-magnitude / ground-state OU operator admit a strict positive Bakry-Emery curvature (or a hypocoercive Lyapunov/Villani-Dolbeault-Mouhot structure) on the inherited-bad cascade giving the strict sub-scaling r^-eps gain, or does NS provably have NO positive CD(rho,infty) (rho<=0, curvature catch) \u21d2 11th recurrence?",
+  "risk_penalty": 0.75,
+  "success_threshold": "success iff strict positive Bakry-Emery/hypocoercive exponent-gain survives adversarial kill; 0.5 partial-new-residual; fail iff rho<=0/scale-degenerate (11th recurrence)",
+  "task_type": "ns_clay_bakry_emery_curvature_dimension_20260516",
+  "value_if_success": 9.5,
+  "void_conditions": "memory perennial atom refactored"
+}

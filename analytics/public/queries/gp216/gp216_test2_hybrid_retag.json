@@ -1,0 +1,23 @@
+{
+  "experiment": "gp216_test2_hybrid_retag",
+  "hybrid_arcs": [
+    "erdos_discrepancy",
+    "furstenberg_ergodic_szemeredi"
+  ],
+  "original_2x2": {
+    "tb_on_tb": 58.1,
+    "tb_on_ps": 20.7,
+    "ps_on_tb": 19.1,
+    "ps_on_ps": 65.9,
+    "avg_gap": 42.10000000000001
+  },
+  "hybrid_excluded_2x2": {
+    "tb_on_tb": 58.125,
+    "tb_on_ps": 18.518518518518515,
+    "ps_on_tb": 19.116161616161616,
+    "ps_on_ps": 62.40740740740741,
+    "avg_gap": 41.44886363636364
+  },
+  "delta_pp": -0.6511363636363683,
+  "verdict": "UNEXPECTED \u2014 gap NARROWS by 0.7pp when hybrids excluded. The hybrid arcs were not blurring the distinction; they were sharpening it. Investigate."
+}

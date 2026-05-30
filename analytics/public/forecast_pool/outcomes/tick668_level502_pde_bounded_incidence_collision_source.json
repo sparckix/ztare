@@ -1,0 +1,33 @@
+{
+  "actual_cost_agent_minutes": 32.0,
+  "artifact_hash": "311a79d99af4780fc56d0eef059694b9f4a4652325523d9d51f19b20c98b3777",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level502_pde_bounded_incidence_collision_pencil.md",
+  "changed_by_forecast_ids": [
+    "codex:RD"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": false,
+  "compile_status": "lake_build_pass",
+  "contract_id": "tick668_level502_pde_bounded_incidence_collision_source",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": false,
+  "independent_forecaster_bets": [],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": "no warm forecaster was emitted for this local meso contract; RD forecast predates resolution and strict gate/workbench/Lake evidence decides the source result",
+  "ordering_override_no_independent_forecaster": "no warm forecaster was emitted for this local meso contract; RD forecast predates resolution and strict gate/workbench/Lake evidence decides the source result",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Positive Level502 result: L3A PDE-geometry source for bounded incident existence plus collision-free incidence formalized and composed through Level501 into Level500; strict receipt, workbench, and Lake build passed.",
+  "resolved_at": "2026-05-27T04:54:01Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

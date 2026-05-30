@@ -1,0 +1,195 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-16T21:24:08Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 25.0,
+    "expected_value": 0.08819606912147275,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.14,
+    "p_needs_new_lemma": 0.395,
+    "p_regression": 0.045,
+    "p_success": 0.38319606912147275,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari/claude_rd.json",
+        "forecasted_at": "2026-05-16T21:21:40Z",
+        "p_success": 0.55,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari/codex.json",
+        "forecasted_at": "2026-05-16T21:23:45Z",
+        "p_success": 0.24,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "vacuous_or_pessimistic_without_derivation",
+        "p": 0.165
+      },
+      {
+        "mode": "recast_of_killed_move_as_new_route",
+        "p": 0.145
+      },
+      {
+        "mode": "no_structurally_distinct_candidate_found",
+        "p": 0.12
+      },
+      {
+        "mode": "adversary_check_slips_provenance",
+        "p": 0.07
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+    "score": "analytics/public/forecast_pool/scores/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T21:21:40Z",
+    "created_by": "claude_rd",
+    "horizon": "1 tick",
+    "layer": "micro",
+    "objective_resolver": "cold_agent_structural_reframe_or_derived_route_invariance_adversary_checked",
+    "question": "tick607 carve-out-3: a COLD de-anchored agent given ONLY the now-exhaustively-mapped residual (16 recurrences, route-invariant supercritical-enstrophy atom, killed set enumerated, the everything-dimensionless-or-secretly-TypeI invariant, the generating-function insight) plus the open ask: is there ANY structurally-absent move outside the killed set, OR is route-1 provably terminal \u2014 and if terminal give the cleanest NEW route-invariance argument not a re-vocabularization. Success = the cold agent yields either a genuinely structurally-distinct candidate worth a disciplined tick, OR a NEW derived route-invariance argument; result then adversary-checked; no laundering, no pessimistic hand-wave. Fail = vacuous, OR a disguised recast of a killed move, OR pessimism without a new derivation.",
+    "success_threshold": "0.5",
+    "task_type": "ns_tick607_carveout3_cold_outside_view_sharpened_residual_20260516"
+  },
+  "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 20.0,
+        "forecasted_at": "2026-05-16T21:21:40Z",
+        "p_success": 0.55,
+        "rationale_short": "Cold-outside-view has twice this session produced GPT-5.5-comparable structural reframes from the residual doc (scale-transfer operator; porosity). The residual is now far sharper/more-constrained, so P(genuinely-new structurally-distinct candidate) is lower than before but P(a NEW clean derived route-invariance argument) is high; either is contract-success. 0.55 = P(non-vacuous non-laundered non-pessimistic cold output adversary-checked).",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-16T21:23:45Z",
+        "p_success": 0.24,
+        "rationale_short": "The residual is already exhaustively mapped, so the main risk is circular recasting of killed moves rather than raw search. I price a modest chance of a genuinely new structural candidate or derived route-invariance argument, with high lemma demand and nontrivial dependency risk.",
+        "specific_failure_mode_ids": [
+          "vacuous_or_pessimistic_without_derivation",
+          "recast_of_killed_move_as_new_route",
+          "no_structurally_distinct_candidate_found",
+          "adversary_check_slips_provenance"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-16T21:24:08Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.31,
+      "p_success": 0.38319606912147275,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 0.5464
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 25.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.38319606912147275,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "vacuous_or_pessimistic_without_derivation",
+        "p": 0.165
+      },
+      {
+        "mode": "recast_of_killed_move_as_new_route",
+        "p": 0.145
+      },
+      {
+        "mode": "no_structurally_distinct_candidate_found",
+        "p": 0.12
+      },
+      {
+        "mode": "adversary_check_slips_provenance",
+        "p": 0.07
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.39005,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:46Z"
+  }
+}

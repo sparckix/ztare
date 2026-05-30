@@ -1,0 +1,53 @@
+{
+  "n_rows": 579,
+  "n_features": 377,
+  "cv_r2_mean": 0.3592002815880887,
+  "cv_r2_std": 0.03612243104041533,
+  "cv_mae_mean": 0.05626724259461301,
+  "cv_mae_std": 0.0033773967059157195,
+  "baseline_mae": 0.10244626104802217,
+  "mae_reduction_pct": 45.07633366117923,
+  "top_features": [
+    [
+      "p_success",
+      0.4785360479101864
+    ],
+    [
+      "question_len",
+      0.06064598542815146
+    ],
+    [
+      "agent_id_Church4",
+      0.05975281211362116
+    ],
+    [
+      "agent_id_Curry4",
+      0.041858437025251743
+    ],
+    [
+      "p_dep",
+      0.03819678258357619
+    ],
+    [
+      "domain_lean_replay_verification",
+      0.037827028494597244
+    ],
+    [
+      "domain_gp225_pre_gnn",
+      0.03751240455684759
+    ],
+    [
+      "agent_id_codex_rd_language_gate",
+      0.02380515101600698
+    ],
+    [
+      "domain_navier_stokes_route1",
+      0.020124513996781602
+    ],
+    [
+      "agent_id_codex_rd_tick361",
+      0.018041282420550253
+    ]
+  ],
+  "interpretation": "STRONG: features predict Brier substantially better than baseline; meta-classifier is a useful pre-resolution reliability signal"
+}

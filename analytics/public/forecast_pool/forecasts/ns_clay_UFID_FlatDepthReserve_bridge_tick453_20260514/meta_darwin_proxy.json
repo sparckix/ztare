@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship only if the FailureOfUFIDExtractsSilentFlatDefectProfile carrier is explicitly named as Prop-only (no inhabitant) and the finite-packing bound is honestly labeled as loose-list-length, not dyadic-sharp.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_clay_UFID_FlatDepthReserve_bridge_tick453_20260514",
+  "contract_question": "Can a UniformFlatInheritanceDepth structure + FlatDepthReserveLike.ofUFID bridge def + finite radius packing theorem be shipped in a new self-contained Lean file with omega/linarith-discharged verification (no Prop wrappers in the core inequalities, no sorry/admit)?",
+  "domain": "ns_clay_bridge_construction",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T03:30:00Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.05,
+  "p_success": 0.70,
+  "rationale_short": "Risk: bridge looks closure-ish to a casual handover reader because it produces FlatDepthReserveLike directly. Mitigation: scope guard listing the unproven upstream Prop, the abstract Nat depthBudget, the zero non-flat charges, and the loose vs. sharp packing bound must be front-and-center.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

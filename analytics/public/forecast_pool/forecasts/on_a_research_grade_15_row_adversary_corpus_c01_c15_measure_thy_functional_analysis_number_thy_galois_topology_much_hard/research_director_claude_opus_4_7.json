@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "on_a_research_grade_15_row_adversary_corpus_c01_c15_measure_thy_functional_analysis_number_thy_galois_topology_much_hard",
+  "contract_question": "On a RESEARCH-GRADE 15-row adversary corpus C01-C15 (measure thy/functional analysis/number thy/Galois/topology \u2014 much harder than textbook B), verified through the canonical pinned v4.29.0 sandbox, will genuine novel closures be >=5/15 with 0 false ratifications?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 70.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T20:11:18Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.3,
+  "rationale_short": "research-grade is MUCH harder than textbook B(45%); many C-rows need deep Mathlib API (legendreSym/padic/Brouwer/euler-mascheroni) provers often misname at v4.29.0 pin; expect 3-6 genuine, >=5 plausible but not favored; honest near-zero acceptable",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

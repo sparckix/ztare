@@ -1,0 +1,23 @@
+{
+  "agent_id": "Gibbs",
+  "contract_id": "ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318",
+  "contract_question": "Can this tick connect the existing recovered-Riesz/local-pressure source machinery to the new Route1PressureHessianTailWindowProjectionStation without claiming the older source upper-bound arc proves pressure visibility?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "GP233_row_scope_or_concurrency_issue": 0.08,
+    "constructor_requires_extra_explicit_props_not_present_in_local_CZ_source": 0.18,
+    "duplicate_surface_with_low_new_information": 0.08,
+    "missing_scalar_bridge_from_recovered_riesz_energy_to_pressureL2_radialGrade": 0.24,
+    "namespace_or_field_name_friction": 0.12,
+    "upper_control_smuggled_as_lower_visibility": 0.3
+  },
+  "forecasted_at": "2026-05-14T00:35:17Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.07,
+  "p_success": 0.7,
+  "rationale_short": "compile-passing connector plausible if framed as new source station with explicit tail-window projection fields, not as local-CZ inequalities implying visibility.",
+  "read_only_attestation": true
+}

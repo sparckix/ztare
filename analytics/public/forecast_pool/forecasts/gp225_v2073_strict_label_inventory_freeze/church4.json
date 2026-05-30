@@ -1,0 +1,23 @@
+{
+  "action_change_recommendation": "run_or_continue",
+  "agent_id": "Church4",
+  "contract_id": "gp225_v2073_strict_label_inventory_freeze",
+  "contract_question": "Will v20.73 produce an artifact-backed strict-label inventory freeze for the 15 current GP-225 labels, preserving source-safety/compile-invariant guards and keeping training blocked?",
+  "domain": "lean_gnn_harness",
+  "expected_cost_agent_minutes": 12.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "manifest_field_mismatch": 0.4516129032258065,
+    "quarantine_source_omitted": 0.3548387096774194,
+    "row_count_drift": 0.1935483870967742
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T19:20:25Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.03,
+  "p_success": 0.88,
+  "rationale_short": "This is a deterministic freeze from the current manifest and guard artifacts; risk is losing quarantine/compile-invariant context.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

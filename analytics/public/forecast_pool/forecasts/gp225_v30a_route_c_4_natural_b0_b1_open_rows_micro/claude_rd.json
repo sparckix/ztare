@@ -1,0 +1,23 @@
+{
+  "action_change_recommendation": "Run; per-row priors P(close): D02~0.7, D03~0.5, D04~0.6, E05~0.7; P(>=1) ~0.85 with correlation-adjustment",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v30a_route_c_4_natural_b0_b1_open_rows_micro",
+  "contract_question": "Will Route C (LLM-mediated proof composition) close \u22651 of 4 B0+B1-open natural rows (D02 triangle inequality, D03 n.choose 2 identity, D04 2*inner \u2264 norm^2+norm^2, E05 Finset sum_add_distrib) under strict v30 contract: no oracle proof lines, replay from scratch, 0 manual edits, machinery-OK per relaxed audit?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "all_4_rows_blocked_by_unification_or_typeclass": 0.2,
+    "compile_error_during_replay": 0.2,
+    "llm_paraphrases_gold_from_training": 0.6
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T15:33:08Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.2,
+  "p_regression": 0.05,
+  "p_success": 0.85,
+  "rationale_short": "D02 standard triangle, D04 polarization rearrangement, E05 sum dist all have well-known Mathlib idioms Claude can compose. D03 with Nat.choose 2 trickiest. P(\u22651) high.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

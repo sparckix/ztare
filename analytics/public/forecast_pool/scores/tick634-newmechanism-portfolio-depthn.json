@@ -1,0 +1,92 @@
+{
+  "contract_id": "tick634-newmechanism-portfolio-depthn",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.029000000000000015,
+  "mean_log_score": -0.18640216293430806,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick634-newmechanism-portfolio-depthn",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "SOUND (codex p=0.84). ONE tick, PORTFOLIO of 6 new-program mechanisms each DEPTH-N derived IN-THREAD (PATTERN-011 compliant: composed not orchestrated; ONE sanctioned codex adversarial-kill, not per-probe). Codex verified every Mi's named obstruction correct, no missed large-data critical a-priori survivor: M1 modified-energy/I-method\u21d2small-data-only (no NS dispersion); M2 Cauchy+ropelength\u21d2lower-bound/topology-not-NS-conserved=helicity-class; M4 self-similar/RG\u21d2tick592/599/600 recurrence; M5 kinetic-H-theorem\u21d2hydrodynamic limit=L\u00b2-energy subcritical; M6 Duchon-Robert\u21d2tick617 energy-level-covariant absorbed. M3 Caffarelli-Vasseur nonlocal-De-Giorgi = genuinely-distinct (it CLOSED critical SQG) and its 3D-NS failure is PRECISELY localized: vector \u03c9 has no max-principle and vortex stretching (\u03c9\u00b7\u2207)u destroys the L\u221e/BMO drift-closure CV requires \u2014 an accurate, named, literature-grounded obstruction (codex: 'more precise than a vague Clay restatement'), NOT a survivor route. Deliverable = the sharpest honest localization of WHERE the deterministic critical mechanism dies + a concrete forward target (quantify/deplete the vortex-stretching obstruction to a CV-type closure). NOT a closure, NOT pessimism, NOT inflated \u2014 real depth-n composition.",
+    "resolved_at": "2026-05-17T12:10:54Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:55Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "claude:RD",
+      "brier": 0.03240000000000002,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383832,
+      "p_success": 0.82,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T12:10:01Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T12:10:54Z",
+        "resolved_at": "2026-05-17T12:10:54Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "codex",
+      "brier": 0.02560000000000001,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.1743533871447778,
+      "p_success": 0.84,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T12:10:01Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T12:10:54Z",
+        "resolved_at": "2026-05-17T12:10:54Z"
+      }
+    }
+  ]
+}

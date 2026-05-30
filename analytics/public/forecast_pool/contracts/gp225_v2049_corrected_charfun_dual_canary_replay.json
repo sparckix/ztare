@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2049_corrected_charfun_dual_canary_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2049_corrected_charfun_dual_canary_replay.json"
+  },
+  "baseline_action": "Do not replay; keep building static wrappers.",
+  "budget_agent_minutes": 28.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2049_corrected_charfun_dual_canary_replay",
+  "cost_penalty": 0.018,
+  "counterfactual_action": "Run one-row corrected charFunDual canary replay.",
+  "created_at": "2026-05-14T17:42:58Z",
+  "created_by": "Codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1176,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_replay_gate",
+    "score": 0.2857,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2857,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1176,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1562,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1724,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1724,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1481,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may still fail from helper source-safety or instance mismatch"
+    ],
+    "positive": [
+      "tests whether corrected public-source contract can produce executable proof progress",
+      "calibrates historic target-shape audit"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.2,
+  "layer": "micro",
+  "objective_resolver": "Replay artifact reports attempted_candidate_rows >= 1, compiled_candidate_actions + verified_overclosure_pull_forward_actions + new_strict_same_target_rows >= 1, harmful_compiled_mismatch_actions = 0, train_gnn_now=false, gnn_blocked=true.",
+  "question": "If we replay the two corrected v20.48 charFunDual/L candidate templates for current_scale_0329, will at least one compile into strict, solver-closure, or auxiliary progress with harmful mismatches zero?",
+  "risk_penalty": 0.1,
+  "success_threshold": "one corrected charFunDual canary compiles/progresses with harmful mismatch zero",
+  "task_type": "pre_gnn_replay_gate",
+  "value_if_success": 0.72,
+  "void_conditions": "Void if corrected v20.48 source contract is modified before replay."
+}

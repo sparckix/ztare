@@ -1,0 +1,61 @@
+{
+  "sub_clusters": [
+    {
+      "sub_id": "cluster_6.1",
+      "n": 1,
+      "members": [
+        "5ch\u21925ch"
+      ],
+      "sub_move_name": "Definitional Kill Bifurcation",
+      "signature": "Splits a conflated obstruction package into a nontriviality bar isolating the internal definitional kill from a PDE-derived obligation, bridged by a transport-ratio theorem naming the exact disc.",
+      "object_created": "Lean file pair defining obstruction target and transport-ratio bridge theorem",
+      "stall_recognized_by": "undifferentiated definitional versus analytic obstruction conflation"
+    },
+    {
+      "sub_id": "cluster_6.2",
+      "n": 5,
+      "members": [
+        "5fv\u21925fw",
+        "5fx\u21925fx",
+        "5ga\u21925ga",
+        "5fu\u21925fu",
+        "5fy\u21925fy"
+      ],
+      "sub_move_name": "Interaction Class Bridge Instantiation",
+      "signature": "Each move creates a dedicated typed adapter structure that formally equates payoff/price fields to pre-declared ledger or chain entries for a specific interaction class (low-high, high-high, high-low, same-shell, continuation), rather than stratifying obligation fields abstractly.",
+      "object_created": "per-interaction-class Lean adapter structure with no-arbitrage theorem",
+      "stall_recognized_by": "informal interaction narrative lacking a typed bridge to named ledger fields"
+    },
+    {
+      "sub_id": "cluster_6.3",
+      "n": 6,
+      "members": [
+        "5gc\u21925gc",
+        "5fj\u21925fl",
+        "5fn\u21925fq",
+        "5ge\u21925ge",
+        "5fm\u21925fm",
+        "5gd\u21925gd"
+      ],
+      "sub_move_name": "Branch-Gate Certificate Scaffolding",
+      "signature": "Each move converts an open monolithic obligation into a named, independently checkable Lean skeleton by introducing either a gate predicate, a receipt interface, or a decomposed branch-killer certificate structure that routes analytic burden outside the formal core.",
+      "object_created": "Lean obligation skeleton with routing theorem",
+      "stall_recognized_by": "undischarged analytic PDE burden blocking formal closure"
+    },
+    {
+      "sub_id": "cluster_6.4",
+      "n": 5,
+      "members": [
+        "5da\u21925dd",
+        "5ci\u21925ct",
+        "5cu\u21925cz",
+        "5bq\u21925cg",
+        "5ft\u21925ft"
+      ],
+      "sub_move_name": "Typed Skeleton Decomposition",
+      "signature": "Each move converts a narrative or scalar analytic burden into a named, typed Lean definition skeleton that isolates exactly one unpaid proof obligation as a formal structure.",
+      "object_created": "named Lean obligation skeleton files with typed certificates and structured preconditions",
+      "stall_recognized_by": "proof burden left as informal narrative or untyped scalar shortcut"
+    }
+  ]
+}

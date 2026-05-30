@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level523_finite_cofinal_event_selector_source",
+  "contract_question": "Will Level523 construct the Level522 cofinal event selector source from a finite cofinal selector valued in Fin (supportLength - 1), with Lean/workbench/gate/tests passing?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 80.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "fin_projection_mismatch": 0.28,
+    "lake_build_regression": 0.18,
+    "lean_dependent_field_mismatch": 0.22,
+    "provenance_direction_gate_regression": 0.16,
+    "workbench_arg_gap": 0.16
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T08:40:31Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.72,
+  "rationale_short": "Level522 gives the target shape; Fin projection should compile cleanly, with residual risk in dependent field names, workbench wiring, and direction gate receipt.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

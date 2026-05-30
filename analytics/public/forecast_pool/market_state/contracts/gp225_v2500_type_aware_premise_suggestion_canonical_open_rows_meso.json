@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T02:30:16Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 40.0,
+    "expected_value": -0.3440001941908722,
+    "forecast_count": 3,
+    "forecast_history_count": 3,
+    "p_dependency_issue": 0.15,
+    "p_needs_new_lemma": 0.35000000000000003,
+    "p_regression": 0.05000000000000001,
+    "p_success": 0.10599980580912784,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso/claude.json",
+        "forecasted_at": "2026-05-15T02:30:15Z",
+        "p_success": 0.12,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso/franklin.json",
+        "forecasted_at": "2026-05-15T02:30:15Z",
+        "p_success": 0.09,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso/noether.json",
+        "forecasted_at": "2026-05-15T02:30:15Z",
+        "p_success": 0.11,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": [
+      {
+        "mode": "blind_retrieval_excludes_unique_closer",
+        "p": 0.12200073827980805
+      },
+      {
+        "mode": "indirect_simp_leakage",
+        "p": 0.11231884057971014
+      },
+      {
+        "mode": "indirect_simp_leakage_dominates",
+        "p": 0.08730158730158731
+      },
+      {
+        "mode": "type_similarity_misranks_gold_outside_topk",
+        "p": 0.08152173913043478
+      },
+      {
+        "mode": "no_candidate_closes_literal",
+        "p": 0.07246376811594203
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T02:14:52Z",
+    "created_by": "codex:RD",
+    "horizon": "1-2 ticks",
+    "layer": "meso",
+    "objective_resolver": "v25 audit: each closure on an OPEN row must pass v24.01-style indirect-simp-set-leakage audit + definitional-triviality check (rfl/tauto closure pattern) AND must not be a direct match to the gold lemma name before counting toward threshold.",
+    "question": "Will type-aware Mathlib-dep-graph-grounded premise suggestion (top-k by type-similarity over the 122867-decl graph) on 2-3 canonical-train OPEN rows surface at least 1 moat-grade closure (NOT direct gold-name match, NOT indirect-simp-set leakage, NOT definitional triviality)?",
+    "success_threshold": "at-least-one-moat-grade-closure-on-OPEN-rows-after-type-aware-premise-suggestion-and-anti-laundering",
+    "task_type": "premise_selection_calibration"
+  },
+  "contract_id": "gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude",
+          "claude_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude",
+      "claude_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Prioritize single-lemma-exact-class rows (0017, 0162, 0163). PRE-COMMIT to moat-audit variant that accepts sibling-lemma closure (suggested != gold AND not in @[simp] default set AND not definitional unfold) as moat-grade. Without pre-commitment contract is near-certain fail. Run dry-run leakage audit on graph BEFORE suggestion pass.",
+        "agent_id": "claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso/claude_20260515T02301.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-15T02:30:15Z",
+        "p_success": 0.11,
+        "rationale_short": "Per-class p_close \u00d7 p_passes_moat: single-lemma-exact 0.45\u00d70.15=0.067 each; single-hint-simp 0.30\u00d70.10=0.03; multi-hint-simp 0.15\u00d70.08=0.012; multi-step-rw 0.08\u00d70.10=0.008. P(>=1 moat-grade) ~ 0.29, discounted by P(harness wires correctly) 0.65 \u00d7 P(auditor accepts sibling) 0.55 \u2192 0.10. Multi-step-rw class structurally near-zero.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "PRE-REGISTER moat-gate v25 audit definition NOW (before run) per Noether: a closure counts moat-grade if and only if (1) candidate name not in gold tactic, (2) candidate not @[simp]/@[grind=] tagged in Mathlib OR closure reproduces when @[simp] set is empty (verified by tactic  instead of ), (3) closure not reproduced by bare  or . Run on 0163/0025/0279 (intersect of Franklin/Noether top picks + tractable shape). Use simple type-token Jaccard over Mathlib graph as the retrieval signal \u2014 no embedding needed.",
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-15T02:30:15Z",
+        "p_success": 0.12,
+        "rationale_short": "Franklin 0.09 + Noether 0.11 anchor. Slight upward shade (0.12) for the pre-registered moat-gate carve-out (Noether's sibling-lemma allowance) which structurally raises the moat-audit pass rate without post-hoc redefinition. Dominant failure mode remains indirect-simp-leakage on the simp-shape rows (0025, 0279); the moat-grade candidate is most plausibly on 0163 (exact-class, less leak-prone).",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T02:31:03Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "kill_branch",
+      "expected_value": -0.3440001941908722,
+      "p_success": 0.10599980580912784,
+      "reason": "low probability, negative expected value, and no declared information value",
+      "voi_proxy": 0.1048
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 40.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": 0.10599980580912784,
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": [
+      {
+        "mode": "blind_retrieval_excludes_unique_closer",
+        "p": 0.12200073827980805
+      },
+      {
+        "mode": "indirect_simp_leakage",
+        "p": 0.11231884057971014
+      },
+      {
+        "mode": "indirect_simp_leakage_dominates",
+        "p": 0.08730158730158731
+      },
+      {
+        "mode": "type_similarity_misranks_gold_outside_topk",
+        "p": 0.08152173913043478
+      },
+      {
+        "mode": "no_candidate_closes_literal",
+        "p": 0.07246376811594203
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

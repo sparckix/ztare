@@ -1,0 +1,134 @@
+{
+  "contract_id": "gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Treat the new strict row as enough to start training.",
+      "counterfactual_action": "Run union training-readiness gate and hold GNN blocked unless heldout delta exists.",
+      "externality_hypotheses": {
+        "negative": [
+          "static gate may defer useful small-model training",
+          "heldout delta may need a separate artifact"
+        ],
+        "positive": [
+          "prevents row-count Goodharting",
+          "updates distance-to-GNN from 15 strict rows plus heldout delta missing"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Pearl3",
+        "Neyman3"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "training_gate",
+        "anti_goodhart",
+        "distance_to_gnn"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "training_deferred",
+        "heldout_delta_missing"
+      ],
+      "new_next_action": "hold GNN blocked and generate post-bayesRisk heldout delta packet",
+      "old_next_action": "treat 15 strict rows as enough to start training",
+      "preconditioner_effect": "Converted one new strict row into training-readiness decision boundary.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2069_manifest_after_bayesRisk_strict_replay.json"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.03485,
+  "mean_log_score": -0.20503786033292382,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": "30ca1af6d199a2104def7d73ffbb418c1d5e941c5bd6a55a0c531dfd753632b5",
+    "artifact_path": "analytics/public/leanmill/results/v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+    "changed_by_forecast_ids": [
+      "Pearl3",
+      "Neyman3"
+    ],
+    "compile_status": "union_training_gate_passed_gnn_blocked",
+    "contract_id": "gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "training_gate",
+      "anti_goodhart",
+      "distance_to_gnn"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "training_deferred",
+      "heldout_delta_missing"
+    ],
+    "new_next_action": "hold GNN blocked and generate post-bayesRisk heldout delta packet",
+    "old_next_action": "treat 15 strict rows as enough to start training",
+    "preconditioner_effect": "Converted one new strict row into training-readiness decision boundary.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2069_manifest_after_bayesRisk_strict_replay.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.70 passed: manifest strict rows 15, bayesRisk counted, prior no-policy-delta preserved, no replay/training, GNN blocked. Missing evidence is heldout/union candidate-policy delta, not a fixed row-count threshold.",
+    "resolved_at": "2026-05-14T19:08:30Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:08:37Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Neyman3",
+      "brier": 0.044099999999999986,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "gp225_pre_gnn_union_training_gate",
+      "expected_cost_agent_minutes": 19.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.23572233352106983,
+      "p_success": 0.79,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:06:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:06:57Z",
+        "resolved_at": "2026-05-14T19:08:30Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "Pearl3",
+      "brier": 0.02560000000000001,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "gp225_pre_gnn_union_training_gate",
+      "expected_cost_agent_minutes": 17.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.1743533871447778,
+      "p_success": 0.84,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:06:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:06:57Z",
+        "resolved_at": "2026-05-14T19:08:30Z"
+      }
+    }
+  ]
+}

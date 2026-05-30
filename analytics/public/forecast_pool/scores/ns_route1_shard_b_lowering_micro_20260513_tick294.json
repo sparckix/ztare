@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_shard_b_lowering_micro_20260513_tick294",
+  "mean_brier": 0.185,
+  "mean_log_score": -0.5622728353473071,
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "pass",
+    "contract_id": "ns_route1_shard_b_lowering_micro_20260513_tick294",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Succeeded: added FreshFrequencyMeanFreeTentSquareSplitIdentity, squareFunction_split_of_meanFreeTentSquareSplitIdentity, FreshFrequencyResolvedMeanFreeTentSquareEstimate, and constructor from split identity plus resolved estimate; lake build passed; no pre-GNN mutation.",
+    "resolved_at": "2026-05-13T21:58:35Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T21:58:46Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 21.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+      "brier": 0.19359999999999997,
+      "cost_error_agent_minutes": 21.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.579818495252942,
+      "p_success": 0.56,
+      "success_bool": true
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 15.0,
+  "artifact_hash": "7464cba5403a25bb9ad46885b5ffc4933620d307c91d5471e6c434ae6743b4a5",
+  "artifact_path": "analytics/public/leanmill/results/v1930_namespace_aware_wrapper_trace.json",
+  "compile_status": "namespace_wrapper_build_passed_trace_blocked",
+  "contract_id": "gp225_v1929_benchmark_detour_vs_residual_generation_meso",
+  "error_type": "leandojo_extractdata_lean_4_30_api_incompatibility",
+  "goal_delta": null,
+  "resolution_note": "v19.30 generated namespace-aware wrapper theorems, avoided unknown-identifier and copied-source failures, and Lake built successfully. LeanDojo then failed in generated ExtractData.lean due Lean 4.30 API incompatibilities, producing a decisive route change back to residual generation while preserving the wrapper trace project as a future adapter asset.",
+  "resolved_at": "2026-05-13T23:11:08Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

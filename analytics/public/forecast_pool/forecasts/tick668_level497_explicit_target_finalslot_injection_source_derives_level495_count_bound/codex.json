@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "Proceed: split through the explicit injection source before any incidence chase.",
+  "agent_family": "codex",
+  "agent_id": "codex",
+  "contract_id": "tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound",
+  "contract_question": "TICK668 Level497: construct an explicit target-prefix to final-slot injection source that derives the Level495 target-count final-slot bound and composes to the canonical eventData assignment",
+  "domain": "ns_millennium_hunt",
+  "expected_cost_agent_minutes": 80.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "downstream_composition_gap": 0.27,
+    "explicit_injection_wrapper_missing": 0.31,
+    "lean_universe_or_field_collision": 0.22,
+    "socket_only_no_incidence_progress": 0.2
+  },
+  "forecast_externality_tags": [
+    "ns_trackb",
+    "level497",
+    "target_finalslot_injection"
+  ],
+  "forecasted_at": "2026-05-27T03:10:59Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.23,
+  "p_regression": 0.09,
+  "p_success": 0.71,
+  "rationale_short": "Existing Fintype.card_le_of_injective analogs and the Level495 Fin.castLE assignment make the explicit injection-source wrapper likely; the main risks are a missing bridge field or composition plumbing in the dense bridge file, not the inequality itself.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "explicit_injection_wrapper_missing",
+    "downstream_composition_gap"
+  ],
+  "tail_downside_worry": 27.0,
+  "tail_insurance_premium": 0.28,
+  "tail_upside_surprise": 14.0
+}

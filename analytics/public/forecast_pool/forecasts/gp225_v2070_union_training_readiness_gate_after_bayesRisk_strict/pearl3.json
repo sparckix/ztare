@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Keep GNN blocked unless the gate can point to a changed heldout policy arm; row count alone is insufficient.",
+  "agent_id": "Pearl3",
+  "contract_id": "gp225_v2070_union_training_readiness_gate_after_bayesRisk_strict",
+  "contract_question": "After v20.69 raises GP-225 to 15 strict rows with bayesRisk, is the public/internal union ready to unblock any GNN or cross-encoder training?",
+  "domain": "gp225_pre_gnn_union_training_gate",
+  "expected_cost_agent_minutes": 17.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bayesRisk_row_not_in_consumer_count": 0.18,
+    "heldout_delta_overclaimed": 0.28,
+    "manifest_count_mismatch": 0.25,
+    "prior_quarantine_lost": 0.12,
+    "training_boundary_ambiguous": 0.17
+  },
+  "forecast_externality_tags": [
+    "training_gate",
+    "anti_goodhart",
+    "manifest_accounting"
+  ],
+  "forecasted_at": "2026-05-14T19:06:57Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.05,
+  "p_success": 0.84,
+  "rationale_short": "The manifest has a clean new strict row, so accounting should pass; the key is preserving the no-training boundary.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "heldout_delta_overclaimed",
+    "manifest_count_mismatch"
+  ]
+}

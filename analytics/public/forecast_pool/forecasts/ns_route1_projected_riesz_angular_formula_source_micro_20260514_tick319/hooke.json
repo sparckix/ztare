@@ -1,0 +1,23 @@
+{
+  "agent_id": "Hooke",
+  "contract_id": "ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319",
+  "contract_question": "Can this tick lower Route1ProjectedRieszAngularMomentStation into a fixed projected-Riesz kernel/angular-moment formula source, without merely restating the l2 carrier equality?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "GP233_row_missing_or_underjustified": 0.06,
+    "anti_tautology_guards_too_weak_for_GP233": 0.18,
+    "build_or_import_regression": 0.06,
+    "constructor_type_plumbing_exceeds_tick": 0.14,
+    "formula_source_restates_existing_equality": 0.32,
+    "tail_window_and_projected_kernel_values_do_not_align_cleanly": 0.24
+  },
+  "forecasted_at": "2026-05-14T00:39:52Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.38,
+  "p_regression": 0.06,
+  "p_success": 0.68,
+  "rationale_short": "likely compile-passing source split; risk is that it compiles while still looking like renamed equality unless provenance guards are strong.",
+  "read_only_attestation": true
+}

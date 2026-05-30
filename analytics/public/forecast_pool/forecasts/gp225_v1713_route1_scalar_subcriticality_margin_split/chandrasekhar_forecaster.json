@@ -1,0 +1,20 @@
+{
+  "agent_id": "chandrasekhar_forecaster",
+  "contract_id": "gp225_v1713_route1_scalar_subcriticality_margin_split",
+  "contract_question": "Will v17.13 reduce the route-1 scalar subcriticality hinge to a smaller Lean-checkable strict-margin guard without closing/laundering the analytic source obligation?",
+  "domain": "ns_live_scalar_hinge",
+  "expected_cost_agent_minutes": 45.0,
+  "failure_mode_distribution": {
+    "existing_adapter": 0.18,
+    "gap_only": 0.28,
+    "guard_split": 0.42,
+    "refactor": 0.12
+  },
+  "forecasted_at": "2026-05-12T15:25:53Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.12,
+  "p_success": 0.42,
+  "rationale_short": "No existing route1 primitive safely controls budget; guard decomposition is most likely safe path.",
+  "read_only_attestation": true
+}

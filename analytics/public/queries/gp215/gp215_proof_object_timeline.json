@@ -1,0 +1,3026 @@
+{
+  "phase_docs": {
+    "5aa": [
+      {
+        "file": "phase5aa_time_rate_tax_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5aa_time_rate_tax_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5aa_time_rate_tax_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ab": [
+      {
+        "file": "phase5ab_163d_isomorphism.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ac": [
+      {
+        "file": "phase5ac_orientation_discount_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ac_orientation_discount_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ac_orientation_discount_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ad": [
+      {
+        "file": "phase5ad_phase_scramble_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ad_phase_scramble_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ad_phase_scramble_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ae": [
+      {
+        "file": "phase5ae_jump_transaction_cost_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ae_jump_transaction_cost_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ae_jump_transaction_cost_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5af": [
+      {
+        "file": "phase5af_orientation_reentry_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5af_orientation_reentry_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5af_orientation_reentry_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ag": [
+      {
+        "file": "phase5ag_dirty_target_frame_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ag_dirty_target_frame_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ag_dirty_target_frame_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ah": [
+      {
+        "file": "phase5ah_component_halo_debt_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ah_component_halo_debt_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ah_component_halo_debt_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ai": [
+      {
+        "file": "phase5ai_cross_domain_gridlock_synthesis.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ai_cross_domain_gridlock_synthesis.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ai_cross_domain_gridlock_synthesis.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5aj": [
+      {
+        "file": "phase5aj_gp163d_field_debt_proxy_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5aj_gp163d_field_debt_proxy_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5aj_gp163d_field_debt_proxy_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ak": [
+      {
+        "file": "phase5ak_aqual_mu_saturation_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ak_aqual_mu_saturation_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ak_aqual_mu_saturation_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5al": [
+      {
+        "file": "phase5al_orientation_stability_proxy_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5al_orientation_stability_proxy_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5al_orientation_stability_proxy_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5am": [
+      {
+        "file": "phase5am_cz_pressure_stealth_audit.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5an": [
+      {
+        "file": "phase5an_parity_transversality_cold_shot.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ao": [
+      {
+        "file": "phase5ao_fourier_2d_trap_red_team.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ap": [
+      {
+        "file": "phase5ap_local_delta_sheath_takeaway.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5aq": [
+      {
+        "file": "phase5aq_angular_moment_takeaway.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ar": [
+      {
+        "file": "phase5ar_angular_moment_ansatz_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ar_angular_moment_ansatz_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ar_angular_moment_ansatz_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5as": [
+      {
+        "file": "phase5as_full_jet_ansatz_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5as_full_jet_ansatz_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5as_full_jet_ansatz_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5at": [
+      {
+        "file": "phase5at_dynamic_admissibility_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5at_dynamic_admissibility_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5at_dynamic_admissibility_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5au": [
+      {
+        "file": "phase5au_dynamic_ensemble_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5au_dynamic_ensemble_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5au_dynamic_ensemble_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5av": [
+      {
+        "file": "phase5av_gpu_refine_pair.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5av_gpu_refine_pair.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5av_gpu_refine_pair.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5av_gpu_torch_screen.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5av_gpu_torch_screen.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5av_gpu_torch_screen.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5av_gpu_validate_candidate.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5av_gpu_validate_candidate.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5av_gpu_validate_candidate.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5aw": [
+      {
+        "file": "phase5aw_gpu_cloak_debt_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5aw_gpu_cloak_debt_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5aw_gpu_cloak_debt_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ax": [
+      {
+        "file": "phase5ax_gpt55_empty_output_incident.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ax_trajectory_persistence_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ax_trajectory_persistence_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ax_trajectory_persistence_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ay": [
+      {
+        "file": "phase5ay_riesz_hessian_l2_scaling_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ay_riesz_hessian_l2_scaling_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ay_riesz_hessian_l2_scaling_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5az": [
+      {
+        "file": "phase5az_ns_critical_riesz_scaling_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5az_ns_critical_riesz_scaling_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5az_ns_critical_riesz_scaling_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ba": [
+      {
+        "file": "phase5ba_stealth_normal_rejection_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ba_stealth_normal_rejection_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ba_stealth_normal_rejection_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bb": [
+      {
+        "file": "phase5bb_enstrophy_sterility_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bb_enstrophy_sterility_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bb_enstrophy_sterility_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bc": [
+      {
+        "file": "phase5bc_curvature_exit_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bc_curvature_exit_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bc_curvature_exit_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bd": [
+      {
+        "file": "phase5bd_resolution_dealias_curvature_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bd_resolution_dealias_curvature_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bd_resolution_dealias_curvature_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5be": [
+      {
+        "file": "phase5be_retuned_resolution_curvature_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5be_retuned_resolution_curvature_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5be_retuned_resolution_curvature_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bf": [
+      {
+        "file": "phase5bf_highres_dynamic_tangent_screen.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bf_highres_dynamic_tangent_screen.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bf_highres_dynamic_tangent_screen.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bg": [
+      {
+        "file": "phase5bg_gemini_pro_cold_shot_prompt.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bg_targeted_highres_tangent_refine.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bg_targeted_highres_tangent_refine.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bg_targeted_highres_tangent_refine.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bh": [
+      {
+        "file": "phase5bh_tangent_tube_persistence_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bh_tangent_tube_persistence_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bh_tangent_tube_persistence_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bi": [
+      {
+        "file": "phase5bi_viscous_tangent_refine_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bi_viscous_tangent_refine_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bi_viscous_tangent_refine_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bj": [
+      {
+        "file": "phase5bj_stealth_growth_budget_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bj_stealth_growth_budget_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bj_stealth_growth_budget_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bk": [
+      {
+        "file": "phase5bk_static_stealth_growth_intersection.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bk_static_stealth_growth_intersection.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bk_static_stealth_growth_intersection.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bl": [
+      {
+        "file": "phase5bl_sos_certificate_pilot.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bl_sos_certificate_pilot.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bl_sos_certificate_pilot.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bm": [
+      {
+        "file": "phase5bm_three_mode_stealth_growth_search.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bm_three_mode_stealth_growth_search.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bm_three_mode_stealth_growth_search.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bn": [
+      {
+        "file": "phase5bn_toxic_block_hessian_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bn_toxic_block_hessian_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bn_toxic_block_hessian_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bo": [
+      {
+        "file": "phase5bo_lean_adapter_peer_review.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bo_reduced_toxic_block_certificate.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bo_reduced_toxic_block_certificate.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bo_reduced_toxic_block_certificate.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bp": [
+      {
+        "file": "phase5bp_mode20_substitution_attack.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bp_mode20_substitution_attack.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bp_mode20_substitution_attack.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5bp_spectral_n_pre_registration.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5bq": [
+      {
+        "file": "phase5bq_spectral_n_certificate_atlas.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bq_spectral_n_certificate_atlas.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bq_spectral_n_certificate_atlas.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5br": [
+      {
+        "file": "phase5br_5bq_failure_mode_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5br_5bq_failure_mode_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5br_5bq_failure_mode_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bs": [
+      {
+        "file": "phase5bs_high_n_tube_recovery_or_normalized_certificate.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bs_high_n_tube_recovery_or_normalized_certificate.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bs_high_n_tube_recovery_or_normalized_certificate.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bt": [
+      {
+        "file": "phase5bt_asymptote_extraction_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bt_asymptote_extraction_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bt_asymptote_extraction_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bu": [
+      {
+        "file": "phase5bu_uniform_margin_candidate_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bu_uniform_margin_candidate_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bu_uniform_margin_candidate_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bv": [
+      {
+        "file": "phase5bv_n128_tube_gap_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bv_n128_tube_gap_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bv_n128_tube_gap_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bw": [
+      {
+        "file": "phase5bw_core_signal_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bw_core_signal_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bw_core_signal_audit.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5bw_kida_pelz_diagnostic_N64.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bw_kida_pelz_diagnostic_N64.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5bw_kida_pelz_ic_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bw_kida_pelz_ic_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bw_kida_pelz_ic_audit.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5bw_kida_pelz_inverse_pre_registration.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bw_literature_check.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bw_matched_geometry_probe.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bw_matched_geometry_probe.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5bw_matched_geometry_probe.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5bw_matched_geometry_probe_N128.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bw_matched_geometry_probe_N128.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bx": [
+      {
+        "file": "phase5bx_kida_pelz_prison_discriminator_N128.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bx_kida_pelz_prison_discriminator_N128.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5bx_kida_pelz_prison_discriminator_N64.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bx_kida_pelz_prison_discriminator_N64.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5by": [
+      {
+        "file": "phase5by_kida_group_projector_discriminator_N64.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5by_kida_group_projector_discriminator_N64.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5bz": [
+      {
+        "file": "phase5bz_kida_symmetric_saturation_decomposition_N64.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5bz_kida_symmetric_saturation_decomposition_N64.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ca": [
+      {
+        "file": "phase5ca_cross_branch_alignment_dilution_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ca_cross_branch_alignment_dilution_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ca_cross_branch_alignment_dilution_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5cb": [
+      {
+        "file": "phase5cb_old_branch_black_box_replay_N32.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cb_old_branch_black_box_replay_N32.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5cb_old_branch_black_box_replay_N384.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cb_old_branch_black_box_replay_N384.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5cc": [
+      {
+        "file": "phase5cc_old_branch_spike_lifecycle_N256_N256.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cc_old_branch_spike_lifecycle_N256_N256.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5cg": [
+      {
+        "file": "phase5cg_2028_hindsight_pullforward.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_cold_shot_deanchored_summary.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_deanchored_synthesis_checkpoint.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_decisive_fork_status.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_decisive_theorem_run_packet.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_exhaust_discount_bridge_note.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_fd_rescaling_sanity.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_fd_rescaling_sanity.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5cg_fd_rescaling_sanity.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5cg_fd_rescaling_sanity_N32.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_fd_rescaling_sanity_N32.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5cg_fd_rescaling_sanity_N64.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_fd_rescaling_sanity_N64.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5cg_geometric_bypass_note.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_irrep_panel_debate.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_l2_carrier_note.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_leray_rescaling_discriminator_design.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_literature_novelty_bar.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_literature_position.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_local_leray_pilot.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_local_leray_pilot.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5cg_local_leray_pilot.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5cg_local_leray_pilot_N32.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_local_leray_pilot_N32.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5cg_local_leray_pilot_N64.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_local_leray_pilot_N64.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5cg_paper7_obstruction_candidate.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_pressure_quadrupole_instrumentation.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_proofsearch_packet.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_route1_vs_route5_comparison.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cg_route5_denominator_robustness_note.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ch": [
+      {
+        "file": "phase5ch_capacity_realization_falsifier.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ch_capacity_realization_falsifier.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ch_capacity_realization_falsifier.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5ch_capacity_realization_falsifier_packet.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ci": [
+      {
+        "file": "phase5ci_metric_degeneracy_receipt.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ci_metric_degeneracy_receipt.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ci_metric_degeneracy_receipt.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5cj": [
+      {
+        "file": "phase5cj_source_stratified_degeneracy_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cj_source_stratified_degeneracy_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5cj_source_stratified_degeneracy_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ck": [
+      {
+        "file": "phase5ck_degeneracy_time_profile.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ck_degeneracy_time_profile.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ck_degeneracy_time_profile.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5cl": [
+      {
+        "file": "phase5cl_paper7_science_grade_ns_insight.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cm": [
+      {
+        "file": "phase5cm_parabolic_escape_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cm_parabolic_escape_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5cm_parabolic_escape_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5cn": [
+      {
+        "file": "phase5cn_material_control_sensitivity.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5cn_material_control_sensitivity.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5cn_material_control_sensitivity.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5co": [
+      {
+        "file": "phase5co_material_control_theorem_skeleton.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cq": [
+      {
+        "file": "phase5cq_science_claim_status.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cr": [
+      {
+        "file": "phase5cr_material_control_obligation_decomposition.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cs": [
+      {
+        "file": "phase5cs_pressure_rotation_capacity_escape.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ct": [
+      {
+        "file": "phase5ct_exhaust_horizon_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cu": [
+      {
+        "file": "phase5cu_cycle_bridge_discriminator.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cv": [
+      {
+        "file": "phase5cv_formal_resource_packet.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cw": [
+      {
+        "file": "phase5cw_exhaust_efficiency_scaling_split.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cx": [
+      {
+        "file": "phase5cx_exhaust_efficiency_noncircularity_bar.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cy": [
+      {
+        "file": "phase5cy_anisotropic_fractional_bridge_redteam.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5cz": [
+      {
+        "file": "phase5cz_ztare_anisotropic_fractional_bridge_packet.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5da": [
+      {
+        "file": "phase5da_fractional_bridge_launch_packet.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5db": [
+      {
+        "file": "phase5db_fractional_bridge_ztare_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dc": [
+      {
+        "file": "phase5dc_pressure_dwell_timescale_split.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dd": [
+      {
+        "file": "phase5dd_resupply_escape_pincer.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5de": [
+      {
+        "file": "phase5de_resupply_pincer_ztare_launch_packet.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5df": [
+      {
+        "file": "phase5df_resupply_pincer_ztare_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dg": [
+      {
+        "file": "phase5dg_residual_defect_packet_certificate_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dh": [
+      {
+        "file": "phase5dh_resupply_pincer_rerun_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5di": [
+      {
+        "file": "phase5di_alien_invariant_bridge_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dj": [
+      {
+        "file": "phase5dj_10x_finite_mode_taxonomy_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dk": [
+      {
+        "file": "phase5dk_stationary_euler_escape_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dl": [
+      {
+        "file": "phase5dl_mixed_residual_tax_probe.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dl_mixed_residual_tax_probe.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dm": [
+      {
+        "file": "phase5dm_two_background_mixed_profit_probe.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dm_two_background_mixed_profit_probe.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dn": [
+      {
+        "file": "phase5dn_local_triad_symbolic_ceiling.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dn_local_triad_symbolic_ceiling.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5do": [
+      {
+        "file": "phase5do_full_background_subspace_probe.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5do_full_background_subspace_probe.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dp": [
+      {
+        "file": "phase5dp_multishell_projection_ladder.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dp_multishell_projection_ladder.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dq": [
+      {
+        "file": "phase5dq_sparse_multishell_lsmr_probe.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dq_sparse_multishell_lsmr_probe.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dr": [
+      {
+        "file": "phase5dr_projection_deficit_law.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dr_projection_deficit_law.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5ds": [
+      {
+        "file": "phase5ds_candidate_cascade_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ds_candidate_cascade_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dt": [
+      {
+        "file": "phase5dt_triadic_boundary_leak_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dt_triadic_boundary_leak_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5du": [
+      {
+        "file": "phase5du_independent_multishell_cascade_debrief.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5du_projection_ceiling_formula_check.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5du_projection_ceiling_formula_check.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dv": [
+      {
+        "file": "phase5dv_projection_formula_reduced_model.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dv_projection_formula_reduced_model.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5dv_square_law_exhaust_bridge_debrief.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dw": [
+      {
+        "file": "phase5dw_finite_stencil_full_closure_launch.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dw_iter1_self_reference_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dw_square_law_exhaust_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5dx": [
+      {
+        "file": "phase5dx_offdiagonal_leray_commutator_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dx_offdiagonal_leray_commutator_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dy": [
+      {
+        "file": "phase5dy_leray_intertwiner_profit_tax_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dy_leray_intertwiner_profit_tax_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5dz": [
+      {
+        "file": "phase5dz_leray_intertwiner_backtests.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5dz_leray_intertwiner_backtests.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5ea": [
+      {
+        "file": "phase5ea_leray_intertwiner_psd_stress_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ea_leray_intertwiner_psd_stress_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5eb": [
+      {
+        "file": "phase5eb_leray_intertwiner_viscous_orientation_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5eb_leray_intertwiner_viscous_orientation_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5ec": [
+      {
+        "file": "phase5ec_cycle_integrated_signed_coordinate_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ec_cycle_integrated_signed_coordinate_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5ed": [
+      {
+        "file": "phase5ed_adaptive_same_ledger_no_go.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ed_adaptive_same_ledger_no_go.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ed_adaptive_same_ledger_no_go.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ee": [
+      {
+        "file": "phase5ee_block_ceiling_stress.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ee_block_ceiling_stress.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ee_block_ceiling_stress.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ef": [
+      {
+        "file": "phase5ef_generalized_polarization_hostile_search.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ef_generalized_polarization_hostile_search.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ef_generalized_polarization_hostile_search.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5eg": [
+      {
+        "file": "phase5eg_finite_support_multibackground_eigen_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5eg_finite_support_multibackground_eigen_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5eg_finite_support_multibackground_eigen_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5eh": [
+      {
+        "file": "phase5eh_multibackground_high_high_tax_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5eh_multibackground_high_high_tax_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5eh_multibackground_high_high_tax_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ei": [
+      {
+        "file": "phase5ei_full_ledger_hostile_search.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ei_full_ledger_hostile_search.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ei_full_ledger_hostile_search.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ej": [
+      {
+        "file": "phase5ej_gain_tax_frontier_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ej_gain_tax_frontier_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ej_gain_tax_frontier_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ek": [
+      {
+        "file": "phase5ek_gain_tax_sequence.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ek_gain_tax_sequence.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ek_gain_tax_sequence.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5el": [
+      {
+        "file": "phase5el_cross_aware_gain_tax_margin.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5el_cross_aware_gain_tax_margin.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5el_cross_aware_gain_tax_margin.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5em": [
+      {
+        "file": "phase5em_top_subspace_full_ledger_search.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5em_top_subspace_full_ledger_search.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5em_top_subspace_full_ledger_search.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5en": [
+      {
+        "file": "phase5en_fourier_spatial_dual_geometry_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5en_fourier_spatial_dual_geometry_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5en_fourier_spatial_dual_geometry_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5eo": [
+      {
+        "file": "phase5eo_gain_tax_tether_next_directive.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ep": [
+      {
+        "file": "phase5ep_sharp_survival_constant_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ep_sharp_survival_constant_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ep_sharp_survival_constant_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5eq": [
+      {
+        "file": "phase5eq_nonlocal_ghost_sparse_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5eq_nonlocal_ghost_sparse_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5eq_nonlocal_ghost_sparse_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5er": [
+      {
+        "file": "phase5er_multimode_hostile_full_ledger_search.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5er_multimode_hostile_full_ledger_search.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5er_multimode_hostile_full_ledger_search.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5es": [
+      {
+        "file": "phase5es_trackb_ambient_efficiency_invariant.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5et": [
+      {
+        "file": "phase5et_matrix_intertwiner_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5et_matrix_intertwiner_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5et_matrix_intertwiner_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5eu": [
+      {
+        "file": "phase5eu_trackb_nullcharge_replay.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5eu_trackb_nullcharge_replay.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5eu_trackb_nullcharge_replay.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5eu_trackb_nullcharge_replay_smoke.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5eu_trackb_nullcharge_replay_smoke.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ev": [
+      {
+        "file": "phase5ev_null_branch_exact_single_mode_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ev_null_branch_exact_single_mode_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ev_null_branch_exact_single_mode_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ew": [
+      {
+        "file": "phase5ew_translation_covariance_intertwiner_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ew_translation_covariance_intertwiner_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ew_translation_covariance_intertwiner_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ex": [
+      {
+        "file": "phase5ex_w_coupled_shift_matrix_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ex_w_coupled_shift_matrix_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ex_w_coupled_shift_matrix_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ey": [
+      {
+        "file": "phase5ey_continuous_support_violator_search.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ey_continuous_support_violator_search.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ey_continuous_support_violator_search.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5ey_continuous_support_violator_search_shift.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ey_continuous_support_violator_search_shift.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5ez": [
+      {
+        "file": "phase5ez_state_pricing_collapse_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5ez_state_pricing_collapse_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5ez_state_pricing_collapse_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5f": [
+      {
+        "file": "phase5f_symmetry_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5f_symmetry_audit.py",
+        "kind": "deterministic_audit_script"
+      }
+    ],
+    "5fa": [
+      {
+        "file": "phase5fa_sparse_psd_pricing_certificate.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fa_sparse_psd_pricing_certificate.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fa_sparse_psd_pricing_certificate.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fb": [
+      {
+        "file": "phase5fb_shift_quartic_pricing_certificate.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fb_shift_quartic_pricing_certificate.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fb_shift_quartic_pricing_certificate.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fc": [
+      {
+        "file": "phase5fc_constrained_participation_optimizer.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fc_constrained_participation_optimizer.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fc_constrained_participation_optimizer.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5fc_constrained_participation_optimizer_fixed.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fc_constrained_participation_optimizer_fixed.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5fc_constrained_participation_optimizer_shift.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fc_constrained_participation_optimizer_shift.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fd": [
+      {
+        "file": "phase5fd_pricing_kernel_limit_passage_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fe": [
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_broad_noopt.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_broad_noopt.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_cross_noopt.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_cross_noopt.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_cross_scale2_opt.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_cross_scale2_opt.json",
+        "kind": "deterministic_audit_result"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_scale2_opt.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fe_profile_decoupling_pricing_audit_scale2_opt.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fi": [
+      {
+        "file": "phase5fi_countable_limit_pricing_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fj": [
+      {
+        "file": "phase5fj_countable_prefix_pricing_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fj_countable_prefix_pricing_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fj_countable_prefix_pricing_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fk": [
+      {
+        "file": "phase5fk_prefix_weight_optimizer.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fk_prefix_weight_optimizer.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fk_prefix_weight_optimizer.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fl": [
+      {
+        "file": "phase5fl_null_profile_cap_branch.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fm": [
+      {
+        "file": "phase5fm_trackb_branch_killer_grid.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fn": [
+      {
+        "file": "phase5fn_concentration_impact_branch_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fn_concentration_impact_branch_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fn_concentration_impact_branch_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fo": [
+      {
+        "file": "phase5fo_vanishing_branch_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5fo_vanishing_branch_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5fo_vanishing_branch_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5fq": [
+      {
+        "file": "phase5fq_trackb_profile_decomposition_obligation.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fr": [
+      {
+        "file": "phase5fr_littlewood_paley_profile_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fs": [
+      {
+        "file": "phase5fs_littlewood_paley_paraproduct_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ft": [
+      {
+        "file": "phase5ft_clay_closure_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fu": [
+      {
+        "file": "phase5fu_low_high_catalyst_charging_obligation.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fv": [
+      {
+        "file": "phase5fv_low_high_pde_estimate_reality_check.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fw": [
+      {
+        "file": "phase5fw_low_frequency_lipschitz_control_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fx": [
+      {
+        "file": "phase5fx_high_high_self_tax_charging_obligation.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fy": [
+      {
+        "file": "phase5fy_high_low_transport_charging_obligation.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5fz": [
+      {
+        "file": "phase5fz_profile_lipschitz_clay_bridge.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ga": [
+      {
+        "file": "phase5ga_same_shell_remainder_charging_obligation.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5gb": [
+      {
+        "file": "phase5gb_low_high_kinematic_dichotomy.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5gc": [
+      {
+        "file": "phase5gc_matrix_block_ledger_charging_obligation.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5gd": [
+      {
+        "file": "phase5gd_universal_state_pricing_split.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5ge": [
+      {
+        "file": "phase5ge_trackb_sos_pricing_kernel_receipt.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5h": [
+      {
+        "file": "phase5h_symbolic_mine.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5h_symbolic_mine.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5h_symbolic_mine.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5j": [
+      {
+        "file": "phase5j_scale_radius_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5j_scale_radius_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5j_scale_radius_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5k": [
+      {
+        "file": "phase5k_topology_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5k_topology_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5k_topology_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5l": [
+      {
+        "file": "phase5l_dual_peak_budget_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5l_dual_peak_budget_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5l_dual_peak_budget_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5m": [
+      {
+        "file": "phase5m_curvature_proxy_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5m_curvature_proxy_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5m_curvature_proxy_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5n": [
+      {
+        "file": "phase5n_stall_law_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5n_stall_law_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5n_stall_law_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5o": [
+      {
+        "file": "phase5o_state_transition_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5o_state_transition_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5o_state_transition_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5p": [
+      {
+        "file": "phase5p_eviction_scaling_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5p_eviction_scaling_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5p_eviction_scaling_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5q": [
+      {
+        "file": "phase5q_bounded_state_lemma_seed.md",
+        "kind": "phase_doc"
+      }
+    ],
+    "5r": [
+      {
+        "file": "phase5r_transversality_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5r_transversality_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5r_transversality_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5s": [
+      {
+        "file": "phase5s_signed_escape_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5s_signed_escape_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5s_signed_escape_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5t": [
+      {
+        "file": "phase5t_instantaneous_forcing_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5t_instantaneous_forcing_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5t_instantaneous_forcing_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5u": [
+      {
+        "file": "phase5u_forcing_decomposition_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5u_forcing_decomposition_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5u_forcing_decomposition_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5v": [
+      {
+        "file": "phase5v_kinematic_decomposition_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5v_kinematic_decomposition_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5v_kinematic_decomposition_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5w": [
+      {
+        "file": "phase5w_scaling_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5w_scaling_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5w_scaling_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5x": [
+      {
+        "file": "phase5x_exhaust_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5x_exhaust_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5x_exhaust_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ],
+    "5y": [
+      {
+        "file": "phase5y_second_cycle_audit.md",
+        "kind": "phase_doc"
+      },
+      {
+        "file": "phase5y_second_cycle_audit.py",
+        "kind": "deterministic_audit_script"
+      },
+      {
+        "file": "phase5y_second_cycle_audit.json",
+        "kind": "deterministic_audit_result"
+      }
+    ]
+  },
+  "lean_files": [
+    {
+      "file": "ns_2028_hindsight_obligations.lean",
+      "mtime": 1777749136.5082421,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_abstract_eviction_implication.lean",
+      "mtime": 1777506135.9994345,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_angular_moment_pressure_target.lean",
+      "mtime": 1777554134.894621,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_asymptotic_margin_extraction.lean",
+      "mtime": 1777612066.7388926,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_bounded_state_eviction.lean",
+      "mtime": 1777505900.3624947,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_calderon_zygmund_stealth_obstruction.lean",
+      "mtime": 1777551765.9206262,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_centrifugal_transversality.lean",
+      "mtime": 1777512737.6494396,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_clay_closure_bridge.lean",
+      "mtime": 1777934389.2102776,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_coherent_stretch_depletion.lean",
+      "mtime": 1777745529.3402908,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_commutator_cutoff_penalty.lean",
+      "mtime": 1777751616.8249152,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_commutator_microstructure_escape.lean",
+      "mtime": 1777753830.7192776,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_commutator_tower_contraction_bridge.lean",
+      "mtime": 1777751379.8609345,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_commutator_tower_defect_budget.lean",
+      "mtime": 1777751531.5086594,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_commutator_tower_irreducible_estimate.lean",
+      "mtime": 1777751636.513934,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_commutator_tower_proofsearch.lean",
+      "mtime": 1777749422.3912907,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_commutator_tower_stepwise_targets.lean",
+      "mtime": 1777751160.6031413,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_concentration_impact_branch.lean",
+      "mtime": 1777929141.5050952,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_continuum_tail_bound.lean",
+      "mtime": 1777596720.97939,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_core_tail_budget_bridge.lean",
+      "mtime": 1777595408.81493,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_cycle_resupply_threshold.lean",
+      "mtime": 1777850849.6217,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_decisive_ns_theorem_search.lean",
+      "mtime": 1777764738.786998,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_decisive_post_obstruction_theorem_search.lean",
+      "mtime": 1777765347.8507419,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_dichotomy_cross_profile_branch.lean",
+      "mtime": 1777930662.2012494,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_discrete_recurrence_map.lean",
+      "mtime": 1777513935.474394,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_dyadic_annulus_commutator_obstruction.lean",
+      "mtime": 1777751756.674473,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_dynamic_admissibility_pivot.lean",
+      "mtime": 1777563516.9385927,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_eigenframe_poincare_section.lean",
+      "mtime": 1777515142.5504405,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_eigenvalue_repulsion_or_collapse.lean",
+      "mtime": 1777752690.1688936,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_endogenous_orientation_instability.lean",
+      "mtime": 1777521168.4302802,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_ergodic_no_null_lock.lean",
+      "mtime": 1777551944.1081593,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_eulerian_dissipation_bridge.lean",
+      "mtime": 1777516752.9249167,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exact_open_obligations.lean",
+      "mtime": 1777759960.5913517,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exhaust_horizon_bridge.lean",
+      "mtime": 1777808844.362058,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exhaust_scale_reserve_bridge.lean",
+      "mtime": 1777745819.7050707,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exponential_metric_capacity_deficit.lean",
+      "mtime": 1777766377.2351534,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exponential_metric_nontriviality_bar.lean",
+      "mtime": 1777765802.889583,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exponential_metric_obstruction_stack.lean",
+      "mtime": 1777766140.1494455,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exponential_metric_survivor_obstruction.lean",
+      "mtime": 1777764524.3400295,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_exponential_metric_transport_ratio_obstruction.lean",
+      "mtime": 1777767552.0175521,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_final_gridlock_closure.lean",
+      "mtime": 1777551852.8858328,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_flat_torus_killing_mode.lean",
+      "mtime": 1777945024.6962862,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_fourier_2d_trap_obstruction.lean",
+      "mtime": 1777553008.9083366,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_fractal_recurrence_target.lean",
+      "mtime": 1777515250.287027,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_fractional_dwell_bridge.lean",
+      "mtime": 1777810924.2376904,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_frequency_sensitive_commutator_collapse.lean",
+      "mtime": 1777753867.9435458,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_gain_tax_tether_scalar.lean",
+      "mtime": 1777856095.9589953,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_gauge_topology_bypass.lean",
+      "mtime": 1777750507.273584,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_global_tail_coercivity_bridge.lean",
+      "mtime": 1777751674.0089881,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_high_high_self_tax_charging_obligation.lean",
+      "mtime": 1777935901.400608,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_high_low_transport_charging_obligation.lean",
+      "mtime": 1777936028.4652889,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_interior_renormalization_obligation.lean",
+      "mtime": 1777729523.6761765,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_intrinsic_frame_mollification_universality.lean",
+      "mtime": 1777753430.2459605,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_kida_pelz_prison_dichotomy.lean",
+      "mtime": 1777639813.4177341,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_kinematic_compensation.lean",
+      "mtime": 1777516316.9761817,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_knife_edge_gridlock_closure.lean",
+      "mtime": 1777551110.7378163,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_l2_carrier_bridge.lean",
+      "mtime": 1777747355.8369858,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_l2_carrier_transport.lean",
+      "mtime": 1777749020.5752978,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_landfill_dilemma.lean",
+      "mtime": 1777551508.8555503,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_leray_gain_tax_trackb_obligation.lean",
+      "mtime": 1777913304.6660717,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_literature_novelty_targets.lean",
+      "mtime": 1777765009.0809784,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_littlewood_paley_paraproduct_bridge.lean",
+      "mtime": 1777933971.1710293,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_littlewood_paley_profile_bridge.lean",
+      "mtime": 1777933761.027757,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_local_delta_sheath_pressure_target.lean",
+      "mtime": 1777553738.2015502,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_low_frequency_lipschitz_control_bridge.lean",
+      "mtime": 1777935768.7020972,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_low_high_catalyst_charging_obligation.lean",
+      "mtime": 1777934646.4536574,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_low_high_kinematic_dichotomy.lean",
+      "mtime": 1777944949.9856474,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_marginal_tax_rate.lean",
+      "mtime": 1777516031.2831595,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_matrix_block_ledger_charging_obligation.lean",
+      "mtime": 1777939715.5883164,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_millennium_frontier.lean",
+      "mtime": 1777759044.6151347,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_mollified_frame_subdyadic_bridge.lean",
+      "mtime": 1777752950.5595012,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_nonlocal_frame_transport_gap.lean",
+      "mtime": 1777752531.0911016,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_null_profile_cap_branch.lean",
+      "mtime": 1777928217.814866,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_null_profile_cap_obligation.lean",
+      "mtime": 1777928511.9131618,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_parity_transversality_target.lean",
+      "mtime": 1777552661.950436,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_phase_scrambling_bridge.lean",
+      "mtime": 1777521769.4978511,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_pressure_hessian_l2_bridge.lean",
+      "mtime": 1777747355.8705983,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_pressure_pollution_bridge.lean",
+      "mtime": 1777551464.3124256,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_pricing_kernel_countable_limit.lean",
+      "mtime": 1777923386.910145,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_pricing_kernel_limit_passage.lean",
+      "mtime": 1777919104.957375,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_profile_lipschitz_clay_bridge.lean",
+      "mtime": 1777936248.4504442,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_proof_spine.lean",
+      "mtime": 1777520955.203683,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_quadrupole_identity.lean",
+      "mtime": 1777747355.8000157,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_recurrence_hysteresis.lean",
+      "mtime": 1777513066.9912617,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_resupply_escape_pincer.lean",
+      "mtime": 1777811347.5602748,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route1_constructive_frontier.lean",
+      "mtime": 1777753987.99609,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route1_frequency_collapse_obstruction.lean",
+      "mtime": 1777765003.0360286,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route1_killer_theorem_search.lean",
+      "mtime": 1777759667.016476,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route1_next_killer_hinges.lean",
+      "mtime": 1777759652.6179335,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_constructive_frontier.lean",
+      "mtime": 1777755828.041554,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_exponential_metric_curvature_capacity.lean",
+      "mtime": 1777758060.4140332,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_global_offset_sufficiency.lean",
+      "mtime": 1777756767.2437727,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_killer_theorem_search.lean",
+      "mtime": 1777764724.3537123,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_microlocal_global_leak.lean",
+      "mtime": 1777758047.3102758,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_next_killer_hinges.lean",
+      "mtime": 1777759299.8592355,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_offset_candidate_families.lean",
+      "mtime": 1777756188.8007097,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_periodic_metric_reset.lean",
+      "mtime": 1777758035.0367682,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_post_obstruction_theorem_search.lean",
+      "mtime": 1777765251.857917,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_postrun_survivor_surface.lean",
+      "mtime": 1777758076.3915286,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_remaining_survivors.lean",
+      "mtime": 1777764893.29966,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_secondary_offset_bridge.lean",
+      "mtime": 1777755648.760834,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_survivor_elimination.lean",
+      "mtime": 1777764797.2807186,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_survivor_theorem_search.lean",
+      "mtime": 1777758215.7093322,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_tensor_absorption_ellipticity.lean",
+      "mtime": 1777756909.0201874,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route5_topological_offset_mismatch.lean",
+      "mtime": 1777756565.6403677,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_route_reranking_frontier.lean",
+      "mtime": 1777758989.3589919,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_same_shell_remainder_charging_obligation.lean",
+      "mtime": 1777936391.7990038,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_section_budget_bounds.lean",
+      "mtime": 1777515746.308388,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_section_dichotomy.lean",
+      "mtime": 1777515729.231778,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_section_tax_bridge.lean",
+      "mtime": 1777516141.5129108,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_self_generated_pressure_transversality.lean",
+      "mtime": 1777552415.156155,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_signed_escape_coordinate.lean",
+      "mtime": 1777506835.1617022,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_singular_value_compensation.lean",
+      "mtime": 1777516586.9265819,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_sos_certificate_bridge.lean",
+      "mtime": 1777579913.8386495,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_sos_section_margin_bridge.lean",
+      "mtime": 1777587376.8258386,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_spectral_diseconomy_toxic_block.lean",
+      "mtime": 1777586749.555663,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_stealth_coverage_case_split.lean",
+      "mtime": 1777605293.929751,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_stealth_coverage_section_bridge.lean",
+      "mtime": 1777605797.5013807,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_stealth_growth_tradeoff.lean",
+      "mtime": 1777578517.9067261,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_strain_aligned_connection_bypass.lean",
+      "mtime": 1777749743.1108556,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_structural_misalignment.lean",
+      "mtime": 1777506347.1265428,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_subdyadic_summability_barrier.lean",
+      "mtime": 1777752986.3474743,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_tensor_metric_pressure_absorption.lean",
+      "mtime": 1777753136.059041,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_tensor_metric_pressure_l2_bridge.lean",
+      "mtime": 1777753287.2670712,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_time_rate_pincer.lean",
+      "mtime": 1777518526.7186005,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_topological_gridlock.lean",
+      "mtime": 1777549912.9970279,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_trackb_profile_decomposition_spine.lean",
+      "mtime": 1777930867.6817677,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_trackb_sos_pricing_kernel_receipt.lean",
+      "mtime": 1777943253.140392,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_translation_covariant_matrix_exclusion.lean",
+      "mtime": 1777909381.1729825,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_universal_state_pricing_split.lean",
+      "mtime": 1777942871.512322,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_vanishing_branch.lean",
+      "mtime": 1777930310.1457999,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_viscous_exhaust_horizon.lean",
+      "mtime": 1777514939.5719705,
+      "kind": "lean_proof_object"
+    },
+    {
+      "file": "ns_zeno_gridlock_threshold.lean",
+      "mtime": 1777551289.5790858,
+      "kind": "lean_proof_object"
+    }
+  ],
+  "gate_files": [],
+  "phases_sorted": [
+    "5f",
+    "5h",
+    "5j",
+    "5k",
+    "5l",
+    "5m",
+    "5n",
+    "5o",
+    "5p",
+    "5q",
+    "5r",
+    "5s",
+    "5t",
+    "5u",
+    "5v",
+    "5w",
+    "5x",
+    "5y",
+    "5aa",
+    "5ab",
+    "5ac",
+    "5ad",
+    "5ae",
+    "5af",
+    "5ag",
+    "5ah",
+    "5ai",
+    "5aj",
+    "5ak",
+    "5al",
+    "5am",
+    "5an",
+    "5ao",
+    "5ap",
+    "5aq",
+    "5ar",
+    "5as",
+    "5at",
+    "5au",
+    "5av",
+    "5aw",
+    "5ax",
+    "5ay",
+    "5az",
+    "5ba",
+    "5bb",
+    "5bc",
+    "5bd",
+    "5be",
+    "5bf",
+    "5bg",
+    "5bh",
+    "5bi",
+    "5bj",
+    "5bk",
+    "5bl",
+    "5bm",
+    "5bn",
+    "5bo",
+    "5bp",
+    "5bq",
+    "5br",
+    "5bs",
+    "5bt",
+    "5bu",
+    "5bv",
+    "5bw",
+    "5bx",
+    "5by",
+    "5bz",
+    "5ca",
+    "5cb",
+    "5cc",
+    "5cg",
+    "5ch",
+    "5ci",
+    "5cj",
+    "5ck",
+    "5cl",
+    "5cm",
+    "5cn",
+    "5co",
+    "5cq",
+    "5cr",
+    "5cs",
+    "5ct",
+    "5cu",
+    "5cv",
+    "5cw",
+    "5cx",
+    "5cy",
+    "5cz",
+    "5da",
+    "5db",
+    "5dc",
+    "5dd",
+    "5de",
+    "5df",
+    "5dg",
+    "5dh",
+    "5di",
+    "5dj",
+    "5dk",
+    "5dl",
+    "5dm",
+    "5dn",
+    "5do",
+    "5dp",
+    "5dq",
+    "5dr",
+    "5ds",
+    "5dt",
+    "5du",
+    "5dv",
+    "5dw",
+    "5dx",
+    "5dy",
+    "5dz",
+    "5ea",
+    "5eb",
+    "5ec",
+    "5ed",
+    "5ee",
+    "5ef",
+    "5eg",
+    "5eh",
+    "5ei",
+    "5ej",
+    "5ek",
+    "5el",
+    "5em",
+    "5en",
+    "5eo",
+    "5ep",
+    "5eq",
+    "5er",
+    "5es",
+    "5et",
+    "5eu",
+    "5ev",
+    "5ew",
+    "5ex",
+    "5ey",
+    "5ez",
+    "5fa",
+    "5fb",
+    "5fc",
+    "5fd",
+    "5fe",
+    "5fi",
+    "5fj",
+    "5fk",
+    "5fl",
+    "5fm",
+    "5fn",
+    "5fo",
+    "5fq",
+    "5fr",
+    "5fs",
+    "5ft",
+    "5fu",
+    "5fv",
+    "5fw",
+    "5fx",
+    "5fy",
+    "5fz",
+    "5ga",
+    "5gb",
+    "5gc",
+    "5gd",
+    "5ge"
+  ]
+}

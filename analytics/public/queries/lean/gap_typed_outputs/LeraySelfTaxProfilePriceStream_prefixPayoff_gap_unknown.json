@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-06T14:58:04.627453+00:00",
+  "target": "LeraySelfTaxProfilePriceStream",
+  "field": "prefixPayoff",
+  "classification": {
+    "gap_type": "UNKNOWN",
+    "confidence": "low",
+    "rationale": "No strong local lexical evidence for a supported gap type.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

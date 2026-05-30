@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_silent_flat_residual_aggregation_tick456_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_silent_flat_residual_aggregation_tick456_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_silent_flat_residual_aggregation_tick456_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_silent_flat_residual_aggregation_tick456_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_silent_flat_residual_aggregation_tick456_20260514.json"
+  },
+  "baseline_action": "Ship Mathlib-derived aggregation theorem with anti-wrapper discipline applied in-artifact",
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_silent_flat_residual_aggregation_tick456_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Skip and continue typed-bridge wrappers per prior pattern",
+  "created_at": "2026-05-15T02:57:35Z",
+  "created_by": "claude_principal",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_mathlib_aggregation",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-15 EOD",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "lean_compile_plus_mathlib_lemma_count_and_no_projection_bodies",
+  "question": "Can the aggregation step of SilentFlatResidualRadiusCharge \u2014 \u03a3 c\u00b7radius Q \u2264 \u03bc K \u2014 be proved via real Mathlib measure-theory lemmas (Finset.sum_le_sum, measure_biUnion_finset, measure_mono) with zero wrapper-style projection bodies and zero rfl identity theorems, satisfying all 5 anti-wrapper rules?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_clay_mathlib_aggregation",
+  "value_if_success": 1.0,
+  "void_conditions": "Toolchain timeout > 25 min"
+}

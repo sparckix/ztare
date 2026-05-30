@@ -1,0 +1,22 @@
+{
+  "agent_id": "Euler",
+  "contract_id": "ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314",
+  "contract_question": "Will this tick add a compiling angular-moment pressure tail-mass visibility bridge that routes existing angularMomentDominance into Route1PressureHessianL2TailMassCertificate or TailMassVisibility?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 35.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "angular_to_hessian_carrier_gap": 0.28,
+    "build_regression": 0.08,
+    "lean_friction": 0.1,
+    "route_tail_scale_to_core_floor_gap": 0.2,
+    "same_scale_sheath_cancellation": 0.34
+  },
+  "forecasted_at": "2026-05-13T23:47:44Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.92,
+  "p_regression": 0.06,
+  "p_success": 0.84,
+  "rationale_short": "Compile surface likely high from existing angular and pressure-tail certificate objects; true PDE discharge remains low because non-null visibility is the hard direction.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,25 @@
+{
+  "agent_id": "gp230_ohm_skeptical_gp225_v1951",
+  "contract_id": "gp225_v1951_public_tacgen_plus_local_error_replay",
+  "contract_question": "Will GP-225 v19.51 bundled execution produce at least one new strict same-target row beyond v19.45's two strict rows, with harmful_compiled_mismatch_rows=0 and clean source policy, using ReProver direct tacgen if model staging succeeds plus clean local error-packet replay?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 31.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_compiles_but_only_pull_forward_not_strict": 0.17,
+    "clean_execution_but_no_new_strict_row": 0.15,
+    "harmful_mismatch_or_clean_policy_regression": 0.04,
+    "hf_model_staging_download_auth_or_cache_failure": 0.22,
+    "lean_replay_or_adapter_harness_friction": 0.05,
+    "local_error_packet_tactic_syntax_or_name_failure": 0.1,
+    "reprover_tacgen_invalid_or_off_context_tactic": 0.21,
+    "source_policy_or_quarantine_blocks_high_signal_row": 0.06
+  },
+  "forecasted_at": "2026-05-14T01:09:35Z",
+  "p_dependency_issue": 0.4,
+  "p_needs_new_lemma": 0.45,
+  "p_regression": 0.07,
+  "p_success": 0.33,
+  "rationale_short": "Strict label win remains below even odds because v19.49 failed strict, public tacgen needs HF staging, and local queue may produce pull-forward rather than same-target rows.",
+  "read_only_attestation": true
+}

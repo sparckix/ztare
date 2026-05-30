@@ -1,0 +1,31 @@
+{
+  "tick_id": "TICK668",
+  "level": 529,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "L3A typed coverage packet can be sourced from downstream Level517 enumeration",
+      "check": "introduce upstream TypedBadCenterEventPrefixCoversSelectedBadTree and construct the L3A packet from it"
+    },
+    {
+      "residual": "ordinary coverage appearance is Prop-only",
+      "check": "typed primitive carries selected-bad-node appearance as a Fin-valued sigma witness"
+    }
+  ],
+  "surplus_projection_artifact": {
+    "source": "NSL3MultiscaleYM.TypedBadCenterEventPrefixCoversSelectedBadTree",
+    "projection": "Forward coverage and typedSelectedBadNodeAppearance into L3ATypedBadCenterEventPrefixCoveragePacket.",
+    "target": "L3ATypedBadCenterEventPrefixCoveragePacket"
+  },
+  "claim_boundary": {
+    "broad": "This does not prove the typed coverage primitive from raw event geometry.",
+    "narrow": "This promotes the exact typed primitive required upstream and proves it constructs the L3A typed packet without Level517/518/519 source families."
+  },
+  "nearest_confuser": "L3AEventPrefixEnumerationTypedCoveragePacketSource",
+  "next_lever": "prove TypedBadCenterEventPrefixCoversSelectedBadTree from finite-prefix exhaustion, event ordering, and same-tree incidence"
+}

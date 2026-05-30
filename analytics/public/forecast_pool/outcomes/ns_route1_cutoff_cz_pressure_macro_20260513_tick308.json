@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": null,
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_cutoff_cz_pressure_macro_20260513_tick308",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "Compiled cutoff/CZ commutator leakage source station and changed pressure-remainder frontier to endpoint/boundary split source estimates.",
+  "resolved_at": "2026-05-13T23:16:25Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

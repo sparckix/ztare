@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_faraday_gp225_v1968",
+  "contract_id": "gp225_v1968_candidate_backed_bundled_replay",
+  "contract_question": "Will the candidate-backed bundled GP-225 replay over v19.66/v19.67 produce at least 4 new unique strict target-state rows and at least 1 target-state-to-full-closure conversion across at least 40 clean candidate actions, with harmful mismatches zero and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 36.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "closure_conversion_does_not_follow_target_state": 0.24,
+    "generic_candidate_templates_low_compile_yield": 0.16,
+    "other": 0.16,
+    "row_distribution_shift": 0.12,
+    "runtime_or_hydration_regression": 0.08,
+    "strict_label_threshold_still_too_high": 0.24
+  },
+  "forecasted_at": "2026-05-14T03:26:09Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.04,
+  "p_success": 0.44,
+  "rationale_short": "Candidate denominator and hydration readiness materially improve the replay odds versus v19.63. The route is worth a bounded replay audit, but closure conversion is still the hard term and prevents a >0.5 price.",
+  "read_only_attestation": true
+}

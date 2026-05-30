@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 24.0,
+  "artifact_hash": "760e18bd6b293f248d8444d1cfdd93dfe81362afac51e15e3ed6fccc13363e43",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/fixed_window_cone_packet_scout_20260514.json",
+  "compile_status": "offline_script_passed",
+  "contract_id": "ns_route1_fixed_window_packet_scout_micro_20260514_tick327",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Added and ran deterministic fixed-window cone packet scout. It emitted JSON/Markdown, constructed exact amplitude-tuned cancellations for 64/64 sampled nonzero symmetric trace-free tensors, and returned GEOMETRY_ONLY_NO_GO. No pre-GNN harness mutation.",
+  "resolved_at": "2026-05-14T01:42:17Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

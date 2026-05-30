@@ -1,0 +1,133 @@
+{
+  "contract_id": "gp225_v2053_charfun_dual_normalization_source_safety_audit",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Proceed directly from v20.52 to replay.",
+      "counterfactual_action": "Audit normalizer source-safety before replay.",
+      "externality_hypotheses": {
+        "negative": [
+          "may defer replay another tick"
+        ],
+        "positive": [
+          "reduces proof-line leakage risk",
+          "distinguishes source-safe normalizers from target proof reuse"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Noether2",
+        "Turing2"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "anti_leakage",
+        "source_safety",
+        "replay_gate"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "no_compile_evidence",
+        "replay_deferred"
+      ],
+      "new_next_action": "generate separate one-row replay packet after source-safety audit",
+      "old_next_action": "proceed directly from source hinge to replay",
+      "preconditioner_effect": "Converted normalization-obligation-only templates into an explicit source-safety audit before replay.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2052_nonself_charfun_dual_candidate_synthesis_gate.json"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.044499999999999984,
+  "mean_log_score": -0.23604289772503,
+  "outcome": {
+    "actual_cost_agent_minutes": 17.0,
+    "artifact_hash": "2886139155b24cd2be09e531d58d3620f9984093fb34c08cb974eeaa1d3aaa22",
+    "artifact_path": "analytics/public/leanmill/results/v2053_charfun_dual_normalization_source_safety_audit.json",
+    "changed_by_forecast_ids": [
+      "Noether2",
+      "Turing2"
+    ],
+    "compile_status": "static_source_audit_passed",
+    "contract_id": "gp225_v2053_charfun_dual_normalization_source_safety_audit",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "anti_leakage",
+      "source_safety",
+      "replay_gate"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "no_compile_evidence",
+      "replay_deferred"
+    ],
+    "new_next_action": "generate separate one-row replay packet after source-safety audit",
+    "old_next_action": "proceed directly from source hinge to replay",
+    "preconditioner_effect": "Converted normalization-obligation-only templates into an explicit source-safety audit before replay.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2052_nonself_charfun_dual_candidate_synthesis_gate.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.53 passed: verified four normalizers and two bridge preconditions as source-safe or before-target inputs; blocked target rw-list as evidence; no replay/training; GNN remains blocked.",
+    "resolved_at": "2026-05-14T18:00:22Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:00:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 17.0,
+      "agent_id": "Noether2",
+      "brier": 0.03609999999999998,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "gp225_pre_gnn_source_audit",
+      "expected_cost_agent_minutes": 16.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.21072103131565253,
+      "p_success": 0.81,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:58:24Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:58:38Z",
+        "resolved_at": "2026-05-14T18:00:22Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 17.0,
+      "agent_id": "Turing2",
+      "brier": 0.05289999999999999,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "gp225_pre_gnn_source_audit",
+      "expected_cost_agent_minutes": 18.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2613647641344075,
+      "p_success": 0.77,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:58:24Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:58:38Z",
+        "resolved_at": "2026-05-14T18:00:22Z"
+      }
+    }
+  ]
+}

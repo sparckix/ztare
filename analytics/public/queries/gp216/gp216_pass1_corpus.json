@@ -1,0 +1,938 @@
+{
+  "experiment": "gp216_pass1_corpus_enumeration",
+  "n_arcs": 8,
+  "total_moves": 161,
+  "arcs": [
+    {
+      "id": "wiles_flt",
+      "title": "Andrew Wiles's proof of Fermat's Last Theorem (1986\u20131995)",
+      "description": "Andrew Wiles spent seven years constructing a proof that no positive integers a, b, c satisfy a^n + b^n = c^n for n > 2. The proof did not attack the equation directly. Wiles instead established a special case of the Taniyama-Shimura conjecture: every semistable elliptic curve over the rationals is modular. Combined with Frey's curve construction and Ribet's level-lowering theorem, this implies FLT. Wiles built his proof through deformation theory of Galois representations, an R = T isomorphism between deformation rings and Hecke algebras, and a passage from residual modularity (mod 3, mod 5) to full modularity. The first announcement (1993) had a gap in the Euler system step; Wiles and Richard Taylor closed it (1995) by replacing the failed Euler system argument with a different technique using Iwasawa theory."
+    },
+    {
+      "id": "grothendieck_schemes",
+      "title": "Alexander Grothendieck's introduction of schemes (1957\u20131970)",
+      "description": "Algebraic geometry before Grothendieck studied varieties: solution sets of polynomial equations over fields. Grothendieck replaced the variety with the SCHEME, an object built from any commutative ring's prime spectrum, glued along a sheaf of rings. This let Grothendieck handle: nilpotent elements (which varieties cannot see), arithmetic and geometry simultaneously (number rings and function fields became the same kind of object), generic points, base changes, families of varieties parametrized by another scheme. He developed \u00e9tale cohomology to give Weil-style cohomology theories with coefficients in finite fields, eventually leading to Deligne's proof of the Weil conjectures. The construction proceeded by identifying universal properties (every construction had to be characterized by what mapped into or out of it) and by demanding that all definitions be functorial."
+    },
+    {
+      "id": "lurie_htt",
+      "title": "Jacob Lurie's Higher Topos Theory and \u221e-categories (2009)",
+      "description": "Mathematicians had several models of weak higher categories that were equivalent in spirit but technically incompatible. Lurie selected the quasicategory model (Joyal/Boardman-Vogt) and built a comprehensive theory: an infinity-categorical version of category theory that includes adjoint functors, limits, colimits, Kan extensions, and a full theory of \u221e-topoi. The motivation was that derived categories, stable homotopy theory, and \u00e9tale homotopy types had been suffering from the lack of a categorical framework that handled them natively. By promoting homotopy-coherent versions of every standard categorical construction, Lurie made it possible to do derived algebraic geometry, derived deformation theory, and topological field theory inside a single language."
+    },
+    {
+      "id": "scholze_perfectoid",
+      "title": "Peter Scholze's perfectoid spaces and diamonds (2011\u2013present)",
+      "description": "Scholze defined a perfectoid space: a topological ring object satisfying a Frobenius lift condition that lets characteristic-0 and characteristic-p geometry be tilted into each other. Scholze used perfectoid spaces to give a uniform proof of Deligne's weight-monodromy conjecture in many cases, prove the local Langlands correspondence in new settings, and build new cohomology theories. He later introduced diamonds, which are quotients of perfectoid spaces by pro-\u00e9tale equivalence relations, and used them to define the Fargues-Fontaine curve in a way that unified p-adic Hodge theory with global Langlands. Each step was motivated by a specific gap: a phenomenon was visible empirically (e.g., the Frobenius-perfection trick in p-adic Hodge theory) but lacked a unified object that made it categorical."
+    },
+    {
+      "id": "riemann_surfaces",
+      "title": "Riemann's introduction of Riemann surfaces (1851\u20131857)",
+      "description": "Bernhard Riemann was confronted with multi-valued analytic functions like sqrt(z) and log(z), which mathematicians of his time had handled by branch cuts and conventions about which value to pick. Riemann replaced the multi-valued function on the complex plane with a single-valued function on a new geometric object \u2014 the Riemann surface \u2014 constructed by gluing copies of the plane together along the branch cuts. This transformed the study of algebraic functions into the study of compact orientable two-manifolds equipped with complex structure, whose topology (genus, cycles) carried structural information about the function. The Riemann-Roch theorem then connected the topological invariants of the surface to dimensions of spaces of meromorphic functions and differentials on it."
+    },
+    {
+      "id": "newton_calculus",
+      "title": "Newton's invention of calculus and the principia (1665\u20131687)",
+      "description": "Newton confronted simultaneous problems: tangent lines to curves, instantaneous velocities, areas under curves, and planetary orbits. Existing methods handled each in isolation. Newton introduced fluxions (derivatives) and the inverse method (integrals) and recognized them as inverse operations. He developed the calculus of infinite series for handling functions defined implicitly. He treated instantaneous velocity as a limit of average velocities \u2014 a concept that took two centuries to be made rigorous. Applied to physics: gravity acts at a distance, the same law (inverse-square) explains both falling apples and elliptical planetary orbits, and a small set of axioms (three laws of motion, universal gravitation) yields all of celestial mechanics. Calculus and physics co-evolved: each was needed to make the other operational."
+    },
+    {
+      "id": "einstein_gr",
+      "title": "Einstein's General Relativity (1907\u20131915)",
+      "description": "Einstein began with the equivalence principle: a uniformly accelerating frame is indistinguishable from a uniform gravitational field. Over eight years he searched for a tensor-valued field equation that recovered Newtonian gravity in the weak-field limit, was generally covariant (no preferred frames), and conserved energy-momentum. Mathematical inputs from Marcel Grossmann and the Ricci-Levi-Civita absolute differential calculus (now called tensor calculus) provided the language. Einstein's 1913 'Entwurf' theory failed (not generally covariant). The 1915 field equations G_\u03bc\u03bd = 8\u03c0G T_\u03bc\u03bd resulted from realizing that the Bianchi identities forced the form of the equation once general covariance was demanded. Two predictions were specific and falsifiable: perihelion of Mercury (43 arcsec/century, observed match within one year) and bending of starlight (Eddington 1919 confirmed it)."
+    },
+    {
+      "id": "polya_hadamard_meta",
+      "title": "Polya's How to Solve It (1945) and Hadamard's Psychology of Invention (1945)",
+      "description": "Polya systematized the heuristics of mathematical problem-solving: understand the problem, devise a plan, carry out the plan, look back. Inside the 'devise a plan' step Polya catalogued moves: have you seen this before? specialize, generalize, consider an analogous problem, work backward, decompose, recombine, vary the problem (drop a hypothesis, weaken a conclusion, swap roles of given and unknown). Hadamard documented his and others' (notably Poincar\u00e9's) introspective accounts of discovery: a period of conscious work, then incubation, then sudden insight, then verification. Both works refused to claim mechanical algorithms \u2014 heuristics are guides, not procedures, and the moment of insight resists decomposition."
+    }
+  ],
+  "results": {
+    "sonnet": {
+      "wiles_flt": {
+        "arc_id": "wiles_flt",
+        "moves": [
+          {
+            "name": "Indirect Target Substitution",
+            "signature": "Replacing an intractable target problem with a structurally equivalent surrogate problem whose solution entails the original.",
+            "anchor": "did not attack the equation directly; instead established a special case of Taniyama-Shimura"
+          },
+          {
+            "name": "Bridge Theorem Chaining",
+            "signature": "Linking independently established results in sequence so that their conjunction yields the desired conclusion.",
+            "anchor": "combined with Frey's curve construction and Ribet's level-lowering theorem, this implies FLT"
+          },
+          {
+            "name": "Scope Restriction",
+            "signature": "Narrowing the domain of a general conjecture to a tractable subclass while preserving sufficiency for the goal.",
+            "anchor": "established a special case\u2026 every semistable elliptic curve"
+          },
+          {
+            "name": "Structural Isomorphism Construction",
+            "signature": "Building an explicit correspondence between two independently defined objects to transfer properties from one to the other.",
+            "anchor": "R = T isomorphism between deformation rings and Hecke algebras"
+          },
+          {
+            "name": "Residual-to-Global Lifting",
+            "signature": "Proving a property holds in a reduced or approximate setting, then extending the argument to the full unrestricted case.",
+            "anchor": "passage from residual modularity (mod 3, mod 5) to full modularity"
+          },
+          {
+            "name": "Prolonged Covert Development",
+            "signature": "Pursuing a long-term research program in isolation to avoid premature exposure of an incomplete framework.",
+            "anchor": "Wiles spent seven years constructing a proof"
+          },
+          {
+            "name": "Parametric Family Encoding",
+            "signature": "Organizing a collection of related objects into a continuously varying family so that global structure can be studied through the family's deformation.",
+            "anchor": "deformation theory of Galois representations"
+          },
+          {
+            "name": "Public Gap Acknowledgment",
+            "signature": "Openly identifying a specific flaw in a announced result rather than allowing an incorrect claim to stand.",
+            "anchor": "the first announcement (1993) had a gap in the Euler system step"
+          },
+          {
+            "name": "Failed-Path Replacement",
+            "signature": "Abandoning a specific sub-method that cannot be repaired and substituting an alternative technique that achieves the same sub-goal.",
+            "anchor": "replacing the failed Euler system argument with a different technique using Iwasawa theory"
+          },
+          {
+            "name": "Collaborative Gap Closure",
+            "signature": "Recruiting a collaborator to jointly resolve a localized obstruction within an otherwise complete framework.",
+            "anchor": "Wiles and Richard Taylor closed it (1995)"
+          },
+          {
+            "name": "Inherited Result Leverage",
+            "signature": "Incorporating a prior result proved by others as a load-bearing component of a new argument rather than re-deriving it.",
+            "anchor": "Ribet's level-lowering theorem\u2026 Frey's curve construction"
+          }
+        ]
+      },
+      "grothendieck_schemes": {
+        "arc_id": "grothendieck_schemes",
+        "moves": [
+          {
+            "name": "Container Generalization",
+            "signature": "Replace a restricted class of objects with a strictly larger class defined by relaxing the founding constraints, so the original objects become special cases.",
+            "anchor": "replaced the variety with the scheme, built from any commutative ring"
+          },
+          {
+            "name": "Invisible Feature Absorption",
+            "signature": "Redesign the foundational object so that phenomena previously invisible to the framework become first-class, representable elements.",
+            "anchor": "handle nilpotent elements, which varieties cannot see"
+          },
+          {
+            "name": "Domain Unification via Analogy",
+            "signature": "Identify two previously separate domains as instances of a single structural type, collapsing the boundary between them.",
+            "anchor": "number rings and function fields became the same kind of object"
+          },
+          {
+            "name": "Relational Characterization",
+            "signature": "Define every object not by its internal constitution but solely by its pattern of relationships to all other objects in the category.",
+            "anchor": "every construction had to be characterized by what mapped into or out of it"
+          },
+          {
+            "name": "Transformation Consistency Demand",
+            "signature": "Impose a global coherence requirement that all constructions must respect morphisms, ruling out definitions that work only object-by-object.",
+            "anchor": "demanding that all definitions be functorial"
+          },
+          {
+            "name": "Local-to-Global Assembly",
+            "signature": "Construct a global object by specifying local pieces and explicit gluing data that governs how the pieces cohere.",
+            "anchor": "glued along a sheaf of rings"
+          },
+          {
+            "name": "Parameter Space Internalization",
+            "signature": "Treat a continuously varying family of objects as a single object in the same framework, so families and individuals are handled uniformly.",
+            "anchor": "families of varieties parametrized by another scheme"
+          },
+          {
+            "name": "Reference Point Generalization",
+            "signature": "Replace a fixed ground context with a variable one, so all constructions are defined relative to an arbitrary base rather than a privileged default.",
+            "anchor": "base changes"
+          },
+          {
+            "name": "Limit Point Reification",
+            "signature": "Introduce formal representatives for limiting or degenerate cases that previously had no explicit standing in the framework.",
+            "anchor": "generic points"
+          },
+          {
+            "name": "Parallel Machinery Construction",
+            "signature": "Build a new computational or measurement apparatus that mirrors an existing one but operates under the constraints of the new, generalized setting.",
+            "anchor": "developed \u00e9tale cohomology to give Weil-style cohomology theories with coefficients in finite fields"
+          },
+          {
+            "name": "Deferred Payoff Harvesting",
+            "signature": "Allow a successor to extract a major result by applying the machinery already erected, with the original architect's framework doing the structural load-bearing.",
+            "anchor": "eventually leading to Deligne's proof of the Weil conjectures"
+          }
+        ]
+      },
+      "lurie_htt": {
+        "arc_id": "lurie_htt",
+        "moves": [
+          {
+            "name": "Single Model Selection",
+            "signature": "From multiple equivalent but mutually incompatible representations, one is chosen as the working substrate for systematic development.",
+            "anchor": "selected the quasicategory model among several technically incompatible alternatives"
+          },
+          {
+            "name": "Deficit Inventory",
+            "signature": "Existing successful frameworks are surveyed specifically to catalog what structural machinery they lack, motivating the new construction.",
+            "anchor": "derived categories and stable homotopy theory suffering from lack of a categorical framework"
+          },
+          {
+            "name": "Wholesale Lifting",
+            "signature": "An entire established vocabulary of constructions is systematically re-instantiated at a higher or more general level, preserving the original structure's shape.",
+            "anchor": "promoting homotopy-coherent versions of every standard categorical construction"
+          },
+          {
+            "name": "Coherence Internalization",
+            "signature": "Conditions that were previously external constraints or side obligations are absorbed into the core objects so they are automatically satisfied.",
+            "anchor": "handled natively \u2014 coherence built into the framework rather than imposed afterward"
+          },
+          {
+            "name": "Comprehensive Scope Commitment",
+            "signature": "The builder explicitly commits to reproducing a full reference theory rather than selected parts, establishing completeness as a design criterion.",
+            "anchor": "comprehensive theory including adjoint functors, limits, colimits, Kan extensions"
+          },
+          {
+            "name": "Unification by Common Language",
+            "signature": "Disparate fields that previously required separate formalisms are brought under one framework, making cross-domain translation automatic.",
+            "anchor": "derived algebraic geometry, deformation theory, and topological field theory inside a single language"
+          },
+          {
+            "name": "Retroactive Sufficiency Claim",
+            "signature": "The new framework is positioned as what prior successful work had implicitly needed all along, reframing past results as partial instances.",
+            "anchor": "derived categories had been suffering from the lack \u2014 the new theory supplies what was missing"
+          },
+          {
+            "name": "Equivalence Class Reduction",
+            "signature": "A family of mutually equivalent objects is collapsed to a canonical representative to enable rigorous manipulation without loss of generality.",
+            "anchor": "equivalent in spirit but technically incompatible models reduced to one working choice"
+          },
+          {
+            "name": "Incremental Reconstruction",
+            "signature": "The new framework is built by methodically reconstructing familiar results one by one in the new setting, establishing trust through correspondence.",
+            "anchor": "infinity-categorical version of category theory reproducing the classical theory piece by piece"
+          },
+          {
+            "name": "Capstone Object Introduction",
+            "signature": "After rebuilding foundational machinery, a central high-level object is defined that justifies and crowns the entire construction.",
+            "anchor": "full theory of \u221e-topoi as the culminating structure of the framework"
+          }
+        ]
+      },
+      "scholze_perfectoid": {
+        "arc_id": "scholze_perfectoid",
+        "moves": [
+          {
+            "name": "Observed Gap Formalization",
+            "signature": "A phenomenon known informally or empirically is identified as lacking a rigorous unifying object, motivating construction of one.",
+            "anchor": "a phenomenon was visible empirically but lacked a unified object that made it categorical"
+          },
+          {
+            "name": "Condition-Bounded Definition",
+            "signature": "A new entity is defined by specifying the precise structural conditions it must satisfy, rather than by example or analogy.",
+            "anchor": "a topological ring object satisfying a Frobenius lift condition"
+          },
+          {
+            "name": "Cross-Regime Bridge",
+            "signature": "A constructed object is shown to mediate between two previously separate formal regimes, enabling transfer of results across them.",
+            "anchor": "lets characteristic-0 and characteristic-p geometry be tilted into each other"
+          },
+          {
+            "name": "Uniform Proof Consolidation",
+            "signature": "Multiple previously case-specific or partial results are subsumed under a single argument enabled by the new framework.",
+            "anchor": "give a uniform proof of Deligne's weight-monodromy conjecture in many cases"
+          },
+          {
+            "name": "Framework Stress-Testing",
+            "signature": "The new object is applied to established open problems to demonstrate its load-bearing capacity beyond its original motivation.",
+            "anchor": "prove the local Langlands correspondence in new settings"
+          },
+          {
+            "name": "Quotient Object Construction",
+            "signature": "A more general entity is produced by taking an existing object and modding out by an equivalence relation, expanding the class of representable structures.",
+            "anchor": "diamonds, which are quotients of perfectoid spaces by pro-\u00e9tale equivalence relations"
+          },
+          {
+            "name": "Abstraction Ladder Ascent",
+            "signature": "After establishing a base-level construction, a higher-order abstraction is introduced that subsumes the original as a special case.",
+            "anchor": "He later introduced diamonds"
+          },
+          {
+            "name": "Disparate Theory Unification",
+            "signature": "A new construction is used to show that two independently developed theoretical bodies share a common structural foundation.",
+            "anchor": "unified p-adic Hodge theory with global Langlands"
+          },
+          {
+            "name": "Categorical Repackaging",
+            "signature": "An existing informal or ad hoc technique is recast as a formal categorical object, making its properties systematically derivable.",
+            "anchor": "the Frobenius-perfection trick in p-adic Hodge theory lacked a unified object that made it categorical"
+          },
+          {
+            "name": "Iterative Gap Detection",
+            "signature": "Each successive construction is motivated by a new gap exposed by the previous one, creating a chain of problem-driven extensions.",
+            "anchor": "each step was motivated by a specific gap"
+          },
+          {
+            "name": "New Invariant Generation",
+            "signature": "The framework is used to define previously unavailable measurement or classification tools applicable across the domain.",
+            "anchor": "build new cohomology theories"
+          }
+        ]
+      },
+      "riemann_surfaces": {
+        "arc_id": "riemann_surfaces",
+        "moves": [
+          {
+            "name": "Obstacle Reframing",
+            "signature": "A problematic feature of the current representation is treated not as a defect to be patched but as a signal that the representation itself is inadequate.",
+            "anchor": "multi-valued functions handled by branch cuts and conventions"
+          },
+          {
+            "name": "Domain Substitution",
+            "signature": "The object of study is relocated from its original carrier space to a newly constructed one where the problematic behavior dissolves.",
+            "anchor": "replaced the multi-valued function on the complex plane with a single-valued function on a new geometric object"
+          },
+          {
+            "name": "Constructive Gluing",
+            "signature": "A new structural object is assembled by joining multiple copies of a familiar object along specified boundary correspondences.",
+            "anchor": "gluing copies of the plane together along the branch cuts"
+          },
+          {
+            "name": "Complexity Absorption",
+            "signature": "Irregularities that previously required case-by-case handling are absorbed into the intrinsic structure of the new object, making the function itself regular.",
+            "anchor": "single-valued function on a new geometric object"
+          },
+          {
+            "name": "Category Elevation",
+            "signature": "A class of problems previously framed in one mathematical category is recast as a problem in a higher or different category with richer invariants.",
+            "anchor": "transformed the study of algebraic functions into the study of compact orientable two-manifolds"
+          },
+          {
+            "name": "Invariant Extraction",
+            "signature": "Global structural properties of the new object are identified as stable, classification-relevant quantities that persist across local transformations.",
+            "anchor": "topology (genus, cycles) carried structural information about the function"
+          },
+          {
+            "name": "Cross-Domain Bridging",
+            "signature": "A quantitative relationship is established that equates invariants from two previously separate structural domains.",
+            "anchor": "Riemann-Roch theorem connected the topological invariants of the surface to dimensions of spaces of meromorphic functions"
+          },
+          {
+            "name": "Global-Local Inversion",
+            "signature": "Properties that were previously read off locally are shown to be determined by, or expressible in terms of, global structural features of the object.",
+            "anchor": "topological invariants... connected to dimensions of spaces of functions and differentials"
+          },
+          {
+            "name": "Representational Unification",
+            "signature": "Multiple previously distinct objects or cases are shown to be instances of a single unified structural type.",
+            "anchor": "study of algebraic functions into the study of compact orientable two-manifolds equipped with complex structure"
+          }
+        ]
+      },
+      "newton_calculus": {
+        "arc_id": "newton_calculus",
+        "moves": [
+          {
+            "name": "Problem Cluster Recognition",
+            "signature": "Multiple apparently distinct problems are reframed as instances of a single underlying structural challenge.",
+            "anchor": "tangent lines, instantaneous velocities, areas under curves, and planetary orbits confronted simultaneously"
+          },
+          {
+            "name": "Inverse Relation Discovery",
+            "signature": "Two operations previously treated as unrelated are identified as exact inverses of each other, unifying separate procedures.",
+            "anchor": "fluxions and the inverse method recognized as inverse operations"
+          },
+          {
+            "name": "Limit Substitution",
+            "signature": "An undefined or problematic quantity is replaced by the limiting behavior of a well-defined sequence of approximations.",
+            "anchor": "instantaneous velocity treated as a limit of average velocities"
+          },
+          {
+            "name": "Deferred Rigor Acceptance",
+            "signature": "A productive but incompletely justified concept is retained and deployed operationally, with full formal grounding left to later work.",
+            "anchor": "a concept that took two centuries to be made rigorous"
+          },
+          {
+            "name": "Scale-Invariant Law Assertion",
+            "signature": "A single governing rule is claimed to hold across phenomena at vastly different scales or domains, collapsing apparent distinctions.",
+            "anchor": "the same inverse-square law explains both falling apples and elliptical planetary orbits"
+          },
+          {
+            "name": "Axiomatic Compression",
+            "signature": "A large body of observed phenomena is derived from a minimal set of explicitly stated foundational principles.",
+            "anchor": "a small set of axioms yields all of celestial mechanics"
+          },
+          {
+            "name": "Cross-Domain Co-Evolution",
+            "signature": "Two developing frameworks are advanced in tandem, each providing the scaffolding the other needs to become operational.",
+            "anchor": "calculus and physics co-evolved: each was needed to make the other operational"
+          },
+          {
+            "name": "Implicit Object Expansion",
+            "signature": "The representational toolkit is extended to handle objects that resist direct explicit expression, enabling previously blocked computations.",
+            "anchor": "calculus of infinite series for handling functions defined implicitly"
+          },
+          {
+            "name": "Remote Cause Unification",
+            "signature": "A mechanism previously assumed to require local contact is generalized to act across distance, broadening the explanatory scope of a law.",
+            "anchor": "gravity acts at a distance"
+          },
+          {
+            "name": "Isolation-to-Integration Move",
+            "signature": "Methods that each solved one problem in isolation are replaced by a single framework that handles all of them as special cases.",
+            "anchor": "existing methods handled each in isolation; Newton introduced a unified calculus"
+          }
+        ]
+      },
+      "einstein_gr": {
+        "arc_id": "einstein_gr",
+        "moves": [
+          {
+            "name": "Seed Symmetry Principle",
+            "signature": "A single equivalence or indistinguishability claim is elevated to a foundational constraint that all subsequent structure must respect.",
+            "anchor": "a uniformly accelerating frame is indistinguishable from a uniform gravitational field"
+          },
+          {
+            "name": "Constraint Enumeration",
+            "signature": "The builder explicitly lists multiple independent requirements the target structure must simultaneously satisfy, framing the problem as a multi-constraint search.",
+            "anchor": "recovered Newtonian gravity in the weak-field limit, was generally covariant, and conserved energy-momentum"
+          },
+          {
+            "name": "External Language Adoption",
+            "signature": "The builder imports a pre-existing formal vocabulary from another domain to gain expressive power unavailable in the current framework.",
+            "anchor": "mathematical inputs from Grossmann and the Ricci-Levi-Civita absolute differential calculus provided the language"
+          },
+          {
+            "name": "Intermediate Candidate Rejection",
+            "signature": "A partially constructed solution is retained long enough to expose its deficiency, and that deficiency sharpens the criteria for the successor.",
+            "anchor": "Einstein's 1913 Entwurf theory failed \u2014 not generally covariant"
+          },
+          {
+            "name": "Prolonged Iterative Search",
+            "signature": "The builder sustains a directed but open-ended search over an extended period, resisting premature closure while criteria remain unmet.",
+            "anchor": "over eight years he searched for a tensor-valued field equation"
+          },
+          {
+            "name": "Hidden Structural Forcing",
+            "signature": "A pre-existing mathematical identity or theorem is recognized as secretly determining the form of the solution once the governing constraints are accepted.",
+            "anchor": "the Bianchi identities forced the form of the equation once general covariance was demanded"
+          },
+          {
+            "name": "Constraint Convergence",
+            "signature": "Multiple independent requirements, previously treated as separate demands, are discovered to jointly single out a unique or near-unique solution.",
+            "anchor": "realizing that the Bianchi identities forced the form once general covariance was demanded"
+          },
+          {
+            "name": "Legacy Limit Recovery",
+            "signature": "The new structure is required to reproduce an established predecessor theory as a special case, providing a continuity check and partial validation.",
+            "anchor": "recovered Newtonian gravity in the weak-field limit"
+          },
+          {
+            "name": "Sharp Quantitative Prediction",
+            "signature": "The theory is committed to a precise numerical value for an observable, making the framework concretely vulnerable to empirical refutation.",
+            "anchor": "perihelion of Mercury 43 arcsec/century"
+          },
+          {
+            "name": "Anomaly Absorption",
+            "signature": "A previously unexplained empirical discrepancy is shown to follow naturally from the new framework, converting a standing puzzle into supporting evidence.",
+            "anchor": "perihelion of Mercury \u2014 observed match within one year"
+          },
+          {
+            "name": "Novel Domain Prediction",
+            "signature": "The framework is extended to generate a prediction in a phenomenon entirely outside the domain that motivated the theory's construction.",
+            "anchor": "bending of starlight \u2014 Eddington 1919 confirmed it"
+          },
+          {
+            "name": "Collaborative Competence Bridging",
+            "signature": "The primary builder partners with a specialist in a complementary discipline to overcome a technical gap that would otherwise block progress.",
+            "anchor": "mathematical inputs from Marcel Grossmann"
+          }
+        ]
+      },
+      "polya_hadamard_meta": {
+        "arc_id": "polya_hadamard_meta",
+        "moves": [
+          {
+            "name": "Phase Sequence Articulation",
+            "signature": "A continuous process is carved into discrete, ordered stages to make it tractable and communicable.",
+            "anchor": "understand, devise a plan, carry out, look back"
+          },
+          {
+            "name": "Heuristic Inventory Building",
+            "signature": "Recurring informal strategies are collected, named, and listed without being collapsed into a single algorithm.",
+            "anchor": "Polya catalogued moves: specialize, generalize, work backward, decompose"
+          },
+          {
+            "name": "Relational Role Swapping",
+            "signature": "The structural positions of two elements in a problem are exchanged to reveal hidden symmetry or new solution paths.",
+            "anchor": "swap roles of given and unknown"
+          },
+          {
+            "name": "Constraint Relaxation",
+            "signature": "A condition defining the problem is weakened or removed to open a larger solution space that may illuminate the original.",
+            "anchor": "drop a hypothesis, weaken a conclusion"
+          },
+          {
+            "name": "Analogical Transfer Prompt",
+            "signature": "A solver is directed to retrieve a structurally similar prior problem and import its solution pattern.",
+            "anchor": "have you seen this before? consider an analogous problem"
+          },
+          {
+            "name": "Backward Chaining",
+            "signature": "Reasoning proceeds from the desired endpoint toward the starting conditions rather than forward from givens.",
+            "anchor": "work backward"
+          },
+          {
+            "name": "Introspective Data Collection",
+            "signature": "First-person phenomenological reports are treated as primary evidence about a process that cannot be directly observed.",
+            "anchor": "Hadamard documented his and others' introspective accounts of discovery"
+          },
+          {
+            "name": "Temporal Gap Recognition",
+            "signature": "An interval of non-deliberate processing between active effort and outcome is identified as a causally significant stage.",
+            "anchor": "a period of conscious work, then incubation, then sudden insight"
+          },
+          {
+            "name": "Discontinuity Marking",
+            "signature": "A qualitative break in the process \u2014 where gradual progress gives way to abrupt resolution \u2014 is named and treated as structurally distinct.",
+            "anchor": "sudden insight"
+          },
+          {
+            "name": "Algorithm Refusal",
+            "signature": "The theorist explicitly declines to reduce the described process to a mechanical procedure, preserving its irreducibly heuristic character.",
+            "anchor": "heuristics are guides, not procedures"
+          },
+          {
+            "name": "Decomposition and Recombination",
+            "signature": "A whole is broken into constituent parts and those parts are reassembled in a different configuration to generate new structure.",
+            "anchor": "decompose, recombine"
+          },
+          {
+            "name": "Scale Shifting",
+            "signature": "A specific instance is generalized upward or a general claim is narrowed downward to test or extend its scope.",
+            "anchor": "specialize, generalize"
+          },
+          {
+            "name": "Resistance Acknowledgment",
+            "signature": "A stage of the process is explicitly flagged as opaque to the framework's own analytical tools, preserving epistemic honesty.",
+            "anchor": "the moment of insight resists decomposition"
+          }
+        ]
+      }
+    },
+    "gemini": {
+      "wiles_flt": {
+        "arc_id": "wiles_flt",
+        "moves": [
+          {
+            "name": "Indirect Problem Substitution",
+            "signature": "A primary problem is solved by proving a different, more general conjecture known to imply the original one.",
+            "anchor": "established a special case of the Taniyama-Shimura conjecture"
+          },
+          {
+            "name": "Leveraging an Implication Chain",
+            "signature": "An existing logical sequence connecting a secondary problem to a primary one is utilized to justify a strategic shift.",
+            "anchor": "Combined with Frey's curve construction and Ribet's level-lowering theorem"
+          },
+          {
+            "name": "Adopting a Generative Framework",
+            "signature": "A broad theoretical system is chosen as the primary environment for constructing the solution.",
+            "anchor": "deformation theory of Galois representations"
+          },
+          {
+            "name": "Forging a Structural Equivalence",
+            "signature": "A fundamental correspondence is established between two seemingly distinct conceptual structures.",
+            "anchor": "an R = T isomorphism"
+          },
+          {
+            "name": "Scaling From Base Case",
+            "signature": "A simplified or partial version of the desired property is established first and then leveraged to prove the complete property.",
+            "anchor": "a passage from residual modularity (mod 3, mod 5) to full modularity"
+          },
+          {
+            "name": "Identifying a Logical Flaw",
+            "signature": "A critical error or missing link is discovered within the constructed argument.",
+            "anchor": "had a gap"
+          },
+          {
+            "name": "Isolating the Failure Point",
+            "signature": "The specific component or sub-argument responsible for a larger logical failure is precisely located.",
+            "anchor": "in the Euler system step"
+          },
+          {
+            "name": "Collaborative Problem Resolution",
+            "signature": "A key obstacle is overcome by bringing in a collaborator with relevant expertise.",
+            "anchor": "Wiles and Richard Taylor closed it"
+          },
+          {
+            "name": "Component Substitution Strategy",
+            "signature": "A flawed component of a larger argument is completely replaced with an alternative mechanism to achieve the same sub-goal.",
+            "anchor": "replacing the failed Euler system argument with a different technique"
+          },
+          {
+            "name": "Importing an External Tool",
+            "signature": "A technique from a different theoretical area is introduced to solve a specific sub-problem.",
+            "anchor": "using Iwasawa theory"
+          }
+        ]
+      },
+      "grothendieck_schemes": {
+        "arc_id": "grothendieck_schemes",
+        "moves": [
+          {
+            "name": "Generalize Core Object",
+            "signature": "Replacing a central object of study with a more abstract, encompassing one that treats the original as a special case.",
+            "anchor": "replaced the variety with the SCHEME"
+          },
+          {
+            "name": "Reconstitute From Primitives",
+            "signature": "Defining a new core object by composing more fundamental, pre-existing structural components.",
+            "anchor": "built from any commutative ring's prime spectrum, glued along a sheaf of rings"
+          },
+          {
+            "name": "Increase Representational Capacity",
+            "signature": "Expanding a framework's expressive power to capture phenomena previously invisible or treated as degenerate.",
+            "anchor": "nilpotent elements (which varieties cannot see)"
+          },
+          {
+            "name": "Unify Disparate Domains",
+            "signature": "Creating a higher-level abstraction that subsumes previously distinct conceptual domains under a single framework.",
+            "anchor": "arithmetic and geometry simultaneously"
+          },
+          {
+            "name": "Parameterize Variation",
+            "signature": "Introducing a mechanism to study not just static objects, but families of objects varying over a parameter space.",
+            "anchor": "families of varieties parametrized by another scheme"
+          },
+          {
+            "name": "Port Analytical Tool",
+            "signature": "Adapting a powerful analytical tool from a prior context to function within a new, more general framework.",
+            "anchor": "developed \u00e9tale cohomology to give Weil-style cohomology theories"
+          },
+          {
+            "name": "Resolve Motivating Problem",
+            "signature": "Demonstrating the power of a new framework by using it to solve a major, pre-existing open problem.",
+            "anchor": "Deligne's proof of the Weil conjectures"
+          },
+          {
+            "name": "Define By External Relations",
+            "signature": "Characterizing an object not by its internal structure but by its complete pattern of interactions with other objects.",
+            "anchor": "identifying universal properties"
+          },
+          {
+            "name": "Mandate Structural Coherence",
+            "signature": "Imposing a global constraint that all constructions must preserve the system's fundamental relational structure.",
+            "anchor": "demanding that all definitions be functorial"
+          }
+        ]
+      },
+      "lurie_htt": {
+        "arc_id": "lurie_htt",
+        "moves": [
+          {
+            "name": "Identify Formalism Fragmentation",
+            "signature": "Recognizing that multiple competing, non-interoperable formalisms for a single core concept are hindering progress.",
+            "anchor": "several models of weak higher categories that were equivalent in spirit but technically incompatible"
+          },
+          {
+            "name": "Select Foundational Model",
+            "signature": "Choosing one specific formalism from a set of competing candidates to serve as the primary vehicle for development.",
+            "anchor": "selected the quasicategory model"
+          },
+          {
+            "name": "Identify Unification Deficit",
+            "signature": "Recognizing that several distinct domains are hampered by the absence of a common underlying framework.",
+            "anchor": "suffering from the lack of a categorical framework that handled them natively"
+          },
+          {
+            "name": "Elevate Existing Framework",
+            "signature": "Systematically generalizing an established theoretical framework to a more abstract or encompassing context.",
+            "anchor": "an infinity-categorical version of category theory"
+          },
+          {
+            "name": "Apply Systematic Translation",
+            "signature": "Establishing a consistent principle or transformation rule to translate an entire class of concepts from a source to a target domain.",
+            "anchor": "promoting homotopy-coherent versions of every standard categorical construction"
+          },
+          {
+            "name": "Replicate Core Constructs",
+            "signature": "Systematically recreating the essential concepts and operational tools from a source framework within a new, more general one.",
+            "anchor": "includes adjoint functors, limits, colimits, Kan extensions"
+          },
+          {
+            "name": "Define Central Object",
+            "signature": "Formulating the primary object of investigation within the new system, analogous to a key structure in the source domain.",
+            "anchor": "a full theory of \u221e-topoi"
+          },
+          {
+            "name": "Achieve Domain Unification",
+            "signature": "Demonstrating that the new system provides a common operational context for previously disparate fields of inquiry.",
+            "anchor": "inside a single language"
+          }
+        ]
+      },
+      "scholze_perfectoid": {
+        "arc_id": "scholze_perfectoid",
+        "moves": [
+          {
+            "name": "Formalizing an Empirical Pattern",
+            "signature": "An observed, recurring technique is elevated into a formal, well-defined object, making its properties systematically available.",
+            "anchor": "a phenomenon was visible empirically"
+          },
+          {
+            "name": "Synthesizing a Core Object",
+            "signature": "A new foundational entity is constructed by combining and constraining existing concepts to capture a specific behavior.",
+            "anchor": "defined a perfectoid space"
+          },
+          {
+            "name": "Establishing a Translation Bridge",
+            "signature": "A new structure is shown to create a formal correspondence between two previously disconnected conceptual domains.",
+            "anchor": "tilted into each other"
+          },
+          {
+            "name": "Unifying Disparate Cases",
+            "signature": "A single framework is applied to solve multiple instances of a problem that previously required case-specific approaches.",
+            "anchor": "a uniform proof"
+          },
+          {
+            "name": "Expanding Programmatic Scope",
+            "signature": "A new tool is used to extend the applicability of a major research program to previously inaccessible areas.",
+            "anchor": "in new settings"
+          },
+          {
+            "name": "Generating New Machinery",
+            "signature": "A foundational object is used as a building block to construct entirely new classes of theoretical tools.",
+            "anchor": "build new cohomology theories"
+          },
+          {
+            "name": "Abstracting via Quotients",
+            "signature": "A more general class of objects is created by taking quotients of an existing structure, thereby identifying and collapsing certain types of variation.",
+            "anchor": "quotients of perfectoid spaces"
+          },
+          {
+            "name": "Forging a Grand Unification",
+            "signature": "A higher-level abstraction is used to reveal and formalize a deep connection between two previously separate, large-scale theories.",
+            "anchor": "unified p-adic Hodge theory with global Langlands"
+          }
+        ]
+      },
+      "riemann_surfaces": {
+        "arc_id": "riemann_surfaces",
+        "moves": [
+          {
+            "name": "Isolating Ambiguity",
+            "signature": "Identifying a class of inputs for which a mapping produces multiple, inconsistent outputs.",
+            "anchor": "multi-valued analytic functions"
+          },
+          {
+            "name": "Rejecting Ad-Hoc Conventions",
+            "signature": "Dismissing arbitrary rules used to resolve ambiguity in favor of a more fundamental explanation.",
+            "anchor": "handled by branch cuts and conventions"
+          },
+          {
+            "name": "Expanding the Domain",
+            "signature": "Replacing the original input space with a new, more complex structure to resolve ambiguity in the output.",
+            "anchor": "a new geometric object \u2014 the Riemann surface"
+          },
+          {
+            "name": "Lifting the Mapping",
+            "signature": "Reinterpreting a multi-valued mapping on a simple space as a single-valued mapping on a complex space.",
+            "anchor": "replaced the multi-valued function ... with a single-valued function"
+          },
+          {
+            "name": "Synthesizing from Copies",
+            "signature": "Constructing a new domain by joining multiple instances of the original domain along their problematic boundaries.",
+            "anchor": "gluing copies of the plane together"
+          },
+          {
+            "name": "Translating Problem Domains",
+            "signature": "Recasting a problem from one formal system into an equivalent problem in a different formal system.",
+            "anchor": "transformed the study of algebraic functions into the study of ... two-manifolds"
+          },
+          {
+            "name": "Embedding Properties in Structure",
+            "signature": "Encoding the properties of an object as intrinsic properties of the space on which it is defined.",
+            "anchor": "topology (genus, cycles) carried structural information about the function"
+          },
+          {
+            "name": "Connecting Invariant Classes",
+            "signature": "Establishing a formal equivalence or relationship between invariants from different conceptual domains.",
+            "anchor": "connected the topological invariants of the surface to dimensions of spaces of meromorphic functions"
+          }
+        ]
+      },
+      "newton_calculus": {
+        "arc_id": "newton_calculus",
+        "moves": [
+          {
+            "name": "Unifying a Problem-Set",
+            "signature": "Identifying a common underlying structure across a set of previously disconnected problems.",
+            "anchor": "simultaneous problems: tangent lines to curves, instantaneous velocities, areas under curves"
+          },
+          {
+            "name": "Introducing New Operators",
+            "signature": "Devising a novel formal operation to manipulate system elements.",
+            "anchor": "introduced fluxions (derivatives) and the inverse method (integrals)"
+          },
+          {
+            "name": "Establishing Inverse Relationship",
+            "signature": "Demonstrating that two distinct operations are functional inverses of each other, creating a closed system.",
+            "anchor": "recognized them as inverse operations"
+          },
+          {
+            "name": "Developing a Sub-Tool",
+            "signature": "Creating a specialized technique to extend the core method's applicability to previously intractable cases.",
+            "anchor": "developed the calculus of infinite series"
+          },
+          {
+            "name": "Employing a Provisional Concept",
+            "signature": "Utilizing a conceptually powerful but not-yet-rigorous idea as a functional placeholder to advance the theory.",
+            "anchor": "treated instantaneous velocity as a limit"
+          },
+          {
+            "name": "Positing a Counterintuitive Mechanism",
+            "signature": "Proposing a fundamental mechanism that operates contrary to prevailing assumptions about system interactions.",
+            "anchor": "gravity acts at a distance"
+          },
+          {
+            "name": "Unifying Across Scales",
+            "signature": "Applying a single explanatory principle to phenomena previously considered to be in separate domains or at vastly different scales.",
+            "anchor": "explains both falling apples and elliptical planetary orbits"
+          },
+          {
+            "name": "Axiomatic Compression",
+            "signature": "Distilling a wide range of phenomena into a minimal set of foundational rules from which the phenomena can be derived.",
+            "anchor": "a small set of axioms... yields all of celestial mechanics"
+          },
+          {
+            "name": "Co-evolving Tool and Domain",
+            "signature": "Developing a formal system and a descriptive model in a mutually reinforcing loop, where advances in one enable advances in the other.",
+            "anchor": "Calculus and physics co-evolved"
+          }
+        ]
+      },
+      "einstein_gr": {
+        "arc_id": "einstein_gr",
+        "moves": [
+          {
+            "name": "Postulating Core Equivalence",
+            "signature": "A foundational claim of identity is established between two distinct conceptual domains.",
+            "anchor": "the equivalence principle"
+          },
+          {
+            "name": "Specifying Solution Form",
+            "signature": "The desired formal structure for the final theoretical expression is explicitly defined.",
+            "anchor": "searched for a tensor-valued field equation"
+          },
+          {
+            "name": "Imposing Legacy Compatibility",
+            "signature": "A new model is required to reduce to a predecessor model under specific limiting conditions.",
+            "anchor": "recovered Newtonian gravity in the weak-field limit"
+          },
+          {
+            "name": "Mandating Principle Symmetry",
+            "signature": "A fundamental principle of invariance is imposed as a non-negotiable constraint on the final form.",
+            "anchor": "was generally covariant"
+          },
+          {
+            "name": "Enforcing Conservation Law",
+            "signature": "The proposed model must adhere to an established law of conservation.",
+            "anchor": "conserved energy-momentum"
+          },
+          {
+            "name": "Importing Formal Language",
+            "signature": "An existing formal system is adopted from another field to provide the necessary descriptive and operational tools.",
+            "anchor": "absolute differential calculus ... provided the language"
+          },
+          {
+            "name": "Rejecting Intermediate Model",
+            "signature": "A candidate model is discarded for failing to satisfy a pre-established guiding constraint.",
+            "anchor": "'Entwurf' theory failed"
+          },
+          {
+            "name": "Deriving Form from Constraint",
+            "signature": "A formal property inherent to the chosen descriptive language reveals that the guiding constraints logically compel the final structure.",
+            "anchor": "the Bianchi identities forced the form of the equation"
+          },
+          {
+            "name": "Resolving Known Anomaly",
+            "signature": "The new model successfully explains an empirical observation that was inconsistent with the predecessor model.",
+            "anchor": "perihelion of Mercury"
+          },
+          {
+            "name": "Generating Novel Prediction",
+            "signature": "The completed model is used to derive a previously unobserved and testable consequence.",
+            "anchor": "bending of starlight"
+          }
+        ]
+      },
+      "polya_hadamard_meta": {
+        "arc_id": "polya_hadamard_meta",
+        "moves": [
+          {
+            "name": "Codifying Tacit Knowledge",
+            "signature": "A set of informal, effective practices is organized into an explicit, transmissible framework.",
+            "anchor": "systematized the heuristics"
+          },
+          {
+            "name": "Staging the Process",
+            "signature": "A complex process is broken down into a sequence of distinct, ordered phases.",
+            "anchor": "understand the problem, devise a plan, carry out the plan, look back"
+          },
+          {
+            "name": "Retrieving Prior Art",
+            "signature": "An existing solution or pattern is sought from a repository of past experiences to apply to a current challenge.",
+            "anchor": "have you seen this before?"
+          },
+          {
+            "name": "Modulating Abstraction Level",
+            "signature": "The scope of the problem is deliberately narrowed to a specific case or broadened to a wider class.",
+            "anchor": "specialize, generalize"
+          },
+          {
+            "name": "Mapping Analogous Structures",
+            "signature": "A solution method from a different but structurally similar domain is imported to address the current problem.",
+            "anchor": "consider an analogous problem"
+          },
+          {
+            "name": "Inverting the Path",
+            "signature": "The process starts from the desired outcome and traces the necessary steps back to the initial state.",
+            "anchor": "work backward"
+          },
+          {
+            "name": "Deconstructing and Reassembling",
+            "signature": "A complex system is broken into its constituent parts, which are then reconfigured to form a new whole.",
+            "anchor": "decompose, recombine"
+          },
+          {
+            "name": "Perturbing the System",
+            "signature": "The parameters, constraints, or components of a problem are systematically altered to explore its properties and potential solutions.",
+            "anchor": "vary the problem"
+          },
+          {
+            "name": "Sourcing Introspective Data",
+            "signature": "First-person accounts of internal cognitive processes are collected and analyzed as primary evidence.",
+            "anchor": "introspective accounts of discovery"
+          },
+          {
+            "name": "Sequencing Cognitive States",
+            "signature": "A discovery process is modeled as a progression through distinct mental phases, including both active effort and passive gestation.",
+            "anchor": "conscious work, then incubation, then sudden insight"
+          },
+          {
+            "name": "Defining Scope Limitations",
+            "signature": "The boundaries of a model's applicability are explicitly stated, distinguishing it from a fully deterministic procedure.",
+            "anchor": "refused to claim mechanical algorithms"
+          },
+          {
+            "name": "Identifying an Irreducible Core",
+            "signature": "A central component of a process is identified as a primitive or black box that cannot be further broken down by the current analysis.",
+            "anchor": "resists decomposition"
+          }
+        ]
+      }
+    }
+  }
+}

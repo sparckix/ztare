@@ -1,0 +1,25 @@
+{
+  "n_total": 22,
+  "n_marked": 22,
+  "aggregate_novelty_rate": 0.0,
+  "verdict": "confirmation_theater",
+  "per_source": {
+    "transitivity": {
+      "trivial": 10
+    },
+    "gemini_standard": {
+      "wrong": 2,
+      "already_considered": 1
+    },
+    "claude_standard": {
+      "wrong": 3
+    },
+    "gemini_novelty_prompted": {
+      "wrong": 3
+    },
+    "claude_novelty_prompted": {
+      "wrong": 2,
+      "already_considered": 1
+    }
+  }
+}

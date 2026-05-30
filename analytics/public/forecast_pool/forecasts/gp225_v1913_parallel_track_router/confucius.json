@@ -1,0 +1,22 @@
+{
+  "agent_id": "confucius",
+  "contract_id": "gp225_v1913_parallel_track_router",
+  "contract_question": "Will v19.13 convert the v19.12 external benchmark packet into three concrete parallel next-track specs (external adapters, density generator, repair-loop canary), each with success thresholds, effort estimates, GP-233 block, and no GNN/training launch?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 6.5,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "accidental_training_or_gnn_unblock_language": 0.05555555555555555,
+    "effort_estimates_missing_or_not_per_track": 0.1111111111111111,
+    "missing_or_vague_gp233_block": 0.3888888888888889,
+    "only_two_tracks_resolved_or_repair_canary_underdeveloped": 0.16666666666666663,
+    "tracks_named_but_not_concrete_thresholded_specs": 0.27777777777777773
+  },
+  "forecasted_at": "2026-05-13T21:57:31Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.07,
+  "p_success": 0.82,
+  "rationale_short": "Mostly static write-quality; v1912 already names the three tracks, v1908 gives failure context, v1911 gives slice model signal, and GNN remains blocked.",
+  "read_only_attestation": true
+}

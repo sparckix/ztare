@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship; demonstrates tick441 is real, addresses tick448 audit prescription.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_clay_dyadic_flatDepthReserve_instance_tick450_20260514",
+  "contract_question": "Can a concrete dyadic FlatDepthReserveLike instance be shipped on BadNode := Nat \u00d7 Nat with all verification conditions discharged by real computation (no Prop wrappers, no sorry/admit), demonstrating tick441 structure is non-vacuously inhabited?",
+  "domain": "ns_clay_real_instance",
+  "expected_cost_agent_minutes": 15.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T02:07:29Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.82,
+  "rationale_short": "Dyadic skeleton is the worst-case countermodel; depth-reserve telescoping survives by construction. Real number radii, omega + computed sum identity for verification. No external classical inputs needed.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

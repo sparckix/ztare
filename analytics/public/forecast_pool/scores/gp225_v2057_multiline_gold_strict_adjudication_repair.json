@@ -1,0 +1,133 @@
+{
+  "contract_id": "gp225_v2057_multiline_gold_strict_adjudication_repair",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Leave v20.55 as auxiliary-only under incomplete gold capture.",
+      "counterfactual_action": "Repair gold multiline adjudication and re-run strict comparison.",
+      "externality_hypotheses": {
+        "negative": [
+          "could accidentally use target proof text as generation evidence if not flagged"
+        ],
+        "positive": [
+          "prevents false negative strict label from multiline capture bug",
+          "keeps target proof lines adjudication-only"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Hopper2",
+        "Gauss2"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "strict_label_repair",
+        "anti_leakage",
+        "gold_adjudication_only"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "requires_manifest_refresh",
+        "single_row_only"
+      ],
+      "new_next_action": "refresh manifest with one repaired strict charFunDual row while keeping training blocked",
+      "old_next_action": "leave charFunDual as auxiliary-only compile signal",
+      "preconditioner_effect": "Identified multiline gold capture gap and forced target proof lines to be adjudication-only, not generation evidence.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2056_charfun_dual_replay_strict_adjudication_reducer.json"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.08499999999999999,
+  "mean_log_score": -0.3433837867979531,
+  "outcome": {
+    "actual_cost_agent_minutes": 15.0,
+    "artifact_hash": "bbde568968d1a58cd4e7cb3714af50fa81d99488e5611b34cc7151a5c59897c8",
+    "artifact_path": "analytics/public/leanmill/results/v2057_multiline_gold_strict_adjudication_repair.json",
+    "changed_by_forecast_ids": [
+      "Hopper2",
+      "Gauss2"
+    ],
+    "compile_status": "strict_adjudication_repair_passed",
+    "contract_id": "gp225_v2057_multiline_gold_strict_adjudication_repair",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "strict_label_repair",
+      "anti_leakage",
+      "gold_adjudication_only"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "negative_externality_tags": [
+      "requires_manifest_refresh",
+      "single_row_only"
+    ],
+    "new_next_action": "refresh manifest with one repaired strict charFunDual row while keeping training blocked",
+    "old_next_action": "leave charFunDual as auxiliary-only compile signal",
+    "preconditioner_effect": "Identified multiline gold capture gap and forced target proof lines to be adjudication-only, not generation evidence.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2056_charfun_dual_replay_strict_adjudication_reducer.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.57 repaired strict adjudication by using the full target proof only as gold adjudication evidence, not candidate generation evidence. Re-run result: 2/2 candidates compiled, 2 strict candidate actions, 1 strict target row, 0 auxiliary pull-forwards, 0 harmful mismatches, replay=true, training=false, GNN blocked=true.",
+    "resolved_at": "2026-05-14T18:12:40Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:13:01Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 15.0,
+      "agent_id": "Gauss2",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "gp225_pre_gnn_strict_adjudication_repair",
+      "expected_cost_agent_minutes": 16.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:10:04Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:10:19Z",
+        "resolved_at": "2026-05-14T18:12:40Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 15.0,
+      "agent_id": "Hopper2",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "gp225_pre_gnn_strict_adjudication_repair",
+      "expected_cost_agent_minutes": 14.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:10:04Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:10:19Z",
+        "resolved_at": "2026-05-14T18:12:40Z"
+      }
+    }
+  ]
+}

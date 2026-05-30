@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1913_parallel_track_router.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1913_parallel_track_router.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1913_parallel_track_router",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1913_parallel_track_router.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1913_parallel_track_router.json"
+  },
+  "budget_agent_minutes": 8.0,
+  "contract_id": "gp225_v1913_parallel_track_router",
+  "cost_penalty": 0.0,
+  "created_at": "2026-05-13T21:54:23Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "through v19.13 static router closure",
+  "information_value": 0.6,
+  "layer": "meso",
+  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1913_parallel_track_router.json metrics.",
+  "question": "Will v19.13 convert the v19.12 external benchmark packet into three concrete parallel next-track specs (external adapters, density generator, repair-loop canary), each with success thresholds, effort estimates, GP-233 block, and no GNN/training launch?",
+  "risk_penalty": 0.3,
+  "success_threshold": "tracks_count=3 AND ready_tracks>=3 AND has_external_adapter_track=true AND has_density_generator_track=true AND has_repair_loop_track=true AND all_tracks_have_thresholds=true AND all_tracks_have_effort_estimates=true AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_parallel_track_routing",
+  "value_if_success": 1.2,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

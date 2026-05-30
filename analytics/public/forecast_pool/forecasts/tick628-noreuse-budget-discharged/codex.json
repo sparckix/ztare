@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick628-noreuse-budget-discharged",
+  "contract_question": "tick628 LEMMA (composing on the precheck-surfaced endpoint, NOT a new recast): the VorticityCapacityNoReuseBudget half of the Cap_omega separator dichotomy is dischargeable by a real bounded-overlap estimate Sum_j Cap_omega(Q_j) <= N^2 * nu ||omega||_{L2}^2 (Vitali family, |grad phi_j|<=1/r_Qj, bounded overlap N) \u2014 is this estimate CORRECT, and is it honestly framed as CONDITIONAL on enstrophy (= the known supercritical hard core, manifest:180), NOT as progress/closure?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T02:09:36Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.82,
+  "rationale_short": "estimate correct (sharpen N^2->N; overlap on cutoff dilates, Vitali-dim constant); framing honest non-laundered: not closure/gain, only prevents separator-reuse supercritical loss if limitation explicit",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

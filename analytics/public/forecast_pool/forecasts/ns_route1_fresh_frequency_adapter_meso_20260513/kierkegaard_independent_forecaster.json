@@ -1,0 +1,20 @@
+{
+  "agent_id": "kierkegaard_independent_forecaster",
+  "contract_id": "ns_route1_fresh_frequency_adapter_meso_20260513",
+  "contract_question": "Will graph plus v19.02 consumption yield a non-tautological typechecked Lean bridge and E/F row in this session, and should next frontier prioritize fresh-frequency/event-tent over pressure-small scalar strengthening?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "l3_route1_variable_mismatch": 0.4,
+    "pressure_small_scalar_distraction": 0.23333333333333336,
+    "v1902_lane_map_not_causal": 0.3666666666666667
+  },
+  "forecasted_at": "2026-05-13T20:39:23Z",
+  "p_dependency_issue": 0.32,
+  "p_needs_new_lemma": 0.66,
+  "p_regression": 0.16,
+  "p_success": 0.68,
+  "rationale_short": "Fresh-frequency/event-tent adapter is favored over pressure-small scalar strengthening; resolution requires a non-tautological typechecked bridge and explicit E/F next-move record.",
+  "read_only_attestation": true
+}

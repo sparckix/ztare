@@ -1,0 +1,48 @@
+{
+  "actual_cost_agent_minutes": 36.0,
+  "artifact_hash": "08ddaa4280cb5a73790659bfe5390f8359e85eca1412d178a4303cc6350dc70a",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level499_finite_incidence_extraction_pencil.md",
+  "changed_by_forecast_ids": [
+    "codex:RD",
+    "codex"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "lake_build_pass",
+  "contract_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "positive_extraction_interface",
+    "selector_equality_reflection",
+    "c5_facing_source_law"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 4,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-27T04:24:52Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary/codex.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": "prove the analytic selector/equality-reflection law: construct targetEventIndex and targetSlot from BadCenterEventIncidenceGeometry/eventData with collision exclusion before cardinality",
+  "old_next_action": "derive targetSlot and injectivity directly from broad incidence/prefix labels",
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "forced injectivity to be derived from equality reflection before cardinality, not supplied as an opaque Level498 socket",
+  "preconditioner_source": "existing G-INCIDENCE-DERIVED-FINITE-INJECTION plus Level499 selector/equality-reflection pencil",
+  "realized_failure_mode_ids": [
+    "current_incidence_fields_prop_only",
+    "level498_schema_as_law_confuser"
+  ],
+  "resolution_note": "TRUE: Level499 added TargetSlotFromFiniteIncidenceExtractionSource, deriving Function.Injective targetSlot from slotEqualityReflection, plus L3AFiniteIncidenceTargetSlotExtractionSource packaging it into the Level498 incidence-derived source. It also added the two-target/one-slot obstruction for the sharper finite extraction source. Strict receipts, work-unit gate, orchestration gate, PDE workbench, lake env lean, and lake build all pass.",
+  "resolved_at": "2026-05-27T04:25:14Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

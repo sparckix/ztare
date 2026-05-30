@@ -1,0 +1,33 @@
+{
+  "contract_id": "gp225_v1872_next_remaining_witness_pilot",
+  "mean_brier": 0.1444,
+  "mean_log_score": -0.4780358009429998,
+  "outcome": {
+    "actual_cost_agent_minutes": 1.11,
+    "artifact_hash": "1341bf205d8376d0b20c6cf787671d2e5f999cae0309aa2f87e4adf122c1e448",
+    "artifact_path": "analytics/public/leanmill/results/v1872_next_remaining_witness_backfill_runner.json",
+    "compile_status": "ran_6_rows_success_clean_harvest",
+    "contract_id": "gp225_v1872_next_remaining_witness_pilot",
+    "error_type": null,
+    "goal_delta": null,
+    "resolution_note": "Objective contract passed: rows_attempted=6, clean_target_labels=6, true_false_accepts=0, static_prefilter_not_run_rows=0, training_now=false, gnn_blocked=true.",
+    "resolved_at": "2026-05-13T17:26:46Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T17:26:54Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 1.11,
+      "agent_id": "codex_local_rd_v1872",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 6.89,
+      "domain": "gp225_lean_witness_backfill",
+      "expected_cost_agent_minutes": 8.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.62,
+      "success_bool": true
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "contract_id": "gp230_ns_clay_route_selection_meso_20260515",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "realized_failure_mode_ids": [
+        "reduces_to_existing_literature",
+        "no_quantitative_bridge_to_q_4_3"
+      ]
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.0324,
+  "mean_log_score": -0.19845093872383818,
+  "outcome": {
+    "actual_cost_agent_minutes": 35.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "compile_status": "clean",
+    "contract_id": "gp230_ns_clay_route_selection_meso_20260515",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [
+      "reduces_to_existing_literature",
+      "no_quantitative_bridge_to_q_4_3"
+    ],
+    "resolution_note": "All 6 routes (X1 stochastic-Lagrangian, X2 sumset, X3 weighted-CZ, X4 CCFS-flux, X5 Tao-Palasek-VY-bridge, X6 BV-nonuniqueness) reduce to existing literature OR to the open Clay problem itself. X5 produced a non-trivial equivalence chain: q>4/3 \u21d4 supercritical-local \u21d4 Serrin-regular \u21d4 L^3-bounded (ESS/Tao) \u21d4 no-CKN-concentration \u21d4 flat-branch-empty \u21d4 Clay closure. The chain is a sharper reformulation but not a closure. No peer-reviewed-citable new finding produced. Predicted p_success=0.18 (claude_rd); realized success=0. Calibration: claude_rd's prediction was directionally correct (low probability) but the route-selection element was N/A since all routes resolved negatively.",
+    "resolved_at": "2026-05-15T16:06:21Z",
+    "sorry_delta": 0,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:14Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 35.0,
+      "agent_id": "claude_rd",
+      "brier": 0.0324,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.34375,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.19845093872383818,
+      "p_success": 0.18,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T16:04:13Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T16:04:49Z",
+        "resolved_at": "2026-05-15T16:06:21Z"
+      }
+    }
+  ]
+}

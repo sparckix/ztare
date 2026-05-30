@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Prefer a market-gate abort unless the packet is narrowed to unblocked rank-1/rank-2 candidates and explicitly treats success as compile signal, not label credit.",
+  "agent_id": "Lovelace3",
+  "contract_id": "gp225_v2063_public_union_source_candidate_replay_market_gate",
+  "contract_question": "Should GP-225 run a bounded canary replay over the v20.62 unblocked public/internal source candidates, and if run, is at least one compiled candidate with zero harmful mismatches likely enough to justify execution?",
+  "domain": "gp225_pre_gnn_canary_replay_gate",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "affine_span_hypothesis_shape_mismatch": 0.2,
+    "ascii_identifier_normalization_leaks_into_unblocked_packet": 0.09,
+    "bayes_bound_witness_missing": 0.18,
+    "binder_context_underhydrated": 0.34,
+    "canary_too_small_to_teach": 0.07,
+    "gold_witness_or_target_shape_gap": 0.12
+  },
+  "forecast_externality_tags": [
+    "market_abort_possible",
+    "source_discovery",
+    "anti_goodhart"
+  ],
+  "forecasted_at": "2026-05-14T18:40:01Z",
+  "p_dependency_issue": 0.26,
+  "p_needs_new_lemma": 0.21,
+  "p_regression": 0.12,
+  "p_success": 0.29,
+  "rationale_short": "Prior source candidates often failed at hydration; v20.62 is cleaner, but still static-only and should not be converted into broad replay spend.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "binder_context_underhydrated",
+    "affine_span_hypothesis_shape_mismatch"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "experiment": "gp216_lean_cluster_to_ops_rigorous_mapping",
+  "n_lean_clusters": 6,
+  "n_aligned": 4,
+  "n_unmapped": 2,
+  "result": {
+    "mappings": [
+      {
+        "lean_cluster": "lean_cluster_0",
+        "best_op": "broad_08",
+        "confidence": "medium",
+        "reasoning": "The high frequency of `tac_apply` combined with the `X_implies_Y` theorem shape suggests a pattern of chaining logical implications. This directly aligns with establishing conditions and deriving necessary consequences, the core of Constraint Imposition & Propagation."
+      },
+      {
+        "lean_cluster": "lean_cluster_1",
+        "best_op": "broad_03",
+        "confidence": "high",
+        "reasoning": "The co-occurrence of proof by contradiction (`tac_by_contra`) and theorem shapes like `no_X_falsifier` is a direct syntactic signature of an adversarial argument. The proof proceeds by assuming the existence of a counterexample (a falsifier) and deriving a contradiction."
+      },
+      {
+        "lean_cluster": "lean_cluster_2",
+        "best_op": "broad_02",
+        "confidence": "high",
+        "reasoning": "The extremely high z-score for the `induction` tactic is the defining feature of this cluster. Proof by induction is the direct procedural analog of Recursive Decomposition, breaking a proof into a base case and a self-similar inductive step."
+      },
+      {
+        "lean_cluster": "lean_cluster_3",
+        "best_op": "spec_03",
+        "confidence": "high",
+        "reasoning": "The dominant feature is the declaration of axioms (`def_axiom`), which is the most direct syntactic evidence of establishing foundational ground rules. This, combined with defining new classes (`def_class`), points squarely to the process of Axiomatization."
+      },
+      {
+        "lean_cluster": "lean_cluster_4",
+        "best_op": "no_clear_op",
+        "confidence": "high",
+        "reasoning": "The primary feature is `def_abbrev`, which is used for creating notational shorthands. This is a utility or boilerplate activity for managing complexity, not a core research mechanism from the vocabulary."
+      },
+      {
+        "lean_cluster": "lean_cluster_5",
+        "best_op": "no_clear_op",
+        "confidence": "high",
+        "reasoning": "This large cluster has no distinctive features, representing the corpus baseline or a mix of many patterns. Without a clear syntactic signal, it cannot be mapped to a specific research operation."
+      }
+    ],
+    "n_aligned": 4,
+    "n_unmapped": 2,
+    "auditor_notes": "The deterministic syntactic clusters show a surprisingly strong alignment with the v5 research vocabulary. Four of the six clusters map to specific ops with medium or high confidence based on clear syntactic fingerprints, such as tactic choice (`induction`, `by_contra`) and definition type (`axiom`). This suggests that deep structural patterns in mathematical reasoning leave detectable, machine-readable traces in formal proof code. The existence of a large, un-featured 'baseline' cluster and a 'utility/abbreviation' cluster is also expected and appropriate, representing background activity rather than core logical strategies. This audit provides positive evidence for the vocabulary's ability to bridge high-level research concepts and low-level code structure."
+  },
+  "verdict": "AUTONOMOUS LEAN CLUSTERING ALIGNS WITH V5 \u2014 4/6 deterministic Lean clusters map cleanly onto v5 universal-vocabulary ops. The vocabulary's structural mechanisms appear in formal Lean text without LLM-mediated enumeration. Bridge A passes: claim-A evidence from formal corpus."
+}

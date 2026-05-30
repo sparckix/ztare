@@ -1,0 +1,599 @@
+{
+  "buckets": {
+    "cognitive_reframe": [
+      {
+        "buckets": [
+          "cognitive_reframe"
+        ],
+        "description": "3-leg verification (invert + compress + adversarial disagreement).",
+        "id": "PATTERN-008-THREE-LEG-VERIFICATION",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "anti_anchoring"
+        ],
+        "path": "org/patterns/three_leg_verification.md",
+        "score": 62.5,
+        "why": "matched anti_anchoring; bucket cognitive_reframe; impact 4; graph_bonus 1.5"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe"
+        ],
+        "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure.",
+        "id": "PATTERN-002-DARWIN-IDEA-KILLER",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "anti_anchoring"
+        ],
+        "path": "org/patterns/darwin_idea_killer.md",
+        "score": 61.5,
+        "why": "matched anti_anchoring; bucket cognitive_reframe; impact 4; graph_bonus 0.5"
+      },
+      {
+        "buckets": [
+          "graph_mining",
+          "cognitive_reframe"
+        ],
+        "description": "GP-216 v1.20: catches infinite-loop iteration + stagnation + ceiling violation. Fail-closed.",
+        "id": "POTENTIAL-FUNCTION-MONOTONICITY-GATE",
+        "impact_factor_expost": 2.0,
+        "kind": "gate",
+        "last_used": "2026-05-05",
+        "matched_terms": [
+          "stagnation",
+          "closure_attempt"
+        ],
+        "path": "src/ztare/gates/potential_function_monotonicity_gate.py",
+        "score": 55.0,
+        "why": "matched stagnation, closure_attempt; bucket graph_mining, cognitive_reframe; impact 2"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe"
+        ],
+        "description": "Cross-domain analogy proposer.",
+        "id": "ANALOGY-PRIMITIVE",
+        "impact_factor_expost": 2.0,
+        "kind": "primitive",
+        "last_used": "2026-05-04",
+        "matched_terms": [
+          "anti_anchoring",
+          "stagnation"
+        ],
+        "path": "src/ztare/fit/analogy.py",
+        "score": 49.0,
+        "why": "matched anti_anchoring, stagnation; bucket cognitive_reframe; impact 2"
+      }
+    ],
+    "graph_mining": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Refreshes Lean declaration index, NS artifact graph, closure miner, typed-endpoint bridge, and the L3A concentration workmap for RD ticks.",
+        "id": "NS-GRAPH-TICK-PRECHECK",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [
+          "NS_track_b",
+          "lean_substrate",
+          "graph_mining",
+          "closure_attempt",
+          "typed_endpoint"
+        ],
+        "path": "src/ztare/research_director/ns_graph_tick.py",
+        "score": 104.5,
+        "why": "matched NS_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths.",
+        "id": "NS-L3A-CONCENTRATION-WORKMAP",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [
+          "NS_track_b",
+          "lean_substrate",
+          "typed_endpoint"
+        ],
+        "path": "src/ztare/research_director/ns_l3a_workmap.py",
+        "score": 87.0,
+        "why": "matched NS_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
+      },
+      {
+        "buckets": [
+          "graph_mining"
+        ],
+        "description": "Capability index + meta-graph used as load-bearing context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired (Verdict B PARTIALLY NOVEL per literature scout 2026-05-08; Spea",
+        "id": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
+        "impact_factor_expost": 5.0,
+        "kind": "reflexive_primitive",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "src/ztare/reflexive_primitives/architecture_index_meta_graph.md",
+        "score": 63.0,
+        "why": "bucket graph_mining; impact 5"
+      },
+      {
+        "buckets": [
+          "graph_mining",
+          "cognitive_reframe"
+        ],
+        "description": "GP-216 v1.20: catches infinite-loop iteration + stagnation + ceiling violation. Fail-closed.",
+        "id": "POTENTIAL-FUNCTION-MONOTONICITY-GATE",
+        "impact_factor_expost": 2.0,
+        "kind": "gate",
+        "last_used": "2026-05-05",
+        "matched_terms": [
+          "stagnation",
+          "closure_attempt"
+        ],
+        "path": "src/ztare/gates/potential_function_monotonicity_gate.py",
+        "score": 55.0,
+        "why": "matched stagnation, closure_attempt; bucket graph_mining, cognitive_reframe; impact 2"
+      }
+    ],
+    "lagrangian_path_b": [
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "Core ZTARE autoresearch loop (mutator-judge cycle, Newton mode, Path B Lagrangian).",
+        "id": "AUTORESEARCH-LOOP",
+        "impact_factor_expost": 4.0,
+        "kind": "validator",
+        "last_used": "2026-05-08",
+        "matched_terms": [],
+        "path": "src/ztare/validator/autoresearch_loop.py",
+        "score": 53.0,
+        "why": "bucket lagrangian_path_b; impact 4"
+      },
+      {
+        "buckets": [
+          "sympy_cas",
+          "lagrangian_path_b"
+        ],
+        "description": "GP-181 dimensional consistency check (Buckingham pi theorem).",
+        "id": "BUCKINGHAM-PI-GATE",
+        "impact_factor_expost": 1.0,
+        "kind": "gate",
+        "last_used": "2026-04-28",
+        "matched_terms": [
+          "dimensional_check",
+          "lagrangian_path_b"
+        ],
+        "path": "src/ztare/gates/buckingham_pi_gate.py",
+        "score": 45.0,
+        "why": "matched dimensional_check, lagrangian_path_b; bucket sympy_cas, lagrangian_path_b; impact 1"
+      },
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "GP-180/181 Path B Lagrangian derivation: derives equations of motion from a Lagrangian via Euler-Lagrange.",
+        "id": "LAGRANGIAN-DERIVATION",
+        "impact_factor_expost": 2.0,
+        "kind": "primitive",
+        "last_used": "2026-04-28",
+        "matched_terms": [
+          "variational_principle"
+        ],
+        "path": "src/ztare/fit/lagrangian_derivation.py",
+        "score": 43.5,
+        "why": "matched variational_principle; bucket lagrangian_path_b; impact 2; graph_bonus 2.5"
+      },
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "Routes substrate to appropriate primitive (fit / lagrangian / etc).",
+        "id": "PRIMITIVE-ROUTING",
+        "impact_factor_expost": 2.0,
+        "kind": "validator",
+        "last_used": "2026-05-04",
+        "matched_terms": [],
+        "path": "src/ztare/validator/core/primitive_routing.py",
+        "score": 33.0,
+        "why": "bucket lagrangian_path_b; impact 2"
+      }
+    ],
+    "pde_ns_lean": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Refreshes Lean declaration index, NS artifact graph, closure miner, typed-endpoint bridge, and the L3A concentration workmap for RD ticks.",
+        "id": "NS-GRAPH-TICK-PRECHECK",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [
+          "NS_track_b",
+          "lean_substrate",
+          "graph_mining",
+          "closure_attempt",
+          "typed_endpoint"
+        ],
+        "path": "src/ztare/research_director/ns_graph_tick.py",
+        "score": 104.5,
+        "why": "matched NS_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight).",
+        "id": "CAS-W6-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "script",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "harmonic_analysis",
+          "CAS_verification"
+        ],
+        "path": "scripts/projects/ns/CAS_W6_verification.py",
+        "score": 87.0,
+        "why": "matched harmonic_analysis, CAS_verification; bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths.",
+        "id": "NS-L3A-CONCENTRATION-WORKMAP",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [
+          "NS_track_b",
+          "lean_substrate",
+          "typed_endpoint"
+        ],
+        "path": "src/ztare/research_director/ns_l3a_workmap.py",
+        "score": 87.0,
+        "why": "matched NS_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "v1.48: deterministic dimensional/endpoint check on LLM-proposed PDE inequalities BEFORE Lean editing.",
+        "id": "PDE-INEQUALITY-DIMENSIONAL-GATE",
+        "impact_factor_expost": 3.0,
+        "kind": "gate",
+        "last_used": "2026-05-07",
+        "matched_terms": [
+          "PDE_estimate",
+          "pre_lean_preflight",
+          "dimensional_check",
+          "endpoint_check"
+        ],
+        "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
+        "score": 82.25,
+        "why": "matched PDE_estimate, pre_lean_preflight, dimensional_check, endpoint_check; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
+      }
+    ],
+    "sympy_cas": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight).",
+        "id": "CAS-W6-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "script",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "harmonic_analysis",
+          "CAS_verification"
+        ],
+        "path": "scripts/projects/ns/CAS_W6_verification.py",
+        "score": 87.0,
+        "why": "matched harmonic_analysis, CAS_verification; bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "v1.48: deterministic dimensional/endpoint check on LLM-proposed PDE inequalities BEFORE Lean editing.",
+        "id": "PDE-INEQUALITY-DIMENSIONAL-GATE",
+        "impact_factor_expost": 3.0,
+        "kind": "gate",
+        "last_used": "2026-05-07",
+        "matched_terms": [
+          "PDE_estimate",
+          "pre_lean_preflight",
+          "dimensional_check",
+          "endpoint_check"
+        ],
+        "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
+        "score": 82.25,
+        "why": "matched PDE_estimate, pre_lean_preflight, dimensional_check, endpoint_check; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
+      },
+      {
+        "buckets": [
+          "sympy_cas"
+        ],
+        "description": "CAS verification of atom8 (Newton-mode Reynolds attack, shipped tonight).",
+        "id": "CAS-ATOM8-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "script",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "CAS_verification"
+        ],
+        "path": "scripts/projects/ns/CAS_atom8_verification.py",
+        "score": 73.25,
+        "why": "matched CAS_verification; bucket sympy_cas; impact 5; graph_bonus 2.25"
+      },
+      {
+        "buckets": [
+          "sympy_cas"
+        ],
+        "description": "Independent CAS verification of LLM-proposed inequalities.",
+        "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "pattern",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "CAS_verification"
+        ],
+        "path": "org/patterns/independent_cas_verification.md",
+        "score": 72.75,
+        "why": "matched CAS_verification; bucket sympy_cas; impact 5; graph_bonus 1.75"
+      }
+    ]
+  },
+  "ok": true,
+  "query_terms": [
+    "NS_track_b",
+    "PDE_estimate",
+    "harmonic_analysis",
+    "lean_substrate",
+    "proof_compile_check",
+    "pre_lean_preflight",
+    "dimensional_check",
+    "endpoint_check",
+    "CAS_verification",
+    "sympy",
+    "lagrangian_path_b",
+    "variational_principle",
+    "inversion",
+    "anti_anchoring",
+    "framer",
+    "stagnation",
+    "cold_start",
+    "graph_mining",
+    "closure_attempt",
+    "typed_endpoint"
+  ],
+  "top_hits": [
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "graph_mining"
+      ],
+      "description": "Refreshes Lean declaration index, NS artifact graph, closure miner, typed-endpoint bridge, and the L3A concentration workmap for RD ticks.",
+      "id": "NS-GRAPH-TICK-PRECHECK",
+      "impact_factor_expost": 4.0,
+      "kind": "primitive",
+      "last_used": "2026-05-09",
+      "matched_terms": [
+        "NS_track_b",
+        "lean_substrate",
+        "graph_mining",
+        "closure_attempt",
+        "typed_endpoint"
+      ],
+      "path": "src/ztare/research_director/ns_graph_tick.py",
+      "score": 104.5,
+      "why": "matched NS_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "sympy_cas"
+      ],
+      "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight).",
+      "id": "CAS-W6-VERIFICATION",
+      "impact_factor_expost": 5.0,
+      "kind": "script",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "harmonic_analysis",
+        "CAS_verification"
+      ],
+      "path": "scripts/projects/ns/CAS_W6_verification.py",
+      "score": 87.0,
+      "why": "matched harmonic_analysis, CAS_verification; bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "graph_mining"
+      ],
+      "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths.",
+      "id": "NS-L3A-CONCENTRATION-WORKMAP",
+      "impact_factor_expost": 4.0,
+      "kind": "primitive",
+      "last_used": "2026-05-09",
+      "matched_terms": [
+        "NS_track_b",
+        "lean_substrate",
+        "typed_endpoint"
+      ],
+      "path": "src/ztare/research_director/ns_l3a_workmap.py",
+      "score": 87.0,
+      "why": "matched NS_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "sympy_cas"
+      ],
+      "description": "v1.48: deterministic dimensional/endpoint check on LLM-proposed PDE inequalities BEFORE Lean editing.",
+      "id": "PDE-INEQUALITY-DIMENSIONAL-GATE",
+      "impact_factor_expost": 3.0,
+      "kind": "gate",
+      "last_used": "2026-05-07",
+      "matched_terms": [
+        "PDE_estimate",
+        "pre_lean_preflight",
+        "dimensional_check",
+        "endpoint_check"
+      ],
+      "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
+      "score": 82.25,
+      "why": "matched PDE_estimate, pre_lean_preflight, dimensional_check, endpoint_check; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "GP-219 PDE estimate-craft vocabulary (pec_a/b/c/d/e/f + cand_g) covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses.",
+      "id": "PDE-ESTIMATE-CRAFT-OPS",
+      "impact_factor_expost": 4.0,
+      "kind": "op",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "NS_track_b",
+        "PDE_estimate",
+        "harmonic_analysis"
+      ],
+      "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
+      "score": 78.75,
+      "why": "matched NS_track_b, PDE_estimate, harmonic_analysis; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
+    },
+    {
+      "buckets": [
+        "sympy_cas"
+      ],
+      "description": "CAS verification of atom8 (Newton-mode Reynolds attack, shipped tonight).",
+      "id": "CAS-ATOM8-VERIFICATION",
+      "impact_factor_expost": 5.0,
+      "kind": "script",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "CAS_verification"
+      ],
+      "path": "scripts/projects/ns/CAS_atom8_verification.py",
+      "score": 73.25,
+      "why": "matched CAS_verification; bucket sympy_cas; impact 5; graph_bonus 2.25"
+    },
+    {
+      "buckets": [
+        "sympy_cas"
+      ],
+      "description": "Independent CAS verification of LLM-proposed inequalities.",
+      "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
+      "impact_factor_expost": 5.0,
+      "kind": "pattern",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "CAS_verification"
+      ],
+      "path": "org/patterns/independent_cas_verification.md",
+      "score": 72.75,
+      "why": "matched CAS_verification; bucket sympy_cas; impact 5; graph_bonus 1.75"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Verifies Lean proof compiles with no axioms / sorries.",
+      "id": "LEAN-PROOF-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "lean_substrate",
+        "proof_compile_check"
+      ],
+      "path": "src/ztare/gates/lean_proof_gate.py",
+      "score": 70.25,
+      "why": "matched lean_substrate, proof_compile_check; bucket pde_ns_lean; impact 4; graph_bonus 1.25"
+    },
+    {
+      "buckets": [
+        "graph_mining"
+      ],
+      "description": "Capability index + meta-graph used as load-bearing context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired (Verdict B PARTIALLY NOVEL per literature scout 2026-05-08; Spea",
+      "id": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
+      "impact_factor_expost": 5.0,
+      "kind": "reflexive_primitive",
+      "last_used": "2026-05-08",
+      "matched_terms": [],
+      "path": "src/ztare/reflexive_primitives/architecture_index_meta_graph.md",
+      "score": 63.0,
+      "why": "bucket graph_mining; impact 5"
+    },
+    {
+      "buckets": [
+        "cognitive_reframe"
+      ],
+      "description": "3-leg verification (invert + compress + adversarial disagreement).",
+      "id": "PATTERN-008-THREE-LEG-VERIFICATION",
+      "impact_factor_expost": 4.0,
+      "kind": "pattern",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "anti_anchoring"
+      ],
+      "path": "org/patterns/three_leg_verification.md",
+      "score": 62.5,
+      "why": "matched anti_anchoring; bucket cognitive_reframe; impact 4; graph_bonus 1.5"
+    },
+    {
+      "buckets": [
+        "cognitive_reframe"
+      ],
+      "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure.",
+      "id": "PATTERN-002-DARWIN-IDEA-KILLER",
+      "impact_factor_expost": 4.0,
+      "kind": "pattern",
+      "last_used": "2026-05-08",
+      "matched_terms": [
+        "anti_anchoring"
+      ],
+      "path": "org/patterns/darwin_idea_killer.md",
+      "score": 61.5,
+      "why": "matched anti_anchoring; bucket cognitive_reframe; impact 4; graph_bonus 0.5"
+    },
+    {
+      "buckets": [
+        "graph_mining",
+        "cognitive_reframe"
+      ],
+      "description": "GP-216 v1.20: catches infinite-loop iteration + stagnation + ceiling violation. Fail-closed.",
+      "id": "POTENTIAL-FUNCTION-MONOTONICITY-GATE",
+      "impact_factor_expost": 2.0,
+      "kind": "gate",
+      "last_used": "2026-05-05",
+      "matched_terms": [
+        "stagnation",
+        "closure_attempt"
+      ],
+      "path": "src/ztare/gates/potential_function_monotonicity_gate.py",
+      "score": 55.0,
+      "why": "matched stagnation, closure_attempt; bucket graph_mining, cognitive_reframe; impact 2"
+    }
+  ],
+  "total_index_rows": 192,
+  "warnings": []
+}

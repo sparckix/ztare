@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 30.0,
+  "artifact_hash": "f84a0e6a6f0da466b410fc4a0e86dea03635f5a8265ae9fadd6dd22d8e38043e",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/same_provenance_boundary_underpay_scout_20260514.json",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_same_provenance_boundary_underpay_scout_micro_20260514_tick351",
+  "error_type": null,
+  "goal_delta": 3,
+  "resolution_note": "Added and ran same_provenance_boundary_underpay_scout.py. py_compile passed. Scout emitted JSON+MD artifacts with sentinel_ok true, 48 paid same-provenance numeric-domination rows and 48 same-provenance undercharge rows. Verdict SAME_PROVENANCE_STILL_NEEDS_NUMERIC_BOUNDARY_DOMINATION.",
+  "resolved_at": "2026-05-14T11:48:50Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

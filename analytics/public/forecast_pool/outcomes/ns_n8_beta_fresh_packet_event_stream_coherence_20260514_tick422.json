@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 15.0,
+  "artifact_hash": "6aa6affcfa66c1414ceed4f0c9ab09cf39ac698d2f04f4760aab8f53dbabae49",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "pass",
+  "contract_id": "ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "event_stream_coherence_guard",
+    "anti_tautology_guard",
+    "fresh_packet_risk"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 4,
+  "negative_externality_tags": [
+    "coherence_still_unproved",
+    "fresh_packet_selection_still_open"
+  ],
+  "new_next_action": "Attack event-stream coherent FreshComparablePacketSideConditionAudit: fixed event index map, selected-node match, ledger weight/gain match, bounded multiplicity, and independent price.",
+  "old_next_action": "Attack FreshComparablePacketSideConditionAudit as a wrapper.",
+  "preconditioner_effect": "Caught the risk that audit-selected packets and ledger events could be separate streams.",
+  "preconditioner_source": "Meta-Darwin sidecar on tick421",
+  "realized_failure_mode_ids": [
+    "event_stream_embedding_unproved",
+    "event_price_independence_unproved",
+    "bad_node_indexed_event_risk"
+  ],
+  "resolution_note": "Added FreshPacketAuditSameEventStreamCoherence, BetaNonflatFreshPacketCoherentSourceSplit, projection nonflatFreshPacket_of_coherentBetaSourceSplit, and guard FreshPacketEventStreamCoherenceIsNotSourceProof. Lean passes; no sorry/admit. The patch requires audit-selected packets to map into the same hEvents/L stream with matching bad node, weight, gain, ledger booking, and no posthoc matching.",
+  "resolved_at": "2026-05-14T22:02:23Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

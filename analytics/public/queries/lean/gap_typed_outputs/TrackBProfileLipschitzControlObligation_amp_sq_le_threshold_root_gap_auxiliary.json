@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-07T00:40:38.393987+00:00",
+  "target": "TrackBProfileLipschitzControlObligation",
+  "field": "amp_sq_le_threshold_root",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "low",
+    "rationale": "Local lexical classifier found packaging/object-construction language after no stronger analytic field/type cue matched. Field was not resolved inside the workmap target.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

@@ -1,0 +1,137 @@
+{
+  "contract_id": "ns_route1_same_schedule_fresh_square_active_tail_source_20260514_tick405",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "treat FreshFrequencyTailSquareActiveTailSameCarrierSource as the next source and stop there",
+      "counterfactual_action": "math-first attempt to source or kill the same-schedule prefix comparison from route selection",
+      "externality_hypotheses": {
+        "route_selection_feedback": "failure may identify a missing finite-residual branch rather than another route1 source",
+        "same_carrier_discriminator": "forecast may separate true source path from raw-tail countermodel before Lean edits"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "rd_codex",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "gp-233:positive:active-passive-lineage-schedule",
+        "gowers-first",
+        "same-carrier-guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "persistence-unproved",
+        "upstream-branch-still-open"
+      ],
+      "new_next_action": "prove FreshFrequencyTailSquarePersistenceSource and finite lineageTailSchedule prefix budget, then feed schedule into finite-tail strictness",
+      "old_next_action": "try to prove freshFrequencySquareBudget prefix <= C_A activeTail prefix directly",
+      "preconditioner_effect": "Prevented forcing passive fresh-frequency square mass through active leakage; switched next target to persistence plus finite lineage schedule.",
+      "preconditioner_source": "GPT-5.5 user-side audit + GP-230 forecast modes + math-first audit",
+      "realized_failure_mode_ids": [
+        "active_only_bridge_false",
+        "lineage_schedule_wrapper_only",
+        "prefix_budget_missing"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.16820000000000002,
+  "mean_log_score": -0.5277763996038314,
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "artifact_hash": "94f31f5a57fa2d58fa095762edaf06e72b231bc13896fd89236411c14a3c77c5",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/route1_active_or_passive_lineage_schedule_audit_20260514.md",
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "compile_status": "lean_pass",
+    "contract_id": "ns_route1_same_schedule_fresh_square_active_tail_source_20260514_tick405",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "gp-233:positive:active-passive-lineage-schedule",
+      "gowers-first",
+      "same-carrier-guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "persistence-unproved",
+      "upstream-branch-still-open"
+    ],
+    "new_next_action": "prove FreshFrequencyTailSquarePersistenceSource and finite lineageTailSchedule prefix budget, then feed schedule into finite-tail strictness",
+    "old_next_action": "try to prove freshFrequencySquareBudget prefix <= C_A activeTail prefix directly",
+    "preconditioner_effect": "Prevented forcing passive fresh-frequency square mass through active leakage; switched next target to persistence plus finite lineage schedule.",
+    "preconditioner_source": "GPT-5.5 user-side audit + GP-230 forecast modes + math-first audit",
+    "realized_failure_mode_ids": [
+      "active_only_bridge_false",
+      "lineage_schedule_wrapper_only",
+      "prefix_budget_missing"
+    ],
+    "resolution_note": "Produced math-first verdict: active-only fresh-square-to-activeTail bridge is no-go; corrected proof route is an active-or-passive lineage schedule with passive caloric persistence, Duhamel recharge, and cutoff/commutator residual. Added Lean sources SameCarrierRouteTailLineageScheduleControlSource, FreshFrequencyTailSquareLineageScheduleSource, FreshFrequencyTailSquarePersistenceSource, constructor into existing same-carrier control, and guard ActiveTailOnlyDoesNotControlTailSquare. Lean file compiles; no new sorry/admit.",
+    "resolved_at": "2026-05-14T19:10:27Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:10:32Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.16000000000000003,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 36.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.52,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5108256237659907,
+      "p_success": 0.6,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:07:19Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:09:38Z",
+        "resolved_at": "2026-05-14T19:10:27Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "rd_codex",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 23.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.54,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:07:19Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:08:01Z",
+        "resolved_at": "2026-05-14T19:10:27Z"
+      }
+    }
+  ]
+}

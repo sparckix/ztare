@@ -1,0 +1,40 @@
+{
+  "action_change_recommendation": "Force the cover relation to mention finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix directly, then name the next residual as selected-index production from event-prefix enumeration.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.24,
+  "b_width": 0.14,
+  "contract_id": "tick668_level511_finite_scale_cofinality_prefix_cover_source",
+  "contract_question": "Can Level511 define the Level510 targetEventDataIndexCover as the graph of a selected eventData index guarded by finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix?",
+  "domain": "ns_trackb_formal_bridge",
+  "expected_cost_agent_minutes": 84.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "graph_relation_too_tautological": 0.5,
+    "incidence_transport_rewrite_issue": 0.21428571428571427,
+    "primitive_fields_too_prop_level": 0.2857142857142857
+  },
+  "forecast_externality_tags": [
+    "positive_source_ladder",
+    "finite_prefix_cover_graph"
+  ],
+  "forecasted_at": "2026-05-27T06:31:40Z",
+  "p_buy_yes_max": 0.43,
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.36,
+  "p_regression": 0.07,
+  "p_sell_yes_min": 0.55,
+  "p_success": 0.58,
+  "predicted_brier_hi": 0.31,
+  "predicted_brier_lo": 0.17,
+  "rationale_short": "Lean should package a graph relation guarded by prefix primitive fields into Level510. This is positive progress if it makes the cover relation non-arbitrary, but it may still leave selectedEventDataIndex as the real residual.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "graph_relation_too_tautological",
+    "incidence_transport_rewrite_issue",
+    "primitive_fields_too_prop_level"
+  ],
+  "spread": -0.12,
+  "tail_downside_worry": 18.0,
+  "tail_upside_surprise": 11.0
+}

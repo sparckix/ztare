@@ -1,0 +1,135 @@
+{
+  "contract_id": "ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "leave active-or-passive lineage schedule source unconnected to finite-tail strictness",
+      "counterfactual_action": "add a finite lineage schedule budget source and constructor into Route1FiniteTailAmortizedStrictness",
+      "externality_hypotheses": {
+        "interface_completion": "may reduce future proof friction by wiring corrected carrier into scalar adapter",
+        "overclaim_guard": "should preserve persistence estimate as a separate PDE obligation"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "rd_codex",
+        "codex_forecaster"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "gp-233:positive:lineage-schedule-interface",
+        "interface-wiring",
+        "overclaim-guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "persistence-unproved",
+        "branch-dominance-open"
+      ],
+      "new_next_action": "use Route1FiniteTailAmortizedStrictness.ofLineageScheduleSources once persistence and schedule-budget fields are proved",
+      "old_next_action": "manually combine lineage schedule source with finite-tail adapter in future ticks",
+      "preconditioner_effect": "Kept the patch to constructor/interface wiring and left persistence/upstream closure as explicit obligations.",
+      "preconditioner_source": "GP-230 forecasts + tick405 audit",
+      "realized_failure_mode_ids": [
+        "constructor_type_friction",
+        "overclaim_persistence"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.08725000000000002,
+  "mean_log_score": -0.3497838741814341,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "b4a791cfb5a90dea3af4d4a1ffb5a1af9f38c4fece05b53970b9c88fcd1b8b17",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "compile_status": "lean_pass",
+    "contract_id": "ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "gp-233:positive:lineage-schedule-interface",
+      "interface-wiring",
+      "overclaim-guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "persistence-unproved",
+      "branch-dominance-open"
+    ],
+    "new_next_action": "use Route1FiniteTailAmortizedStrictness.ofLineageScheduleSources once persistence and schedule-budget fields are proved",
+    "old_next_action": "manually combine lineage schedule source with finite-tail adapter in future ticks",
+    "preconditioner_effect": "Kept the patch to constructor/interface wiring and left persistence/upstream closure as explicit obligations.",
+    "preconditioner_source": "GP-230 forecasts + tick405 audit",
+    "realized_failure_mode_ids": [
+      "constructor_type_friction",
+      "overclaim_persistence"
+    ],
+    "resolution_note": "Added LineageTailScheduleFiniteBudgetSource, Route1FiniteActiveTailBudget.ofLineageScheduleFiniteBudgetSource, and Route1FiniteTailAmortizedStrictness.ofLineageScheduleSources. The patch wires a finite active-or-passive lineage schedule into the existing finite-tail strictness adapter without claiming the fresh-frequency persistence PDE estimate or upstream closure. Lean compiles; no new sorry/admit.",
+    "resolved_at": "2026-05-14T19:15:00Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T19:15:06Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "codex_forecaster",
+      "brier": 0.09610000000000003,
+      "cost_error_agent_minutes": 12.0,
+      "domain": "ns_lean_micro",
+      "expected_cost_agent_minutes": 26.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.42,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.37106368139083207,
+      "p_success": 0.69,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:11:49Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:13:01Z",
+        "resolved_at": "2026-05-14T19:15:00Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "rd_codex",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_lean_micro",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.42,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T19:11:49Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T19:11:56Z",
+        "resolved_at": "2026-05-14T19:15:00Z"
+      }
+    }
+  ]
+}

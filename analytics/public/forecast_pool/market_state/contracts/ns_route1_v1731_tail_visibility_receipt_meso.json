@@ -1,0 +1,167 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T18:27:44Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 8.0,
+    "expected_value": 2.06,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.06,
+    "p_needs_new_lemma": 0.82,
+    "p_regression": 0.02,
+    "p_success": 0.72,
+    "participants": [
+      {
+        "agent_id": "codex_rd_ns_route1_pricer",
+        "domain": "ns_live_scalar_hinge",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "local_receipts_all_context_only",
+        "p": 0.34
+      },
+      {
+        "mode": "candidate_receipt_tautological",
+        "p": 0.24
+      },
+      {
+        "mode": "branch_choice_unchanged",
+        "p": 0.16
+      },
+      {
+        "mode": "scanner_misses_semantic_receipt",
+        "p": 0.14
+      },
+      {
+        "mode": "other",
+        "p": 0.08
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_v1731_tail_visibility_receipt_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_v1731_tail_visibility_receipt_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_v1731_tail_visibility_receipt_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_v1731_tail_visibility_receipt_meso.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_v1731_tail_visibility_receipt_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 8.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T18:27:31Z",
+    "created_by": "codex:RD_2026_05_13",
+    "horizon": "2026-05-13T19:15:00Z",
+    "layer": "meso",
+    "objective_resolver": "python script emits status plus metrics: non_tautological_receipt_candidates, invalid_shortcut_count, selected_next_move, training_now=false",
+    "question": "Will a saved-artifact route-1 tail-visibility receipt audit identify either a non-tautological CriticalTailVisibilityReserve candidate or a precise no-local-producer verdict that changes the next NS move?",
+    "success_threshold": "success if artifact exists, training_now=false, gnn_blocked=true, and either non_tautological_receipt_candidates>=1 or no_local_producer_verdict=true with selected_next_move",
+    "task_type": "ns_route1_tail_visibility_branch_choice"
+  },
+  "contract_id": "ns_route1_v1731_tail_visibility_receipt_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_ns_route1_pricer",
+        "raw_agent_ids": [
+          "codex_rd_ns_route1_pricer"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_ns_route1_pricer"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_ns_route1_pricer",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_v1731_tail_visibility_receipt_meso/codex_rd_ns_route1_pricer.json",
+        "canonical_agent_id": null,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes": 8.0,
+        "forecasted_at": "2026-05-13T18:27:39Z",
+        "p_success": 0.72,
+        "rationale_short": "Local evidence v17.25/v17.28/v17.30 says adapters exist but no producer. A saved scan should still decide the next branch: either name a non-tautological receipt candidate or prove the current local graph lacks one. Effort prior overridden because this is saved-artifact scan, not older Lean-heavy ns_live_scalar_hinge.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 4.5,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T18:29:23Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.72,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 1.0016
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 8.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.72,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "local_receipts_all_context_only",
+        "p": 0.34
+      },
+      {
+        "mode": "candidate_receipt_tautological",
+        "p": 0.24
+      },
+      {
+        "mode": "branch_choice_unchanged",
+        "p": 0.16
+      },
+      {
+        "mode": "scanner_misses_semantic_receipt",
+        "p": 0.14
+      },
+      {
+        "mode": "other",
+        "p": 0.08
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.07840000000000001,
+    "score_rows": 1,
+    "scored_at": "2026-05-13T18:29:28Z"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick625-monotonicity-variational-obstruction",
+  "contract_question": "tick625: does the monotonicity-formula route toward 3D-NS closure yield a genuinely-new (non-trichotomy) mechanism, or does it reduce to CKN almost-monotonicity = class(1) with the ADDED structural reason that the remainder is unsigned BECAUSE of skew-transport + nonlocal-pressure (no gradient/variational structure) \u2014 a derived deepening of tick623's missing-object characterization?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T02:03:30Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.68,
+  "rationale_short": "gradient-flow obstruction plausible as heuristic not theorem (non-gradient systems can still have monotones); CKN almost-monotone framing right; downgrade the absolute impossibility",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

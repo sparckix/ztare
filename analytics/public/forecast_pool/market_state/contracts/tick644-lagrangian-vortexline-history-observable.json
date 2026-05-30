@@ -1,0 +1,83 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick644-lagrangian-vortexline-history-observable.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick644-lagrangian-vortexline-history-observable.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick644-lagrangian-vortexline-history-observable.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick644-lagrangian-vortexline-history-observable.json",
+    "score": "analytics/public/forecast_pool/scores/tick644-lagrangian-vortexline-history-observable.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": "selected_projected_coherence_observable_liminf_source",
+    "created_at": "2026-05-19T02:02:58Z",
+    "created_by": "claude:RD",
+    "horizon": "this_tick",
+    "layer": "micro",
+    "objective_resolver": "codex_cold_adversary+MetaDarwin: TRUE iff a dimensionally-valid non-vacuous NON-SPECTRAL Lagrangian/material deformation-history observable controlling limsup norm-omega-Linf is CONSTRUCTED and survives one independent cold adversary as NOT a local-polynomial recast / forbidden spectral-gap-Oseledets object / Sobolev relabel / forbidden transport; else FALSE",
+    "question": "Can a material/Lagrangian vortex-line deformation-history observable (non-spectral, positive-cone, multiplicative-over-nesting; e.g. a Constantin-Iyer stochastic-Lagrangian deformation functional) be CONSTRUCTED that controls limsup_t norm-omega-Linf for 3D NSE by SUPPLYING the missing pointwise active-scale via trajectory time-integration \u2014 outside the now-excluded local Eulerian (omega,S)-polynomial class and NOT a forbidden spectral-gap/Oseledets object?",
+    "success_threshold": "binary: constructed_nonvacuous_nonspectral_lagrangian_observable_surviving_cold_adversary=1; partial/recast/spectral_collapse/recurrence=0",
+    "task_type": "ns_trackb"
+  },
+  "contract_id": "tick644-lagrangian-vortexline-history-observable",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": true,
+    "closed": false,
+    "missing_obligations": [
+      "forecast_backfill_or_void_no_score"
+    ],
+    "next_action": "resolved_without_forecasts",
+    "state": "resolved_without_forecasts"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-19T02:20:18Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "resolved_without_forecasts",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd_ns_route1_channel_producer",
+  "contract_id": "ns_route1_channel_producer_pde_leg_micro",
+  "contract_question": "Will the next NS route1 PDE-leg tightening produce a compiled channel-producer linkage that reduces scalar-smuggling surface without adding a new GNN/harness artifact?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_import_staleness_or_build_cache": 0.12,
+    "other": 0.3,
+    "overfitting_to_scalar_algebra": 0.18,
+    "profile_module_build_debt_blocks_integration": 0.18,
+    "wrapper_without_pde_content": 0.22
+  },
+  "forecasted_at": "2026-05-13T19:10:31Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.35,
+  "p_regression": 0.08,
+  "p_success": 0.72,
+  "rationale_short": "Pressure and commutator legs already compiled independently; main risk is producing only wrappers rather than a channel linkage that reduces scalar-smuggling surface.",
+  "read_only_attestation": true
+}

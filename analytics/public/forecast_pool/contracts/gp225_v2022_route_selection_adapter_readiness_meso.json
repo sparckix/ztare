@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2022_route_selection_adapter_readiness_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2022_route_selection_adapter_readiness_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2022_route_selection_adapter_readiness_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2022_route_selection_adapter_readiness_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2022_route_selection_adapter_readiness_meso.json"
+  },
+  "budget_agent_minutes": 14.0,
+  "budget_agent_minutes_source": "domain_effort_prior:exact",
+  "contract_id": "gp225_v2022_route_selection_adapter_readiness_meso",
+  "cost_penalty": 0.05,
+  "created_at": "2026-05-14T13:31:11Z",
+  "created_by": "codex_RD_2026_05_14",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 14.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_repair_micro",
+    "score": 1.0,
+    "selected_domain": "gp225_repair_micro",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 14.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 43,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 3,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.2143,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "one bounded no-replay route-selection artifact",
+  "information_value": 0.5,
+  "layer": "meso",
+  "objective_resolver": "Success iff analytics/public/leanmill/results/v2022_route_selection_adapter_readiness.json/.md exist, consume LATEST_META_SOLVER_CONSUMPTION_MANIFEST v20.21, cite public/blended benchmark state, choose one next executable bridge with thresholds, run no Lean replay/training, include research_yield_decomposition, and set gnn_blocked=true.",
+  "question": "Will v20.22 produce a no-replay GP-225 route-selection/adapter-readiness artifact that consumes v20.21, cites public/union benchmark state, selects the next executable bridge, includes GP-233 decomposition, and keeps GNN blocked?",
+  "risk_penalty": 0.15,
+  "success_threshold": "json_md_exist,uses_v2021_latest_manifest,cites_public_union_benchmark_state,names_next_executable_bridge_with_thresholds,no_replay,no_training,research_yield_decomposition_present,gnn_blocked_true",
+  "task_type": "gp225_route_selection_meso",
+  "value_if_success": 0.65,
+  "void_conditions": "repo state changes make v20.21 unavailable, forecast artifacts missing, or resolver artifact not written"
+}

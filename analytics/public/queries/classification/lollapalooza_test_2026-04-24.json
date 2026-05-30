@@ -1,0 +1,59 @@
+{
+  "generated": "2026-04-24",
+  "source": "/analytics/public/ledgers/trajectory/trajectory_archive_enriched.jsonl",
+  "hypothesis": "Lollapalooza: iterations scoring >= 90 have structurally different thesis-term distributions from iterations at 70-89",
+  "falsifier": "KS p > 0.05 for every feature => REFUTED",
+  "high_bucket": {
+    "threshold": "score >= 90",
+    "n": 210
+  },
+  "mid_bucket": {
+    "threshold": "70 <= score < 90",
+    "n": 416
+  },
+  "features_tested": [
+    {
+      "feature": "primitive_count",
+      "ks_statistic": 0.0429,
+      "p_value": 0.945839,
+      "significant_at_005": false,
+      "high_bucket_mean": 0.37,
+      "mid_bucket_mean": 0.46,
+      "high_bucket_median": 0,
+      "mid_bucket_median": 0,
+      "high_bucket_n": 210,
+      "mid_bucket_n": 416
+    },
+    {
+      "feature": "dimension_term_count",
+      "ks_statistic": 0.1121,
+      "p_value": 0.054385,
+      "significant_at_005": false,
+      "high_bucket_mean": 4.32,
+      "mid_bucket_mean": 4.82,
+      "high_bucket_median": 4,
+      "mid_bucket_median": 4,
+      "high_bucket_n": 210,
+      "mid_bucket_n": 416
+    },
+    {
+      "feature": "active_constraint_count",
+      "ks_statistic": 0.1984,
+      "p_value": 2.7e-05,
+      "significant_at_005": true,
+      "high_bucket_mean": 8.87,
+      "mid_bucket_mean": 7.37,
+      "high_bucket_median": 9,
+      "mid_bucket_median": 8,
+      "high_bucket_n": 210,
+      "mid_bucket_n": 416
+    }
+  ],
+  "verdict": "SUPPORTED",
+  "verdict_detail": "At least one structural feature shows a statistically significant difference (p <= 0.05) between high-scoring (>=90) and mid-scoring (70-89) iterations. The Lollapalooza hypothesis -- that breakthroughs require multi-constraint convergence -- is supported by the data, though the specific distinguishing features should be interpreted with caution given the known limitations of the thesis_primitive_names field.",
+  "anti_overfitting_notes": [
+    "thesis_primitive_names is only populated for the best iteration per project; most records use regex fallback.",
+    "active_constraints reflects current rubric state, not historical state at iteration time.",
+    "High bucket N=210 is adequate for KS but smaller than mid bucket N=416."
+  ]
+}

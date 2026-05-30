@@ -1,0 +1,15 @@
+{
+  "contract_id": "ns_route1_zero_helicity_ejection_strictness_macro_20260516_tick559",
+  "resolution_bucket": "retired_invalid",
+  "resolution": "retired_invalid",
+  "resolved_by": "claude:v34_contract_closeout_session_20260515",
+  "resolved_at": "2026-05-16T00:22:43.966263+00:00",
+  "reason": "freshly-minted route-1 contract (concurrent session continues tick552/555/558/559 minting) re-posing the do-NOT-re-derive perennial atom; same class as v34 retired set; no forecasts/outcomes/F-rows; not autonomously resolvable.",
+  "current_evidence": "NONE",
+  "evidence_pointer": "analytics/public/forecast_pool/v34_contract_closeout_report.md",
+  "operator_needed": "yes (halt route-1 contract minting AT SOURCE \u2014 recurring; operator-owned)",
+  "no_fabricated_metrics": true,
+  "note": "retired_invalid honest disposition; not green-washed",
+  "voided": true,
+  "voided_reason": "freshly-minted route-1 contract (concurrent session continues tick552/555/558/559 minting) re-posing the do-NOT-re-derive perennial atom; same class as v34 retired set; no forecasts/outcomes/F-rows; not autonomously resolvable."
+}

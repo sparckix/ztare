@@ -1,0 +1,138 @@
+{
+  "contract_id": "gp225_v2055_source_safe_charfun_dual_one_row_replay",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Do not run the source-safe packet.",
+      "counterfactual_action": "Run a one-row, two-candidate Lean bridge replay.",
+      "externality_hypotheses": {
+        "negative": [
+          "can produce another zero-compile negative"
+        ],
+        "positive": [
+          "first compile signal after source-safety repair",
+          "separates static packet success from verifier yield"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Curry3",
+        "Euclid2"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "compile_signal",
+        "anti_goodhart",
+        "strict_adjudication_gap"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "no_strict_label",
+        "gold_multiline_capture_gap"
+      ],
+      "new_next_action": "repair strict adjudication for multiline gold target before any label promotion",
+      "old_next_action": "keep charFunDual at static packet stage",
+      "preconditioner_effect": "Limited replay to source-safe one-row packet with target-copy guards.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+      "realized_failure_mode_ids": [
+        "gold_multiline_capture_incomplete"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.37300000000000005,
+  "mean_log_score": -0.9445759076183522,
+  "outcome": {
+    "actual_cost_agent_minutes": 15.0,
+    "artifact_hash": "1d9702c8977c4240da28329244f4ca6d76a773d2e5fdb6fd29e213f445ed13bf",
+    "artifact_path": "analytics/public/leanmill/results/v2055_source_safe_charfun_dual_one_row_replay.json",
+    "changed_by_forecast_ids": [
+      "Curry3",
+      "Euclid2"
+    ],
+    "compile_status": "replay_compiled_auxiliary_pull_forward_only",
+    "contract_id": "gp225_v2055_source_safe_charfun_dual_one_row_replay",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "compile_signal",
+      "anti_goodhart",
+      "strict_adjudication_gap"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "no_strict_label",
+      "gold_multiline_capture_gap"
+    ],
+    "new_next_action": "repair strict adjudication for multiline gold target before any label promotion",
+    "old_next_action": "keep charFunDual at static packet stage",
+    "preconditioner_effect": "Limited replay to source-safe one-row packet with target-copy guards.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+    "realized_failure_mode_ids": [
+      "gold_multiline_capture_incomplete"
+    ],
+    "resolution_note": "v20.55 replay ran one row/two candidates: 2/2 compiled, 0 strict same-target under current bridge adjudicator, 2 auxiliary pull-forwards, 0 harmful mismatches, no training, GNN blocked. Contract objective was at least one compiled candidate with zero harmful mismatches, so resolved true; strict-label promotion remains blocked by gold multiline capture/adjudication.",
+    "resolved_at": "2026-05-14T18:06:26Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:06:30Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 15.0,
+      "agent_id": "Curry3",
+      "brier": 0.3364000000000001,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "gp225_pre_gnn_lean_replay",
+      "expected_cost_agent_minutes": 14.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.8675005677047231,
+      "p_success": 0.42,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:05:04Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:05:14Z",
+        "resolved_at": "2026-05-14T18:06:26Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 15.0,
+      "agent_id": "Euclid2",
+      "brier": 0.4096,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "gp225_pre_gnn_lean_replay",
+      "expected_cost_agent_minutes": 16.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -1.0216512475319814,
+      "p_success": 0.36,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:05:04Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:05:04Z",
+        "resolved_at": "2026-05-14T18:06:26Z"
+      }
+    }
+  ]
+}

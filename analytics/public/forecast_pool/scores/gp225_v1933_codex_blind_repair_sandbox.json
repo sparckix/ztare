@@ -1,0 +1,44 @@
+{
+  "contract_id": "gp225_v1933_codex_blind_repair_sandbox",
+  "mean_brier": 0.16360000000000002,
+  "mean_log_score": -0.5158507916927415,
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "artifact_hash": "adb345707fad6139a7410efdcb5780aae985fb5cd0ebf71cfaba08c3008f0c71",
+    "artifact_path": "analytics/public/leanmill/results/v1933_codex_blind_repair_sandbox.json",
+    "compile_status": "codex_blind_repair_ran_threshold_failed",
+    "contract_id": "gp225_v1933_codex_blind_repair_sandbox",
+    "error_type": "strict_or_pull_forward_rows_below_2",
+    "goal_delta": null,
+    "resolution_note": "v19.33 ran five uncontaminated Codex-blind repair rows. One candidate compiled and produced verified over-closure pull-forward; zero strict target-state hits and zero harmful compiled mismatches. Threshold required at least two strict-or-pull-forward rows, so blind Codex repair should not be scaled yet; next route is context-enriched candidate generation or a separately labeled teacher/oracle lane.",
+    "resolved_at": "2026-05-13T23:26:42Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:26:47Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "pascal_adversarial_forecaster",
+      "brier": 0.11560000000000002,
+      "cost_error_agent_minutes": 15.0,
+      "domain": "GP-225",
+      "expected_cost_agent_minutes": 20.0,
+      "log_score": -0.41551544396166595,
+      "p_success": 0.34,
+      "success_bool": false
+    },
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "peirce_readonly_forecaster",
+      "brier": 0.2116,
+      "cost_error_agent_minutes": 11.0,
+      "domain": "GP-225",
+      "expected_cost_agent_minutes": 16.0,
+      "log_score": -0.616186139423817,
+      "p_success": 0.46,
+      "success_bool": false
+    }
+  ]
+}

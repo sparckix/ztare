@@ -1,0 +1,24 @@
+{
+  "agent_id": "herschel_market_A",
+  "contract_id": "ns_route1_sheath_nogo_branch_meso_20260514_tick321",
+  "contract_question": "Will the same-scale sheath cancellation No-Go dispatch change the NS route-1 pressure/Riesz branch decision or add a necessary hypothesis today?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 75.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "abstract_countermodel": 0.19,
+    "branch_already_determined": 0.14,
+    "missing_hypothesis_not_compilable_today": 0.13,
+    "needs_harmonic_analysis": 0.18,
+    "other": 0.04,
+    "restates_existing_guard": 0.24,
+    "under_specified_sheath": 0.08
+  },
+  "forecasted_at": "2026-05-14T00:51:10Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.55,
+  "p_regression": 0.04,
+  "p_success": 0.64,
+  "rationale_short": "No-Go is well matched to same-scale sheath cancellation and likely to add a needed hypothesis or branch guard today.",
+  "read_only_attestation": true
+}

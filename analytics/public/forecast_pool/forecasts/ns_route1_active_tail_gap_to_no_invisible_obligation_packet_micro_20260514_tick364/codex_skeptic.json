@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_active_tail_gap_to_no_invisible_obligation_packet_micro_20260514_tick364",
+  "contract_question": "Can this tick produce a concrete math-first work packet mapping active all-channel-invisible route-1 tail failure to the existing no-invisible compactness obligation, with falsifiers and next discriminator?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_completion": 0.12,
+    "map_still_missing_pde_content": 0.45,
+    "pressure_commutator_topology_underdefined": 0.21,
+    "zero_visibility_tautology": 0.22
+  },
+  "forecasted_at": "2026-05-14T12:50:18Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.14,
+  "p_success": 0.58,
+  "rationale_short": "The packet is feasible, but the actual mathematical map may remain only a named obligation unless active carrier and visibility topology are pinned tightly.",
+  "read_only_attestation": true
+}

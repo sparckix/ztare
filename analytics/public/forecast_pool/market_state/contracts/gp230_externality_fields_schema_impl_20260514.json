@@ -1,0 +1,204 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T14:30:15Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 43.5,
+    "expected_value": -3.9214997999999497,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.15,
+    "p_needs_new_lemma": 0.035,
+    "p_regression": 0.135,
+    "p_success": 0.7107319512195732,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "meta_prediction_market",
+        "p_success": 0.78,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "meta_prediction_market",
+        "p_success": 0.63,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "argparse_schema_breaks_existing_contracts",
+        "p": 0.275
+      },
+      {
+        "mode": "audit_script_misses_new_fields",
+        "p": 0.22
+      },
+      {
+        "mode": "success_clean_patch",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "docs_overstate_enforcement",
+        "p": 0.2
+      },
+      {
+        "mode": "smoke_regression",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp230_externality_fields_schema_impl_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp230_externality_fields_schema_impl_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp230_externality_fields_schema_impl_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp230_externality_fields_schema_impl_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/gp230_externality_fields_schema_impl_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T14:29:50Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T16:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "py_compile and forecast_pool smoke pass; audit report reruns; seam/spec document panel result and externality fields.",
+    "question": "Can we implement optional structured externality fields in forecast_pool.py, update the GP-230 seam/spec, and preserve smoke/audit compatibility?",
+    "success_threshold": "Code accepts optional fields on init-contract/add-forecast/resolve, score payload surfaces externality audit fields, smoke passes, externality audit reruns, and docs mention the fields.",
+    "task_type": "forecast_pool_schema_patch"
+  },
+  "contract_id": "gp230_externality_fields_schema_impl_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "keep fields optional, preserve legacy contract validity, and make externality scoring separate from Brier",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp230_externality_fields_schema_impl_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-14T14:30:08Z",
+        "p_success": 0.78,
+        "rationale_short": "The patch is optional-field compatible and local to CLI serialization/audit. Main risks are backward compatibility and overstating enforcement in the seam/spec.",
+        "specific_failure_mode_ids": [
+          "argparse_schema_breaks_existing_contracts",
+          "audit_script_misses_new_fields",
+          "docs_overstate_enforcement"
+        ]
+      },
+      {
+        "action_change_recommendation": "run smoke and real audit after code patch; do not claim old contracts had structured externality telemetry",
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp230_externality_fields_schema_impl_20260514/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "meta_prediction_market",
+        "expected_cost_agent_minutes": 52.0,
+        "forecasted_at": "2026-05-14T14:30:08Z",
+        "p_success": 0.63,
+        "rationale_short": "Optional fields should be feasible, but code must avoid making old artifacts invalid. The audit should compute structured coverage rather than only prose term counts.",
+        "specific_failure_mode_ids": [
+          "argparse_schema_breaks_existing_contracts",
+          "audit_script_misses_new_fields",
+          "docs_overstate_enforcement"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T14:30:29Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 43.5,
+      "expected_value": -3.9214997999999497,
+      "p_success": 0.7107319512195732,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.0956
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 43.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7107319512195732,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "argparse_schema_breaks_existing_contracts",
+        "p": 0.275
+      },
+      {
+        "mode": "audit_script_misses_new_fields",
+        "p": 0.22
+      },
+      {
+        "mode": "success_clean_patch",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "docs_overstate_enforcement",
+        "p": 0.2
+      },
+      {
+        "mode": "smoke_regression",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09265,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T14:30:36Z"
+  }
+}

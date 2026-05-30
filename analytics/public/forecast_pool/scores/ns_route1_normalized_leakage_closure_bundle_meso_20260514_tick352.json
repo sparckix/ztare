@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352",
+  "mean_brier": 0.17424999999999996,
+  "mean_log_score": -0.5391107995101878,
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "artifact_hash": "0cb478d1de8b5a99bec694d4ef89f7f6d930a637131a295d40d82ca3529d4e94",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/normalized_leakage_closure_bundle_discriminator_20260514.json",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_normalized_leakage_closure_bundle_meso_20260514_tick352",
+    "error_type": null,
+    "goal_delta": 6,
+    "resolution_note": "Built and ran PATTERN-022 normalized leakage closure bundle discriminator. py_compile passed. Artifact emitted sentinel_ok true, 8 estimate gates, ranked bottleneck list, and top PDE action transport_route_flux_lower_payment. Added PDE estimate brief route1_transport_flux_lower_payment_estimate_20260514.md.",
+    "resolved_at": "2026-05-14T11:54:37Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T11:54:43Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "hooke_pde_tick352",
+      "brier": 0.1369,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 58.0,
+      "log_score": -0.4620354595965587,
+      "p_success": 0.63,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T11:51:12Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T11:51:25Z",
+        "resolved_at": "2026-05-14T11:54:37Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 42.0,
+      "agent_id": "rawls_skeptic_tick352",
+      "brier": 0.21159999999999995,
+      "cost_error_agent_minutes": 40.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 82.0,
+      "log_score": -0.616186139423817,
+      "p_success": 0.54,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T11:51:12Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T11:51:25Z",
+        "resolved_at": "2026-05-14T11:54:37Z"
+      }
+    }
+  ]
+}

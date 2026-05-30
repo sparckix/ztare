@@ -1,0 +1,227 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T22:50:53Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 12.666666666666666,
+    "expected_value": -0.0750401866504476,
+    "forecast_count": 3,
+    "forecast_history_count": 3,
+    "p_dependency_issue": 0.07333333333333333,
+    "p_needs_new_lemma": 0.04666666666666667,
+    "p_regression": 0.55,
+    "p_success": 0.0665662000405477,
+    "participants": [
+      {
+        "agent_id": "Claude",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro/claude.json",
+        "forecasted_at": "2026-05-14T22:50:53Z",
+        "p_success": 0.06,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Franklin",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro/franklin.json",
+        "forecasted_at": "2026-05-14T22:50:53Z",
+        "p_success": 0.12,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Noether",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro/noether.json",
+        "forecasted_at": "2026-05-14T22:50:53Z",
+        "p_success": 0.04,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "rank_baseline_still_saturates_top1_1p0",
+        "p": 0.49
+      },
+      {
+        "mode": "logistic_overfits_train_underperforms_eval",
+        "p": 0.2333333333333333
+      },
+      {
+        "mode": "logistic_matches_baseline_at_1p0_no_strict_exceed",
+        "p": 0.13333333333333333
+      },
+      {
+        "mode": "logistic_strictly_exceeds_baseline",
+        "p": 0.05666666666666667
+      },
+      {
+        "mode": "schema_or_runtime_error",
+        "p": 0.05666666666666667
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 8.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T22:49:34Z",
+    "created_by": "claude:RD",
+    "horizon": "2026-05-15T03:30:00Z",
+    "layer": "micro",
+    "objective_resolver": "analytics/public/leanmill/results/v2109_typed_label_cpu_logistic_diagnostic.json:metrics.cpu_logistic_top1_rate > metrics.candidate_rank_baseline_top1_rate AND metrics.witness_equality_smuggled_into_canonical_strict_training_table == false",
+    "question": "On the typed-label heldout eval union (canonical compile-backed strict rows + current_scale_0164 with witness-equality positives + v20.96 hard negatives), does the tiny CPU logistic top1_rate strictly exceed the candidate-rank baseline top1_rate? Resolves true only on strict majority and no harmful smuggling of witness-equality labels into the canonical training table.",
+    "success_threshold": "cpu_logistic_top1_rate > candidate_rank_baseline_top1_rate",
+    "task_type": "tiny_cpu_logistic_diagnostic_under_typed_labels"
+  },
+  "contract_id": "gp225_v2109_typed_label_cpu_logistic_diagnostic_micro",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "Claude"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Franklin",
+        "raw_agent_ids": [
+          "Franklin"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Noether",
+        "raw_agent_ids": [
+          "Noether"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Claude",
+      "Franklin",
+      "Noether"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": "Do NOT run the logistic diagnostic now; it cannot resolve the contract true. Instead pivot to v2109_baseline_unsaturating_row_acquisition or operator gate-threshold redefinition.",
+        "agent_id": "Claude",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro/claude.json",
+        "canonical_agent_id": "claude",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 8.0,
+        "forecasted_at": "2026-05-14T22:50:53Z",
+        "p_success": 0.06,
+        "rationale_short": "RD aggregate of Franklin p=0.12 and Noether p=0.04; the contract threshold is structurally unreachable while the rank baseline saturates. The honest call is to surface this gate-shape finding rather than spend agent-minutes on a diagnostic that cannot resolve true.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Run v2109 as diagnostic-only and accept near-certain non-exceed; in parallel commission a baseline-unsaturating heldout row per v2108 next_artifact options.",
+        "agent_id": "Franklin",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro/franklin.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 18.0,
+        "forecasted_at": "2026-05-14T22:50:53Z",
+        "p_success": 0.12,
+        "rationale_short": "v2090 prior shows logistic 0.5 vs baseline 1.0; v2108 confirms baseline still saturates under natural merge; strict exceedance requires >1.0 \u2014 mathematically impossible without a baseline-unsaturating row.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "Acquire a baseline-unsaturating row before running the logistic diagnostic; strict-exceed is structurally infeasible while baseline=1.0.",
+        "agent_id": "Noether",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2109_typed_label_cpu_logistic_diagnostic_micro/noether.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 12.0,
+        "forecasted_at": "2026-05-14T22:50:53Z",
+        "p_success": 0.04,
+        "rationale_short": "Baseline saturates at top1=1.0 on all three eval rows under natural merge; >1.0 is structurally impossible. v2090 logistic regressed to 0.5; expanding eval is unlikely to flip the inequality.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 6.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T22:51:08Z",
+    "success_bool": false,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 12.666666666666666,
+      "expected_value": -0.0750401866504476,
+      "p_success": 0.0665662000405477,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.4421
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 12.666666666666666,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "voided_no_score",
+    "p_success": 0.0665662000405477,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "rank_baseline_still_saturates_top1_1p0",
+        "p": 0.49
+      },
+      {
+        "mode": "logistic_overfits_train_underperforms_eval",
+        "p": 0.2333333333333333
+      },
+      {
+        "mode": "logistic_matches_baseline_at_1p0_no_strict_exceed",
+        "p": 0.13333333333333333
+      },
+      {
+        "mode": "logistic_strictly_exceeds_baseline",
+        "p": 0.05666666666666667
+      },
+      {
+        "mode": "schema_or_runtime_error",
+        "p": 0.05666666666666667
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

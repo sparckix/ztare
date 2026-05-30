@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick626-c3-cz-offdiagonal-pair",
+  "contract_question": "tick626 LEMMA: a complementary-scaling-carrier dichotomy for C3 sourced from CZ-kernel H\u00f6rmander OFF-DIAGONAL regularity (structural margin s=1, NOT viscosity) \u2014 single-shell\u21d2scale-invariant principal (A) vs multi-shell\u21d2off-diagonal 2^{-|j-j'|} structural decay (B). Does this evade tick595's C3-non-transfer (which only treated DIAGONAL same-scale carriers, \u03b1=\u03b2=0), or does the C3 separator provably self-similarly single-shell-concentrate so B never triggers (degeneracy returns = atom)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T02:05:40Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.12,
+  "rationale_short": "amnesia gate: CZ off-diagonal pair = tick591 shared-support (bad mass IS the CZ-source mass \u21d2 supports coincide \u21d2 no Schur gain) = alias #8, strengthened by tick596 to entire \u03bd-injection class; NOT novel, a hidden recast \u2014 honest failure",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_forecast_tick345",
+  "contract_id": "ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345",
+  "contract_question": "Within the current tick, can we add a compile-checked Lean bridge/guard that lowers normalized shard-C transport/boundary undercharge into existing route-flux and tent-boundary receipt objects, with no new sorry/admit and no final-carrier magnitude input?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 74.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "final_carrier_smuggling": 0.17,
+    "lean_type_mismatch": 0.16,
+    "other": 0.08,
+    "receipt_object_too_weak": 0.32,
+    "transport_boundary_split_restates_charge_sum": 0.27
+  },
+  "forecasted_at": "2026-05-14T04:09:08Z",
+  "p_dependency_issue": 0.32,
+  "p_needs_new_lemma": 0.45,
+  "p_regression": 0.09,
+  "p_success": 0.61,
+  "rationale_short": "The declarations exist, but the useful version must tie normalized transport/boundary parts to route-flux and tent-truncation receipts without simply assuming their charge inequalities again.",
+  "read_only_attestation": true
+}

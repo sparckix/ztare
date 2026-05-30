@@ -1,0 +1,284 @@
+{
+  "audit_timestamp_utc": "2026-05-09T23:24:02.365712+00:00",
+  "sources_loaded": 5,
+  "n_entities_tracked": 1119,
+  "n_single_source_flags": 933,
+  "n_multi_source_disagreements": 10,
+  "n_catch_demotion_drift": 0,
+  "single_source_significant": [
+    {
+      "entity": "R24",
+      "single_source": "cross_audit",
+      "tag": "flagged"
+    },
+    {
+      "entity": "GP-130",
+      "single_source": "cross_audit",
+      "tag": "flagged"
+    },
+    {
+      "entity": "GP-140",
+      "single_source": "cross_audit",
+      "tag": "flagged"
+    },
+    {
+      "entity": "GP-173",
+      "single_source": "cross_audit",
+      "tag": "flagged"
+    },
+    {
+      "entity": "GP-188",
+      "single_source": "cross_audit",
+      "tag": "flagged"
+    },
+    {
+      "entity": "GP-192",
+      "single_source": "cross_audit",
+      "tag": "flagged"
+    },
+    {
+      "entity": "R21",
+      "single_source": "cross_audit",
+      "tag": "flagged"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161007Z_ns_trackb_source_constructors_20260506/01_FlatTorusLowHighKinematicPDEObligation.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161007Z_ns_trackb_source_constructors_20260506/02_FlatTorusKillingModePDEAdapter.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161007Z_ns_trackb_source_constructors_20260506/03_LowHighLipschitzReservePDEObligation.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161007Z_ns_trackb_source_constructors_20260506/04_EventRecurrencePricePDEObligation.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161007Z_ns_trackb_source_constructors_20260506/05_MacroscopicFlatTorusClockSource.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161007Z_ns_trackb_source_constructors_20260506/manifest.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161007Z_ns_trackb_source_constructors_20260506/prompts.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/01_FlatTorusLowHighKinematicPDEObligation.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/02_GP216BridgeCompositionReceipt.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/03_LowHighLipschitzReservePDEObligation.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/04_EventRecurrencePricePDEObligation.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/05_MacroscopicFlatTorusClockSource.prompt.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/manifest.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/metrics.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/prompts.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/results/01_FlatTorusLowHighKinematicPDEObligation.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/results/02_GP216BridgeCompositionReceipt.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/results/03_LowHighLipschitzReservePDEObligation.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/results/04_EventRecurrencePricePDEObligation.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/results/05_MacroscopicFlatTorusClockSource.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/agent_panels/20260506T161557Z_ns_trackb_live_agent_panel_20260506/summary.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/apparatus_level2_review.md",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    },
+    {
+      "entity": "analytics/queries/cap_kind_distribution.json",
+      "single_source": "process_catalog",
+      "tag": "recently_authored"
+    }
+  ],
+  "multi_source_disagreements": [
+    {
+      "entity": "research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md",
+      "n_sources": 3,
+      "kind_per_source": {
+        "recursive_gain": [
+          "one_shot_artifact"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md",
+      "n_sources": 3,
+      "kind_per_source": {
+        "recursive_gain": [
+          "one_shot_artifact"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md",
+      "n_sources": 3,
+      "kind_per_source": {
+        "recursive_gain": [
+          "one_shot_artifact"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "scripts/scaffold_rubric.py",
+      "n_sources": 2,
+      "kind_per_source": {
+        "process_catalog": [
+          "one_shot"
+        ],
+        "recursive_gain": [
+          "one_shot_artifact"
+        ]
+      }
+    },
+    {
+      "entity": "scripts/upgrade_mlh_rubrics.py",
+      "n_sources": 2,
+      "kind_per_source": {
+        "recursive_gain": [
+          "one_shot_artifact"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "research_areas/private/seams/substrates/planck/GP-023_planck_sandbox_08_closure.md",
+      "n_sources": 2,
+      "kind_per_source": {
+        "recursive_gain": [
+          "load_bearing_seam"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "research_areas/private/seams/audits/2026_04_25/GP-163d_unified_accel_run_postmortem.md",
+      "n_sources": 2,
+      "kind_per_source": {
+        "recursive_gain": [
+          "load_bearing_seam"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "research_areas/private/seams/engine/GP-154_learning_mechanics_scaling_exponents_seam.md",
+      "n_sources": 2,
+      "kind_per_source": {
+        "recursive_gain": [
+          "load_bearing_seam"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "research_areas/private/seams/mission/GP-140_ztare_discovery_seam.md",
+      "n_sources": 2,
+      "kind_per_source": {
+        "recursive_gain": [
+          "load_bearing_seam"
+        ],
+        "process_catalog": [
+          "unclassified"
+        ]
+      }
+    },
+    {
+      "entity": "research_areas/private/seams/engine/GP-216_theory_building_operations_seam.md",
+      "n_sources": 2,
+      "kind_per_source": {
+        "process_catalog": [
+          "recently_authored"
+        ],
+        "recursive_gain": [
+          "load_bearing_seam"
+        ]
+      }
+    }
+  ],
+  "catch_demotion_drift": [],
+  "method_note": "Kernel of the ACRR/PECVP primitive (substrate-produced, run 5). Full ACRR requires isolated infrastructure + cryptographic attestation; this kernel applies the divergence-check pattern to mining outputs we already produce. Single-source flags = entities only one source noticed (potential coverage gap). Multi-source disagreements = entities multiple sources see but characterize differently (potential semantic drift)."
+}

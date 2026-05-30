@@ -1,0 +1,37 @@
+{
+  "actual_cost_agent_minutes": 24.0,
+  "artifact_hash": "16f49d41c456279bd7be6abe49f517aab533debb21e58258e14ad393fe2f00c1",
+  "artifact_path": "analytics/public/leanmill/results/v2049_corrected_charfun_dual_canary_replay.json",
+  "changed_by_forecast_ids": [
+    "Russell",
+    "Mirzakhani"
+  ],
+  "compile_status": "replay_failed_zero_compile",
+  "contract_id": "gp225_v2049_corrected_charfun_dual_canary_replay",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "zero_compile_post_target_source_risk",
+  "externality_tags": [
+    "negative_replay_evidence",
+    "source_safety_quarantine",
+    "replay_budget_guard"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "zero_compile"
+  ],
+  "new_next_action": "reduce v20.49 failure; quarantine post-target same-file charFunDual helper for primary source contracts",
+  "old_next_action": "scale corrected charFunDual canary replay or count it as source-contract success",
+  "preconditioner_effect": "Limited replay spend to one row and two candidates.",
+  "preconditioner_source": "analytics/public/forecast_pool/aggregates/gp225_v2049_corrected_charfun_dual_canary_replay.json",
+  "realized_failure_mode_ids": [
+    "helper_source_safety_or_name_missing",
+    "aemeasurable_or_instance_mismatch"
+  ],
+  "resolution_note": "Corrected charFunDual canary replay attempted two candidates; zero compiled, zero strict/auxiliary, zero harmful. Replay output also shows the dual iff support is post-target same-file and therefore not source-safe for primary generation.",
+  "resolved_at": "2026-05-14T17:44:39Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

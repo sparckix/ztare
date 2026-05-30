@@ -1,0 +1,69 @@
+{
+  "experiment": "inversion_as_generation",
+  "n_stalls": 3,
+  "results": [
+    {
+      "stall_id": "low_high",
+      "stall": "Need to prove that, for actual Leray/NSE paraproduct blocks at fixed LP/Besov topology, the low-high catalyst interaction's payoff is charged by the leakage budget. Lean adapter exists at obligation level; the actual PDE estimate is open.",
+      "saturated_cluster": "Obligation Field Stratification",
+      "generated": {
+        "generated_move_name": "Bilinear Charge Witness",
+        "structural_signature": "Construct an explicit numeric certificate that bounds the bilinear paraproduct remainder by exhibiting a closed-form Besov-norm inequality whose constants are computable from the Leray projection data, thereby closing the estimate gap by witness rather than by obligation decomposition.",
+        "what_distinguishes_from_saturated": "The saturated cluster operates by stratifying the proof burden into typed obligation nodes (a decomposition primitive), whereas this move introduces a bound-constructing primitive: it produces a concrete numeric witness (a Besov-norm constant) that directly certifies the low-high catalyst payoff is dominated by the leakage budget, without further branching.",
+        "expected_proof_object": "A Lean theorem of shape `theorem lh_catalyst_leakage_bound (u v : BesovBlock) : \u2016T_lh u v\u2016_{B^s_{p,q}} \u2264 C_leak * leakage_budget u v` with `C_leak` a computable real extracted from the Littlewood-Paley frequency envelope of the Leray projector.",
+        "first_concrete_step": "Declare a Lean definition `lh_catalyst_constant : \u211d` computed as the supremum of `\u2016P_\u2264k u\u2016_{L^p} * \u2016P_k v\u2016_{B^s_{p,q}}` over dyadic blocks k, then state the bounding lemma as a `sorry`-free `#check`-able skeleton to expose the exact numeric gap."
+      },
+      "critique": {
+        "structural_distinctness": 5,
+        "proof_object_shift": 5,
+        "escapability": 4,
+        "overall_pass": true,
+        "verdict": "This is genuinely structurally distinct from Obligation Field Stratification. The saturated cluster lives on the meta-proof-management axis: it decomposes an undifferentiated burden into typed obligation nodes with predicates for coverage and completeness. The generated move instead lives on the analytic-certificate axis: it attempts to construct a concrete numeric Besov/paraproduct bound with a computable constant, so the central primitive is witness production rather than obligation decomposition. The proof artifact also shifts from a lattice of Lean obligation objects to a direct inequality theorem with an explicit constant. Its escapability is strong but not perfect: it avoids the specific failure mode of merely reorganizing proof burdens, but it may still fail if the claimed computable constant or supremum estimate cannot actually be established in Lean."
+      },
+      "mean_score": 4.666666666666667
+    },
+    {
+      "stall_id": "high_high",
+      "stall": "Need to rule out the failure mode where high-high mixed-only profit survives while the self-tax appears to cancel. Lean obligation names the burden but the actual quartic ledger inequality is open.",
+      "saturated_cluster": "Obligation Field Stratification",
+      "generated": {
+        "generated_move_name": "Quartic Bound Witness",
+        "structural_signature": "Construct an explicit numeric certificate \u2014 a concrete parameter tuple \u2014 that satisfies the quartic ledger inequality's hypotheses while falsifying its conclusion, thereby converting the open inequality into a decidable closed-form check.",
+        "what_distinguishes_from_saturated": "The saturated cluster decomposes the burden into named sub-obligations (a lattice operation) but never instantiates a numeric witness; this move introduces a concrete existential witness that collapses the open inequality to a ground arithmetic decision, a structural primitive the stratification cluster entirely lacks.",
+        "expected_proof_object": "A Lean `decide`-closed theorem of shape `\u00ac (quartic_ledger_ineq a b c d)` for a specific tuple `(a, b, c, d)` that exhibits the high-high mixed-only profit survival with self-tax cancellation, serving as a falsifier certificate for the open obligation.",
+        "first_concrete_step": "Declare a Lean theorem `example : \u00ac quartic_ledger_ineq (a\u2080) (b\u2080) (c\u2080) (d\u2080) := by native_decide` where `(a\u2080, b\u2080, c\u2080, d\u2080)` is a tuple computed by a companion script that numerically minimizes the ledger expression over the high-high mixed-only regime until the self-tax cancellation condition is met."
+      },
+      "critique": {
+        "structural_distinctness": 5,
+        "proof_object_shift": 5,
+        "escapability": 4,
+        "overall_pass": true,
+        "verdict": "This is genuinely structurally distinct. The saturated cluster operates on the obligation-management axis: it stratifies an existing proof burden into typed sub-obligations with coverage and completeness predicates. The generated move operates on the counterexample/certificate axis: it seeks a concrete numeric tuple that turns an open symbolic inequality obligation into a closed ground arithmetic refutation. The expected Lean artifact is not another named obligation node or lattice refinement, but a decidable theorem proving the negation of the target statement for specific parameters. It therefore escapes the stratification class rather than elaborating it, though its success depends on actually finding a valid tuple and ensuring the closed check is accepted by Lean."
+      },
+      "mean_score": 4.666666666666667
+    },
+    {
+      "stall_id": "remainder_cross",
+      "stall": "Need to prove cross/residual payoff in the LP/paraproduct decomposition is charged by residual price BEFORE taking the countable limit. Lean adapter exists; analytic estimate at actual NSE blocks is open.",
+      "saturated_cluster": "Obligation Field Stratification",
+      "generated": {
+        "generated_move_name": "Residual Charge Witness Construction",
+        "structural_signature": "Construct an explicit pointwise witness function that certifies the charge inequality holds at each individual NSE block before any limit passage, binding the residual price variable to a concrete measurable selector rather than an asymptotic envelope.",
+        "what_distinguishes_from_saturated": "The saturated cluster stratifies the proof burden into typed obligation objects (a decomposition move), whereas this move constructs a positive existential witness \u2014 a named measurable selector for the residual price \u2014 which is a witness-introduction primitive absent from the stratification lattice.",
+        "expected_proof_object": "A Lean theorem of shape `\u2200 b \u2208 NSE_blocks, \u2203 p_b : ResidualPrice, cross_payoff b \u2264 p_b * residual_norm b` with `p_b` given by an explicit measurable selector, provable without invoking any limit or compactness argument.",
+        "first_concrete_step": "Declare a Lean definition `residual_price_selector : NSEBlock \u2192 \u211d\u22650` as `fun b => cross_payoff b / residual_norm b` (with a guarded default at zero norm) and state the bounding lemma `cross_payoff b \u2264 residual_price_selector b * residual_norm b` as the first theorem to close."
+      },
+      "critique": {
+        "structural_distinctness": 4,
+        "proof_object_shift": 4,
+        "escapability": 3,
+        "overall_pass": true,
+        "verdict": "This is largely a genuinely distinct move rather than a paraphrase of Obligation Field Stratification. The saturated cluster operates on the meta-structure of the proof by decomposing an undifferentiated burden into typed obligation objects with coverage and completeness predicates. The generated move instead lives on the witness-introduction axis: it constructs a concrete measurable selector and proves a pointwise inequality before any limiting argument. The proof artifact is therefore different: a definition plus an existential/bounding theorem, not another node in an obligation lattice. Its escapability is moderate rather than complete, because it may still become one obligation inside a stratified framework and does not by itself solve branch coverage or global charge completeness; however, its core mechanism is not merely further stratification."
+      },
+      "mean_score": 3.6666666666666665
+    }
+  ],
+  "n_pass": 3,
+  "mean_score": 4.333333333333333,
+  "verdict": "STRONG PASS \u2014 inversion-as-generation produces genuinely distinct moves under structural critique. The saturation flag becomes a generator, not just a refusal-to-retrieve."
+}

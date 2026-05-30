@@ -1,0 +1,134 @@
+{
+  "contract_id": "gp225_v2037_repair_candidate_replay",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "do not replay repaired candidates; keep v20.35 as static pre-replay supply",
+      "counterfactual_action": "build replay adapter and run strict-implies-compile replay over v20.35 repaired candidates",
+      "externality_hypotheses": {
+        "negative": [
+          "May show deterministic repairs still fail Lean, redirecting to external adapter or source-discovery rather than more hand repairs"
+        ],
+        "positive": [
+          "May convert repaired public-adapter supply into compile-backed labels for future union training"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "gp230_chandrasekhar_gp225_v2037",
+        "gp230_mill_gp225_v2037"
+      ],
+      "counterfactual_value_bucket": "medium_positive",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "general_purpose_lean_harness",
+        "public_adapter_repair_replay",
+        "auxiliary_pull_forward_positive",
+        "strict_label_negative",
+        "pre_gnn"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Do not promote labels or train; reduce the ofScalars_add pull-forward mismatch and build target-shape alignment before another replay.",
+      "old_next_action": "Potentially promote repaired public-adapter candidates if strict replay succeeds.",
+      "preconditioner_effect": "Ensured all 20 actions were attempted through a replay-compatible adapter; replay produced useful auxiliary compile signal but no strict labels.",
+      "preconditioner_source": "v20.36 static hygiene gate and GP-230 replay forecasts",
+      "realized_failure_mode_ids": [
+        "compiled_but_not_strict_same_target",
+        "no_strict_same_target_despite_repair"
+      ]
+    }
+  },
+  "mean_brier": 0.16820000000000002,
+  "mean_log_score": -0.5277763996038314,
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "artifact_hash": "74eedf6ef5ee3712805843d51a79fd4e0ff4d31db4430a2065584782432dddc3",
+    "artifact_path": "analytics/public/leanmill/results/v2037_repair_candidate_replay.json",
+    "changed_by_forecast_ids": [
+      "gp230_chandrasekhar_gp225_v2037",
+      "gp230_mill_gp225_v2037"
+    ],
+    "compile_status": "pass",
+    "contract_id": "gp225_v2037_repair_candidate_replay",
+    "counterfactual_value_bucket": "medium_positive",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "general_purpose_lean_harness",
+      "public_adapter_repair_replay",
+      "auxiliary_pull_forward_positive",
+      "strict_label_negative",
+      "pre_gnn"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "Do not promote labels or train; reduce the ofScalars_add pull-forward mismatch and build target-shape alignment before another replay.",
+    "old_next_action": "Potentially promote repaired public-adapter candidates if strict replay succeeds.",
+    "preconditioner_effect": "Ensured all 20 actions were attempted through a replay-compatible adapter; replay produced useful auxiliary compile signal but no strict labels.",
+    "preconditioner_source": "v20.36 static hygiene gate and GP-230 replay forecasts",
+    "realized_failure_mode_ids": [
+      "compiled_but_not_strict_same_target",
+      "no_strict_same_target_despite_repair"
+    ],
+    "resolution_note": "v20.37 adapter plus replay attempted all 20 repaired candidates. Result: compiled_candidate_actions=2, rows_with_compiled_candidate=1, new_strict_same_target_rows=0, verified_overclosure_pull_forward_actions=2, harmful_compiled_mismatch_actions=0, source hygiene clean, training=false, GNN blocked=true. Compiled actions were ofScalars_add ext/funext repairs, but they closed rather than matching the gold target state and are auxiliary pull-forward only.",
+    "resolved_at": "2026-05-14T15:34:23Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T15:34:30Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "gp230_chandrasekhar_gp225_v2037",
+      "brier": 0.16000000000000003,
+      "cost_error_agent_minutes": 6.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5108256237659907,
+      "p_success": 0.4,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:28:35Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:31:28Z",
+        "resolved_at": "2026-05-14T15:34:23Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 22.0,
+      "agent_id": "gp230_mill_gp225_v2037",
+      "brier": 0.17639999999999997,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 32.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.5447271754416719,
+      "p_success": 0.42,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T15:28:35Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T15:31:28Z",
+        "resolved_at": "2026-05-14T15:34:23Z"
+      }
+    }
+  ]
+}

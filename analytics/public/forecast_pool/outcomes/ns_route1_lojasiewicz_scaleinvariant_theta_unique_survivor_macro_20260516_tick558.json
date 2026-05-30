@@ -1,0 +1,15 @@
+{
+  "contract_id": "ns_route1_lojasiewicz_scaleinvariant_theta_unique_survivor_macro_20260516_tick558",
+  "resolution_bucket": "retired_invalid",
+  "resolution": "retired_invalid",
+  "resolved_by": "claude:v34_contract_closeout_session_20260515",
+  "resolved_at": "2026-05-16T00:07:47.948474+00:00",
+  "reason": "freshly-minted route-1 contract re-posing the perennial strict-margin/Lojasiewicz scale-invariant theta atom (do-NOT-re-derive, open since 2026-05-12); same class as the 9 v34-retired contracts; no forecasts/outcomes/F-rows; not autonomously resolvable. Ongoing route-1 contract minting from another session is itself the operator-owned parking decision, not an autonomous-resolution target.",
+  "current_evidence": "NONE",
+  "evidence_pointer": "analytics/public/forecast_pool/v34_contract_closeout_report.md",
+  "operator_needed": "yes (research-direction: park narrow Track-B route-1 Clay pursuit AND halt route-1 contract minting at the source)",
+  "no_fabricated_metrics": true,
+  "note": "retired_invalid honest disposition; not green-washed",
+  "voided": true,
+  "voided_reason": "freshly-minted route-1 contract re-posing the perennial strict-margin/Lojasiewicz scale-invariant theta atom (do-NOT-re-derive, open since 2026-05-12); same class as the 9 v34-retired contracts; no forecasts/outcomes/F-rows; not autonomously resolvable. Ongoing route-1 contract minting from another session is itself the operator-owned parking decision, not an autonomous-resolution target."
+}

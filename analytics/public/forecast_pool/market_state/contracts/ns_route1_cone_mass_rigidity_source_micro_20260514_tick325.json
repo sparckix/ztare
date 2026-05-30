@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T01:32:28Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 78.5,
+    "expected_value": -70.82258526554487,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.235,
+    "p_needs_new_lemma": 0.65,
+    "p_regression": 0.08499999999999999,
+    "p_success": 0.4745691224091884,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick325",
+        "domain": "ns_route1_pde",
+        "p_success": 0.41,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_forecast_tick325",
+        "domain": "ns_route1_pde",
+        "p_success": 0.54,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "opposite_cone_source_restates_cone_mass_subordination",
+        "p": 0.155
+      },
+      {
+        "mode": "rigidity_source_restates_cone_mass_subordination",
+        "p": 0.145
+      },
+      {
+        "mode": "opposite_cone_overflow_countermodel_not_formalized_enough_to_derive_subordination",
+        "p": 0.12
+      },
+      {
+        "mode": "overflow_to_countermodel_primitive_is_too_abstract_to_count",
+        "p": 0.11
+      },
+      {
+        "mode": "no_countermodel_primitive_is_too_opaque_for_gp233_credit",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_cone_mass_rigidity_source_micro_20260514_tick325.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_cone_mass_rigidity_source_micro_20260514_tick325.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_cone_mass_rigidity_source_micro_20260514_tick325.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_cone_mass_rigidity_source_micro_20260514_tick325.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_cone_mass_rigidity_source_micro_20260514_tick325.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 42.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T01:30:07Z",
+    "created_by": "codex_rd",
+    "horizon": "same-session",
+    "layer": "micro",
+    "objective_resolver": "Success iff Lean builds ns_pressure_hessian_l2_bridge and downstream ns_route1_fresh_frequency_coercivity_adapter after adding a lower source where cone-mass subordination is derived from an opposite-cone overflow-to-countermodel/no-countermodel primitive, with no sorry/admit introduced in the checked files.",
+    "question": "Will the next NS route-1 tick add a build-passed opposite-cone no-escape / rigidity source that derives FixedWindowStressConeMassSubordination without final-carrier smuggling?",
+    "success_threshold": "true",
+    "task_type": "lean_proof_surface_lowering"
+  },
+  "contract_id": "ns_route1_cone_mass_rigidity_source_micro_20260514_tick325",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick325",
+        "raw_agent_ids": [
+          "hooke_forecast_tick325"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_forecast_tick325",
+        "raw_agent_ids": [
+          "rawls_forecast_tick325"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick325",
+      "rawls_forecast_tick325"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick325",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_cone_mass_rigidity_source_micro_20260514_tick325/hooke_forecast_tick325.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 105.0,
+        "forecasted_at": "2026-05-14T01:32:11Z",
+        "p_success": 0.41,
+        "rationale_short": "Recent source lowerings raise compile odds, but this asks for cone subordination from an opposite-cone no-escape/countermodel primitive rather than passing it through.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_forecast_tick325",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_cone_mass_rigidity_source_micro_20260514_tick325/rawls_forecast_tick325.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 52.0,
+        "forecasted_at": "2026-05-14T01:32:21Z",
+        "p_success": 0.54,
+        "rationale_short": "Likely successful shape is an explicit dichotomy: opposite-cone overflow yields cancellation countermodel, and no-countermodel forces subordination; main risk is a renamed subordination assumption.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 32.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T01:33:56Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.13,
+      "p_success": 0.4745691224091884,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "opposite_cone_source_restates_cone_mass_subordination",
+        "p": 0.155
+      },
+      "voi_proxy": 5.3794
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 78.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.4745691224091884,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "opposite_cone_source_restates_cone_mass_subordination",
+        "p": 0.155
+      },
+      {
+        "mode": "rigidity_source_restates_cone_mass_subordination",
+        "p": 0.145
+      },
+      {
+        "mode": "opposite_cone_overflow_countermodel_not_formalized_enough_to_derive_subordination",
+        "p": 0.12
+      },
+      {
+        "mode": "overflow_to_countermodel_primitive_is_too_abstract_to_count",
+        "p": 0.11
+      },
+      {
+        "mode": "no_countermodel_primitive_is_too_opaque_for_gp233_credit",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.27985000000000004,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T01:34:00Z"
+  }
+}

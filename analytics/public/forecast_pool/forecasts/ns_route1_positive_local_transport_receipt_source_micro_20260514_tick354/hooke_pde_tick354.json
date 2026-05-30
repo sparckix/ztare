@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_pde_tick354",
+  "contract_id": "ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354",
+  "contract_question": "Can we compile the corrected positive-localized-flux transport receipt source and constructor into the route-1 transport lower-payment source without adding a signed/global defect shortcut?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_syntax_issue": 0.16,
+    "existing_type_names_mismatch": 0.22,
+    "other": 0.18,
+    "overwraps_instead_of_correcting_target": 0.24,
+    "visible_or_invisible_structure_too_abstract": 0.2
+  },
+  "forecasted_at": "2026-05-14T12:03:01Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.25,
+  "p_regression": 0.04,
+  "p_success": 0.72,
+  "rationale_short": "Tick353 already compiled the base no-go; adding the corrected positive-flux/visible-or-invisible target should be local if we avoid pretending to prove the PDE estimate.",
+  "read_only_attestation": true
+}

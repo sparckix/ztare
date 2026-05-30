@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T11:41:57Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 44.0,
+    "expected_value": -5.164711715092644,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.265,
+    "p_needs_new_lemma": 0.36,
+    "p_regression": 0.07,
+    "p_success": 0.6867552982376707,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick350",
+        "domain": "ns_route1_pde",
+        "p_success": 0.73,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_skeptic_tick350",
+        "domain": "ns_route1_pde",
+        "p_success": 0.64,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.2
+      },
+      {
+        "mode": "only_scaffolding",
+        "p": 0.17
+      },
+      {
+        "mode": "source_duplicates_existing_fields",
+        "p": 0.14
+      },
+      {
+        "mode": "payment_still_assumed",
+        "p": 0.12
+      },
+      {
+        "mode": "mismatch_guard_too_weak",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_boundary_tent_provenance_source_micro_20260514_tick350.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_boundary_tent_provenance_source_micro_20260514_tick350.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_boundary_tent_provenance_source_micro_20260514_tick350.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_boundary_tent_provenance_source_micro_20260514_tick350.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_boundary_tent_provenance_source_micro_20260514_tick350.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T11:41:40Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14 current tick",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean file contains named provenance source, constructor into FixedWindowBoundaryTentTruncationLowerPaymentSource, mismatch-undercharge no-go theorem, lake env lean and downstream build pass, and touched-file sorry/admit scan is clean",
+    "question": "Can we add a compile-checked Lean provenance source/guard for boundary tent lower payment: same tent-family and same cutoff feed the boundary lower-payment source, while mismatch-undercharge blocks any matching lower-payment source?",
+    "success_threshold": "compiled provenance source plus mismatch guard",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_boundary_tent_provenance_source_micro_20260514_tick350",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick350",
+        "raw_agent_ids": [
+          "hooke_forecast_tick350"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_skeptic_tick350",
+        "raw_agent_ids": [
+          "rawls_skeptic_tick350"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick350",
+      "rawls_skeptic_tick350"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick350",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_boundary_tent_provenance_source_micro_20260514_tick350/hooke_forecast_tick350.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 38.0,
+        "forecasted_at": "2026-05-14T11:41:52Z",
+        "p_success": 0.73,
+        "rationale_short": "Scout says provenance is the lever; Lean already has boundary source fields, so the value is making same-tent/cutoff a named constructor and mismatch-undercharge a no-instantiation rule.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_skeptic_tick350",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_boundary_tent_provenance_source_micro_20260514_tick350/rawls_skeptic_tick350.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 50.0,
+        "forecasted_at": "2026-05-14T11:41:52Z",
+        "p_success": 0.64,
+        "rationale_short": "Likely compiles, but it remains conditional unless the same-tent/cutoff assumptions do real numeric work. Still useful as a guard against dropping provenance.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 36.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T11:43:31Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 44.0,
+      "expected_value": -5.164711715092644,
+      "p_success": 0.6867552982376707,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.8851
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 44.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6867552982376707,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.2
+      },
+      {
+        "mode": "only_scaffolding",
+        "p": 0.17
+      },
+      {
+        "mode": "source_duplicates_existing_fields",
+        "p": 0.14
+      },
+      {
+        "mode": "payment_still_assumed",
+        "p": 0.12
+      },
+      {
+        "mode": "mismatch_guard_too_weak",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10125,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T11:43:38Z"
+  }
+}

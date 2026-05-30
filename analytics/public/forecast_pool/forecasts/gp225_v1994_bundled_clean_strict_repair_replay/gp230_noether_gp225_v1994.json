@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_noether_gp225_v1994",
+  "contract_id": "gp225_v1994_bundled_clean_strict_repair_replay",
+  "contract_question": "Conditional on v1992 and v1993 candidate packets existing, will v19.94 bundled clean strict repair replay add at least one fresh primary strict row, with harm zero, source-policy clean, no training, and GNN still blocked?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_packets_missing_or_not_replay_ready": 0.18,
+    "clean_repair_candidates_compile_but_do_not_reach_strict": 0.24,
+    "freshness_filter_removes_apparent_win": 0.14,
+    "one_fresh_primary_strict_row_closes": 0.28,
+    "source_policy_or_harm_gate_blocks_result": 0.08,
+    "other": 0.08
+  },
+  "forecasted_at": "2026-05-14T09:21:00Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.36,
+  "rationale_short": "Bundling two repair packets improves the chance of at least one strict row versus v1990, but the market is conditional because the v1992/v1993 packets were not present during scaffolding. Clean source policy and freshness filters remain the main suppressors.",
+  "read_only_attestation": true
+}

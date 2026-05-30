@@ -1,0 +1,195 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:59:06Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 417.5,
+    "expected_value": -1.452002190580668,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.245,
+    "p_needs_new_lemma": 0.78,
+    "p_regression": 0.135,
+    "p_success": 0.4167997809419332,
+    "participants": [
+      {
+        "agent_id": "Euler",
+        "domain": "ns_route1_clay_adjacency",
+        "p_success": 0.58,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Rawls",
+        "domain": "ns_route1_clay_adjacency",
+        "p_success": 0.27,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "carrier_identification_gap",
+        "p": 0.2
+      },
+      {
+        "mode": "certificate_adapter_only",
+        "p": 0.125
+      },
+      {
+        "mode": "certificate_reshuffling",
+        "p": 0.11
+      },
+      {
+        "mode": "hidden_scalar_oracle",
+        "p": 0.09
+      },
+      {
+        "mode": "pressure_decomposition_smuggling",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_clay_proof_adjacency_macro_20260513_tick315.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_clay_proof_adjacency_macro_20260513_tick315.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_clay_proof_adjacency_macro_20260513_tick315.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_clay_proof_adjacency_macro_20260513_tick315.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_clay_proof_adjacency_macro_20260513_tick315.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 31.5,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:57:32Z",
+    "created_by": "codex:RD",
+    "horizon": "next_10_RD_ticks_from_2026-05-13_tick315",
+    "layer": "macro",
+    "objective_resolver": "Resolve true only if a build-passed Lean artifact and E/F+GP-233 evidence show the remaining route-1 strictness blocker is one named classical PDE estimate station: critical-tail visibility/no-invisible-profile, angular dominance plus carrier identification, or pressure-decomposition lower bound. Wrapper-only/certificate reshuffling resolves false.",
+    "question": "Within the next 10 NS route-1 RD ticks, will we reach Clay-proof-adjacent status under the stricter predicate: build-passed Lean plus E/F and GP-233 row showing route-1 strictness reduces to one externally meaningful Navier-Stokes PDE estimate, not scalar strict-budget oracle and not route wiring or certificate reshuffling?",
+    "success_threshold": "one named externally meaningful PDE estimate station, build-passed Lean consumer, no new sorry, GP-233 next-lever change, not a strict-subratio oracle",
+    "task_type": "ns_route1_clay_adjacency"
+  },
+  "contract_id": "ns_route1_clay_proof_adjacency_macro_20260513_tick315",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Euler",
+        "raw_agent_ids": [
+          "Euler"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Rawls",
+        "raw_agent_ids": [
+          "Rawls"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Euler",
+      "Rawls"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Euler",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_proof_adjacency_macro_20260513_tick315/euler.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_clay_adjacency",
+        "expected_cost_agent_minutes": 300.0,
+        "forecasted_at": "2026-05-13T23:58:59Z",
+        "p_success": 0.58,
+        "rationale_short": "Angular bridge already narrows pressure-visible strictness to angular non-nullness/carrier identification, but success requires one externally meaningful PDE estimate rather than another Lean projection surface.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Rawls",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_proof_adjacency_macro_20260513_tick315/rawls.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_clay_adjacency",
+        "expected_cost_agent_minutes": 535.0,
+        "forecasted_at": "2026-05-13T23:59:01Z",
+        "p_success": 0.27,
+        "rationale_short": "Current infrastructure can package the reduction, but avoiding oracle-shaped assumptions likely needs a new lemma tying angular dominance or critical-tail visibility to recovered pressure-Hessian carrier.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.31,
+      "p_success": 0.4167997809419332,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 3.5531
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 417.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.4167997809419332,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "carrier_identification_gap",
+        "p": 0.2
+      },
+      {
+        "mode": "certificate_adapter_only",
+        "p": 0.125
+      },
+      {
+        "mode": "certificate_reshuffling",
+        "p": 0.11
+      },
+      {
+        "mode": "hidden_scalar_oracle",
+        "p": 0.09
+      },
+      {
+        "mode": "pressure_decomposition_smuggling",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

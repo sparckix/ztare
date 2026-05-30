@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "Dispatch only with explicit instruction to kill the idea and name first illegal inference.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_clay_near_miss_gpt55_xhigh_pincer_20260514",
+  "contract_question": "Will a GPT-5.5 xhigh near-miss pincer attempt produce a concrete next proof move beyond the current frontier: beta audit eligibility, pressure no-invisible/coherence, or flat radius scale reserve, without overclaiming Clay closure?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 130.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "actionable_no_go": 0.1,
+    "actual_new_route": 0.04,
+    "ckn_radius_gap_survives": 0.28,
+    "narrative_overclaim": 0.24,
+    "pressure_coherence_unsourced": 0.2,
+    "repeats_beta_map": 0.14
+  },
+  "forecast_externality_tags": [
+    "darwin",
+    "clay_overclaim_guard",
+    "gpt55_xhigh",
+    "n8_frontier"
+  ],
+  "forecasted_at": "2026-05-14T22:56:56Z",
+  "p_dependency_issue": 0.82,
+  "p_needs_new_lemma": 0.98,
+  "p_regression": 0.3,
+  "p_success": 0.34,
+  "rationale_short": "The likely result is not closure. The value is adversarial: prevent laundering radius or pressure gaps into route-1/beta progress.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "narrative_overclaim",
+    "ckn_radius_gap_survives",
+    "pressure_coherence_unsourced",
+    "repeats_beta_map",
+    "actionable_no_go",
+    "actual_new_route"
+  ]
+}

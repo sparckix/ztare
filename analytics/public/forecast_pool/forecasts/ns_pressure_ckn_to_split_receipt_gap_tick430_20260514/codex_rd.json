@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_ckn_to_split_receipt_gap_tick430_20260514",
+  "contract_question": "Will tick430 add a compiling Lean source-split showing that CKN/tent compatibility only yields the split receipt source after explicit receipt-share routing, without using final-carrier visibility?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:18:51Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.1,
+  "p_success": 0.74,
+  "rationale_short": "The gap is visible in existing fields; a projection with explicit receipt-share routing should be a small Lean interface refinement.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

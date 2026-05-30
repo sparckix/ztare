@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2061_public_union_next_source_discovery_queue.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2061_public_union_next_source_discovery_queue.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2061_public_union_next_source_discovery_queue",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2061_public_union_next_source_discovery_queue.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2061_public_union_next_source_discovery_queue.json"
+  },
+  "baseline_action": "Continue from old source queue including solved charFun row.",
+  "budget_agent_minutes": 16.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2061_public_union_next_source_discovery_queue",
+  "cost_penalty": 0.1,
+  "counterfactual_action": "Refresh queue after charFun strict repair and route to unsolved source-content rows.",
+  "created_at": "2026-05-14T18:30:48Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.6552,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_source_discovery_queue",
+    "score": 0.6667,
+    "selected_domain": "gp225_pre_gnn_source_discovery",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.6667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.6552,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.6667,
+        "score_rows": 2,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.2128,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.0909,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.093,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.1026,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.25,
+        "score_rows": 2,
+        "token_jaccard": 0.25
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "still static until candidates/replay"
+    ],
+    "positive": [
+      "prevents reworking solved charFun row",
+      "moves toward candidate-content delta"
+    ]
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.36,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2061 artifact exists with status passed, consumes v2060 and v2043, excludes current_scale_0329 from next queue, includes at least three remaining source-discovery rows, names a next candidate-generation artifact, replay_run=false, training_now=false, gnn_blocked=true.",
+  "question": "Will v20.61 produce a source-discovery queue after the charFun strict repair that removes the solved row, ranks remaining public/internal rows for candidate-content delta, and keeps replay/training blocked?",
+  "risk_penalty": 0.08,
+  "success_threshold": "1.0",
+  "task_type": "pre_gnn_source_discovery_queue",
+  "value_if_success": 0.7,
+  "void_conditions": "Void only if v2060 or v2043 artifacts are missing."
+}

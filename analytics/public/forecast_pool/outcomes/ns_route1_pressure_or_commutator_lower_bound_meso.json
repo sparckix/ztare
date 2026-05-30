@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 32.0,
+  "artifact_hash": "not_computed",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "compile_status": "route1_and_pressure_compiled",
+  "contract_id": "ns_route1_pressure_or_commutator_lower_bound_meso",
+  "error_type": "none",
+  "goal_delta": 1,
+  "resolution_note": "Independent forecast_count=3 aggregated at p_success=0.617. Majority selected pressure reserve/no-escape lower-bound. Execution added compiled Route1PressureVisibilityLowerBoundProducer and concrete no-escape-only counterexample, proving no-escape alone cannot force positive pressure visibility. Route1 still compiles; no GNN/harness artifact emitted.",
+  "resolved_at": "2026-05-13T19:17:52Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

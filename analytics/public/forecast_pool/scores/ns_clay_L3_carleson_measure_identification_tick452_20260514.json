@@ -1,0 +1,94 @@
+{
+  "contract_id": "ns_clay_L3_carleson_measure_identification_tick452_20260514",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "tick453+: (i) construct parabolic-Carleson measure from real NS velocity data (the analytic half of the gap); (ii) refine MeasurableSpace SpaceTimePoint from trivial-top to Borel on R x R^3; (iii) consume L3CarlesonMeasureFromESS in flat-radius reserve telescoping; OR revert to ns_graph_tick Track-B top targets (LeraySelfTaxProfilePriceStream, LowFrequencyLipschitzBridge)",
+      "old_next_action": "abstract L3DefectMeasureValue Real not identified with integral of |u|^3 against an honest measure (per tick448 audit + tick446 honest-scope-guard)"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.097,
+  "mean_log_score": -0.37200975546685094,
+  "outcome": {
+    "actual_cost_agent_minutes": 35.0,
+    "artifact_hash": "881cdd2e6c7f863e9798f5078856751c6345fe55f0433ebfce22ddce9c356af1",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_L3_endpoint_carleson_identification.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "clean",
+    "contract_id": "ns_clay_L3_carleson_measure_identification_tick452_20260514",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "tick453+: (i) construct parabolic-Carleson measure from real NS velocity data (the analytic half of the gap); (ii) refine MeasurableSpace SpaceTimePoint from trivial-top to Borel on R x R^3; (iii) consume L3CarlesonMeasureFromESS in flat-radius reserve telescoping; OR revert to ns_graph_tick Track-B top targets (LeraySelfTaxProfilePriceStream, LowFrequencyLipschitzBridge)",
+    "old_next_action": "abstract L3DefectMeasureValue Real not identified with integral of |u|^3 against an honest measure (per tick448 audit + tick446 honest-scope-guard)",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Tick452 ships NEW FILE ztare_proofs/ZtareProofs/ns_L3_endpoint_carleson_identification.lean (universe-free Type) closing the typing-half of the tick448 Meta-Darwin audit gap on tick446 L3DefectMeasureValue. Real Mathlib MeasureTheory.Measure typed field (NOT a Real-wrapped Prop): L3CarlesonMeasureFromESS structure with endpointL3Bound M, ParabolicCubeAbstract cube (radius r), honest L3DefectMeasure : MeasureTheory.Measure SpaceTimePoint, Carleson-style cube_measure_le_rM3 upper bound L3DefectMeasure cube.Q <= ENNReal.ofReal (r*M^3), and cubeMassIdentification_tight equality flag. Identification theorem L3DefectMeasureValue_eq_toReal_measure proves r*M^3 = (mu Q).toReal via ENNReal.toReal_ofReal. Real Lean cube-mass inequality cube_measure_toReal_le_rM3 derived (not asserted) via ENNReal.toReal_mono + ENNReal.ofReal_ne_top. Canonical inhabitant L3CarlesonMeasureFromESS.canonical_smul_dirac (noncomputable def) uses ENNReal.ofReal (r*M^3) smul Measure.dirac default with Q := {default}, discharging cube_measure_le_rM3 and cubeMassIdentification_tight via Measure.dirac_apply_of_mem rfl. Two smoke theorems on canonical witness. L3CarlesonIdentificationIsNotClayClosure (10-field scope guard) + L3CarlesonIdentificationMetaDarwinSelfAudit (6-field in-artifact Meta-Darwin discipline). Added import in ZtareProofs.lean. lake env lean compiled clean on the new file; rg sorry|admit clean. Tick432-449 structures untouched. Honest scope: typing half of the audit gap closed (Real L3DefectMeasureValue identified with toReal of a real Mathlib Measure); analytic half open (parabolic-Carleson construction from real NS velocity data not derived; canonical witness uses Dirac mass on trivial sigma-algebra, NOT the PDE-correct measure). ESS theorem still externally cited. NOT Clay closure, NOT NoSilentFlatDefectProfile closure, NOT flat-radius reserve closure.",
+    "resolved_at": "2026-05-15T02:30:43Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-15T02:30:47Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 35.0,
+      "agent_id": "codex_rd",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "lean_proof_attempt_pde",
+      "expected_cost_agent_minutes": 45.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T02:26:44Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T02:26:51Z",
+        "resolved_at": "2026-05-15T02:30:43Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 35.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 13.0,
+      "domain": "lean_proof_attempt_pde",
+      "expected_cost_agent_minutes": 48.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T02:26:44Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T02:26:55Z",
+        "resolved_at": "2026-05-15T02:30:43Z"
+      }
+    }
+  ]
+}

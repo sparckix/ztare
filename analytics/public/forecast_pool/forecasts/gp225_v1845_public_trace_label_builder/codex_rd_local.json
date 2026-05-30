@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd_local",
+  "contract_id": "gp225_v1845_public_trace_label_builder",
+  "contract_question": "Will v18.45 convert v17.39 public before/action/after traces into at least 50 candidate-pool target-label rows, with at least 20 baseline-unsaturated rows and zero unquarantined false accepts, while keeping GNN/cross-encoder training blocked?",
+  "domain": "gp225_public_trace_labels",
+  "expected_cost_agent_minutes": 2.0,
+  "failure_mode_distribution": {
+    "baselines_saturate_easy_refs": 0.16,
+    "candidate_pool_oracle_from_tactic_string": 0.2,
+    "other": 0.08,
+    "schema_drift_or_parser_bug": 0.1,
+    "state_delta_not_closure_value": 0.22,
+    "tactics_mostly_local_hyp_or_structural": 0.24
+  },
+  "forecasted_at": "2026-05-13T15:22:32Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.02,
+  "p_success": 0.4,
+  "rationale_short": "Public traces likely yield many state-delta labels but fewer true target refs. The discriminator is whether enough non-oracle candidate-pool rows survive action-family/local-name baselines to justify replay verification.",
+  "read_only_attestation": true
+}

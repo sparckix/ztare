@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Run only the one-row canary; do not train regardless of outcome.",
+  "agent_id": "Euclid2",
+  "contract_id": "gp225_v2055_source_safe_charfun_dual_one_row_replay",
+  "contract_question": "Will v20.55 replay the v20.54 source-safe charFunDual one-row packet and produce at least one compiled candidate with zero harmful mismatches?",
+  "domain": "gp225_pre_gnn_lean_replay",
+  "expected_cost_agent_minutes": 16.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "bridge_multiline_format_issue": 0.2,
+    "candidate_closes_wrong_shape": 0.14,
+    "normalizer_tactic_elaboration_fails": 0.39,
+    "typed_context_missing_notation_or_instance": 0.27
+  },
+  "forecast_externality_tags": [
+    "lean_replay",
+    "no_training",
+    "calibration"
+  ],
+  "forecasted_at": "2026-05-14T18:05:04Z",
+  "p_dependency_issue": 0.13,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.07,
+  "p_success": 0.36,
+  "rationale_short": "Source-safety is now clean, but the local replay context may not elaborate notation and normalizers exactly as packet text expects.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "normalizer_tactic_elaboration_fails",
+    "typed_context_missing_notation_or_instance"
+  ]
+}

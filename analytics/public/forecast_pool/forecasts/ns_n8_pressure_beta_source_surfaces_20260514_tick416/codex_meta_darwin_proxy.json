@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "proceed_only_as_recording",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_n8_pressure_beta_source_surfaces_20260514_tick416",
+  "contract_question": "Will the pressure/beta source-surface tick add compiling Lean structures for PressureConeFailureReducesToPreSummedVisibilityOrRigidity and BadCenterBetaEventIncidenceClosure without claiming either branch is closed?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "beta_branch_still_open": 0.25,
+    "lean_compile_issue": 0.15,
+    "names_not_sources": 0.35,
+    "pressure_branch_still_open": 0.25
+  },
+  "forecast_externality_tags": [
+    "n8-not-closed",
+    "negative-boundary"
+  ],
+  "forecasted_at": "2026-05-14T20:52:11Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.7,
+  "p_regression": 0.08,
+  "p_success": 0.68,
+  "rationale_short": "Useful only as recording. The actual pressure and beta source theorems remain open.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "names_not_sources",
+    "pressure_branch_still_open",
+    "beta_branch_still_open",
+    "lean_compile_issue"
+  ]
+}

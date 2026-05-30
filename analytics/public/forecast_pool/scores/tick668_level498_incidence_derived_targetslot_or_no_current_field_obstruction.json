@@ -1,0 +1,114 @@
+{
+  "contract_id": "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "continue trying to use opaque same-tree incidence or prefix domination as if it carried a finite targetSlot",
+      "counterfactual_action": "force the incidence-derived targetSlot question into a finite map/injectivity constructor or a typed obstruction before any C5 promotion",
+      "externality_hypotheses": {
+        "negative": "may prove another socket/obstruction rather than incidence construction",
+        "positive": "sharpens the C5-adjacent discharge path to the actual incidence data needed for targetSlot"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "positive_bridge_schema",
+        "current_field_obstruction",
+        "gate_semantics_fix"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "derive concrete targetSlot and injectivity from a stronger incidence extraction law, or add that law as the next explicit C5-facing source",
+      "old_next_action": "try to derive final-slot target-count bound from same-tree/incidence props",
+      "preconditioner_effect": "prevented label-only incidence from being counted as targetSlot construction while preserving positive conditional source",
+      "preconditioner_source": "Meta-Darwin gate audit plus incidence-derived finite-injection discriminator",
+      "realized_failure_mode_ids": [
+        "current_prop_only_incidence_no_finite_map",
+        "label_only_prefix_domination_confuser"
+      ]
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.11559999999999998,
+  "mean_log_score": -0.4155154439616658,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "d4147e5018a8b58e0198d7a34ef30c5c38225af75720d47c9534b9c36d01b17c",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level498_incidence_targetslot_pencil.md",
+    "changed_by_forecast_ids": [],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "lake_build_pass",
+    "contract_id": "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "positive_bridge_schema",
+      "current_field_obstruction",
+      "gate_semantics_fix"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 3,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "derive concrete targetSlot and injectivity from a stronger incidence extraction law, or add that law as the next explicit C5-facing source",
+    "old_next_action": "try to derive final-slot target-count bound from same-tree/incidence props",
+    "ordering_override_no_codex": "warm-consumer-once found no live warm message for the already-created Level498 contract after the initial warm-forecaster format error; resolving with explicit no-independent waiver rather than fabricating a forecast",
+    "ordering_override_no_independent_forecaster": "warm-consumer-once found no live warm message for the already-created Level498 contract after the initial warm-forecaster format error; resolving with explicit no-independent waiver rather than fabricating a forecast",
+    "preconditioner_effect": "prevented label-only incidence from being counted as targetSlot construction while preserving positive conditional source",
+    "preconditioner_source": "Meta-Darwin gate audit plus incidence-derived finite-injection discriminator",
+    "realized_failure_mode_ids": [
+      "current_prop_only_incidence_no_finite_map",
+      "label_only_prefix_domination_confuser"
+    ],
+    "resolution_note": "TRUE: Level498 added a positive conditional incidence-derived targetSlot source and proved its handoff to the Level497 finite-cardinality bound; it also mechanized the two-target/one-slot obstruction showing current Prop-only incidence/prefix fields do not derive the concrete map. Lean file check, lake build, strict gate receipts, workbench, orchestration, and work-unit gate all pass.",
+    "resolved_at": "2026-05-27T04:12:40Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T04:12:46Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex:RD",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": 66.0,
+      "domain": "ns_millennium_hunt",
+      "expected_cost_agent_minutes": 90.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.4155154439616658,
+      "p_buy_yes_max": 0.59,
+      "p_dependency_issue": 0.18,
+      "p_needs_new_lemma": 0.38,
+      "p_regression": 0.1,
+      "p_sell_yes_min": 0.76,
+      "p_success": 0.66,
+      "predicted_brier_hi": 0.3,
+      "predicted_brier_lo": 0.16,
+      "predicted_self_error_ratio": 0.25,
+      "success_bool": true,
+      "tail_downside_worry": 30.0,
+      "tail_upside_surprise": 20.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T03:44:17Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T03:45:05Z",
+        "resolved_at": "2026-05-27T04:12:40Z"
+      },
+      "verbalized_confidence": 0.66
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "tick_id": "tick668",
+  "level": 514,
+  "contract_id": "tick668_level514_coverage_choice_finite_selector_source",
+  "selected_pattern_chain": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second",
+    "GP-219 estimate-craft"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018",
+    "no opaque selected index",
+    "no endpoint-capacity substitute",
+    "no post-payoff selector"
+  ],
+  "residual_to_check_edge": {
+    "residual": "coverage packet is Prop-level and Level513 still carried selectedPrefixEventIndex as data",
+    "check": "G-COVERAGE-CHOICE-FINITE-SELECTOR plus Lean projection of a finite sigma witness",
+    "positive_construction": "define selectedPrefixEventIndex from coverageChoice and package into Level513"
+  },
+  "carrier_schema_receipts": [
+    "projects/ns_millennium_hunt/workspace/queries/tick668_level514_coverage_choice_finite_selector_receipt.json"
+  ],
+  "nearest_universal_op": "pec_b: convert structural coverage into a typed finite witness before downstream transport",
+  "nearest_confuser": "Level513 coverage-bound selected index with opaque selector source",
+  "remaining_live_vector": "strengthen BadCenterEventPrefixCoversSelectedBadTree.everySelectedBadNodeAppearsInSomePrefix from Prop to typed finite witness"
+}

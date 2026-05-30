@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "running_real_exact_apply_rw_name_search_in_the_canonical_pinned_v4_29_0_sandbox_on_3_h1_name_drift_rows_c10_connected_co",
+  "contract_question": "Running REAL exact?/apply?/rw? + name-search in the canonical pinned v4.29.0 sandbox on 3 H1 name-drift rows (C10 connected->constant, C15 Basel, C06 chi4): will >=2/3 close genuine, confirming research-tier is grounding-bound and recoverable by grounded tool-exec (not a dead static-memory index)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T21:10:26Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.6,
+  "rationale_short": "Tick-G diagnosis: these are pure H1 name-drift (lemma exists, wrong name); real in-sandbox exact?/search should resolve names that imagined-exact? could not; >=2/3 favored but C06 chi4 chain may resist single-search",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

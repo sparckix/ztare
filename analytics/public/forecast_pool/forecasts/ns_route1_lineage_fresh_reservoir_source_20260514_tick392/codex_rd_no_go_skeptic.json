@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "prefer a guard unless source fields explicitly cite monotone reserve drop and lineage freshness",
+  "agent_id": "codex_rd_no_go_skeptic",
+  "contract_id": "ns_route1_lineage_fresh_reservoir_source_20260514_tick392",
+  "contract_question": "Can the next NS tick connect route-1 event-local defect no-reuse to existing fresh-frequency/profile machinery by encoding or killing a lineage-fresh monotone reservoir source/guard?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_only_no_pde_source": 0.32,
+    "lean_type_mismatch": 0.08,
+    "overabstract_wrapper": 0.14,
+    "recurrent_reuse_countermodel": 0.18,
+    "same_tree_incidence_wrong_layer": 0.28
+  },
+  "forecast_externality_tags": [
+    "no_go_preconditioner",
+    "residual_language_feedback"
+  ],
+  "forecasted_at": "2026-05-14T15:21:56Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.86,
+  "p_regression": 0.1,
+  "p_success": 0.47,
+  "rationale_short": "Same-tree incidence historically controls beta-square event budgets, not necessarily route-1 active local-energy defect reuse. The safe success is a no-go/guard or residual classifier, not a source theorem.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_tree_incidence_wrong_layer",
+    "adapter_only_no_pde_source"
+  ]
+}

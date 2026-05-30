@@ -1,0 +1,15 @@
+{
+  "contract_id": "flatbranchkineticloadcarrier_lean_formalization_builds_clean_with_real_ns_inhabitation_20260515t151851z",
+  "resolution_bucket": "retired_invalid",
+  "resolution": "retired_invalid",
+  "resolved_by": "claude:v34_contract_closeout_session_20260515",
+  "resolved_at": "2026-05-16T00:06:49.521722+00:00",
+  "reason": "thin criteria-less Lean/derivability sub-obligation; no Lean artifact, forecast, outcome, or F-row; subjective resolver; not resolvable without inventing missing evidence",
+  "current_evidence": "NONE - no forecasts/aggregate/outcome/score; no EXPERIMENT_TRACK_RECORD F-row tick550-555; no Lean artifact on disk",
+  "evidence_pointer": "analytics/public/forecast_pool/v34_contract_closeout_report.md; docs/concepts/closure_claim_governance.md; memory project_strict_margin_perennial_atom",
+  "operator_needed": "no",
+  "no_fabricated_metrics": true,
+  "note": "retired_invalid = honest gate-legitimate disposition (NOT resolved_success/failure, NOT green-washed): structurally unanswerable autonomous instrument",
+  "voided": true,
+  "voided_reason": "thin criteria-less Lean/derivability sub-obligation; no Lean artifact, forecast, outcome, or F-row; subjective resolver; not resolvable without inventing missing evidence"
+}

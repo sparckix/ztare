@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T15:18:29Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 11.0,
+    "expected_value": 1.2357922172272722,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.29000000000000004,
+    "p_needs_new_lemma": 0.045,
+    "p_regression": 0.045,
+    "p_success": 0.6402435143560601,
+    "participants": [
+      {
+        "agent_id": "codex_gpt5_readonly_2026_05_13",
+        "domain": "gp225_label_source",
+        "p_success": 0.66,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_local",
+        "domain": "gp225_label_source",
+        "p_success": 0.62,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "hard_decoy_same_factory_overfit",
+        "p": 0.15
+      },
+      {
+        "mode": "same_factory_hard_decoy_signal_overfits_or_fails_holdout",
+        "p": 0.125
+      },
+      {
+        "mode": "public_traces_have_before_after_state_but_not_closure_labels",
+        "p": 0.12
+      },
+      {
+        "mode": "public_traces_have_state_not_labels",
+        "p": 0.11
+      },
+      {
+        "mode": "target_state_rows_are_precise_but_saturated_by_deterministic_cpu",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1844_meso_label_source_choice.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1844_meso_label_source_choice.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1844_meso_label_source_choice.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1844_meso_label_source_choice.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1844_meso_label_source_choice.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 20.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T15:15:52Z",
+    "created_by": "codex_rd",
+    "horizon": "v18.44 inventory closure",
+    "layer": "meso",
+    "objective_resolver": "Resolve from v18.44 inventory decision: success iff the selected next lane has the highest usable unsaturated replayable-row count after false-accept quarantine and deterministic/BM25 saturation checks, and the closure artifact names that lane explicitly.",
+    "question": "Which immediate source lane should GP-225 prioritize after v18.43: public before-action-after traces, natural local proof-step replay, target-state witness rows, or more same-factory hard-decoy residuals?",
+    "success_threshold": "selected_lane=max_usable_unsaturated_replayable_rows AND false_accept_quarantine_explicit=true AND closure_artifact_names_lane=true",
+    "task_type": "gp225_label_source_selection"
+  },
+  "contract_id": "gp225_v1844_meso_label_source_choice",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd_local"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_gpt5_readonly_2026_05_13",
+        "raw_agent_ids": [
+          "codex_gpt5_readonly_2026_05_13"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_gpt5_readonly_2026_05_13",
+      "codex_rd_local"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_gpt5_readonly_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1844_meso_label_source_choice/codex_gpt5_readonly_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes": 12.0,
+        "forecasted_at": "2026-05-13T15:18:11Z",
+        "p_success": 0.66,
+        "rationale_short": "Recommended lane: public/natural proof-delta closure-value rows with target-state witness supplement. Same-factory hard-decoy lane weakened by v18.40/v18.43; harness-solver labels should encode closure contribution/proof delta, not one-step rank.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_local",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1844_meso_label_source_choice/codex_rd_local.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes": 10.0,
+        "forecasted_at": "2026-05-13T15:16:25Z",
+        "p_success": 0.62,
+        "rationale_short": "My prior selected lane is public/natural proof-delta inventory, with target-state witness rows as high-precision supplement and same-factory hard decoys deprioritized. Success means v18.44 can name a lane by unsaturated replayable rows, not by total row count.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 0.2,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T15:19:35Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.04,
+      "p_success": 0.6402435143560601,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "hard_decoy_same_factory_overfit",
+        "p": 0.15
+      },
+      "voi_proxy": 0.8703
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 11.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6402435143560601,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "hard_decoy_same_factory_overfit",
+        "p": 0.15
+      },
+      {
+        "mode": "same_factory_hard_decoy_signal_overfits_or_fails_holdout",
+        "p": 0.125
+      },
+      {
+        "mode": "public_traces_have_before_after_state_but_not_closure_labels",
+        "p": 0.12
+      },
+      {
+        "mode": "public_traces_have_state_not_labels",
+        "p": 0.11
+      },
+      {
+        "mode": "target_state_rows_are_precise_but_saturated_by_deterministic_cpu",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.13,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T15:19:35Z"
+  }
+}

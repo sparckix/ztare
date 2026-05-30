@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_freshness_closes_via_besicovitch_or_lojasiewicz_macro_20260515_tick553",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-15T23:39:27Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_dual_channel_freshness_macro_20260515",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0222,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0154,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 4,
+        "token_jaccard": 0.0833
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "30d",
+  "information_value": 3.0,
+  "layer": "macro",
+  "objective_resolver": "GMT/PDE judgment (NOT a Lean tick \u2014 \u03a6-iterates proved futile tick549): does route-1's stopping-tree event-tent family meet Besicovitch eccentricity (cite GMT), OR does a localized \u0141ojasiewicz-Simon inequality give scale-invariant \u03b3>0 for a high-freq reversing wave (cite gradient-flow). Resolve success iff one channel's KNOWN condition is verified for the construction; fail iff both falsifiers (non-Besicovitch nesting / \u03b3_n\u21920) hold",
+  "question": "TERMINAL: the whole route-1 strict-margin edifice provably (tick544-553) localizes to ONE combinatorial core (scale-freshness/bounded-overlap of positive same-carrier cutoff-flux event tents) with TWO orthogonal solved-elsewhere attack channels. Does the route-1 event-tent construction satisfy EITHER (G) the Besicovitch controlled-eccentricity condition (\u21d2 dimension-only bounded multiplicity \u21d2 freshness) OR (A) a localized \u0141ojasiewicz-Simon strict scale-invariant entropy-dissipation debit per reversal (\u03b3>0)? Either \u21d2 Clay flat-radius cascade closure (narrow Track-B route-1 sense); neither \u21d2 the P4 reuse-cascade fixed point is the irreducible residual.",
+  "risk_penalty": 1.0,
+  "success_threshold": "success if either channel condition verified for the route-1 construction; 0.5 if one channel reduces to a single new GMT/PDE lemma; fail if both falsifiers hold (reuse-cascade irreducible)",
+  "task_type": "ns_clay_dual_channel_freshness_macro_20260515",
+  "value_if_success": 6.0,
+  "void_conditions": "tick551/553 signatures refactored"
+}

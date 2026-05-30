@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Run only to close the raw corrected-scope ReProver question cheaply; force per-row-limit 8 and do not treat as likely label source or training trigger.",
+  "agent_id": "gp230_maxwell_gp225_v2031",
+  "contract_id": "gp225_v2031_corrected_scope_reprover_replay",
+  "contract_question": "Will strict-implies-compile replay of the v20.30 corrected-scope ReProver candidates add at least one clean same-target strict row without harmful mismatches?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [
+    "general_purpose_lean_harness",
+    "public_adapter_replay",
+    "strict_compile_invariant",
+    "pre_gnn"
+  ],
+  "forecasted_at": "2026-05-14T14:55:04Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.24,
+  "rationale_short": "v20.30 supply is clean and broad, but raw ReProver replay history is weak after discounting old strict-without-compile artifacts. Full top-8 is required to meet attempted threshold.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "raw_reprover_no_compile_backed_strict_row",
+    "per_row_limit_default_under_attempts",
+    "compiled_progress_only_or_target_mismatch",
+    "hydration_or_toolchain_join_issue",
+    "source_hygiene_or_contamination_block",
+    "harmful_compiled_mismatch"
+  ]
+}

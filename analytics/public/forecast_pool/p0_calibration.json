@@ -1,0 +1,56 @@
+{
+  "schema": "p0_calibration.v1",
+  "as_of": "2026-05-16T23:56:26.252105+00:00",
+  "source": "forecast_pool {contracts,outcomes,forecasts}/ + externalities_rollup.json",
+  "brier_per_period": [
+    {
+      "period": "2026-W20",
+      "N": 261,
+      "brier": 0.1628,
+      "uniform_baseline": 0.25
+    }
+  ],
+  "cross_family_disagreement": {
+    "n_shared_contracts": 83,
+    "disagreement_rate": 0.1325,
+    "n_disagree": 11,
+    "resolution_split": {
+      "success": 48,
+      "fail": 16,
+      "unresolved": 19
+    },
+    "disagreement_def": "families split across p=0.5 OR family-mean spread > 0.25"
+  },
+  "resolution": {
+    "total_contracts": 301,
+    "resolved": 270,
+    "voided": 26,
+    "rate": 0.897,
+    "median_latency_days": 0.002,
+    "note": "Brier-of-resolved-only hides survivorship; voided+unresolved exposed here."
+  },
+  "externalities": {
+    "positive": {
+      "distinct_tags": 211,
+      "total_count": 306
+    },
+    "negative": {
+      "distinct_tags": 95,
+      "total_count": 123
+    },
+    "ratio_count": 2.488,
+    "ratio_distinct": 2.221,
+    "rollup_generated_at": "2026-05-16T13:12:44Z",
+    "by_period": [
+      {
+        "note": "no per-contract externality tags populated \u2014 externalities infra dormant this period (honest empty)"
+      }
+    ],
+    "note": "Has a real negative bucket \u2014 Tier-B eligible per GP-236."
+  },
+  "conventions": {
+    "brier": "mean over a contract's forecasts of (p-y)^2; period = ISO-week(resolved_at); non-voided resolved only",
+    "uniform_baseline": "0.25 = Brier of constant p=0.5 (max-entropy reference)",
+    "family": "agent_id substring -> Claude|GPT|Codex|Other"
+  }
+}

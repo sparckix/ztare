@@ -1,0 +1,41 @@
+{
+  "contract_id": "tick668_level532_final_prefix_appearance_selector",
+  "surface": "NS Track-B final-prefix appearance selector source",
+  "pattern_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "GP-219:pde_estimate_craft_ops"
+  ],
+  "anti_patterns": [
+    "ANTI-PATTERN-018",
+    "Level517/518/519 downstream enumeration recurrence",
+    "endpoint-capacity-only bound"
+  ],
+  "residual_to_check_edges": [
+    {
+      "residual": "Level531 separates Nat index, strict bound, and equality",
+      "check": "introduce final-prefix Fin selector source and construct the Level531 event-order source from it"
+    }
+  ],
+  "carrier_schema_receipts": [
+    {
+      "schema": "typed_coverage_packet_appearance",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level532_final_prefix_appearance_selector_receipt.json"
+    },
+    {
+      "schema": "provenance_edge_direction",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level532_provenance_edge_direction_receipt.json"
+    },
+    {
+      "schema": "provenance_acyclic_edge",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level532_provenance_acyclic_edge_receipt.json"
+    }
+  ],
+  "positive_construction": {
+    "source": "NSL3MultiscaleYM.BadCenterFinalPrefixAppearanceSelectorSource",
+    "projection": "Use selector.val as the event index, selector.isLt as the strict bound, and the displayed equality as the eventToBadNode law.",
+    "target": "NSL3MultiscaleYM.BadCenterEventOrderAppearanceIndexSource"
+  },
+  "nearest_confuser": "capacity count without a selector-valued final-prefix event witness",
+  "next_lever": "prove finalPrefixAppearanceSelector from finite-prefix exhaustion, event ordering, same-tree incidence, and nonadaptive event-to-bad-node geometry"
+}

@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T12:33:33Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": -0.12760205144336434,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.28989794855663564,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo/claude_rd.json",
+        "forecasted_at": "2026-05-17T12:33:33Z",
+        "p_success": 0.28,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo/codex.json",
+        "forecasted_at": "2026-05-17T12:33:33Z",
+        "p_success": 0.3,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json",
+    "score": "analytics/public/forecast_pool/scores/tick637-mega-degiorgi-powerdeficit-invariant-subnogo.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T12:31:13Z",
+    "created_by": "claude:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "manual_rd",
+    "question": "tick637 MEGA: is the tick636 De-Giorgi-vorticity degree-3-vs-2 power-deficit INVARIANT under all admissible convex test nonlinearities \u03a6(|\u03c9|) (e.g. |\u03c9|^p, v=|\u03c9|^{(p+1)/2})? Depth-n: source \u222b(\u03be\u00b7S\u03be)|\u03c9|\u03a6' ~ \u222b\u2016S\u2016v\u00b2 with \u2016S\u2016~\u2016\u03c9\u2016~v^{2/(p+1)} since S=CZ(\u03c9) is DEGREE-0 / exactly scale-invariant \u21d2 source ~ \u222bv^{2+2/(p+1)} vs dissipation \u03bd\u222b|\u2207v|\u00b2 \u21d2 under NS scaling the ratio carries the SAME one-\u03c9-power deficit for EVERY p (CZ degree-0 scales identically to any renormalized power) \u21d2 sharp SUB-NO-GO: no De-Giorgi test-function geometry rebalances it; the deficit's untouchability IS the degree-0 scale-invariance of S=CZ(\u03c9). Honest scope: consistent with the known route-invariant atom (manifest:180) \u2014 deliverable = the precise test-function-invariance sub-no-go + its mechanistic cause (CZ degree-0), a sharpening NOT a new route.",
+    "success_threshold": "the v=|\u03c9|^{(p+1)/2} renormalization power-count is correct AND the invariance argument (CZ degree-0 \u21d2 deficit p-independent under NS scaling) is right AND honestly scoped as a sub-no-go/sharpening of the known atom (not new, not impossibility-overclaim); survives ONE codex adversarial-kill",
+    "task_type": "ns_mega_portfolio"
+  },
+  "contract_id": "tick637-mega-degiorgi-powerdeficit-invariant-subnogo",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T12:33:33Z",
+        "p_success": 0.28,
+        "rationale_short": "conceding: my CZ\u21d2p-invariance derivation was ERRONEOUS (codex: CZ linear in \u03c9, S~\u03c9 not ~v; off-by-one). Contract required the invariance argument correct \u2014 failed. SALVAGE (codex-supplied, honest): no scalar \u03a6(|\u03c9|) (power/log/exp) rebalances the cubic stretching \u2014 the demand stays at the CRITICAL VORTICITY EXPONENT L^{3/2}; the only lever is \u03be-anisotropic/alignment = the separate open C5/C7 route, NOT a scalar test-function fix",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick637-mega-degiorgi-powerdeficit-invariant-subnogo/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T12:33:33Z",
+        "p_success": 0.3,
+        "rationale_short": "NOT as stated: CZ degree-0 is LINEAR in \u03c9 so S scales like \u03c9 not |\u03c9|^{(p+1)/2}; source off-by-one (\u03a6 vs \u03a6'). My p-invariance proof WRONG. Correct: stretching=one extra unrenormalized \u03c9 factor beyond tested density \u21d2 critical vorticity exponent L^{3/2}; logs no help, exp worse, \u03be-anisotropic=extra alignment structure not scalar fix. Honest as route-warning, not a clean proof",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T12:33:33Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 36.75,
+      "expected_value": -0.12760205144336434,
+      "p_success": 0.28989794855663564,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.2259
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.28989794855663564,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0842,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:56Z"
+  }
+}

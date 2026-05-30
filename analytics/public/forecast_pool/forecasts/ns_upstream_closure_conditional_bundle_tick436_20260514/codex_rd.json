@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship; flag conditional/honesty in F-row.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_upstream_closure_conditional_bundle_tick436_20260514",
+  "contract_question": "Can a conditional upstream-closure bundle be shipped in ns_route1 \u2014 collecting all three named missing analytic primitives (pressure Galilean reserve + commutator shard + invisible remainder + positive stress coherence + flat-radius scale reserve) via two bridge witnesses, with a theorem proving \u00acCriticalIncrementFailure conditional on the bundle, the touched file compiling and no new sorries/admits?",
+  "domain": "ns_clay_upstream",
+  "expected_cost_agent_minutes": 25.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T00:00:03Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.72,
+  "rationale_short": "Bundle is structurally well-defined: noCriticalIncrementFailure_of_betaEligibilityAudit already exists; need only structures + bridge prop-implications. Risk: nested-field access pattern, namespace closing.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

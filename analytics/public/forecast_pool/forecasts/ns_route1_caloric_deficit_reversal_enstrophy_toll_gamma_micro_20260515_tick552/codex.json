@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "belief_update": false,
+  "contract_id": "ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552",
+  "contract_question": "Caloric-Deficit MD-verdict: tick552 PROVES the viscous-reflection-penalty L(n+1)\u2264(1-\u03b3)L_n is a SPECIAL CASE of the already-open tick551 positiveFluxScaleFresh reserve-drop (R_n=L_n/\u03b3) and its geometric closure IS tick551 telescoping \u2014 so it adds no new closure; \u03b3>0 scale-invariant-strict \u2261 the perennial atom. Forward question: can the reversal\u21d2enstrophy-toll mechanism (\u0141ojasiewicz-Simon localized inequality channel) actually deliver \u03b3>0 scale-invariant for a high-frequency reversing wave, or does \u03b3_n\u21920 (mechanism fails, P4 reuse-cascade fixed point persists)?",
+  "domain": "general",
+  "evidence_fingerprint": null,
+  "expected_cost_agent_minutes": 37.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "gamma_n_to_zero_for_high_frequency_reversal": 0.5,
+    "hidden_coupling_or_stale_assumption_in_entropy_dissipation": 0.2,
+    "localized_lojasiewicz_channel_requires_new_lemma": 0.3
+  },
+  "forecast_externality_tags": [
+    "localized_channel_risk",
+    "high_frequency_reversal"
+  ],
+  "forecasted_at": "2026-05-15T23:34:06Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.9,
+  "p_regression": 0.04,
+  "p_success": 0.18,
+  "prior_forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_caloric_deficit_reversal_enstrophy_toll_gamma_micro_20260515_tick552/codex.json",
+  "prior_forecasted_at": "2026-05-15T23:33:50Z",
+  "prior_p_success": 0.18,
+  "rationale_short": "Calibrated below claude_rd because tick552 only shows the penalty branch is a special case of tick551; the live question is whether the localized Lojasiewicz/entropy channel can remain scale-invariant under high-frequency reversal without collapsing to gamma_n->0. Mass stays on a fixed-point reuse obstruction or one new localization lemma, not on a clean scale-invariant gain.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "gamma_n_to_zero_for_high_frequency_reversal",
+    "localized_lojasiewicz_channel_requires_new_lemma"
+  ],
+  "update_reason": null
+}

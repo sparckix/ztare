@@ -1,0 +1,41 @@
+{
+  "actual_cost_agent_minutes": 68.0,
+  "artifact_hash": "1d2d27b417cb764cf9ee6bee0f7278acb15f10129315192b56035d64970216c3",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/route1_dag_swarm_integrated_report_20260514.md",
+  "changed_by_forecast_ids": [
+    "rd_codex",
+    "codex_forecaster"
+  ],
+  "compile_status": "lean_pass",
+  "contract_id": "ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "gp-233:positive:dag-swarm-next-nodes",
+    "gowers-first-dag",
+    "sidecar-reuse",
+    "darwin-pressure"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "persistence-unproved",
+    "schedule-budget-unproved",
+    "branch-dominance-open"
+  ],
+  "new_next_action": "attack FixedCutoffAnnularPacketEnergyPersistenceSource first, then LineageScheduleAggregateBudgetSource and branch dominance",
+  "old_next_action": "continue local N1 persistence work only",
+  "preconditioner_effect": "Prevented stopping at route1 wrapper; identified N1 fixed-cutoff annular packet persistence, N2 aggregate schedule budget, and N7 branch dominance as the next proof nodes.",
+  "preconditioner_source": "orchestration menu PATTERN-025 dependency DAG, GP-230 forecasts, reused sidecar swarm, Darwin pressure",
+  "realized_failure_mode_ids": [
+    "n1_persistence_missing_side_condition",
+    "n2_schedule_budget_reuse_gap",
+    "n7_branch_dominance_open"
+  ],
+  "resolution_note": "DAG swarm returned MISSING_HYPOTHESIS with useful proof-route nodes. Added FixedCutoffAnnularPacketEnergyPersistenceSource below FreshFrequencyTailSquarePersistenceSource, LineageScheduleAggregateBudgetSource below LineageTailScheduleFiniteBudgetSource, and saved integrated report. Upstream branch dominance remains open. Lean compiles; no new sorry/admit.",
+  "resolved_at": "2026-05-14T19:22:54Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

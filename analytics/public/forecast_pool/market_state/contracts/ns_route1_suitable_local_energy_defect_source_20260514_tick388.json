@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T14:41:49Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 38.0,
+    "expected_value": -5.7696173282375645,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.445,
+    "p_needs_new_lemma": 0.72,
+    "p_regression": 0.16,
+    "p_success": 0.6533092663367165,
+    "participants": [
+      {
+        "agent_id": "codex_rd_executor_prior",
+        "domain": "ns_route1_local_energy_measure_split",
+        "p_success": 0.72,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic_prior",
+        "domain": "ns_route1_local_energy_measure_split",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "alphaI_final_slack_smuggling",
+        "p": 0.3731609195402299
+      },
+      {
+        "mode": "suitable_inequality_not_signed_identity",
+        "p": 0.165
+      },
+      {
+        "mode": "lean_type_breakage",
+        "p": 0.14045977011494254
+      },
+      {
+        "mode": "too_prop_like_not_pde_source",
+        "p": 0.13793103448275862
+      },
+      {
+        "mode": "compile_passes_but_no_next_lever_change",
+        "p": 0.10344827586206896
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_suitable_local_energy_defect_source_20260514_tick388.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T14:41:26Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff ns_route1_fresh_frequency_coercivity_adapter.lean compiles and the diff adds a lower source tying alphaI to a fixed local-energy defect/residual before positive variation, with guards against final route slack.",
+    "question": "Can this tick add a compiled non-tautological suitable-local-energy defect source below FixedCutoffLocalEnergySignedMeasureIdentitySource?",
+    "success_threshold": "lake env lean ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean passes; no new sorry/admit in touched region; source is below signed identity rather than another scalar route wrapper",
+    "task_type": "ns_route1_lean_frontier"
+  },
+  "contract_id": "ns_route1_suitable_local_energy_defect_source_20260514_tick388",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_executor_prior",
+        "raw_agent_ids": [
+          "codex_rd_executor_prior"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic_prior",
+        "raw_agent_ids": [
+          "codex_skeptic_prior"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_executor_prior",
+      "codex_skeptic_prior"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Add explicit fixed-before-positive-variation provenance and no-final-route-slack guard fields; do not claim full route closure.",
+        "agent_id": "codex_rd_executor_prior",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_suitable_local_energy_defect_source_20260514_tick388/codex_rd_executor_prior.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T14:41:41Z",
+        "p_success": 0.72,
+        "rationale_short": "Likely to compile because the source ladder is abstract, but the value depends on making alphaI a named defect/residual rather than route slack.",
+        "specific_failure_mode_ids": [
+          "alphaI_final_slack_smuggling",
+          "too_prop_like_not_pde_source"
+        ]
+      },
+      {
+        "action_change_recommendation": "Treat suitable local energy as inequality plus explicit defect equality; add guard if equality is not independently sourced.",
+        "agent_id": "codex_skeptic_prior",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_suitable_local_energy_defect_source_20260514_tick388/codex_skeptic_prior.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes": 44.0,
+        "forecasted_at": "2026-05-14T14:41:41Z",
+        "p_success": 0.58,
+        "rationale_short": "The hard point is converting inequality/slack into an independent signed event-local residual. Good if stated honestly; bad if it just restates the desired split.",
+        "specific_failure_mode_ids": [
+          "alphaI_final_slack_smuggling",
+          "suitable_inequality_not_signed_identity"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [
+      "codex_rd_executor_prior",
+      "codex_skeptic_prior"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T14:43:59Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 38.0,
+      "expected_value": -5.7696173282375645,
+      "p_success": 0.6533092663367165,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.0065
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 38.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6533092663367165,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "alphaI_final_slack_smuggling",
+        "p": 0.3731609195402299
+      },
+      {
+        "mode": "suitable_inequality_not_signed_identity",
+        "p": 0.165
+      },
+      {
+        "mode": "lean_type_breakage",
+        "p": 0.14045977011494254
+      },
+      {
+        "mode": "too_prop_like_not_pde_source",
+        "p": 0.13793103448275862
+      },
+      {
+        "mode": "compile_passes_but_no_next_lever_change",
+        "p": 0.10344827586206896
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1274,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T14:44:05Z"
+  }
+}

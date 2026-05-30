@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_v1731_tail_visibility_receipt_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_v1731_tail_visibility_receipt_meso.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_v1731_tail_visibility_receipt_meso",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_v1731_tail_visibility_receipt_meso.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_v1731_tail_visibility_receipt_meso.json"
+  },
+  "budget_agent_minutes": 8.0,
+  "contract_id": "ns_route1_v1731_tail_visibility_receipt_meso",
+  "cost_penalty": 0.02,
+  "created_at": "2026-05-13T18:27:31Z",
+  "created_by": "codex:RD_2026_05_13",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-13T19:15:00Z",
+  "information_value": 0.8,
+  "layer": "meso",
+  "objective_resolver": "python script emits status plus metrics: non_tautological_receipt_candidates, invalid_shortcut_count, selected_next_move, training_now=false",
+  "question": "Will a saved-artifact route-1 tail-visibility receipt audit identify either a non-tautological CriticalTailVisibilityReserve candidate or a precise no-local-producer verdict that changes the next NS move?",
+  "risk_penalty": 1.0,
+  "success_threshold": "success if artifact exists, training_now=false, gnn_blocked=true, and either non_tautological_receipt_candidates>=1 or no_local_producer_verdict=true with selected_next_move",
+  "task_type": "ns_route1_tail_visibility_branch_choice",
+  "value_if_success": 2.0,
+  "void_conditions": "infra failure or missing route-1 artifacts"
+}

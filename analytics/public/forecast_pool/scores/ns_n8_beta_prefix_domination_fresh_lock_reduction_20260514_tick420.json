@@ -1,0 +1,125 @@
+{
+  "contract_id": "ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Attack cofinality in prose only.",
+      "counterfactual_action": "Formalize the fresh-frequency same-tree lock reduction and guard."
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "beta_prefix_gap_sharpened",
+        "fresh_packet_gate_exposed",
+        "anti_tautology_guard"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "fresh_packet_theorem_unproved",
+        "beta_still_open"
+      ],
+      "new_next_action": "Attack FreshFrequencyEventSameTreeLock subprimitives: nonflat/inherited/flat fresh-packet dichotomy, gain-to-beta, square-budget radius-beta payment, bounded fanout/no-log-reuse, pressure same-carrier, flat skeleton.",
+      "old_next_action": "Prove cofinal same-tree event-budgeted incidence as a raw field.",
+      "preconditioner_effect": "Forced the tick to name hPrefixDomination as the gap and expose FreshFrequencyEventSameTreeLock rather than declaring beta closure.",
+      "preconditioner_source": "sidecar Meta-Darwin + L3 scientific-amnesia scan",
+      "realized_failure_mode_ids": [
+        "fresh_packet_subprimitives_unproved",
+        "prefix_domination_still_adapter_only",
+        "same_tree_lock_not_constructed"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.12200000000000003,
+  "mean_log_score": -0.4229161341127969,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "ab743e7b4056123ba240b6152adbc7f71a1823f1ffff2404d3d66499dc2705d1",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "pass",
+    "contract_id": "ns_n8_beta_prefix_domination_fresh_lock_reduction_20260514_tick420",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "beta_prefix_gap_sharpened",
+      "fresh_packet_gate_exposed",
+      "anti_tautology_guard"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 5,
+    "negative_externality_tags": [
+      "fresh_packet_theorem_unproved",
+      "beta_still_open"
+    ],
+    "new_next_action": "Attack FreshFrequencyEventSameTreeLock subprimitives: nonflat/inherited/flat fresh-packet dichotomy, gain-to-beta, square-budget radius-beta payment, bounded fanout/no-log-reuse, pressure same-carrier, flat skeleton.",
+    "old_next_action": "Prove cofinal same-tree event-budgeted incidence as a raw field.",
+    "preconditioner_effect": "Forced the tick to name hPrefixDomination as the gap and expose FreshFrequencyEventSameTreeLock rather than declaring beta closure.",
+    "preconditioner_source": "sidecar Meta-Darwin + L3 scientific-amnesia scan",
+    "realized_failure_mode_ids": [
+      "fresh_packet_subprimitives_unproved",
+      "prefix_domination_still_adapter_only",
+      "same_tree_lock_not_constructed"
+    ],
+    "resolution_note": "Added BetaPrefixDominationReducedToFreshFrequencySameTreeLock, projection prefixDominationPrimitive_of_betaFreshFrequencySameTreeLock, and guard BetaPrefixDominationFreshLockIsNotClosure. Lean passes; no sorry/admit. The patch lowers cofinal prefix domination to FreshFrequencyEventSameTreeLock and records fresh packet, gain-to-beta, square-budget, and no-log-reuse subprimitives as still required.",
+    "resolved_at": "2026-05-14T21:48:57Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T21:49:03Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "codex-rd",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "ns_n8_beta",
+      "expected_cost_agent_minutes": 22.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:47:23Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:47:23Z",
+        "resolved_at": "2026-05-14T21:48:57Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "meta-darwin-proxy",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "ns_n8_beta",
+      "expected_cost_agent_minutes": 31.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:47:23Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:47:23Z",
+        "resolved_at": "2026-05-14T21:48:57Z"
+      }
+    }
+  ]
+}

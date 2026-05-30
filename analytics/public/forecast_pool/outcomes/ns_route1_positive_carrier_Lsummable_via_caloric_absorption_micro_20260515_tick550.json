@@ -1,0 +1,15 @@
+{
+  "contract_id": "ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550",
+  "resolution_bucket": "retired_invalid",
+  "resolution": "retired_invalid",
+  "resolved_by": "claude:v34_contract_closeout_session_20260515",
+  "resolved_at": "2026-05-16T00:06:49.521722+00:00",
+  "reason": "re-poses the perennial strict-margin/freshness/gamma>0 route-1 atom (open since 2026-05-12, do-NOT-re-derive per settled governance verdict); subjective PDE-frontier resolver; zero forecasts/outcomes/F-rows; not autonomously resolvable without solving Clay route-1 or fabricating a PDE judgment",
+  "current_evidence": "NONE - no forecasts/aggregate/outcome/score; no EXPERIMENT_TRACK_RECORD F-row tick550-555; no Lean artifact on disk",
+  "evidence_pointer": "analytics/public/forecast_pool/v34_contract_closeout_report.md; docs/concepts/closure_claim_governance.md; memory project_strict_margin_perennial_atom",
+  "operator_needed": "yes (research-direction meta-decision; not per-contract)",
+  "no_fabricated_metrics": true,
+  "note": "retired_invalid = honest gate-legitimate disposition (NOT resolved_success/failure, NOT green-washed): structurally unanswerable autonomous instrument",
+  "voided": true,
+  "voided_reason": "re-poses the perennial strict-margin/freshness/gamma>0 route-1 atom (open since 2026-05-12, do-NOT-re-derive per settled governance verdict); subjective PDE-frontier resolver; zero forecasts/outcomes/F-rows; not autonomously resolvable without solving Clay route-1 or fabricating a PDE judgment"
+}

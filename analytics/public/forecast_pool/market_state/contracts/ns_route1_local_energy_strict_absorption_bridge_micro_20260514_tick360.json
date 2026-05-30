@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:34:57Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 45.5,
+    "expected_value": -45.656493801464194,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.295,
+    "p_needs_new_lemma": 0.45,
+    "p_regression": 0.065,
+    "p_success": 0.5772865997908296,
+    "participants": [
+      {
+        "agent_id": "codex_rd_tick360",
+        "domain": "ns_route1_pde",
+        "p_success": 0.66,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic_tick360",
+        "domain": "ns_route1_pde",
+        "p_success": 0.49,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "missing_existing_decl_link",
+        "p": 0.2
+      },
+      {
+        "mode": "tautological_strict_absorption",
+        "p": 0.2
+      },
+      {
+        "mode": "wrapper_only",
+        "p": 0.17
+      },
+      {
+        "mode": "allocation_not_strictness",
+        "p": 0.15
+      },
+      {
+        "mode": "algebra_compile_issue",
+        "p": 0.08
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:34:42Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00-04:00",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean compiles, touched file has no new sorry/admit, bridge reuses Route1ChannelVisibilityProducer or Route1CriticalTailVisibility machinery, and includes an allocation-only no-strictness guard or caveat surface",
+    "question": "Can we add a compiled, non-tautological bridge from LocalEnergyPositiveBoundaryFluxSubadditivitySource plus independently visible routed charges into Route1ChannelVisibilityProducer / strict subratio, while also recording that allocation-only saturation is not strictness?",
+    "success_threshold": "compile_passed_and_no_sorry_and_strict_visibility_bridge_added",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_tick360",
+        "raw_agent_ids": [
+          "codex_rd_tick360"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic_tick360",
+        "raw_agent_ids": [
+          "codex_skeptic_tick360"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_tick360",
+      "codex_skeptic_tick360"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_tick360",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360/codex_rd_tick360.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-14T12:34:57Z",
+        "p_success": 0.66,
+        "rationale_short": "Existing Route1ChannelVisibilityProducer already has strict algebra; likely path is a bridge that turns local-energy routed-charge strict loss into that producer plus an allocation-only saturation guard. Risk is mostly wrapper smell if split is not tied to S_tail.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic_tick360",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_strict_absorption_bridge_micro_20260514_tick360/codex_skeptic_tick360.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T12:34:57Z",
+        "p_success": 0.49,
+        "rationale_short": "Allocation closure is not strictness. Success requires explicitly separating routed-charge payment from visibility loss and adding a no-strictness guard; otherwise this is just another conditional wrapper.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 29.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:37:14Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.17,
+      "p_success": 0.5772865997908296,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "missing_existing_decl_link",
+        "p": 0.2
+      },
+      "voi_proxy": 5.414
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 45.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5772865997908296,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "missing_existing_decl_link",
+        "p": 0.2
+      },
+      {
+        "mode": "tautological_strict_absorption",
+        "p": 0.2
+      },
+      {
+        "mode": "wrapper_only",
+        "p": 0.17
+      },
+      {
+        "mode": "allocation_not_strictness",
+        "p": 0.15
+      },
+      {
+        "mode": "algebra_compile_issue",
+        "p": 0.08
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.18785,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T12:37:26Z"
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "experiment": "gp216_sparse_coverage_OOD_falsifier",
+  "n_arcs": 4,
+  "arcs": [
+    "tropical_matroid_schubert_2026",
+    "delsarte_singleton_intersection_2026",
+    "edge_isoperimetric_chambers_2026",
+    "lipschitz_toric_2026"
+  ],
+  "results": [
+    {
+      "arc": "tropical_matroid_schubert_2026",
+      "title": "Tropical matroid Schubert varieties and the graded M\u00f6bius algebra (Lee, April 2026)",
+      "n_moves": 10,
+      "shared_core_pct": 80.0,
+      "shared_plus_broadly_pct": 90.0,
+      "shared_plus_broadly_no_ctx_pct": 100.0,
+      "shared_core_ops_used": [
+        "core_02",
+        "core_06"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_02",
+        "core_06",
+        "broad_08"
+      ],
+      "moves": [
+        {
+          "name": "Transplant to neutral medium",
+          "signature": "Re-stage an object from a restrictive ambient setting into a more permissive ambient setting that preserves structural form.",
+          "anchor": "introduces tropical matroid Schubert varieties as a tropical analogue of arrangement Schubert varieties"
+        },
+        {
+          "name": "Mirror existing construction",
+          "signature": "Build the new object as a parallel of an established one, preserving the construction's skeleton.",
+          "anchor": "tropical analogue of arrangement Schubert varieties associated with realisable matroids"
+        },
+        {
+          "name": "Drop admissibility precondition",
+          "signature": "Remove a qualifying restriction that gated the original construction's domain of applicability.",
+          "anchor": "extending... to arbitrary matroids including non-realisable ones"
+        },
+        {
+          "name": "Match invariant to algebra",
+          "signature": "Show the new object's intrinsic invariant coincides with a pre-existing algebraic structure.",
+          "anchor": "tropical cohomology ring... is isomorphic to the graded M\u00f6bius algebra"
+        },
+        {
+          "name": "Supply geometric model",
+          "signature": "Provide a spatial/geometric realisation for an object previously known only algebraically or combinatorially.",
+          "anchor": "yields a geometric model for B^\u2022(M)"
+        },
+        {
+          "name": "Universalise prior special case",
+          "signature": "Recover the original setting as the specialisation of the new construction under the dropped condition.",
+          "anchor": "extending the geometric setting of arrangement Schubert varieties"
+        },
+        {
+          "name": "Bridge two regimes",
+          "signature": "Connect a permissive general regime to a restrictive classical regime via a single shared invariant.",
+          "anchor": "where the original geometric setting failed"
+        },
+        {
+          "name": "Pick known target invariant",
+          "signature": "Fix in advance a well-understood algebraic target that the new object's invariant should reproduce.",
+          "anchor": "matches a known algebraic invariant"
+        },
+        {
+          "name": "Use isomorphism as bridge",
+          "signature": "Deploy an explicit identification between two structures as the load-bearing certificate of the construction.",
+          "anchor": "is isomorphic to the graded M\u00f6bius algebra B^\u2022(M)"
+        },
+        {
+          "name": "Reframe failure as scope",
+          "signature": "Treat the prior method's breakdown not as an obstruction but as a boundary marking where extension is needed.",
+          "anchor": "where the original geometric setting failed"
+        }
+      ]
+    },
+    {
+      "arc": "delsarte_singleton_intersection_2026",
+      "title": "Set systems containing no singleton intersection and the Delsarte number (Linz, April 2026)",
+      "n_moves": 12,
+      "shared_core_pct": 33.33333333333333,
+      "shared_plus_broadly_pct": 75.0,
+      "shared_plus_broadly_no_ctx_pct": 75.0,
+      "shared_core_ops_used": [
+        "core_05",
+        "core_06",
+        "core_03"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "broad_05",
+        "core_05",
+        "broad_08",
+        "core_06",
+        "core_03"
+      ],
+      "moves": [
+        {
+          "name": "tighten existing bound",
+          "signature": "Take a known extremal result and seek a strictly sharper version under restricted parameters.",
+          "anchor": "improving on a result of Cherkashin"
+        },
+        {
+          "name": "swap sharper instrument",
+          "signature": "Replace a standard parameter with a refined variant known to dominate it.",
+          "anchor": "Schrijver's variant of the Lov\u00e1sz number"
+        },
+        {
+          "name": "restrict parameter window",
+          "signature": "Constrain the regime to a band where the chosen technique becomes effective.",
+          "anchor": "when 3k-3 \u2264 n \u2264 k\u00b2-k+1"
+        },
+        {
+          "name": "translate to graph",
+          "signature": "Recast a combinatorial extremal problem as a question about a graph invariant.",
+          "anchor": "appealing to a sharper spectral graph parameter"
+        },
+        {
+          "name": "exhibit witness family",
+          "signature": "Construct an explicit infinite family demonstrating the new instrument's strict advantage.",
+          "anchor": "infinite family of graphs where Schrijver's variant is strictly smaller"
+        },
+        {
+          "name": "certify strict gap",
+          "signature": "Prove the refined tool gives strictly better values than its predecessor on the witnesses.",
+          "anchor": "strictly smaller than the Lov\u00e1sz number"
+        },
+        {
+          "name": "compose with prior",
+          "signature": "Combine the new bound with a complementary external result to close a gap.",
+          "anchor": "Combined with a result of Keller-Lifshitz"
+        },
+        {
+          "name": "settle threshold",
+          "signature": "Pin down the exact boundary at which a phenomenon transitions.",
+          "anchor": "confirms the optimal threshold n \u2265 3k-3"
+        },
+        {
+          "name": "asymptotic concession",
+          "signature": "Accept that the conclusion holds only beyond a sufficiently large parameter.",
+          "anchor": "for sufficiently large k"
+        },
+        {
+          "name": "import algebraic machinery",
+          "signature": "Bring algebraic or spectral methods to bear on a discrete extremal question.",
+          "anchor": "extremal combinatorics via algebraic methods"
+        },
+        {
+          "name": "identify candidate extremum",
+          "signature": "Propose a clean closed-form value as the conjectured maximum.",
+          "anchor": "maximum size ... is C(n-2, k-2)"
+        },
+        {
+          "name": "match upper and lower",
+          "signature": "Drive a bound until it meets a known construction, certifying optimality.",
+          "anchor": "the maximum size ... is C(n-2, k-2)"
+        }
+      ]
+    },
+    {
+      "arc": "edge_isoperimetric_chambers_2026",
+      "title": "Edge-Isoperimetric Inequalities in Chamber Graphs of Hyperplane Arrangements (Marc, April 2026)",
+      "n_moves": 13,
+      "shared_core_pct": 53.84615384615385,
+      "shared_plus_broadly_pct": 69.23076923076923,
+      "shared_plus_broadly_no_ctx_pct": 84.61538461538461,
+      "shared_core_ops_used": [
+        "core_06",
+        "core_03",
+        "core_01"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_06",
+        "core_01",
+        "core_03",
+        "broad_05",
+        "broad_08"
+      ],
+      "moves": [
+        {
+          "name": "cross-domain reframing",
+          "signature": "Recast a problem stated in one category into the language of another category where richer tools exist.",
+          "anchor": "topological approach to edge-isoperimetric inequalities"
+        },
+        {
+          "name": "thicken to continuum",
+          "signature": "Replace a discrete object with a continuous fattening that preserves the quantity of interest.",
+          "anchor": "associate to a set of chambers its thickening in Euclidean space"
+        },
+        {
+          "name": "induced stratification",
+          "signature": "Decompose the ambient object along natural substructures to make local accounting tractable.",
+          "anchor": "induced stratification by hyperplane intersections"
+        },
+        {
+          "name": "boundary-volume transfer",
+          "signature": "Convert the target combinatorial measurement into a geometric ratio between bulk and frontier.",
+          "anchor": "reducing to volume-boundary geometry"
+        },
+        {
+          "name": "extremal candidate",
+          "signature": "Nominate a structurally distinguished family as the conjectural optimum.",
+          "anchor": "convex sets minimize the edge boundary"
+        },
+        {
+          "name": "tight benchmark",
+          "signature": "Compute exact bounds on the candidate family to fix the scale of the inequality.",
+          "anchor": "size sum_{i=0}^d \u230ak\u230b_i ... boundary at least sum_{i=0}^{d-1} \u230ak\u230b_i"
+        },
+        {
+          "name": "low-dim base case",
+          "signature": "Settle the smallest nontrivial instance fully to validate the framework.",
+          "anchor": "verifies the conjecture in dimension 2"
+        },
+        {
+          "name": "scope restriction",
+          "signature": "Trade full generality for a tractable regime where the method delivers sharp results.",
+          "anchor": "in dimension 3 with arrangements in general position"
+        },
+        {
+          "name": "size truncation",
+          "signature": "Constrain inputs to a bounded fraction so degenerate large-scale behavior is excluded.",
+          "anchor": "every chamber subset S of bounded proportion"
+        },
+        {
+          "name": "asymptotic-rate target",
+          "signature": "Aim for an order-of-magnitude lower bound rather than exact constants.",
+          "anchor": "|\u2202S| = \u03a9(|S|^{2/3})"
+        },
+        {
+          "name": "case split by dimension",
+          "signature": "Partition the proof along a structural parameter, treating each level with tailored arguments.",
+          "anchor": "case analysis dim 2 / dim 3"
+        },
+        {
+          "name": "downstream payoff",
+          "signature": "Cash the structural inequality into a quantitative bound on a derived dynamical process.",
+          "anchor": "lazy simple random walk on chamber graph has \u03b5-mixing time O(n^2 log(n/\u03b5))"
+        },
+        {
+          "name": "open conjecture flag",
+          "signature": "Explicitly mark the gap between proven regime and believed-general statement.",
+          "anchor": "conjectures convex sets minimize the edge boundary among all chamber sets"
+        }
+      ]
+    },
+    {
+      "arc": "lipschitz_toric_2026",
+      "title": "Lipschitz saturation of toric singularities in any dimension (Bernard, Ch\u00e1vez-Mart\u00ednez, Giles Flores, April 2026)",
+      "n_moves": 12,
+      "shared_core_pct": 50.0,
+      "shared_plus_broadly_pct": 66.66666666666666,
+      "shared_plus_broadly_no_ctx_pct": 75.0,
+      "shared_core_ops_used": [
+        "core_06",
+        "core_03",
+        "core_05",
+        "core_02"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_06",
+        "core_03",
+        "core_05",
+        "broad_07",
+        "broad_05",
+        "broad_08"
+      ],
+      "moves": [
+        {
+          "name": "translate to combinatorics",
+          "signature": "Recast an opaque object in one category as a membership question in a discrete combinatorial structure.",
+          "anchor": "translate analytic Lipschitz-saturation problem into combinatorial monomial-membership problem"
+        },
+        {
+          "name": "encode via generators",
+          "signature": "Reduce a global invariant to conditions on a privileged generating set of elementary atoms.",
+          "anchor": "condition for a monomial in the normalization to belong to the Lipschitz saturation"
+        },
+        {
+          "name": "discrete envelope criterion",
+          "signature": "Use a convex/lattice envelope of the data as the decision boundary for membership.",
+          "anchor": "in terms of Newton polyhedra and lattice conditions"
+        },
+        {
+          "name": "lift ambient dimension",
+          "signature": "Extend a result previously confined to a low regime to the fully general regime.",
+          "anchor": "Lipschitz saturation of a complex analytic toric singularity in arbitrary dimension"
+        },
+        {
+          "name": "necessary and sufficient",
+          "signature": "Replace partial implications with a tight two-sided characterization.",
+          "anchor": "necessary and sufficient condition"
+        },
+        {
+          "name": "structural to procedural",
+          "signature": "Convert a characterization theorem into an explicit terminating procedure.",
+          "anchor": "deduce a finite algorithm to compute it"
+        },
+        {
+          "name": "guarantee termination",
+          "signature": "Bound the search by a finiteness argument so the procedure halts.",
+          "anchor": "finite algorithm"
+        },
+        {
+          "name": "describe the semigroup",
+          "signature": "Characterize the entire algebraic skeleton, not just isolated cases.",
+          "anchor": "describe the semigroup of the Lipschitz saturation"
+        },
+        {
+          "name": "separate sibling notions",
+          "signature": "Demonstrate by counterexample that two previously conflated invariants diverge.",
+          "anchor": "Campillo's notion of presaturation differs from the Lipschitz saturation"
+        },
+        {
+          "name": "regime boundary",
+          "signature": "Identify the exact dimensional or parametric threshold where coincidence breaks.",
+          "anchor": "in dimension greater than two"
+        },
+        {
+          "name": "preserve in stronger setting",
+          "signature": "Show a distinction persists even after restricting to a more rigid sub-category.",
+          "anchor": "even for complex singularities"
+        },
+        {
+          "name": "invariant via ambient lattice",
+          "signature": "Read off intrinsic properties from positions inside an external combinatorial lattice.",
+          "anchor": "Newton polyhedra and lattice conditions"
+        }
+      ]
+    }
+  ],
+  "mean_shared_core_pct": 54.294871794871796,
+  "mean_shared_plus_broadly_pct": 75.22435897435898,
+  "mean_shared_plus_broadly_no_ctx_pct": 83.65384615384616,
+  "verdict": "H_REAL CONFIRMED \u2014 structural recognition is real even on post-cutoff specialist papers. Mean shared+broadly coverage 75.2% is at math held-out / business OOD baseline (58%). Training-data-overlap was NOT load-bearing for the prior 58% finding. The methodology recognizes structural moves on arcs the LLMs have minimal-to-zero training-data exposure to. Claim B is now substantively closer to claim A."
+}

@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:28:33Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 43.5,
+    "expected_value": 3.112154405932709,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.42000000000000004,
+    "p_needs_new_lemma": 0.48,
+    "p_regression": 0.095,
+    "p_success": 0.4249308811865419,
+    "participants": [
+      {
+        "agent_id": "goodall_readonly_forecaster",
+        "domain": "gp225_typed_feedback",
+        "p_success": 0.41,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "parfit_readonly_forecaster",
+        "domain": "gp225_typed_feedback",
+        "p_success": 0.44,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "filters_too_many",
+        "p": 0.245
+      },
+      {
+        "mode": "domain_arguments_missing",
+        "p": 0.15
+      },
+      {
+        "mode": "row_specific_hypotheses_missing",
+        "p": 0.15
+      },
+      {
+        "mode": "namespace_typeclass_stuck",
+        "p": 0.13
+      },
+      {
+        "mode": "teacher_oracle_slip",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_typed_feedback_meso_20260513_v1945.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_typed_feedback_meso_20260513_v1945.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_typed_feedback_meso_20260513_v1945.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_typed_feedback_meso_20260513_v1945.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_typed_feedback_meso_20260513_v1945.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 80.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:27:30Z",
+    "created_by": "codex_rd",
+    "horizon": "next_2_executable_gp225_ticks",
+    "layer": "meso",
+    "objective_resolver": "Resolve true if a v19.45-or-v19.46 executable artifact records compiled_candidate_rows>=2 and harmful_compiled_mismatch_rows=0 under no teacher/oracle primary inputs; false after two executable ticks or explicit route kill.",
+    "question": "Typed elaborator feedback produces at least 2 compiled candidates with zero harmful compiled mismatches within the next 2 executable GP-225 ticks",
+    "success_threshold": "compiled_candidate_rows>=2 and harmful_compiled_mismatch_rows=0",
+    "task_type": "typed_feedback_route"
+  },
+  "contract_id": "gp225_typed_feedback_meso_20260513_v1945",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:goodall_readonly_forecaster",
+        "raw_agent_ids": [
+          "goodall_readonly_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:parfit_readonly_forecaster",
+        "raw_agent_ids": [
+          "parfit_readonly_forecaster"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "goodall_readonly_forecaster",
+      "parfit_readonly_forecaster"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "goodall_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_typed_feedback_meso_20260513_v1945/goodall_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_typed_feedback",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T00:28:11Z",
+        "p_success": 0.41,
+        "rationale_short": "v19.44 gives concrete error taxonomy over 46 failed candidates, but jumping from zero compiled to two compiled remains nontrivial.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "parfit_readonly_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_typed_feedback_meso_20260513_v1945/parfit_readonly_forecaster.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_typed_feedback",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T00:28:11Z",
+        "p_success": 0.44,
+        "rationale_short": "Useful failure taxonomy and only a >=2 compiled target, but typed argument synthesis is still the bottleneck.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T00:34:48Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.03,
+      "p_success": 0.4249308811865419,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "filters_too_many",
+        "p": 0.245
+      },
+      "voi_proxy": 2.2744
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 43.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.4249308811865419,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "filters_too_many",
+        "p": 0.245
+      },
+      {
+        "mode": "domain_arguments_missing",
+        "p": 0.15
+      },
+      {
+        "mode": "row_specific_hypotheses_missing",
+        "p": 0.15
+      },
+      {
+        "mode": "namespace_typeclass_stuck",
+        "p": 0.13
+      },
+      {
+        "mode": "teacher_oracle_slip",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.3308500000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T00:34:57Z"
+  }
+}

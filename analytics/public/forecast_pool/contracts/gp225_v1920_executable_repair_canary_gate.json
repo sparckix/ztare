@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1920_executable_repair_canary_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1920_executable_repair_canary_gate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1920_executable_repair_canary_gate",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1920_executable_repair_canary_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1920_executable_repair_canary_gate.json"
+  },
+  "budget_agent_minutes": 40.0,
+  "contract_id": "gp225_v1920_executable_repair_canary_gate",
+  "cost_penalty": 0.3,
+  "created_at": "2026-05-13T22:06:55Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "before any GP-225 GNN training launch",
+  "information_value": 1.1,
+  "layer": "meso",
+  "objective_resolver": "Resolve from future v19.20 executable repair-loop canary artifact metrics.",
+  "question": "Will an executable GP-225 repair-loop canary over the v19.16 contract rows produce compile-checked repair progress beyond ranking-only baseline without gold-tactic leakage?",
+  "risk_penalty": 0.45,
+  "success_threshold": "canary_rows>=8 AND gold_tactic_hidden_for_primary_attempt=true AND candidate_action_compiles_rate>0 AND same_target_state_as_gold_rate>0 AND false_accepts=0 AND no_training=true AND gnn_blocked=true",
+  "task_type": "gp225_executable_repair_canary",
+  "value_if_success": 2.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

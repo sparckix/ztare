@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick641-micro-dyadic-beta-rg-transport-discriminator.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick641-micro-dyadic-beta-rg-transport-discriminator.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick641-micro-dyadic-beta-rg-transport-discriminator",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick641-micro-dyadic-beta-rg-transport-discriminator.json",
+    "score": "analytics/public/forecast_pool/scores/tick641-micro-dyadic-beta-rg-transport-discriminator.json"
+  },
+  "baseline_action": "assert terminus from tick600/611/640 without the dyadic beta computation",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_projected_same_family_approximation_binding_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_projected_same_family_approximation_binding_source' is an EXACT match of surfaced id 'selected_projected_same_family_approximation_binding_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick641-micro-dyadic-beta-rg-transport-discriminator",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "compute the dyadic marginal-coupling beta + codex-adjudicate (this tick)",
+  "created_at": "2026-05-18T19:22:38Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_cross_field_isomorphism_negative_discriminator",
+    "score": 0.1429,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1429,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 10,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0208,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 140,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0185,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 7,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 4,
+        "token_jaccard": 0.0909
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-19T00:00:00Z",
+  "information_value": 0.7,
+  "layer": "micro",
+  "objective_resolver": "codex xhigh adversarial kill of ztare_proofs/ZtareProofs/ns_tick640_c3_no_complementary_pair_c7lower_nontransfer.lean + ns_tick641_dyadic_beta_function_identically_zero_marginal.lean; SOUND iff NO load-bearing error in (i) identical lambda-prefactor cancellation => b_{n+1}=b_{n-1}^2/b_n, (ii) roots {1,-2} + distinct-root=>no-log-running, (iii) honest scope (NOT closure/impossibility; residual=stochastic-beta principal-gated)",
+  "question": "CONSUMES surfaced void node selected_projected_same_family_approximation_binding_source (single approximation_family tied to compactness provenance) \u2014 the Katz-Pavlovic dyadic shell model IS that same-family approximation binding of the enstrophy cascade. Does a codex xhigh adversarial kill confirm SOUND: K41-renormalized (a_n=lambda^{-n/3} b_n) inertial fixed-flux balance yields the scale-FREE recursion b_{n+1}=b_{n-1}^2/b_n (all lambda-prefactors cancel identically); logs u_{n+1}=2u_{n-1}-u_n; char x^2+x-2=(x-1)(x+2) roots {1,-2}; distinct roots => NO repeated unit root => NO log-running marginal-relevance lever; only |-2|>1 alternating blow-up-side mode; so the RG marginal-coupling cross-field transport CONFIRMS+STRENGTHENS the route-1 supercritical terminus (NOT a lever); residual_class=new_channel_or_residual_measure_needed (sole un-probed object=stochastic-fluctuation/ensemble beta = NEW object algebra, principal-gated, NOT route-1) \u2014 versus codex finding a load-bearing error (as in tick637)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.65",
+  "task_type": "ns_cross_field_isomorphism_negative_discriminator",
+  "value_if_success": 0.8,
+  "void_conditions": "codex unavailable; resolver cannot adjudicate the 3 load-bearing items"
+}

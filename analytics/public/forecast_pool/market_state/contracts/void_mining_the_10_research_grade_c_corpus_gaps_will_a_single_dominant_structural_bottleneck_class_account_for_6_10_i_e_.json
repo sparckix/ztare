@@ -1,0 +1,134 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:42Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.75,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.1875
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 25.0,
+    "expected_value": 0.2625,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.75,
+    "participants": [
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T20:22:47Z",
+        "p_success": 0.75,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json",
+    "contract": "analytics/public/forecast_pool/contracts/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json",
+    "score": "analytics/public/forecast_pool/scores/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 25.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T20:22:47Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "manual structural classification of the 10 C-gaps by missing-capability class, recorded in F-row",
+    "question": "Void-mining the 10 research-grade C-corpus gaps: will a SINGLE dominant structural bottleneck class account for >=6/10 (i.e. the gaps are one improvable failure mode, not scattered)?",
+    "success_threshold": "0.5",
+    "task_type": "voidmine_c_gaps_bottleneck"
+  },
+  "contract_id": "void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/void_mining_the_10_research_grade_c_corpus_gaps_will_a_single_dominant_structural_bottleneck_class_account_for_6_10_i_e_/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-16T20:22:47Z",
+        "p_success": 0.75,
+        "rationale_short": "prover's own GAP notes repeatedly cite 'cannot name the v4.29.0 lemma/shape' for true-and-existing theorems -> expect dominant class = pinned premise-retrieval/name-resolution, not math inability",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T20:23:18Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.75,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.1875
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 25.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.75,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0625,
+    "score_rows": 1,
+    "scored_at": "2026-05-19T16:39:24Z"
+  }
+}

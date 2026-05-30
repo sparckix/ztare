@@ -1,0 +1,210 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:35:22Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 30.0,
+    "expected_value": -1.9699848146065073,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.345,
+    "p_needs_new_lemma": 0.81,
+    "p_regression": 0.08499999999999999,
+    "p_success": 0.6650185187725518,
+    "participants": [
+      {
+        "agent_id": "codex_forecaster",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_recharge_event_ledger_source_20260514_tick400/codex_forecaster.json",
+        "forecasted_at": "2026-05-14T18:34:54Z",
+        "p_success": 0.66,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_tick400",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_recharge_event_ledger_source_20260514_tick400/codex_rd_tick400.json",
+        "forecasted_at": "2026-05-14T18:33:36Z",
+        "p_success": 0.67,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "post_hoc_recharge_definition",
+        "p": 0.245
+      },
+      {
+        "mode": "cutoff_error_not_summable",
+        "p": 0.225
+      },
+      {
+        "mode": "event_ledger_provenance_mismatch",
+        "p": 0.185
+      },
+      {
+        "mode": "wrapper_surface_too_broad",
+        "p": 0.155
+      },
+      {
+        "mode": "lean_prefix_sum_friction",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_recharge_event_ledger_source_20260514_tick400.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_recharge_event_ledger_source_20260514_tick400.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_recharge_event_ledger_source_20260514_tick400.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_recharge_event_ledger_source_20260514_tick400.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_recharge_event_ledger_source_20260514_tick400.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:33:00Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Lean compiles ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean; new declarations source or guard rechargePaidByEventLedger/cutoffErrorsSummable; no sorry/admit in touched file.",
+    "question": "Will the next NS tick compile a source or guard lowering same-lineage Duhamel recharge/event-ledger payment and cutoff-error summability without claiming full route closure?",
+    "success_threshold": "compile_pass_and_no_sorry",
+    "task_type": "ns_route1_lean_proof_tick"
+  },
+  "contract_id": "ns_route1_recharge_event_ledger_source_20260514_tick400",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_tick400",
+        "raw_agent_ids": [
+          "codex_rd_tick400"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_forecaster",
+      "codex_rd_tick400"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Implement a source/guard around same-lineage recharge and cutoff-error budget, not a full route closure theorem.",
+        "agent_id": "codex_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_recharge_event_ledger_source_20260514_tick400/codex_forecaster.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-14T18:34:54Z",
+        "p_success": 0.66,
+        "rationale_short": "The Lean file already contains the recharge and cutoff-error ladder, so the next tick looks like a bounded lowering pass rather than fresh proof topology; the main risks are provenance, summability, and one bridging lemma.",
+        "specific_failure_mode_ids": [
+          "post_hoc_recharge_definition",
+          "cutoff_error_not_summable",
+          "event_ledger_provenance_mismatch"
+        ]
+      },
+      {
+        "action_change_recommendation": "Implement a source/guard around same-lineage recharge and cutoff-error budget, not a full route closure theorem.",
+        "agent_id": "codex_rd_tick400",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_recharge_event_ledger_source_20260514_tick400/codex_rd_tick400.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-14T18:33:36Z",
+        "p_success": 0.67,
+        "rationale_short": "Tick399 lowered the reserve-drop field; the next field is plausible in Lean as a source object, but the PDE content depends on recharge provenance and cutoff-error summability.",
+        "specific_failure_mode_ids": [
+          "post_hoc_recharge_definition",
+          "cutoff_error_not_summable",
+          "event_ledger_provenance_mismatch"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 8.0,
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd_tick400"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:35:44Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 30.0,
+      "expected_value": -1.9699848146065073,
+      "p_success": 0.6650185187725518,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.7328
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 30.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6650185187725518,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "post_hoc_recharge_definition",
+        "p": 0.245
+      },
+      {
+        "mode": "cutoff_error_not_summable",
+        "p": 0.225
+      },
+      {
+        "mode": "event_ledger_provenance_mismatch",
+        "p": 0.185
+      },
+      {
+        "mode": "wrapper_surface_too_broad",
+        "p": 0.155
+      },
+      {
+        "mode": "lean_prefix_sum_friction",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11224999999999997,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:35:48Z"
+  }
+}

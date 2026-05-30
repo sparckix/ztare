@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Proceed with static correction only; do not replay until corrected contract is separately priced.",
+  "agent_id": "Shannon",
+  "contract_id": "gp225_v2048_charfun_dual_source_contract_correction",
+  "contract_question": "Will v20.48 produce a source-safe charFunDual/L correction packet for current_scale_0329 after the v20.47 historic target-shape audit, with no replay/training and the old charFun_map_eq/t canary forbidden?",
+  "domain": "gp225_pre_gnn_source_contract_correction",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "contract_too_narrow": 0.16,
+    "corrected_template_still_semantic_not_compile": 0.29,
+    "historic_names_not_source_safe": 0.34,
+    "old_candidate_not_fully_quarantined": 0.21
+  },
+  "forecast_externality_tags": [
+    "target_shape_alignment",
+    "anti_goodhart"
+  ],
+  "forecasted_at": "2026-05-14T17:40:04Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.025,
+  "p_success": 0.76,
+  "rationale_short": "v20.47 gives enough historic evidence to correct theorem family and variable shape without running Lean replay.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "historic_names_not_source_safe",
+    "corrected_template_still_semantic_not_compile"
+  ]
+}

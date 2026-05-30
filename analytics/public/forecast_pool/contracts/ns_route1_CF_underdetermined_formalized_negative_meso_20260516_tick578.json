@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_CF_underdetermined_formalized_negative_meso_20260516_tick578",
+  "cost_penalty": 0.4,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T13:34:21Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_formalized_negative_CF_underdetermined_20260516",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0164,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 4,
+        "token_jaccard": 0.0833
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "14d",
+  "information_value": 7.5,
+  "layer": "meso",
+  "objective_resolver": "Lean check: (a) cf_underdetermined_by_arc_data + no_derivation_of_cf_from_arc_data are genuine PROVED non-implications (real impossibility content, not trivial-true-wrap); (b) GeneralContractiveForced.orbit_uniformly_bounded is substrate-agnostic (no NS vocabulary, reusable); (c) builds clean, Tier-3 not PARTIAL_LAUNDERING. success iff genuine formalized negative + general engine, Tier-3 PASS; 0.5 if builds but Tier-3 weak; fail iff trivial-wrap or Tier-3 laundering.",
+  "question": "Targets the CF Clay-equivalent axiom (named per HARD RULE). Formalize tick577's negative in Lean: PROVE that Constantin-Fefferman direction-Lipschitz is NOT a function of the arc's controlled data (s_z, Type-I, R1) \u2014 \u2203 two configs with identical arc_data but opposite cf_holds \u21d2 no derivation g with cf_holds\u2194g(arc_data). Plus restate the tick573 engine substrate-agnostically (general-purpose, no NS overfit). Does the formalized negative genuinely harden tick577 (machine-checked impossibility = scientific finding) without being tick569-style trivial-wrap, and is the engine genuinely general-purpose?",
+  "risk_penalty": 0.4,
+  "success_threshold": "success iff genuine formalized-negative non-implication PROVED + general engine + Tier-3 PASS; 0.5 if Tier-3 weak; fail iff trivial-wrap/laundering",
+  "task_type": "ns_clay_formalized_negative_CF_underdetermined_20260516",
+  "value_if_success": 7.0,
+  "void_conditions": "tick577 negative or tick573 engine refactored"
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "Euler",
+  "contract_id": "ns_route1_clay_proof_adjacency_macro_20260513_tick315",
+  "contract_question": "Within the next 10 NS route-1 RD ticks, will we reach Clay-proof-adjacent status under the stricter predicate: build-passed Lean plus E/F and GP-233 row showing route-1 strictness reduces to one externally meaningful Navier-Stokes PDE estimate, not scalar strict-budget oracle and not route wiring or certificate reshuffling?",
+  "domain": "ns_route1_clay_adjacency",
+  "expected_cost_agent_minutes": 300.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "carrier_identification_gap": 0.22,
+    "certificate_reshuffling": 0.22,
+    "compactness_predicate_without_source": 0.14,
+    "ledger_overclaim": 0.1,
+    "pressure_decomposition_smuggling": 0.18,
+    "scalar_oracle_reentry": 0.14
+  },
+  "forecasted_at": "2026-05-13T23:58:59Z",
+  "p_dependency_issue": 0.27,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.11,
+  "p_success": 0.58,
+  "rationale_short": "Angular bridge already narrows pressure-visible strictness to angular non-nullness/carrier identification, but success requires one externally meaningful PDE estimate rather than another Lean projection surface.",
+  "read_only_attestation": true
+}

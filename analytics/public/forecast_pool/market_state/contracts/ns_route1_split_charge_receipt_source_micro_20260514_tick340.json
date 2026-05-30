@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:35:27Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 70.0,
+    "expected_value": -128.1789239396388,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.22999999999999998,
+    "p_needs_new_lemma": 0.73,
+    "p_regression": 0.045,
+    "p_success": 0.6138845075451501,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick340",
+        "domain": "ns_route1_pde",
+        "p_success": 0.7,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_adversarial_tick340",
+        "domain": "ns_route1_pde",
+        "p_success": 0.52,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "galilean_charge_has_no_receipt_home",
+        "p": 0.171875
+      },
+      {
+        "mode": "receipt_sum_has_only_three_slots",
+        "p": 0.16666666666666666
+      },
+      {
+        "mode": "leakage_belongs_shard_c_not_pressure_receipts",
+        "p": 0.140625
+      },
+      {
+        "mode": "charge_split_becomes_too_abstract",
+        "p": 0.12962962962962962
+      },
+      {
+        "mode": "algebraic_bound_needs_extra_nonnegativity",
+        "p": 0.1111111111111111
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_split_charge_receipt_source_micro_20260514_tick340.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_split_charge_receipt_source_micro_20260514_tick340.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_split_charge_receipt_source_micro_20260514_tick340.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_split_charge_receipt_source_micro_20260514_tick340.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_split_charge_receipt_source_micro_20260514_tick340.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 75.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:34:59Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T07:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean adds a split-charge source below the pressure/Riesz cone receipt bridge, proves pressureRieszConeCharge <= route1PressureVisibilityReceipts.receiptSum from explicit local/tent, mean, and leakage charge bounds, downstream adapter builds, and no new sorry/admit appears in touched surfaces",
+    "question": "Will we add a Lean source that repairs the tick339 gap by routing resolved mean-free, Galilean, and leakage weighted-stress shares through explicit pressure visibility receipt charges, without assuming pure tent-excess domination?",
+    "success_threshold": "lean_split_charge_source_builds_and_feeds_pressure_receipt_bridge",
+    "task_type": "ns_route1_pde_lean_bridge"
+  },
+  "contract_id": "ns_route1_split_charge_receipt_source_micro_20260514_tick340",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick340",
+        "raw_agent_ids": [
+          "hooke_forecast_tick340"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_adversarial_tick340",
+        "raw_agent_ids": [
+          "rawls_adversarial_tick340"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick340",
+      "rawls_adversarial_tick340"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick340",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_split_charge_receipt_source_micro_20260514_tick340/hooke_forecast_tick340.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 52.0,
+        "forecasted_at": "2026-05-14T03:35:15Z",
+        "p_success": 0.7,
+        "rationale_short": "Likely because pressure receipt sum already has local quadratic, pressure reserve, and child charge slots, and tick339 supplies the needed split labels. Risk is that Galilean/leakage charges do not map cleanly to existing receipt slots.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_adversarial_tick340",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_split_charge_receipt_source_micro_20260514_tick340/rawls_adversarial_tick340.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 88.0,
+        "forecasted_at": "2026-05-14T03:35:15Z",
+        "p_success": 0.52,
+        "rationale_short": "A weaker split source should compile, but making it feed pressure receipts may overuse receipt slots. Best outcome may be a split-plus-leakage-bookkeeping bridge rather than a direct pressure receipt bridge.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:38:05Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.6138845075451501,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "galilean_charge_has_no_receipt_home",
+        "p": 0.171875
+      },
+      "voi_proxy": 7.417
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 70.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6138845075451501,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "galilean_charge_has_no_receipt_home",
+        "p": 0.171875
+      },
+      {
+        "mode": "receipt_sum_has_only_three_slots",
+        "p": 0.16666666666666666
+      },
+      {
+        "mode": "leakage_belongs_shard_c_not_pressure_receipts",
+        "p": 0.140625
+      },
+      {
+        "mode": "charge_split_becomes_too_abstract",
+        "p": 0.12962962962962962
+      },
+      {
+        "mode": "algebraic_bound_needs_extra_nonnegativity",
+        "p": 0.1111111111111111
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1602,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:38:10Z"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude:RD",
+  "contract_id": "tick624-arc-terminal-consolidation",
+  "contract_question": "tick624: is the NS scale-margin arc + complement provably TERMINAL for the apparatus (structural exhaustion across tick611-623, each leg derived+adversary-survived, residual Clay-equivalent), so the disciplined action is STOP-this-line + handoff, NOT further in-arc ticks (which would be the treadmill the apparatus exists to stop)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T01:53:51Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.34,
+  "rationale_short": "concede the adversary: tick616 is hypothesis-bounded theorem, tick622 is informal taxonomy NOT a formal no-go; 'provably terminal/complete' is an overclaim; honest status = exhausted-AS-EXPLORED + de-prioritize, NOT provably terminal; AP-014 risk acknowledged",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

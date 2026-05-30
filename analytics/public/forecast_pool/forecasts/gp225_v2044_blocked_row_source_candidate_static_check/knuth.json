@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Proceed with static candidate packet only; no replay until hygiene passes.",
+  "agent_id": "Knuth",
+  "contract_id": "gp225_v2044_blocked_row_source_candidate_static_check",
+  "contract_question": "Will v20.44 generate a small blocked-row source candidate packet from v20.43 contracts and pass static hygiene checks without replay/training?",
+  "domain": "gp225_pre_gnn_candidate_static_check",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_templates_still_context_dependent": 0.4,
+    "placeholder_leak": 0.1714285714285714,
+    "source_hinge_missing": 0.14285714285714285,
+    "static_check_too_weak": 0.2857142857142857
+  },
+  "forecast_externality_tags": [
+    "candidate_content_bottleneck",
+    "static_hygiene",
+    "replay_guard"
+  ],
+  "forecasted_at": "2026-05-14T17:24:59Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.06,
+  "p_regression": 0.04,
+  "p_success": 0.68,
+  "rationale_short": "The source contracts are concrete enough for static candidate actions, but Lean context variable mismatch remains likely at replay time.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "candidate_templates_still_context_dependent",
+    "static_check_too_weak"
+  ]
+}

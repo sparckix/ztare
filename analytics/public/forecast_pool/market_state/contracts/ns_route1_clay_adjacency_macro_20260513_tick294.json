@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T21:55:26Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 420.0,
+    "expected_value": 1.2668978588792545,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.31,
+    "p_needs_new_lemma": 0.6799999999999999,
+    "p_regression": 0.2,
+    "p_success": 0.2683622323599068,
+    "participants": [
+      {
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.18,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.38,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "multiple_unpaid_wrapper_fields_remain",
+        "p": 0.19
+      },
+      {
+        "mode": "requires_new_non_scalar_pde_estimate",
+        "p": 0.15
+      },
+      {
+        "mode": "object_is_only_repackaging_not_materially_clay_adjacent",
+        "p": 0.12
+      },
+      {
+        "mode": "transport_flux_visibility_not_sufficiently_typed",
+        "p": 0.1
+      },
+      {
+        "mode": "lean_type_surface_or_import_drift",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_clay_adjacency_macro_20260513_tick294.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_clay_adjacency_macro_20260513_tick294.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_clay_adjacency_macro_20260513_tick294.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_clay_adjacency_macro_20260513_tick294.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_clay_adjacency_macro_20260513_tick294.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 600.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T21:54:35Z",
+    "created_by": "codex:RD",
+    "horizon": "10 RD ticks on 2026-05-13",
+    "layer": "macro",
+    "objective_resolver": "artifact exists and lake build ZtareProofs.ns_route1_fresh_frequency_coercivity_adapter passes; experiment ledger records <=1 remaining named non-scalar PDE estimate station",
+    "question": "Within <=10 RD ticks, produce a materially Clay-proof-adjacent PDE estimate station in Lean: a compiled source object/theorem reducing route-1 strictness to at most one named non-scalar PDE estimate, rather than multiple wrapper/provenance fields.",
+    "success_threshold": "compiled Lean plus E/F row showing route-1 strictness depends on at most one named non-scalar PDE estimate",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_clay_adjacency_macro_20260513_tick294",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230_ns_route1_2026_05_13",
+        "raw_agent_ids": [
+          "codex_readonly_gp230_ns_route1_2026_05_13"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_readonly_ns_route1_forecast_2026_05_13",
+        "raw_agent_ids": [
+          "gp230_readonly_ns_route1_forecast_2026_05_13"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_readonly_gp230_ns_route1_2026_05_13",
+      "gp230_readonly_ns_route1_forecast_2026_05_13"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_adjacency_macro_20260513_tick294/codex_readonly_gp230_ns_route1_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 420.0,
+        "forecasted_at": "2026-05-13T21:55:09Z",
+        "p_success": 0.18,
+        "rationale_short": "Well-factored and compiling, but several independent unpaid PDE fields remain; ten ticks only works if shard B absorbs most wrapper fields and shard C becomes a named residual.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_clay_adjacency_macro_20260513_tick294/gp230_readonly_ns_route1_forecast_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 420.0,
+        "forecasted_at": "2026-05-13T21:55:09Z",
+        "p_success": 0.38,
+        "rationale_short": "Compiling A/B/C decomposition makes a material station plausible; reducing multiple B/C obligations to one named non-scalar PDE estimate likely needs a genuinely new Lean-facing estimate.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 1.2668978588792545,
+      "forecast_spread": 0.2,
+      "p_success": 0.2683622323599068,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 1.3963
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 420.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.2683622323599068,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "multiple_unpaid_wrapper_fields_remain",
+        "p": 0.19
+      },
+      {
+        "mode": "requires_new_non_scalar_pde_estimate",
+        "p": 0.15
+      },
+      {
+        "mode": "object_is_only_repackaging_not_materially_clay_adjacent",
+        "p": 0.12
+      },
+      {
+        "mode": "transport_flux_visibility_not_sufficiently_typed",
+        "p": 0.1
+      },
+      {
+        "mode": "lean_type_surface_or_import_drift",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

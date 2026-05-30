@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed as guard; do not claim source proof.",
+  "agent_id": "codex-rd",
+  "contract_id": "ns_n8_beta_fresh_packet_event_stream_coherence_20260514_tick422",
+  "contract_question": "Will tick422 add a compiling Lean guard/source surface requiring audit-selected fresh packets to embed into the same hEvents/L event stream, preventing event-per-bad-node and beta-defined price smuggling below the fresh-packet audit?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "event_stream_coherence_still_prop": 0.25,
+    "guard_only_no_source": 0.25,
+    "logging_overhead": 0.15,
+    "overclaim_guard_needed": 0.15,
+    "signature_friction": 0.2
+  },
+  "forecast_externality_tags": [
+    "event_stream_coherence",
+    "anti_tautology_guard",
+    "fresh_packet_risk"
+  ],
+  "forecasted_at": "2026-05-14T22:00:31Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.12,
+  "p_success": 0.72,
+  "rationale_short": "Meta-Darwin found a real risk: audit-selected packets may not be the ledger events. A guard is useful before continuing.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "event_stream_embedding_unproved",
+    "event_price_independence_unproved",
+    "bad_node_indexed_event_risk"
+  ]
+}

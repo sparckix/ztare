@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_readonly_gp230",
+  "contract_id": "gp225_v1844_micro_inventory_pass",
+  "contract_question": "Will v18.44, using saved artifacts only, pass the proof-delta label source inventory gate: >=50 natural/replayable before-action-after or prefix-state rows, >=20 rows not saturated by deterministic/BM25/action-sweep baselines, and zero unquarantined false accepts?",
+  "domain": "gp225_inventory_gate",
+  "expected_cost_agent_minutes": 1.2,
+  "failure_mode_distribution": {
+    "artifact_schema_or_missing_output_issue": 0.11,
+    "false_accept_quarantine_interpretation": 0.34,
+    "other": 0.05,
+    "replayability_definition_too_strict": 0.28,
+    "unsaturated_rows_absorbed_by_bm25_or_cpu": 0.22
+  },
+  "forecasted_at": "2026-05-13T15:18:11Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.16,
+  "p_success": 0.74,
+  "rationale_short": "Likely pass if trace candidates count and v18.00 false accept is quarantined. v17.39 has 120 before/after/tactic rows, v17.99 has 60 clean and 30 action-residual rows, v18.39 has 75 non-BM25 rows; main risk is false-accept aggregation semantics.",
+  "read_only_attestation": true
+}

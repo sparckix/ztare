@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Replace arbitrary-function target with SameCutoffTransportFluxAbsorption plus fixed activeSource/muA/muQP fields.",
+  "agent_id": "codex_rd_absorption_route",
+  "contract_id": "ns_route1_active_tail_caloric_target_repair_20260514_tick396",
+  "contract_question": "Can the next NS tick repair the ActiveTailPaidByCaloricDissipation target so it binds fixed same-carrier quantities instead of arbitrary functions?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_field_shape_error": 0.18,
+    "logging_overhead": 0.1,
+    "no_decision_delta": 0.1,
+    "qp_residual_not_bound": 0.22,
+    "target_still_too_abstract": 0.24,
+    "unknown_route_types": 0.16
+  },
+  "forecast_externality_tags": [
+    "same_carrier_target_repair",
+    "young_bernstein_absorption"
+  ],
+  "forecasted_at": "2026-05-14T17:03:02Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.06,
+  "p_success": 0.76,
+  "rationale_short": "The proof sketch is coherent if the target binds fixed event/cutoff quantities and routes the quadratic overflow to QP. Lean surface should be low-risk.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "target_still_too_abstract",
+    "qp_residual_not_bound",
+    "lean_field_shape_error"
+  ]
+}

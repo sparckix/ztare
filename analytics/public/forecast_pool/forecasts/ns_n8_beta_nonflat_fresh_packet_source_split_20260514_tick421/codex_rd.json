@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed as source-split and guard tick; do not claim fresh packet theorem sourced.",
+  "agent_id": "codex-rd",
+  "contract_id": "ns_n8_beta_nonflat_fresh_packet_source_split_20260514_tick421",
+  "contract_question": "Will tick421 add a compiling Lean surface assembling NonflatNonInheritedBadCenterForcesFreshFrequencyPacket from existing fresh-packet side-condition audit, pressure same-carrier lock, square-budget, and bounded-fanout/no-log-reuse sources while explicitly recording that fresh packet side-condition data remains unproved?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_only_no_source": 0.25,
+    "event_per_bad_node_tautology_risk": 0.18,
+    "fresh_packet_audit_still_unproved": 0.25,
+    "logging_overhead": 0.14,
+    "signature_friction": 0.18
+  },
+  "forecast_externality_tags": [
+    "fresh_packet_gate_sharpening",
+    "anti_tautology_guard",
+    "lean_reuse"
+  ],
+  "forecasted_at": "2026-05-14T21:56:39Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.12,
+  "p_success": 0.76,
+  "rationale_short": "Existing L3 constructors likely assemble the theorem. The value is naming the side-condition audit as the next hard source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "fresh_packet_side_condition_audit_unproved",
+    "event_selection_rule_unproved",
+    "payment_carrier_locks_unproved"
+  ]
+}

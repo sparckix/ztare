@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "Proceed only if the fork returns ResidualFreshExcessAuditEligibilityData, not full source split.",
+  "agent_id": "meta_darwin_proxy",
+  "contract_id": "ns_n8_beta_audit_eligibility_or_residual_fork_20260514_tick427",
+  "contract_question": "Will tick427 add a compiling Lean fork that states residual-fresh audit eligibility or explicit routing to flat-radius, pressure-visibility, or beta-incidence residuals, incorporating Banach's no-go without claiming eligibility proof?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 34.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "dependent_type_failure": 0.14,
+    "eligibility_name_tautology": 0.24,
+    "overclaim": 0.12,
+    "pressure_flat_not_actually_routed": 0.2,
+    "redundant_fork": 0.3
+  },
+  "forecast_externality_tags": [
+    "darwin",
+    "banach_nogo",
+    "ns_n8_beta",
+    "eligibility"
+  ],
+  "forecasted_at": "2026-05-14T22:45:22Z",
+  "p_dependency_issue": 0.52,
+  "p_needs_new_lemma": 0.9,
+  "p_regression": 0.2,
+  "p_success": 0.58,
+  "rationale_short": "Formalizing the no-go is useful, but another fork can become ceremony. Keep it at the eligibility data level.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "redundant_fork",
+    "eligibility_name_tautology",
+    "pressure_flat_not_actually_routed",
+    "dependent_type_failure",
+    "overclaim"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke_independent_micro",
+  "contract_id": "ns_route1_pressure_velocity_piece_micro_20260513_tick302",
+  "contract_question": "Can this tick compile a non-tautological lower Lean station for either pressure-piece decomposition or velocity-piece Caccioppoli under FreshFrequencyGalileanCKNFreshEnergySplitSource?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_mismatch": 0.1,
+    "new_station_wrapper_only": 0.32,
+    "other": 0.12,
+    "pressure_nonlocality_exposes_remainder": 0.24,
+    "velocity_branch_cleaner_than_pressure": 0.22
+  },
+  "forecasted_at": "2026-05-13T22:44:54Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.06,
+  "p_success": 0.62,
+  "rationale_short": "A compiling lower station is likely if it explicitly separates local CZ pressure, harmonic reserve, child collar, and cutoff commutator terms.",
+  "read_only_attestation": true
+}

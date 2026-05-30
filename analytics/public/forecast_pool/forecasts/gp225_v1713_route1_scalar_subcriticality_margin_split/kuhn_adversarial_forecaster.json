@@ -1,0 +1,20 @@
+{
+  "agent_id": "kuhn_adversarial_forecaster",
+  "contract_id": "gp225_v1713_route1_scalar_subcriticality_margin_split",
+  "contract_question": "Will v17.13 reduce the route-1 scalar subcriticality hinge to a smaller Lean-checkable strict-margin guard without closing/laundering the analytic source obligation?",
+  "domain": "ns_live_scalar_hinge",
+  "expected_cost_agent_minutes": 45.0,
+  "failure_mode_distribution": {
+    "existing_adapter": 0.12,
+    "gap_only": 0.3,
+    "guard_split": 0.48,
+    "refactor": 0.1
+  },
+  "forecasted_at": "2026-05-12T15:25:53Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.1,
+  "p_success": 0.48,
+  "rationale_short": "Safe patch is only a stronger slack certificate; direct adapter would launder the inequality.",
+  "read_only_attestation": true
+}

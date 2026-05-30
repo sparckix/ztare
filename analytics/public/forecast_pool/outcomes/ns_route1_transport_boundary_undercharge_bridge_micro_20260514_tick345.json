@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 36.0,
+  "artifact_hash": "b3466909d0cee6478eabdb7f62a558e8b87a8eb295e9e42277f4d7d865447131",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_transport_boundary_undercharge_bridge_micro_20260514_tick345",
+  "error_type": null,
+  "goal_delta": 3,
+  "resolution_note": "Added FixedWindowTransportBoundaryReceiptChannelSplitSource, constructor FixedWindowNormalizedLeakageShardCChannelSplitSource.ofTransportBoundaryReceiptSource, FixedWindowTransportBoundaryReceiptUpperBoundOnlyGap, and no_transportBoundaryPayment_of_receiptUpperBoundOnlyGap. lake env lean and downstream lake build passed; touched-file sorry/admit scan clean.",
+  "resolved_at": "2026-05-14T04:11:41Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

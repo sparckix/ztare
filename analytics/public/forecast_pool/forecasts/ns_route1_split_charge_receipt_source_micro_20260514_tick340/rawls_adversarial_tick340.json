@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_adversarial_tick340",
+  "contract_id": "ns_route1_split_charge_receipt_source_micro_20260514_tick340",
+  "contract_question": "Will we add a Lean source that repairs the tick339 gap by routing resolved mean-free, Galilean, and leakage weighted-stress shares through explicit pressure visibility receipt charges, without assuming pure tent-excess domination?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 88.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "galilean_charge_has_no_receipt_home": 0.34375,
+    "leakage_belongs_shard_c_not_pressure_receipts": 0.28125,
+    "receipt_nonnegativity_insufficient": 0.15625,
+    "source_too_conditional_to_improve_frontier": 0.21875000000000003
+  },
+  "forecasted_at": "2026-05-14T03:35:15Z",
+  "p_dependency_issue": 0.3,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.04,
+  "p_success": 0.52,
+  "rationale_short": "A weaker split source should compile, but making it feed pressure receipts may overuse receipt slots. Best outcome may be a split-plus-leakage-bookkeeping bridge rather than a direct pressure receipt bridge.",
+  "read_only_attestation": true
+}

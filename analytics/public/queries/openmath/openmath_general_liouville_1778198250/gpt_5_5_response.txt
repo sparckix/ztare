@@ -1,0 +1,229 @@
+## 1. Approach name
+
+**Ergodic blow-down of the vorticity semigroup**
+
+## 2. The mechanism
+
+First, a necessary correction: as stated, the conjecture cannot be true, because every constant vector field  
+\[
+u(t,x)\equiv U_0\in\mathbb R^3,\qquad p\equiv 0,
+\]
+is a bounded ancient mild solution. Thus the most plausible Liouville target is
+
+\[
+u \equiv \text{constant},
+\]
+
+or \(u\equiv 0\) after imposing a normalization such as vanishing spatial mean, decay, or fixing the Galilean frame.
+
+The proposed mechanism attacks the corrected rigidity statement by working entirely at the vorticity level and trying to prove that every bounded ancient mild solution has identically zero vorticity:
+\[
+\omega=\nabla\times u \equiv 0.
+\]
+Since \(u\in L^\infty_{t,x}\), the vorticity equation is meaningful after mollification:
+\[
+\partial_t \omega - \Delta \omega + u\cdot\nabla \omega = \omega\cdot\nabla u.
+\]
+The new idea is to use a **large-scale ergodic blow-down** rather than backward uniqueness. For \(R\to\infty\), define parabolically rescaled fields
+\[
+u_R(t,x)=u(R^2t,Rx),\qquad \omega_R(t,x)=R\,\omega(R^2t,Rx).
+\]
+The velocity remains uniformly bounded, while the vorticity is formally scale-subcritical in averaged negative norms. One tries to show that any nonzero vorticity produces a nontrivial invariant defect measure in the blow-down limit, but that the limiting defect measure is simultaneously dissipated by the heat part and transported by a bounded divergence-free drift. The contradiction would arise from an “ancient stationary statistical enstrophy balance”: a nonzero recurrent vorticity packet cannot survive indefinitely under diffusion at arbitrarily large scales unless the stretching term supplies energy, but the stretching term disappears in the blow-down limit in a suitable negative Besov topology.
+
+The central quantity would be a localized, scale-averaged vorticity energy:
+\[
+\mathcal E_R(t)
+=
+\frac1{R^3}\int_{\mathbb R^3}
+|\omega(t,x)|^2 \phi(x/R)\,dx,
+\]
+or more realistically a mollified version
+\[
+\mathcal E_{R,\ell}(t)
+=
+\frac1{R^3}\int |\omega_\ell(t,x)|^2\phi(x/R)\,dx,
+\qquad \omega_\ell=\rho_\ell*\omega.
+\]
+The desired monotonicity is not pointwise in time but **ergodic in ancient time**:
+\[
+\limsup_{T,R\to\infty}
+\frac1T\int_{-T}^0 \mathcal E_{R,\ell}(t)\,dt
+\]
+should vanish after sending \(R\to\infty\), then \(\ell\downarrow0\). If nonzero vorticity exists somewhere, parabolic unique continuation/local smoothing should force a positive lower density of vorticity energy across large ancient cylinders, contradicting this vanishing averaged enstrophy.
+
+## 3. Why this is NEW
+
+This is not the KNSŠ / ESS template. It does **not** try to apply backward uniqueness to conclude that vorticity vanishes from a terminal zero set. It also does **not** use an axisymmetric scalar maximum principle such as the equation for \(\omega_\theta/r\). The mechanism is instead statistical and large-scale: prove that bounded ancient solutions cannot carry a nonzero invariant vorticity defect measure under parabolic blow-down.
+
+The new ingredient is an **ergodic compactness principle for ancient vorticity**, closer in spirit to homogenization, statistical hydrodynamics, or Furstenberg-type recurrence than to Carleman estimates. The hope is to sidestep the missing scalar maximum principle by not trying to control pointwise vorticity. Instead, one controls large-scale averaged vorticity in negative or mollified norms, where the vortex-stretching term may become perturbative under blow-down.
+
+The classical obstacle is the term
+\[
+\omega\cdot\nabla u,
+\]
+which prevents a maximum principle for \(|\omega|\). The proposed sidestep is to observe that \(\nabla u\) is a Calderón-Zygmund transform of \(\omega\), and under large-scale averaging the bilinear stretching contribution may have zero density unless there is a nontrivial stationary vorticity cascade. The approach would try to rule out such a cascade by combining ancientness, bounded velocity, and local parabolic smoothing.
+
+## 4. Three specific lemmas / sub-targets
+
+### Lemma 1: Large-scale averaged vorticity dissipation
+
+Let \(u\in L^\infty_{t,x}(\mathbb R\times\mathbb R^3)\) be an ancient mild solution and \(\omega=\nabla\times u\) in distributions. For every standard mollifier \(\rho_\ell\), set \(\omega_\ell=\rho_\ell*\omega\). Prove that for every \(\phi\in C_c^\infty(B_2)\), \(\phi\equiv1\) on \(B_1\), \(0\leq\phi\leq1\),
+
+\[
+\limsup_{R\to\infty}
+\limsup_{T\to\infty}
+\frac1T\int_{-T}^0
+\frac1{R^3}\int_{\mathbb R^3}
+|\nabla \omega_\ell(t,x)|^2\phi(x/R)\,dx\,dt
+=0
+\]
+
+after subsequently sending \(\ell\downarrow0\), or at least with a bound tending to zero like \(o_\ell(1)\).
+
+A weaker but still useful target:
+
+\[
+\frac1T\int_{-T}^0
+\|\omega_\ell(t)\|_{\dot H^{-1}(B_R)}^2\,dt
+=o(R^3)
+\quad\text{as }R,T\to\infty.
+\]
+
+The key difficulty is controlling the stretching term only from \(u\in L^\infty\).
+
+---
+
+### Lemma 2: Stretching has zero density in negative Besov norm
+
+For bounded ancient mild solutions, prove an estimate of the form
+
+\[
+\lim_{R\to\infty}
+\limsup_{T\to\infty}
+\frac1T\int_{-T}^0
+\left|
+\frac1{R^3}
+\int_{\mathbb R^3}
+(\omega_\ell\cdot\nabla u_\ell)\cdot \omega_\ell
+\,\phi(x/R)\,dx
+\right|dt
+=0
+\]
+
+for fixed \(\ell>0\), or more realistically,
+
+\[
+\left|
+\int
+(\omega_\ell\cdot\nabla u_\ell)\cdot \omega_\ell \,\phi_R
+\right|
+\lesssim
+\varepsilon(R,\ell)
+\int |\nabla\omega_\ell|^2\phi_R
++
+C_{\ell,M} o(R^3),
+\]
+
+with \(\varepsilon(R,\ell)\to0\) as \(R\to\infty\) after appropriate averaging in time.
+
+This would be the genuinely new analytic heart. One possible route is a commutator-cancellation identity using
+
+\[
+\nabla u = \nabla\nabla\times(-\Delta)^{-1}\omega,
+\]
+
+together with spatial averaging to show that the trilinear vortex-stretching form has no extensive component for ancient bounded flows.
+
+---
+
+### Lemma 3: Nonzero vorticity implies positive ancient density
+
+Assume \(\omega(t_0,x_0)\neq0\) in the sense that for some \(\ell>0\),
+
+\[
+|\omega_\ell(t_0,x_0)|\geq c_0>0.
+\]
+
+Then prove a recurrence/lower-density statement:
+
+\[
+\liminf_{R\to\infty}
+\liminf_{T\to\infty}
+\frac1T\int_{-T}^0
+\frac1{R^3}\int_{B_R}
+|\omega_\ell(t,x)|^2\,dx\,dt
+\geq c(c_0,\ell,M)>0.
+\]
+
+This is the other hard piece. It would say that a single nonzero vorticity event in an ancient bounded solution cannot be isolated in spacetime; ancientness plus bounded drift forces it to recur with positive spacetime density. The proof might use Krylov-Safonov/Harnack-type estimates for the mollified vorticity magnitude, or a quantitative propagation-of-smallness theorem for the drift-diffusion-stretching system.
+
+Together, Lemmas 1–2 would force zero large-scale vorticity density, while Lemma 3 would force positive density from any nonzero vorticity. Hence \(\omega\equiv0\). Then \(u\) is bounded, divergence-free, curl-free on \(\mathbb R^3\), so \(u(t,\cdot)\) is spatially constant. The equation then forces this constant to be time-independent up to a pressure gradient; with the usual mild formulation and no external forcing, \(u\equiv U_0\). A further normalization would be needed to conclude \(U_0=0\).
+
+## 5. Self-criticism
+
+The largest danger is that Lemma 3 may be false or secretly equivalent to the desired Liouville theorem. Nonzero coherent structures could, in principle, drift to spatial infinity as \(t\to-\infty\) with zero density in every fixed blow-down frame. Because the Navier-Stokes equations are translation invariant, one must be careful: a vorticity packet may avoid recurrence in the uncentered average. One might need to average over all spatial centers or work with an invariant mean, but that risks becoming vacuous.
+
+Lemma 2 is also highly speculative. The vortex-stretching term is exactly the supercritical obstruction in 3D. Claiming that it has zero large-scale density may amount to assuming absence of an ancient enstrophy cascade, which is close to the conjecture itself. The proposed cancellation would need to be genuinely harmonic-analytic, not just a disguised regularity estimate.
+
+Another issue: \(u\in L^\infty\) does not immediately give \(\omega\in L^2_{\mathrm{loc}}\) uniformly in ancient time. Local smoothing gives positive-time regularity from any time slice, but for an ancient solution one must avoid using estimates whose constants depend on an initial time sent to \(-\infty\). Any argument involving \(|\omega|^2\) must therefore be mollified or justified through mild regularization.
+
+Finally, the original statement \(u\equiv0\) is false without fixing the constant Galilean mode. This approach can at best prove vorticity-free rigidity, hence \(u\) spatially constant. An additional assumption is necessary to kill the constant solution.
+
+## 6. Lean sketch
+
+```lean
+import Mathlib.Analysis.Calculus.ContDiff.Basic
+import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+
+/-!
+A toy formalization of the elementary endpoint of the proposed strategy:
+
+If a sufficiently smooth vector field on ℝ³ is both curl-free and divergence-free,
+one wants to conclude it is locally a harmonic gradient.  The full analytic
+Liouville step would then use boundedness to show the harmonic potential is affine,
+hence the velocity is constant.
+
+This is only a schematic auxiliary statement, not a proof of Navier-Stokes
+Liouville rigidity.
+-/
+
+noncomputable section
+
+open scoped RealInnerProductSpace
+
+abbrev Vec3 := Fin 3 → ℝ
+
+-- Placeholder for Euclidean space ℝ³ as functions Fin 3 → ℝ.
+abbrev R3 := Fin 3 → ℝ
+
+/-- A placeholder derivative of a vector field. -/
+constant jacobian : (R3 → Vec3) → R3 → (Fin 3 → Fin 3 → ℝ)
+
+/-- Placeholder divergence. -/
+def div (u : R3 → Vec3) (x : R3) : ℝ :=
+  ∑ i : Fin 3, jacobian u x i i
+
+/-- Placeholder curl components in ℝ³. -/
+def curl (u : R3 → Vec3) (x : R3) : Vec3 :=
+  fun i =>
+    match i with
+    | ⟨0, _⟩ => jacobian u x 2 1 - jacobian u x 1 2
+    | ⟨1, _⟩ => jacobian u x 0 2 - jacobian u x 2 0
+    | ⟨2, _⟩ => jacobian u x 1 0 - jacobian u x 0 1
+
+/--
+Schematic Liouville endpoint: a bounded, smooth, curl-free velocity field on ℝ³
+should be spatially constant.  In a real development this would follow from
+Poincaré lemma + bounded harmonic-gradient Liouville theorem.
+-/
+axiom bounded_curlfree_divfree_constant
+  (u : R3 → Vec3)
+  (h_smooth : ContDiff ℝ ⊤ u)
+  (h_bound : ∃ M : ℝ, ∀ x : R3, ‖u x‖ ≤ M)
+  (h_curl : ∀ x : R3, curl u x = 0)
+  (h_div : ∀ x : R3, div u x = 0) :
+  ∃ c : Vec3, ∀ x : R3, u x = c
+
+end
+```

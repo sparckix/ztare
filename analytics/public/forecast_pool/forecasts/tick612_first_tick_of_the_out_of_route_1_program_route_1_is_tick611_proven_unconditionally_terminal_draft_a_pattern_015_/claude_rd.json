@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "tick612_first_tick_of_the_out_of_route_1_program_route_1_is_tick611_proven_unconditionally_terminal_draft_a_pattern_015_",
+  "contract_question": "tick612 (FIRST tick of the out-of-route-1 program; route-1 is tick611-proven unconditionally terminal): draft a PATTERN-015 eigenquestion for a coercive global-regularity functional Phi NOT built from the route-1 algebra {Biot-Savart,grad,omega} \u2014 Lagrangian flow-map / Cauchy-invariants / relative-entropy-along-characteristics / optimal-transport displacement / Constantin-Iyer stochastic-Lagrangian \u2014 where nu enters via the back-to-labels stochastic flow (NOT nuDelta on algebra fields), so the nu-length is genuinely OFF-LATTICE and decoupled from the parabolic heat-length, paired vs a SUBCRITICAL companion (delta>0). Route it to the external prover (log to external_prover_ledger) + an independent external-prover attempt. Success = a PATTERN-015-conformant single falsifiable eigenquestion (anti-laundering: the Phi must provably NOT reduce to a {B,grad,omega} word NOR a parabolic/heat functional \u2014 respecting the tick611 closing-the-space theorem) logged to external_prover + an external-prover attempt whose verdict (Y construct / N forcing-extends-to-this-class-too / U) SURVIVES dogfood-claused adversarial-survival. Fail = eigenq is laundering/non-falsifiable, OR collapses to a route-1 recast, OR the external attempt is asserted-not-derived.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T22:41:56Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.58,
+  "rationale_short": "Drafting a PATTERN-015 eigenq is reliable; the risk is the out-of-route-1 Phi class being a disguised route-1 word or a parabolic/heat length (tick611 theorem must be respected as the anti-laundering bar). Lagrangian/stochastic-flow nu-length is the most credible genuinely-off-lattice candidate (\u03bd enters via back-to-labels noise, not \u03bd\u0394 on {B,grad,\u03c9}) \u2014 non-vacuous to ASK. P(clean conformant eigenq + external attempt surviving dogfood-claused adversary) ~0.58; P(the eigenq's YES branch actually constructible) much lower, not the contract criterion.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

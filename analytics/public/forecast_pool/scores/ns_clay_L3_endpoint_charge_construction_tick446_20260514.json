@@ -1,0 +1,94 @@
+{
+  "contract_id": "ns_clay_L3_endpoint_charge_construction_tick446_20260514",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "construct VorticityDecoherenceChargeReplacement.ofConstantinFeffermanHypothesis as parallel companion bridge; or per ns_graph_tick revert to Track-B (LeraySelfTaxProfilePriceStream, LowFrequencyLipschitzBridge) which dominate the closure-miner ranks",
+      "old_next_action": "construct one of (iii) L3 endpoint or (iv) vorticity decoherence charges from a classical-input witness"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.06920000000000001,
+  "mean_log_score": -0.30256815161861605,
+  "outcome": {
+    "actual_cost_agent_minutes": 25.0,
+    "artifact_hash": "ce533ab82bbc37f04847f74bdd44b38f204072a923af2506057f471515fcd9a8",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_silent_flat_defect_observability.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "clean",
+    "contract_id": "ns_clay_L3_endpoint_charge_construction_tick446_20260514",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "construct VorticityDecoherenceChargeReplacement.ofConstantinFeffermanHypothesis as parallel companion bridge; or per ns_graph_tick revert to Track-B (LeraySelfTaxProfilePriceStream, LowFrequencyLipschitzBridge) which dominate the closure-miner ranks",
+    "old_next_action": "construct one of (iii) L3 endpoint or (iv) vorticity decoherence charges from a classical-input witness",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Tick446 ships ESSEndpointL3Hypothesis carrier (LocalESSLInftyL3RegularityHypothesis, ASCII-safe rename from spec because Lean rejects \u221e in identifiers) + real def L3EndpointBlowupChargeReplacement.ofESSEndpointL3Hypothesis producing the tick445 charge replacement from an ESS endpoint witness (cubeRadius r, endpointL3Bound M>0) with field choices L3DefectMeasureValue=r*M\u00b3, radiusCharge=r, radiusChargeCoeff=M\u00b3, finiteRootBudget=r*M\u00b3 + r-linear inequality theorem ofESSEndpointL3Hypothesis_rLinearCharge + scaling_identity + coeff_identity (both rfl) + L3EndpointConstructionFromESSIsNotClayClosure scope guard. Inserted right before end ZtareProofs.NSSilentFlatDefectObservability; tick442/443/444/445 structures untouched. Lake env lean compiles clean; sorry/admit scan clean. Lean hash ce533ab82bbc37f04847f74bdd44b38f204072a923af2506057f471515fcd9a8. Honest scope: ESS theorem is externally cited (Escauriaza-Seregin-\u0160ver\u00e1k 2003); the Carleson fresh-region identification is a Prop; the abstract L3DefectMeasureValue Real is not identified with an actual \u222b|u|\u00b3; NOT Clay closure; NOT NoSilentFlatDefectProfile closure. One of three named classical-input bridges; CF hypothesis bridge and No-Concentration Lemma axiom remain parallel/separate targets.",
+    "resolved_at": "2026-05-15T01:57:09Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-15T01:57:13Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 25.0,
+      "agent_id": "codex_rd",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 30.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T01:54:17Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T01:54:27Z",
+        "resolved_at": "2026-05-15T01:57:09Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 25.0,
+      "agent_id": "meta_darwin_proxy",
+      "brier": 0.09000000000000002,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 35.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.35667494393873245,
+      "p_success": 0.7,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-15T01:54:17Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-15T01:54:32Z",
+        "resolved_at": "2026-05-15T01:57:09Z"
+      }
+    }
+  ]
+}

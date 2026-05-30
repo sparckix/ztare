@@ -1,0 +1,168 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T02:57:06Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.46,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 1.1084
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 160.0,
+    "expected_value": -37.273599999999995,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.22,
+    "p_needs_new_lemma": 0.62,
+    "p_regression": 0.18,
+    "p_success": 0.46,
+    "participants": [
+      {
+        "agent_id": "codex:RD",
+        "belief_update": false,
+        "domain": "ns_millennium_hunt",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f/codex_rd.json",
+        "forecasted_at": "2026-05-27T02:34:27Z",
+        "p_success": 0.46,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "incidence_fields_prop_only",
+        "p": 0.34
+      },
+      {
+        "mode": "numeric_bound_requires_new_selector",
+        "p": 0.28
+      },
+      {
+        "mode": "hostile_oversubscription_witness_survives",
+        "p": 0.23
+      },
+      {
+        "mode": "lean_composition_issue",
+        "p": 0.15
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 180.0,
+    "consumes_surfaced": "tick668_level495_canonical_target_assignment",
+    "created_at": "2026-05-27T02:34:12Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-27T06:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "checked Lean artifact or validated hostile witness plus gate/workbench receipts",
+    "question": "TICK668 Level496: derive or refute targetPrefixCount finalSlot <= finalSlot from same-tree incidence and prefix domination for the canonical eventData target assignment",
+    "success_threshold": "TRUE iff the next step produces a checked Lean theorem/source or a validated hostile witness that materially settles the target-count final-slot bound surface without endpoint restatement",
+    "task_type": "construct"
+  },
+  "contract_id": "tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex:RD",
+        "raw_agent_ids": [
+          "codex:RD"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex:RD"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed only after Level495 is validated; then attack the numeric target-count bound directly, not another source-budget wrapper.",
+        "agent_id": "codex:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level496_derive_or_refute_targetprefixcount_finalslot_finalslot_from_same_tree_incidence_and_prefix_domination_f/codex_rd.json",
+        "canonical_agent_id": null,
+        "domain": "ns_millennium_hunt",
+        "expected_cost_agent_minutes": 160.0,
+        "forecasted_at": "2026-05-27T02:34:27Z",
+        "p_success": 0.46,
+        "rationale_short": "Level495 should reduce assignment to targetPrefixCount finalSlot <= finalSlot. Existing incidence/prefix fields look Prop-level, so success likely requires either a narrow new source theorem or an honest hostile witness.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 45.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": false,
+    "exists": true,
+    "resolved_at": "2026-05-27T02:57:55Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.46,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 1.1084
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 160.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.46,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "incidence_fields_prop_only",
+        "p": 0.34
+      },
+      {
+        "mode": "numeric_bound_requires_new_selector",
+        "p": 0.28
+      },
+      {
+        "mode": "hostile_oversubscription_witness_survives",
+        "p": 0.23
+      },
+      {
+        "mode": "lean_composition_issue",
+        "p": 0.15
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.2916,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T02:58:06Z"
+  }
+}

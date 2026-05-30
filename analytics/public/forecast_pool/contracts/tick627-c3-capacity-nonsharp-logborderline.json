@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick627-c3-capacity-nonsharp-logborderline.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick627-c3-capacity-nonsharp-logborderline.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick627-c3-capacity-nonsharp-logborderline",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick627-c3-capacity-nonsharp-logborderline.json",
+    "score": "analytics/public/forecast_pool/scores/tick627-c3-capacity-nonsharp-logborderline.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick627-c3-capacity-nonsharp-logborderline",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T02:06:45Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0435,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_closure_pde_lemma",
+    "score": 0.4,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0435,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 140,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick627 LEMMA (falsification of the obstruction): at the EXACT C3 (ESS L^inf_t L^3_x) critical scaling the \u03c9-capacity lower bound is the BORDERLINE Riesz-capacity case (p\u00b7s=d), so Cap degrades from a power to a LOGARITHM \u2014 the capacity lower bound the whole killed route-1 program assumed is NON-SHARP at criticality. Closure via this route \u27fa \u03a3_n 1/log(scale_n) summable; for an exact self-similar cascade scale_n~\u03bb^n this is (1/log\u03bb)\u03a31/n = DIVERGENT (=atom in log-capacity vocab) \u2014 BUT summable iff the active-scale count per epoch is bounded (a concrete NEW falsifiable target, not the capacity atom, not previously attempted).",
+  "risk_penalty": 1.0,
+  "success_threshold": "a DERIVED real lemma: (i) capacity bound non-sharp=logarithmic at C3 criticality (borderline Riesz p\u00b7s=d), (ii) self-similar cascade \u21d2 harmonic-divergent \u21d2 atom, (iii) the precise NEW closure-target = bounded-active-scales-per-epoch \u21d2 summable; surviving codex adversarial-kill of the ESTIMATE (the p\u00b7s=d borderline claim + the \u03a31/n divergence + the escape)",
+  "task_type": "ns_closure_pde_lemma",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

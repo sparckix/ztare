@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "21e471aa342017978d63377c0719518b3cc67d22ed29aba2fef8fdd0148f6a08",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/xhigh_no_nonzero_zero_visibility_feynman_verdict_20260514.md",
+  "compile_status": "not_applicable_sidecar",
+  "contract_id": "ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "Feynman did not prove the lemma but produced a useful lower missing hypothesis: ActiveTailCarrierVisibilityDomination, plus fifth-channel warning V_A_perp.",
+  "resolved_at": "2026-05-14T12:58:10Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:21:48Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 60.08001641362331,
+    "expected_value": -10.827946088119019,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.22010668855149773,
+    "p_needs_new_lemma": 0.3450266721378744,
+    "p_regression": 0.07989331144850226,
+    "p_success": 0.5657807510721351,
+    "participants": [
+      {
+        "agent_id": "hooke",
+        "domain": "ns_route1_pde",
+        "p_success": 0.61,
+        "weight": 0.98
+      },
+      {
+        "agent_id": "mcclintock",
+        "domain": "ns_route1_pde",
+        "p_success": 0.52,
+        "weight": 0.9696
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "missing_harmonic_source",
+        "p": 0.15080016413623307
+      },
+      {
+        "mode": "wrapper_without_new_leg",
+        "p": 0.14919983586376692
+      },
+      {
+        "mode": "integration_is_only_rename",
+        "p": 0.12064013130898646
+      },
+      {
+        "mode": "harmonic_still_bottleneck",
+        "p": 0.10941321296676242
+      },
+      {
+        "mode": "gauge_window_mismatch",
+        "p": 0.09048009848173985
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_pressure_remainder_lower_source_macro_20260513_tick309.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_pressure_remainder_lower_source_macro_20260513_tick309.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_pressure_remainder_lower_source_macro_20260513_tick309.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_pressure_remainder_lower_source_macro_20260513_tick309.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_pressure_remainder_lower_source_macro_20260513_tick309.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:20:52Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-13T23:59:00Z",
+    "layer": "macro",
+    "objective_resolver": "artifact-backed Lean compile plus E/F closure",
+    "question": "Will the next NS route-1 pressure-remainder tick materially compress the pressure branch after child/cutoff source lowering?",
+    "success_threshold": "Compiled Lean object changes next pressure-remainder lever without importing strictness or touching pre-GNN artifacts",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_pressure_remainder_lower_source_macro_20260513_tick309",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke",
+        "raw_agent_ids": [
+          "hooke"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:mcclintock",
+        "raw_agent_ids": [
+          "mcclintock"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke",
+      "mcclintock"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pressure_remainder_lower_source_macro_20260513_tick309/hooke.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 75.0,
+        "forecasted_at": "2026-05-13T23:21:40Z",
+        "p_success": 0.61,
+        "rationale_short": "Macro success likely if C integrates child/cutoff lower sources or A deepens Riesz source; C gives cleanest next compression.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "mcclintock",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pressure_remainder_lower_source_macro_20260513_tick309/mcclintock.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 45.0,
+        "forecasted_at": "2026-05-13T23:21:40Z",
+        "p_success": 0.52,
+        "rationale_short": "Best macro path is integrating lower child/cutoff sources into the pressure-remainder bundle while keeping harmonic explicit.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:24:16Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.09,
+      "p_success": 0.5657807510721351,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "missing_harmonic_source",
+        "p": 0.15080016413623307
+      },
+      "voi_proxy": 1.1357
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 60.08001641362331,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5657807510721351,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "missing_harmonic_source",
+        "p": 0.15080016413623307
+      },
+      {
+        "mode": "wrapper_without_new_leg",
+        "p": 0.14919983586376692
+      },
+      {
+        "mode": "integration_is_only_rename",
+        "p": 0.12064013130898646
+      },
+      {
+        "mode": "harmonic_still_bottleneck",
+        "p": 0.10941321296676242
+      },
+      {
+        "mode": "gauge_window_mismatch",
+        "p": 0.09048009848173985
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.19125,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:24:25Z"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "ts": "2026-05-06T13:06:45.683862+00:00",
+  "target": "TrackBProfileDecompositionBridgeBundle",
+  "field": "threshold_handoff_of_family_no_arbitrage",
+  "classification": {
+    "gap_type": "AUXILIARY",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched AUXILIARY evidence in the target/field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": []
+}

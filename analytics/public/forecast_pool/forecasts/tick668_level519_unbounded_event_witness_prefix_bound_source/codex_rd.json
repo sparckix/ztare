@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level519_unbounded_event_witness_prefix_bound_source",
+  "contract_question": "Will Level519 construct the Level518 bounded natural event enumeration from typed unbounded event witnesses plus same-witness final-prefix bounds, with Lean/workbench/gate/tests passing?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "gate_semantics_regression": 0.14,
+    "lake_build_regression": 0.14,
+    "lean_dependent_projection_mismatch": 0.22,
+    "same_witness_bound_mismatch": 0.32,
+    "workbench_arg_gap": 0.18
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T08:01:18Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.04,
+  "p_success": 0.68,
+  "rationale_short": "Positive construction splits bounded Nat enumeration into typed witness plus bound on same witness; risk is dependent projection or workbench wiring.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level502_pde_bounded_incidence_collision_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level502_pde_bounded_incidence_collision_source.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick668_level502_pde_bounded_incidence_collision_source",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level502_pde_bounded_incidence_collision_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level502_pde_bounded_incidence_collision_source.json"
+  },
+  "baseline_action": "treat bounded incident existence and collision-free incidence as free fields on the Level501 least-hit source",
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_branch_projected_audited_output_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_branch_projected_audited_output_source' is an EXACT match of surfaced id 'selected_branch_projected_audited_output_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick668_level502_pde_bounded_incidence_collision_source",
+  "cost_penalty": 0.18,
+  "counterfactual_action": "bind those fields to displayed same-tree eventData, prefix domination, and bounded fanout/no-log-reuse provenance in an L3A source",
+  "created_at": "2026-05-27T04:48:27Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_formal_frontier",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "still source-level: it records the PDE theorem fields rather than proving them from estimates",
+    "positive": "moves the exact analytic debt onto PDE geometry provenance rather than a pure selector socket"
+  },
+  "horizon": "2026-05-27T09:00:00Z",
+  "information_value": 0.92,
+  "layer": "meso",
+  "objective_resolver": "TRUE iff Lean adds an L3A source carrying bounded incident existence and collision-free incidence tied to sameTreeLock/prefix/fanout provenance, constructs L3ABoundedEventIndexTargetSlotSource through Level501, and strict receipts, workbench, lake env lean, and lake build pass.",
+  "question": "Can Level502 compile an L3A bounded-incidence/collision-free source that packages displayed same-tree, prefix-domination, and fanout provenance into the Level501 least-hit selector?",
+  "risk_penalty": 0.19,
+  "success_threshold": "lake_build_pass_and_level502_receipts_pass",
+  "task_type": "ns_formal_frontier",
+  "value_if_success": 0.89,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

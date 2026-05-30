@@ -1,0 +1,21 @@
+{
+  "agent_id": "codex_skeptic",
+  "contract_id": "ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365",
+  "contract_question": "Can an xhigh pull-forward agent produce a useful proof route, missing-sublemma split, or countermodel for NoNonzeroZeroVisibilityActiveProfile?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 50.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "needs_precise_profile_topology": 0.26,
+    "possible_smooth_passive_profile_counterexample": 0.14,
+    "restatement_only": 0.42,
+    "visibility_channel_not_measurable": 0.18
+  },
+  "forecasted_at": "2026-05-14T12:53:18Z",
+  "p_dependency_issue": 0.48,
+  "p_needs_new_lemma": 0.93,
+  "p_regression": 0.12,
+  "p_success": 0.34,
+  "rationale_short": "A frontier PDE rigidity lemma is unlikely to be pulled forward in one sidecar; best case is sharper decomposition or a kill test.",
+  "read_only_attestation": true
+}

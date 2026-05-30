@@ -1,0 +1,28 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "external_gh_api_mathlib_tree_diff_pinned_v4_29_0_tag_vs_a_newer_tag_genuinely_added_lemmas_10_escape_route_candidates_wh",
+  "contract_question": "External gh-api Mathlib tree-diff (pinned v4.29.0 tag vs a newer tag) -> genuinely-added lemmas -> >=10 escape-route candidates whose closer #check-FAILS in pinned AND no canonical equivalent: can a CLEAN Tier-2 corpus (>=5 valid rows) be sourced this way (vs cold-author guessing which gave 0/12)?",
+  "domain": "tier2_external_version_delta_mining",
+  "expected_cost_agent_minutes": 72.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "candidate_attrition_after_filtering": 0.45,
+    "canonical_equivalent_collapse": 0.22,
+    "pinned_check_or_resolver_noise": 0.15,
+    "tag_or_api_drift": 0.18
+  },
+  "forecast_externality_tags": [
+    "mathlib-tree-diff",
+    "clean-corpus-sourcing",
+    "pinned-check-screening"
+  ],
+  "forecasted_at": "2026-05-16T23:11:56Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.32,
+  "p_regression": 0.04,
+  "p_success": 0.57,
+  "rationale_short": "gh-api tree-diff is the validated entrypoint, and the supplied evidence plus prior RD price point support a majority chance of sourcing a clean >=5-row corpus. I shade lower than RD because the hard part is attrition after filtering for genuinely added lemmas, pinned #check failure, and no canonical equivalent; the wake supplies no DAG, candidate list, or negative control, so the residual is mostly filtering void rather than a new theorem bottleneck.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

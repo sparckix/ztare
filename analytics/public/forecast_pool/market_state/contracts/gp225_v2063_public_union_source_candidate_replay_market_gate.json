@@ -1,0 +1,208 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:40:05Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 32.5,
+    "expected_value": 0.00546233567119625,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.24,
+    "p_needs_new_lemma": 0.195,
+    "p_regression": 0.11,
+    "p_success": 0.31446233567119625,
+    "participants": [
+      {
+        "agent_id": "Lovelace3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_canary_replay_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2063_public_union_source_candidate_replay_market_gate/lovelace3.json",
+        "forecasted_at": "2026-05-14T18:40:01Z",
+        "p_success": 0.29,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Turing3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_canary_replay_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2063_public_union_source_candidate_replay_market_gate/turing3.json",
+        "forecasted_at": "2026-05-14T18:40:01Z",
+        "p_success": 0.34,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "binder_context_underhydrated",
+        "p": 0.325
+      },
+      {
+        "mode": "affine_span_hypothesis_shape_mismatch",
+        "p": 0.18
+      },
+      {
+        "mode": "bayes_bound_witness_missing",
+        "p": 0.175
+      },
+      {
+        "mode": "ascii_identifier_normalization_leaks_into_unblocked_packet",
+        "p": 0.135
+      },
+      {
+        "mode": "gold_witness_or_target_shape_gap",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2063_public_union_source_candidate_replay_market_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2063_public_union_source_candidate_replay_market_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2063_public_union_source_candidate_replay_market_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2063_public_union_source_candidate_replay_market_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2063_public_union_source_candidate_replay_market_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 16.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:39:47Z",
+    "created_by": "codex:RD",
+    "horizon": "same session 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff v2063 consumes v20.62 and the GP-230 aggregate, separates unblocked candidates from replay-blocked candidates, emits either a no-run market abort when EV is negative or a replay-compatible canary candidate packet when EV is positive, preserves replay=false for the gate itself, records no training and GNN blocked, and names the next execution artifact only if the gate selects run.",
+    "question": "Should GP-225 run a bounded canary replay over the v20.62 unblocked public/internal source candidates, and if run, is at least one compiled candidate with zero harmful mismatches likely enough to justify execution?",
+    "success_threshold": "valid gate artifact; unblocked/replay-blocked candidates separated; run/no-run decision follows aggregate EV and risk; no replay/training in the gate",
+    "task_type": "replay_market_gate"
+  },
+  "contract_id": "gp225_v2063_public_union_source_candidate_replay_market_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Lovelace3",
+        "raw_agent_ids": [
+          "Lovelace3"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Turing3",
+        "raw_agent_ids": [
+          "Turing3"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Lovelace3",
+      "Turing3"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Prefer a market-gate abort unless the packet is narrowed to unblocked rank-1/rank-2 candidates and explicitly treats success as compile signal, not label credit.",
+        "agent_id": "Lovelace3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2063_public_union_source_candidate_replay_market_gate/lovelace3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_canary_replay_gate",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T18:40:01Z",
+        "p_success": 0.29,
+        "rationale_short": "Prior source candidates often failed at hydration; v20.62 is cleaner, but still static-only and should not be converted into broad replay spend.",
+        "specific_failure_mode_ids": [
+          "binder_context_underhydrated",
+          "affine_span_hypothesis_shape_mismatch"
+        ]
+      },
+      {
+        "action_change_recommendation": "Run only if the gate excludes replay-blocked radius/elliptic rank-2 candidates and caps the canary to unblocked rows with full harmful-mismatch reporting.",
+        "agent_id": "Turing3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2063_public_union_source_candidate_replay_market_gate/turing3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_canary_replay_gate",
+        "expected_cost_agent_minutes": 31.0,
+        "forecasted_at": "2026-05-14T18:40:01Z",
+        "p_success": 0.34,
+        "rationale_short": "The candidates are source-grounded but not context-hydrated; a small canary may teach, but direct full replay is not justified.",
+        "specific_failure_mode_ids": [
+          "binder_context_underhydrated",
+          "bayes_bound_witness_missing"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "changed_by_forecast_ids": [
+      "Turing3",
+      "Lovelace3"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:41:16Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.00546233567119625,
+      "forecast_spread": 0.05,
+      "p_success": 0.31446233567119625,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 0.5156
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 32.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.31446233567119625,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "binder_context_underhydrated",
+        "p": 0.325
+      },
+      {
+        "mode": "affine_span_hypothesis_shape_mismatch",
+        "p": 0.18
+      },
+      {
+        "mode": "bayes_bound_witness_missing",
+        "p": 0.175
+      },
+      {
+        "mode": "ascii_identifier_normalization_leaks_into_unblocked_packet",
+        "p": 0.135
+      },
+      {
+        "mode": "gold_witness_or_target_shape_gap",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.46984999999999993,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:41:19Z"
+  }
+}

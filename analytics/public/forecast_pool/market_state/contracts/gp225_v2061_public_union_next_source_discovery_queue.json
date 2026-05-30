@@ -1,0 +1,200 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:31:02Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 14.0,
+    "expected_value": -0.45642735597790374,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.055,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.025,
+    "p_success": 0.836532348602995,
+    "participants": [
+      {
+        "agent_id": "Boole2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_discovery_queue",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2061_public_union_next_source_discovery_queue/boole2.json",
+        "forecasted_at": "2026-05-14T18:30:59Z",
+        "p_success": 0.86,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Pascal2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_source_discovery_queue",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2061_public_union_next_source_discovery_queue/pascal2.json",
+        "forecasted_at": "2026-05-14T18:30:48Z",
+        "p_success": 0.81,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "solved_row_not_excluded",
+        "p": 0.30000000000000004
+      },
+      {
+        "mode": "queue_priority_vague",
+        "p": 0.275
+      },
+      {
+        "mode": "next_artifact_missing",
+        "p": 0.225
+      },
+      {
+        "mode": "training_boundary_missing",
+        "p": 0.2
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2061_public_union_next_source_discovery_queue.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2061_public_union_next_source_discovery_queue.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2061_public_union_next_source_discovery_queue.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2061_public_union_next_source_discovery_queue.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2061_public_union_next_source_discovery_queue.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 16.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:30:48Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff v2061 artifact exists with status passed, consumes v2060 and v2043, excludes current_scale_0329 from next queue, includes at least three remaining source-discovery rows, names a next candidate-generation artifact, replay_run=false, training_now=false, gnn_blocked=true.",
+    "question": "Will v20.61 produce a source-discovery queue after the charFun strict repair that removes the solved row, ranks remaining public/internal rows for candidate-content delta, and keeps replay/training blocked?",
+    "success_threshold": "1.0",
+    "task_type": "pre_gnn_source_discovery_queue"
+  },
+  "contract_id": "gp225_v2061_public_union_next_source_discovery_queue",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Boole2",
+        "raw_agent_ids": [
+          "Boole2"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Pascal2",
+        "raw_agent_ids": [
+          "Pascal2"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Boole2",
+      "Pascal2"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Build queue and route next to candidate generation/static check, not replay.",
+        "agent_id": "Boole2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2061_public_union_next_source_discovery_queue/boole2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_discovery_queue",
+        "expected_cost_agent_minutes": 13.0,
+        "forecasted_at": "2026-05-14T18:30:59Z",
+        "p_success": 0.86,
+        "rationale_short": "v2043 already has source contracts and v2060 says source discovery is next; likely task is deterministic queue refresh.",
+        "specific_failure_mode_ids": [
+          "solved_row_not_excluded",
+          "queue_priority_vague"
+        ]
+      },
+      {
+        "action_change_recommendation": "Queue remaining rows by content-delta mechanism and defer replay.",
+        "agent_id": "Pascal2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2061_public_union_next_source_discovery_queue/pascal2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_source_discovery_queue",
+        "expected_cost_agent_minutes": 15.0,
+        "forecasted_at": "2026-05-14T18:30:48Z",
+        "p_success": 0.81,
+        "rationale_short": "The main risk is picking priorities by vibes rather than explicit reducer/source-contract features.",
+        "specific_failure_mode_ids": [
+          "queue_priority_vague",
+          "next_artifact_missing"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "changed_by_forecast_ids": [
+      "Boole2",
+      "Pascal2"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:33:29Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 14.0,
+      "expected_value": -0.45642735597790374,
+      "p_success": 0.836532348602995,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.5467
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 14.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.836532348602995,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "solved_row_not_excluded",
+        "p": 0.30000000000000004
+      },
+      {
+        "mode": "queue_priority_vague",
+        "p": 0.275
+      },
+      {
+        "mode": "next_artifact_missing",
+        "p": 0.225
+      },
+      {
+        "mode": "training_boundary_missing",
+        "p": 0.2
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.027849999999999993,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:33:32Z"
+  }
+}

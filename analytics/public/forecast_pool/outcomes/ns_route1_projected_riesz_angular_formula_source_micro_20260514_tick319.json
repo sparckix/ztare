@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 24.0,
+  "artifact_hash": "76ce39677e74a8cd7f97fef8090eb46cbd710d141b904744c70bf4b04cc2706f",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "compile_status": "lake env lean pass; lake build pressure pass; downstream adapter build pass",
+  "contract_id": "ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319",
+  "error_type": "none",
+  "goal_delta": 2,
+  "resolution_note": "success=true with caveat: added Route1ProjectedRieszAngularFormulaSource and Route1ProjectedRieszAngularMomentStation.ofFormulaSource. Equality is split into pressureTailWindowCarrier_eq_l2Carrier, pressureTailWindowCarrier_eq_absProjectedKernelMoment, and projectedKernelMoment_eq_totalAngularMoment, with fixed-before/not-defined-from guards. This is still frontier sharpening, not PDE discharge.",
+  "resolved_at": "2026-05-14T00:40:05Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

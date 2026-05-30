@@ -1,0 +1,88 @@
+{
+  "experiment": "gp216_probe2_retrospective_verifier_improvement",
+  "n_rows": 594,
+  "n_with_date": 364,
+  "date_range": [
+    "2026-04-13",
+    "2026-05-05"
+  ],
+  "by_week": {
+    "2026-W16": {
+      "n_rows": 32,
+      "gates": 56,
+      "theorems": 1,
+      "falsifiers": 1,
+      "named_negatives": 0,
+      "lean_idents": 40
+    },
+    "2026-W17": {
+      "n_rows": 28,
+      "gates": 37,
+      "theorems": 16,
+      "falsifiers": 8,
+      "named_negatives": 0,
+      "lean_idents": 34
+    },
+    "2026-W18": {
+      "n_rows": 218,
+      "gates": 72,
+      "theorems": 121,
+      "falsifiers": 53,
+      "named_negatives": 1,
+      "lean_idents": 358
+    },
+    "2026-W19": {
+      "n_rows": 86,
+      "gates": 54,
+      "theorems": 141,
+      "falsifiers": 114,
+      "named_negatives": 24,
+      "lean_idents": 105
+    }
+  },
+  "density_series": [
+    {
+      "week": "2026-W16",
+      "gates_per_row": 1.75,
+      "theorems_per_row": 0.03125,
+      "named_neg_per_row": 0.0,
+      "lean_id_per_row": 1.25,
+      "n_rows": 32
+    },
+    {
+      "week": "2026-W17",
+      "gates_per_row": 1.3214285714285714,
+      "theorems_per_row": 0.5714285714285714,
+      "named_neg_per_row": 0.0,
+      "lean_id_per_row": 1.2142857142857142,
+      "n_rows": 28
+    },
+    {
+      "week": "2026-W18",
+      "gates_per_row": 0.3302752293577982,
+      "theorems_per_row": 0.555045871559633,
+      "named_neg_per_row": 0.0045871559633027525,
+      "lean_id_per_row": 1.6422018348623852,
+      "n_rows": 218
+    },
+    {
+      "week": "2026-W19",
+      "gates_per_row": 0.627906976744186,
+      "theorems_per_row": 1.6395348837209303,
+      "named_neg_per_row": 0.27906976744186046,
+      "lean_id_per_row": 1.2209302325581395,
+      "n_rows": 86
+    }
+  ],
+  "slopes": {
+    "named_neg_per_row": 0.08417964582888841,
+    "lean_id_per_row": 0.03407068182510895,
+    "gates_per_row": -0.4357432411838215
+  },
+  "verdict_parts": [
+    "named-negative-theorem density per F-row is INCREASING (verifier vocabulary sharpening)",
+    "Lean identifier density FLAT"
+  ],
+  "verdict": "named-negative-theorem density per F-row is INCREASING (verifier vocabulary sharpening) | Lean identifier density FLAT",
+  "scope_limit": "RETROSPECTIVE only. F-row corpus is biased \u2014 F-rows are written when operator notices something noteworthy, so vocabulary growth could be writing-style drift, not verifier-capability growth. A real probe #2 requires freezing model + running N additional iterations + measuring verifier capability on held-out target at iter 1 vs N."
+}

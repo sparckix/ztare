@@ -1,0 +1,136 @@
+{
+  "contract_id": "ns_route1_young_bernstein_transport_absorption_20260514_tick397",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "try to prove broad youngBernsteinAbsorption directly",
+      "counterfactual_action": "first split Young/Bernstein analytic source from QP overflow compatibility and cutoff/frequency guards",
+      "externality_hypotheses": {
+        "negative": [
+          "may reveal activeTail carrier is still too abstract for PDE source"
+        ],
+        "positive": [
+          "prevents hiding local-quadratic overflow",
+          "may lower first analytic PDE field to standard estimate"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd_source_route",
+        "codex_rd_no_go_skeptic"
+      ],
+      "counterfactual_value_bucket": "positive_pde_surface",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "pde_field_narrowed",
+        "qp_overflow_guard",
+        "summability_adapter_needed"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "not_full_route_closure"
+      ],
+      "new_next_action": "encode summability route: caloricDissipation paid by reserve drop plus recharge, reserve telescoping, and route failure implies divergent activeTail",
+      "old_next_action": "try to prove broad youngBernsteinAbsorption directly",
+      "preconditioner_effect": "Focused on source/guard and QP overflow compatibility rather than claiming full route closure.",
+      "preconditioner_source": "codex_rd_source_route,codex_rd_no_go_skeptic",
+      "realized_failure_mode_ids": [
+        "proof_succeeds"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.23400000000000004,
+  "mean_log_score": -0.6606279824703343,
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "artifact_hash": "405bd0e81c907e8ee6df6c41109bf8283edef9aa0865ba8076804713e4a2b033",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd_source_route",
+      "codex_rd_no_go_skeptic"
+    ],
+    "compile_status": "lean_pass",
+    "contract_id": "ns_route1_young_bernstein_transport_absorption_20260514_tick397",
+    "counterfactual_value_bucket": "positive_pde_surface",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "pde_field_narrowed",
+      "qp_overflow_guard",
+      "summability_adapter_needed"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "negative_externality_tags": [
+      "not_full_route_closure"
+    ],
+    "new_next_action": "encode summability route: caloricDissipation paid by reserve drop plus recharge, reserve telescoping, and route failure implies divergent activeTail",
+    "old_next_action": "try to prove broad youngBernsteinAbsorption directly",
+    "preconditioner_effect": "Focused on source/guard and QP overflow compatibility rather than claiming full route closure.",
+    "preconditioner_source": "codex_rd_source_route,codex_rd_no_go_skeptic",
+    "realized_failure_mode_ids": [
+      "proof_succeeds"
+    ],
+    "resolution_note": "Lean already contains the sharpened non-tautological source/guard surface: SameCutoffYoungBernsteinTransportSource, projection to SameCutoffTransportFluxAbsorption, LocalQuadraticOverflowQPResidualCompatibility, guard for missing QP compatibility, and activeTailPaidByCaloricDissipation_of_sameCarrierTransportAbsorption. lake env lean passed. Next target moves to caloric dissipation reserve-drop/recharge and summability-to-route-closure adapter.",
+    "resolved_at": "2026-05-14T17:45:48Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T17:45:54Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "codex_rd_no_go_skeptic",
+      "brier": 0.2916,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 42.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.08,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.7765287894989963,
+      "p_success": 0.46,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:10:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:10:29Z",
+        "resolved_at": "2026-05-14T17:45:48Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "codex_rd_source_route",
+      "brier": 0.17640000000000003,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 34.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.12,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.5447271754416722,
+      "p_success": 0.58,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T17:10:11Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T17:10:29Z",
+        "resolved_at": "2026-05-14T17:45:48Z"
+      }
+    }
+  ]
+}

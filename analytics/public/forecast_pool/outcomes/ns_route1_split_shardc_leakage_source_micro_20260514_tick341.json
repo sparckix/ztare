@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 96.0,
+  "artifact_hash": "ebc4a5f4a8e8334b4c90b573fc4370cb88b1afab89aef465069dc1a0aa64405e",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_split_shardc_leakage_source_micro_20260514_tick341",
+  "error_type": null,
+  "goal_delta": 3,
+  "resolution_note": "Added FixedWindowPreSummedStressMassShardCLeakageSource, constructors to FixedWindowPressureRieszConeChargeSource and FixedWindowOverflowVisibleOrInvisibleProfile, and visibleOverflowCharge_of_shardCLeakageSource. Sidecar critique added explicit frequencyLeakageStressNormalizer bridge before shard-C charges. lake env lean and lake build passed; no new sorry/admit in touched files.",
+  "resolved_at": "2026-05-14T03:49:40Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

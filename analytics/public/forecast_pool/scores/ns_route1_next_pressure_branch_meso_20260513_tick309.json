@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_next_pressure_branch_meso_20260513_tick309",
+  "mean_brier": 0.10400000000000001,
+  "mean_log_score": -0.3873955848002278,
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_next_pressure_branch_meso_20260513_tick309",
+    "error_type": null,
+    "goal_delta": 0,
+    "resolution_note": "Market selected integration branch C; added lower-source composition constructors and build passed. Prediction evidence remains separate from GP-233 proof evidence.",
+    "resolved_at": "2026-05-13T23:24:16Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:24:25Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "hooke",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": 37.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 18.0,
+      "agent_id": "mcclintock",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 17.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true
+    }
+  ]
+}

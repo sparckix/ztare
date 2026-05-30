@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Build static packet only; no replay/training. Require heldout exclusion of ofScalars.",
+  "agent_id": "Bayes",
+  "contract_id": "gp225_v2040_heldout_dual_head_delta_packet",
+  "contract_question": "Will v20.40 emit a no-replay heldout dual-head delta packet that excludes ofScalars, defines baseline vs auxiliary-conditioned replay arms, and blocks training until strict/auxiliary head deltas are measured separately?",
+  "domain": "gp225_pre_gnn_alignment_policy",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "auxiliary_conditioned_arm_vague": 0.3636363636363636,
+    "heldout_set_too_small": 0.30303030303030304,
+    "schema_mismatch": 0.12121212121212122,
+    "static_packet_overclaimed": 0.21212121212121213
+  },
+  "forecast_externality_tags": [
+    "single_theorem_overfit_guard",
+    "heldout_delta_gate",
+    "anti_laundering"
+  ],
+  "forecasted_at": "2026-05-14T17:08:21Z",
+  "p_dependency_issue": 0.07,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.04,
+  "p_success": 0.77,
+  "rationale_short": "The ingredients exist in v20.35/v20.39; success depends on crisp arm definitions and explicit no-replay semantics.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "auxiliary_conditioned_arm_vague",
+    "static_packet_overclaimed"
+  ]
+}

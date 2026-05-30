@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Ship the split and the composite layout; flag it explicitly as documentation/structural not analytic.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_invisible_and_stress_coherence_frontier_split_tick434_20260514",
+  "contract_question": "Can the existing PressureSplitReceiptFrontierIsNotClosure.noInvisibleProfileOrStressCoherenceStillRequired Prop field be split into two named missing primitives \u2014 invisible-remainder compactness-extraction and positive-side stress-angular-coherence dominance \u2014 with a composite frontier-layout structure compiling in Lean and no new axioms?",
+  "domain": "ns_clay_pressure",
+  "expected_cost_agent_minutes": 16.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:43:31Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.05,
+  "p_success": 0.78,
+  "rationale_short": "This is naming/structure work, not derivation: the frontier field is already a Prop. Splitting into two named Prop-bearing structures + a layout follows the tick432/433 pattern. Risk is mostly syntactic. Honest self-Darwin caveat: this does not produce new analytic content.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Proceed math-first; mechanize only a same-carrier source and mismatch guard unless the audit finds an existing carrier identity.",
+  "agent_id": "rd_codex",
+  "contract_id": "ns_route1_tail_square_to_active_tail_bridge_20260514_tick404",
+  "contract_question": "Will the next NS tick produce a usable math-first verdict and Lean-facing source/guard for bridging tailSquareFunction/X_tail to the lineage activeTail schedule?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 65.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "lean_surface_only": 0.1,
+    "proof_route_only_conditional": 0.16,
+    "raw_tail_countermodel": 0.18,
+    "same_schedule_missing": 0.18,
+    "tail_square_not_active_leakage": 0.24,
+    "tautological_activeTail_definition": 0.14
+  },
+  "forecast_externality_tags": [
+    "gp-233:route1",
+    "gowers-first",
+    "same-carrier-audit"
+  ],
+  "forecasted_at": "2026-05-14T19:01:52Z",
+  "p_dependency_issue": 0.41,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.08,
+  "p_success": 0.47,
+  "rationale_short": "Likely to produce a useful conditional source/guard, but current fields probably do not prove fresh-frequency tail square mass is paid by active local-energy leakage without a new same-carrier prefix inequality.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T21:55:26Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 55.0,
+    "expected_value": 0.7250571433236229,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.165,
+    "p_needs_new_lemma": 0.385,
+    "p_regression": 0.09,
+    "p_success": 0.5700285716618114,
+    "participants": [
+      {
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.58,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.56,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "object_is_non_tautological_but_does_not_pay_a_field",
+        "p": 0.14
+      },
+      {
+        "mode": "only_a_new_wrapper_is_possible_without_paying_b",
+        "p": 0.14
+      },
+      {
+        "mode": "available_primitives_are_prop_provenance_not_numeric_bounds",
+        "p": 0.13
+      },
+      {
+        "mode": "residual_fresh_or_ckn_primitives_are_too_abstract",
+        "p": 0.12
+      },
+      {
+        "mode": "square_function_split_needs_new_tent_boundary_receipt",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_shard_b_lowering_micro_20260513_tick294.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_shard_b_lowering_micro_20260513_tick294.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_shard_b_lowering_micro_20260513_tick294.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_shard_b_lowering_micro_20260513_tick294.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_shard_b_lowering_micro_20260513_tick294.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T21:54:35Z",
+    "created_by": "codex:RD",
+    "horizon": "current local tick 2026-05-13",
+    "layer": "micro",
+    "objective_resolver": "lake build ZtareProofs.ns_route1_fresh_frequency_coercivity_adapter passes and diff contains a shard-B lowering/payer object using existing L3/CKN/residual-fresh primitives",
+    "question": "Can the immediate local tick add a compiling non-tautological Lean object that lowers or pays part of shard B from existing L3/CKN/residual-fresh primitives without a strictness oracle or pre-GNN mutation?",
+    "success_threshold": "compiled Lean change with no new sorry and no pre-GNN/GNN mutation",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_shard_b_lowering_micro_20260513_tick294",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230_ns_route1_2026_05_13",
+        "raw_agent_ids": [
+          "codex_readonly_gp230_ns_route1_2026_05_13"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_readonly_ns_route1_forecast_2026_05_13",
+        "raw_agent_ids": [
+          "gp230_readonly_ns_route1_forecast_2026_05_13"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_readonly_gp230_ns_route1_2026_05_13",
+      "gp230_readonly_ns_route1_forecast_2026_05_13"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_shard_b_lowering_micro_20260513_tick294/codex_readonly_gp230_ns_route1_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-13T21:55:26Z",
+        "p_success": 0.58,
+        "rationale_short": "A narrower source/audit layer under the existing B certificate is likely; fully paying one B inequality from current primitives is less likely without a new lemma.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_shard_b_lowering_micro_20260513_tick294/gp230_readonly_ns_route1_forecast_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-13T21:55:26Z",
+        "p_success": 0.56,
+        "rationale_short": "A compiling B-side lowering object is feasible, but fully paying a numeric field may require a small new estimate lemma because many existing primitives are propositional.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T21:58:35Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.02,
+      "p_success": 0.5700285716618114,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "object_is_non_tautological_but_does_not_pay_a_field",
+        "p": 0.14
+      },
+      "voi_proxy": 0.7651
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 55.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5700285716618114,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "object_is_non_tautological_but_does_not_pay_a_field",
+        "p": 0.14
+      },
+      {
+        "mode": "only_a_new_wrapper_is_possible_without_paying_b",
+        "p": 0.14
+      },
+      {
+        "mode": "available_primitives_are_prop_provenance_not_numeric_bounds",
+        "p": 0.13
+      },
+      {
+        "mode": "residual_fresh_or_ckn_primitives_are_too_abstract",
+        "p": 0.12
+      },
+      {
+        "mode": "square_function_split_needs_new_tent_boundary_receipt",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.185,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T21:58:46Z"
+  }
+}

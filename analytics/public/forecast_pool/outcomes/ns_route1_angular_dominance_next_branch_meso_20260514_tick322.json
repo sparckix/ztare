@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 58.0,
+  "artifact_hash": "09e481351c8d8fad6f222e0f9f80417391e94bdc6227618b0333bce09305c389",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "compile_status": "pass",
+  "contract_id": "ns_route1_angular_dominance_next_branch_meso_20260514_tick322",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Resolved true: the next useful pressure/Riesz branch was fixed-window angular-dominance/countermodel construction; recovered-Riesz magnitude and formula-wrapper routes were explicitly downgraded by the no-go mechanism.",
+  "resolved_at": "2026-05-14T01:09:56Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json"
+  },
+  "baseline_action": "leave tick394 surface as an audit object despite circular input",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_noncircular_frequency_duhamel_source_20260514_tick395",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "repair surface into noncircular source before attempting PDE sublemma",
+  "created_at": "2026-05-14T15:37:28Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 134,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.1875,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.25,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 16,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may expose that prior tick394 source was only an audit wrapper"
+    ],
+    "positive": [
+      "prevents source/target circularity",
+      "names exact first PDE sublemma"
+    ]
+  },
+  "horizon": "same-session_tick395",
+  "information_value": 0.65,
+  "layer": "micro",
+  "objective_resolver": "Lean single-file check passes and new source no longer takes LineageFreshMonotoneReservoirSource as an input; no route closure claimed",
+  "question": "Can the next NS tick remove circularity from the frequency-localized Duhamel reservoir surface by encoding a noncircular source for LineageFreshMonotoneReservoirSource and the first active-tail-to-caloric-dissipation sublemma target?",
+  "risk_penalty": 0.45,
+  "success_threshold": "true iff Lean compiles with no sorry/admit delta and the next proof action becomes activeTailPaidByCaloricDissipation_of_sameTreeFreshFrequency or a no-go guard",
+  "task_type": "ns_route1_pde",
+  "value_if_success": 0.95,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

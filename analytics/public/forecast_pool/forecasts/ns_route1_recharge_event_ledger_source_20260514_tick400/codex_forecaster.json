@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": "Implement a source/guard around same-lineage recharge and cutoff-error budget, not a full route closure theorem.",
+  "agent_id": "codex_forecaster",
+  "contract_id": "ns_route1_recharge_event_ledger_source_20260514_tick400",
+  "contract_question": "Will the next NS tick compile a source or guard lowering same-lineage Duhamel recharge/event-ledger payment and cutoff-error summability without claiming full route closure?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cutoff_error_not_summable": 0.22,
+    "event_ledger_provenance_mismatch": 0.18,
+    "lean_prefix_sum_friction": 0.12,
+    "overclaim_full_route_closure": 0.08,
+    "post_hoc_recharge_definition": 0.25,
+    "wrapper_surface_too_broad": 0.15
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioner",
+    "no_overclaim_guard",
+    "ns_route1"
+  ],
+  "forecasted_at": "2026-05-14T18:34:54Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.8,
+  "p_regression": 0.09,
+  "p_success": 0.66,
+  "rationale_short": "The Lean file already contains the recharge and cutoff-error ladder, so the next tick looks like a bounded lowering pass rather than fresh proof topology; the main risks are provenance, summability, and one bridging lemma.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "post_hoc_recharge_definition",
+    "cutoff_error_not_summable",
+    "event_ledger_provenance_mismatch"
+  ]
+}

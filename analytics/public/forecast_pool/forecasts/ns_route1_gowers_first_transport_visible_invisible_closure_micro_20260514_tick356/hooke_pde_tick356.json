@@ -1,0 +1,24 @@
+{
+  "agent_id": "hooke_pde_tick356",
+  "contract_id": "ns_route1_gowers_first_transport_visible_invisible_closure_micro_20260514_tick356",
+  "contract_question": "Can we add a Lean-checked transport visible/invisible route-level closure theorem from the Gowers-first informal proof, without substituting DR/pressure carriers or adding sorry/admit?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 55.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "alternate_charges_not_exposed_with_matching_receipt_fields": 0.22,
+    "anti_smuggling_constructor_uninhabitable": 0.06,
+    "commutator_local_charge_sum_needs_scalar_bridge": 0.11,
+    "namespace_friction": 0.08,
+    "no_invisible_charge_too_abstract_for_shear_mismatch": 0.18,
+    "other": 0.03,
+    "visible_invisible_split_restates_target_without_independent_positive_flux_source": 0.32
+  },
+  "forecasted_at": "2026-05-14T12:16:28Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.72,
+  "p_regression": 0.06,
+  "p_success": 0.37,
+  "rationale_short": "Right only if positive-flux split is independent; otherwise it renames leakage and hides coercivity in bookkeeping.",
+  "read_only_attestation": true
+}

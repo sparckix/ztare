@@ -1,0 +1,41 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "5c31a8bdf8238a3055e5ee8ae3b41f9399a33b6fb7c80f96646a965be61ed5d8",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level500_bounded_event_index_pencil.md",
+  "changed_by_forecast_ids": [
+    "codex:RD",
+    "codex"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "lake_build_pass",
+  "contract_id": "tick668_level500_bounded_event_index_selector_source",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-27T04:35:02Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick668_level500_bounded_event_index_selector_source/codex.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [],
+  "resolution_note": "Positive Level500 result: bounded event-index selector source formalized and bridged to finite incidence target-slot extraction; strict gates, PDE workbench, and lake build passed.",
+  "resolved_at": "2026-05-27T04:35:22Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

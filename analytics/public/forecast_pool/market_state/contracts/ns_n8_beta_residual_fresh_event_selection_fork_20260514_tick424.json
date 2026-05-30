@@ -1,0 +1,218 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T22:28:35Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 35.0,
+    "expected_value": -19.26,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.53,
+    "p_needs_new_lemma": 0.9099999999999999,
+    "p_regression": 0.18,
+    "p_success": 0.5714285714285714,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_proof_frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424/codex_rd.json",
+        "forecasted_at": "2026-05-14T22:28:30Z",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "ns_proof_frontier",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T22:28:30Z",
+        "p_success": 0.5,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "pressure_visibility_smuggling",
+        "p": 0.18
+      },
+      {
+        "mode": "signature_mismatch",
+        "p": 0.16
+      },
+      {
+        "mode": "self_referential_event_selection",
+        "p": 0.14
+      },
+      {
+        "mode": "adapter_bloat",
+        "p": 0.1
+      },
+      {
+        "mode": "flat_inherited_branch_not_explicit",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T22:28:13Z",
+    "created_by": "codex_rd",
+    "horizon": "same RD tick 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Resolve true iff the tick adds a compiling no-sorry Lean surface below CoherentFreshPacketAuditResidualRoutingSource that states a residual-fresh-excess same-ledger event-selection fork with explicit N8 residual alternatives and a no-closure guard; false if Lean fails, the surface defines the event post-hoc from beta-radius accounting, or it claims the analytic selection theorem.",
+    "question": "Will tick424 add a compiling Lean fork surface for residual fresh excess creating a same-ledger audit event, or routing the obstruction to flat/inherited scale reserve, pressure visibility, or beta incidence residuals, without claiming analytic event selection?",
+    "success_threshold": "Lean compiles; no sorry/admit; git diff check clean; event-selection fork is compatible with existing audit/coherence structures; next theorem is explicit.",
+    "task_type": "ns_proof_frontier_lean_surface"
+  },
+  "contract_id": "ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed with a fork surface only; do not claim event selection proof.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_proof_frontier",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-14T22:28:30Z",
+        "p_success": 0.64,
+        "rationale_short": "The file has enough structs for a compatible fork. The value is compressing the next theorem; the risk is adapter drift or pressure/inherited branches being hidden.",
+        "specific_failure_mode_ids": [
+          "repeats_tick423",
+          "signature_mismatch",
+          "pressure_visibility_smuggling",
+          "flat_inherited_branch_not_explicit",
+          "analytic_selection_overclaim",
+          "logging_gap"
+        ]
+      },
+      {
+        "action_change_recommendation": "Do only if the fork explicitly returns named residual failures and keeps the analytic event-selection theorem open.",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns_proof_frontier",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T22:28:30Z",
+        "p_success": 0.5,
+        "rationale_short": "The fork is useful only if it refuses to manufacture a same-ledger event from the need for one. The main obstruction is flat/inherited and pressure-only cases masquerading as fresh residual excess.",
+        "specific_failure_mode_ids": [
+          "self_referential_event_selection",
+          "adapter_bloat",
+          "pressure_visibility_smuggling",
+          "flat_radius_scale_reuse_unpaid",
+          "signature_mismatch"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "changed_by_forecast_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T22:34:07Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.14,
+      "p_success": 0.5714285714285714,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "pressure_visibility_smuggling",
+        "p": 0.18
+      },
+      "voi_proxy": 9.3849
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 35.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5714285714285714,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "pressure_visibility_smuggling",
+        "p": 0.18
+      },
+      {
+        "mode": "signature_mismatch",
+        "p": 0.16
+      },
+      {
+        "mode": "self_referential_event_selection",
+        "p": 0.14
+      },
+      {
+        "mode": "adapter_bloat",
+        "p": 0.1
+      },
+      {
+        "mode": "flat_inherited_branch_not_explicit",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1898,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T22:34:13Z"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "_renamed_from": "claude",
+  "action_change_recommendation": "Run; the BASELINE NUMBER itself is the value, success/fail framing is secondary.",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v2600_leanhammer_baseline_on_12_open_rows_meso",
+  "contract_question": "On 12 canonical-train OPEN rows, how many does LeanHammer baseline (cloud premise selection + Duper + Aesop + Zipperposition) close moat-cleanly (not tautological-original-theorem-apply, not @[simp]/@[fun_prop]/@[grind]/automation-machinery indirect leakage, not gold-name overlap)?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cloud_premise_selector_unreachable": 0.10714285714285715,
+    "tautological_closure_confound_on_v4.29.0_mathlib": 0.6071428571428572,
+    "toolchain_alignment_failure": 0.28571428571428575
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T03:14:44Z",
+  "p_dependency_issue": 0.2,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.02,
+  "p_success": 0.95,
+  "rationale_short": "This is a measurement contract not a binary win. The number IS the answer. Confound: original theorems in Mathlib v4.29.0 are in scope, so hammer can apply them \u2014 distorts the pure baseline number for theorems hammer was 'going to' close anyway. Audit MUST detect tautology.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,55 @@
+{
+  "contract_id": "ns_route1_next_pde_branch_after_pressure_split_meso",
+  "mean_brier": 0.09826666666666665,
+  "mean_log_score": -0.37599996852090056,
+  "outcome": {
+    "actual_cost_agent_minutes": 34.0,
+    "artifact_hash": "pending_git_worktree",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_constructive_frontier.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_next_pde_branch_after_pressure_split_meso",
+    "error_type": "none",
+    "goal_delta": 1,
+    "resolution_note": "Resolved success: branch A was selected by all three independent forecasters and the pressure-visible Hessian L2 chain remains compiled; the tick also pulled forward the graph-basin Q pressure-small reduced-nu bridge without scalar visibility smuggling or pre-GNN mutation.",
+    "resolved_at": "2026-05-13T19:59:35Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T19:59:42Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "bohr_independent_forecaster",
+      "brier": 0.09000000000000002,
+      "cost_error_agent_minutes": -6.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 28.0,
+      "log_score": -0.35667494393873245,
+      "p_success": 0.7,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "laplace_independent_forecaster",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": -6.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 28.0,
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 34.0,
+      "agent_id": "pauli_independent_forecaster",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": 0.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 34.0,
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true
+    }
+  ]
+}

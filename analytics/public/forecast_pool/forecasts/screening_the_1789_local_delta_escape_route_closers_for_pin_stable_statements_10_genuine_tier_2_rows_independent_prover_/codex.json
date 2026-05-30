@@ -1,0 +1,36 @@
+{
+  "action_change_recommendation": "run_or_continue",
+  "agent_id": "codex",
+  "contract_id": "screening_the_1789_local_delta_escape_route_closers_for_pin_stable_statements_10_genuine_tier_2_rows_independent_prover_",
+  "contract_question": "Screening the 1789 local-delta escape-route closers for pin-stable statements -> >=10 genuine Tier-2 rows -> independent prover -> bundle_run through canonical v4.29.0: does it hit the Tier-2 gate (>=2 clean non-control closures OR >=5 exact-gaps/falsifiers, 0 false-ratify, 0 wrong-kind)?",
+  "domain": "tier2_mined_corpus_run",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "exact_gap_falsifier_shortfall": 0.24,
+    "false_ratify_contamination": 0.18,
+    "insufficient_clean_non_control_closures": 0.28,
+    "resolver_or_bundle_drift": 0.14,
+    "wrong_kind_capture": 0.16
+  },
+  "forecast_externality_tags": [
+    "tier2_screening",
+    "independent_prover",
+    "forecast_pool",
+    "read_only_attestation"
+  ],
+  "forecasted_at": "2026-05-17T02:18:20Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.17,
+  "p_regression": 0.04,
+  "p_success": 0.44,
+  "rationale_short": "Large candidate pool makes a pass plausible, but the gate is brittle: clean non-control closures and exact-gap/falsifier counts can get derailed by row typing, wrong-kind contamination, or resolver/bundle drift before the underlying screening quality is decisive.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "insufficient_clean_non_control_closures",
+    "exact_gap_falsifier_shortfall",
+    "false_ratify_contamination",
+    "wrong_kind_capture",
+    "resolver_or_bundle_drift"
+  ]
+}

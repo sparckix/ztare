@@ -1,0 +1,32 @@
+{
+  "action_change_recommendation": "Add a raw source structure with constructor into LineageFreshMonotoneReservoirSource; keep activeTailPaidByCaloricDissipation as the first named PDE sublemma.",
+  "agent_id": "codex_rd_surface_repair",
+  "contract_id": "ns_route1_noncircular_frequency_duhamel_source_20260514_tick395",
+  "contract_question": "Can the next NS tick remove circularity from the frequency-localized Duhamel reservoir surface by encoding a noncircular source for LineageFreshMonotoneReservoirSource and the first active-tail-to-caloric-dissipation sublemma target?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "active_tail_sublemma_underdefined": 0.24,
+    "event_schedule_mismatch": 0.16,
+    "lean_field_refactor_error": 0.22,
+    "logging_overhead": 0.1,
+    "still_too_wrapper_like": 0.28
+  },
+  "forecast_externality_tags": [
+    "circularity_repair",
+    "first_pde_sublemma"
+  ],
+  "forecasted_at": "2026-05-14T15:37:43Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.92,
+  "p_regression": 0.08,
+  "p_success": 0.72,
+  "rationale_short": "The sidecar correctly flagged circularity. A noncircular source is a straightforward Lean surface if it carries raw source fields and constructs the abstract reservoir.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "still_too_wrapper_like",
+    "active_tail_sublemma_underdefined",
+    "lean_field_refactor_error"
+  ]
+}

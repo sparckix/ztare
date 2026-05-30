@@ -1,0 +1,24 @@
+{
+  "_renamed_from": "noether",
+  "action_change_recommendation": "Structural: pdf/measurable_pdf style goals have a UNIQUE closing lemma (measurable_rnDeriv); siblings exist (Measurable.const, Measurable.add) but don't match goal shape. Blind retrieval excludes the unique closer \u2192 near-zero probability per row unless a non-gold sibling happens to have the right type.",
+  "agent_id": "claude",
+  "contract_id": "gp225_v2700_premise_enum_then_exact_on_3_single_lemma_exact_rows_meso",
+  "contract_question": "Will the premise-enum-then-exact strategy (use cloud premises 32 to enumerate top-32 candidates, filter out gold-lemma + @[simp]/@[fun_prop]/@[grind] tagged, try each as 'exact CAND _ _' application) produce AT LEAST 1 moat-grade closure on the 3 single-lemma-exact moat-surface rows (0162, 0163, 0329)?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "gold_lemma_is_THE_unique_closer_and_blind_excludes_it": 0.44000000000000006,
+    "implicit_unification_fails_on_exact_application": 0.24,
+    "premises_returns_simp_tagged_siblings_for_all_top_32": 0.32
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T03:19:37Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.05,
+  "p_success": 0.15,
+  "rationale_short": "Single-lemma-exact class is a tight type-match game. Per row: P(top-32 contains gold) ~0.85; blind-exclude removes it. P(top-32 contains non-gold non-leaky closer) ~0.10. P(exact CAND _ _ unifies cleanly) ~0.50. Joint ~0.05 per row. Over 3 rows ~0.14.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Run v2030 candidate generation only if it consumes v2029 corrected eligible rows, excludes contaminated rows, uses local_files_only, and keeps replay/training blocked.",
+  "agent_id": "gp230_lovelace_gp225_v2030",
+  "contract_id": "gp225_v2030_corrected_scope_reprover_candidate_generation",
+  "contract_question": "Will corrected all-scope non-strict GP-225 queue generation produce a clean local ReProver context-enriched candidate packet?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 18.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [
+    "general_purpose_lean_harness",
+    "pre_gnn",
+    "public_repo_adapter",
+    "candidate_supply"
+  ],
+  "forecasted_at": "2026-05-14T14:46:39Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.86,
+  "rationale_short": "v20.29 has 11 corrected eligible rows; v19.56/v19.57 already showed cached local ReProver generation works with margin. Main risk is queue or hygiene regression.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "queue_wiring_regression",
+    "source_hygiene_regression",
+    "local_model_cache_or_dependency_regression",
+    "beam_collapse_below_threshold",
+    "row_hydration_drop"
+  ]
+}

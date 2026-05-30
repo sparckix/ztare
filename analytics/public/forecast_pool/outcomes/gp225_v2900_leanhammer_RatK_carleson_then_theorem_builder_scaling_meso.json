@@ -1,0 +1,28 @@
+{
+  "actual_cost_agent_minutes": 95.0,
+  "artifact_hash": null,
+  "artifact_path": "analytics/public/leanmill/results/v29_leanhammer_RatK_carleson_audit.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": null,
+  "contract_id": "gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": null,
+  "error_type": null,
+  "externality_tags": [],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [],
+  "new_next_action": "Scale to remaining 2 v28A.01 OPEN rows (seven_le_c trivial; carleson_pow_chain already closed by ring); publish v29 chain finding; OR start Route B+C hybrid (GraphSAGE retrieval + LLM proof) as the moat-stacking architecture.",
+  "old_next_action": null,
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "rich_arithmetic_rows_yield_distinct_proofs",
+    "definitional_bound_rows_yield_single_route_only"
+  ],
+  "resolution_note": "BREAKTHROUGH session. v29 primary: LeanHammer cloud R@1=0.60, R@16=0.90, R@32=1.00, MRR=0.7538 on 10 real Carleson theorems \u2014 paper R@1=0% claim OBSOLETE. v29b: 3/70 closures (only carleson_pow_chain via ring family) \u2014 4/5 inlined Mathlib-only Carleson-style rows resist ALL basic tactics + hammer full pipeline. v29d Round 1: 5 structurally-distinct compiling proofs on sixteen_times_le_cube (a row hammer LEAVES OPEN). v29d Round 2: 5/5 on four_times_sq_le_cube + 5/5 on add_le_pow_two_simple. v29d Round 3: only 1 mathematically distinct route (4 syntactic variants) on real Carleson iLipENorm_le_add \u2014 definitional-bound rows have essentially unique proofs. **CUMULATIVE: 15 moat-grade closures across 3 of 4 OPEN-under-hammer rich-arithmetic rows.** The moat moved from RETRIEVAL (cloud caught up on Carleson) to COMPOSITION (hammer's Aesop+Duper can't find these proofs that LLM-mediated theorem builder finds). Outcome=true.",
+  "resolved_at": "2026-05-15T12:47:34Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

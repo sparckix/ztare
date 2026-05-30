@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1941_scope_clean_signature_repair_execution.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1941_scope_clean_signature_repair_execution.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1941_scope_clean_signature_repair_execution",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1941_scope_clean_signature_repair_execution.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1941_scope_clean_signature_repair_execution.json"
+  },
+  "budget_agent_minutes": 14.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1941_scope_clean_signature_repair_execution",
+  "cost_penalty": 0.03,
+  "created_at": "2026-05-13T23:57:18Z",
+  "created_by": "codex:RD_2026_05_13",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 14.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_repair_micro",
+    "score": 1.0,
+    "selected_domain": "gp225_repair_micro",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 14.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 4,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 3,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.2143,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1111,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-14T00:45:00Z",
+  "information_value": 0.9,
+  "layer": "micro",
+  "objective_resolver": "Run scripts/public/models/gnn_lemma_relevance/v1941_scope_clean_signature_repair_execution.py and resolve from analytics/public/leanmill/results/v1941_scope_clean_signature_repair_execution.json metrics.",
+  "question": "Will v19.41 scope-clean signature-driven primary repair execution improve beyond v19.37 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, using only pre-target scope-available declaration signatures?",
+  "risk_penalty": 1.0,
+  "success_threshold": "attempted_rows>=5 AND strict_or_pull_forward_rows>=2 AND harmful_compiled_mismatch_rows=0 AND post_target_same_file_declarations_used_for_primary=false AND target_proof_lines_used_for_candidate_generation=false AND teacher_oracle_candidates_excluded_from_primary=true AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_scope_clean_signature_repair_execution",
+  "value_if_success": 3.0,
+  "void_conditions": "void only if v19.40 scope-aware packet missing, Lean invocation unavailable before any row attempt, or primary candidate contamination detected before execution"
+}

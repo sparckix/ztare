@@ -1,0 +1,38 @@
+{
+  "actual_cost_agent_minutes": 26.0,
+  "artifact_hash": "7a7c03818d32bb63fa833ae8437a8efbd6c3bb3c9f9a61e2c14c35e30a64398f",
+  "artifact_path": "analytics/public/leanmill/results/v2066_bayesRisk_hydrated_canary_replay.json",
+  "changed_by_forecast_ids": [
+    "Dijkstra3",
+    "McCarthy3"
+  ],
+  "compile_status": "hydrated_canary_replay_failed_zero_compiles",
+  "contract_id": "gp225_v2066_bayesRisk_hydrated_canary_replay_gate",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": "zero_compiled_candidates",
+  "externality_tags": [
+    "negative_replay",
+    "step_index_drift",
+    "anti_goodhart"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [
+    "zero_compile",
+    "replay_spend"
+  ],
+  "new_next_action": "build step-index-aware finite-bound patch before replay",
+  "old_next_action": "promote hydrated bayesRisk canary if compile signal appears",
+  "preconditioner_effect": "Hydration removed synthetic tokens but did not account for replay insertion point.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2065_public_union_hydrated_top_row_patch.json",
+  "realized_failure_mode_ids": [
+    "finite_bound_simp_needs_extra_instances",
+    "bayesRisk_le_mul_argument_shape_mismatch"
+  ],
+  "resolution_note": "v20.66 ran hydrated one-row bayesRisk canary replay: 2 attempted, 0 compiled, 0 harmful mismatches, no target proof generation, no training, GNN blocked. Failure reducer: candidates were theorem-head chains inserted at the finite-bound subgoal step.",
+  "resolved_at": "2026-05-14T18:58:32Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level521_explicit_cofinal_event_witness_bound_source",
+  "contract_question": "Will Level521 construct the Level519 typed natural event witness from an explicit cofinal event witness plus same-witness final-prefix bound, with Lean/workbench/gate/tests passing?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "explicit_witness_bound_mismatch": 0.34,
+    "gate_semantics_regression": 0.15,
+    "lake_build_regression": 0.15,
+    "lean_dependent_projection_mismatch": 0.2,
+    "workbench_arg_gap": 0.16
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T08:18:38Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.68,
+  "rationale_short": "Level520 supplies the downstream type shape; residual risk is dependent-field mismatch, workbench wiring, and gate semantics regression.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

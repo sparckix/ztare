@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 31.0,
+  "artifact_hash": "b834aa562575ebe1403f8351bf9d0b8eb8f059eda60d67fda32a2b50991642fd",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "compile_status": "pass",
+  "contract_id": "ns_route1_angular_moment_pressure_visibility_micro_20260513_tick314",
+  "error_type": "none",
+  "goal_delta": 1,
+  "resolution_note": "Added Route1PressureAngularMomentTailMassCertificate and constructors into Route1PressureHessianL2TailMassCertificate and Route1PressureTailMassVisibility; Lean check and route1 downstream build passed.",
+  "resolved_at": "2026-05-13T23:50:20Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

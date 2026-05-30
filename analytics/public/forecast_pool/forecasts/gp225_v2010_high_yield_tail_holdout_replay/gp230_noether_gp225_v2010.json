@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_noether_gp225_v2010",
+  "contract_id": "gp225_v2010_high_yield_tail_holdout_replay",
+  "domain": "gp225_repair_micro",
+  "forecasted_at": "2026-05-14T12:47:30Z",
+  "p_success": 0.24,
+  "expected_cost_agent_minutes": 20.0,
+  "p_regression": 0.05,
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.22,
+  "failure_mode_distribution": {
+    "fresh_strict_success": 0.21,
+    "ordered_lineMap_candidates_too_weak": 0.27,
+    "cardinal_candidate_names_wrong": 0.20,
+    "progress_only_no_strict": 0.18,
+    "source_policy_or_schema_issue": 0.04,
+    "other": 0.10
+  },
+  "rationale": "The policy has replicated, but this tail packet has weaker candidate specificity and only two rows. The ordered lineMap row likely needs exact lemma knowledge.",
+  "rationale_short": "Replicated policy helps, but tail candidates are weak for ordered lineMap/cardinal names.",
+  "read_only_attestation": true
+}

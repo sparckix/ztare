@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T01:09:41Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.5,
+    "expected_value": -6.8686157989928205,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.4,
+    "p_needs_new_lemma": 0.365,
+    "p_regression": 0.07,
+    "p_success": 0.44188595357997507,
+    "participants": [
+      {
+        "agent_id": "gp230_ampere_gp225_v1951",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.56,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_ohm_skeptical_gp225_v1951",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.33,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "dependency_or_model_staging_blocks_public_tacgen_and_local_lane_not_enough",
+        "p": 0.135
+      },
+      {
+        "mode": "local_error_packet_candidates_remain_syntax_or_elaboration_brittle",
+        "p": 0.12
+      },
+      {
+        "mode": "hf_model_staging_download_auth_or_cache_failure",
+        "p": 0.11
+      },
+      {
+        "mode": "reprover_tacgen_invalid_or_off_context_tactic",
+        "p": 0.105
+      },
+      {
+        "mode": "ReProver_generates_generic_or_non_replaying_tactics",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1951_public_tacgen_plus_local_error_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1951_public_tacgen_plus_local_error_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1951_public_tacgen_plus_local_error_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1951_public_tacgen_plus_local_error_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1951_public_tacgen_plus_local_error_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T01:06:06Z",
+    "created_by": "codex_rd_gp225",
+    "horizon": "same session after bounded candidate generation/replay",
+    "layer": "micro",
+    "objective_resolver": "Resolve from v19.51/v19.52 artifacts: new_strict_same_target_rows>=1, harmful_compiled_mismatch_rows==0, forbidden generation fields absent, train_gnn_now==false. Pull-forward closures are auxiliary and do not by themselves satisfy success.",
+    "question": "Will GP-225 v19.51 bundled execution produce at least one new strict same-target row beyond v19.45's two strict rows, with harmful_compiled_mismatch_rows=0 and clean source policy, using ReProver direct tacgen if model staging succeeds plus clean local error-packet replay?",
+    "success_threshold": "new_strict_same_target_rows >= 1 AND harmful_compiled_mismatch_rows == 0 AND clean source policy true",
+    "task_type": "bundled_executable_candidate_generation_and_replay"
+  },
+  "contract_id": "gp225_v1951_public_tacgen_plus_local_error_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_ampere_gp225_v1951",
+        "raw_agent_ids": [
+          "gp230_ampere_gp225_v1951"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_ohm_skeptical_gp225_v1951",
+        "raw_agent_ids": [
+          "gp230_ohm_skeptical_gp225_v1951"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_ampere_gp225_v1951",
+      "gp230_ohm_skeptical_gp225_v1951"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_ampere_gp225_v1951",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1951_public_tacgen_plus_local_error_replay/gp230_ampere_gp225_v1951.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-14T01:09:35Z",
+        "p_success": 0.56,
+        "rationale_short": "Prices the bundle above v19.49 because the local error-packet lane is targeted, especially dist_map_map_zero_lt; discounts public tacgen because model is uncached and prior ReProver/LeanDojo integration had friction.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_ohm_skeptical_gp225_v1951",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1951_public_tacgen_plus_local_error_replay/gp230_ohm_skeptical_gp225_v1951.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 31.0,
+        "forecasted_at": "2026-05-14T01:09:35Z",
+        "p_success": 0.33,
+        "rationale_short": "Strict label win remains below even odds because v19.49 failed strict, public tacgen needs HF staging, and local queue may produce pull-forward rather than same-target rows.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 44.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T01:18:48Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.23,
+      "p_success": 0.44188595357997507,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "dependency_or_model_staging_blocks_public_tacgen_and_local_lane_not_enough",
+        "p": 0.135
+      },
+      "voi_proxy": 1.2766
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.44188595357997507,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "dependency_or_model_staging_blocks_public_tacgen_and_local_lane_not_enough",
+        "p": 0.135
+      },
+      {
+        "mode": "local_error_packet_candidates_remain_syntax_or_elaboration_brittle",
+        "p": 0.12
+      },
+      {
+        "mode": "hf_model_staging_download_auth_or_cache_failure",
+        "p": 0.11
+      },
+      {
+        "mode": "reprover_tacgen_invalid_or_off_context_tactic",
+        "p": 0.105
+      },
+      {
+        "mode": "ReProver_generates_generic_or_non_replaying_tactics",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.3212499999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T01:19:01Z"
+  }
+}

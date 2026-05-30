@@ -1,0 +1,125 @@
+{
+  "counts": {
+    "action_impact_rows": 0,
+    "aggregates": 322,
+    "blocking": 1,
+    "consumed_surfacing_events": 0,
+    "decision_use_rows": 0,
+    "gp233_rows": 342,
+    "info": 0,
+    "issues": 5,
+    "surfacing_event_rows": 0,
+    "warning": 4
+  },
+  "generated_at": "2026-05-19T19:26:26Z",
+  "issues": [
+    {
+      "affected_domains": [
+        "forecast_ops"
+      ],
+      "blocking_rule": "forecast_ops recommendations remain diagnostic until decision-use rows exist",
+      "denominator": "forecast aggregates",
+      "domain": null,
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates",
+        "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
+      ],
+      "expected_count": 322,
+      "freshness_window_days": 14,
+      "issue_id": "sh_c901d8c3617fbdcb",
+      "issue_type": "missing_decision_use",
+      "observed_count": 0,
+      "recommended_action": "repair_source_emitter",
+      "scope": "forecast_ops",
+      "severity": "blocking"
+    },
+    {
+      "affected_domains": [
+        "trajectory_surfacing",
+        "forecast_ops"
+      ],
+      "blocking_rule": "markdown-only GP-233 linkage cannot support non-diagnostic recommendations",
+      "denominator": "GP-233 markdown rows with stable refs",
+      "domain": null,
+      "evidence_refs": [
+        "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
+      ],
+      "expected_count": 342,
+      "freshness_window_days": 14,
+      "issue_id": "sh_bd0f5eb54484e22a",
+      "issue_type": "weak_gp233_linkage",
+      "observed_count": 329,
+      "recommended_action": "repair_source_emitter",
+      "scope": "gp233",
+      "severity": "warning"
+    },
+    {
+      "affected_domains": [
+        "trajectory_surfacing"
+      ],
+      "blocking_rule": "trajectory/primitives surfacing remains diagnostic until shown surfaces are logged",
+      "denominator": "surfacing event rows",
+      "domain": null,
+      "evidence_refs": [
+        "analytics/public/ledgers/action_intelligence/surfacing_event_ledger.jsonl"
+      ],
+      "expected_count": 1,
+      "freshness_window_days": 14,
+      "issue_id": "sh_d8a6616ab7d141f1",
+      "issue_type": "unconsumed_surface",
+      "observed_count": 0,
+      "recommended_action": "repair_source_emitter",
+      "scope": "trajectory_surfacing",
+      "severity": "warning"
+    },
+    {
+      "affected_domains": [
+        "trajectory_surfacing"
+      ],
+      "blocking_rule": "trajectory/primitives surfacing recommendations are diagnostic until consumption is recorded",
+      "denominator": "surfacing consumption action-impact rows",
+      "domain": null,
+      "evidence_refs": [
+        "analytics/public/ledgers/action_intelligence/surfacing_event_ledger.jsonl",
+        "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl"
+      ],
+      "expected_count": 1,
+      "freshness_window_days": 14,
+      "issue_id": "sh_0add7c2f5a0e50df",
+      "issue_type": "unconsumed_surface",
+      "observed_count": 0,
+      "recommended_action": "repair_source_emitter",
+      "scope": "trajectory_surfacing",
+      "severity": "warning"
+    },
+    {
+      "affected_domains": [
+        "trajectory_surfacing"
+      ],
+      "blocking_rule": "catch preconditioners remain diagnostic until action consumption is recorded",
+      "denominator": "load-bearing catch rows linked to action-impact rows",
+      "domain": null,
+      "evidence_refs": [
+        "analytics/public/ledgers/catch/catch_ledger.jsonl",
+        "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl"
+      ],
+      "expected_count": 99,
+      "freshness_window_days": 14,
+      "issue_id": "sh_ba101af51c83851d",
+      "issue_type": "unconsumed_surface",
+      "observed_count": 0,
+      "recommended_action": "repair_source_emitter",
+      "scope": "catch",
+      "severity": "warning"
+    }
+  ],
+  "schema_version": 1,
+  "source_paths": {
+    "aggregates": "analytics/public/forecast_pool/aggregates",
+    "catch": "analytics/public/ledgers/catch/catch_ledger.jsonl",
+    "decision_use": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "gp233": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+    "surfacing_events": "analytics/public/ledgers/action_intelligence/surfacing_event_ledger.jsonl",
+    "trajectory": "analytics/public/ledgers/trajectory/trajectory_archive_enriched.jsonl"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "contract_id": "tick635-mega-CV-C7-junction-depthn",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.07300000000000001,
+  "mean_log_score": -0.31480457987797883,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "codex_bet_present": true,
+    "compile_status": null,
+    "contract_id": "tick635-mega-CV-C7-junction-depthn",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "ordering_override_no_codex": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "SOUND on the core deliverable (codex p=0.74). B3 SURVIVES adversary: in the De Giorgi level-set energy for {|\u03c9|>k}, div u=0 \u21d2 the drift term vanishes by parts (modulo standard smooth/regularized approximation; no extra commutator where \u03c9\u22600), exactly the CV/SQG free-divergence-free-drift mechanism \u2014 so tick634/M3's 'CV fails for NS at the drift-BMO closure' was IMPRECISE and is hereby CORRECTED: the drift IS controlled for 3D NS by div-free just as in CV; the SOLE residual obstruction is the vortex-stretching SOURCE \u222b(\u03be\u00b7S\u03be)|\u03c9|(|\u03c9|-k)_+. This is the genuine depth-n deliverable (a real correction+sharpening of a prior tick, codex-verified). HONEST DOWNGRADE (conceded to codex, NOT laundered): B1 'CV-closure \u27fa C7-budget', B2 'gain exponent-0 kills all conditional gains', B4 'route-invariant' are downgraded from EQUIVALENCES to OBSTRUCTION-HEURISTICS (C7-budget is one sufficient encoded control not logically equivalent to all De Giorgi closures; exponent-0 is a recurrence not a standalone no-go theorem; route-invariance is meta not proof). Net: M3 corrected (drift handled), obstruction sharpened to PURELY the stretching source; the equivalence claims are heuristics. NOT a closure, NOT inflated.",
+    "resolved_at": "2026-05-17T12:18:07Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:36:55Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "claude:RD",
+      "brier": 0.07840000000000001,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3285040669720361,
+      "p_success": 0.72,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T12:16:55Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T12:18:07Z",
+        "resolved_at": "2026-05-17T12:18:07Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "codex",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 36.75,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-17T12:16:55Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-17T12:18:07Z",
+        "resolved_at": "2026-05-17T12:18:07Z"
+      }
+    }
+  ]
+}

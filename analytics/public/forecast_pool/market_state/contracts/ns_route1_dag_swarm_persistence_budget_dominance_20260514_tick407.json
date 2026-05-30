@@ -1,0 +1,210 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:30Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 55.0,
+      "expected_value": -149.42420840882713,
+      "p_success": 0.6500659659310712,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 8.2475
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 55.0,
+    "expected_value": -149.42420840882713,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.32499999999999996,
+    "p_needs_new_lemma": 0.59,
+    "p_regression": 0.075,
+    "p_success": 0.6500659659310712,
+    "participants": [
+      {
+        "agent_id": "codex_forecaster",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407/codex_forecaster.json",
+        "forecasted_at": "2026-05-14T19:19:38Z",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rd_codex",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407/rd_codex.json",
+        "forecasted_at": "2026-05-14T19:18:23Z",
+        "p_success": 0.66,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "n7_branch_dominance_open",
+        "p": 0.12
+      },
+      {
+        "mode": "n1_persistence_missing_side_condition",
+        "p": 0.11
+      },
+      {
+        "mode": "persistence_source_too_broad",
+        "p": 0.11
+      },
+      {
+        "mode": "upstream_branch_still_open",
+        "p": 0.11
+      },
+      {
+        "mode": "lineage_schedule_prefix_budget_missing",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T19:18:02Z",
+    "created_by": "rd_codex",
+    "horizon": "2026-05-15T03:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "success iff sidecar/local outputs identify a concrete proof-route/no-go/missing-hypothesis and at least one resulting Lean-facing surface or work packet is saved; no claim of full upstream closure unless branch dominance is resolved",
+    "question": "Will the route-1 DAG swarm produce at least one usable next proof node or no-go across N1 persistence, N2 lineage schedule budget, and N7 branch dominance, with Lean-facing surfaces and no overclaim?",
+    "success_threshold": "saved work packet or compiled Lean surface plus GP-233 row",
+    "task_type": "ns_route1_dag_swarm"
+  },
+  "contract_id": "ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_forecaster",
+          "rd_codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_forecaster",
+      "rd_codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Attack N1 first; if it fails, stop at a named no-go and classify the residual branch rather than widening activeTail.",
+        "agent_id": "codex_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407/codex_forecaster.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T19:19:38Z",
+        "p_success": 0.64,
+        "rationale_short": "N3 and N4 are already mechanized; the current DAG says N1 and N2 are the next route-1 nodes, while N7/N8 remain upstream hinges. I expect the swarm to produce either a first usable next proof node or a named no-go plus a Lean-facing surface, but the weakest points are a persistence source that stays too broad and branch-dominance evidence that remains unpriced.",
+        "specific_failure_mode_ids": [
+          "persistence_source_too_broad",
+          "lineage_schedule_prefix_budget_missing",
+          "upstream_branch_still_open",
+          "wrapper_only_surface",
+          "missing_negative_case_or_hidden_coupling"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed with reused-agent swarm; integrate only concrete proof nodes/no-go guards, and keep branch dominance separate from route1 closure.",
+        "agent_id": "rd_codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407/rd_codex.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 70.0,
+        "forecasted_at": "2026-05-14T19:18:23Z",
+        "p_success": 0.66,
+        "rationale_short": "The DAG is now sharp enough for parallel shard work. Probability is decent for a usable next node/no-go, but full route closure is unlikely because branch dominance and persistence remain true PDE/domain obligations.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 68.0,
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T19:22:54Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 55.0,
+      "expected_value": -149.42420840882713,
+      "p_success": 0.6500659659310712,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 8.2475
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 55.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.6500659659310712,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "n7_branch_dominance_open",
+        "p": 0.12
+      },
+      {
+        "mode": "n1_persistence_missing_side_condition",
+        "p": 0.11
+      },
+      {
+        "mode": "persistence_source_too_broad",
+        "p": 0.11
+      },
+      {
+        "mode": "upstream_branch_still_open",
+        "p": 0.11
+      },
+      {
+        "mode": "lineage_schedule_prefix_budget_missing",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.12259999999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T19:23:00Z"
+  }
+}

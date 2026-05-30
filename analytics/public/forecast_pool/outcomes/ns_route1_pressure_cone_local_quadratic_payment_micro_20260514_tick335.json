@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 45.0,
+  "artifact_hash": "74d739a598c32ff057d66291121b75eab253cafd45bf78aa06f29415d0824e8a",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/pressure_cone_local_quadratic_payment_scout_20260514.json",
+  "compile_status": "passed",
+  "contract_id": "ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Scout produced LOCAL_QUADRATIC_OPERATOR_NORM_PAYMENT for 128/128 packets; Lean source constructs pressure receipt bridge from local quadratic receipt plus nonnegative reserve/child receipts; target and downstream builds passed.",
+  "resolved_at": "2026-05-14T03:07:45Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

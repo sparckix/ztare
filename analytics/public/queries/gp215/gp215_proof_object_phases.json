@@ -1,0 +1,286 @@
+[
+  {
+    "phase_id": "5bp",
+    "file": "phase5bp_spectral_n_pre_registration.md",
+    "mtime_iso": "2026-04-30T18:42:48.586704",
+    "lean_files_created": [
+      "ns_spectral_diseconomy_toxic_block.lean"
+    ]
+  },
+  {
+    "phase_id": "5bo",
+    "file": "phase5bo_lean_adapter_peer_review.md",
+    "mtime_iso": "2026-04-30T18:44:06.039829",
+    "lean_files_created": [
+      "ns_sos_section_margin_bridge.lean",
+      "ns_spectral_diseconomy_toxic_block.lean",
+      "ns_spectral_diseconomy_toxic_block.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_cold_shot_deanchored_summary.md",
+    "mtime_iso": "2026-05-02T14:25:09.741292",
+    "lean_files_created": [
+      "ns_coherent_stretch_depletion.lean",
+      "ns_exhaust_scale_reserve_bridge.lean",
+      "ns_l2_carrier_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_irrep_panel_debate.md",
+    "mtime_iso": "2026-05-02T14:56:25.691444",
+    "lean_files_created": [
+      "ns_l2_carrier_bridge.lean",
+      "ns_pressure_hessian_l2_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_l2_carrier_note.md",
+    "mtime_iso": "2026-05-02T15:10:00.505762",
+    "lean_files_created": [
+      "ns_quadrupole_identity.lean",
+      "ns_l2_carrier_transport.lean",
+      "ns_l2_carrier_transport.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_proofsearch_packet.md",
+    "mtime_iso": "2026-05-02T15:44:17.748678",
+    "lean_files_created": [
+      "ns_l2_carrier_transport.lean",
+      "ns_2028_hindsight_obligations.lean",
+      "ns_commutator_tower_proofsearch.lean",
+      "ns_gauge_topology_bypass.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_2028_hindsight_pullforward.md",
+    "mtime_iso": "2026-05-02T15:44:17.783822",
+    "lean_files_created": [
+      "ns_strain_aligned_connection_bypass.lean",
+      "ns_gauge_topology_bypass.lean",
+      "ns_2028_hindsight_obligations.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_geometric_bypass_note.md",
+    "mtime_iso": "2026-05-02T18:12:18.986876",
+    "lean_files_created": [
+      "ns_route5_topological_offset_mismatch.lean",
+      "ns_route5_global_offset_sufficiency.lean",
+      "ns_route5_tensor_absorption_ellipticity.lean",
+      "ns_route5_postrun_survivor_surface.lean",
+      "ns_route5_next_killer_hinges.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_literature_position.md",
+    "mtime_iso": "2026-05-02T19:23:23.343276",
+    "lean_files_created": [
+      "ns_decisive_ns_theorem_search.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_route1_vs_route5_comparison.md",
+    "mtime_iso": "2026-05-02T19:37:52.154689",
+    "lean_files_created": [
+      "ns_decisive_ns_theorem_search.lean"
+    ]
+  },
+  {
+    "phase_id": "5cg",
+    "file": "phase5cg_decisive_theorem_run_packet.md",
+    "mtime_iso": "2026-05-02T19:44:03.751870",
+    "lean_files_created": [
+      "ns_decisive_ns_theorem_search.lean",
+      "ns_decisive_post_obstruction_theorem_search.lean"
+    ]
+  },
+  {
+    "phase_id": "5ch",
+    "file": "phase5ch_capacity_realization_falsifier_packet.md",
+    "mtime_iso": "2026-05-02T20:20:47.451984",
+    "lean_files_created": [
+      "ns_exponential_metric_nontriviality_bar.lean",
+      "ns_exponential_metric_transport_ratio_obstruction.lean"
+    ]
+  },
+  {
+    "phase_id": "5ct",
+    "file": "phase5ct_exhaust_horizon_bridge.md",
+    "mtime_iso": "2026-05-03T07:47:11.172900",
+    "lean_files_created": [
+      "ns_exhaust_horizon_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5cz",
+    "file": "phase5cz_ztare_anisotropic_fractional_bridge_packet.md",
+    "mtime_iso": "2026-05-03T07:51:35.169182",
+    "lean_files_created": [
+      "ns_exhaust_horizon_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5dd",
+    "file": "phase5dd_resupply_escape_pincer.md",
+    "mtime_iso": "2026-05-03T08:52:08.751019",
+    "lean_files_created": [
+      "ns_resupply_escape_pincer.lean"
+    ]
+  },
+  {
+    "phase_id": "5fi",
+    "file": "phase5fi_countable_limit_pricing_bridge.md",
+    "mtime_iso": "2026-05-04T15:39:13.000080",
+    "lean_files_created": [
+      "ns_pricing_kernel_countable_limit.lean"
+    ]
+  },
+  {
+    "phase_id": "5fl",
+    "file": "phase5fl_null_profile_cap_branch.md",
+    "mtime_iso": "2026-05-04T16:57:44.760037",
+    "lean_files_created": [
+      "ns_null_profile_cap_branch.lean"
+    ]
+  },
+  {
+    "phase_id": "5fq",
+    "file": "phase5fq_trackb_profile_decomposition_obligation.md",
+    "mtime_iso": "2026-05-04T17:39:59.649208",
+    "lean_files_created": [
+      "ns_null_profile_cap_branch.lean",
+      "ns_concentration_impact_branch.lean",
+      "ns_vanishing_branch.lean",
+      "ns_dichotomy_cross_profile_branch.lean"
+    ]
+  },
+  {
+    "phase_id": "5fr",
+    "file": "phase5fr_littlewood_paley_profile_bridge.md",
+    "mtime_iso": "2026-05-04T18:30:17.792424",
+    "lean_files_created": [
+      "ns_littlewood_paley_profile_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5fs",
+    "file": "phase5fs_littlewood_paley_paraproduct_bridge.md",
+    "mtime_iso": "2026-05-04T18:33:27.441577",
+    "lean_files_created": [
+      "ns_littlewood_paley_paraproduct_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5ft",
+    "file": "phase5ft_clay_closure_bridge.md",
+    "mtime_iso": "2026-05-04T18:40:51.311298",
+    "lean_files_created": [
+      "ns_clay_closure_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5fu",
+    "file": "phase5fu_low_high_catalyst_charging_obligation.md",
+    "mtime_iso": "2026-05-04T18:44:50.391232",
+    "lean_files_created": [
+      "ns_low_high_catalyst_charging_obligation.lean",
+      "ns_littlewood_paley_paraproduct_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5fw",
+    "file": "phase5fw_low_frequency_lipschitz_control_bridge.md",
+    "mtime_iso": "2026-05-04T19:03:38.451856",
+    "lean_files_created": [
+      "ns_low_frequency_lipschitz_control_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5fx",
+    "file": "phase5fx_high_high_self_tax_charging_obligation.md",
+    "mtime_iso": "2026-05-04T19:05:36.587432",
+    "lean_files_created": [
+      "ns_high_high_self_tax_charging_obligation.lean"
+    ]
+  },
+  {
+    "phase_id": "5fy",
+    "file": "phase5fy_high_low_transport_charging_obligation.md",
+    "mtime_iso": "2026-05-04T19:07:41.170099",
+    "lean_files_created": [
+      "ns_high_low_transport_charging_obligation.lean"
+    ]
+  },
+  {
+    "phase_id": "5fz",
+    "file": "phase5fz_profile_lipschitz_clay_bridge.md",
+    "mtime_iso": "2026-05-04T19:11:41.371129",
+    "lean_files_created": [
+      "ns_profile_lipschitz_clay_bridge.lean"
+    ]
+  },
+  {
+    "phase_id": "5ga",
+    "file": "phase5ga_same_shell_remainder_charging_obligation.md",
+    "mtime_iso": "2026-05-04T19:13:37.029335",
+    "lean_files_created": [
+      "ns_same_shell_remainder_charging_obligation.lean"
+    ]
+  },
+  {
+    "phase_id": "5gc",
+    "file": "phase5gc_matrix_block_ledger_charging_obligation.md",
+    "mtime_iso": "2026-05-04T20:09:52.720971",
+    "lean_files_created": [
+      "ns_matrix_block_ledger_charging_obligation.lean"
+    ]
+  },
+  {
+    "phase_id": "5gd",
+    "file": "phase5gd_universal_state_pricing_split.md",
+    "mtime_iso": "2026-05-04T21:03:50.078667",
+    "lean_files_created": [
+      "ns_universal_state_pricing_split.lean"
+    ]
+  },
+  {
+    "phase_id": "5ge",
+    "file": "phase5ge_trackb_sos_pricing_kernel_receipt.md",
+    "mtime_iso": "2026-05-04T21:08:19.658826",
+    "lean_files_created": [
+      "ns_trackb_sos_pricing_kernel_receipt.lean"
+    ]
+  },
+  {
+    "phase_id": "5fm",
+    "file": "phase5fm_trackb_branch_killer_grid.md",
+    "mtime_iso": "2026-05-04T21:08:38.747788",
+    "lean_files_created": [
+      "ns_universal_state_pricing_split.lean",
+      "ns_trackb_sos_pricing_kernel_receipt.lean",
+      "ns_low_high_kinematic_dichotomy.lean",
+      "ns_universal_state_pricing_split.lean",
+      "ns_trackb_sos_pricing_kernel_receipt.lean"
+    ]
+  },
+  {
+    "phase_id": "5gb",
+    "file": "phase5gb_low_high_kinematic_dichotomy.md",
+    "mtime_iso": "2026-05-04T21:38:32.854347",
+    "lean_files_created": [
+      "ns_low_high_kinematic_dichotomy.lean",
+      "ns_flat_torus_killing_mode.lean",
+      "ns_low_high_kinematic_dichotomy.lean"
+    ]
+  }
+]

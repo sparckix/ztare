@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": "Record gap + name missing Galilean-quotient/reserve primitive; do not stretch to a tick431-style closure.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_pressure_galilean_mean_reserve_receipt_tick432_20260514",
+  "contract_question": "Can the Galilean-mean weighted-stress share in FixedWindowPreSummedStressMassCKNTentCompatibility be routed to pressureReserveReceipt using only CKN/tent compatibility + share-budget arithmetic (the tick431 pattern), with the touched Lean file compiling and no new axioms?",
+  "domain": "ns_clay_pressure",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-14T23:30:35Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.85,
+  "p_regression": 0.05,
+  "p_success": 0.12,
+  "rationale_short": "pressureReserveReceipt := decomposition.pressureReserve is an independent observable; tick431 worked only because localQuadraticReceipt identifies tent excess; CKN bound on Galilean share uses tent excess, with no a-priori bridge to the reserve decomposition. Handover predicts gauge-fix gap.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

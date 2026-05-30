@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "run_or_continue",
+  "agent_id": "rd_codex",
+  "contract_id": "ns_route1_pincer_bottom_up_top_down_20260514_tick409",
+  "contract_question": "Can this tick build a route-1 pincer work packet and compile a Lean surface that links bottom-up N1/N2/N3 schedule closure to top-down branch-dominance obligations, without claiming full upstream Clay closure?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 65.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "branch_dominance_wrapper_only": 0.28,
+    "finite_mass_semantics_unsourced": 0.22,
+    "lean_interface_friction": 0.12,
+    "n2_budget_double_counting": 0.18,
+    "route1_closed_but_upstream_open": 0.2
+  },
+  "forecast_externality_tags": [
+    "gp-233:positive:pincer-map",
+    "top-down-bottom-up"
+  ],
+  "forecasted_at": "2026-05-14T19:37:29Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.5,
+  "p_regression": 0.05,
+  "p_success": 0.58,
+  "rationale_short": "A pincer should add value if it keeps branch dominance separate from route1 closure; main risk is adding a top-down shell without sourcing failure semantics.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "branch_dominance_wrapper_only",
+    "finite_mass_semantics_unsourced"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "agent_id": "Noether",
+  "agent_name": "Codex GP-230 Meso Forecaster",
+  "contract_id": "gp225_v2096_blind_hydrated_new_heldout_replay_meso_gate",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 34,
+  "forecasted_at": "2026-05-14T21:28:38Z",
+  "p_dependency": 0.15,
+  "p_new_lemma": 0.05,
+  "p_regression": 0.06,
+  "p_success": 0.57,
+  "rationale": "The expected value is positive but not high: v20.93 showed the same two heldout rows are sensitive to context/name drift, while v20.95 improves the packet with eight blind non-target hydrated candidates from sidecars and keeps target proof, gold state, replay, and training flags false. Success can come from either a strict same-target row or an informative hard-negative contrast, which raises p_success versus strict-only replay. The main uncertainty is whether Franklin/Noether hydration fixed the actual local names and theorem orientations without crossing the v20.94 quarantine boundary.",
+  "routing_hint": "run_bounded_replay",
+  "top_failure_modes": {
+    "anti_leakage_metadata_incomplete": 0.05,
+    "candidate_compiles_but_not_same_target_strict": 0.1,
+    "clean_failures_not_adjudicated_as_useful_contrast_labels": 0.17,
+    "density_pdf_arguments_or_measure_namespace_mismatch": 0.13,
+    "harmful_compiled_mismatch": 0.04,
+    "hydrated_sidecar_names_still_mismatch_local_context": 0.2,
+    "isoSpec_category_morphism_orientation_mismatch": 0.14,
+    "replay_harness_timeout_or_unclassified_error": 0.06,
+    "target_or_gold_state_leakage_detected": 0.03,
+    "v2094_quarantine_contaminates_trust_in_packet_provenance": 0.08
+  }
+}

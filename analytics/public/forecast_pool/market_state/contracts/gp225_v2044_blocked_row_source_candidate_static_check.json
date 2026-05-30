@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T17:25:04Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 32.0,
+    "expected_value": 0.8860727974751481,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.13,
+    "p_needs_new_lemma": 0.065,
+    "p_regression": 0.045,
+    "p_success": 0.6505959985973044,
+    "participants": [
+      {
+        "agent_id": "Knuth",
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "p_success": 0.68,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Noether2",
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "p_success": 0.62,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "candidate_templates_still_context_dependent",
+        "p": 0.4
+      },
+      {
+        "mode": "static_check_too_weak",
+        "p": 0.23035714285714287
+      },
+      {
+        "mode": "row_0319_underresolved",
+        "p": 0.11249999999999999
+      },
+      {
+        "mode": "row_0329_namespace_fragile",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "placeholder_leak",
+        "p": 0.0857142857142857
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2044_blocked_row_source_candidate_static_check.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2044_blocked_row_source_candidate_static_check.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2044_blocked_row_source_candidate_static_check.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2044_blocked_row_source_candidate_static_check.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2044_blocked_row_source_candidate_static_check.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T17:24:43Z",
+    "created_by": "codex:RD",
+    "horizon": "45m",
+    "layer": "micro",
+    "objective_resolver": "success iff v2044 JSON exists, consumes v2043, emits >=8 candidate actions across >=5 rows, static checks placeholder-free and source-hinge-present pass for every action, replay_run=false, training_now=false, gnn_blocked=true",
+    "question": "Will v20.44 generate a small blocked-row source candidate packet from v20.43 contracts and pass static hygiene checks without replay/training?",
+    "success_threshold": "all objective resolver clauses true",
+    "task_type": "gp225_pre_gnn_candidate_static_check"
+  },
+  "contract_id": "gp225_v2044_blocked_row_source_candidate_static_check",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Knuth",
+        "raw_agent_ids": [
+          "Knuth"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Noether2",
+        "raw_agent_ids": [
+          "Noether2"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Knuth",
+      "Noether2"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed with static candidate packet only; no replay until hygiene passes.",
+        "agent_id": "Knuth",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2044_blocked_row_source_candidate_static_check/knuth.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-14T17:24:59Z",
+        "p_success": 0.68,
+        "rationale_short": "The source contracts are concrete enough for static candidate actions, but Lean context variable mismatch remains likely at replay time.",
+        "specific_failure_mode_ids": [
+          "candidate_templates_still_context_dependent",
+          "static_check_too_weak"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed if candidates are marked static-only and future replay requires GP-230 pricing.",
+        "agent_id": "Noether2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2044_blocked_row_source_candidate_static_check/noether2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T17:24:59Z",
+        "p_success": 0.62,
+        "rationale_short": "Candidate packet should pass textual hygiene, but some source contracts depend on local names that may not match replay contexts.",
+        "specific_failure_mode_ids": [
+          "candidate_templates_still_context_dependent",
+          "row_0319_underresolved"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 29.0,
+    "changed_by_forecast_ids": [
+      "Knuth",
+      "Noether2"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T17:27:29Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.8860727974751481,
+      "forecast_spread": 0.06,
+      "p_success": 0.6505959985973044,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.6873
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 32.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6505959985973044,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "candidate_templates_still_context_dependent",
+        "p": 0.4
+      },
+      {
+        "mode": "static_check_too_weak",
+        "p": 0.23035714285714287
+      },
+      {
+        "mode": "row_0319_underresolved",
+        "p": 0.11249999999999999
+      },
+      {
+        "mode": "row_0329_namespace_fragile",
+        "p": 0.09999999999999999
+      },
+      {
+        "mode": "placeholder_leak",
+        "p": 0.0857142857142857
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.12339999999999998,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T17:27:34Z"
+  }
+}

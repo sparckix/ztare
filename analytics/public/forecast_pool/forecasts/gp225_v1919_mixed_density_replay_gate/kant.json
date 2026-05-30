@@ -1,0 +1,25 @@
+{
+  "agent_id": "kant",
+  "contract_id": "gp225_v1919_mixed_density_replay_gate",
+  "contract_question": "Will a GP-225 mixed-density replay run generated from v19.15 pass a bounded replay gate without false accepts and without unblocking GNN training?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "breadth_gate_source_packets_or_top_areas_shortfall": 0.07,
+    "clean_replay_rows_below_72": 0.14,
+    "false_accept_or_post_quarantine_hygiene_failure": 0.08,
+    "no_rescue_density_below_0_45": 0.36,
+    "runner_timeout_or_partial_completion": 0.06,
+    "same_family_or_same_head_regression_detected": 0.1,
+    "slice_selection_or_generator_contract_mismatch": 0.17,
+    "unexpected_training_or_gnn_state_mismatch": 0.02
+  },
+  "forecasted_at": "2026-05-13T22:11:46Z",
+  "p_dependency_issue": 0.29,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.05,
+  "p_success": 0.38,
+  "rationale_short": "Static v19.15 design is plausible and false-accept hygiene has held, but density is still the bottleneck; 0.45 requires preserving high-density pockets without same-family/same-head regression.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,195 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T15:19:11Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 38.5,
+    "expected_value": 1.0236654601610309,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.28,
+    "p_needs_new_lemma": 0.1,
+    "p_regression": 0.23,
+    "p_success": 0.4463327300805155,
+    "participants": [
+      {
+        "agent_id": "codex_gp230_readonly_gp225_v1844_macro",
+        "domain": "gp225_harness_solver",
+        "p_success": 0.32,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_local",
+        "domain": "gp225_harness_solver",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "insufficient_unsaturated_rows_after_bm25_cpu_action_sweep",
+        "p": 0.165
+      },
+      {
+        "mode": "local_overfit_not_general_solver",
+        "p": 0.15
+      },
+      {
+        "mode": "rows_exist_but_labels_not_closure_value",
+        "p": 0.125
+      },
+      {
+        "mode": "same_factory_oracle_trace_overfit_survives_as_false_signal",
+        "p": 0.11
+      },
+      {
+        "mode": "deterministic_baselines_saturate",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1844_macro_harness_solver_detour.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1844_macro_harness_solver_detour.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1844_macro_harness_solver_detour.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1844_macro_harness_solver_detour.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1844_macro_harness_solver_detour.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T15:15:52Z",
+    "created_by": "codex_rd",
+    "horizon": "through GP-225 v18.46 closure or earlier kill",
+    "layer": "macro",
+    "objective_resolver": "Resolve after v18.44-v18.46 closure: success iff inventory plus next label/replay artifact identifies a reusable general-purpose harness-solver dataset path with >=50 replayable state/action rows, >=20 unsaturated rows, zero unquarantined false accepts, and a next action that is not same-factory ranker tuning.",
+    "question": "Should GP-225 continue the pre-GNN harness-solver detour as the route to a general-purpose Lean/harness solver before returning to NS, rather than stopping at deterministic CPU sidecar work?",
+    "success_threshold": "reusable_dataset_path=true AND replayable_rows>=50 AND unsaturated_rows>=20 AND unquarantined_false_accepts=0 AND next_action_not_same_factory_ranker=true",
+    "task_type": "gp225_harness_solver_detour_continuation"
+  },
+  "contract_id": "gp225_v1844_macro_harness_solver_detour",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd_local"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_gp230_readonly_gp225_v1844_macro",
+        "raw_agent_ids": [
+          "codex_gp230_readonly_gp225_v1844_macro"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_gp230_readonly_gp225_v1844_macro",
+      "codex_rd_local"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_gp230_readonly_gp225_v1844_macro",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1844_macro_harness_solver_detour/codex_gp230_readonly_gp225_v1844_macro.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_harness_solver",
+        "expected_cost_agent_minutes": 42.0,
+        "forecasted_at": "2026-05-13T15:19:11Z",
+        "p_success": 0.32,
+        "rationale_short": "Continue only as bounded v18.44-v18.46 discriminator, not confident two-day detour. Same-factory learning failed; natural proof-step substrate is plausible but still small/oracle-shaped. If v18.44 misses replayable/unsaturated thresholds, return to NS with GP-225 as deterministic triage.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_local",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1844_macro_harness_solver_detour/codex_rd_local.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "gp225_harness_solver",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-13T15:16:25Z",
+        "p_success": 0.58,
+        "rationale_short": "The detour has already produced real harness mechanics and failure taxonomy, but the strongest evidence is still small/local. Continue only if v18.44 exposes unsaturated closure-value rows; otherwise build replay substrate first and return to NS with advisory artifact only.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "pre_tick_consumed",
+      "resolved"
+    ],
+    "next_action": "await_objective_outcome",
+    "state": "aggregate_ready"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": false,
+    "resolved_at": null,
+    "success_bool": null,
+    "voided": null
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.26,
+      "p_success": 0.4463327300805155,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 1.2071
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 38.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "await_objective_outcome",
+    "p_success": 0.4463327300805155,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "insufficient_unsaturated_rows_after_bm25_cpu_action_sweep",
+        "p": 0.165
+      },
+      {
+        "mode": "local_overfit_not_general_solver",
+        "p": 0.15
+      },
+      {
+        "mode": "rows_exist_but_labels_not_closure_value",
+        "p": 0.125
+      },
+      {
+        "mode": "same_factory_oracle_trace_overfit_survives_as_false_signal",
+        "p": 0.11
+      },
+      {
+        "mode": "deterministic_baselines_saturate",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

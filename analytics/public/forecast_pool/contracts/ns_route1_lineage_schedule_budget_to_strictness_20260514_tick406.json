@@ -1,0 +1,97 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406.json"
+  },
+  "baseline_action": "leave active-or-passive lineage schedule source unconnected to finite-tail strictness",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406",
+  "cost_penalty": 1.5,
+  "counterfactual_action": "add a finite lineage schedule budget source and constructor into Route1FiniteTailAmortizedStrictness",
+  "created_at": "2026-05-14T19:11:49Z",
+  "created_by": "rd_codex",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.3158,
+    "expected_cost_agent_minutes_prior": 42.0,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_lean_interface",
+    "score": 0.5,
+    "selected_domain": "NS_route1",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.3158,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.5,
+        "score_rows": 10,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.0769,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.4,
+        "score_rows": 2,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.2727,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 140,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.1707,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 4,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0541,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "interface_completion": "may reduce future proof friction by wiring corrected carrier into scalar adapter",
+    "overclaim_guard": "should preserve persistence estimate as a separate PDE obligation"
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 4.0,
+  "layer": "micro",
+  "objective_resolver": "success iff Lean compiles a finite lineage schedule budget source/constructor and no new sorry/admit is introduced",
+  "question": "Will the next NS tick produce a compiled finite lineage-schedule budget interface that feeds the route-1 finite-tail amortized strictness adapter without claiming the persistence PDE estimate?",
+  "risk_penalty": 1.5,
+  "success_threshold": "Lean compile pass plus no-sorry scan",
+  "task_type": "ns_route1_lean_interface",
+  "value_if_success": 6.0,
+  "void_conditions": "void if it claims the persistence estimate or upstream branch closure"
+}

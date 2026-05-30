@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "proceed_as_negative_theorem",
+  "agent_id": "codex-rd-main",
+  "contract_id": "ns_n8_radius_component_audit_flat_scale_reserve_20260514_tick415",
+  "contract_question": "Will the radius component audit add a compiling Lean surface showing RadiusComponentPaysRadiusScale is not sourced by current tri-carrier data and sharpening CKNRadiusFailure to FlatRadiusScaleReserveFailure?",
+  "domain": "ns-n8-radius-component",
+  "expected_cost_agent_minutes": 24.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "duplicate_existing_ckn_guard": 0.2,
+    "flat_model_too_abstract": 0.2,
+    "lean_compile_issue": 0.15,
+    "overstates_radius_independence": 0.2,
+    "surface_compiles_but_no_new_math": 0.25
+  },
+  "forecast_externality_tags": [
+    "negative-theorem",
+    "radius-frontier-sharpening",
+    "anti-overclaim"
+  ],
+  "forecasted_at": "2026-05-14T20:48:31Z",
+  "p_dependency_issue": 0.46,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.08,
+  "p_success": 0.76,
+  "rationale_short": "The flat multiscale reuse model is the right no-go for current radius component data. Main risk is only restating an existing CKN guard.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "surface_compiles_but_no_new_math",
+    "flat_model_too_abstract",
+    "lean_compile_issue",
+    "overstates_radius_independence",
+    "duplicate_existing_ckn_guard"
+  ]
+}

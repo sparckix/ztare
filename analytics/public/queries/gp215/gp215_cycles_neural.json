@@ -1,0 +1,265 @@
+[
+  {
+    "cycle_idx": 0,
+    "start_iteration": 3,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 8,
+    "weakest_points_in_cycle": [
+      "Assumes SINDy + multi-start differential\u2013evolution exhaustively enumerates *all* polynomial vector fields that match the data (A-completeness). Heuristic sparsifiers have no guarantee of completeness; if even one valid model is missed, both the behavioural-fit claim and the B-filter ranking collapse.",
+      "Completeness hinges on the unproven assumption that the true ODE lies inside the \u00b13, degree-3 integer-coefficient box; if this is false, both the A-claim and B-claim collapse.",
+      "Class-A enumerates only integer-valued coefficients; if the hidden generator contains any non-integer (irrational or even rational) constants, completeness claim fails and B cannot certify the true law.",
+      "Unjustified assumption that Savitzky\u2013Golay (order-5, GCV window) keeps the L2 derivative error \u2264 5 % everywhere; if violated the MILP search space misses the true generator, collapsing both A- and B-claims.",
+      "Class-A integral collocation imposes |\u222bx dt \u2212 w \u03a6(X\u0304)\u00b7c| \u2264 \u03b5, equating \u222bx dt with w\u00b7F(X\u0304); for nonlinear systems this surrogate is mathematically wrong, so the true generator will often violate the MILP constraints and be pruned\u2014undercutting the completeness claim."
+    ],
+    "final_score": 55,
+    "final_weakest": "The entire completeness claim rests on the unproven premise that the true dynamics, once expressed in the 6-dimensional Takens delay-embedding, is still a sparse cubic polynomial with small integer coefficients; if this fails, the exhaustive grid search is exhaustive over the wrong space and Class-A coverage collapses.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by an unverified sparsity-and-integrality assumption: the Class-A exhaustive grid search was defined over a \u00b13, degree-3 integer-coefficient polynomial box whose adequacy as a search space for the true gp140 ODE generator was never established.",
+    "resolution_move": "Replaced the unverified integer-coefficient box with a two-stage apparatus that first uses data-driven coefficient-range estimation to bound the search space empirically, then applies a formal coverage certificate (a residual-gap test) as a gate that must pass before Class-A completeness is asserted.",
+    "what_survived": "The structural claim that a Takens delay-embedding of dimension 6 is a valid coordinate system for reconstructing the hidden attractor, and that SINDy-style sparse regression is a legitimate candidate-generation step within that embedding.",
+    "what_opened": "Whether the residual-gap certificate itself is tight enough\u2014i.e., whether the gap threshold can be set without introducing a new unverified assumption about noise floor and derivative-estimation error jointly.",
+    "proof_object_delta": {
+      "before": "No mechanism to verify that the integer-coefficient polynomial box contained the true generator; completeness was asserted by fiat, making both A- and B-claims unfalsifiably circular.",
+      "after": "A data-driven coefficient-range estimator paired with a residual-gap gate that must be satisfied before Class-A coverage is declared, replacing the bare grid-search with a certifiable search-space construction step.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 1,
+    "start_iteration": 2,
+    "end_iteration": 2,
+    "n_iters_in_cycle": 4,
+    "weakest_points_in_cycle": [
+      "Behavioral solver assumes the first three delay-embedding coordinates equal the true physical initial state; in chaotic systems this is almost never true, so completeness collapses.",
+      "Catastrophic assumption that exhaustive enumeration over ~10^338 candidate models and initial states is computationally feasible; coverage_proof.json cannot actually be produced, so both A-claim and B-claim are untestable.",
+      "Class-B relies on deciding global dissipativity for arbitrary radius-2 binary CA rules \u2013 a \u03a01^0-complete property that is in general undecidable and practically non-terminating, so the law-finder cannot be guaranteed to run or to output sound certificates.",
+      "Soundness and completeness of the branch-and-bound MILP enumeration: If enumeration or the coverage certificate is flawed, the core completeness guarantee collapses and the entire generative/discriminative advantage vanishes."
+    ],
+    "final_score": 93,
+    "final_weakest": "Soundness and completeness of the branch-and-bound MILP enumeration: If enumeration or the coverage certificate is flawed, the core completeness guarantee collapses and the entire generative/discriminative advantage vanishes.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by an infeasible exhaustive enumeration scheme over ~10^338 candidate models, making coverage_proof.json unproducible and both A-claim and B-claim untestable.",
+    "resolution_move": "Replaced unbounded exhaustive enumeration with a branch-and-bound MILP formulation that produces a bounded, certifiable coverage certificate over the constrained hypothesis space.",
+    "what_survived": "The core generative/discriminative advantage claim contingent on a sound and complete enumeration procedure producing a valid coverage certificate.",
+    "what_opened": "Whether the branch-and-bound MILP enumeration itself is sound and complete, since a flaw in the certificate procedure would collapse the completeness guarantee entirely.",
+    "proof_object_delta": {
+      "before": "No feasible enumeration mechanism; coverage certificate was computationally unproducible over the full candidate space.",
+      "after": "Branch-and-bound MILP enumeration apparatus with an associated coverage certificate gate (coverage_proof.json) over a tractable constrained hypothesis space.",
+      "delta_type": "apparatus"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 2,
+    "start_iteration": 3,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 2,
+    "weakest_points_in_cycle": [
+      "Assumes the invariant-measure Fisher Information Matrix is strictly convex, guaranteeing <1e-4 parameter boxes; known counter-examples (divergence-free additions) leave the FIM rank-deficient, undermining both A-fit exhaustiveness and B-filter precision."
+    ],
+    "final_score": null,
+    "final_weakest": null,
+    "final_thesis_primitives": [],
+    "fill_error": "'NoneType' object is not subscriptable",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 3,
+    "start_iteration": 4,
+    "end_iteration": 1,
+    "n_iters_in_cycle": 7,
+    "weakest_points_in_cycle": [
+      "The entire Class-B mechanism relies on the mathematically false premise that Maximal Lyapunov Exponents (MLE) are altered by smooth coordinate warps (diffeomorphisms). MLE is invariant under C^1 diffeomorphisms, meaning the proposed filter will fail to reject adversarial coordinate warps.",
+      "Class-B mathematical flaw: Constant Jacobian Trace is invariant under volume-preserving diffeomorphisms and is not universally constant across true chaotic systems (e.g., R\u00f6ssler), making it both blind to Framer-gaming and prone to rejecting real physics.",
+      "The chosen physical prior (Dimensional Consistency) is mathematically incompatible with the chosen held-out substrate (R\u00f6ssler attractor). The R\u00f6ssler equations inherently mix dimensions if state variables are assigned physical units, guaranteeing the unconditional rejection of the true generator and falsifying the B-claim.",
+      "The mathematical assumption that a non-dimensionalized nonlinear chaotic substrate (R\u00f6ssler) recovered via dimensionless integer coefficients (LLL) can survive a strict Dimensional Consistency Audit. It is self-falsifying and guarantees rejection of the true physical system.",
+      "Fundamental logic contradiction in Method B: proposing a C1-diffeomorphism-invariant property (Persistent Homology Betti numbers) to reject C1-diffeomorphism coordinate warps, rendering the filter completely blind to the exact exploits it claims to prevent."
+    ],
+    "final_score": 38,
+    "final_weakest": "The thesis is mathematically self-falsifying: by specifying a single scalar observable as the input contract, it forces Method A to perform a non-affine state-space reconstruction, which geometrically injects the exact fluctuating positive divergence that Method B's Strict Dissipativity prior is designed to definitively reject.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by an inadequate input contract: a single scalar observable forced Method A into non-affine state-space reconstruction, injecting positive divergence that Method B's Strict Dissipativity prior was structurally guaranteed to reject.",
+    "resolution_move": "Collapsed the thesis primitives list to empty, removing all specific mathematical filter claims (MLE invariance, Jacobian trace, dimensional consistency, persistent homology) that were each individually self-falsifying under diffeomorphism invariance or substrate incompatibility.",
+    "what_survived": "The adversarial framing that any proposed scalar-input contract paired with a dissipative prior creates a self-falsifying verification loop survived as the structural diagnosis.",
+    "what_opened": "The question of what non-scalar or multi-modal input contract structure could avoid injecting the divergence that defeats Strict Dissipativity priors in Method B.",
+    "proof_object_delta": {
+      "before": "A populated thesis primitives list containing specific mathematical filters (MLE, Jacobian trace, dimensional consistency, persistent homology) each shown to be diffeomorphism-blind or substrate-incompatible",
+      "after": "An empty thesis primitives skeleton acknowledging that no valid filter primitive had yet been identified that survives both diffeomorphism invariance and substrate compatibility constraints simultaneously",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "evacuate failed primitives",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 4,
+    "start_iteration": 2,
+    "end_iteration": 3,
+    "n_iters_in_cycle": 2,
+    "weakest_points_in_cycle": [
+      "The B-claim mathematically fails because it asserts all non-affine C1-diffeomorphisms inject an oscillating Jacobian log-determinant time-derivative that violates the strict negative divergence threshold. This completely ignores volume-preserving non-affine diffeomorphisms (like nonlinear shears) where the determinant is globally 1, the log-determinant is 0, and the divergence is perfectly preserved\u2014allowing adversarial non-physical warps to effortlessly bypass the Method B filter."
+    ],
+    "final_score": null,
+    "final_weakest": null,
+    "final_thesis_primitives": [],
+    "fill_error": "'NoneType' object is not subscriptable",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 5,
+    "start_iteration": 4,
+    "end_iteration": 5,
+    "n_iters_in_cycle": 2,
+    "weakest_points_in_cycle": [
+      "Method-A takes a scalar observable that necessarily requires a non-affine Takens-style reconstruction, yet Method-B imposes a Strict Global Liouville Dissipativity prior whose validity is broken by that very reconstruction; the thesis ignores the v2.6 \u2018input-contract / filter compatibility\u2019 ban and therefore self-falsifies.",
+      "Method B rests on \u201cStrict Global Liouville Dissipativity\u201d (max \u2207\u00b7f < 0) as a decisive law-certification gate; but global negativity cannot be proven from finitely-sampled noisy trajectories and is not guaranteed even for the true generator under small modelling error, so the filter can both reject truth and admit cleverly warped fakes."
+    ],
+    "final_score": 58,
+    "final_weakest": "Method B rests on \u201cStrict Global Liouville Dissipativity\u201d (max \u2207\u00b7f < 0) as a decisive law-certification gate; but global negativity cannot be proven from finitely-sampled noisy trajectories and is not guaranteed even for the true generator under small modelling error, so the filter can both reject truth and admit cleverly warped fakes.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by 'Strict Global Liouville Dissipativity' (max \u2207\u00b7f < 0) being used as a decisive law-certification gate despite being unprovable from finite noisy samples and incompatible with the non-affine Takens-style reconstruction required by Method A.",
+    "resolution_move": "Demoted the global Liouville dissipativity condition from a hard certification gate to a soft prior, replacing it with a finite-sample-compatible local divergence bound apparatus that acknowledges modelling error tolerance.",
+    "what_survived": "The two-method architecture (Method A scalar observable reconstruction + Method B generator certification) survived as the structural backbone of the thesis.",
+    "what_opened": "The replacement of the global gate with a local bound apparatus opened the question of how to set and justify the modelling-error tolerance threshold without reintroducing an unprovable global assumption.",
+    "proof_object_delta": {
+      "before": "A hard binary certification gate ('Strict Global Liouville Dissipativity', max \u2207\u00b7f < 0) that could not be verified from finite noisy trajectories and was incompatible with the Takens reconstruction input contract.",
+      "after": "A local divergence bound apparatus with explicit finite-sample and modelling-error tolerance parameters replacing the global dissipativity gate.",
+      "delta_type": "apparatus"
+    },
+    "structural_move_class": "replace certification gate",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 6,
+    "start_iteration": 6,
+    "end_iteration": 5,
+    "n_iters_in_cycle": 6,
+    "weakest_points_in_cycle": [
+      "The thesis hinges on the claim that a time-averaged Lyapunov-sum test (\u03a3\u03bbi<0 with one \u22480 exponent) will reliably separate the true generator from the huge over-fit polynomial family emitted by Weak-LLL, even though adding small linear sink terms or having estimator variance at finite T can make many wrong candidates pass, while noise-induced bias can make the true model occasionally fail.",
+      "Assumes equality of finite-sample Betti numbers (\u03b20,\u03b21) between noisy data and simulated trajectory is a reliable, low-variance discriminator; in practice Betti estimates fluctuate with noise level, sampling density, and Vietoris-Rips scale, so both false negatives (true law rejected) and false accepts (distinct ODE with homeomorphic attractor) remain probable.",
+      "Core assumption that selecting only the P highest-power PSD peaks and setting each weak-form test radius r_k \u221d 1/f_dom_k preserves \u226595 % of the algebraic rank that a full logarithmic sweep would give for every continuous-chaos system. Empirically unverified and contradicted by broadband / intermittent chaos examples; if false, Method A fails to emit the full behavioural-equivalence set, violating the charter.",
+      "The core assumption that all weak-form integrals with support larger than the first zero-crossing of the scalar autocorrelation (\u03c4_auto) are linear combinations of shorter-window integrals\u2014hence add no new rank\u2014is unproven and demonstrably false on many broadband chaotic signals; if the assumption fails, Method-A misses basis rows and the entire ABW pipeline collapses.",
+      "The entire bias-correction scheme depends on a sharp noise-only frequency band (f>f_noise) containing zero signal power, an assumption empirically false for broadband chaotic flows; if even small signal energy leaks above f_noise the rank guarantee and the claimed unbiased coefficient recovery both fail."
+    ],
+    "final_score": 50,
+    "final_weakest": "Method A relies on a catastrophic assumption that continuous chaotic substrates possess a sparse set of discrete 'dominant frequencies' (PSD peaks). Broadband chaos does not. Restricting Weak-form LLL test radii to these pseudo-peaks acts as a narrow filter that annihilates the broadband nonlinear information, collapsing the column space, and making the data matrix severely rank-deficient.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by the PSD-peak frequency selection heuristic, which assumed broadband chaotic substrates possess a sparse set of dominant frequencies sufficient to preserve algebraic rank in the Weak-form LLL test radius assignment.",
+    "resolution_move": "Abandoned the PSD-peak radius assignment rule and replaced it with a logarithmic sweep apparatus that samples test radii densely across the full frequency band, eliminating the sparse-peak filter that collapsed the data matrix column space.",
+    "what_survived": "The Weak-form LLL framework as a candidate equation-recovery mechanism survived, retaining its role as the algebraic backbone for extracting governing-law candidates from trajectory data.",
+    "what_opened": "Whether a logarithmic sweep radius apparatus can maintain sufficient rank without introducing a new over-completeness problem that defeats downstream Lyapunov-sum and topological discriminators.",
+    "proof_object_delta": {
+      "before": "PSD-peak-restricted radius assignment that annihilated broadband nonlinear information and produced rank-deficient data matrices for continuous chaotic substrates",
+      "after": "Logarithmic sweep apparatus for Weak-form LLL test radii covering the full frequency band without sparse-peak filtering",
+      "delta_type": "apparatus"
+    },
+    "structural_move_class": "replace filter apparatus",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 7,
+    "start_iteration": 7,
+    "end_iteration": 2,
+    "n_iters_in_cycle": 4,
+    "weakest_points_in_cycle": [
+      "Mathematical catastrophe in both Method A (K<=12 splines over T=300 acts as a fatal low-pass filter erasing all dynamics) and Method B (ranking chaotic trajectories via Fit-RMSE over T=300 guarantees saturation due to Lyapunov divergence, while demanding exact integer matches for Persistent Homology barcodes is a category error).",
+      "The Class A solver mathematically guarantees an empty candidate set. By demanding a machine-precision residual (< 10^-8) while deliberately resolving fine-scale wavelets on data with a broadband noise floor (\u03c3=0.02), the projected noise completely swamps the threshold. Furthermore, the search space (autonomous monomials) is structurally incapable of representing the non-autonomous sinusoidal drive of the held-out substrate.",
+      "Direct violation of v2.7 corrections: (a) relies on FFT/PSD peak timescales on a broadband chaotic substrate, and (b) uses exact Betti-number equality rather than a Wasserstein/Bottleneck metric\u2014both explicitly forbidden, so Method A is ill-posed and Method B is brittle.",
+      "Assumption that three test-function radii {\u00bd\u03c4_decorr, \u03c4_decorr, 2\u03c4_decorr} sample all relevant dynamical scales of a broadband chaotic flow \u2013 demonstrably false once the system contains even moderate time-scale separation; leads to structural miss in Method A."
+    ],
+    "final_score": 45,
+    "final_weakest": "Assumption that three test-function radii {\u00bd\u03c4_decorr, \u03c4_decorr, 2\u03c4_decorr} sample all relevant dynamical scales of a broadband chaotic flow \u2013 demonstrably false once the system contains even moderate time-scale separation; leads to structural miss in Method A.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by an under-specified radius-sampling apparatus in Method A, where the fixed triplet {\u00bd\u03c4_decorr, \u03c4_decorr, 2\u03c4_decorr} was the inadequate object failing to cover multi-scale dynamical structure in broadband chaotic flows.",
+    "resolution_move": "Replaced the fixed three-radius test-function triplet with an adaptive multi-scale radius schedule derived from the empirical Lyapunov spectrum, ensuring coverage across all dynamically relevant time-scale separations present in the substrate.",
+    "what_survived": "The two-method architecture (Method A: functional/spline-based; Method B: topological/persistent-homology-based) survived as the structural skeleton of the discovery protocol.",
+    "what_opened": "The question of how to define a principled stopping criterion for the adaptive radius schedule when the Lyapunov spectrum itself is estimated from finite, noisy trajectory data.",
+    "proof_object_delta": {
+      "before": "A hardcoded three-radius sampling triplet anchored to a single decorrelation timescale, blind to time-scale separation in broadband chaotic flows.",
+      "after": "An adaptive multi-scale radius apparatus keyed to the empirical Lyapunov spectrum, replacing the fixed triplet with a spectrum-driven coverage gate in Method A.",
+      "delta_type": "apparatus"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 8,
+    "start_iteration": 3,
+    "end_iteration": 2,
+    "n_iters_in_cycle": 14,
+    "weakest_points_in_cycle": [
+      "No Class-B compressibility mechanism or A\u2194B composition is provided; thesis is a single-side Method-A tweak, violating the paired-primitive mandate.",
+      "The thesis assumes a geometric 4-spacing of integration radii anchored at \u03c4_decorr guarantees that at least one test function overlaps exactly one independent dynamical time-scale of a broadband chaotic flow. Chaotic spectra are essentially continuous, so the claimed isolation property is unproven and likely false; without it, LLL may miss the true generator and the whole pipeline collapses.",
+      "The thesis upgrades only the Class-A ladder selection while leaving the Class-B law-finder and the A\u2194B composition contract implicit; therefore it violates the charter\u2019s paired-primitive requirement and offers no protocol for behavioural-fit vs. law-certification hand-off.",
+      "Assumption that a fixed K\u22645 logarithmic scaffold centred on \u03c4_decorr always isolates every dynamical timescale (Axiom 1). If even one slower/hidden scale slips through, the real generator never reaches Method B, collapsing the whole pipeline.",
+      "Axiom 1\u2032 \u2013 the claim that two bump test functions per 1 %-energy wavelet band suffice to span all weak-form constraints is unsupported and empirically contradicted; if false, Class-A coverage and hence the whole paired primitive collapses."
+    ],
+    "final_score": 67,
+    "final_weakest": "Hidden assumption that the true hold-out generator\u2019s coefficients are integer or small-denominator (\u22648) rationals; if even one coefficient is an arbitrary real the completeness and certification guarantees collapse.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by an incomplete paired-primitive structure, specifically the absence of a Class-B law-finder and an explicit A\u2194B composition contract that left the charter's paired-primitive mandate unmet.",
+    "resolution_move": "Replaced the single-side Method-A tweak with a formally paired primitive skeleton that named both the Class-A ladder selection mechanism and the Class-B law-finder, binding them through an explicit A\u2194B hand-off contract, while adding a rational-coefficient domain constraint to scope the completeness guarantee.",
+    "what_survived": "The core claim that a logarithmic scaffold anchored on \u03c4_decorr can isolate dynamical timescales for Class-A coverage survived as the foundation of the ladder-selection primitive.",
+    "what_opened": "The rational-coefficient domain constraint exposed the open question of whether the certification guarantees can be extended to arbitrary-real-coefficient generators without collapsing completeness.",
+    "proof_object_delta": {
+      "before": "A single-side Method-A ladder-selection tweak with no Class-B primitive, no A\u2194B composition contract, and no domain scoping of the completeness guarantee.",
+      "after": "A paired-primitive obligation skeleton naming Class-A ladder selection and Class-B law-finder with an explicit A\u2194B hand-off contract, scoped to integer or small-denominator rational coefficients.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "add obligation skeleton",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 9,
+    "start_iteration": 3,
+    "end_iteration": 4,
+    "n_iters_in_cycle": 2,
+    "weakest_points_in_cycle": [
+      "Completeness guarantee (A-claim) silently assumes the real generator satisfies \u2016c*\u2016\u221e\u22644 and weak-form RMS\u2264\u03b5A; if the hold-out violates either, the \u2018provably complete\u2019 claim collapses and downstream MDL ranking becomes vacuous.",
+      "Completeness proof hinges on an upper-Lipschitz bound of the weak-form residual; without a proven coercivity (lower-Lipschitz) bound, large-norm coefficient vectors outside the enumerated cube can achieve the same RMS, so DRIFT-LLL may terminate prematurely and miss the true rule."
+    ],
+    "final_score": 62,
+    "final_weakest": "Completeness proof hinges on an upper-Lipschitz bound of the weak-form residual; without a proven coercivity (lower-Lipschitz) bound, large-norm coefficient vectors outside the enumerated cube can achieve the same RMS, so DRIFT-LLL may terminate prematurely and miss the true rule.",
+    "final_thesis_primitives": [],
+    "failure_signature": "The completeness guarantee (A-claim) was inadequate because it silently assumed the real generator satisfies \u2016c*\u2016\u221e\u22644, leaving the claim vacuous when hold-out data violates that bound.",
+    "resolution_move": "Added a coercivity (lower-Lipschitz) bound requirement as an explicit apparatus gate on the weak-form residual, conditioning the completeness claim on a proven two-sided Lipschitz bracket rather than a one-sided upper bound.",
+    "what_survived": "The MDL ranking apparatus and the DRIFT-LLL enumeration procedure survived as the core search mechanism, contingent on the newly gated residual bounds.",
+    "what_opened": "Whether a constructive proof of the coercivity constant can be derived from the PDE structure alone, or whether it requires additional empirical calibration on hold-out data.",
+    "proof_object_delta": {
+      "before": "Only an upper-Lipschitz bound on the weak-form residual, leaving large-norm coefficient vectors outside the enumerated cube unconstrained and the completeness claim unverified.",
+      "after": "An explicit coercivity (lower-Lipschitz) bound gate on the weak-form residual that must be satisfied before the completeness claim is asserted.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp140_ztare_discovery"
+  },
+  {
+    "cycle_idx": 10,
+    "start_iteration": 5,
+    "end_iteration": 10,
+    "n_iters_in_cycle": 6,
+    "weakest_points_in_cycle": [
+      "Completeness still hinges on the empirical estimate of the smallest eigenvalue \u03bb\u0302_min of the weak-form Gram matrix. If \u03bb\u0302_min is over-estimated by noise or numerical error, the enumerated \u2113\u221e cube can miss large-norm generators that fit the data, breaking the A-claim while the algorithm has no internal diagnostic.",
+      "Soundness of the \u03b5_spec upper-bound: the k \u03c3_noise L\u00b2 \u0394t formula ignores condition-number amplification, so \u03bb_safe can be over-optimistic and the advertised completeness guarantee may fail silently.",
+      "Thesis omits the mandated paired-primitive specification (no explicit Class-A behavioral solver, no Class-B compressibility filter, no composition contract).",
+      "LLL-based solver requires the true KS-8 coefficient vector to lie within a small-integer lattice ball; if coefficients are generic reals the behavioral set will be empty and the whole pipeline collapses.",
+      "Thesis fatally under-estimates the number of unconstrained rule-table entries (203 not \u226418 after 40 observations); the claimed \"complete enumeration\" via MiniSat is astronomically infeasible (\u224810^97 solutions), so Class-A cannot guarantee full behavioral coverage and the entire paired-primitive contract collapses."
+    ],
+    "final_score": 24,
+    "final_weakest": "Method-B violates v2.2 requirement for an orthogonal physical/structural prior\u2014minterm-count is pure compressibility, so the law-finder cannot distinguish coordinate-warp or cryptographic fits; additionally the whole scaling story rests on a factual error (a radius-2 binary CA has only 32 rule bits, not \u2264400).",
+    "final_thesis_primitives": [],
+    "failure_signature": "The cycle addressed the stall caused by an inadequate orthogonal physical/structural prior in Method-B, where minterm-count as the sole compressibility filter could not distinguish coordinate-warp or cryptographic fits from genuine law discovery.",
+    "resolution_move": "Replaced the minterm-count compressibility filter with a paired-primitive specification requiring an explicit orthogonal physical/structural prior distinct from pure compressibility, and corrected the CA rule-bit count factual error (32 bits for radius-2 binary CA, not \u2264400).",
+    "what_survived": "The weak-form Gram matrix eigenvalue completeness framing and the \u2113\u221e enumeration strategy for bounding candidate generators survived as the structural backbone of the Class-A behavioral solver.",
+    "what_opened": "Whether any orthogonal physical/structural prior can be specified that is both computationally tractable and provably distinguishes genuine law-candidates from coordinate-warp or cryptographic fits at the required scale.",
+    "proof_object_delta": {
+      "before": "No paired-primitive specification with an orthogonal physical/structural prior; Method-B relied solely on minterm-count compressibility with an incorrect CA rule-bit bound (\u2264400).",
+      "after": "A corrected factual bound on CA rule bits (32 for radius-2 binary CA) and a requirement for an explicit orthogonal physical/structural prior as a mandatory gate separating compressibility from law-discovery in the paired-primitive contract.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "add apparatus gate",
+    "project": "gp140_ztare_discovery"
+  }
+]

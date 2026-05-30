@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 50.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574",
+  "cost_penalty": 0.5,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T13:08:21Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_clay_birkhoff_R5_coupled_bootstrap_20260516",
+    "score": 0.125,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.125,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 10,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1111,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 140,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 7,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 4,
+        "token_jaccard": 0.0833
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "21d",
+  "information_value": 8.0,
+  "layer": "meso",
+  "objective_resolver": "PDE check the coupled Riccati bootstrap: (a) is \u2016R[q]\u2016\u2272q\u00b2 and the 2D-enstrophy sign condition (Cq\u00b2\u2212\u03bd)\u22640 for q<q* genuine; (b) is q_n\u2272s_n\u21920 the cascade's defining selection property (not circular) so threshold-crossing is satisfied; (c) do BOTH cutoff-commutators close at the stated orders (q-eq via tick570 R1, p\u0304-eq via Ladyzhenskaya enstrophy). success iff bootstrap self-consistently closes with only cited inputs; 0.5 if one extra standard hypothesis (e.g. uniform initial 2D enstrophy) needed; fail iff circular with asymptotic-tangentiality OR a cutoff-commutator escapes the stated order.",
+  "question": "Does the LOCALIZED Raugel-Sell coupled bootstrap close at R1/(iii) order? q=\u2016Nu\u00b7W\u2016 obeys d/ds q\u00b2 \u2264 \u2212(\u03bd\u03bb\u2081\u2212O(s_n))q\u00b2 + (back-reaction from 2D-avg p\u0304) + C\u039b\u207b\u00b9M; p\u0304 is 2D-NSE (Ladyzhenskaya global) forced by Reynolds R[q]\u2272q\u00b2; 2D enstrophy d/ds\u2016\u2207p\u0304\u2016\u00b2 \u2264 (Cq\u00b2\u2212\u03bd)\u2016\u0394p\u0304\u2016\u00b2 \u22640 for q<q*=\u221a(\u03bd/C) \u21d2 bounded; asymptotic tangentiality s_n\u21920 \u21d2 q_n eventually <q* (pec_c threshold dichotomy) \u21d2 contraction persists \u21d2 \u03a3 s_n<\u221e. Cutoff-commutator: q-eq at R1 order (tick570 mechanism), p\u0304-eq at 2D-enstrophy order (Ladyzhenskaya-bounded). Closes given only cited inputs (Ladyzhenskaya, tick570 R1, tick573 \u03bb\u2081=\u03c0\u00b2) \u2014 no new atom \u2014 OR is q_n<q* circular w/ the asymptotic-tangentiality hypothesis?",
+  "risk_penalty": 0.7,
+  "success_threshold": "success iff coupled bootstrap closes with only cited inputs (Ladyzhenskaya+tick570+tick573); 0.5 if one std extra hypothesis; fail iff circular or commutator escapes",
+  "task_type": "ns_clay_birkhoff_R5_coupled_bootstrap_20260516",
+  "value_if_success": 8.5,
+  "void_conditions": "tick573 engine or tick570 R1 refactored"
+}

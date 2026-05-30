@@ -1,0 +1,30 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "c656dc16511060192623d6022e5a2561e9566af808c15d64862d013087daf84e",
+  "artifact_path": "analytics/public/leanmill/results/v2079_union_training_readiness_gate_after_slope_heldout_strict.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": "gate_passed",
+  "contract_id": "gp225_v2079_union_training_readiness_gate_after_slope_heldout_strict",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "meso_only_forecast",
+    "heldout_strict_yield",
+    "null_baseline_allowed",
+    "anti_goodhart"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "v2080_null_baseline_split_and_leakage_dry_run_after_slope_heldout_strict",
+  "old_next_action": "full training remains blocked after manifest refresh",
+  "preconditioner_effect": "v20.77/v20.78 closed the heldout-content blocker but exposed the baseline/model-delta blocker.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2078_manifest_after_slope_heldout_strict_replay.json",
+  "realized_failure_mode_ids": [
+    "baseline_model_delta_evidence_missing_for_full_training"
+  ],
+  "resolution_note": "v20.79 passed as a read-only gate: full GNN/cross-encoder training remains blocked, but a null/baseline split and leakage dry-run is now allowed as the next evidence-generating artifact.",
+  "resolved_at": "2026-05-14T20:02:37Z",
+  "success_bool": true,
+  "voided": false
+}

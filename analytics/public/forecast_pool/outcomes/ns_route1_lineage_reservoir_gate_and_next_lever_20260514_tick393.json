@@ -1,0 +1,36 @@
+{
+  "actual_cost_agent_minutes": 10.0,
+  "artifact_hash": "f00b80115e955b57d80cad4cf5d195fb8886518b110d46f46529f43e8422e077",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/gate_reports/tick393_lineage_reservoir_gate_report.json",
+  "changed_by_forecast_ids": [
+    "codex_rd_language_gate",
+    "codex_rd_pde_skeptic"
+  ],
+  "compile_status": "not_applicable",
+  "contract_id": "ns_route1_lineage_reservoir_gate_and_next_lever_20260514_tick393",
+  "counterfactual_value_bucket": "medium",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "gate_stop_signal",
+    "residual_language_feedback"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": null,
+  "negative_externality_tags": [
+    "gate_no_decision_delta"
+  ],
+  "new_next_action": "do not extend language now; attack the PDE source theorem or recurrent-reuse fifth channel",
+  "old_next_action": "possibly extend language/gates after LineageFreshMonotoneReservoirSource",
+  "preconditioner_effect": "Confirmed the local contract is crisp and prevented further language/gate work; next action stays PDE source/falsifier.",
+  "preconditioner_source": "GP-216/219 ns_gate_check on tick393 lineage-reservoir rubric",
+  "realized_failure_mode_ids": [
+    "gate_no_decision_delta",
+    "lineage_reservoir_missing_theorem"
+  ],
+  "resolution_note": "ns_gate_check passed all crisp structural gates and emitted residual_language_feedback, but it did not change the next proof action beyond tick392. The residual remains the PDE theorem LineageFreshMonotoneReservoirSource or recurrent-reuse fifth channel. Treat as a useful stop signal for gate work, not a successful decision-changing tick.",
+  "resolved_at": "2026-05-14T15:30:36Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

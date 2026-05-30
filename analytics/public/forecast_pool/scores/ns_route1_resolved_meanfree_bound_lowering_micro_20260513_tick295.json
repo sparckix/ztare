@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295",
+  "mean_brier": 0.11924999999999998,
+  "mean_log_score": -0.42338233461277236,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "pass",
+    "contract_id": "ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Succeeded: added FreshFrequencyResolvedMeanFreeTentSquareBoundDecomposition, resolvedMeanFreeTentSquare_bound_of_decomposition, and constructor into FreshFrequencyResolvedMeanFreeTentSquareEstimate; lake build passed; no pre-GNN mutation.",
+    "resolved_at": "2026-05-13T22:04:53Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T22:05:04Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+      "brier": 0.10889999999999997,
+      "cost_error_agent_minutes": 26.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 50.0,
+      "log_score": -0.40047756659712525,
+      "p_success": 0.67,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 46.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 70.0,
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true
+    }
+  ]
+}

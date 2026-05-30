@@ -1,0 +1,207 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T15:37:54Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 35.0,
+    "expected_value": 0.8623873357539124,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.28,
+    "p_needs_new_lemma": 0.94,
+    "p_regression": 0.1,
+    "p_success": 0.6393550902672762,
+    "participants": [
+      {
+        "agent_id": "codex_rd_pde_no_go",
+        "domain": "ns_route1_pde",
+        "p_success": 0.55,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_surface_repair",
+        "domain": "ns_route1_pde",
+        "p_success": 0.72,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "still_too_wrapper_like",
+        "p": 0.31000000000000005
+      },
+      {
+        "mode": "active_tail_sublemma_underdefined",
+        "p": 0.25
+      },
+      {
+        "mode": "lean_field_refactor_error",
+        "p": 0.18
+      },
+      {
+        "mode": "event_schedule_mismatch",
+        "p": 0.16
+      },
+      {
+        "mode": "logging_overhead",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T15:37:28Z",
+    "created_by": "codex:RD",
+    "horizon": "same-session_tick395",
+    "layer": "micro",
+    "objective_resolver": "Lean single-file check passes and new source no longer takes LineageFreshMonotoneReservoirSource as an input; no route closure claimed",
+    "question": "Can the next NS tick remove circularity from the frequency-localized Duhamel reservoir surface by encoding a noncircular source for LineageFreshMonotoneReservoirSource and the first active-tail-to-caloric-dissipation sublemma target?",
+    "success_threshold": "true iff Lean compiles with no sorry/admit delta and the next proof action becomes activeTailPaidByCaloricDissipation_of_sameTreeFreshFrequency or a no-go guard",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_noncircular_frequency_duhamel_source_20260514_tick395",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_pde_no_go",
+        "raw_agent_ids": [
+          "codex_rd_pde_no_go"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_surface_repair",
+        "raw_agent_ids": [
+          "codex_rd_surface_repair"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_pde_no_go",
+      "codex_rd_surface_repair"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Do not claim more than surface repair. If the source still delegates activeTail->caloric dissipation, log the hard theorem and stop.",
+        "agent_id": "codex_rd_pde_no_go",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395/codex_rd_pde_no_go.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T15:37:43Z",
+        "p_success": 0.55,
+        "rationale_short": "Likely compile succeeds, but scientific success depends on clearly isolating the first PDE estimate rather than hiding it in producesLineageReservoir.",
+        "specific_failure_mode_ids": [
+          "still_too_wrapper_like",
+          "active_tail_sublemma_underdefined",
+          "no_decision_delta"
+        ]
+      },
+      {
+        "action_change_recommendation": "Add a raw source structure with constructor into LineageFreshMonotoneReservoirSource; keep activeTailPaidByCaloricDissipation as the first named PDE sublemma.",
+        "agent_id": "codex_rd_surface_repair",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_noncircular_frequency_duhamel_source_20260514_tick395/codex_rd_surface_repair.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-14T15:37:43Z",
+        "p_success": 0.72,
+        "rationale_short": "The sidecar correctly flagged circularity. A noncircular source is a straightforward Lean surface if it carries raw source fields and constructs the abstract reservoir.",
+        "specific_failure_mode_ids": [
+          "still_too_wrapper_like",
+          "active_tail_sublemma_underdefined",
+          "lean_field_refactor_error"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 17.0,
+    "changed_by_forecast_ids": [
+      "codex_rd_surface_repair",
+      "codex_rd_pde_no_go"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T15:40:14Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.17,
+      "p_success": 0.6393550902672762,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "still_too_wrapper_like",
+        "p": 0.31000000000000005
+      },
+      "voi_proxy": 1.0506
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 35.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6393550902672762,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "still_too_wrapper_like",
+        "p": 0.31000000000000005
+      },
+      {
+        "mode": "active_tail_sublemma_underdefined",
+        "p": 0.25
+      },
+      {
+        "mode": "lean_field_refactor_error",
+        "p": 0.18
+      },
+      {
+        "mode": "event_schedule_mismatch",
+        "p": 0.16
+      },
+      {
+        "mode": "logging_overhead",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.14045,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T15:40:22Z"
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level501_least_hit_incidence_selector_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level501_least_hit_incidence_selector_source.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level501_least_hit_incidence_selector_source.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level501_least_hit_incidence_selector_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level501_least_hit_incidence_selector_source.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": "selected_branch_projected_audited_output_source",
+    "created_at": "2026-05-27T04:42:12Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-27T08:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "TRUE iff Lean adds TargetEventIndexFromBoundedIncidenceLeastHitSource with least-hit targetEventIndex, proves bound and injectivity, packages to TargetSlotFromBoundedEventIndexInjectionSource, and lake env lean plus strict receipts pass.",
+    "question": "Can Level501 compile a least-hit bounded incidence selector that constructs the Level500 bounded event-index injection source from bounded incident existence plus collision-free incidence?",
+    "success_threshold": "lake_env_lean_pass_and_level501_receipts_pass",
+    "task_type": "ns_formal_frontier"
+  },
+  "contract_id": "tick668_level501_least_hit_incidence_selector_source",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex:RD",
+        "raw_agent_ids": [
+          "codex:RD"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex:RD"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed with Level501 least-hit selector if Lean, strict gate, workbench, and Lake build remain green.",
+        "agent_id": "codex:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecast_updates/tick668_level501_least_hit_incidence_selector_source/codex_rd/20260527t044536z_codex_rd.json",
+        "canonical_agent_id": null,
+        "domain": "ns_millennium_hunt",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-27T04:45:36Z",
+        "p_success": 0.78,
+        "rationale_short": "Updated after contract rewrite: Lean already accepted the local shape; remaining uncertainty is mostly packaging and validation friction.",
+        "specific_failure_mode_ids": [
+          "least_hit_packaging_regression",
+          "gate_schema_too_weak",
+          "lake_build_regression"
+        ]
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": false,
+    "missing_obligations": [
+      "aggregate_ready"
+    ],
+    "next_action": "aggregate_when_rd_releases",
+    "state": "forecast_fulfilled"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "changed_by_forecast_ids": [
+      "codex:RD"
+    ],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-27T04:45:54Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "aggregate_when_rd_releases",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.04839999999999999,
+    "score_rows": 1,
+    "scored_at": "2026-05-27T04:46:00Z"
+  }
+}

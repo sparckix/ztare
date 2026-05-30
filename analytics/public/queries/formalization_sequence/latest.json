@@ -1,0 +1,36 @@
+{
+  "branch_text": "coherent event selection residual fresh excess same ledger event stream inherited flat pressure visibility no posthoc beta radius",
+  "generated_at": "2026-05-14T22:22:08.310569+00:00",
+  "gowers_first_score": 2,
+  "lean_first_score": 0,
+  "matched_gowers_first_terms": [
+    "visibility"
+  ],
+  "matched_lean_first_terms": [],
+  "matched_wrapper_risk_terms": [
+    "visibility"
+  ],
+  "output_path": "analytics/public/queries/formalization_sequence/latest.json",
+  "recommended_next_steps": [
+    "do a short informal surface audit, then formalize the scalar or constructor step",
+    "record whether the informal pass found proof route, no-go, or missing hypothesis"
+  ],
+  "verdict": "mixed_sequence",
+  "vocabulary_fingerprint": {
+    "pde_estimate_craft_ops": [
+      "pec_a auxiliary object",
+      "pec_e failure witness"
+    ],
+    "problem_solving_ops": [
+      "ps_06 estimate chaining"
+    ],
+    "theory_building_ops": [
+      "tb_06 tacit pattern formalization"
+    ],
+    "universal_research_ops": [
+      "core_03 decomposition",
+      "broad_05 extremal audit"
+    ]
+  },
+  "wrapper_risk_score": 1
+}

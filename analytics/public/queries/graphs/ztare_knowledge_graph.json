@@ -1,0 +1,3917 @@
+{
+  "@context": "ztare://kg/v2",
+  "@graph": [
+    {
+      "@id": "seam:README",
+      "@type": "seam",
+      "title": "Seams cabinet structure",
+      "status": "unknown",
+      "path": "research_areas/private/seams/README.md",
+      "depends_on": [
+        "seam:GP-072",
+        "seam:GP-172"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-058",
+      "@type": "seam",
+      "title": "GP-058 Bug-bounty + factory integration seam",
+      "status": "open",
+      "path": "research_areas/private/seams/gaming/GP-058_bug_bounty_factory_integration_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-055",
+        "seam:GP-056",
+        "seam:GP-057"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-073",
+      "@type": "seam",
+      "title": "GP-073 \u2014 Subliminal Learning Reproduction Protocol (Cloud et al. 2026, Nature)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/gaming/GP-073_subliminal_learning_reproduction_seam.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-154",
+      "@type": "seam",
+      "title": "T14 \u2014 v4 Conversion-Transform External Validation Charter",
+      "status": "active",
+      "path": "research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-106",
+      "@type": "seam",
+      "title": "GP-106 \u2014 Proportionality and Precautionary Principle for Model Treatment",
+      "status": "active",
+      "path": "research_areas/private/seams/reflexive/GP-106_proportionality_precautionary_principle_seam.md",
+      "depends_on": [
+        "seam:GP-088",
+        "seam:GP-105"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-105",
+      "@type": "seam",
+      "title": "GP-105 \u2014 M-Form Alignment Audit: Catching Goodhart's Law in Qualitative Rubrics",
+      "status": "open",
+      "path": "research_areas/private/seams/reflexive/GP-105_mform_alignment_audit_seam.md",
+      "depends_on": [
+        "seam:GP-054",
+        "seam:GP-072",
+        "seam:GP-086",
+        "seam:GP-102",
+        "seam:GP-106"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-172",
+      "@type": "seam",
+      "title": "GP-172 \u2014 Research Director as M-form Role (post-ZTARE diagnostic + intervention mandate)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/protocol/GP-172_research_director_mform_role_seam.md",
+      "depends_on": [
+        "seam:GP-070",
+        "seam:GP-072",
+        "seam:GP-168"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-072",
+      "@type": "seam",
+      "title": "GP-072 Sandbox 14 \u2014 Debate Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/protocol/GP-072_sandbox_14_debate_seam.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-076",
+      "@type": "seam",
+      "title": "GP-076 \u2014 Predictive Divergence Sweep: Breaking Corrector Degeneracy Without Oracle Access",
+      "status": "unknown",
+      "path": "research_areas/private/seams/protocol/GP-076_predictive_divergence_sweep_seam.md",
+      "depends_on": [
+        "seam:GP-074"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-193",
+      "@type": "seam",
+      "title": "GP-193 \u2014 Post-Run Thesis Synthesizer Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/protocol/GP-193_post_run_thesis_synthesizer_seam.md",
+      "depends_on": [
+        "seam:GP-168",
+        "seam:GP-169",
+        "seam:GP-193b"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-189",
+      "@type": "seam",
+      "title": "GP-189 \u2014 NS Continuation Criterion After Bounded Near-Miss",
+      "status": "open",
+      "path": "research_areas/private/seams/protocol/GP-189_ns_continuation_criterion_after_bounded_near_miss_seam.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-128b",
+      "@type": "seam",
+      "title": "GP-128b \u2014 Inbound Principal Directives (Telegram channel)",
+      "status": "active",
+      "path": "research_areas/private/seams/protocol/GP-128b_inbound_principal_directives.md",
+      "depends_on": [
+        "seam:GP-128"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-188",
+      "@type": "seam",
+      "title": "GP-188 \u2014 Research Director Primitive-Compilation Boundary",
+      "status": "open",
+      "path": "research_areas/private/seams/protocol/GP-188_research_director_primitive_compilation_boundary_seam.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-192",
+      "@type": "seam",
+      "title": "GP-192 \u2014 Enterprise-Grade Org Runtime Requirements",
+      "status": "open",
+      "path": "research_areas/private/seams/protocol/GP-192_enterprise_grade_org_runtime_seam.md",
+      "depends_on": [
+        "seam:GP-191"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-075",
+      "@type": "seam",
+      "title": "GP-075 \u2014 Rubric Generation for Unknown Domains",
+      "status": "unknown",
+      "path": "research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-045",
+        "seam:GP-069",
+        "seam:GP-073",
+        "seam:GP-074",
+        "seam:GP-077"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-079",
+      "@type": "seam",
+      "title": "GP-079 Persona Library Unification",
+      "status": "open",
+      "path": "research_areas/private/seams/protocol/GP-079_persona_library_unification_seam.md",
+      "depends_on": [
+        "seam:GP-054",
+        "seam:GP-070",
+        "seam:GP-072",
+        "seam:GP-078",
+        "seam:GP-101"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-191",
+      "@type": "seam",
+      "title": "GP-191 \u2014 Org Kernel / Policy Boundary",
+      "status": "open",
+      "path": "research_areas/private/seams/protocol/GP-191_org_kernel_policy_boundary_seam.md",
+      "depends_on": [
+        "seam:GP-070",
+        "seam:GP-086",
+        "seam:GP-128",
+        "seam:GP-157",
+        "seam:GP-188",
+        "seam:GP-190"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-096",
+      "@type": "seam",
+      "title": "GP-096 \u2014 Science Programme Decomposition: Four Phases from Cage to Discovery",
+      "status": "active",
+      "path": "research_areas/private/seams/mission/GP-096_science_programme_decomposition_seam.md",
+      "depends_on": [
+        "seam:GP-072",
+        "seam:GP-075",
+        "seam:GP-082",
+        "seam:GP-083",
+        "seam:GP-085",
+        "seam:GP-088",
+        "seam:GP-095",
+        "seam:GP-103",
+        "seam:GP-133"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:ztare_mission_hypothesis_ledger_seam",
+      "@type": "seam",
+      "title": "ZTARE Mission Hypothesis Ledger Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/ztare_mission_hypothesis_ledger_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-028",
+        "seam:GP-035",
+        "seam:GP-046",
+        "seam:GP-047",
+        "seam:GP-048",
+        "seam:GP-154"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:SESSION_HANDOFF_2026-05-01_three_frontier_tracks",
+      "@type": "seam",
+      "title": "Session Handoff: Three Frontier Tracks",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/SESSION_HANDOFF_2026-05-01_three_frontier_tracks.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-136",
+      "@type": "seam",
+      "title": "GP-136 \u2014 pMDL Threshold Hardening (narrower substrate post-GP-135)",
+      "status": "active",
+      "path": "research_areas/private/seams/mission/GP-136_pmdl_threshold_hardening_seam.md",
+      "depends_on": [
+        "seam:GP-134",
+        "seam:GP-135"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-168",
+      "@type": "seam",
+      "title": "GP-168 Org Design Discovery \u2014 Unfalsifiability Without Exogenous Closure",
+      "status": "open",
+      "path": "research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md",
+      "depends_on": [
+        "seam:GP-070",
+        "seam:GP-132",
+        "seam:GP-172"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-049",
+      "@type": "seam",
+      "title": "GP-049 Epistemic Verification Decomposition Validation Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-049_epistemic_verification_decomposition_validation_seam.md",
+      "depends_on": [
+        "seam:GP-032"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-133",
+      "@type": "seam",
+      "title": "GP-133 Round 4 \u2014 `py_exec` Sandbox Engineering Review",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-133_R4_py_exec_sandbox_review.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-135",
+      "@type": "seam",
+      "title": "GP-135 \u2014 Meta-Law Hypothesis Family Program",
+      "status": "active",
+      "path": "research_areas/private/seams/mission/GP-135_meta_law_hypothesis_family_program_seam.md",
+      "depends_on": [
+        "seam:GP-096",
+        "seam:GP-133",
+        "seam:GP-134"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-082",
+      "@type": "seam",
+      "title": "GP-082: Substrate Scope Boundary \u2014 Where Abductive Compression Works and Where It Breaks",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-082_substrate_scope_boundary_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-080",
+        "seam:GP-081"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-050",
+      "@type": "seam",
+      "title": "GP-050 \u2014 Post-Treatise Philosophy Anchors Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-050_post_treatise_philosophy_anchors_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-027",
+        "seam:GP-035",
+        "seam:GP-045",
+        "seam:GP-046",
+        "seam:GP-049",
+        "seam:GP-061",
+        "seam:GP-074"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-129",
+      "@type": "seam",
+      "title": "GP-129 \u2014 Biological & Multidisciplinary Panel on AI-Native Org Design",
+      "status": "open",
+      "path": "research_areas/private/seams/mission/GP-129_biological_org_design_panel_seam.md",
+      "depends_on": [
+        "seam:GP-128",
+        "seam:GP-130"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-128",
+      "@type": "seam",
+      "title": "GP-128 Persistent Manager Agent \u2014 Org Design Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-128_persistent_manager_agent_seam.md",
+      "depends_on": [
+        "seam:GP-070",
+        "seam:GP-105",
+        "seam:GP-105b",
+        "seam:GP-129",
+        "seam:GP-130",
+        "seam:GP-131"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-140",
+      "@type": "seam",
+      "title": "GP-140 Seam \u2014 ZTARE-on-ZTARE Discovery Inversion",
+      "status": "open",
+      "path": "research_areas/private/seams/mission/GP-140_ztare_discovery_seam.md",
+      "depends_on": [
+        "seam:GP-135"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-169",
+      "@type": "seam",
+      "title": "GP-169 \u2014 Consciousness Decision Protocol Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-169_consciousness_decision_protocol_seam.md",
+      "depends_on": [
+        "seam:GP-168"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-141",
+      "@type": "seam",
+      "title": "GP-141 Seam \u2014 Continuous A+B reference implementation lineage",
+      "status": "open",
+      "path": "research_areas/private/seams/mission/GP-141_continuous_A_plus_B_reference_implementation_seam.md",
+      "depends_on": [
+        "seam:GP-140"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-166",
+      "@type": "seam",
+      "title": "GP-166 \u2014 Self-Enacted Procedural Compliance: The Homeostasis Problem",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-166_self_enacted_procedural_compliance_seam.md",
+      "depends_on": [
+        "seam:GP-129",
+        "seam:GP-164"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-127",
+      "@type": "seam",
+      "title": "GP-127: Falsify-Before-Patent Discipline",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-127_falsify_before_patent_seam.md",
+      "depends_on": [
+        "seam:GP-108",
+        "seam:GP-116"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-085",
+      "@type": "seam",
+      "title": "GP-085 \u2014 Grammar Ceiling Hypothesis: Static vs. Dynamic Dictionary",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-085_grammar_ceiling_hypothesis_seam.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-131",
+      "@type": "seam",
+      "title": "GP-131 \u2014 Work-Discovery Loop (Level 2 Daemon Bridge)",
+      "status": "open",
+      "path": "research_areas/private/seams/mission/GP-131_work_discovery_loop_seam.md",
+      "depends_on": [
+        "seam:GP-105",
+        "seam:GP-105b",
+        "seam:GP-128",
+        "seam:GP-129",
+        "seam:GP-130"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-083",
+      "@type": "seam",
+      "title": "GP-083: Inference Type Boundary \u2014 Kepler, Newton, and the Limits of Abduction",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/GP-083_inference_type_boundary_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-046",
+        "seam:GP-080",
+        "seam:GP-081",
+        "seam:GP-082"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-130",
+      "@type": "seam",
+      "title": "GP-130 \u2014 Non-LLM Substrate in the ZTARE Loop",
+      "status": "open",
+      "path": "research_areas/private/seams/mission/GP-130_non_llm_substrate_seam.md",
+      "depends_on": [
+        "seam:GP-072",
+        "seam:GP-085",
+        "seam:GP-127",
+        "seam:GP-128",
+        "seam:GP-129"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-134",
+      "@type": "seam",
+      "title": "GP-134 \u2014 ZTARE-on-ZTARE: Self-Recursive Architectural Discovery",
+      "status": "active",
+      "path": "research_areas/private/seams/mission/GP-134_ztare_on_ztare_self_recursive_seam.md",
+      "depends_on": [
+        "seam:GP-021",
+        "seam:GP-101",
+        "seam:GP-131",
+        "seam:GP-133"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-167",
+      "@type": "seam",
+      "title": "GP-167 \u2014 Multi-Agent Interface Form Factor",
+      "status": "active",
+      "path": "research_areas/private/seams/mission/GP-167_multi_agent_interface_form_factor_seam.md",
+      "depends_on": [
+        "seam:GP-128",
+        "seam:GP-129",
+        "seam:GP-166"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:ztare_operational_mode_seam",
+      "@type": "seam",
+      "title": "ZTARE Operational Mode Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/mission/ztare_operational_mode_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-028",
+        "seam:GP-035",
+        "seam:GP-046",
+        "seam:GP-047",
+        "seam:GP-048",
+        "seam:GP-051",
+        "seam:GP-053",
+        "seam:GP-054"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-173",
+      "@type": "seam",
+      "title": "GP-173 \u2014 Comparative Closure-Clock Substrate (org-design v2)",
+      "status": "open",
+      "path": "research_areas/private/seams/substrates/GP-173_comparative_closure_clock_substrate_seam.md",
+      "depends_on": [
+        "seam:GP-168"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-143",
+      "@type": "seam",
+      "title": "GP-143 \u2014 Continuous-Chaotic Kernel Integration (Seam)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-143_continuous_chaotic_kernel_integration_seam.md",
+      "depends_on": [
+        "seam:GP-035",
+        "seam:GP-053",
+        "seam:GP-078",
+        "seam:GP-086",
+        "seam:GP-099",
+        "seam:GP-119"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-149",
+      "@type": "seam",
+      "title": "GP-149 Phase 2 \u2014 Mining Refresh (2026-05-04)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-149_phase2_refresh_2026-05-04.md",
+      "depends_on": [
+        "seam:GP-151",
+        "seam:GP-212",
+        "seam:GP-213"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-145",
+      "@type": "seam",
+      "title": "GP-145 \u2014 SAW Connective Constant \u03bc_sq (Conjecture Refinement Seam)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-145_saw_mu_square_seam.md",
+      "depends_on": [
+        "seam:GP-086",
+        "seam:GP-122",
+        "seam:GP-143",
+        "seam:GP-144",
+        "seam:GP-146",
+        "seam:GP-148"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-216",
+      "@type": "seam",
+      "title": "GP-216 \u2014 Theory-Building Operations: Mining, Validation, ZTARE Integration",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-216_theory_building_operations_seam.md",
+      "depends_on": [
+        "seam:GP-180",
+        "seam:GP-181",
+        "seam:GP-215"
+      ],
+      "instantiates_op": [
+        "op:tb_01",
+        "op:tb_02",
+        "op:tb_04",
+        "op:tb_06",
+        "op:tb_07",
+        "op:tb_10",
+        "op:tb_11",
+        "op:tb_12",
+        "op:tb_LAK1",
+        "op:tb_LAK2",
+        "op:tb_NEW_HOF",
+        "op:tb_NEW_POLYA"
+      ],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-162",
+      "@type": "seam",
+      "title": "GP-162 \u2014 Convention Homogeneity Enforcement (3-Layer Design)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-162_convention_homogeneity_enforcement_seam.md",
+      "depends_on": [
+        "seam:GP-154",
+        "seam:GP-157",
+        "seam:GP-158"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-216e",
+      "@type": "seam",
+      "title": "GP-216e \u2014 Reflexive Engineering Primitives Map to GP-216 Universal Ops",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-216e_reflexive_primitives_to_v5_ops_mapping.md",
+      "depends_on": [
+        "seam:GP-216"
+      ],
+      "instantiates_op": [
+        "op:core_01",
+        "op:core_02",
+        "op:core_03",
+        "op:core_04",
+        "op:core_05",
+        "op:core_06",
+        "op:core_07"
+      ],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-216d",
+      "@type": "seam",
+      "title": "GP-216d \u2014 Knowledge-Graph Representation for ZTARE Artifacts",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-216d_knowledge_graph_proposal.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-035",
+        "seam:GP-072",
+        "seam:GP-088",
+        "seam:GP-148",
+        "seam:GP-149",
+        "seam:GP-156",
+        "seam:GP-167",
+        "seam:GP-215",
+        "seam:GP-216",
+        "seam:GP-216b",
+        "seam:GP-216c"
+      ],
+      "instantiates_op": [
+        "op:broad_03",
+        "op:core_01",
+        "op:core_02",
+        "op:core_03",
+        "op:core_05",
+        "op:core_06",
+        "op:core_07",
+        "op:spec_01_graph"
+      ],
+      "references_gate": [
+        "gate:BoundChainConsistencyGate",
+        "gate:PotentialFunctionMonotonicityGate",
+        "gate:StagnationSpecialCaseHintGate"
+      ]
+    },
+    {
+      "@id": "seam:GP-216f",
+      "@type": "seam",
+      "title": "GP-216f \u2014 The Cross-Scale Fractal: 7 Scales, 82 Moves, 1 Shape",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-216f_cross_scale_fractal_map.md",
+      "depends_on": [
+        "seam:GP-216",
+        "seam:GP-216e"
+      ],
+      "instantiates_op": [
+        "op:core_01",
+        "op:core_02",
+        "op:core_03",
+        "op:core_04",
+        "op:core_05",
+        "op:core_06",
+        "op:core_07"
+      ],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-171",
+      "@type": "seam",
+      "title": "GP-171 \u2014 Tier-3 Mechanism Search via Lean-Audited Lagrangian Generation",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-171_tier3_mechanism_search_via_lean_lagrangian.md",
+      "depends_on": [
+        "seam:GP-170"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-170",
+      "@type": "seam",
+      "title": "GP-170 \u2014 Symbolic Logic Cage (deductive cage on PARAMETRIC_FORM)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-170_symbolic_logic_cage_seam.md",
+      "depends_on": [
+        "seam:GP-157",
+        "seam:GP-164",
+        "seam:GP-167",
+        "seam:GP-169"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-216b",
+      "@type": "seam",
+      "title": "GP-216b \u2014 Mechanization Roadmap: Two-Cultures Ops as Gates vs Director Judgment",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-216b_mechanization_roadmap.md",
+      "depends_on": [
+        "seam:GP-180",
+        "seam:GP-215",
+        "seam:GP-216"
+      ],
+      "instantiates_op": [
+        "op:ps_01",
+        "op:ps_02",
+        "op:ps_03",
+        "op:ps_04",
+        "op:ps_05",
+        "op:ps_06",
+        "op:tb_01",
+        "op:tb_02",
+        "op:tb_03",
+        "op:tb_04",
+        "op:tb_06",
+        "op:tb_08",
+        "op:tb_09",
+        "op:tb_11",
+        "op:tb_LAK1",
+        "op:tb_LAK2",
+        "op:tb_NEW_HOF",
+        "op:tb_NEW_POLYA"
+      ],
+      "references_gate": [
+        "gate:BoundChainConsistencyGate",
+        "gate:PotentialFunctionMonotonicityGate",
+        "gate:StagnationSpecialCaseHintGate",
+        "gate:TacitPatternRecurrenceDetector"
+      ]
+    },
+    {
+      "@id": "seam:GP-109",
+      "@type": "seam",
+      "title": "GP-109 \u2014 Residual Periodicity Detector (Self-Recursive Improvement)",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-109_residual_periodicity_detector_seam.md",
+      "depends_on": [
+        "seam:GP-088"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-164",
+      "@type": "seam",
+      "title": "GP-164 \u2014 ZTARE v2.0 Meta-Architecture: REFRAME + ANALOGY",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-164_ztare_v2_reframe_analogy_meta_architecture_seam.md",
+      "depends_on": [
+        "seam:GP-085",
+        "seam:GP-103",
+        "seam:GP-110",
+        "seam:GP-112",
+        "seam:GP-152",
+        "seam:GP-159"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-116",
+      "@type": "seam",
+      "title": "GP-116 \u2014 Compression as Architecture Discovery (Karpathy Connection)",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-116_compression_as_architecture_discovery.md",
+      "depends_on": [
+        "seam:GP-080",
+        "seam:GP-088"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-190",
+      "@type": "seam",
+      "title": "GP-190 \u2014 Post-Run Discriminator Daemon and Background-Debt Ladder",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-190_post_run_discriminator_daemon_seam.md",
+      "depends_on": [
+        "seam:GP-035",
+        "seam:GP-119",
+        "seam:GP-120",
+        "seam:GP-184",
+        "seam:GP-188"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-081",
+      "@type": "seam",
+      "title": "GP-081 \u2014 ZTARE \u2192 Lean 4 Formal Bridge",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-081_lean_formal_bridge_seam.md",
+      "depends_on": [
+        "seam:GP-088",
+        "seam:GP-103"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-115",
+      "@type": "seam",
+      "title": "GP-115 \u2014 Residual-Driven Grammar Expansion",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-115_residual_driven_grammar_expansion.md",
+      "depends_on": [
+        "seam:GP-088",
+        "seam:GP-103",
+        "seam:GP-112",
+        "seam:GP-113",
+        "seam:GP-116"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-216c",
+      "@type": "seam",
+      "title": "GP-216c \u2014 Apply Two-Cultures Insights to NS Track B Push to Closure",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-216c_ns_trackb_application.md",
+      "depends_on": [
+        "seam:GP-216"
+      ],
+      "instantiates_op": [
+        "op:ps_01",
+        "op:ps_02",
+        "op:ps_03",
+        "op:ps_04",
+        "op:ps_05",
+        "op:ps_06",
+        "op:tb_01",
+        "op:tb_02",
+        "op:tb_03",
+        "op:tb_04",
+        "op:tb_06",
+        "op:tb_08",
+        "op:tb_09",
+        "op:tb_11",
+        "op:tb_LAK1",
+        "op:tb_LAK2",
+        "op:tb_NEW_HOF",
+        "op:tb_NEW_POLYA"
+      ],
+      "references_gate": [
+        "gate:BoundChainConsistencyGate",
+        "gate:PotentialFunctionMonotonicityGate",
+        "gate:StagnationSpecialCaseHintGate",
+        "gate:TacitPatternRecurrenceDetector"
+      ]
+    },
+    {
+      "@id": "seam:GP-211",
+      "@type": "seam",
+      "title": "GP-211 \u2014 Lean-Proof Substrate Class",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-211_lean_proof_substrate_class_seam.md",
+      "depends_on": [
+        "seam:GP-135"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-213",
+      "@type": "seam",
+      "title": "GP-213 \u2014 Operator-Role Mechanization Frontier (Seam)",
+      "status": "active",
+      "path": "research_areas/private/seams/engine/GP-213_operator_role_mechanization_seam.md",
+      "depends_on": [
+        "seam:GP-103",
+        "seam:GP-104",
+        "seam:GP-148",
+        "seam:GP-149",
+        "seam:GP-151",
+        "seam:GP-167",
+        "seam:GP-211",
+        "seam:GP-212"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-151",
+      "@type": "seam",
+      "title": "GP-151 \u2014 Classifier Telemetry Downgrade & Super-Class Routing",
+      "status": "closed",
+      "path": "research_areas/private/seams/engine/GP-151_classifier_telemetry_downgrade_seam.md",
+      "depends_on": [
+        "seam:GP-145b",
+        "seam:GP-146",
+        "seam:GP-148",
+        "seam:GP-149"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-215",
+      "@type": "seam",
+      "title": "GP-215 \u2014 Meta-arc mining and self-recursive pattern application",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-215_meta_arc_mining_seam.md",
+      "depends_on": [
+        "seam:GP-060",
+        "seam:GP-148",
+        "seam:GP-149",
+        "seam:GP-151",
+        "seam:GP-186",
+        "seam:GP-213",
+        "seam:GP-214"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-212",
+      "@type": "seam",
+      "title": "GP-212 \u2014 Meta-Solver Kernel (Seam)",
+      "status": "active",
+      "path": "research_areas/private/seams/engine/GP-212_meta_solver_kernel_seam.md",
+      "depends_on": [
+        "seam:GP-053",
+        "seam:GP-086",
+        "seam:GP-104",
+        "seam:GP-133",
+        "seam:GP-148",
+        "seam:GP-149",
+        "seam:GP-151"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-111",
+      "@type": "seam",
+      "title": "GP-111 \u2014 Proactive Closure: Automated Post-Discovery Test Generation",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-111_proactive_closure_seam.md",
+      "depends_on": [
+        "seam:GP-088"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-114",
+      "@type": "seam",
+      "title": "GP-114 \u2014 Spectral Dynamics of Neural Network Training (Paper 6 Candidate)",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-114_neural_scaling_spectral_dynamics.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-148",
+      "@type": "seam",
+      "title": "GP-148 \u2014 Mining the Void (Seam)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-148_void_mining_seam.md",
+      "depends_on": [
+        "seam:GP-053",
+        "seam:GP-086",
+        "seam:GP-104",
+        "seam:GP-133"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-112",
+      "@type": "seam",
+      "title": "GP-112 \u2014 Margin of Safety Gate (Post-Discovery Stress Testing)",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-112_margin_of_safety_gate.md",
+      "depends_on": [
+        "seam:GP-088",
+        "seam:GP-111",
+        "seam:GP-113"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-110",
+      "@type": "seam",
+      "title": "GP-110 \u2014 Statistical Fingerprint Result Class",
+      "status": "active",
+      "path": "research_areas/private/seams/engine/GP-110_statistical_fingerprint_seam.md",
+      "depends_on": [
+        "seam:GP-088"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-113",
+      "@type": "seam",
+      "title": "GP-113 \u2014 Diagnosis-Informed LLM Feedback Loop",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-113_diagnosis_feedback_loop.md",
+      "depends_on": [
+        "seam:GP-111",
+        "seam:GP-112"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-117",
+      "@type": "seam",
+      "title": "GP-117 \u2014 Why Does the Pipeline Kill But Never Discover?",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-117_why_only_kills.md",
+      "depends_on": [
+        "seam:GP-112",
+        "seam:GP-113",
+        "seam:GP-115",
+        "seam:GP-116"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-103",
+      "@type": "seam",
+      "title": "GP-103 \u2014 The Topology Induction Gap (DFDO Sandbox_18)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-103_topology_induction_gap.md",
+      "depends_on": [
+        "seam:GP-048",
+        "seam:GP-087",
+        "seam:GP-088"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-144",
+      "@type": "seam",
+      "title": "GP-144 \u2014 New-Science Claim Discipline (Seam)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-144_new_science_claim_discipline_seam.md",
+      "depends_on": [
+        "seam:GP-086",
+        "seam:GP-088",
+        "seam:GP-105",
+        "seam:GP-119",
+        "seam:GP-122",
+        "seam:GP-143",
+        "seam:GP-145",
+        "seam:GP-146"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-214",
+      "@type": "seam",
+      "title": "GP-214 \u2014 Pattern-bank kernel injection (I-5 promotion)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/GP-214_pattern_bank_kernel_injection_seam.md",
+      "depends_on": [
+        "seam:GP-149",
+        "seam:GP-151"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-055",
+      "@type": "seam",
+      "title": "GP-055 Meta-judge parse robustness seam",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/GP-055_meta_judge_parse_robustness_seam.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:D4_distribution_form_factor_seam",
+      "@type": "seam",
+      "title": "D4 Distribution Form-Factor Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/interfaces/D4_distribution_form_factor_seam.md",
+      "depends_on": [
+        "seam:GP-0",
+        "seam:GP-031",
+        "seam:GP-036",
+        "seam:GP-070",
+        "seam:GP-071"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:D3_layer3_surfacing_seam",
+      "@type": "seam",
+      "title": "D3 Layer 3 Surfacing Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/interfaces/D3_layer3_surfacing_seam.md",
+      "depends_on": [
+        "seam:GP-012",
+        "seam:GP-014",
+        "seam:GP-017",
+        "seam:GP-021",
+        "seam:GP-022"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-099",
+      "@type": "seam",
+      "title": "GP-099 \u2014 Vocabulary Floor: Expanding the Primitive Library Without Combinatorial Death",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/grammar/GP-099_vocabulary_floor_seam.md",
+      "depends_on": [
+        "seam:GP-078",
+        "seam:GP-097",
+        "seam:GP-098"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-035",
+      "@type": "seam",
+      "title": "GP-035 Mutator Missing Fit Primitive Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md",
+      "depends_on": [
+        "seam:GP-011",
+        "seam:GP-023",
+        "seam:GP-030",
+        "seam:GP-034"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-095",
+      "@type": "seam",
+      "title": "GP-095 \u2014 Post-Fit Residual Ambiguity: Distinguish Convergence Failure, Ill-Conditioning, and Grammar Ceiling",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/grammar/GP-095_post_fit_residual_ambiguity_seam.md",
+      "depends_on": [
+        "seam:GP-035",
+        "seam:GP-074",
+        "seam:GP-078",
+        "seam:GP-085",
+        "seam:GP-086",
+        "seam:GP-089"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-060",
+      "@type": "seam",
+      "title": "GP-060 Parallel Champion Synthesis \u2014 Seam",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/grammar/GP-060_parallel_champion_synthesis_seam.md",
+      "depends_on": [
+        "seam:GP-034",
+        "seam:GP-042",
+        "seam:GP-058",
+        "seam:GP-059"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-087",
+      "@type": "seam",
+      "title": "GP-087 \u2014 Residual-Driven Primitive Generation",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md",
+      "depends_on": [
+        "seam:GP-082",
+        "seam:GP-085"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-078",
+      "@type": "seam",
+      "title": "GP-078 \u2014 Component D: Topology Synthesizer via AST Composition",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/grammar/GP-078_component_d_topology_synthesizer_seam.md",
+      "depends_on": [
+        "seam:GP-021",
+        "seam:GP-035",
+        "seam:GP-042",
+        "seam:GP-075",
+        "seam:GP-076",
+        "seam:GP-077",
+        "seam:GP-079",
+        "seam:GP-088",
+        "seam:GP-103"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-174",
+      "@type": "seam",
+      "title": "GP-174 \u2014 Parallel Recombination Pipeline (closes GP-060)",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/grammar/GP-174_parallel_recombination_pipeline_seam.md",
+      "depends_on": [
+        "seam:GP-060",
+        "seam:GP-157",
+        "seam:GP-164",
+        "seam:GP-167",
+        "seam:GP-168"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-056",
+      "@type": "seam",
+      "title": "GP-056 Axiomatic patching seam",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/grammar/GP-056_axiomatic_patching_seam.md",
+      "depends_on": [
+        "seam:GP-057",
+        "seam:GP-058"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-097",
+      "@type": "seam",
+      "title": "GP-097 \u2014 N-D Manifold Compressor: Dimensional Reduction Before Synthesis",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/grammar/GP-097_nd_manifold_compressor_seam.md",
+      "depends_on": [
+        "seam:GP-074",
+        "seam:GP-076",
+        "seam:GP-078",
+        "seam:GP-090"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-069",
+      "@type": "seam",
+      "title": "GP-069 \u2014 Champion nesting-audit gate seam (draft)",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/mutator/GP-069_champion_nesting_audit_gate_seam.md",
+      "depends_on": [
+        "seam:GP-061"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-030",
+      "@type": "seam",
+      "title": "GP-030 Deterministic Charter-Gate Lane Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md",
+      "depends_on": [
+        "seam:GP-012",
+        "seam:GP-013",
+        "seam:GP-014",
+        "seam:GP-023",
+        "seam:GP-028",
+        "seam:GP-029"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-034",
+      "@type": "seam",
+      "title": "GP-034 Loop Control Blind to Latent Distance Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/mutator/GP-034_loop_control_blind_to_latent_distance_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-028",
+        "seam:GP-030",
+        "seam:GP-037"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-100",
+      "@type": "seam",
+      "title": "GP-100 \u2014 Epistemic Decoupling: Separating Topology Generation from Thesis Writing",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/mutator/GP-100_epistemic_decoupling_seam.md",
+      "depends_on": [
+        "seam:GP-099"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-062",
+      "@type": "seam",
+      "title": "GP-062 Trajectory-Level Thrash Detection \u2014 Seam",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/mutator/GP-062_trajectory_thrash_detection_seam.md",
+      "depends_on": [
+        "seam:GP-034",
+        "seam:GP-061"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-042",
+      "@type": "seam",
+      "title": "GP-042 Mutator Structural Diversity",
+      "status": "unknown",
+      "path": "research_areas/private/seams/engine/mutator/GP-042_mutator_structural_diversity_seam.md",
+      "depends_on": [
+        "seam:GP-034",
+        "seam:GP-035",
+        "seam:GP-037",
+        "seam:GP-041"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-057",
+      "@type": "seam",
+      "title": "GP-057 Ratio-finiteness gate seam",
+      "status": "open",
+      "path": "research_areas/private/seams/engine/mutator/GP-057_ratio_finiteness_gate_seam.md",
+      "depends_on": [
+        "seam:GP-056",
+        "seam:GP-058"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-023",
+      "@type": "seam",
+      "title": "Sandbox_10 (Kepler) \u2014 Nesting-Collapse Audit",
+      "status": "unknown",
+      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_nesting_collapse_audit.md",
+      "depends_on": [
+        "seam:GP-061"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-084",
+      "@type": "seam",
+      "title": "GP-084 Crucial Experiment \u2014 Pre-Registration",
+      "status": "unknown",
+      "path": "research_areas/private/seams/substrates/planck/GP-084_crucial_experiment_pre_registration.md",
+      "depends_on": [
+        "seam:GP-080",
+        "seam:GP-083"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-061",
+      "@type": "seam",
+      "title": "GP-061 Phase 2 \u2014 Large-Modulus Cubic Substrate Pre-Registration",
+      "status": "closed",
+      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_13_pre_registration.md",
+      "depends_on": [
+        "seam:GP-072"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-080",
+      "@type": "seam",
+      "title": "GP-080 \u2014 Tacrolimus Pharmacokinetics: Component D Test on a Continuous Clinical Domain",
+      "status": "unknown",
+      "path": "research_areas/private/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md",
+      "depends_on": [
+        "seam:GP-072",
+        "seam:GP-078",
+        "seam:GP-083"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-090",
+      "@type": "seam",
+      "title": "GP-090 \u2014 Dark Sequence Discovery: A001414 (sopfr) Pre-Registration",
+      "status": "unknown",
+      "path": "research_areas/private/seams/substrates/erdos/GP-090_erdos_dark_sequence_pre_registration.md",
+      "depends_on": [
+        "seam:GP-072",
+        "seam:GP-075",
+        "seam:GP-086"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-089",
+      "@type": "seam",
+      "title": "GP-089 \u2014 Dark Sequence Discovery: A000009 (q(n)) Pre-Registration",
+      "status": "unknown",
+      "path": "research_areas/private/seams/substrates/erdos/GP-089_erdos_dark_sequence_pre_registration.md",
+      "depends_on": [
+        "seam:GP-072",
+        "seam:GP-075",
+        "seam:GP-086"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-077",
+      "@type": "seam",
+      "title": "GP-077 \u2014 OEIS Sequence Law Recovery: ZTARE as a Machine Scientist for Dark Sequences",
+      "status": "unknown",
+      "path": "research_areas/private/seams/substrates/erdos/GP-077_oeis_sequence_law_recovery_seam.md",
+      "depends_on": [
+        "seam:GP-061",
+        "seam:GP-076"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-074",
+      "@type": "seam",
+      "title": "GP-074 \u2014 Component C: Residual Fingerprinting Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md",
+      "depends_on": [
+        "seam:GP-035",
+        "seam:GP-073"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-157",
+      "@type": "seam",
+      "title": "GP-157 \u2014 Cage Orchestrator (Substrate-Agnostic Gate Dispatch)",
+      "status": "active",
+      "path": "research_areas/private/seams/apparatus/cage/GP-157_cage_orchestrator_substrate_agnostic_dispatch.md",
+      "depends_on": [
+        "seam:GP-143",
+        "seam:GP-144",
+        "seam:GP-152",
+        "seam:GP-153",
+        "seam:GP-156",
+        "seam:GP-156s"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-086",
+      "@type": "seam",
+      "title": "GP-086 \u2014 Cage & Kernel Hardening: Automated Promotion of Gaming Patterns",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md",
+      "depends_on": [
+        "seam:GP-077"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-039",
+      "@type": "seam",
+      "title": "GP-039 Gate Library Formalization Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/cage/GP-039_gate_library_formalization_seam.md",
+      "depends_on": [
+        "seam:GP-012",
+        "seam:GP-014",
+        "seam:GP-023",
+        "seam:GP-030",
+        "seam:GP-032",
+        "seam:GP-037"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-040",
+      "@type": "seam",
+      "title": "GP-040 Throughput & Cost Instrumentation Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-040_throughput_instrumentation_seam.md",
+      "depends_on": [
+        "seam:GP-031",
+        "seam:GP-032",
+        "seam:GP-034",
+        "seam:GP-037",
+        "seam:GP-038"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-088",
+      "@type": "seam",
+      "title": "GP-081 \u2014 Peircean Pipeline: Abductive Discovery \u2192 Deductive Verification",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md",
+      "depends_on": [
+        "seam:GP-050",
+        "seam:GP-080",
+        "seam:GP-081"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-098",
+      "@type": "seam",
+      "title": "GP-098 \u2014 Evidence Compressor: Preprocessing Warps for Dynamical Systems and Heteroscedastic Noise",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-098_evidence_compressor_seam.md",
+      "depends_on": [
+        "seam:GP-097",
+        "seam:GP-099"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-038",
+      "@type": "seam",
+      "title": "GP-038 Tail Cycle-Time Instrumentation Seam",
+      "status": "closed",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-038_tail_cycle_time_instrumentation_seam.md",
+      "depends_on": [
+        "seam:GP-008",
+        "seam:GP-017",
+        "seam:GP-023",
+        "seam:GP-030",
+        "seam:GP-032",
+        "seam:GP-037",
+        "seam:GP-040"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-183",
+      "@type": "seam",
+      "title": "GP-183 \u2014 Mechanizing the Research Director's falsification tests",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-183_falsification_mechanization_plan.md",
+      "depends_on": [
+        "seam:GP-180"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-032",
+      "@type": "seam",
+      "title": "GP-032 Epistemic Throughput & Unit Economics Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-032_epistemic_throughput_unit_economics_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-030",
+        "seam:GP-031"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-101",
+      "@type": "seam",
+      "title": "GP-101 \u2014 Agent-Native Self-Model Format: What Representation Minimizes Agent Error Rate?",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md",
+      "depends_on": [
+        "seam:GP-035",
+        "seam:GP-100",
+        "seam:GP-133"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-102",
+      "@type": "seam",
+      "title": "GP-102 \u2014 Reflexive Primitive Discovery: Mechanizing the Inception Move",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md",
+      "depends_on": [
+        "seam:GP-029",
+        "seam:GP-053",
+        "seam:GP-070",
+        "seam:GP-079",
+        "seam:GP-087",
+        "seam:GP-101"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-024",
+      "@type": "seam",
+      "title": "GP-024 Persistent Research Workspace / Librarian Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-024_persistent_research_workspace_seam.md",
+      "depends_on": [
+        "seam:GP-011",
+        "seam:GP-017"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-033",
+      "@type": "seam",
+      "title": "GP-033 Multi-Project Synthesis Generalization Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/instrumentation/GP-033_multi_project_synthesis_generalization_seam.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-036",
+      "@type": "seam",
+      "title": "GP-036 Findings Runner / Supervisor Convergence Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-036_findings_runner_supervisor_convergence_seam.md",
+      "depends_on": [
+        "seam:GP-031",
+        "seam:GP-034",
+        "seam:GP-035"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-070",
+      "@type": "seam",
+      "title": "GP-070 Meta-Supervisor Goal Orchestrator Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md",
+      "depends_on": [
+        "seam:GP-031",
+        "seam:GP-036"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-031",
+      "@type": "seam",
+      "title": "GP-031 Findings-Birth Bridge Seam",
+      "status": "active",
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-031_findings_birth_bridge_seam.md",
+      "depends_on": [
+        "seam:GP-023",
+        "seam:GP-030"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-071",
+      "@type": "seam",
+      "title": "GP-071 Executive Inbox Seam",
+      "status": "unknown",
+      "path": "research_areas/private/seams/apparatus/supervisor/GP-071_executive_inbox_seam.md",
+      "depends_on": [
+        "seam:GP-031",
+        "seam:GP-036",
+        "seam:GP-039",
+        "seam:GP-070"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_arnold_cat_map",
+      "@type": "seam",
+      "title": "Cold-LLM null test \u2014 Arnold Cat Map Lyapunov",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_arnold_cat_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_lucky_validity_horizon",
+      "@type": "seam",
+      "title": "Cold-LLM null test \u2014 Lucky number validity horizon",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_validity_horizon.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:substrate_classifier_v1",
+      "@type": "seam",
+      "title": "Substrate Classifier v1 \u2014 pre-launch rubric configuration",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/substrate_classifier_v1.md",
+      "depends_on": [
+        "seam:GP-157"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_saw_pslq_bound",
+      "@type": "seam",
+      "title": "Cold-LLM null test \u2014 SAW PSLQ kappa-bound argument",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_pslq_bound.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:alien_math_null_hypothesis_backtest",
+      "@type": "seam",
+      "title": "Alien-Math Null Hypothesis \u2014 Backtest Design",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/alien_math_null_hypothesis_backtest.md",
+      "depends_on": [
+        "seam:GP-078",
+        "seam:GP-103",
+        "seam:GP-164"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_ulam_steinerberger_gpt41",
+      "@type": "seam",
+      "title": "Cold-LLM null \u2014 Ulam/Steinerberger reciprocal-rotation, GPT-4.1",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_ulam_steinerberger_gpt41.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_kww_polymer",
+      "@type": "seam",
+      "title": "Cold-LLM null test \u2014 KWW polymer relaxation",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_kww_polymer.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_lucky_horizon_gpt41",
+      "@type": "seam",
+      "title": "Cold-LLM null \u2014 Lucky number validity horizon, GPT-4.1",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_horizon_gpt41.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:2026_04_25_v2_1_meta_architecture_session_postmortem",
+      "@type": "seam",
+      "title": "2026-04-25 v2.1 Meta-Architecture Session Postmortem",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_v2_1_meta_architecture_session_postmortem.md",
+      "depends_on": [
+        "seam:GP-166"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:2026_04_25_novelty_audit_vs_cold_llm",
+      "@type": "seam",
+      "title": "ZTARE Novelty Audit vs Cold-LLM Null",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_novelty_audit_vs_cold_llm.md",
+      "depends_on": [
+        "seam:GP-088",
+        "seam:GP-103",
+        "seam:GP-149"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_saw_mu_square",
+      "@type": "seam",
+      "title": "Cold-LLM null test \u2014 SAW \u03bc_square closed-form null",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_mu_square.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-163d",
+      "@type": "seam",
+      "title": "GP-163d Unified Accel \u2014 Run Postmortem (10-iter all-zero)",
+      "status": "closed",
+      "path": "research_areas/private/seams/audits/2026_04_25/GP-163d_unified_accel_run_postmortem.md",
+      "depends_on": [
+        "seam:GP-156"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:cold_llm_null_gp023_planck_gpt41",
+      "@type": "seam",
+      "title": "Cold-LLM null test \u2014 GP-023 Planck substrate, GPT-4.1",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_gp023_planck_gpt41.md",
+      "depends_on": [
+        "seam:GP-023"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:2026_04_25_deep_audit_findings",
+      "@type": "seam",
+      "title": "Deep Audit Findings \u2014 2026-04-25 night",
+      "status": "unknown",
+      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_deep_audit_findings.md",
+      "depends_on": [
+        "seam:GP-166",
+        "seam:GP-167"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-104",
+      "@type": "seam",
+      "title": "GP-104 \u2014 General Purpose Project Generator Spec",
+      "status": "unknown",
+      "path": "research_areas/specs/active/GP-104_general_purpose_project_generator_spec.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-021",
+      "@type": "seam",
+      "title": "GP-021 Topological Pivot Heuristics Spec",
+      "status": "unknown",
+      "path": "research_areas/specs/active/engine/grammar/GP-021_topological_pivot_heuristics_spec.md",
+      "depends_on": [
+        "seam:GP-023"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-011",
+      "@type": "seam",
+      "title": "GP-011 Derived Constraints Lane Spec",
+      "status": "unknown",
+      "path": "research_areas/specs/active/engine/grammar/GP-011_derived_constraints_lane_spec.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-022",
+      "@type": "seam",
+      "title": "GP-022 Forecast Project Typing Spec",
+      "status": "unknown",
+      "path": "research_areas/specs/active/apparatus/instrumentation/GP-022_forecast_project_typing_spec.md",
+      "depends_on": [
+        "seam:GP-014"
+      ],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-027",
+      "@type": "seam",
+      "title": "GP-027 Evidence Compile Reuse Spec",
+      "status": "unknown",
+      "path": "research_areas/specs/active/apparatus/instrumentation/GP-027_evidence_compile_reuse_spec.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "seam:GP-026",
+      "@type": "seam",
+      "title": "GP-026 Runner No-Suite Rejection Spec",
+      "status": "unknown",
+      "path": "research_areas/specs/active/apparatus/supervisor/GP-026_runner_no_suite_rejection_spec.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": []
+    },
+    {
+      "@id": "module:orchestrator_protocols",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_protocols_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_protocols.scalar_model_proto",
+      "@type": "code_region",
+      "module": "module:orchestrator_protocols",
+      "name": "scalar_model_proto",
+      "lines": "25-30",
+      "entry": "class ScalarModel",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_protocols.feature_model_proto",
+      "@type": "code_region",
+      "module": "module:orchestrator_protocols",
+      "name": "feature_model_proto",
+      "lines": "33-37",
+      "entry": "class FeatureModel",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_protocols.contract_error",
+      "@type": "code_region",
+      "module": "module:orchestrator_protocols",
+      "name": "contract_error",
+      "lines": "43-72",
+      "entry": "class ContractError",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_protocols.error_codes",
+      "@type": "code_region",
+      "module": "module:orchestrator_protocols",
+      "name": "error_codes",
+      "lines": "75-84",
+      "entry": "CONTRACT_ERROR_CODES",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_protocols.signature_match",
+      "@type": "code_region",
+      "module": "module:orchestrator_protocols",
+      "name": "signature_match",
+      "lines": "90-115",
+      "entry": "def _signature_matches",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_protocols.adapt",
+      "@type": "code_region",
+      "module": "module:orchestrator_protocols",
+      "name": "adapt",
+      "lines": "118-185",
+      "entry": "def adapt",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_protocols.adapt",
+      "@type": "code_function",
+      "module": "module:orchestrator_protocols",
+      "name": "adapt",
+      "sig": "(module, spec) -> Callable",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_protocols._signature_matches",
+      "@type": "code_function",
+      "module": "module:orchestrator_protocols",
+      "name": "_signature_matches",
+      "sig": "(observed, abi) -> bool",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_prompt",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_prompt_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_prompt.imports",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "imports",
+      "lines": "60-65",
+      "entry": "from __future__ import annotations",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.override_classes",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "override_classes",
+      "lines": "60-79",
+      "entry": "_OVERRIDE_CONTRACT_CLASSES",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.scalar_classes",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "scalar_classes",
+      "lines": "80-80",
+      "entry": "_SCALAR_OVERRIDE_CONTRACT_CLASSES",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.scalar_hint_text",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "scalar_hint_text",
+      "lines": "83-142",
+      "entry": "_I_MODEL_SCALAR_CONTRACT_HINT",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.contract_hint_text",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "contract_hint_text",
+      "lines": "144-192",
+      "entry": "_I_MODEL_OVERRIDE_CONTRACT_HINT",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.needs_check",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "needs_check",
+      "lines": "210-225",
+      "entry": "def needs_override_contract_hint",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.needs_scalar_check",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "needs_scalar_check",
+      "lines": "227-265",
+      "entry": "def needs_scalar_contract_hint",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.select",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "select",
+      "lines": "267-285",
+      "entry": "def select_substrate_contract_hint",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_prompt.verify_consistency",
+      "@type": "code_region",
+      "module": "module:orchestrator_prompt",
+      "name": "verify_consistency",
+      "lines": "383-470",
+      "entry": "def verify_class_consistency_with_substrate",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_prompt.needs_override_contract_hint",
+      "@type": "code_function",
+      "module": "module:orchestrator_prompt",
+      "name": "needs_override_contract_hint",
+      "sig": "(rubric_data: Mapping[str, Any]) -> bool",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_prompt.needs_scalar_contract_hint",
+      "@type": "code_function",
+      "module": "module:orchestrator_prompt",
+      "name": "needs_scalar_contract_hint",
+      "sig": "(rubric_data, project_dir=None) -> bool",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_prompt.select_substrate_contract_hint",
+      "@type": "code_function",
+      "module": "module:orchestrator_prompt",
+      "name": "select_substrate_contract_hint",
+      "sig": "(rubric_data, project_dir=None) -> str",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_prompt.verify_class_consistency_with_substrate",
+      "@type": "code_function",
+      "module": "module:orchestrator_prompt",
+      "name": "verify_class_consistency_with_substrate",
+      "sig": "(cage_meta_class: str, project_dir: Path) -> Optional[str]",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_contract_adherence",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_contract_adherence_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.imports",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "imports",
+      "lines": "21-30",
+      "entry": "from __future__ import annotations",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.violation_codes",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "violation_codes",
+      "lines": "33-40",
+      "entry": "VIOLATION_CODES",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.adherence_report",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "adherence_report",
+      "lines": "43-60",
+      "entry": "@dataclass(frozen=True)",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.resolve_active_contract",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "resolve_active_contract",
+      "lines": "65-85",
+      "entry": "def _resolve_active_contract",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.check_contract_adherence",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "check_contract_adherence",
+      "lines": "88-180",
+      "entry": "def check_contract_adherence",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.runtime_check",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "runtime_check",
+      "lines": "184-291",
+      "entry": "def runtime_check_imodel",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.emit_adherence",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "emit_adherence",
+      "lines": "294-318",
+      "entry": "def emit_adherence",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.format_summary",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "format_summary",
+      "lines": "321-333",
+      "entry": "def format_adherence_summary",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence._resolve_active_contract",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "_resolve_active_contract",
+      "sig": "(rubric_data, project_dir) -> str",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.check_contract_adherence",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "check_contract_adherence",
+      "sig": "(test_model_text, rubric_data, project_dir) -> list[str]",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.runtime_check_imodel",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "runtime_check_imodel",
+      "sig": "(test_model_path: Path, *, sample_count: int = 3) -> list[str]",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.emit_adherence",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "emit_adherence",
+      "sig": "(ctx: IterContext, test_model_text: str) -> AdherenceReport",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.format_adherence_summary",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "format_adherence_summary",
+      "sig": "(report: AdherenceReport) -> Optional[str]",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.to_jsonl_line",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "to_jsonl_line",
+      "sig": "(self) -> str",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_state",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_state_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_state.imports",
+      "@type": "code_region",
+      "module": "module:orchestrator_state",
+      "name": "imports",
+      "lines": "19-22",
+      "entry": "from __future__ import annotations",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_state.cage_runtime",
+      "@type": "code_region",
+      "module": "module:orchestrator_state",
+      "name": "cage_runtime",
+      "lines": "25-46",
+      "entry": "@dataclass(frozen=True)",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_state.resolve_cage_mode",
+      "@type": "code_region",
+      "module": "module:orchestrator_state",
+      "name": "resolve_cage_mode",
+      "lines": "49-60",
+      "entry": "def resolve_cage_mode",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_state.build_cage_runtime",
+      "@type": "code_region",
+      "module": "module:orchestrator_state",
+      "name": "build_cage_runtime",
+      "lines": "63-174",
+      "entry": "def build_cage_runtime",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_state.cage_init_banner",
+      "@type": "code_region",
+      "module": "module:orchestrator_state",
+      "name": "cage_init_banner",
+      "lines": "177-194",
+      "entry": "def cage_init_banner",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_state.resolve_cage_mode",
+      "@type": "code_function",
+      "module": "module:orchestrator_state",
+      "name": "resolve_cage_mode",
+      "sig": "(rubric_data: Mapping[str, Any]) -> str",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_state.build_cage_runtime",
+      "@type": "code_function",
+      "module": "module:orchestrator_state",
+      "name": "build_cage_runtime",
+      "sig": "(rubric_data, *, cage_factory, cage_available) -> CageRuntime",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_state.cage_init_banner",
+      "@type": "code_function",
+      "module": "module:orchestrator_state",
+      "name": "cage_init_banner",
+      "sig": "(runtime: CageRuntime) -> Optional[str]",
+      "depends_on": [
+        "module:orchestrator_state"
+      ]
+    },
+    {
+      "@id": "module:autoresearch_loop",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/autoresearch_loop_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:autoresearch_loop.cli_args",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "cli_args",
+      "lines": "190-341",
+      "entry": "parser.add_argument",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.globals",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "globals",
+      "lines": "342-422",
+      "entry": "RUNTIME, MUTATOR_MODEL_ID, paths",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.artifact_mgmt",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "artifact_mgmt",
+      "lines": "551-700",
+      "entry": "_pop_seed_queue, _persist_best_candidate",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.gate_telemetry",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "gate_telemetry",
+      "lines": "704-1920",
+      "entry": "_extract_iteration_gate_metrics",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.prepare_candidate",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "prepare_candidate",
+      "lines": "1962-2110",
+      "entry": "def _prepare_mutation_candidate",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.llm_call",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "llm_call",
+      "lines": "2162-2294",
+      "entry": "def safe_mutate",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.prompt_assembly",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "prompt_assembly",
+      "lines": "2293-4135",
+      "entry": "def compute_dag_steering_context",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.grammar_helpers",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "grammar_helpers",
+      "lines": "4099-4156",
+      "entry": "def build_model_grammar_failure_code",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.init",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "init",
+      "lines": "4111-4191",
+      "entry": "if __name__ == \"__main__\"",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.rubric_preflight",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "rubric_preflight",
+      "lines": "4186-4461",
+      "entry": "# --- GP-133 Round 4",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.postloop_helpers",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "postloop_helpers",
+      "lines": "4894-4976",
+      "entry": "def _finalize_run_telemetry_once",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.main_loop",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "main_loop",
+      "lines": "5066-8821",
+      "entry": "--- Iteration {i + 1}",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.postloop",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "postloop",
+      "lines": "8945-8979",
+      "entry": "print(\"\ud83c\udfc1 OPTIMIZATION LOOP COMPLETE\")",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.fit_primitive_features_dispatch",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "fit_primitive_features_dispatch",
+      "lines": "6359-6915",
+      "entry": "print(f\"\ud83e\uddee \u2500\u2500\u2500 GP-156 fit_primitive_features dispatch \u2500\u2500\u2500\")",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "region:autoresearch_loop.fit_primitive_features_dispatch",
+      "@type": "code_region",
+      "module": "module:autoresearch_loop",
+      "name": "fit_primitive_features_dispatch",
+      "lines": "6359-6915",
+      "entry": "print(f\"\ud83e\uddee \u2500\u2500\u2500 GP-156 fit_primitive_features dispatch \u2500\u2500\u2500\")",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._pop_seed_queue",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_pop_seed_queue",
+      "sig": "(workspace_dir:Path, injected:bool) \u2192 None",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._prepare_mutation_candidate",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_prepare_mutation_candidate",
+      "sig": "(raw_text, current_thesis, current_test_model, falsification_mode) \u2192 (decl, validation, thesis, python, full)",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop.safe_mutate",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "safe_mutate",
+      "sig": "(prompt, config=None, model_id=MUTATOR_MODEL_ID) \u2192 str",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop.mutate_thesis",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "mutate_thesis",
+      "sig": "(current_content, current_test_model, weakest_point, evidence, persona, stagnation_count, ...) \u2192 str",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._persist_best_candidate",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_persist_best_candidate",
+      "sig": "(thesis_content, *, score, weakest_point, iteration, run_id, ...) \u2192 str",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._promote_latest_artifacts_to_champion",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_promote_latest_artifacts_to_champion",
+      "sig": "() \u2192 dict",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._restore_project_state",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_restore_project_state",
+      "sig": "(snapshot:dict) \u2192 None",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._capture_project_state",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_capture_project_state",
+      "sig": "(paths:tuple) \u2192 dict",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._saved_best_comparison_anchor",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_saved_best_comparison_anchor",
+      "sig": "(current_eval:dict) \u2192 dict",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._gp087_propose_tail_correction_seeds",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_gp087_propose_tail_correction_seeds",
+      "sig": "(eval_results:dict, workspace_dir:Path, rubric_data:dict, iteration_index:int, stagnation_count:int=0) \u2192 list[dict]|None",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._finalize_run_telemetry_once",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_finalize_run_telemetry_once",
+      "sig": "() \u2192 None",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "func:autoresearch_loop._refresh_latest_evidence_gaps_from_eval",
+      "@type": "code_function",
+      "module": "module:autoresearch_loop",
+      "name": "_refresh_latest_evidence_gaps_from_eval",
+      "sig": "(evaluation:dict, artifact_role:str) \u2192 None  # writes LATEST_EVIDENCE_GAPS_PATH; no-op if no gaps",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "exit:autoresearch_loop.R1_exception",
+      "@type": "code_exit",
+      "module": "module:autoresearch_loop",
+      "name": "R1_exception",
+      "line": 3566,
+      "cause": "_prepare_mutation_candidate raises",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "exit:autoresearch_loop.R1_mismatch",
+      "@type": "code_exit",
+      "module": "module:autoresearch_loop",
+      "name": "R1_mismatch",
+      "line": 3641,
+      "cause": "mutation_declaration scope/claim check",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "exit:autoresearch_loop.R3_rejection",
+      "@type": "code_exit",
+      "module": "module:autoresearch_loop",
+      "name": "R3_rejection",
+      "line": 3941,
+      "cause": "candidate not admissible",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "exit:autoresearch_loop.subprocess_crash",
+      "@type": "code_exit",
+      "module": "module:autoresearch_loop",
+      "name": "subprocess_crash",
+      "line": 4341,
+      "cause": "test_thesis.py crashes",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "exit:autoresearch_loop.UNDERIDENTIFIED",
+      "@type": "code_exit",
+      "module": "module:autoresearch_loop",
+      "name": "UNDERIDENTIFIED",
+      "line": 3356,
+      "cause": "pending_loop_action == UNDERIDENTIFIED \u2192 break",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "exit:autoresearch_loop.budget_exhausted",
+      "@type": "code_exit",
+      "module": "module:autoresearch_loop",
+      "name": "budget_exhausted",
+      "line": 4251,
+      "cause": "default `run_exit_reason = \"budget_exhausted\"` set before main_loop; only changed if a structured ex",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "exit:autoresearch_loop.GP133_R4_gate",
+      "@type": "code_exit",
+      "module": "module:autoresearch_loop",
+      "name": "GP133_R4_gate",
+      "line": 4220,
+      "cause": "rubric-preflight refuses: py_exec missing auth/budget, or rubric_mode='newton' without Generative Yi",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_telemetry",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_telemetry_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_telemetry.imports",
+      "@type": "code_region",
+      "module": "module:orchestrator_telemetry",
+      "name": "imports",
+      "lines": "17-23",
+      "entry": "from __future__ import annotations",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_telemetry.cage_engagement_record",
+      "@type": "code_region",
+      "module": "module:orchestrator_telemetry",
+      "name": "cage_engagement_record",
+      "lines": "26-55",
+      "entry": "@dataclass(frozen=True)",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_telemetry.append_jsonl",
+      "@type": "code_region",
+      "module": "module:orchestrator_telemetry",
+      "name": "append_jsonl",
+      "lines": "58-67",
+      "entry": "def append_jsonl",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_telemetry.emit_cage_engagement",
+      "@type": "code_region",
+      "module": "module:orchestrator_telemetry",
+      "name": "emit_cage_engagement",
+      "lines": "70-99",
+      "entry": "def emit_cage_engagement",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_telemetry.format_cage_observe_summary",
+      "@type": "code_region",
+      "module": "module:orchestrator_telemetry",
+      "name": "format_cage_observe_summary",
+      "lines": "102-114",
+      "entry": "def format_cage_observe_summary",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_telemetry.append_jsonl",
+      "@type": "code_function",
+      "module": "module:orchestrator_telemetry",
+      "name": "append_jsonl",
+      "sig": "(path: Path, line: str) -> None",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_telemetry.emit_cage_engagement",
+      "@type": "code_function",
+      "module": "module:orchestrator_telemetry",
+      "name": "emit_cage_engagement",
+      "sig": "(ctx: IterContext, *, utc: str, engagement_matrix: Any) -> CageEngagementRecord",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_telemetry.format_cage_observe_summary",
+      "@type": "code_function",
+      "module": "module:orchestrator_telemetry",
+      "name": "format_cage_observe_summary",
+      "sig": "(record: CageEngagementRecord) -> str",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_telemetry.to_jsonl_line",
+      "@type": "code_function",
+      "module": "module:orchestrator_telemetry",
+      "name": "to_jsonl_line",
+      "sig": "(self) -> str",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_contract_table",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_contract_table_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_contract_table.substrate_abi_enum",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_table",
+      "name": "substrate_abi_enum",
+      "lines": "35-65",
+      "entry": "class SubstrateABI(Enum)",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_table.contract_spec",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_table",
+      "name": "contract_spec",
+      "lines": "68-110",
+      "entry": "@dataclass(frozen=True)",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_table.scalar_skeleton",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_table",
+      "name": "scalar_skeleton",
+      "lines": "130-155",
+      "entry": "_SCALAR_1D_SKELETON",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_table.feature_skeleton",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_table",
+      "name": "feature_skeleton",
+      "lines": "157-180",
+      "entry": "_FEATURE_DICT_SKELETON",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_table.contract_registry",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_table",
+      "name": "contract_registry",
+      "lines": "185-240",
+      "entry": "CONTRACT_REGISTRY",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_contract_table.public_api",
+      "@type": "code_region",
+      "module": "module:orchestrator_contract_table",
+      "name": "public_api",
+      "lines": "245-265",
+      "entry": "def get_spec",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_table.get_spec",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_table",
+      "name": "get_spec",
+      "sig": "(abi: SubstrateABI) -> ContractSpec",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_table.get_spec_by_class",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_table",
+      "name": "get_spec_by_class",
+      "sig": "(cage_meta_class: str) -> Optional[ContractSpec]",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_contract_table.list_substrate_classes",
+      "@type": "code_function",
+      "module": "module:orchestrator_contract_table",
+      "name": "list_substrate_classes",
+      "sig": "() -> tuple[str, ...]",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ]
+    },
+    {
+      "@id": "module:information_yield",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/information_yield_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "module:orchestrator_parallel_mutator",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_parallel_mutator_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.imports",
+      "@type": "code_region",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "imports",
+      "lines": "39-43",
+      "entry": "from __future__ import annotations",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.default_personas",
+      "@type": "code_region",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "default_personas",
+      "lines": "46-55",
+      "entry": "DEFAULT_PARALLEL_PERSONAS",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.mutator_task",
+      "@type": "code_region",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "mutator_task",
+      "lines": "58-67",
+      "entry": "@dataclass(frozen=True)",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.mutator_result",
+      "@type": "code_region",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "mutator_result",
+      "lines": "69-83",
+      "entry": "class MutatorResult",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.run_parallel_mutators",
+      "@type": "code_region",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "run_parallel_mutators",
+      "lines": "86-130",
+      "entry": "def run_parallel_mutators",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.pick_best_candidate",
+      "@type": "code_region",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "pick_best_candidate",
+      "lines": "133-160",
+      "entry": "def pick_best_candidate",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.build_default_tasks",
+      "@type": "code_region",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "build_default_tasks",
+      "lines": "163-180",
+      "entry": "def build_default_tasks",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_parallel_mutator.run_parallel_mutators",
+      "@type": "code_function",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "run_parallel_mutators",
+      "sig": "(tasks, mutator_fn, *, max_workers=None) -> list[MutatorResult]",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_parallel_mutator.pick_best_candidate",
+      "@type": "code_function",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "pick_best_candidate",
+      "sig": "(results, scoring_fn=None) -> Optional[MutatorResult]",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_parallel_mutator.build_default_tasks",
+      "@type": "code_function",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "build_default_tasks",
+      "sig": "(k: int = 3) -> list[MutatorTask]",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_render_evidence_template",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_render_evidence_template_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_evidence_set_d",
+      "@type": "code_region",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_evidence_set_d",
+      "lines": "32-42",
+      "entry": "def render_evidence_set_d",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_imodel",
+      "@type": "code_region",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_imodel",
+      "lines": "45-100",
+      "entry": "def _render_imodel",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_non_imodel",
+      "@type": "code_region",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_non_imodel",
+      "lines": "102-115",
+      "entry": "def _render_non_imodel",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_active_label",
+      "@type": "code_region",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_active_label",
+      "lines": "118-130",
+      "entry": "def render_active_contract_label",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_render_evidence_template.render_evidence_set_d",
+      "@type": "code_function",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_evidence_set_d",
+      "sig": "(spec: ContractSpec) -> str",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_render_evidence_template.render_active_contract_label",
+      "@type": "code_function",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_active_contract_label",
+      "sig": "(spec: ContractSpec) -> str",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_gate_manifest",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_gate_manifest_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_type_enum",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_type_enum",
+      "lines": "43-106",
+      "entry": "class GateType(Enum)",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.evaluative_gate_spec",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "evaluative_gate_spec",
+      "lines": "109-135",
+      "entry": "class EvaluativeGateSpec",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.parameter_schemas",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "parameter_schemas",
+      "lines": "142-184",
+      "entry": "PARAMETER_SCHEMAS:",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_contract_error",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_contract_error",
+      "lines": "187-207",
+      "entry": "class GateContractError",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.validate_gate_spec",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "validate_gate_spec",
+      "lines": "210-263",
+      "entry": "def validate_gate_spec",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_context_protocol",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_context_protocol",
+      "lines": "270-281",
+      "entry": "class GateContext(Protocol)",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.bounds_check_impl",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "bounds_check_impl",
+      "lines": "284-306",
+      "entry": "def _eval_bounds_check",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.holdout_mre_impl",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "holdout_mre_impl",
+      "lines": "309-341",
+      "entry": "def _eval_holdout_mre",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.anti_retrieval_impl",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "anti_retrieval_impl",
+      "lines": "344-365",
+      "entry": "def _eval_anti_retrieval",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_registry",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_registry",
+      "lines": "375-379",
+      "entry": "GATE_REGISTRY:",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.evaluate_gate_dispatcher",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "evaluate_gate_dispatcher",
+      "lines": "382-391",
+      "entry": "def evaluate_gate",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.list_helpers",
+      "@type": "code_region",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "list_helpers",
+      "lines": "394-400",
+      "entry": "def list_gate_types",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.validate_gate_spec",
+      "@type": "code_function",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "validate_gate_spec",
+      "sig": "(spec_dict: Mapping[str, Any]) -> EvaluativeGateSpec",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.evaluate_gate",
+      "@type": "code_function",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "evaluate_gate",
+      "sig": "(ctx: GateContext, spec: EvaluativeGateSpec) -> dict",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.list_gate_types",
+      "@type": "code_function",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "list_gate_types",
+      "sig": "() -> tuple[str, ...]",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.list_registered_gate_types",
+      "@type": "code_function",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "list_registered_gate_types",
+      "sig": "() -> tuple[str, ...]",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_iter_context",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_iter_context_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_iter_context.imports",
+      "@type": "code_region",
+      "module": "module:orchestrator_iter_context",
+      "name": "imports",
+      "lines": "22-26",
+      "entry": "from __future__ import annotations",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_iter_context.dataclass",
+      "@type": "code_region",
+      "module": "module:orchestrator_iter_context",
+      "name": "dataclass",
+      "lines": "28-93",
+      "entry": "@dataclass(frozen=True)",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_iter_context.helpers",
+      "@type": "code_region",
+      "module": "module:orchestrator_iter_context",
+      "name": "helpers",
+      "lines": "80-94",
+      "entry": "def with_iteration",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_iter_context.with_iteration",
+      "@type": "code_function",
+      "module": "module:orchestrator_iter_context",
+      "name": "with_iteration",
+      "sig": "(iteration_index: int) -> IterContext",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_iter_context.cage_engagement_log_path",
+      "@type": "code_function",
+      "module": "module:orchestrator_iter_context",
+      "name": "cage_engagement_log_path",
+      "sig": "(self) -> Path",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_iter_context.__post_init__",
+      "@type": "code_function",
+      "module": "module:orchestrator_iter_context",
+      "name": "__post_init__",
+      "sig": "(self) -> None",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "exit:orchestrator_iter_context.iteration_index_negative",
+      "@type": "code_exit",
+      "module": "module:orchestrator_iter_context",
+      "name": "iteration_index_negative",
+      "line": 91,
+      "cause": "ValueError when iteration_index < 0",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "exit:orchestrator_iter_context.run_id_negative",
+      "@type": "code_exit",
+      "module": "module:orchestrator_iter_context",
+      "name": "run_id_negative",
+      "line": 93,
+      "cause": "ValueError when run_id < 0",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "exit:orchestrator_iter_context.workspace_dir_not_path",
+      "@type": "code_exit",
+      "module": "module:orchestrator_iter_context",
+      "name": "workspace_dir_not_path",
+      "line": 95,
+      "cause": "TypeError when workspace_dir is not a pathlib.Path",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ]
+    },
+    {
+      "@id": "module:orchestrator_evidence_contract",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_evidence_contract_architectural_map.md",
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.evidence_format_enum",
+      "@type": "code_region",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "evidence_format_enum",
+      "lines": "25-65",
+      "entry": "class EvidenceFormat(Enum)",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.evidence_spec",
+      "@type": "code_region",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "evidence_spec",
+      "lines": "68-115",
+      "entry": "@dataclass(frozen=True)",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.evidence_contract_error",
+      "@type": "code_region",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "evidence_contract_error",
+      "lines": "118-150",
+      "entry": "class EvidenceContractError",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.get_evidence_spec",
+      "@type": "code_region",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "get_evidence_spec",
+      "lines": "158-180",
+      "entry": "def get_evidence_spec",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ]
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.list_evidence_formats",
+      "@type": "code_region",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "list_evidence_formats",
+      "lines": "182-186",
+      "entry": "def list_evidence_formats",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_evidence_contract.get_evidence_spec",
+      "@type": "code_function",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "get_evidence_spec",
+      "sig": "(rubric_data: Mapping[str, Any]) -> Optional[EvidenceSpec]",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ]
+    },
+    {
+      "@id": "func:orchestrator_evidence_contract.list_evidence_formats",
+      "@type": "code_function",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "list_evidence_formats",
+      "sig": "() -> tuple[str, ...]",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ]
+    },
+    {
+      "@id": "op:core_01",
+      "@type": "research_op",
+      "name": "Problem Domain Translation",
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_02",
+      "@type": "research_op",
+      "name": "Iterative Refinement Loop",
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_03",
+      "@type": "research_op",
+      "name": "Canonical Decomposition",
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_04",
+      "@type": "research_op",
+      "name": "Local-to-Global Inference",
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_05",
+      "@type": "research_op",
+      "name": "Extremal Case Analysis",
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_06",
+      "@type": "research_op",
+      "name": "External Framework Importation",
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_07",
+      "@type": "research_op",
+      "name": "Framework Generalization",
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:broad_01",
+      "@type": "research_op",
+      "name": "Duality Framing",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_02",
+      "@type": "research_op",
+      "name": "Probabilistic Existence Proof",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_03",
+      "@type": "research_op",
+      "name": "Dimensional Lifting",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_04",
+      "@type": "research_op",
+      "name": "Bounding via Surrogate",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_05",
+      "@type": "research_op",
+      "name": "Forcing via Constraint",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_06",
+      "@type": "research_op",
+      "name": "Property Bootstrapping",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_07",
+      "@type": "research_op",
+      "name": "Systematic Cataloging",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:sub_01_graph",
+      "@type": "research_op",
+      "name": "Characterization by Exclusion",
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "op:sub_02_geom",
+      "@type": "research_op",
+      "name": "Evolution to Equilibrium",
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "op:sub_03_compl",
+      "@type": "research_op",
+      "name": "Hardness Propagation",
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "op:sub_04_addcomb",
+      "@type": "research_op",
+      "name": "Universal Regularity Partition",
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "gate:SharedSkeleton",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/structural_constraint_extractor.py"
+    },
+    {
+      "@id": "gate:StructuralDiagnostic",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/structural_constraint_extractor.py"
+    },
+    {
+      "@id": "gate:SelfReferenceEvidence",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py"
+    },
+    {
+      "@id": "gate:UnresolvedDiagnosis",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py"
+    },
+    {
+      "@id": "gate:DiagnosticSummary",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py"
+    },
+    {
+      "@id": "gate:SemanticGateAnalysis",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py"
+    },
+    {
+      "@id": "gate_fn:run_global_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/global_gates.py"
+    },
+    {
+      "@id": "gate:CorrectorForm",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/corrector_library.py"
+    },
+    {
+      "@id": "gate_fn:run_bound_chain_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/bound_chain_consistency_gate.py"
+    },
+    {
+      "@id": "gate_fn:run_falsifiability_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/falsifiability_gate.py"
+    },
+    {
+      "@id": "gate:DeterministicGateSpec",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/deterministic_charter_gates.py"
+    },
+    {
+      "@id": "gate:DeterministicGateResult",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/deterministic_charter_gates.py"
+    },
+    {
+      "@id": "gate:DeterministicGateEvaluation",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/deterministic_charter_gates.py"
+    },
+    {
+      "@id": "gate_fn:run_buckingham_pi_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/buckingham_pi_gate.py"
+    },
+    {
+      "@id": "gate:EvalResult",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/substrate_evaluation.py"
+    },
+    {
+      "@id": "gate:WithheldValueLeakageVerdict",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py"
+    },
+    {
+      "@id": "gate:EffectiveParameterCountVerdict",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py"
+    },
+    {
+      "@id": "gate:MetaRunnerVerdict",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py"
+    },
+    {
+      "@id": "gate:SparseCellExclusionVerdict",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py"
+    },
+    {
+      "@id": "gate:FeatureBumpPatternVerdict",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py"
+    },
+    {
+      "@id": "gate:injection",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/circularity_gate.py"
+    },
+    {
+      "@id": "gate_fn:run_circularity_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/circularity_gate.py"
+    },
+    {
+      "@id": "gate_fn:run_stagnation_hint_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/stagnation_special_case_hint_gate.py"
+    },
+    {
+      "@id": "gate_fn:run_potential_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/potential_function_monotonicity_gate.py"
+    },
+    {
+      "@id": "gate:_BudgetGuard",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/symbolic_logic_cage.py"
+    },
+    {
+      "@id": "gate:ConstraintVerdict",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/symbolic_logic_cage.py"
+    },
+    {
+      "@id": "gate:ConstraintCheckResult",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/symbolic_logic_cage.py"
+    },
+    {
+      "@id": "gate:CrossClassDiagnostic",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/cross_class_extrapolation_gate.py"
+    },
+    {
+      "@id": "gate:PerClassCeilingResult",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/cross_class_extrapolation_gate.py"
+    },
+    {
+      "@id": "gate:LeakAuditVerdict",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/prompt_leak_audit.py"
+    },
+    {
+      "@id": "gate:Gate",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/cage.py"
+    },
+    {
+      "@id": "gate:EngagementMatrix",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/cage.py"
+    },
+    {
+      "@id": "gate:Cage",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/cage.py"
+    },
+    {
+      "@id": "gate:NegativeSpaceDiagnostic",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/negative_space_extractor.py"
+    },
+    {
+      "@id": "gate:BridgeScopeMismatchCode",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/bridge_scope_contract.py"
+    },
+    {
+      "@id": "gate:BridgeScopeValidationRecord",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/bridge_scope_contract.py"
+    },
+    {
+      "@id": "gate:FunctionContract",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/theorem_packet_gate.py"
+    },
+    {
+      "@id": "gate:TheoremPacketGateSpec",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/theorem_packet_gate.py"
+    },
+    {
+      "@id": "gate:AsymptoticClaimAssessment",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/asymptotic_claim_discipline.py"
+    },
+    {
+      "@id": "gate:LeanProofGateResult",
+      "@type": "gate",
+      "module_path": "src/ztare/gates/lean_proof_gate.py"
+    },
+    {
+      "@id": "gate_fn:run_lean_proof_gate",
+      "@type": "gate_function",
+      "module_path": "src/ztare/gates/lean_proof_gate.py"
+    }
+  ]
+}

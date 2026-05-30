@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T23:21:48Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 45.05334427574887,
+    "expected_value": -7.608999460490274,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.2,
+    "p_needs_new_lemma": 0.31989331144850225,
+    "p_regression": 0.0949199835863767,
+    "p_success": 0.681548524024183,
+    "participants": [
+      {
+        "agent_id": "hooke",
+        "domain": "ns_route1_pde",
+        "p_success": 0.72,
+        "weight": 0.98
+      },
+      {
+        "agent_id": "mcclintock",
+        "domain": "ns_route1_pde",
+        "p_success": 0.64,
+        "weight": 0.9696
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_parameter_friction",
+        "p": 0.17005334427574886
+      },
+      {
+        "mode": "harmonic_blocks_full_composition",
+        "p": 0.1407468198604842
+      },
+      {
+        "mode": "harmonic_leg_blocks_full_constructor",
+        "p": 0.11935986869101353
+      },
+      {
+        "mode": "source_objects_misaligned",
+        "p": 0.11058678703323759
+      },
+      {
+        "mode": "child_cutoff_alignment_issue",
+        "p": 0.10941321296676242
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_next_pressure_branch_meso_20260513_tick309.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_next_pressure_branch_meso_20260513_tick309.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_next_pressure_branch_meso_20260513_tick309.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_next_pressure_branch_meso_20260513_tick309.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_next_pressure_branch_meso_20260513_tick309.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 65.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T23:21:01Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-13T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "market-ranked branch followed by artifact-backed Lean outcome",
+    "question": "Which next pressure branch should be executed after cutoff/CZ source lowering: integrate lower sources, harmonic reserve, recovered Riesz/local CZ, or velocity Caccioppoli?",
+    "success_threshold": "Chosen branch compiles and changes the next lever, with prediction evidence kept separate from GP-233 evidence",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_next_pressure_branch_meso_20260513_tick309",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke",
+        "raw_agent_ids": [
+          "hooke"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:mcclintock",
+        "raw_agent_ids": [
+          "mcclintock"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke",
+      "mcclintock"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_next_pressure_branch_meso_20260513_tick309/hooke.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-13T23:21:40Z",
+        "p_success": 0.72,
+        "rationale_short": "Ranks C first: integrate child/cutoff source constructors into the full pressure-remainder bundle, then do A.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "mcclintock",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_next_pressure_branch_meso_20260513_tick309/mcclintock.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-13T23:21:40Z",
+        "p_success": 0.64,
+        "rationale_short": "Ranks C first because child and cutoff source objects exist while harmonic remains the later bottleneck.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T23:24:16Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 45.05334427574887,
+      "expected_value": -7.608999460490274,
+      "p_success": 0.681548524024183,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.197
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 45.05334427574887,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.681548524024183,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lean_parameter_friction",
+        "p": 0.17005334427574886
+      },
+      {
+        "mode": "harmonic_blocks_full_composition",
+        "p": 0.1407468198604842
+      },
+      {
+        "mode": "harmonic_leg_blocks_full_constructor",
+        "p": 0.11935986869101353
+      },
+      {
+        "mode": "source_objects_misaligned",
+        "p": 0.11058678703323759
+      },
+      {
+        "mode": "child_cutoff_alignment_issue",
+        "p": 0.10941321296676242
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.10400000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T23:24:25Z"
+  }
+}

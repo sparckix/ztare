@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354.json"
+  },
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_positive_local_transport_receipt_source_micro_20260514_tick354",
+  "cost_penalty": 0.14,
+  "created_at": "2026-05-14T12:02:33Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 56.0,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 56.0,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 108,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": true,
+        "score": 0.1034,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-14T15:30:00Z",
+  "information_value": 0.78,
+  "layer": "micro",
+  "objective_resolver": "lake env lean and downstream lake build pass; no new sorry/admit; source fields distinguish positiveLocalizedFluxCharge from signedTransportDefectAbs",
+  "question": "Can we compile the corrected positive-localized-flux transport receipt source and constructor into the route-1 transport lower-payment source without adding a signed/global defect shortcut?",
+  "risk_penalty": 0.18,
+  "success_threshold": "build passed and no sorry delta and positive localized flux constructor exists",
+  "task_type": "lean_pde_target_correction",
+  "value_if_success": 0.74,
+  "void_conditions": "void if source defines transport charge from final carrier or overflow excess"
+}

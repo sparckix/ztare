@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1960_deterministic_scope_template_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1960_deterministic_scope_template_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1960_deterministic_scope_template_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1960_deterministic_scope_template_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1960_deterministic_scope_template_replay.json"
+  },
+  "budget_agent_minutes": 24.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1960_deterministic_scope_template_replay",
+  "cost_penalty": 0.18,
+  "created_at": "2026-05-14T02:50:36Z",
+  "created_by": "codex_rd_gp225",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 26.25,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_repair_micro",
+    "score": 1.0,
+    "selected_domain": "gp225_repair_micro",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 26.25,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 16,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 3,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.2143,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same session after deterministic candidate packet and replay",
+  "information_value": 0.78,
+  "layer": "micro",
+  "objective_resolver": "Resolve from v1960 candidate and replay artifacts: strict_same_target_rows + verified_overclosure_pull_forward_actions >= 1, harmful_compiled_mismatch_actions==0, forbidden generation fields absent, train_gnn_now==false. Candidate generation must use v1958 progress traces plus v1942 pre-target scope names, not gold tactic text.",
+  "question": "Will deterministic scope-template candidates generated from v19.59 replay into at least one strict or pull-forward label, with harmful mismatches zero and clean source policy?",
+  "risk_penalty": 0.14,
+  "success_threshold": "strict_same_target_rows + verified_overclosure_pull_forward_actions >= 1 AND harmful_compiled_mismatch_actions == 0 AND clean source policy true",
+  "task_type": "deterministic_scope_template_replay",
+  "value_if_success": 0.82,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

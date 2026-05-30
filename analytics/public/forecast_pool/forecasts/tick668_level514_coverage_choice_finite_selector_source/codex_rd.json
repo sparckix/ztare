@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex-rd",
+  "contract_id": "tick668_level514_coverage_choice_finite_selector_source",
+  "contract_question": "Can Level514 construct selectedPrefixEventIndex from a finite coverage-choice witness theorem tied to eventToBadNode and target-node membership, then package into Level513?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "gate_workbench_regression": 0.12,
+    "lean_dependent_type_mismatch": 0.18,
+    "sigma_witness_still_source_theorem_not_derived": 0.45,
+    "target_membership_binding_too_weak": 0.25
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-27T07:08:09Z",
+  "p_dependency_issue": 0.06,
+  "p_needs_new_lemma": 0.34,
+  "p_regression": 0.06,
+  "p_success": 0.6,
+  "rationale_short": "Level514 can define selectedPrefixEventIndex from a sigma coverage-choice witness and package into Level513; remaining risk is that the witness is still an assumed theorem, not yet derived from the Prop appearance field.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

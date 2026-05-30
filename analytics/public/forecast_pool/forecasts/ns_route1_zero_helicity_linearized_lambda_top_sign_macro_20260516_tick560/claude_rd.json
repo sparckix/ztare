@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "claude_rd",
+  "contract_id": "ns_route1_zero_helicity_linearized_lambda_top_sign_macro_20260516_tick560",
+  "contract_question": "Channel 5 (genuine extra-scaling spectral input): route-1 Clay closure (narrow Track-B) reduces to sign(lambdaTop), the principal eigenvalue of the explicit self-similar zero-helicity linearized transverse operator L = -nu*Delta + (U.grad) - partial_z^2 p[U]. lambdaTop is scale-invariant by the self-similar symmetry (NOT a scaling-pinned homogeneity endpoint, unlike the 4 collapsed channels). Is lambdaTop>0 strict (transverse mode grows => theta<1 => PROVED tick559->558->552->551 => closure) or lambdaTop<=0 (zero helicity removes vortex stretching => transverse-stable => Ghost survives)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T00:22:04Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.75,
+  "p_regression": 0.03,
+  "p_success": 0.28,
+  "rationale_short": "Strongest reformulation: closure <=> sign(lambdaTop) of an explicit FIXED operator \u2014 genuinely NOT scaling-pinned (unlike ratio/delta/theta endpoints that tick545/557 proved auto-critical). This is the first genuine extra-scaling input per META-PATTERN-024. p_success 0.28 (up from 0.20): spectral sign is decidable-in-principle and not auto-critical. Pre-flight risk: zero helicity removes vortex stretching => lambdaTop<=0 plausible (transverse-stable Ghost). If so = Clay-hardness localization across all 5 channels. p_needs_new_lemma 0.75.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,237 @@
+{
+  "audit_timestamp_utc": "2026-05-07T01:32:42.709844+00:00",
+  "n_runs_completed": 5,
+  "n_champion_iters_total": 11,
+  "n_weakest_points_collected": 11,
+  "n_charter_critic_patches": 2,
+  "n_primitive_classes_explored": 1,
+  "runs_summary": [
+    {
+      "run_id": "1778106338",
+      "n_champion_iters": 3,
+      "peak_score": 36,
+      "peak_iter": 2,
+      "peak_title": "(no title parsed)",
+      "peak_mechanism": null
+    },
+    {
+      "run_id": "1778107134",
+      "n_champion_iters": 3,
+      "peak_score": 58,
+      "peak_iter": 3,
+      "peak_title": "(no title parsed)",
+      "peak_mechanism": null
+    },
+    {
+      "run_id": "1778108139",
+      "n_champion_iters": 2,
+      "peak_score": 77,
+      "peak_iter": 2,
+      "peak_title": "(no title parsed)",
+      "peak_mechanism": null
+    },
+    {
+      "run_id": "1778108910",
+      "n_champion_iters": 2,
+      "peak_score": 90,
+      "peak_iter": 4,
+      "peak_title": "THESIS: \"Attestation Independence via Automated Competing Redundant Recorders (ACRRs)\u2014Eliminate Human Common-Mode Failur",
+      "peak_mechanism": "propose_new_primitive_class"
+    },
+    {
+      "run_id": "1778110098",
+      "n_champion_iters": 1,
+      "peak_score": 92,
+      "peak_iter": 8,
+      "peak_title": "**Primitive Proposal: \"Process-External Cross-Verification Primitive\"**",
+      "peak_mechanism": null
+    }
+  ],
+  "recurring_critique_themes": {
+    "exhaustiveness": 1,
+    "common_mode_independence": 1
+  },
+  "champion_iters": [
+    {
+      "run_id": "1778106338",
+      "iter": 0,
+      "score": 0,
+      "title": "(no title parsed)",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "cage_engagement.jsonl",
+        "reference_graph.weekly_stats"
+      ],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 4306
+    },
+    {
+      "run_id": "1778106338",
+      "iter": 1,
+      "score": 27,
+      "title": "Prose",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "i.e",
+        "process_scheduler.resume_stalled",
+        "test_model.py"
+      ],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 6154
+    },
+    {
+      "run_id": "1778106338",
+      "iter": 2,
+      "score": 36,
+      "title": "(no title parsed)",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "process_scheduler.resume_stalled",
+        "test_model.py"
+      ],
+      "negative_evidence_clauses": [
+        "Absence of Rival Process (Path A, logic clarity/falsification)\n\n---\n\n### **THESIS**\n\n**Clai"
+      ],
+      "file_size_bytes": 6139
+    },
+    {
+      "run_id": "1778107134",
+      "iter": 1,
+      "score": 43,
+      "title": "(no title parsed)",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "e.g",
+        "test_model.py"
+      ],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 8051
+    },
+    {
+      "run_id": "1778107134",
+      "iter": 2,
+      "score": 44,
+      "title": "Prose",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "e.g",
+        "test_model.py"
+      ],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 8305
+    },
+    {
+      "run_id": "1778107134",
+      "iter": 3,
+      "score": 58,
+      "title": "(no title parsed)",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "e.g"
+      ],
+      "negative_evidence_clauses": [
+        "absence of rival overlap (process-catalog oracle)"
+      ],
+      "file_size_bytes": 12218
+    },
+    {
+      "run_id": "1778108139",
+      "iter": 1,
+      "score": 61,
+      "title": "(no title parsed)",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "e.g"
+      ],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 13244
+    },
+    {
+      "run_id": "1778108139",
+      "iter": 2,
+      "score": 77,
+      "title": "(no title parsed)",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 13640
+    },
+    {
+      "run_id": "1778108910",
+      "iter": 1,
+      "score": 84,
+      "title": "(WEAK-LINK REPAIR: Flagging Stream Reliability for Catastrophic Undercoverage)",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 15638
+    },
+    {
+      "run_id": "1778108910",
+      "iter": 4,
+      "score": 90,
+      "title": "THESIS: \"Attestation Independence via Automated Competing Redundant Recorders (ACRRs)\u2014Eliminate Human Common-Mode Failur",
+      "mechanism": "propose_new_primitive_class",
+      "cited_papers": [],
+      "libraries_named": [
+        "e.g"
+      ],
+      "negative_evidence_clauses": [],
+      "file_size_bytes": 12499
+    },
+    {
+      "run_id": "1778110098",
+      "iter": 8,
+      "score": 92,
+      "title": "**Primitive Proposal: \"Process-External Cross-Verification Primitive\"**",
+      "mechanism": null,
+      "cited_papers": [],
+      "libraries_named": [
+        "hashlib.sha256",
+        "os.setuid",
+        "auth.pdf",
+        "e.g",
+        "multiprocess.subprocess",
+        "www.com"
+      ],
+      "negative_evidence_clauses": [
+        "Absence of process-external attestation/primitives in audit traces_  \n   - **source:** `06_",
+        "Lack of multi-trust-domain alarms or process-root isolation mechanisms in primitive cata",
+        "absence of alarm is flagged if adversary sim attended)"
+      ],
+      "file_size_bytes": 10516
+    }
+  ],
+  "primitive_classes_explored": [
+    {
+      "run_id": "1778110098",
+      "iter": 8,
+      "class_name": "PECVP",
+      "score": 92.0,
+      "ts_utc": "2026-05-06T23:40:34.938216+00:00"
+    }
+  ],
+  "charter_critic_patches": [
+    {
+      "run_id": null,
+      "reframe_type": "common_mode_unmitigated",
+      "target": "evidence",
+      "section_id": "REFRAME PRESSURE \u2014 common_mode_unmitigated (heavy)"
+    },
+    {
+      "run_id": null,
+      "reframe_type": "single_substrate_fix",
+      "target": "rubric_dimension",
+      "section_id": "REFRAME PRESSURE \u2014 single_substrate_fix (heavy)"
+    }
+  ]
+}

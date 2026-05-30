@@ -1,0 +1,218 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:14:22Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 13.666666666666666,
+    "expected_value": 0.10427799761500911,
+    "forecast_count": 3,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.3633333333333333,
+    "p_needs_new_lemma": 0.42,
+    "p_regression": 0.04,
+    "p_success": 0.307014163685428,
+    "participants": [
+      {
+        "agent_id": "curry_policy_optimist",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.38,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "noether_reducer_readonly",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.31,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "tarski_replay_skeptic",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.24,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.17333333333333334
+      },
+      {
+        "mode": "placeholder_local_hypothesis_h_absent",
+        "p": 0.09333333333333334
+      },
+      {
+        "mode": "betaPDF_support_source_missing",
+        "p": 0.08333333333333333
+      },
+      {
+        "mode": "map_ext_branch_context_missing",
+        "p": 0.08333333333333333
+      },
+      {
+        "mode": "beta_order_source_missing",
+        "p": 0.08
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2017_repair_lane_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2017_repair_lane_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2017_repair_lane_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2017_repair_lane_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2017_repair_lane_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 15.75,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:14:00Z",
+    "created_by": "codex_RD_2026_05_14",
+    "horizon": "one bounded replay",
+    "layer": "micro",
+    "objective_resolver": "Run v1953 replay bridge on v2017_repair_lane_candidate_packet with strict witness metrics; success iff new_strict_same_target_rows >= 1 and harmful_compiled_mismatch_actions = 0 and training=false and gnn_blocked=true.",
+    "question": "Will v20.17 repair-lane replay produce at least one new strict same-target row from the three v20.16 reduced holdout failures, with zero harmful compiled mismatches and GNN still blocked?",
+    "success_threshold": "new_strict_same_target_rows>=1,harmful_compiled_mismatch_actions=0,training=false,gnn_blocked=true",
+    "task_type": "gp225_repair_micro"
+  },
+  "contract_id": "gp225_v2017_repair_lane_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 3,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:curry_policy_optimist",
+        "raw_agent_ids": [
+          "curry_policy_optimist"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:noether_reducer_readonly",
+        "raw_agent_ids": [
+          "noether_reducer_readonly"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:tarski_replay_skeptic",
+        "raw_agent_ids": [
+          "tarski_replay_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 3,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "curry_policy_optimist",
+      "noether_reducer_readonly",
+      "tarski_replay_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 3,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "curry_policy_optimist",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2017_repair_lane_replay/curry_policy_optimist.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 11.0,
+        "forecasted_at": "2026-05-14T13:14:14Z",
+        "p_success": 0.38,
+        "rationale_short": "v20.16 made failures actionable and ofScalars/betaPDF had progress states; a single strict row from nine candidates is plausible, but GNN remains blocked either way.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "noether_reducer_readonly",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2017_repair_lane_replay/noether_reducer_readonly.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 14.0,
+        "forecasted_at": "2026-05-14T13:14:14Z",
+        "p_success": 0.31,
+        "rationale_short": "Reducer lanes are sharper than v20.14 generic candidates, but the rows are the v20.14 failures and likely require context or theorem supply beyond tactic reshuffling.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "tarski_replay_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2017_repair_lane_replay/tarski_replay_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T13:14:14Z",
+        "p_success": 0.24,
+        "rationale_short": "The packet may be source-safe but includes local-hypothesis placeholders and guessed normalizer names; one closure is possible but odds are below prior high-yield bundles.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 3
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 6.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:15:44Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_value": 0.10427799761500911,
+      "forecast_spread": 0.14,
+      "p_success": 0.307014163685428,
+      "reason": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
+      "voi_proxy": 0.9028
+    },
+    "effective_n": 3,
+    "expected_cost_agent_minutes": 13.666666666666666,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.307014163685428,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.17333333333333334
+      },
+      {
+        "mode": "placeholder_local_hypothesis_h_absent",
+        "p": 0.09333333333333334
+      },
+      {
+        "mode": "betaPDF_support_source_missing",
+        "p": 0.08333333333333333
+      },
+      {
+        "mode": "map_ext_branch_context_missing",
+        "p": 0.08333333333333333
+      },
+      {
+        "mode": "beta_order_source_missing",
+        "p": 0.08
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09936666666666667,
+    "score_rows": 3,
+    "scored_at": "2026-05-14T13:15:47Z"
+  }
+}

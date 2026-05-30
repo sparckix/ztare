@@ -1,0 +1,76 @@
+{
+  "contract_id": "gp225_v2017_repair_lane_replay",
+  "mean_brier": 0.09936666666666667,
+  "mean_log_score": -0.37451210934519735,
+  "outcome": {
+    "actual_cost_agent_minutes": 6.0,
+    "artifact_hash": "9341c47d7a9139325bb6d4abb8bcaf98861da93e22616e7cb591d5af7d6f0b14",
+    "artifact_path": "analytics/public/leanmill/results/v2017_repair_lane_replay.json",
+    "compile_status": "replay_failed_no_compiled_candidates",
+    "contract_id": "gp225_v2017_repair_lane_replay",
+    "error_type": "no_strict_row",
+    "goal_delta": 0,
+    "resolution_note": "v20.17 replay attempted nine source-safe repair-lane candidates across three reduced rows. No candidate compiled closed, no strict same-target row, no harmful compiled mismatch, training=false, GNN blocked=true.",
+    "resolved_at": "2026-05-14T13:15:44Z",
+    "sorry_delta": 0,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T13:15:47Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 6.0,
+      "agent_id": "curry_policy_optimist",
+      "brier": 0.1444,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 11.0,
+      "log_score": -0.4780358009429998,
+      "p_success": 0.38,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T13:14:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T13:14:14Z",
+        "resolved_at": "2026-05-14T13:15:44Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 6.0,
+      "agent_id": "noether_reducer_readonly",
+      "brier": 0.0961,
+      "cost_error_agent_minutes": 8.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 14.0,
+      "log_score": -0.37106368139083207,
+      "p_success": 0.31,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T13:14:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T13:14:14Z",
+        "resolved_at": "2026-05-14T13:15:44Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 6.0,
+      "agent_id": "tarski_replay_skeptic",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 16.0,
+      "log_score": -0.2744368457017603,
+      "p_success": 0.24,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T13:14:00Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T13:14:14Z",
+        "resolved_at": "2026-05-14T13:15:44Z"
+      }
+    }
+  ]
+}

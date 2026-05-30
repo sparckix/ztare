@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Proceed only if the patch names the circularity and narrows the next theorem; stop if it pretends to close beta.",
+  "agent_id": "meta-darwin-proxy",
+  "contract_id": "ns_n8_beta_eventized_constructive_source_split_20260514_tick419",
+  "contract_question": "Will tick419 add a compiling Lean surface that decomposes the N8 beta eventized constructive-data source into existing L3 scale-truncation, singleton-incidence, monotone beta, pressure/Duhamel, and flat-skeleton inputs while explicitly recording the remaining same-tree/cofinality source dependency and avoiding a beta-closure overclaim?",
+  "domain": "ns_n8_beta",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cofinal_prefix_unproved": 0.2,
+    "lean_signature_mismatch": 0.12,
+    "overclaim": 0.1,
+    "same_tree_dependency_smuggled": 0.3,
+    "tautological_source_record": 0.28
+  },
+  "forecast_externality_tags": [
+    "darwin_guard",
+    "tautology_risk",
+    "carrier_hygiene"
+  ],
+  "forecasted_at": "2026-05-14T21:42:44Z",
+  "p_dependency_issue": 0.47,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.2,
+  "p_success": 0.52,
+  "rationale_short": "Useful if it kills the tempting shortcut. Dangerous if it relabels same-tree incidence as its own source.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "eventized_data_from_same_tree_is_not_same_tree_source",
+    "beta_endpoint_still_requires_constructive_data",
+    "posthoc_matching_risk"
+  ]
+}

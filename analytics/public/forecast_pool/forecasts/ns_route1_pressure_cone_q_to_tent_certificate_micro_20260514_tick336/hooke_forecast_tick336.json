@@ -1,0 +1,21 @@
+{
+  "agent_id": "hooke_forecast_tick336",
+  "contract_id": "ns_route1_pressure_cone_q_to_tent_certificate_micro_20260514_tick336",
+  "contract_question": "Will we bridge the pressure/Riesz cone local-quadratic payment source to the existing Route1LocalQuadraticTentExcessCertificate without duplicating CKN/tent machinery?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 58.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.2,
+    "certificate_shape_mismatch": 0.35,
+    "constructor_ordering_issue": 0.2,
+    "still_conditional": 0.25
+  },
+  "forecasted_at": "2026-05-14T03:10:39Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.6,
+  "p_regression": 0.16,
+  "p_success": 0.67,
+  "rationale_short": "Existing tent-excess certificate already identifies localQuadraticReceipt with CKN/tent excess, so the bridge should mostly be scalar wiring plus provenance guards.",
+  "read_only_attestation": true
+}

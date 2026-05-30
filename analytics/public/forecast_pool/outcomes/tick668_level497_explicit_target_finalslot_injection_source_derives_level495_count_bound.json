@@ -1,0 +1,51 @@
+{
+  "actual_cost_agent_minutes": 80.0,
+  "artifact_hash": "1bcc698c59625e0f887a73344ed0f5ed4db20b910a8fdfe0231c691a5635ddbd",
+  "artifact_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level497_target_finalslot_injection_pencil.md",
+  "changed_by_forecast_ids": [
+    "codex",
+    "codex:RD"
+  ],
+  "claude_bet_present": false,
+  "codex_bet_present": true,
+  "compile_status": "passed",
+  "contract_id": "tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": false,
+  "error_type": null,
+  "externality_tags": [
+    "ns_trackb",
+    "tick668",
+    "level497",
+    "target_finalslot_injection",
+    "c5_adjacent"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "independent_forecaster_bet_present": true,
+  "independent_forecaster_bets": [
+    {
+      "agent_id": "codex",
+      "canonical_agent_id": "codex",
+      "forecasted_at": "2026-05-27T03:10:59Z",
+      "path": "analytics/public/forecast_pool/forecasts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound/codex.json"
+    }
+  ],
+  "negative_externality_tags": [],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": null,
+  "ordering_override_no_independent_forecaster": null,
+  "preconditioner_effect": "Converted an opaque target-count inequality debt into an explicit finite-injection source law and strengthened the construct gate against endpoint restatement.",
+  "preconditioner_source": "Level496 refutation plus target-indexed assignment gate, pattern action contract, live codex forecast, and PDE workbench",
+  "realized_failure_mode_ids": [
+    "constructive_bridge_compiles",
+    "gate_schema_missing_injection_field_closed",
+    "socket_only_no_incidence_progress_remaining_as_next_lever"
+  ],
+  "resolution_note": "TRUE: Lean compiles TargetPrefixToFinalSlotInjectionSource.targetPrefixCount_finalSlot_le_finalSlot from explicit Fin target -> Fin finalSlot injectivity and composes L3ATargetPrefixFinalSlotInjectionBoundSource into the Level495 eventData assignment source. Target-indexed assignment gate was tightened with a finite_injection_cardinality_derivation receipt and passes; PDE workbench pack refreshed at tick668/20260527T033848Z. Remaining positive lever is constructing targetSlot from incidence geometry, same-tree eventData, bounded fanout, and no-rebilling.",
+  "resolved_at": "2026-05-27T03:39:33Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

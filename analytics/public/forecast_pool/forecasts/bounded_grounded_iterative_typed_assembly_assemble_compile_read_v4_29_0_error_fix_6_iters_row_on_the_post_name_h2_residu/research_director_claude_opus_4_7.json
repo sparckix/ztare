@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "bounded_grounded_iterative_typed_assembly_assemble_compile_read_v4_29_0_error_fix_6_iters_row_on_the_post_name_h2_residu",
+  "contract_question": "Bounded grounded-ITERATIVE typed-assembly (assemble->compile->read v4.29.0 error->fix, <=6 iters/row) on the post-name H2 residual C15(Basel reindex) + C06(legendreSym chi4 iff), correct names already harvested: will >=1/2 close GENUINE in the canonical pinned v4.29.0 sandbox \u2014 validating the lever as grounded-iterative (not just name-resolution)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 60.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T21:24:27Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.7,
+  "rationale_short": "names harvested + 0 reasoning ceiling (Tick-G) => residual is mechanical typed-assembly (reindex/iff-split); bounded iteration vs the real checker should close >=1/2; C15 reindex is std (tsum shift), C06 iff is a 2-case omega \u2014 favored",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

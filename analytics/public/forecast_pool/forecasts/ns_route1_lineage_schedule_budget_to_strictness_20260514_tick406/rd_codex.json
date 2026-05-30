@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Proceed as a narrow interface patch; keep persistence and upstream closure explicit obligations.",
+  "agent_id": "rd_codex",
+  "contract_id": "ns_route1_lineage_schedule_budget_to_strictness_20260514_tick406",
+  "contract_question": "Will the next NS tick produce a compiled finite lineage-schedule budget interface that feeds the route-1 finite-tail amortized strictness adapter without claiming the persistence PDE estimate?",
+  "domain": "ns_lean_micro",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructor_type_friction": 0.22,
+    "duplicate_interface_noise": 0.15,
+    "lean_compile_friction": 0.15,
+    "logging_overhead": 0.1,
+    "overclaim_persistence": 0.2,
+    "prefix_budget_algebra_friction": 0.18
+  },
+  "forecast_externality_tags": [
+    "gp-233:route1",
+    "interface-wiring",
+    "overclaim-guard"
+  ],
+  "forecasted_at": "2026-05-14T19:11:56Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.32,
+  "p_regression": 0.06,
+  "p_success": 0.72,
+  "rationale_short": "The target is mostly interface algebra over sources added in tick405, so compile success is likely if the patch avoids claiming the PDE persistence estimate.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

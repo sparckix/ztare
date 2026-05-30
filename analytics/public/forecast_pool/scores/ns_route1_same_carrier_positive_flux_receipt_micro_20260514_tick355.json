@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355",
+  "mean_brier": 0.09359999999999999,
+  "mean_log_score": -0.36036197416508986,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "3b1ac0af040655dfefd828834c2ca88a9e179e4869f466c9269d59dedd3577cb",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_same_carrier_positive_flux_receipt_micro_20260514_tick355",
+    "error_type": null,
+    "goal_delta": 4,
+    "resolution_note": "Added SameCarrierPositiveCutoffFluxTransportReceiptSource and constructors into SameCarrierPositiveTransportFluxReceipt and FixedWindowPositiveLocalizedTransportFluxLowerPaymentSource. Source preserves no DR/pressure substitution, no final-carrier sizing, and invisible-tail alternative. lake env lean and downstream lake build passed; no sorry/admit in touched file.",
+    "resolved_at": "2026-05-14T12:11:32Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T12:13:04Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "hooke_pde_tick355",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 26.0,
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:07:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:07:42Z",
+        "resolved_at": "2026-05-14T12:11:32Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "rawls_skeptic_tick355",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 38.0,
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:07:28Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:07:43Z",
+        "resolved_at": "2026-05-14T12:11:32Z"
+      }
+    }
+  ]
+}

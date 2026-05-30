@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_adversarial_tick334",
+  "contract_id": "ns_route1_pressure_final_carrier_receipt_scout_micro_20260514_tick334",
+  "contract_question": "Will a same-window packet scout plus Lean guard show that final-carrier-only pressure receipts cannot pay the pre-summed pressure/Riesz cone charge?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 85.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "final_carrier_not_same_as_receipt_sum": 0.35,
+    "guard_tautological": 0.25,
+    "lean_build_cost": 0.15,
+    "numerical_model_too_weak": 0.25
+  },
+  "forecasted_at": "2026-05-14T02:56:30Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.82,
+  "p_regression": 0.22,
+  "p_success": 0.49,
+  "rationale_short": "Main risk is object mismatch: route1PressureVisibilityReceipts are independent reserve/local/child charges, so a final-carrier no-go may only guard one bad instantiation rather than falsify the current bridge.",
+  "read_only_attestation": true
+}

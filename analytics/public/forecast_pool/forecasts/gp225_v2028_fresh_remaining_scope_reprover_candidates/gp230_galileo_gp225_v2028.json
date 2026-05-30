@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": "Do not run literal remaining_scope_holdout generation; define corrected queue against v20.27 first.",
+  "agent_id": "gp230_galileo_gp225_v2028",
+  "contract_id": "gp225_v2028_fresh_remaining_scope_reprover_candidates",
+  "contract_question": "Will local cached ReProver context-enriched generation on remaining GP-225 scope-holdout rows produce a clean fresh candidate packet without replay/training?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 10.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [
+    "avoid_doomed_local_inference",
+    "queue_definition_bug"
+  ],
+  "forecasted_at": "2026-05-14T14:40:49Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.03,
+  "rationale_short": "Literal remaining_scope_holdout has only 4 old rows and only 3 after v20.27 removes current_scale_0298; success requires >=8 rows and >=48 candidates, so the predicate is structurally impossible.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "remaining_scope_queue_too_small_after_v2027",
+    "success_predicate_structurally_impossible"
+  ]
+}

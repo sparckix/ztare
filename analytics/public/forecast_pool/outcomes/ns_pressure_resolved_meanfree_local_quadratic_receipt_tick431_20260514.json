@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 23.0,
+  "artifact_hash": "3d2a7c7b28b86b545a435b686ae6d3c6727fa9c75757debf570ac3d51adc5b5d",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "lean_passed_no_sorry_admit_diffcheck_clean",
+  "contract_id": "ns_pressure_resolved_meanfree_local_quadratic_receipt_tick431_20260514",
+  "counterfactual_value_bucket": "positive_gap_localization",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "pressure_visible_branch",
+    "receipt_share_routing",
+    "gp233"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 3,
+  "negative_externality_tags": [
+    "pressure_not_closed",
+    "remaining_two_shares_open"
+  ],
+  "new_next_action": "source Galilean mean to pressure reserve and frequency leakage to child/tent charge; resolved share is now discharged",
+  "old_next_action": "source all three pressure receipt-share routings",
+  "preconditioner_effect": "lowered split receipt source to first share lemma",
+  "preconditioner_source": "tick430 receipt-share routing gap",
+  "realized_failure_mode_ids": [
+    "resolved_share_only_not_pressure_closure",
+    "galilean_and_leakage_shares_still_open"
+  ],
+  "resolution_note": "Compiled resolved mean-free to local-quadratic receipt theorem from CKN/tent compatibility, plus explicit guard that Galilean reserve and frequency-leakage child-charge shares are not routed by this theorem.",
+  "resolved_at": "2026-05-14T23:25:18Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

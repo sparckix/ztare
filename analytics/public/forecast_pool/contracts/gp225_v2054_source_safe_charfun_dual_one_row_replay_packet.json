@@ -1,0 +1,102 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2054_source_safe_charfun_dual_one_row_replay_packet",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2054_source_safe_charfun_dual_one_row_replay_packet.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2054_source_safe_charfun_dual_one_row_replay_packet.json"
+  },
+  "baseline_action": "Delay packet generation until another audit.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2054_source_safe_charfun_dual_one_row_replay_packet",
+  "cost_penalty": 0.1,
+  "counterfactual_action": "Generate a small source-safe replay packet now and price replay separately.",
+  "created_at": "2026-05-14T18:03:09Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.3714,
+    "expected_cost_agent_minutes_prior": 50.75,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "pre_gnn_candidate_packet",
+    "score": 0.4286,
+    "selected_domain": "gp225_pre_gnn_candidate_static_check",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4286,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.3714,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.4286,
+        "score_rows": 2,
+        "token_jaccard": 0.4286
+      },
+      {
+        "char_trigram_jaccard": 0.1026,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1667,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1515,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.2857,
+        "score_rows": 2,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.1053,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "candidate may still fail Lean replay"
+    ],
+    "positive": [
+      "moves from audit to replayable packet without copying target proof",
+      "keeps replay and training gates separate"
+    ]
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.3,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2054_source_safe_charfun_dual_one_row_replay_packet.json has status passed, exactly one row current_scale_0329, at least one candidate, zero forbidden post-target helper hits, full target rw-list not emitted, consumes v20.53, replay_run=false, training_now=false, gnn_blocked=true.",
+  "question": "Will v20.54 generate a one-row source-safe charFunDual replay packet that passes leakage checks, uses audited normalizers, and remains replay-ready only through a separately priced bridge run?",
+  "risk_penalty": 0.08,
+  "success_threshold": "1.0",
+  "task_type": "pre_gnn_candidate_packet",
+  "value_if_success": 0.6,
+  "void_conditions": "Void only if v20.53 audit artifact is missing."
+}

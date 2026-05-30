@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json",
+    "score": "analytics/public/forecast_pool/scores/tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick607_carve_out_3_a_cold_de_anchored_agent_given_only_the_now_exhaustively_mapped_residual_16_recurrences_route_invari",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T21:21:40Z",
+  "created_by": "claude_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0169,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_tick607_carveout3_cold_outside_view_sharpened_residual_20260516",
+    "score": 0.1,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0169,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 10,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0909,
+        "score_rows": 2,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0161,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.0909,
+        "score_rows": 140,
+        "token_jaccard": 0.0909
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.0833,
+        "score_rows": 7,
+        "token_jaccard": 0.0833
+      },
+      {
+        "char_trigram_jaccard": 0.0375,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.0714,
+        "score_rows": 4,
+        "token_jaccard": 0.0714
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "1 tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "cold_agent_structural_reframe_or_derived_route_invariance_adversary_checked",
+  "question": "tick607 carve-out-3: a COLD de-anchored agent given ONLY the now-exhaustively-mapped residual (16 recurrences, route-invariant supercritical-enstrophy atom, killed set enumerated, the everything-dimensionless-or-secretly-TypeI invariant, the generating-function insight) plus the open ask: is there ANY structurally-absent move outside the killed set, OR is route-1 provably terminal \u2014 and if terminal give the cleanest NEW route-invariance argument not a re-vocabularization. Success = the cold agent yields either a genuinely structurally-distinct candidate worth a disciplined tick, OR a NEW derived route-invariance argument; result then adversary-checked; no laundering, no pessimistic hand-wave. Fail = vacuous, OR a disguised recast of a killed move, OR pessimism without a new derivation.",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "ns_tick607_carveout3_cold_outside_view_sharpened_residual_20260516",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

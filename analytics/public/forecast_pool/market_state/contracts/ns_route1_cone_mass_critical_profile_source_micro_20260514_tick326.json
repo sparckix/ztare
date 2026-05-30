@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T01:37:30Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 76.5,
+    "expected_value": -67.5,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.26,
+    "p_needs_new_lemma": 0.645,
+    "p_regression": 0.11,
+    "p_success": 0.46,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick326",
+        "domain": "ns_route1_pde",
+        "p_success": 0.46,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_forecast_tick326",
+        "domain": "ns_route1_pde",
+        "p_success": 0.46,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "critical_profile_obstruction_too_abstract_to_bind_to_fixed_window_cone_mass",
+        "p": 0.14
+      },
+      {
+        "mode": "critical_profile_source_restates_cone_subordination_or_no_countermodel",
+        "p": 0.125
+      },
+      {
+        "mode": "source_restates_cone_mass_subordination_via_contradiction_shell",
+        "p": 0.11
+      },
+      {
+        "mode": "opposite_cone_overflow_to_zero_visibility_is_too_abstract",
+        "p": 0.105
+      },
+      {
+        "mode": "ns_no_invisible_critical_profile_import_creates_dependency_or_namespace_friction",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.5,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T01:35:41Z",
+    "created_by": "codex_rd",
+    "horizon": "same-session",
+    "layer": "micro",
+    "objective_resolver": "Success iff Lean builds ns_pressure_hessian_l2_bridge and downstream ns_route1_fresh_frequency_coercivity_adapter after importing ns_no_invisible_critical_profile and adding a source where opposite-cone overflow forces strict no-invisible failure plus zero visibility, hence contradiction, hence cone-mass subordination. No sorry/admit introduced in checked files.",
+    "question": "Will the next NS route-1 tick connect the existing no-invisible-critical-profile primitive to the fixed-window cone-mass branch and derive FixedWindowStressConeMassSubordination from critical-profile overflow obstruction?",
+    "success_threshold": "true",
+    "task_type": "lean_proof_surface_lowering"
+  },
+  "contract_id": "ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick326",
+        "raw_agent_ids": [
+          "hooke_forecast_tick326"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_forecast_tick326",
+        "raw_agent_ids": [
+          "rawls_forecast_tick326"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick326",
+      "rawls_forecast_tick326"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick326",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326/hooke_forecast_tick326.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 95.0,
+        "forecasted_at": "2026-05-14T01:37:10Z",
+        "p_success": 0.46,
+        "rationale_short": "Existing no-invisible-critical-profile primitive helps, but binding it to fixed-window cone mass without target restatement is the risk.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_forecast_tick326",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_cone_mass_critical_profile_source_micro_20260514_tick326/rawls_forecast_tick326.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 58.0,
+        "forecasted_at": "2026-05-14T01:37:19Z",
+        "p_success": 0.46,
+        "rationale_short": "Plausible build-passed packaging, but success requires overflow-to-no-invisible contradiction to derive subordination rather than assume it.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 30.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T01:38:56Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.0,
+      "p_success": 0.46,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "critical_profile_obstruction_too_abstract_to_bind_to_fixed_window_cone_mass",
+        "p": 0.14
+      },
+      "voi_proxy": 6.2484
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 76.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.46,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "critical_profile_obstruction_too_abstract_to_bind_to_fixed_window_cone_mass",
+        "p": 0.14
+      },
+      {
+        "mode": "critical_profile_source_restates_cone_subordination_or_no_countermodel",
+        "p": 0.125
+      },
+      {
+        "mode": "source_restates_cone_mass_subordination_via_contradiction_shell",
+        "p": 0.11
+      },
+      {
+        "mode": "opposite_cone_overflow_to_zero_visibility_is_too_abstract",
+        "p": 0.105
+      },
+      {
+        "mode": "ns_no_invisible_critical_profile_import_creates_dependency_or_namespace_friction",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.2916,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T01:39:01Z"
+  }
+}

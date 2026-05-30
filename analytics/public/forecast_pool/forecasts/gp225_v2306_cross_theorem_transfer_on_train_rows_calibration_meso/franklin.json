@@ -1,0 +1,26 @@
+{
+  "action_change_recommendation": "Bucket candidates by namespace family; budget on same-family pairs first; pre-register indirect-simp-set FP audit.",
+  "agent_id": "Franklin",
+  "contract_id": "gp225_v2306_cross_theorem_transfer_on_train_rows_calibration_meso",
+  "contract_question": "Will cross-theorem transfer (gold tactics from 14 other train rows applied as candidates on each of the 15 canonical train rows under strict source!=target row/theorem and direct-gold-token leakage exclusion) recover AT LEAST 1 target-equivalent positive (under GPT-5.5 review contract: target_equivalent_closure OR target_equivalent_transition) across the 15 train rows? Threshold: at least 1 row \u00d7 1 distinct witness signature.",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "1plus_same_namespace_family_transfer_lands_target_equivalent": 0.22,
+    "all_210_or_fewer_candidates_zero_positive_paradigm_dead": 0.42,
+    "false_positive_from_compile_but_wrong_target": 0.08,
+    "indirect_simp_set_leakage_produces_false_positive": 0.09,
+    "leakage_event_breaks_packet_build": 0.04,
+    "wrong_state_progress_only_no_target_equivalent": 0.15
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T00:58:24Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.35,
+  "p_regression": 0.05,
+  "p_success": 0.22,
+  "rationale_short": "Heldout-unsolved base rate 0/230, but train rows have richer label structure with Topology cluster (0017/0076/0163/0180); same-family transfer has nonzero hit probability lifting p(>=1) to 0.30-0.35; conjoint 0-FP gate attenuates to ~0.22.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

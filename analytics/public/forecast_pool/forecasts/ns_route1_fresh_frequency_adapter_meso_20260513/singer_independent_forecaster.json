@@ -1,0 +1,20 @@
+{
+  "agent_id": "singer_independent_forecaster",
+  "contract_id": "ns_route1_fresh_frequency_adapter_meso_20260513",
+  "contract_question": "Will graph plus v19.02 consumption yield a non-tautological typechecked Lean bridge and E/F row in this session, and should next frontier prioritize fresh-frequency/event-tent over pressure-small scalar strengthening?",
+  "domain": "NS_route1",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "adapter_only_name_bridge": 0.3214285714285714,
+    "graph_signal_noisy": 0.2857142857142857,
+    "lean_integration_failure": 0.39285714285714285
+  },
+  "forecasted_at": "2026-05-13T20:39:16Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.63,
+  "p_regression": 0.14,
+  "p_success": 0.72,
+  "rationale_short": "Graph paths already isolate X_tail to tailSquareFunction to localQuadraticTentExcess with leakage fanout; main uncertainty is typecheck/logging and avoiding hidden visibility oracle.",
+  "read_only_attestation": true
+}

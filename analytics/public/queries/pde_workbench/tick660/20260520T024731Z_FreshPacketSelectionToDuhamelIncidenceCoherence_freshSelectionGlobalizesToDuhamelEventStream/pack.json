@@ -1,0 +1,108 @@
+{
+  "generated_utc": "2026-05-20T02:47:32.813682+00:00",
+  "target": "FreshPacketSelectionToDuhamelIncidenceCoherence",
+  "field": "freshSelectionGlobalizesToDuhamelEventStream",
+  "tool_scope": "RD caller over existing ZTARE primitives; not a second autoresearch loop or replacement workbench",
+  "target_context": {
+    "found": true,
+    "target": "FreshPacketSelectionToDuhamelIncidenceCoherence",
+    "field": "freshSelectionGlobalizesToDuhamelEventStream",
+    "target_file": "ns_L3_multiscale_YM_rescaled_increments",
+    "endpoint_exposure": null,
+    "n_downstream_users": null,
+    "priority": null,
+    "n_fields": 13,
+    "fields": [
+      {
+        "name": "duhamelSource",
+        "type": "EventDynamicRecurrencePricePrecertificateSource L"
+      },
+      {
+        "name": "sectionIncidence",
+        "type": "EventSectionIncidenceReceipt L"
+      },
+      {
+        "name": "reciprocalBudgetMatchesSectionIncidence",
+        "type": "L.reciprocalBudget = sectionIncidence.eventReciprocalBudget"
+      },
+      {
+        "name": "freshSelectionGlobalizesToEventStream",
+        "type": "Prop"
+      },
+      {
+        "name": "eventSectionsAreSelectedBadCenterSections",
+        "type": "Prop"
+      },
+      {
+        "name": "eventPricesDeclaredBeforeBadCenterBetaPayoff",
+        "type": "Prop"
+      },
+      {
+        "name": "effectiveMultiplicityCountsSelectedBadNodes",
+        "type": "Prop"
+      },
+      {
+        "name": "duhamelReserveUsesSameBadCenterCarrier",
+        "type": "Prop"
+      },
+      {
+        "name": "priceBudgetMatchesFiniteNSScaleBudget",
+        "type": "Prop"
+      },
+      {
+        "name": "rawRecurrencePrefixIsSameCarrierScaleDrop",
+        "type": "Prop"
+      },
+      {
+        "name": "prefixBudgetTelescopesOverSelectedBadNodes",
+        "type": "Prop"
+      },
+      {
+        "name": "noPostHocSectionChoiceFromRadiusSum",
+        "type": "Prop"
+      },
+      {
+        "name": "notOnlyShellOrProcessReserve",
+        "type": "Prop"
+      }
+    ],
+    "field_info": null,
+    "constructors": [],
+    "type_producers": [],
+    "nearby_theorems": []
+  },
+  "gap_classification": {
+    "gap_type": "UNKNOWN",
+    "confidence": "low",
+    "rationale": "No strong local lexical evidence for a supported gap type. Field was not resolved inside the workmap target.",
+    "classifier": "local_heuristic"
+  },
+  "mathlib_lemmas": [],
+  "auxiliary_families": [],
+  "inequality_checks": [
+    {
+      "name": "G-PDE-INEQ-DIM",
+      "passed": true,
+      "lhs": "AuditEventIndex_Q",
+      "op": "=",
+      "rhs": "DuhamelSectionIndex_Q",
+      "violations": [],
+      "dim_check": {
+        "consistent": true,
+        "mode": "physical_vector",
+        "lhs_dim": {},
+        "rhs_dim": {}
+      },
+      "endpoint_check": {
+        "all_bound": true,
+        "unbound": []
+      },
+      "hard_fail": false,
+      "severity": "advisory",
+      "source": "pde_inequality_dimensional_gate",
+      "RELIABILITY_NOTE": "Advisory v0.1. Catches dimensional + endpoint-exposure violations on LLM-proposed inequalities. Does NOT verify mathematical correctness \u2014 passes inequalities that are well-typed but mathematically false. Use as a CHEAP PRE-FILTER before lake build."
+    }
+  ],
+  "curriculum_variants": [],
+  "next_step_rule": "Codex chooses a patch/falsifier route. Feed only verified snippets or summarized failure categories back into ZTARE briefing memory."
+}

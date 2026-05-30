@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_tarski_gp225_v2007",
+  "contract_id": "gp225_v2007_high_yield_next3_replay",
+  "domain": "gp225_repair_micro",
+  "forecasted_at": "2026-05-14T12:37:30Z",
+  "p_success": 0.38,
+  "expected_cost_agent_minutes": 24.0,
+  "p_regression": 0.05,
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.15,
+  "failure_mode_distribution": {
+    "fresh_strict_success": 0.33,
+    "generic_candidates_do_not_compile": 0.24,
+    "progress_only_no_strict": 0.22,
+    "source_policy_or_schema_issue": 0.05,
+    "other": 0.16
+  },
+  "rationale": "The endpoint and negative-support rows are plausibly solved by definitional/simp tactics, while map_direction is harder. The prior should update upward after v20.04 and v20.06 but remain below even odds."
+  ,
+  "rationale_short": "Endpoint and negative-support rows give above-v20.04 odds; map_direction keeps the contract below even odds.",
+  "read_only_attestation": true
+}

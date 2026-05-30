@@ -1,0 +1,38 @@
+{
+  "action_change_recommendation": "Proceed with a fork surface only; do not claim event selection proof.",
+  "agent_id": "codex_rd",
+  "contract_id": "ns_n8_beta_residual_fresh_event_selection_fork_20260514_tick424",
+  "contract_question": "Will tick424 add a compiling Lean fork surface for residual fresh excess creating a same-ledger audit event, or routing the obstruction to flat/inherited scale reserve, pressure visibility, or beta incidence residuals, without claiming analytic event selection?",
+  "domain": "ns_proof_frontier",
+  "expected_cost_agent_minutes": 30.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "analytic_selection_overclaim": 0.15,
+    "flat_inherited_branch_not_explicit": 0.18,
+    "logging_gap": 0.15,
+    "pressure_visibility_smuggling": 0.18,
+    "repeats_tick423": 0.18,
+    "signature_mismatch": 0.16
+  },
+  "forecast_externality_tags": [
+    "ns_n8_beta",
+    "residual_fork",
+    "anti_tautology",
+    "swarm"
+  ],
+  "forecasted_at": "2026-05-14T22:28:30Z",
+  "p_dependency_issue": 0.44,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.14,
+  "p_success": 0.64,
+  "rationale_short": "The file has enough structs for a compatible fork. The value is compressing the next theorem; the risk is adapter drift or pressure/inherited branches being hidden.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "repeats_tick423",
+    "signature_mismatch",
+    "pressure_visibility_smuggling",
+    "flat_inherited_branch_not_explicit",
+    "analytic_selection_overclaim",
+    "logging_gap"
+  ]
+}

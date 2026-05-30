@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:44:09Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 91.0,
+    "expected_value": -168.9584531182523,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.31,
+    "p_needs_new_lemma": 0.8200000000000001,
+    "p_regression": 0.055,
+    "p_success": 0.5723940979719703,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick341",
+        "domain": "ns_route1_pde",
+        "p_success": 0.66,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_adversarial_tick341",
+        "domain": "ns_route1_pde",
+        "p_success": 0.48,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tail_visibility_bound_too_global",
+        "p": 0.16666666666666666
+      },
+      {
+        "mode": "leakage_routing_needs_transport_channel_not_pressure_branch",
+        "p": 0.16176470588235295
+      },
+      {
+        "mode": "leakage_charge_sum_not_pressure_receipt",
+        "p": 0.1333333333333333
+      },
+      {
+        "mode": "tail_visibility_receipt_not_available",
+        "p": 0.1323529411764706
+      },
+      {
+        "mode": "source_too_conditional",
+        "p": 0.11764705882352942
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_split_shardc_leakage_source_micro_20260514_tick341.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_split_shardc_leakage_source_micro_20260514_tick341.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_split_shardc_leakage_source_micro_20260514_tick341.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_split_shardc_leakage_source_micro_20260514_tick341.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_split_shardc_leakage_source_micro_20260514_tick341.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 85.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:43:46Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T08:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "success iff Lean adds an adapter-side source using FreshFrequencyLeakageChargeBookkeeping to bound frequencyLeakageWeightedStress, proves pressureRieszConeCharge <= route1TailVisibility from receipt plus leakage charges, feeds FixedWindowPressureRieszConeChargeSource or equivalent visible branch, downstream adapter builds, and no new sorry/admit appears in touched surfaces",
+    "question": "Will we add a Lean source that routes the frequency-leakage share of pressure/Riesz cone stress through FreshFrequencyLeakageChargeBookkeeping/shard-C charges instead of pressure child receipt, while still feeding the visible overflow branch?",
+    "success_threshold": "lean_shardc_leakage_source_builds_and_feeds_visible_branch",
+    "task_type": "ns_route1_pde_lean_bridge"
+  },
+  "contract_id": "ns_route1_split_shardc_leakage_source_micro_20260514_tick341",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick341",
+        "raw_agent_ids": [
+          "hooke_forecast_tick341"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_adversarial_tick341",
+        "raw_agent_ids": [
+          "rawls_adversarial_tick341"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick341",
+      "rawls_adversarial_tick341"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick341",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_split_shardc_leakage_source_micro_20260514_tick341/hooke_forecast_tick341.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 72.0,
+        "forecasted_at": "2026-05-14T03:44:09Z",
+        "p_success": 0.66,
+        "rationale_short": "The adapter already has FreshFrequencyLeakageChargeBookkeeping, so an adapter-side source should compile. Main risk is needing an extra route1TailVisibility bound for receipt sum plus leakage charges.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_adversarial_tick341",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_split_shardc_leakage_source_micro_20260514_tick341/rawls_adversarial_tick341.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 110.0,
+        "forecasted_at": "2026-05-14T03:44:09Z",
+        "p_success": 0.48,
+        "rationale_short": "Likely possible as a conditional source, but direct feeding of pressure/Riesz visible branch may need broader tail visibility, not pressure receipts. Risk of adding a wrapper that is honest but not a lower PDE estimate.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 96.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:49:40Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.5723940979719703,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "tail_visibility_bound_too_global",
+        "p": 0.16666666666666666
+      },
+      "voi_proxy": 8.4248
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 91.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5723940979719703,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tail_visibility_bound_too_global",
+        "p": 0.16666666666666666
+      },
+      {
+        "mode": "leakage_routing_needs_transport_channel_not_pressure_branch",
+        "p": 0.16176470588235295
+      },
+      {
+        "mode": "leakage_charge_sum_not_pressure_receipt",
+        "p": 0.1333333333333333
+      },
+      {
+        "mode": "tail_visibility_receipt_not_available",
+        "p": 0.1323529411764706
+      },
+      {
+        "mode": "source_too_conditional",
+        "p": 0.11764705882352942
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.193,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:49:45Z"
+  }
+}

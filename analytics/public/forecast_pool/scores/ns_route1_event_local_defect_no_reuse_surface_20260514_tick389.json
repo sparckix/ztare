@@ -1,0 +1,134 @@
+{
+  "contract_id": "ns_route1_event_local_defect_no_reuse_surface_20260514_tick389",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Continue local source-domination ladder only.",
+      "counterfactual_action": "Encode fresh/no-reuse defect-drop surface and recurrent-reuse guard.",
+      "externality_hypotheses": {
+        "decision_change": "force next proof target to be fresh payment/bounded overlap rather than another local split",
+        "failure_mode_preconditioning": "local domination may be mistaken for global strict closure"
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd_no_reuse_prior",
+        "codex_skeptic_no_reuse_prior",
+        "Zeno",
+        "Volta"
+      ],
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "countermodel_preconditioning",
+        "anti_tautology",
+        "no_reuse_guard",
+        "ns_source_ladder"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "Encode lineage-level freshness/recharge/reservoir drop and local-domination-only no-go guard.",
+      "old_next_action": "Encode fresh-region bounded-overlap no-reuse only.",
+      "preconditioner_effect": "Patched no-reuse theorem surface from Eulerian bounded overlap to lineage-level no-reuse plus monotone reservoir and multiplicity discount.",
+      "preconditioner_source": "codex forecasters,Zeno sidecar,Volta sidecar",
+      "realized_failure_mode_ids": [
+        "local_domination_mistaken_for_global_closure",
+        "recurrent_same_mass_reuse_countermodel",
+        "bounded_overlap_unpaid"
+      ]
+    }
+  },
+  "mean_brier": 0.10985,
+  "mean_log_score": -0.39770070729935086,
+  "outcome": {
+    "actual_cost_agent_minutes": 26.0,
+    "artifact_hash": "b656291f02ee1db645634ff80670deff9aa8935052a5d74e7380d1f46fa2bbd0",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd_no_reuse_prior",
+      "codex_skeptic_no_reuse_prior",
+      "Zeno",
+      "Volta"
+    ],
+    "compile_status": "passed",
+    "contract_id": "ns_route1_event_local_defect_no_reuse_surface_20260514_tick389",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "countermodel_preconditioning",
+      "anti_tautology",
+      "no_reuse_guard",
+      "ns_source_ladder"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [],
+    "new_next_action": "Encode lineage-level freshness/recharge/reservoir drop and local-domination-only no-go guard.",
+    "old_next_action": "Encode fresh-region bounded-overlap no-reuse only.",
+    "preconditioner_effect": "Patched no-reuse theorem surface from Eulerian bounded overlap to lineage-level no-reuse plus monotone reservoir and multiplicity discount.",
+    "preconditioner_source": "codex forecasters,Zeno sidecar,Volta sidecar",
+    "realized_failure_mode_ids": [
+      "local_domination_mistaken_for_global_closure",
+      "recurrent_same_mass_reuse_countermodel",
+      "bounded_overlap_unpaid"
+    ],
+    "resolution_note": "Added EventLocalDefectDropNoReuse, Route1AmortizedStrictClosureFromDefectNoReuse, and LocalEnergyMeasureDominationDoesNotImplyNoReuse. Sidecars sharpened the surface: bounded Eulerian overlap alone is insufficient; the source now requires lineageFreshness, recurrentPacketReuseRejectedOrPaysRecharge, monotoneDefectReservoir, defectReservoirDrop, rechargeErrorsSummable, overlapMultiplicityBound, and multiplicity discount. lake env lean passed; no new sorry/admit.",
+    "resolved_at": "2026-05-14T15:08:42Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T15:08:52Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 26.0,
+      "agent_id": "codex_rd_no_reuse_prior",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "ns_route1_local_energy_measure_split",
+      "expected_cost_agent_minutes": 28.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.34,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T14:55:01Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T14:55:18Z",
+        "resolved_at": "2026-05-14T15:08:42Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 26.0,
+      "agent_id": "codex_skeptic_no_reuse_prior",
+      "brier": 0.1521,
+      "cost_error_agent_minutes": 16.0,
+      "domain": "ns_route1_local_energy_measure_split",
+      "expected_cost_agent_minutes": 42.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.64,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4942963218147801,
+      "p_success": 0.61,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T14:55:01Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T14:55:19Z",
+        "resolved_at": "2026-05-14T15:08:42Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1923_leanhammer_mapped_smoke.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1923_leanhammer_mapped_smoke.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1923_leanhammer_mapped_smoke",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1923_leanhammer_mapped_smoke.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1923_leanhammer_mapped_smoke.json"
+  },
+  "budget_agent_minutes": 20.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1923_leanhammer_mapped_smoke",
+  "cost_penalty": 0.2,
+  "created_at": "2026-05-13T22:29:16Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.3462,
+    "expected_cost_agent_minutes_prior": 31.5,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_external_baseline_smoke",
+    "score": 0.5,
+    "selected_domain": "gp225_baseline",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.3462,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.5,
+        "score_rows": 3,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.0811,
+        "domain": "gp225_inventory_gate",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0857,
+        "domain": "gp225_label_source",
+        "expected_cost_agent_minutes_prior": 1.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0882,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0789,
+        "domain": "gp225_parallel_replay",
+        "expected_cost_agent_minutes_prior": 52.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 3,
+        "token_jaccard": 0.1667
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same-session v19.23 smoke",
+  "information_value": 0.8,
+  "layer": "meso",
+  "objective_resolver": "Resolve from v19.23 LeanHammer mapped-smoke artifact metrics.",
+  "question": "Will a bounded LeanHammer smoke benchmark over v19.22 mapped rows run in the external LeanHammer clone without mutating the main project and produce per-row pass/fail/suggestion artifacts?",
+  "risk_penalty": 0.35,
+  "success_threshold": "mapped_rows_attempted>=3 AND leanhammer_invocations>=3 AND artifact_records_per_row=true AND main_project_mutated=false AND heavy_training_launched=false AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_external_baseline_smoke",
+  "value_if_success": 1.4,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

@@ -1,0 +1,206 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T19:37:33Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 60.0,
+    "expected_value": -6.405872258047153,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.39,
+    "p_needs_new_lemma": 0.53,
+    "p_regression": 0.05,
+    "p_success": 0.5501824885040661,
+    "participants": [
+      {
+        "agent_id": "codex_forecaster",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pincer_bottom_up_top_down_20260514_tick409/codex_forecaster.json",
+        "forecasted_at": "2026-05-14T19:37:29Z",
+        "p_success": 0.52,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rd_codex",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pincer_bottom_up_top_down_20260514_tick409/rd_codex.json",
+        "forecasted_at": "2026-05-14T19:37:29Z",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "critical_increment_exhaustion_not_available",
+        "p": 0.155
+      },
+      {
+        "mode": "branch_dominance_wrapper_only",
+        "p": 0.14
+      },
+      {
+        "mode": "finite_mass_semantics_unsourced",
+        "p": 0.11
+      },
+      {
+        "mode": "n2_n3_consumers_compile_but_do_not_source",
+        "p": 0.11
+      },
+      {
+        "mode": "route1_closed_but_upstream_open",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 80.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T19:37:13Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "artifact-backed: success iff a pincer work packet is saved, Lean route1 adapter compiles after adding any source/guard surfaces, no sorry/admit is introduced in the touched Lean file, and the result explicitly preserves N7/non-route branch obligations",
+    "question": "Can this tick build a route-1 pincer work packet and compile a Lean surface that links bottom-up N1/N2/N3 schedule closure to top-down branch-dominance obligations, without claiming full upstream Clay closure?",
+    "success_threshold": "pincer_packet_saved_and_lean_passes_no_sorry_no_upstream_overclaim",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_pincer_bottom_up_top_down_20260514_tick409",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_forecaster",
+          "rd_codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_forecaster",
+      "rd_codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "codex_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pincer_bottom_up_top_down_20260514_tick409/codex_forecaster.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T19:37:29Z",
+        "p_success": 0.52,
+        "rationale_short": "Bottom-up is likely compileable; top-down is valuable mostly as a branch map unless critical-increment exhaustion already exists in nearby files.",
+        "specific_failure_mode_ids": [
+          "critical_increment_exhaustion_not_available",
+          "finite_mass_harmlessness_gap"
+        ]
+      },
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "rd_codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pincer_bottom_up_top_down_20260514_tick409/rd_codex.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 65.0,
+        "forecasted_at": "2026-05-14T19:37:29Z",
+        "p_success": 0.58,
+        "rationale_short": "A pincer should add value if it keeps branch dominance separate from route1 closure; main risk is adding a top-down shell without sourcing failure semantics.",
+        "specific_failure_mode_ids": [
+          "branch_dominance_wrapper_only",
+          "finite_mass_semantics_unsourced"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 54.0,
+    "changed_by_forecast_ids": [
+      "rd_codex",
+      "codex_forecaster"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T20:01:39Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.06,
+      "p_success": 0.5501824885040661,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "critical_increment_exhaustion_not_available",
+        "p": 0.155
+      },
+      "voi_proxy": 0.7275
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 60.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.5501824885040661,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "critical_increment_exhaustion_not_available",
+        "p": 0.155
+      },
+      {
+        "mode": "branch_dominance_wrapper_only",
+        "p": 0.14
+      },
+      {
+        "mode": "finite_mass_semantics_unsourced",
+        "p": 0.11
+      },
+      {
+        "mode": "n2_n3_consumers_compile_but_do_not_source",
+        "p": 0.11
+      },
+      {
+        "mode": "route1_closed_but_upstream_open",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.20340000000000003,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T20:01:45Z"
+  }
+}

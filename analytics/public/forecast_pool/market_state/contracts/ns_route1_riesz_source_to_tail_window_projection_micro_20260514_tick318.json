@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:35:22Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 28.0,
+    "expected_value": -42.83981599044432,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.215,
+    "p_needs_new_lemma": 0.33,
+    "p_regression": 0.08,
+    "p_success": 0.6950230011944596,
+    "participants": [
+      {
+        "agent_id": "Euler",
+        "domain": "ns_route1_pde",
+        "p_success": 0.69,
+        "weight": 1.1667
+      },
+      {
+        "agent_id": "Gibbs",
+        "domain": "ns_route1_pde",
+        "p_success": 0.7,
+        "weight": 1.1667
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "upper_control_smuggled_as_lower_visibility",
+        "p": 0.3
+      },
+      {
+        "mode": "missing_scalar_bridge_from_recovered_riesz_energy_to_pressureL2_radialGrade",
+        "p": 0.11999999999999998
+      },
+      {
+        "mode": "tail_window_station_type_mismatch",
+        "p": 0.11
+      },
+      {
+        "mode": "constructor_requires_extra_explicit_props_not_present_in_local_CZ_source",
+        "p": 0.09
+      },
+      {
+        "mode": "import_cycle_or_wrong_file_choice",
+        "p": 0.07
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 40.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:31:41Z",
+    "created_by": "codex:RD",
+    "horizon": "same tick 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "Success iff Lean builds after adding a non-tautological constructor/source station in ns_route1_fresh_frequency_coercivity_adapter.lean or ns_pressure_hessian_l2_bridge.lean that links recovered Riesz/Helmholtz pressure recovery to the tail-window projection station, with no sorry/admit and GP-233 row.",
+    "question": "Can this tick connect the existing recovered-Riesz/local-pressure source machinery to the new Route1PressureHessianTailWindowProjectionStation without claiming the older source upper-bound arc proves pressure visibility?",
+    "success_threshold": "lake env lean pass; lake build pass; no sorry/admit; source station distinguishes upper/control source from lower visibility carrier",
+    "task_type": "lean_pde_frontier_lowering"
+  },
+  "contract_id": "ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Euler",
+        "raw_agent_ids": [
+          "Euler"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Gibbs",
+        "raw_agent_ids": [
+          "Gibbs"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Euler",
+      "Gibbs"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Euler",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318/euler.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 32.0,
+        "forecasted_at": "2026-05-14T00:35:17Z",
+        "p_success": 0.69,
+        "rationale_short": "adapter route feasible; success depends on lower carrier-projection station consuming recovered Riesz without claiming upper pressure-excess control proves visibility.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Gibbs",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318/gibbs.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T00:35:17Z",
+        "p_success": 0.7,
+        "rationale_short": "compile-passing connector plausible if framed as new source station with explicit tail-window projection fields, not as local-CZ inequalities implying visibility.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 22.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T00:35:32Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 28.0,
+      "expected_value": -42.83981599044432,
+      "p_success": 0.6950230011944596,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 8.222
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 28.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6950230011944596,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "upper_control_smuggled_as_lower_visibility",
+        "p": 0.3
+      },
+      {
+        "mode": "missing_scalar_bridge_from_recovered_riesz_energy_to_pressureL2_radialGrade",
+        "p": 0.11999999999999998
+      },
+      {
+        "mode": "tail_window_station_type_mismatch",
+        "p": 0.11
+      },
+      {
+        "mode": "constructor_requires_extra_explicit_props_not_present_in_local_CZ_source",
+        "p": 0.09
+      },
+      {
+        "mode": "import_cycle_or_wrong_file_choice",
+        "p": 0.07
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09305000000000002,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T00:35:37Z"
+  }
+}

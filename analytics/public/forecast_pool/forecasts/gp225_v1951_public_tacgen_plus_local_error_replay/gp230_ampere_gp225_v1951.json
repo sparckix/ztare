@@ -1,0 +1,24 @@
+{
+  "agent_id": "gp230_ampere_gp225_v1951",
+  "contract_id": "gp225_v1951_public_tacgen_plus_local_error_replay",
+  "contract_question": "Will GP-225 v19.51 bundled execution produce at least one new strict same-target row beyond v19.45's two strict rows, with harmful_compiled_mismatch_rows=0 and clean source policy, using ReProver direct tacgen if model staging succeeds plus clean local error-packet replay?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 42.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "ReProver_generates_generic_or_non_replaying_tactics": 0.18,
+    "candidate_compiles_but_only_pull_forward_or_non_strict_label": 0.12,
+    "contamination_or_harmful_mismatch_guard_invalidates_otherwise_positive_row": 0.04,
+    "dependency_or_model_staging_blocks_public_tacgen_and_local_lane_not_enough": 0.27,
+    "harness_row_join_or_replay_adapter_bug": 0.05,
+    "local_error_packet_candidates_remain_syntax_or_elaboration_brittle": 0.24,
+    "residual_rows_need_theorem_specific_bridge_not_in_packet": 0.1
+  },
+  "forecasted_at": "2026-05-14T01:09:35Z",
+  "p_dependency_issue": 0.4,
+  "p_needs_new_lemma": 0.28,
+  "p_regression": 0.07,
+  "p_success": 0.56,
+  "rationale_short": "Prices the bundle above v19.49 because the local error-packet lane is targeted, especially dist_map_map_zero_lt; discounts public tacgen because model is uncached and prior ReProver/LeanDojo integration had friction.",
+  "read_only_attestation": true
+}

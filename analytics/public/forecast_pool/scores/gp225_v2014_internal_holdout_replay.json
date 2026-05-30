@@ -1,0 +1,58 @@
+{
+  "contract_id": "gp225_v2014_internal_holdout_replay",
+  "mean_brier": 0.39185,
+  "mean_log_score": -0.9852038903278567,
+  "outcome": {
+    "actual_cost_agent_minutes": 9.0,
+    "artifact_hash": "765e7dd8ce99c215444a1d00bf2027a4f5b0acf9a2fd1b579b2224a513bbe290",
+    "artifact_path": "analytics/public/leanmill/results/v2014_internal_holdout_replay.json",
+    "compile_status": "replay_completed_internal_holdout_strict_win",
+    "contract_id": "gp225_v2014_internal_holdout_replay",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Replay attempted 12 candidates across 4 internal randomized holdout source-safe rows. compiled_candidate_actions=1, fresh primary strict rows=1, auxiliary pull-forward actions=0, harmful mismatches=0, source-policy flags clean, training_now=false, gnn_blocked=true. Contract resolved true on current_scale_0021/interior_sInter.",
+    "resolved_at": "2026-05-14T12:58:15Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T12:58:23Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 9.0,
+      "agent_id": "gp230_noether_gp225_v2014",
+      "brier": 0.4355999999999999,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 12.0,
+      "log_score": -1.0788096613719298,
+      "p_success": 0.34,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:55:20Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:55:30Z",
+        "resolved_at": "2026-05-14T12:58:15Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 9.0,
+      "agent_id": "gp230_tarski_gp225_v2014",
+      "brier": 0.3481000000000001,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "gp225_repair_micro",
+      "expected_cost_agent_minutes": 14.0,
+      "log_score": -0.8915981192837836,
+      "p_success": 0.41,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T12:55:20Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T12:55:30Z",
+        "resolved_at": "2026-05-14T12:58:15Z"
+      }
+    }
+  ]
+}

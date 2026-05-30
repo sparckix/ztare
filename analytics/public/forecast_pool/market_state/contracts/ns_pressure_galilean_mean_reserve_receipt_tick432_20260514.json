@@ -1,0 +1,156 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T23:30:35Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 25.0,
+    "expected_value": -0.15250550669293783,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.815,
+    "p_regression": 0.05,
+    "p_success": 0.14749449330706219,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "ns_clay_pressure",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-14T23:30:35Z",
+        "p_success": 0.12,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "ns_clay_pressure",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-14T23:30:35Z",
+        "p_success": 0.18,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T23:30:25Z",
+    "created_by": "claude_principal",
+    "horizon": "2026-05-14 EOD",
+    "layer": "micro",
+    "objective_resolver": "lean_compile_plus_sorry_admit_scan_clean",
+    "question": "Can the Galilean-mean weighted-stress share in FixedWindowPreSummedStressMassCKNTentCompatibility be routed to pressureReserveReceipt using only CKN/tent compatibility + share-budget arithmetic (the tick431 pattern), with the touched Lean file compiling and no new axioms?",
+    "success_threshold": "0.5",
+    "task_type": "ns_clay_pressure_share_routing"
+  },
+  "contract_id": "ns_pressure_galilean_mean_reserve_receipt_tick432_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Record gap + name missing Galilean-quotient/reserve primitive; do not stretch to a tick431-style closure.",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "ns_clay_pressure",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T23:30:35Z",
+        "p_success": 0.12,
+        "rationale_short": "pressureReserveReceipt := decomposition.pressureReserve is an independent observable; tick431 worked only because localQuadraticReceipt identifies tent excess; CKN bound on Galilean share uses tent excess, with no a-priori bridge to the reserve decomposition. Handover predicts gauge-fix gap.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "If <0.3 after aggregate, default to negative recording + named primitive instead of attempting force.",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_pressure_galilean_mean_reserve_receipt_tick432_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "ns_clay_pressure",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T23:30:35Z",
+        "p_success": 0.18,
+        "rationale_short": "Naive pattern transfer (1/2 prior share routings worked) inflates p, but the specific obstruction is a known no-go in the handover ('Galilean mean share needs quotient/gauge fixing'); receipts come from a disjoint decomposition object.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T23:33:16Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "kill_branch",
+      "expected_value": -0.15250550669293783,
+      "p_success": 0.14749449330706219,
+      "reason": "low probability, negative expected value, and no declared information value",
+      "voi_proxy": 0.1857
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 25.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.14749449330706219,
+    "routing_hint": "defer_unless_exploration_budget",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.023399999999999997,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T23:33:16Z"
+  }
+}

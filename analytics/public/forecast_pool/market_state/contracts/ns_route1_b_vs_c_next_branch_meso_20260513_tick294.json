@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T21:55:26Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 92.5,
+    "expected_value": 1.4513931206084925,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.2,
+    "p_needs_new_lemma": 0.445,
+    "p_regression": 0.12,
+    "p_success": 0.6654643735361642,
+    "participants": [
+      {
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.69,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "b_poincare_split_still_only_repackaged",
+        "p": 0.15
+      },
+      {
+        "mode": "b_still_has_two_unpaid_numeric_fields",
+        "p": 0.12
+      },
+      {
+        "mode": "existing_l3_ckn_objects_do_not_align_with_route1_fields",
+        "p": 0.12
+      },
+      {
+        "mode": "existing_l3_ckn_primitives_too_propositional_to_pay_inequality",
+        "p": 0.11
+      },
+      {
+        "mode": "c_transport_bound_turns_out_lower_hanging_fruit",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_b_vs_c_next_branch_meso_20260513_tick294.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_b_vs_c_next_branch_meso_20260513_tick294.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_b_vs_c_next_branch_meso_20260513_tick294.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_b_vs_c_next_branch_meso_20260513_tick294.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_b_vs_c_next_branch_meso_20260513_tick294.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T21:54:35Z",
+    "created_by": "codex:RD",
+    "horizon": "current RD tick 2026-05-13",
+    "layer": "meso",
+    "objective_resolver": "lake build ZtareProofs.ns_route1_fresh_frequency_coercivity_adapter passes and new artifact lowers or partially pays shard B without mutating pre-GNN artifacts",
+    "question": "Is shard B mean-free Poincare the better next branch than shard C transportCharge_bound, measured by a compiled theorem/source bridge with fewer unpaid fields in this tick?",
+    "success_threshold": "compiled Lean object reduces shard-B unpaid surface or proves a shard-B numeric sub-claim from existing primitives",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_b_vs_c_next_branch_meso_20260513_tick294",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230_ns_route1_2026_05_13",
+        "raw_agent_ids": [
+          "codex_readonly_gp230_ns_route1_2026_05_13"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_readonly_ns_route1_forecast_2026_05_13",
+        "raw_agent_ids": [
+          "gp230_readonly_ns_route1_forecast_2026_05_13"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_readonly_gp230_ns_route1_2026_05_13",
+      "gp230_readonly_ns_route1_forecast_2026_05_13"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_b_vs_c_next_branch_meso_20260513_tick294/codex_readonly_gp230_ns_route1_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-13T21:55:09Z",
+        "p_success": 0.64,
+        "rationale_short": "Shard B is the better next attack because its unpaid fields are local to the adapter and coercivity surface; C depends on weaker route-flux vocabulary.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_b_vs_c_next_branch_meso_20260513_tick294/gp230_readonly_ns_route1_forecast_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 95.0,
+        "forecasted_at": "2026-05-13T21:55:09Z",
+        "p_success": 0.69,
+        "rationale_short": "B is narrower: squareFunction_split and resolvedMeanFreeTentSquare_bound are isolated near event-tent, fanout, CKN split, and residual-fresh provenance; C still carries route-flux charge difficulty.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 52.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T21:58:35Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 1.4513931206084925,
+      "forecast_spread": 0.05,
+      "p_success": 0.6654643735361642,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.7726
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 92.5,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6654643735361642,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "b_poincare_split_still_only_repackaged",
+        "p": 0.15
+      },
+      {
+        "mode": "b_still_has_two_unpaid_numeric_fields",
+        "p": 0.12
+      },
+      {
+        "mode": "existing_l3_ckn_objects_do_not_align_with_route1_fields",
+        "p": 0.12
+      },
+      {
+        "mode": "existing_l3_ckn_primitives_too_propositional_to_pay_inequality",
+        "p": 0.11
+      },
+      {
+        "mode": "c_transport_bound_turns_out_lower_hanging_fruit",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11285,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T21:58:47Z"
+  }
+}

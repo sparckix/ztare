@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_tarski_gp225_v1990",
+  "contract_id": "gp225_v1990_clean_strict_two_row_replay",
+  "contract_question": "Will v19.90 replay of the v19.89 clean strict two-row packet add at least one fresh primary strict target-state row with harmful mismatches zero?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "affineSpan_requires_specific_local_theorem_not_in_packet": 0.24,
+    "weightedVSub_needs_algebraic_normalization_beyond_simp": 0.22,
+    "candidate_compile_but_auxiliary_only": 0.12,
+    "one_clean_strict_candidate_closes": 0.26,
+    "other": 0.16
+  },
+  "forecasted_at": "2026-05-14T08:46:00Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.1,
+  "p_regression": 0.04,
+  "p_success": 0.31,
+  "rationale_short": "Both rows have closed gold targets and prior progress, so a strict win is plausible. But the packet intentionally avoids source-specific proof lines, making the candidates weak.",
+  "read_only_attestation": true
+}

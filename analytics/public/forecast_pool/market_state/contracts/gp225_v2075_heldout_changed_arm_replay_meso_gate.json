@@ -1,0 +1,202 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T19:27:29Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 31.0,
+    "expected_value": -0.1123356050758284,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.31000000000000005,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.09,
+    "p_success": 0.3895821974620858,
+    "participants": [
+      {
+        "agent_id": "Kleene4",
+        "belief_update": false,
+        "domain": "lean_gnn_harness",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2075_heldout_changed_arm_replay_meso_gate/kleene4.json",
+        "forecasted_at": "2026-05-14T19:27:25Z",
+        "p_success": 0.42,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Scott4",
+        "belief_update": false,
+        "domain": "lean_gnn_harness",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2075_heldout_changed_arm_replay_meso_gate/scott4.json",
+        "forecasted_at": "2026-05-14T19:27:25Z",
+        "p_success": 0.36,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "branch_context_validation_fails",
+        "p": 0.36130268199233717
+      },
+      {
+        "mode": "hydration_missing_source_block",
+        "p": 0.19272030651341
+      },
+      {
+        "mode": "simp_unfolding_not_sufficient",
+        "p": 0.14367816091954022
+      },
+      {
+        "mode": "namespace_or_method_resolution_fails",
+        "p": 0.12222222222222222
+      },
+      {
+        "mode": "candidate_shape_not_gold_equivalent",
+        "p": 0.11111111111111112
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2075_heldout_changed_arm_replay_meso_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2075_heldout_changed_arm_replay_meso_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2075_heldout_changed_arm_replay_meso_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2075_heldout_changed_arm_replay_meso_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2075_heldout_changed_arm_replay_meso_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T19:27:11Z",
+    "created_by": "codex",
+    "horizon": "2026-05-14",
+    "layer": "meso",
+    "objective_resolver": "Resolve true iff v20.75 produces a meso gate artifact and, if EV/routing permits, the one-row replay is run with no training; strict/solver/harmful outcomes must be reported separately. Resolve false if the gate aborts replay for low EV or leakage/context risk.",
+    "question": "Should GP-225 run a bounded replay of the one v20.74 source-safe changed heldout arm for current_scale_0242/slope_of_Y_ne before any training?",
+    "success_threshold": "artifact-backed meso decision; no micro forecast; no training; replay only if justified by changed-arm evidence",
+    "task_type": "heldout_changed_arm_replay"
+  },
+  "contract_id": "gp225_v2075_heldout_changed_arm_replay_meso_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Kleene4",
+        "raw_agent_ids": [
+          "Kleene4"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Scott4",
+        "raw_agent_ids": [
+          "Scott4"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Kleene4",
+      "Scott4"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "Kleene4",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2075_heldout_changed_arm_replay_meso_gate/kleene4.json",
+        "canonical_agent_id": null,
+        "domain": "lean_gnn_harness",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T19:27:25Z",
+        "p_success": 0.42,
+        "rationale_short": "The candidate is source-safe and genuinely changed, but replay risk is material because the historic row has sparse hydration and the tactic depends on method/name resolution for slope_of_Y_ne'.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "run_or_continue",
+        "agent_id": "Scott4",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2075_heldout_changed_arm_replay_meso_gate/scott4.json",
+        "canonical_agent_id": null,
+        "domain": "lean_gnn_harness",
+        "expected_cost_agent_minutes": 34.0,
+        "forecasted_at": "2026-05-14T19:27:25Z",
+        "p_success": 0.36,
+        "rationale_short": "A one-row replay is worth pricing because it is the first heldout content delta, but expected compile success is below even odds due to context/hydration and local notation risk.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T19:28:28Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.06,
+      "p_success": 0.3895821974620858,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "branch_context_validation_fails",
+        "p": 0.36130268199233717
+      },
+      "voi_proxy": 1.2978
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 31.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.3895821974620858,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "branch_context_validation_fails",
+        "p": 0.36130268199233717
+      },
+      {
+        "mode": "hydration_missing_source_block",
+        "p": 0.19272030651341
+      },
+      {
+        "mode": "simp_unfolding_not_sufficient",
+        "p": 0.14367816091954022
+      },
+      {
+        "mode": "namespace_or_method_resolution_fails",
+        "p": 0.12222222222222222
+      },
+      {
+        "mode": "candidate_shape_not_gold_equivalent",
+        "p": 0.11111111111111112
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.15299999999999997,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T19:28:32Z"
+  }
+}

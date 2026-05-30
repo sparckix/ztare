@@ -1,0 +1,99 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level500_bounded_event_index_selector_source.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level500_bounded_event_index_selector_source.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick668_level500_bounded_event_index_selector_source",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level500_bounded_event_index_selector_source.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level500_bounded_event_index_selector_source.json"
+  },
+  "baseline_action": "carry targetSlot as an arbitrary Fin-valued selector with slotEqualityReflection",
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": "selected_branch_projected_audited_output_source",
+  "consumes_surfaced_validation": "surfaced_consumption_gate: 'selected_branch_projected_audited_output_source' is an EXACT match of surfaced id 'selected_branch_projected_audited_output_source' (void-audit (ns_trackb_residual_void_audit.json)) \u2014 probe is surfacing-driven.",
+  "contract_id": "tick668_level500_bounded_event_index_selector_source",
+  "cost_penalty": 0.16,
+  "counterfactual_action": "derive targetSlot from targetEventIndex : Fin target -> Nat, a final-slot bound proof, and targetEventIndex injectivity",
+  "created_at": "2026-05-27T04:29:43Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_formal_frontier",
+    "score": 0.25,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.25,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 10,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 140,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 7,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "may still be a source socket unless analytic incidence constructs targetEventIndex",
+    "positive": "turns final-slot membership into a concrete Nat-bound proof and collision exclusion into event-index injectivity"
+  },
+  "horizon": "2026-05-27T07:00:00Z",
+  "information_value": 0.88,
+  "layer": "meso",
+  "objective_resolver": "TRUE iff Lean adds a compiled bounded event-index selector source that constructs TargetSlotFromFiniteIncidenceExtractionSource, plus obstruction/gate/workbench/ledger evidence passes.",
+  "question": "Can Level500 derive the Level499 targetSlot/equality-reflection source from a bounded injective natural event-index selector into the final-slot prefix?",
+  "risk_penalty": 0.2,
+  "success_threshold": "lake build passes; strict incidence and target-indexed receipts pass; workbench surfaces incidence-derived finite injection check; next lever names analytic event-index selector construction",
+  "task_type": "ns_formal_frontier",
+  "value_if_success": 0.78,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

@@ -1,0 +1,66 @@
+{
+  "contract_id": "ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 1,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {}
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.16809999999999997,
+  "mean_log_score": -0.5276327420823718,
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "compile_status": "lean_builds_tier3_PASS",
+    "contract_id": "ns_route1_birkhoff_R5_coupled_bootstrap_closes_meso_20260516_tick574",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": null,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": null,
+    "old_next_action": null,
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "FAIL (route-invariance, not tick-failure): engine PROVED + Lean builds + Tier-3 PASS, but 2 independent steelman-first reviews + objective scaling audit converge \u2014 the single residual \u03bd\u03c0\u00b2>E\u2080^{1/2} IS the perennial strict-margin atom re-vocabularied. Steelman's stated reason (supercritical dimensional category error) OBJECTIVELY REFUTED (local rescaled enstrophy r\u207b\u00b9\u222b|\u2207u|\u00b2 IS the scale-invariant CKN group, not supercritical); but verdict holds via corrected reasoning: E\u2080 uniformly bounded on the bad cascade = the uniform-rescaled-CKN-bound = the atom; plus (iv) Reynolds coupling makes entry-bounded E\u2080 circular. Route-invariant: Birkhoff = KRZ = defect-budget reduce to the SAME atom.",
+    "resolved_at": "2026-05-16T13:19:07Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:17Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": null,
+      "agent_id": "codex",
+      "brier": 0.16809999999999997,
+      "cost_error_agent_minutes": null,
+      "domain": "general",
+      "expected_cost_agent_minutes": 30.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.5276327420823718,
+      "p_success": 0.41,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T13:08:21Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T13:09:17Z",
+        "resolved_at": "2026-05-16T13:19:07Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:40:15Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 28.0,
+    "expected_value": -16.34,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.18,
+    "p_needs_new_lemma": 0.65,
+    "p_regression": 0.02,
+    "p_success": 0.78,
+    "participants": [
+      {
+        "agent_id": "codex_rd_tick361b",
+        "domain": "ns_route1_pde",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "success",
+        "p": 0.55
+      },
+      {
+        "mode": "vague_math_note",
+        "p": 0.25
+      },
+      {
+        "mode": "no_new_discriminator",
+        "p": 0.2
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:40:15Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00-04:00",
+    "layer": "micro",
+    "objective_resolver": "success iff a workspace note is written with eigenquestion, proof attempt, first illegal inference/countermodel, corrected theorem surface, and next PDE sublemmas; no Lean edits required",
+    "question": "Can a math-first Gowers-style audit of the route-1 critical-tail visibility cover identify whether it is a proof route, no-go, or missing-hypothesis surface, and define the next non-tautological PDE theorem without new Lean?",
+    "success_threshold": "math_first_note_with_verdict_and_next_theorem",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_rd_tick361b",
+        "raw_agent_ids": [
+          "codex_rd_tick361b"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic_tick361b",
+        "raw_agent_ids": [
+          "codex_skeptic_tick361b"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd_tick361b",
+      "codex_skeptic_tick361b"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd_tick361b",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b/codex_rd_tick361b.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T12:40:15Z",
+        "p_success": 0.78,
+        "rationale_short": "Gowers prompt already surfaced the key split: conditional closure vs active-tail visibility. A bounded note should sharpen the next theorem and no-go without formalizing wrappers.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic_tick361b",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_visibility_cover_math_first_audit_micro_20260514_tick361b/codex_skeptic_tick361b.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 40.0,
+        "forecasted_at": "2026-05-14T12:40:15Z",
+        "p_success": 0.62,
+        "rationale_short": "The note is useful only if it narrows active tail and names a falsifiable next lemma; otherwise it repeats tick269/tick360.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 19.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:42:08Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 28.0,
+      "expected_value": -16.34,
+      "p_success": 0.78,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 7.3316
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 28.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.78,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "success",
+        "p": 0.55
+      },
+      {
+        "mode": "vague_math_note",
+        "p": 0.25
+      },
+      {
+        "mode": "no_new_discriminator",
+        "p": 0.2
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.0964,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T12:42:24Z"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T17:24:02Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 8.0,
+    "expected_value": -5.420000000000002,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.18,
+    "p_needs_new_lemma": 0.03,
+    "p_regression": 0.07,
+    "p_success": 0.62,
+    "participants": [
+      {
+        "agent_id": "codex_local_rd_v1872",
+        "domain": "gp225_lean_witness_backfill",
+        "p_success": 0.62,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.28
+      },
+      {
+        "mode": "clean_labels_below_4",
+        "p": 0.2
+      },
+      {
+        "mode": "true_false_accepts_above_2",
+        "p": 0.18
+      },
+      {
+        "mode": "selection_overfits_v1869_clean_distribution",
+        "p": 0.16
+      },
+      {
+        "mode": "source_context_hydration_edge_case",
+        "p": 0.1
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1872_next_remaining_witness_pilot.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1872_next_remaining_witness_pilot.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1872_next_remaining_witness_pilot.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1872_next_remaining_witness_pilot.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1872_next_remaining_witness_pilot.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 12.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T17:23:17Z",
+    "created_by": "codex_RD_2026_05_13",
+    "horizon": "2026-05-13",
+    "layer": "micro",
+    "objective_resolver": "analytics/public/leanmill/results/v1872_next_remaining_witness_backfill_runner.json metrics: rows_attempted=6, clean_target_labels>=4, static_prefilter_not_run_rows=0, true_false_accept_rows<=2, training_now=false, gnn_blocked=true",
+    "question": "Will the v18.72 explicit-manifest runner over the v18.71 six-row non-ambiguous pilot attempt all 6 rows, produce at least 4 clean closure/target witnesses, have at most 2 quarantined accepted-decoy ambiguity rows, and keep training/GNN blocked?",
+    "success_threshold": "rows_attempted==6 AND clean_target_labels>=4 AND static_prefilter_not_run_rows==0 AND true_false_accepts<=2 AND training_now==false AND gnn_blocked==true",
+    "task_type": "lean_witness_backfill_runner"
+  },
+  "contract_id": "gp225_v1872_next_remaining_witness_pilot",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_local_rd_v1872",
+        "raw_agent_ids": [
+          "codex_local_rd_v1872"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_local_rd_v1872"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_local_rd_v1872",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1872_next_remaining_witness_pilot/codex_local_rd_v1872.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes": 8.0,
+        "forecasted_at": "2026-05-13T17:23:50Z",
+        "p_success": 0.62,
+        "rationale_short": "v18.69 proved hydration/static-prefilter works and yielded 6/8 clean labels. v18.72 uses a softer but still useful harvest/quarantine objective over 6 non-quarantined rows; main risks are clean labels below 4 and accepted-decoy ambiguity above 2.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 1.11,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T17:26:46Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.62,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 7.2356
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 8.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.62,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.28
+      },
+      {
+        "mode": "clean_labels_below_4",
+        "p": 0.2
+      },
+      {
+        "mode": "true_false_accepts_above_2",
+        "p": 0.18
+      },
+      {
+        "mode": "selection_overfits_v1869_clean_distribution",
+        "p": 0.16
+      },
+      {
+        "mode": "source_context_hydration_edge_case",
+        "p": 0.1
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1444,
+    "score_rows": 1,
+    "scored_at": "2026-05-13T17:26:54Z"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+  "contract_id": "ns_route1_clay_adjacency_macro_20260513_tick294",
+  "contract_question": "Within <=10 RD ticks, produce a materially Clay-proof-adjacent PDE estimate station in Lean: a compiled source object/theorem reducing route-1 strictness to at most one named non-scalar PDE estimate, rather than multiple wrapper/provenance fields.",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 420.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "branch_attention_shifts_before_10_ticks": 0.1,
+    "build_or_dependency_breakage": 0.08,
+    "lean_type_surface_or_import_drift": 0.18,
+    "object_is_only_repackaging_not_materially_clay_adjacent": 0.24,
+    "requires_new_non_scalar_pde_estimate": 0.3,
+    "strictness_oracle_smuggling_detected": 0.1
+  },
+  "forecasted_at": "2026-05-13T21:55:09Z",
+  "p_dependency_issue": 0.24,
+  "p_needs_new_lemma": 0.62,
+  "p_regression": 0.18,
+  "p_success": 0.38,
+  "rationale_short": "Compiling A/B/C decomposition makes a material station plausible; reducing multiple B/C obligations to one named non-scalar PDE estimate likely needs a genuinely new Lean-facing estimate.",
+  "read_only_attestation": true
+}

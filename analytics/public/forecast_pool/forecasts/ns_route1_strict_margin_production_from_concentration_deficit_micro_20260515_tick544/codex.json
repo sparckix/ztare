@@ -1,0 +1,25 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_strict_margin_production_from_concentration_deficit_micro_20260515_tick544",
+  "contract_question": "Does ns_tick544 produce defectBudgetStrictMarginCertificate from H1 concentration + H2 + cited CZ H3 (ratio=Ckappa/M<1), or is the honest pressure-flux CZ bound trilinear-cubic-critical (~sqrt(kappa)*A, M cancels, ratio O(1)) FALSIFYING the strict gain?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "citation_or_artifact_drift": 0.11,
+    "missing_angular_nonnullness_or_flux_normalization": 0.19,
+    "proof_search_needs_new_lemma_on_H3": 0.18,
+    "residual_repository_or_contract_drift": 0.11,
+    "trilinear_critical_pressure_flux_cancels_M_slack": 0.41
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T22:12:50Z",
+  "p_dependency_issue": 0.11,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.04,
+  "p_success": 0.71,
+  "rationale_short": "Baseline is the existing codex_rd-free price: open contract, narrow proof surface, and the evidence package still favors a standard CZ-style reading. I discount slightly below the claude_rd aggregate because the live risk is that the pressure-flux estimate is genuinely trilinear-critical, so M cancels and the strict ratio never materializes; the main dependency risk is a missing normalization/non-nullness lemma rather than new PDE machinery.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

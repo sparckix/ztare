@@ -1,0 +1,21 @@
+{
+  "agent_id": "hooke_forecast_tick340",
+  "contract_id": "ns_route1_split_charge_receipt_source_micro_20260514_tick340",
+  "contract_question": "Will we add a Lean source that repairs the tick339 gap by routing resolved mean-free, Galilean, and leakage weighted-stress shares through explicit pressure visibility receipt charges, without assuming pure tent-excess domination?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 52.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "algebraic_bound_needs_extra_nonnegativity": 0.2222222222222222,
+    "charge_split_becomes_too_abstract": 0.25925925925925924,
+    "downstream_constructor_mismatch": 0.18518518518518517,
+    "receipt_sum_has_only_three_slots": 0.3333333333333333
+  },
+  "forecasted_at": "2026-05-14T03:35:15Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.64,
+  "p_regression": 0.05,
+  "p_success": 0.7,
+  "rationale_short": "Likely because pressure receipt sum already has local quadratic, pressure reserve, and child charge slots, and tick339 supplies the needed split labels. Risk is that Galilean/leakage charges do not map cleanly to existing receipt slots.",
+  "read_only_attestation": true
+}

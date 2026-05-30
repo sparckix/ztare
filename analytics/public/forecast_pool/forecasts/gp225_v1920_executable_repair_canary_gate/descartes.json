@@ -1,0 +1,25 @@
+{
+  "agent_id": "descartes",
+  "contract_id": "gp225_v1920_executable_repair_canary_gate",
+  "contract_question": "Will an executable GP-225 repair-loop canary over the v19.16 contract rows produce compile-checked repair progress beyond ranking-only baseline without gold-tactic leakage?",
+  "domain": "GP-225",
+  "expected_cost_agent_minutes": 3.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "canary_row_filter_drops_below_8": 0.08,
+    "candidate_action_compiles_rate_zero": 0.18,
+    "context_hydration_or_replay_schema_drift": 0.12,
+    "false_accepts_nonzero": 0.12,
+    "gold_tactic_leakage_or_primary_attempt_not_hidden": 0.06,
+    "lean_runtime_noise_or_timeout": 0.06,
+    "other": 0.24,
+    "same_target_state_as_gold_rate_zero": 0.14
+  },
+  "forecasted_at": "2026-05-13T22:11:46Z",
+  "p_dependency_issue": 0.14,
+  "p_needs_new_lemma": 0.03,
+  "p_regression": 0.04,
+  "p_success": 0.64,
+  "rationale_short": "Row supply is sufficient with 12 canary rows and 84 eligible context rows; main risk is whether hidden-primary repair compiles and reaches gold-equivalent target states.",
+  "read_only_attestation": true
+}

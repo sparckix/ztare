@@ -1,0 +1,33 @@
+{
+  "contract_id": "ns_route1_v1733_yield_decomposition_micro",
+  "mean_brier": 0.019600000000000003,
+  "mean_log_score": -0.15082288973458366,
+  "outcome": {
+    "actual_cost_agent_minutes": 5.0,
+    "artifact_hash": "6aa5f3bee95dde60aa3658b329be84579e9966aa78f62cbb817e4a2b9e847f76",
+    "artifact_path": "analytics/public/leanmill/results/v1733_ns_route1_gp233_yield_decomposition.json",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_v1733_yield_decomposition_micro",
+    "error_type": null,
+    "goal_delta": 0,
+    "resolution_note": "Applied GP-233 to NS route-1 v17.30-v17.32. Artifact names candidate_eligibility_supply as the binding bottleneck, blocks GNN/scalar-wrapper continuation, and selects GPT-5.5 intake-gated receipt/obstruction evaluation as next lever.",
+    "resolved_at": "2026-05-13T18:36:21Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T18:36:24Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 5.0,
+      "agent_id": "codex_rd_ns_route1_gp233_decomposer",
+      "brier": 0.019600000000000003,
+      "cost_error_agent_minutes": 2.0,
+      "domain": "ns_live_scalar_hinge",
+      "expected_cost_agent_minutes": 7.0,
+      "log_score": -0.15082288973458366,
+      "p_success": 0.86,
+      "success_bool": true
+    }
+  ]
+}

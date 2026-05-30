@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_split_shardc_leakage_source_micro_20260514_tick341",
+  "mean_brier": 0.193,
+  "mean_log_score": -0.5747423095209331,
+  "outcome": {
+    "actual_cost_agent_minutes": 96.0,
+    "artifact_hash": "ebc4a5f4a8e8334b4c90b573fc4370cb88b1afab89aef465069dc1a0aa64405e",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_split_shardc_leakage_source_micro_20260514_tick341",
+    "error_type": null,
+    "goal_delta": 3,
+    "resolution_note": "Added FixedWindowPreSummedStressMassShardCLeakageSource, constructors to FixedWindowPressureRieszConeChargeSource and FixedWindowOverflowVisibleOrInvisibleProfile, and visibleOverflowCharge_of_shardCLeakageSource. Sidecar critique added explicit frequencyLeakageStressNormalizer bridge before shard-C charges. lake env lean and lake build passed; no new sorry/admit in touched files.",
+    "resolved_at": "2026-05-14T03:49:40Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:49:45Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 96.0,
+      "agent_id": "hooke_forecast_tick341",
+      "brier": 0.11559999999999998,
+      "cost_error_agent_minutes": -24.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 72.0,
+      "log_score": -0.4155154439616658,
+      "p_success": 0.66,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:43:46Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:44:09Z",
+        "resolved_at": "2026-05-14T03:49:40Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 96.0,
+      "agent_id": "rawls_adversarial_tick341",
+      "brier": 0.27040000000000003,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 110.0,
+      "log_score": -0.7339691750802004,
+      "p_success": 0.48,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:43:46Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:44:09Z",
+        "resolved_at": "2026-05-14T03:49:40Z"
+      }
+    }
+  ]
+}

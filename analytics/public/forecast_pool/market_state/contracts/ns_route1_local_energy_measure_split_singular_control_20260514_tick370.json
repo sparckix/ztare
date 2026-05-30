@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:29:24Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 29.31130374076444,
+    "expected_value": 1.1042447241846132,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.34196521030891847,
+    "p_needs_new_lemma": 0.7242608645063703,
+    "p_regression": 0.06770434580254814,
+    "p_success": 0.6450621073948059,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.72,
+        "weight": 0.9581
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.54,
+        "weight": 0.7608
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "compiled_abstract_measure_surface",
+        "p": 0.13377392518471112
+      },
+      {
+        "mode": "local_energy_split_not_sourced",
+        "p": 0.12393042061783699
+      },
+      {
+        "mode": "needs_gpt55_followup",
+        "p": 0.11147827098725929
+      },
+      {
+        "mode": "scalar_guard_clear",
+        "p": 0.11147827098725929
+      },
+      {
+        "mode": "signed_measure_api_block",
+        "p": 0.10622607481528884
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_local_energy_measure_split_singular_control_20260514_tick370.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_local_energy_measure_split_singular_control_20260514_tick370.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_local_energy_measure_split_singular_control_20260514_tick370.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_local_energy_measure_split_singular_control_20260514_tick370.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_local_energy_measure_split_singular_control_20260514_tick370.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:29:02Z",
+    "created_by": "codex:RD",
+    "horizon": "same session",
+    "layer": "meso",
+    "objective_resolver": "success iff we preserve the proof route, add a compiling Lean/math surface or equivalent work packet, and distinguish Borel-local signed-measure split from scalar allocation",
+    "question": "Can the GPT-5.5 measure-local split route be encoded as a non-tautological route-1 theorem surface: LocalEnergyPositiveBoundaryFluxMeasureSplitSource -> mu_A_perp <= mu_I, with scalar-only guard?",
+    "success_threshold": "compiled Lean surface or precise artifact-backed theorem packet plus guard",
+    "task_type": "math_to_lean_bridge"
+  },
+  "contract_id": "ns_route1_local_energy_measure_split_singular_control_20260514_tick370",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_measure_split_singular_control_20260514_tick370/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T13:29:16Z",
+        "p_success": 0.72,
+        "rationale_short": "Pure measure proof can be abstracted safely; PDE content is sourcing Borel-local split, not singular control itself.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_local_energy_measure_split_singular_control_20260514_tick370/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 36.0,
+        "forecasted_at": "2026-05-14T13:29:16Z",
+        "p_success": 0.54,
+        "rationale_short": "The singular restriction proof is real, but only after a strong Borel-local split; Lean may need an abstract surface rather than mathlib signed measures.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:31:50Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.6450621073948059,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "compiled_abstract_measure_surface",
+        "p": 0.13377392518471112
+      },
+      "voi_proxy": 1.229
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 29.31130374076444,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6450621073948059,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "compiled_abstract_measure_surface",
+        "p": 0.13377392518471112
+      },
+      {
+        "mode": "local_energy_split_not_sourced",
+        "p": 0.12393042061783699
+      },
+      {
+        "mode": "needs_gpt55_followup",
+        "p": 0.11147827098725929
+      },
+      {
+        "mode": "scalar_guard_clear",
+        "p": 0.11147827098725929
+      },
+      {
+        "mode": "signed_measure_api_block",
+        "p": 0.10622607481528884
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.145,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:31:55Z"
+  }
+}

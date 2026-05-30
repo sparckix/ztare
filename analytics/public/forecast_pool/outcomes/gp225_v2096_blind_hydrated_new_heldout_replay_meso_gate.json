@@ -1,0 +1,26 @@
+{
+  "actual_cost_agent_minutes": 24.0,
+  "artifact_hash": "ace885fb7b3a3ddc48b2151b1971021529d2430b520c29d29ffc299aaaf9129a",
+  "artifact_path": "analytics/public/leanmill/results/v2096_blind_hydrated_new_heldout_replay.json",
+  "compile_status": "replay_failed_clean",
+  "contract_id": "gp225_v2096_blind_hydrated_new_heldout_replay_meso_gate",
+  "decision_changed_bool": true,
+  "externality_tags": [
+    "meso_only_forecast",
+    "blind_hydrated_replay_failed",
+    "context_hydration_needed",
+    "no_training"
+  ],
+  "goal_delta": 0,
+  "new_next_action": "v2097_non_target_source_name_audit_before_more_new_heldout_replay",
+  "realized_failure_mode_ids": [
+    "context_or_binder_hydration_still_wrong_after_blind_patch",
+    "isoSpec_hom_naturality_orientation_or_f_argument_mismatch",
+    "withDensity_pdf_le_map_shape_not_matching_setLIntegral_target",
+    "all_candidates_fail_without_useful_contrast_signal"
+  ],
+  "resolution_note": "v20.96 bounded replay of the blind/hydrated packet compiled 0/8, added no strict row and no useful contrast label, with zero harmful mismatches and no leakage/training. The reducer is now specific: isoSpec needs IsAffine/local morphism orientation hydration, while density needs a non-target source for applying measure inequality to a set integral.",
+  "resolved_at": "2026-05-14T21:30:38Z",
+  "success_bool": false,
+  "voided": false
+}

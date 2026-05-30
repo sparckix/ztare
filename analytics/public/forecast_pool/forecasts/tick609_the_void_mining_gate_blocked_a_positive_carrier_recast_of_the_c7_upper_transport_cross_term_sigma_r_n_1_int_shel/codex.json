@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick609_the_void_mining_gate_blocked_a_positive_carrier_recast_of_the_c7_upper_transport_cross_term_sigma_r_n_1_int_shel",
+  "contract_question": "tick609: the void-mining gate BLOCKED a positive carrier-recast of the C7-upper transport-cross-term Sigma r_n^-1 int_shell |u||omega|^2 (tick608 adversary already gave the decisive r^-1-per-scale computation = the scale-critical atom relocated to shells). Required move = negative_result_object_discovery chain [A] invariant across all recurrences [B] structurally-absent move [C] eigenquestion targeting an out-of-space move not a re-vocab. Success = a DERIVED negative verdict (transport-cross-term = 17th recurrence; route-1 route-invariant-terminal WITHIN the explored {carrier,admissible-cut,nu-capacity,scale-transfer,porosity,Gevrey,paired-dichotomy} space; the only escape = the out-of-program move tick607 derived) that SURVIVES an adversarial-survival run whose brief carries the dogfood clause (must-catch: is this laundering of a missable lever / is the block wrong; must-not: declaring NS impossible). Fail = pessimism without derivation, OR a missed in-space lever the adversary surfaces, OR laundering.",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "derivation_stalls_before_structural_absence_is_shown": 0.24,
+    "dogfood_adversary_surfaces_in_space_lever": 0.34,
+    "laundered_negative_verdict_without_derivation": 0.22,
+    "out_of_program_move_not_cleanly_separated_from_re_vocab": 0.2
+  },
+  "forecast_externality_tags": [
+    "negative-result-object-discovery",
+    "dogfood-adversary",
+    "route1-micro"
+  ],
+  "forecasted_at": "2026-05-16T22:24:05Z",
+  "p_dependency_issue": 0.09,
+  "p_needs_new_lemma": 0.12,
+  "p_regression": 0.04,
+  "p_success": 0.64,
+  "rationale_short": "Baseline is a derived negative verdict, not a proof of impossibility: tick607/tick608 already point at the decisive r^-1-per-scale atom, so the main question is whether the adversarial-survival brief can surface a missed in-space lever or expose the block as too broad. I price the success path as more likely than not, but not strong enough to ignore the missing DAG/outcome and the chance of laundering a premature negative.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "dogfood_adversary_surfaces_in_space_lever",
+    "laundered_negative_verdict_without_derivation",
+    "derivation_stalls_before_structural_absence_is_shown",
+    "out_of_program_move_not_cleanly_separated_from_re_vocab"
+  ]
+}

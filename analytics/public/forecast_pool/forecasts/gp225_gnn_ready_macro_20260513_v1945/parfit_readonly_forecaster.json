@@ -1,0 +1,21 @@
+{
+  "agent_id": "parfit_readonly_forecaster",
+  "contract_id": "gp225_gnn_ready_macro_20260513_v1945",
+  "contract_question": "GP-225 reaches a GNN-training-ready label gate within the next 10 GP-225 ticks",
+  "domain": "gp225_macro",
+  "expected_cost_agent_minutes": 150.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "baseline_absorbs_signal": 0.24,
+    "holdout_threshold_expands": 0.2,
+    "pull_forward_only": 0.32,
+    "teacher_oracle_quarantine": 0.24
+  },
+  "forecasted_at": "2026-05-14T00:28:11Z",
+  "p_dependency_issue": 0.58,
+  "p_needs_new_lemma": 0.54,
+  "p_regression": 0.07,
+  "p_success": 0.16,
+  "rationale_short": "v19.42 created clean policy, but v19.43 produced 0/49 compiled candidates and v19.44 keeps train_cross_encoder_or_gnn_now=false.",
+  "read_only_attestation": true
+}

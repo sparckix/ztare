@@ -1,0 +1,40 @@
+{
+  "action_change_recommendation": "Use eventToBadNode equality and displayed incidence refinement to constrain the selected index, and name finite prefix appearance as the next residual.",
+  "agent_family": "codex",
+  "agent_id": "codex_rd",
+  "b_mid": 0.245,
+  "b_width": 0.15,
+  "contract_id": "tick668_level512_event_to_badnode_selected_index_source",
+  "contract_question": "Can Level512 source selectedEventDataIndex from a finite event-prefix index bound to BadCenterEventNodeIdentification.eventToBadNode and displayed incidence geometry?",
+  "domain": "ns_trackb_formal_bridge",
+  "expected_cost_agent_minutes": 88.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "eventToBadNode_refinement_only_prop": 0.2840909090909091,
+    "selected_prefix_event_still_supplied": 0.5113636363636364,
+    "target_node_equality_too_strong": 0.20454545454545453
+  },
+  "forecast_externality_tags": [
+    "positive_source_ladder",
+    "event_prefix_enumeration_binding"
+  ],
+  "forecasted_at": "2026-05-27T06:43:35Z",
+  "p_buy_yes_max": 0.42,
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.37,
+  "p_regression": 0.07,
+  "p_sell_yes_min": 0.55,
+  "p_success": 0.57,
+  "predicted_brier_hi": 0.32,
+  "predicted_brier_lo": 0.17,
+  "rationale_short": "The eventToBadNode map is already in the L3 primitive layer. Lean should package a selected finite event index into Level511; main risk is that the selected prefix event remains a field rather than being derived from appearance/cofinality.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "selected_prefix_event_still_supplied",
+    "eventToBadNode_refinement_only_prop",
+    "target_node_equality_too_strong"
+  ],
+  "spread": -0.13,
+  "tail_downside_worry": 18.0,
+  "tail_upside_surprise": 12.0
+}

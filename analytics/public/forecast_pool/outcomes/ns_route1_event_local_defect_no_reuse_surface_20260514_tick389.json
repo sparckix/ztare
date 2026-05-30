@@ -1,0 +1,39 @@
+{
+  "actual_cost_agent_minutes": 26.0,
+  "artifact_hash": "b656291f02ee1db645634ff80670deff9aa8935052a5d74e7380d1f46fa2bbd0",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+  "changed_by_forecast_ids": [
+    "codex_rd_no_reuse_prior",
+    "codex_skeptic_no_reuse_prior",
+    "Zeno",
+    "Volta"
+  ],
+  "compile_status": "passed",
+  "contract_id": "ns_route1_event_local_defect_no_reuse_surface_20260514_tick389",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "countermodel_preconditioning",
+    "anti_tautology",
+    "no_reuse_guard",
+    "ns_source_ladder"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [],
+  "new_next_action": "Encode lineage-level freshness/recharge/reservoir drop and local-domination-only no-go guard.",
+  "old_next_action": "Encode fresh-region bounded-overlap no-reuse only.",
+  "preconditioner_effect": "Patched no-reuse theorem surface from Eulerian bounded overlap to lineage-level no-reuse plus monotone reservoir and multiplicity discount.",
+  "preconditioner_source": "codex forecasters,Zeno sidecar,Volta sidecar",
+  "realized_failure_mode_ids": [
+    "local_domination_mistaken_for_global_closure",
+    "recurrent_same_mass_reuse_countermodel",
+    "bounded_overlap_unpaid"
+  ],
+  "resolution_note": "Added EventLocalDefectDropNoReuse, Route1AmortizedStrictClosureFromDefectNoReuse, and LocalEnergyMeasureDominationDoesNotImplyNoReuse. Sidecars sharpened the surface: bounded Eulerian overlap alone is insufficient; the source now requires lineageFreshness, recurrentPacketReuseRejectedOrPaysRecharge, monotoneDefectReservoir, defectReservoirDrop, rechargeErrorsSummable, overlapMultiplicityBound, and multiplicity discount. lake env lean passed; no new sorry/admit.",
+  "resolved_at": "2026-05-14T15:08:42Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

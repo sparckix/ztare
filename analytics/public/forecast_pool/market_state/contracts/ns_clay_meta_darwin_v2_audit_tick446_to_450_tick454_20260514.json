@@ -1,0 +1,157 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-15T02:31:00Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 27.917,
+    "expected_value": 0.7857,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.02,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.02,
+    "p_success": 0.7943,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "belief_update": false,
+        "domain": "meta_darwin_lean_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514/codex_rd.json",
+        "forecasted_at": "2026-05-15T02:30:30Z",
+        "p_success": 0.82,
+        "weight": 1.1667
+      },
+      {
+        "agent_id": "meta_darwin_proxy",
+        "belief_update": false,
+        "domain": "meta_darwin_lean_audit",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514/meta_darwin_proxy.json",
+        "forecasted_at": "2026-05-15T02:30:45Z",
+        "p_success": 0.76,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T02:30:00Z",
+    "created_by": "claude_principal",
+    "horizon": "2026-05-15T23:59:59Z",
+    "layer": "micro",
+    "objective_resolver": "(1) analytics/public/audits/meta_darwin_tick454_audit_tick446_to_450.md exists and applies the 6-point checklist to every named primitive added in tick446/447/449/450; (2) each primitive receives a verdict in {HONEST, WRAPPER, LAUNDERED, PURE_NAMING, UNCLEAR}; (3) audit explicitly inspects (a) the M^3 'scaling identity' rfl theorems in tick446, (b) the tick447 'typed bridge' self-flag, (c) the tick449 Sum.elim 2->1 reduction, (d) the tick450 dyadic depth_child_le / flat_children_radius_sum_le proofs; (4) NO Lean files modified during audit; (5) GP-233 ledger entry + E-row + F-row + handover updated with retraction or demotion recommendations if warranted.",
+    "question": "Will the tick454 Meta-Darwin v2 audit of the tick446-tick450 Lean additions (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) identify whether tick450 is honest combinatorial substance or a wrapper in disguise, (c) confirm or refute tick446's r*M^3 scaling identity as carrier-forced vs definitional fiat, (d) confirm or refute tick449's Sum.elim as a real 2->1 reduction vs renaming, and (e) leave Lean files unmodified?",
+    "success_threshold": "0.5",
+    "task_type": "meta_darwin_lean_audit"
+  },
+  "contract_id": "ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:meta_darwin_proxy",
+        "raw_agent_ids": [
+          "meta_darwin_proxy"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "meta_darwin_proxy"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "tick446 M^3 narrative is definitional fiat at the Lean level; tick450 inhabits a FlatDepthReserveLike clone not the original FlatDepthReserve \u2014 flag both as separately scoped",
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "meta_darwin_lean_audit",
+        "expected_cost_agent_minutes": 25.0,
+        "forecasted_at": "2026-05-15T02:30:30Z",
+        "p_success": 0.82,
+        "rationale_short": "Read-only audit on a small, well-bounded set of four post-tick448 additions in two files. Expected primary findings: tick446 ESS constructor's r*M^3 is *definitional fiat* \u2014 the M^3 cube is chosen by the constructor and the _scaling_identity rfl audits the naming not an analytic identity (carrier offers no H\u00f6lder/Tonelli step in Lean); tick447 self-flag confirmed as accurate (carrier carries inequalities as fields, constructor plumbs them); tick449 Sum.elim is renaming + sourceTag enumeration of two identical-shape records, the unified r-linear theorem is field projection; tick450 dyadic instance is HONEST combinatorial substance (real zpow_sub\u2080, real omega, real Finset.sum_insert with side-condition discharge) with two caveats: charge fields all zero (analytic side of telescoping not exercised) and the structure used is a FlatDepthReserveLike clone not the original FlatDepthReserve. The narrative '1 HONEST + 3 WRAPPER, 0 LAUNDERED' is the expected distribution.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": "do not let principal pull-forward language inflate tick446 'real Lean constructor' beyond 'typed bridge with definitional M^3 choice'; demand a H\u00f6lder/Tonelli step in Lean before tick446 is sold as a scaling derivation",
+        "agent_id": "meta_darwin_proxy",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514/meta_darwin_proxy.json",
+        "canonical_agent_id": null,
+        "domain": "meta_darwin_lean_audit",
+        "expected_cost_agent_minutes": 30.0,
+        "forecasted_at": "2026-05-15T02:30:45Z",
+        "p_success": 0.76,
+        "rationale_short": "Adversarial second pass. The session principal acknowledged 11/13 wrappers in tick448 and shipped tick450 as 'concrete dyadic instance' \u2014 this is the right kind of response, BUT three new wrappers (tick446, tick447, tick449) shipped in the same window, so the wrapper-inflation pattern is not fully arrested. Specific risks: (i) tick446's r*M^3 carrier has no inequality field forcing the cube structure \u2014 the M^3 is the constructor's definitional choice, and the _scaling_identity / _coeff_identity rfl theorems audit the naming, not an analytic derivation; this is the exact 'tautological field-projection theorem' pattern the audit memory warns about; (ii) tick449's UnifiedClayChargePrimitive is renaming + sourceTag enumeration \u2014 the two source structures already shared the Real shape, so the 'compression' is type-theoretic refactor not frontier reduction; (iii) tick450 is genuine but uses a clone structure and zero charge fields, so the analytic part of flatDepthReserve_drop is not exercised. Expected verdict distribution: 1 HONEST (tick450 combinatorial with two caveats), 3 WRAPPER, 0 LAUNDERED, 0 PURE_NAMING \u2014 but tick446 has the closest call on LAUNDERED via the M^3 narrative gap. Main risk for audit failure: underweighting the M^3 definitional-fiat finding and accepting tick446 as a 'scaling theorem' at face value.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 28.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-15T02:58:00Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.7857,
+      "forecast_spread": 0.06,
+      "p_success": 0.7943,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.6234
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 27.917,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7943,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.045,
+    "score_rows": 2,
+    "scored_at": "2026-05-15T02:59:00Z"
+  }
+}

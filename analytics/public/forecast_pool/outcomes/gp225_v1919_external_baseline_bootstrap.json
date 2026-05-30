@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 19.0,
+  "artifact_hash": "34f9298d977bfe177d2a9c7272d2032908fd7e3f391e0306f5cefdad6ff73873",
+  "artifact_path": "analytics/public/leanmill/results/v1919_external_baseline_bootstrap.json",
+  "compile_status": null,
+  "contract_id": "gp225_v1919_external_baseline_bootstrap",
+  "error_type": null,
+  "goal_delta": null,
+  "resolution_note": "External baseline bootstrap passed: cloned LeanHammer/ReProver/REAL-Prover plus jixia/interactive; built and smoke-tested LeanHammer externally; installed git-lfs, micromamba, and Python 3.11 ReProver/LeanDojo env with torch; no main Lean project mutation; no heavy training; schema mapping bottleneck named.",
+  "resolved_at": "2026-05-13T22:22:43Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

@@ -1,0 +1,22 @@
+{
+  "agent_id": "hooke",
+  "contract_id": "ns_route1_cutoff_cz_pressure_macro_20260513_tick308",
+  "contract_question": "Will the next NS Route-1 tick produce positive Clay-adjacent progress by lowering a pressure-remainder source estimate without receipt laundering?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 70.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.1,
+    "carrier_mismatch": 0.18,
+    "commutator_split_unclean": 0.26,
+    "lean_plumbing": 0.12,
+    "wrapper_only": 0.34
+  },
+  "forecasted_at": "2026-05-13T23:14:07Z",
+  "p_dependency_issue": 0.18,
+  "p_needs_new_lemma": 0.44,
+  "p_regression": 0.1,
+  "p_success": 0.52,
+  "rationale_short": "Macro positive if cutoff/CZ source lowers a real pressure-remainder source field; risk is wrapper churn.",
+  "read_only_attestation": true
+}

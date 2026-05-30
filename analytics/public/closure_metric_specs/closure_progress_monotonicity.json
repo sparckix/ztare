@@ -1,0 +1,13 @@
+{
+  "metric_name": "closure_progress_monotonicity",
+  "gate_class_name": "ClosureProgressMonotonicityGate",
+  "metric_description": "closed/(closed+open) ratio in receipt-tree must increase between attempts",
+  "threshold_type": "monotonic",
+  "threshold_value": 0.61,
+  "rubric_field_to_check": "current_closure_ratio",
+  "rubric_field_type": "float",
+  "graph_extraction_function": "compute_closure_ratio",
+  "violation_type": "closure_ratio_did_not_increase",
+  "advisory_default": true,
+  "reliability_note": "Numerator (closed_theorem count) is reliable post-Meitner-fix; denominator includes structural placeholders. Ratio should trend up but absolute value may not reflect proof completeness."
+}

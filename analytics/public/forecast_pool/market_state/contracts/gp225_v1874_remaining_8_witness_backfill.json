@@ -1,0 +1,167 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T17:38:21Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 1.89,
+    "expected_value": 8.16,
+    "forecast_count": 1,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.16,
+    "p_needs_new_lemma": 0.03,
+    "p_regression": 0.06,
+    "p_success": 0.58,
+    "participants": [
+      {
+        "agent_id": "codex_local_rd_v1874",
+        "domain": "gp225_lean_witness_backfill",
+        "p_success": 0.58,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.3
+      },
+      {
+        "mode": "clean_labels_below_5",
+        "p": 0.22
+      },
+      {
+        "mode": "remaining_rows_homogeneous_computability_rw",
+        "p": 0.16
+      },
+      {
+        "mode": "true_false_accepts_above_2",
+        "p": 0.16
+      },
+      {
+        "mode": "calibration_prior_underestimates_tail_runtime",
+        "p": 0.08
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1874_remaining_8_witness_backfill.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1874_remaining_8_witness_backfill.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1874_remaining_8_witness_backfill.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1874_remaining_8_witness_backfill.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1874_remaining_8_witness_backfill.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 3.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T17:38:01Z",
+    "created_by": "codex_RD_2026_05_13",
+    "horizon": "2026-05-13",
+    "layer": "micro",
+    "objective_resolver": "analytics/public/leanmill/results/v1874_remaining_8_witness_backfill_runner.json metrics: rows_attempted=8, clean_target_labels>=5, static_prefilter_not_run_rows=0, true_false_accepts<=2, training_now=false, gnn_blocked=true",
+    "question": "Will v18.74 over the remaining 8 actionable GP-225 rows attempt all rows, harvest at least 5 clean closure/target witnesses, have at most 2 true false accepts, and keep GNN blocked pending baseline audit?",
+    "success_threshold": "rows_attempted==8 AND clean_target_labels>=5 AND static_prefilter_not_run_rows==0 AND true_false_accepts<=2 AND training_now==false AND gnn_blocked==true",
+    "task_type": "lean_witness_backfill_runner"
+  },
+  "contract_id": "gp225_v1874_remaining_8_witness_backfill",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_local_rd_v1874",
+        "raw_agent_ids": [
+          "codex_local_rd_v1874"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_local_rd_v1874"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_local_rd_v1874",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1874_remaining_8_witness_backfill/codex_local_rd_v1874.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes": 1.89,
+        "forecasted_at": "2026-05-13T17:38:12Z",
+        "p_success": 0.58,
+        "rationale_short": "Using calibrated domain effort prior from GP-230: bounded GP-225 Lean witness backfill has expected_cost_agent_minutes_prior=1.89 from 3 scored rows. Success risk is higher than v18.72 because remaining rows are more homogeneous and rw-heavy.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 0.92,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T17:42:01Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.58,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 8.2436
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 1.89,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.58,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "other",
+        "p": 0.3
+      },
+      {
+        "mode": "clean_labels_below_5",
+        "p": 0.22
+      },
+      {
+        "mode": "remaining_rows_homogeneous_computability_rw",
+        "p": 0.16
+      },
+      {
+        "mode": "true_false_accepts_above_2",
+        "p": 0.16
+      },
+      {
+        "mode": "calibration_prior_underestimates_tail_runtime",
+        "p": 0.08
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.3364,
+    "score_rows": 1,
+    "scored_at": "2026-05-13T17:42:06Z"
+  }
+}

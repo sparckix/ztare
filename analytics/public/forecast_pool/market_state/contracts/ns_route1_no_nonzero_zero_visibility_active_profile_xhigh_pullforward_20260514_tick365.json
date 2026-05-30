@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T12:53:24Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 44.0,
+    "expected_value": 0.43760590202802974,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.415,
+    "p_needs_new_lemma": 0.905,
+    "p_regression": 0.1,
+    "p_success": 0.4276059020280297,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.52,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.34,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "restatement_only",
+        "p": 0.21
+      },
+      {
+        "mode": "restates_missing_hypothesis",
+        "p": 0.16
+      },
+      {
+        "mode": "needs_precise_profile_topology",
+        "p": 0.13
+      },
+      {
+        "mode": "pressure_visibility_underdefined",
+        "p": 0.1
+      },
+      {
+        "mode": "commutator_topology_underdefined",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 45.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T12:53:03Z",
+    "created_by": "codex:RD",
+    "horizon": "same session",
+    "layer": "meso",
+    "objective_resolver": "success iff the sidecar returns a nontrivial result that either names a credible proof route with sublemmas, kills the lemma by countermodel, or identifies a sharper missing channel/carrier; not success for restating current packet",
+    "question": "Can an xhigh pull-forward agent produce a useful proof route, missing-sublemma split, or countermodel for NoNonzeroZeroVisibilityActiveProfile?",
+    "success_threshold": "nontrivial proof route/countermodel/sharper missing hypothesis",
+    "task_type": "xhigh_math_pullforward"
+  },
+  "contract_id": "ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 38.0,
+        "forecasted_at": "2026-05-14T12:53:18Z",
+        "p_success": 0.52,
+        "rationale_short": "The lemma is correctly isolated, but a full proof needs compactness and lower-semicontinuity not present in current artifacts; a useful sublemma split is plausible.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 50.0,
+        "forecasted_at": "2026-05-14T12:53:18Z",
+        "p_success": 0.34,
+        "rationale_short": "A frontier PDE rigidity lemma is unlikely to be pulled forward in one sidecar; best case is sharper decomposition or a kill test.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T12:58:10Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.4276059020280297,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "restatement_only",
+        "p": 0.21
+      },
+      "voi_proxy": 0.9748
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 44.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.4276059020280297,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "restatement_only",
+        "p": 0.21
+      },
+      {
+        "mode": "restates_missing_hypothesis",
+        "p": 0.16
+      },
+      {
+        "mode": "needs_precise_profile_topology",
+        "p": 0.13
+      },
+      {
+        "mode": "pressure_visibility_underdefined",
+        "p": 0.1
+      },
+      {
+        "mode": "commutator_topology_underdefined",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.33299999999999996,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T12:58:18Z"
+  }
+}

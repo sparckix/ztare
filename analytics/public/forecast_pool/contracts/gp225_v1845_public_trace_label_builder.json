@@ -1,0 +1,30 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1845_public_trace_label_builder.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1845_public_trace_label_builder.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1845_public_trace_label_builder",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1845_public_trace_label_builder.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1845_public_trace_label_builder.json"
+  },
+  "budget_agent_minutes": 5.0,
+  "contract_id": "gp225_v1845_public_trace_label_builder",
+  "cost_penalty": 0.01,
+  "created_at": "2026-05-13T15:22:24Z",
+  "created_by": "codex_rd",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "single v18.45 saved-artifact script run",
+  "information_value": 0.6,
+  "layer": "micro",
+  "objective_resolver": "Resolve from analytics/public/leanmill/results/v1845_public_trace_candidate_pool_and_target_label_builder.json metrics.",
+  "question": "Will v18.45 convert v17.39 public before/action/after traces into at least 50 candidate-pool target-label rows, with at least 20 baseline-unsaturated rows and zero unquarantined false accepts, while keeping GNN/cross-encoder training blocked?",
+  "risk_penalty": 0.5,
+  "success_threshold": "rows=120 AND extractable_target_ref_rows>=55 AND candidate_pool_rows>=50 AND baseline_unsaturated_rows>=20 AND unquarantined_false_accepts=0 AND training_now=false AND gnn_blocked=true",
+  "task_type": "gp225_public_trace_label_builder",
+  "value_if_success": 1.2,
+  "void_conditions": "Void only if v1739 public trace artifact is absent before execution."
+}

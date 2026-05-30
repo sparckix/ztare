@@ -1,0 +1,35 @@
+{
+  "actual_cost_agent_minutes": 175.0,
+  "artifact_hash": null,
+  "artifact_path": "/tmp/tier2_mine/auto_grounded_prover.PARTIAL.log",
+  "changed_by_forecast_ids": [],
+  "codex_bet_present": false,
+  "compile_status": "COMPILE_OK",
+  "contract_id": "automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted",
+  "counterfactual_value_bucket": "high",
+  "decision_changed_bool": false,
+  "error_type": null,
+  "externality_tags": [
+    "decisive_yield_at_n6",
+    "reasoning_is_the_converting_factor",
+    "frees_sandbox_for_rung1"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": null,
+  "negative_externality_tags": [
+    "stopped_n6_not_n9_AP013",
+    "naive_battery_cpu_bound_~3h",
+    "0_conversions"
+  ],
+  "new_next_action": null,
+  "old_next_action": null,
+  "ordering_override_no_codex": "Contract created this session; codex (other agent) did not bet on this cadence; not fabricating the adversary view. Decisive yield is n-insensitive (see note); stopped early under operator's lead-time-to-insight objective to free the sandbox.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [],
+  "resolution_note": "STOPPED at n=6/9 (operator lead-time-to-insight objective; ~2h55m, CPU-bound: every candidate a from-scratch import-Mathlib recompile). Result: 0/6 certified conversions by the unattended blind-battery (T2P_93/42/51/116/57/117 all GAP) \u2014 including T2P_57 & T2P_117 which the in-thread AI reasoning DID certify. Contract Q (>=3/9 beating blind-battery 0/9): NO, and 0/6 trending makes >=3/9 implausible. YIELD-DECOMPOSITION (the decision-relevant, n-insensitive yield, not the headline count): in-thread-AI-reasoning converted 6/9; the SAME grounding tooling with reasoning STRIPPED (fixed ~16-tactic battery) converts 0/6 \u2192 the converting factor is the reasoning, NOT the sandbox grounding alone; and the ~3h CPU-bound cost localizes the bottleneck to the naive from-scratch-import battery. Real next step (already built): the import-amortized, governance-filtered, kernel-grounded-RANKING design = rung1_kernel_grounded_rerank.py \u2014 NOT a bigger blind battery, NOT training. AP-013 under-power acknowledged for the headline count; the decision-relevant yield does not depend on n. Standing \u00a76 verdict unchanged.",
+  "resolved_at": "2026-05-17T15:40:04Z",
+  "sorry_delta": null,
+  "success_bool": false,
+  "voided": false
+}

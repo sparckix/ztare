@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-13T22:02:32Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 60.11011094829391,
+    "expected_value": 0.8181066600956844,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.18461461168097132,
+    "p_needs_new_lemma": 0.48,
+    "p_regression": 0.09022022189658783,
+    "p_success": 0.6549892731083404,
+    "participants": [
+      {
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.67,
+        "weight": 1.1811
+      },
+      {
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "domain": "ns_route1_pde",
+        "p_success": 0.64,
+        "weight": 1.2074
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "existing_l3_primitives_are_too_abstract_to_pay_numeric_bound",
+        "p": 0.13351350219803226
+      },
+      {
+        "mode": "existing_l3_primitives_are_propositional_not_numeric",
+        "p": 0.12637638685367386
+      },
+      {
+        "mode": "new_object_lowers_bound_but_leaves_same_core_inequality_unpaid",
+        "p": 0.11867866862047309
+      },
+      {
+        "mode": "object_is_rejected_as_repackaging_not_lowering",
+        "p": 0.11626627590537994
+      },
+      {
+        "mode": "fresh_energy_to_ckn_excess_comparison_needs_new_constant_bookkeeping",
+        "p": 0.09395394599120786
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 70.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-13T22:02:00Z",
+    "created_by": "codex:RD",
+    "horizon": "current local tick 2026-05-13",
+    "layer": "micro",
+    "objective_resolver": "lake build ZtareProofs.ns_route1_fresh_frequency_coercivity_adapter passes and diff contains a lower resolved-bound object using existing L3 residual-fresh/CKN primitives",
+    "question": "Can the local tick add a compiling non-tautological Lean object lowering FreshFrequencyResolvedMeanFreeTentSquareEstimate.resolvedMeanFreeTentSquare_bound into fresh-energy/Poincare plus CKN-excess comparison sub-estimates without strictness oracle or pre-GNN mutation?",
+    "success_threshold": "compiled Lean object lowers resolvedMeanFreeTentSquare_bound; no new sorry; no pre-GNN/GNN mutation",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:codex_readonly_gp230_ns_route1_2026_05_13",
+        "raw_agent_ids": [
+          "codex_readonly_gp230_ns_route1_2026_05_13"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_readonly_ns_route1_forecast_2026_05_13",
+        "raw_agent_ids": [
+          "gp230_readonly_ns_route1_forecast_2026_05_13"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_readonly_gp230_ns_route1_2026_05_13",
+      "gp230_readonly_ns_route1_forecast_2026_05_13"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_readonly_gp230_ns_route1_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295/codex_readonly_gp230_ns_route1_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 50.0,
+        "forecasted_at": "2026-05-13T22:02:25Z",
+        "p_success": 0.67,
+        "rationale_short": "A lower audit object under resolvedMeanFreeTentSquareEstimate is likely; fully paying the numeric bound probably needs one new comparison lemma or constant-normalization surface.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_resolved_meanfree_bound_lowering_micro_20260513_tick295/gp230_readonly_ns_route1_forecast_2026_05_13.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 70.0,
+        "forecasted_at": "2026-05-13T22:02:00Z",
+        "p_success": 0.64,
+        "rationale_short": "Compiling object likely by lowering into sub-estimate fields and recombining; confidence capped because L3 primitives are mostly Prop-level provenance.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-13T22:04:53Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "run_now",
+      "expected_value": 0.8181066600956844,
+      "forecast_spread": 0.03,
+      "p_success": 0.6549892731083404,
+      "reason": "positive expected value and high success probability",
+      "voi_proxy": 0.756
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 60.11011094829391,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.6549892731083404,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "existing_l3_primitives_are_too_abstract_to_pay_numeric_bound",
+        "p": 0.13351350219803226
+      },
+      {
+        "mode": "existing_l3_primitives_are_propositional_not_numeric",
+        "p": 0.12637638685367386
+      },
+      {
+        "mode": "new_object_lowers_bound_but_leaves_same_core_inequality_unpaid",
+        "p": 0.11867866862047309
+      },
+      {
+        "mode": "object_is_rejected_as_repackaging_not_lowering",
+        "p": 0.11626627590537994
+      },
+      {
+        "mode": "fresh_energy_to_ckn_excess_comparison_needs_new_constant_bookkeeping",
+        "p": 0.09395394599120786
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11924999999999998,
+    "score_rows": 2,
+    "scored_at": "2026-05-13T22:05:04Z"
+  }
+}

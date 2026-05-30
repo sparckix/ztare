@@ -1,0 +1,39 @@
+{
+  "actual_cost_agent_minutes": 28.0,
+  "artifact_hash": "8307606a90077185ef47c3881f13bd29e7adad255964b95bb8cba8a990dea551",
+  "artifact_path": "scripts/public/control/forecast/pool.py",
+  "changed_by_forecast_ids": [
+    "codex_market_architect",
+    "codex_infra_skeptic"
+  ],
+  "compile_status": "passed_py_compile_smoke_warm_loop_belief_update",
+  "contract_id": "gp230_warm_forecaster_daemon_pubsub_detour_ev_20260514",
+  "counterfactual_value_bucket": "positive_bounded_mvp",
+  "decision_changed_bool": true,
+  "error_type": "none",
+  "externality_tags": [
+    "warm_forecaster_memory",
+    "role_bound_pubsub",
+    "subscription_safe_scanner",
+    "cognitive_firm_a2a_reuse",
+    "append_only_belief_updates"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [
+    "duplicate_wake_if_forced",
+    "local_mvp_not_vps_deploy"
+  ],
+  "new_next_action": "use warm-daemon-loop or warm-daemon-once as scanner; keep Claude/Codex as separate pull consumers; belief updates append under forecast_updates; return to NS",
+  "old_next_action": "continue one-off RD-added forecasts and externality audits",
+  "preconditioner_effect": "Capped scope to local MVP plus smoke; avoided VPS deployment and subscription-agent launch; added belief-update regression after user raised delayed macro-update requirement.",
+  "preconditioner_source": "codex_market_architect,codex_infra_skeptic",
+  "realized_failure_mode_ids": [
+    "mvp_succeeds"
+  ],
+  "resolution_note": "Local MVP implemented and regression-tested: warm-daemon-once plus warm-daemon-loop create deduped wake events and cognitive-firm-backed A2A inbox messages for exactly one Claude and one Codex forecaster; scanner launches no LLM runtime; belief updates are append-only timestamped rows under forecast_updates and aggregate/score use latest forecast per stable agent_id. Actual cost is corrected to wall-clock minutes from contract creation 17:14:04Z to resolution 17:42:19Z.",
+  "resolved_at": "2026-05-14T17:43:50Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

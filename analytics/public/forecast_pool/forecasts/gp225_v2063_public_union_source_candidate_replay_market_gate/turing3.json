@@ -1,0 +1,33 @@
+{
+  "action_change_recommendation": "Run only if the gate excludes replay-blocked radius/elliptic rank-2 candidates and caps the canary to unblocked rows with full harmful-mismatch reporting.",
+  "agent_id": "Turing3",
+  "contract_id": "gp225_v2063_public_union_source_candidate_replay_market_gate",
+  "contract_question": "Should GP-225 run a bounded canary replay over the v20.62 unblocked public/internal source candidates, and if run, is at least one compiled candidate with zero harmful mismatches likely enough to justify execution?",
+  "domain": "gp225_pre_gnn_canary_replay_gate",
+  "expected_cost_agent_minutes": 31.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "affine_span_hypothesis_shape_mismatch": 0.16,
+    "ascii_identifier_normalization_leaks_into_unblocked_packet": 0.18,
+    "bayes_bound_witness_missing": 0.17,
+    "binder_context_underhydrated": 0.31,
+    "canary_too_small_to_teach": 0.08,
+    "gold_witness_or_target_shape_gap": 0.1
+  },
+  "forecast_externality_tags": [
+    "replay_pricing",
+    "anti_goodhart",
+    "bounded_canary"
+  ],
+  "forecasted_at": "2026-05-14T18:40:01Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.18,
+  "p_regression": 0.1,
+  "p_success": 0.34,
+  "rationale_short": "The candidates are source-grounded but not context-hydrated; a small canary may teach, but direct full replay is not justified.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "binder_context_underhydrated",
+    "bayes_bound_witness_missing"
+  ]
+}

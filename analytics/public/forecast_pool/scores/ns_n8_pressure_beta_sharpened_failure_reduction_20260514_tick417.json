@@ -1,0 +1,136 @@
+{
+  "contract_id": "ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Keep pressure/beta as broad source surfaces",
+      "counterfactual_action": "Sharpen pressure and beta to explicit failure primitives and reduced frontier theorem",
+      "externality_hypotheses": {
+        "negative": [
+          "names_not_sources",
+          "another_surface_no_closure"
+        ],
+        "positive": [
+          "smaller_next_theorem",
+          "anti_tautology_pressure_beta"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "counterfactual_value_bucket": "high",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "branch-sharpening",
+        "anti-tautology",
+        "pressure-source-theorem",
+        "beta-incidence-source-theorem"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "n8-not-closed",
+        "pressure-beta-still-open"
+      ],
+      "new_next_action": "Attack FixedFreshCoronaPreSummedPressureRieszVisibilitySource, SameTreeNonadaptiveEventIncidenceCarleson/weighted-square incidence, or FlatRadiusReuseConsumesScaleReserve",
+      "old_next_action": "Attack broad PressureConeFailure or BetaIncidenceFailure",
+      "preconditioner_effect": "Sharpened pressure/beta into explicit missing source primitives and added anti-smuggling guards",
+      "preconditioner_source": "Pressure, beta, and Meta-Darwin sidecars plus formalization-sequence precheck",
+      "realized_failure_mode_ids": [
+        "pressure_beta_still_open",
+        "names_not_sources"
+      ]
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.089,
+  "mean_log_score": -0.34737423096345954,
+  "outcome": {
+    "actual_cost_agent_minutes": 12.0,
+    "artifact_hash": "2718b2800df6f6a8fa3f7aa1d555173d3521d5163757fe3f6303624fc01c7b47",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "changed_by_forecast_ids": [],
+    "compile_status": "passed",
+    "contract_id": "ns_n8_pressure_beta_sharpened_failure_reduction_20260514_tick417",
+    "counterfactual_value_bucket": "high",
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "branch-sharpening",
+      "anti-tautology",
+      "pressure-source-theorem",
+      "beta-incidence-source-theorem"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "n8-not-closed",
+      "pressure-beta-still-open"
+    ],
+    "new_next_action": "Attack FixedFreshCoronaPreSummedPressureRieszVisibilitySource, SameTreeNonadaptiveEventIncidenceCarleson/weighted-square incidence, or FlatRadiusReuseConsumesScaleReserve",
+    "old_next_action": "Attack broad PressureConeFailure or BetaIncidenceFailure",
+    "preconditioner_effect": "Sharpened pressure/beta into explicit missing source primitives and added anti-smuggling guards",
+    "preconditioner_source": "Pressure, beta, and Meta-Darwin sidecars plus formalization-sequence precheck",
+    "realized_failure_mode_ids": [
+      "pressure_beta_still_open",
+      "names_not_sources"
+    ],
+    "resolution_note": "Added sharpened pressure/beta failure primitives, a fixed fresh-corona pre-summed pressure visibility source with theorem pressureVisibilityFeedsTriCarrier_of_fixedFreshCoronaPreSummed, anti-smuggling guard N8PressureBetaSourceSurfaceNotClosure, and theorem reducedFailure_of_pressureBetaAudit. Lean passed; no sorry/admit was introduced. Result is frontier sharpening, not pressure/beta/upstream closure.",
+    "resolved_at": "2026-05-14T21:24:04Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T21:24:11Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "codex-meta-darwin-proxy",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 19.0,
+      "domain": "ns-proof-falsification",
+      "expected_cost_agent_minutes": 31.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.6,
+        "failure_mode_top1_hit": true,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": true
+      },
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:19:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:19:47Z",
+        "resolved_at": "2026-05-14T21:24:04Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "codex-rd-main",
+      "brier": 0.04839999999999999,
+      "cost_error_agent_minutes": 12.0,
+      "domain": "ns-n8-pressure-beta",
+      "expected_cost_agent_minutes": 24.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": 0.0,
+        "failure_mode_top1_hit": false,
+        "realized_failure_mode_ids_available": true,
+        "specific_failure_mode_id_hit": false
+      },
+      "log_score": -0.2484613592984996,
+      "p_success": 0.78,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T21:19:30Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T21:19:47Z",
+        "resolved_at": "2026-05-14T21:24:04Z"
+      }
+    }
+  ]
+}

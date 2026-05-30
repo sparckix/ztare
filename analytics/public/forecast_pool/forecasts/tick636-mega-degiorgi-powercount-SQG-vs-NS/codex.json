@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "tick636-mega-degiorgi-powercount-SQG-vs-NS",
+  "contract_question": "tick636 MEGA: power-count the (B3-isolated) vortex-stretching source in the |\u03c9| De-Giorgi level-set energy. S=sym\u2207u=CZ(\u03c9) order-0 \u21d2 \u2016S\u2016_{Lp}\u2272\u2016\u03c9\u2016_{Lp} \u21d2 source \u222b(\u03be\u00b7S\u03be)|\u03c9|(|\u03c9|-k)_+ is CUBIC-homogeneous in \u03c9 on {|\u03c9|>k}, vs the QUADRATIC dissipation \u03bd\u222b|\u2207(|\u03c9|-k)_+|\u00b2 \u21d2 De Giorgi closure fails by exactly ONE \u03c9-power (supercritical) at the NS-critical scaling. Mechanistic CV\u2194NS dichotomy: CV closes critical SQG precisely because SQG's level-set energy has NO vortex-stretching source (only a critical, div-free-and-\u039b^{-1}-smoother commutator); 3D NS HAS the cubic stretching source. Honest scope: the supercriticality itself IS the known route-invariant atom (manifest:180) \u2014 the deliverable is the PRECISE De-Giorgi-power-count + the SQG-no-stretching mechanistic WHY, a sharpening/explanation, NOT a new route.",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-17T12:21:58Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.86,
+  "rationale_short": "(1) yes: \u2207u,S=CZ(\u03c9), \u2016S\u2016_Lp\u2264Cp\u2016\u03c9\u2016_Lp, stretching vs (|\u03c9|-k)_+ degree-3 vs degree-2 dissipation = supercritical obstruction (caveat: power-count not literal pointwise, CZ nonlocal endpoints); (2) accurate, SQG has no stretching analogue (correction: SQG stream function one-deriv-smoother, drift order-0 in \u03b8); (3) honest as known-obstruction/explanation, 'route-invariant atom' too strong \u2192 'standard route-invariant obstruction for this De Giorgi vorticity route'",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,107 @@
+{
+  "contract_id": "tick668_level504_eventdata_horizon_bounded_incident_existence_source",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "leave boundedIncidentEventExists as an opaque socket",
+      "counterfactual_action": "factor boundedIncidentEventExists through explicit targetEventCandidate eventData/horizon fields"
+    },
+    "forecast_rows_with_action_change_recommendation": 1,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 1,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "codex_rd"
+      ],
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "ns_trackb",
+        "level504",
+        "eventdata_horizon"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "new_next_action": "construct targetEventCandidate with horizon and incidence proofs from same-tree eventData/prefix domination/horizon geometry",
+      "old_next_action": "prove boundedIncidentEventExists from same-tree eventData/prefix domination/horizon",
+      "preconditioner_effect": "prevented eventData/horizon/incidence label-only laundering while preserving advisory/blocking semantics",
+      "preconditioner_source": "gate Meta-Darwin audit plus G-BOUNDED-INCIDENT-EXISTENCE-EVENTDATA-HORIZON"
+    }
+  },
+  "forecast_history_count": 1,
+  "mean_brier": 0.06760000000000001,
+  "mean_log_score": -0.3011050927839216,
+  "outcome": {
+    "actual_cost_agent_minutes": 75.0,
+    "artifact_hash": "1664e79dbcb71a01469faf51d3d19226b5f850e5f0a6bb836890f371c32ef61a",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean",
+    "changed_by_forecast_ids": [
+      "codex_rd"
+    ],
+    "claude_bet_present": false,
+    "codex_bet_present": false,
+    "compile_status": "pass",
+    "contract_id": "tick668_level504_eventdata_horizon_bounded_incident_existence_source",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [
+      "ns_trackb",
+      "level504",
+      "eventdata_horizon"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 1,
+    "independent_forecaster_bet_present": false,
+    "independent_forecaster_bets": [],
+    "negative_externality_tags": [],
+    "new_next_action": "construct targetEventCandidate with horizon and incidence proofs from same-tree eventData/prefix domination/horizon geometry",
+    "old_next_action": "prove boundedIncidentEventExists from same-tree eventData/prefix domination/horizon",
+    "ordering_override_no_codex": "No live independent forecast channel emitted for this local meso continuation; RD forecast was registered before edits and outcome records the ordering override.",
+    "ordering_override_no_independent_forecaster": "No live independent forecast channel emitted for this local meso continuation; RD forecast was registered before edits and outcome records the ordering override.",
+    "preconditioner_effect": "prevented eventData/horizon/incidence label-only laundering while preserving advisory/blocking semantics",
+    "preconditioner_source": "gate Meta-Darwin audit plus G-BOUNDED-INCIDENT-EXISTENCE-EVENTDATA-HORIZON",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "Level504 compiled: explicit targetEventCandidate, final-slot bound, and displayed incidence witness now derive boundedIncidentEventExists and package into Level503; strict gate, PDE workbench, targeted Lake build, and workbench tests passed.",
+    "resolved_at": "2026-05-27T05:14:08Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-27T05:14:17Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 75.0,
+      "agent_id": "codex_rd",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 20.0,
+      "domain": "ns_trackb",
+      "expected_cost_agent_minutes": 95.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.3011050927839216,
+      "p_buy_yes_max": 0.68,
+      "p_dependency_issue": 0.18,
+      "p_needs_new_lemma": 0.3,
+      "p_regression": 0.13,
+      "p_sell_yes_min": 0.8,
+      "p_success": 0.74,
+      "predicted_brier_hi": 0.22,
+      "predicted_brier_lo": 0.05,
+      "predicted_self_error_ratio": 0.22,
+      "success_bool": true,
+      "tail_downside_worry": 31.0,
+      "tail_upside_surprise": 18.0,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-27T05:05:55Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-27T05:06:33Z",
+        "resolved_at": "2026-05-27T05:14:08Z"
+      },
+      "verbalized_confidence": 0.74
+    }
+  ]
+}

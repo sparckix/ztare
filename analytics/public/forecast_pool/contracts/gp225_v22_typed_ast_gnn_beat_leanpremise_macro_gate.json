@@ -1,0 +1,98 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate.json"
+  },
+  "baseline_action": "skip v22 and continue with the v21.0X gate (which itself is structurally blocked)",
+  "budget_agent_minutes": 1200.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v22_typed_ast_gnn_beat_leanpremise_macro_gate",
+  "cost_penalty": 0.05,
+  "counterfactual_action": "port Graph2Tac late-fusion only (lever A solo) as a cheaper fallback",
+  "created_at": "2026-05-14T23:00:47Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.1837,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "beat_published_lean_premise_selection_sota",
+    "score": 0.1837,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.1837,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.1837,
+        "score_rows": 4,
+        "token_jaccard": 0.1
+      },
+      {
+        "char_trigram_jaccard": 0.1667,
+        "domain": "gp225_route_selection_meso",
+        "expected_cost_agent_minutes_prior": 35.0,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1111
+      },
+      {
+        "char_trigram_jaccard": 0.0784,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 3,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.125,
+        "score_rows": 2,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0364,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "leanpremise_already_saturates_mathlib_test": "LeanPremise-Large at R@16=63.5% may be near the irreducible ceiling for Mathlib-test, leaving Carleson OOD as the real discriminator",
+    "typed_structure_carries_signal_above_text": "if true, typed-AST + dep-DAG should lift Mathlib-test R@16 and especially Carleson OOD where text-only encoders are at 0%",
+    "verifier_rerank_zero_training_lift": "if the Lean compiler signal correlates with relevance on top-k, we get a free lift independent of model quality"
+  },
+  "horizon": "2026-06-15T00:00:00Z",
+  "information_value": 1.0,
+  "layer": "macro",
+  "objective_resolver": "trained-model eval json must show mathlib_test_r_at_16 > 0.635 AND carleson_r_at_1 > 0.05 AND text_only_baseline_ablation_r_at_16 < typed_ast_r_at_16",
+  "question": "Conditional on the v22 design (TypedAST-GNN + dep-DAG online embedding + Lean-verifier-grounded rerank + CoRNStack hard-negative curriculum) passing the CPU validation gate and getting approximately 2 weeks on 3x A6000, will the trained model beat LeanPremise-Large R@16 = 63.5% on Mathlib-test AND lift Carleson OOD R@1 above 5%?",
+  "risk_penalty": 1.5,
+  "success_threshold": "mathlib_test_r_at_16 > 0.635 AND carleson_r_at_1 > 0.05",
+  "task_type": "beat_published_lean_premise_selection_sota",
+  "value_if_success": 4.0,
+  "void_conditions": "CPU validation gate fails (kill direction); operator does not authorize GPU; LeanPremise paper retracted or benchmark deprecated"
+}

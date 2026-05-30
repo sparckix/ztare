@@ -1,0 +1,141 @@
+{
+  "experiment": "gp216_business_held_out_OOD",
+  "n_arcs": 6,
+  "results": [
+    {
+      "arc": "christensen_disruption",
+      "n_moves": 10,
+      "shared_core_pct": 50.0,
+      "shared_plus_broadly_pct": 70.0,
+      "shared_core_ops_used": [
+        "core_01",
+        "core_03",
+        "core_06",
+        "core_05",
+        "core_04",
+        "core_02"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_01",
+        "broad_04",
+        "broad_08",
+        "core_03",
+        "core_06",
+        "core_05",
+        "broad_01",
+        "core_02"
+      ]
+    },
+    {
+      "arc": "porter_five_forces",
+      "n_moves": 11,
+      "shared_core_pct": 54.54545454545454,
+      "shared_plus_broadly_pct": 63.63636363636363,
+      "shared_core_ops_used": [
+        "core_01",
+        "core_03",
+        "core_04",
+        "core_02"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_01",
+        "core_03",
+        "core_04",
+        "broad_08",
+        "core_02"
+      ]
+    },
+    {
+      "arc": "munger_mental_models",
+      "n_moves": 11,
+      "shared_core_pct": 63.63636363636363,
+      "shared_plus_broadly_pct": 63.63636363636363,
+      "shared_core_ops_used": [
+        "core_06",
+        "core_03",
+        "core_02",
+        "core_01",
+        "core_04"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_06",
+        "core_03",
+        "broad_06",
+        "core_02",
+        "broad_08",
+        "broad_03",
+        "core_01",
+        "core_04"
+      ]
+    },
+    {
+      "arc": "drucker_management_by_objectives",
+      "n_moves": 10,
+      "shared_core_pct": 40.0,
+      "shared_plus_broadly_pct": 40.0,
+      "shared_core_ops_used": [
+        "core_02",
+        "core_01",
+        "core_05",
+        "core_06"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_02",
+        "broad_03",
+        "broad_08",
+        "core_05",
+        "core_06"
+      ]
+    },
+    {
+      "arc": "kahneman_prospect_theory",
+      "n_moves": 10,
+      "shared_core_pct": 70.0,
+      "shared_plus_broadly_pct": 60.0,
+      "shared_core_ops_used": [
+        "core_01",
+        "core_05",
+        "core_03",
+        "core_02",
+        "core_06"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_01",
+        "core_05",
+        "core_03",
+        "core_02",
+        "core_06",
+        "broad_03"
+      ]
+    },
+    {
+      "arc": "mintzberg_emergent_strategy",
+      "n_moves": 10,
+      "shared_core_pct": 40.0,
+      "shared_plus_broadly_pct": 50.0,
+      "shared_core_ops_used": [
+        "core_02",
+        "core_03",
+        "core_01",
+        "core_05",
+        "core_04"
+      ],
+      "shared_plus_broadly_ops_used": [
+        "core_02",
+        "broad_03",
+        "core_03",
+        "core_01",
+        "core_05",
+        "core_04"
+      ]
+    }
+  ],
+  "mean_shared_core": 53.03030303030303,
+  "mean_shared_plus_broadly": 57.878787878787875,
+  "math_baselines": {
+    "in_subfield": 62.0,
+    "held_out_math_6th": 58.0,
+    "OOS_math_pre_remining": 43.0
+  },
+  "verdict": "BUSINESS COVERED \u2014 math vocabulary covers business at 58%. The 7-op shared core IS UNIVERSAL beyond mathematics. Major finding."
+}

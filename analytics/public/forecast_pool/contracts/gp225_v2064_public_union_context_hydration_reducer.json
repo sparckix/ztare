@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2064_public_union_context_hydration_reducer.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2064_public_union_context_hydration_reducer.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v2064_public_union_context_hydration_reducer",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2064_public_union_context_hydration_reducer.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2064_public_union_context_hydration_reducer.json"
+  },
+  "baseline_action": "Reopen replay pricing against the same underhydrated v20.62 packet.",
+  "budget_agent_minutes": 18.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v2064_public_union_context_hydration_reducer",
+  "cost_penalty": 0.018,
+  "counterfactual_action": "Reduce context and binder blockers first, then price a narrower replay.",
+  "created_at": "2026-05-14T18:43:05Z",
+  "created_by": "codex:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.4103,
+    "expected_cost_agent_minutes_prior": 36.75,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_pre_gnn_context_hydration_reducer",
+    "score": 0.5714,
+    "selected_domain": "gp225_pre_gnn_context_binding",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.5714,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.4103,
+        "domain": "gp225_pre_gnn_context_binding",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": true,
+        "score": 0.5714,
+        "score_rows": 2,
+        "token_jaccard": 0.5714
+      },
+      {
+        "char_trigram_jaccard": 0.1915,
+        "domain": "gp225_pre_gnn_alignment_policy",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.2439,
+        "domain": "gp225_pre_gnn_replay_gate",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.25,
+        "domain": "gp225_pre_gnn_route_selection",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.375,
+        "score_rows": 4,
+        "token_jaccard": 0.375
+      },
+      {
+        "char_trigram_jaccard": 0.1915,
+        "domain": "gp225_pre_gnn_source_discovery",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": true,
+        "score": 0.375,
+        "score_rows": 2,
+        "token_jaccard": 0.375
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "static reducer may still be too abstract",
+      "historic artifacts may not expose enough target context"
+    ],
+    "positive": [
+      "prevents repeated replay market aborts",
+      "turns binder_context_underhydrated into row-level work items"
+    ]
+  },
+  "horizon": "same session 2026-05-14",
+  "information_value": 0.22,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff v2064 consumes v20.63, v20.62, typed feedback, and historic replay/error artifacts; emits row-level hydration obligations for all four unsolved rows; identifies at least one concrete replay blocker per row; separates source-name normalization, binder names, proof orientation, and gold/target-shape risks; records no replay/training and GNN blocked; and names a smaller next artifact.",
+  "question": "Will v20.64 reduce the v20.63 replay abort into row-level binder/context hydration obligations that can reopen replay pricing without running Lean replay or training?",
+  "risk_penalty": 0.55,
+  "success_threshold": "four rows classified; >=4 concrete hydration obligations; no replay/training; next artifact named",
+  "task_type": "context_hydration_reducer",
+  "value_if_success": 0.62,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

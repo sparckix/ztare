@@ -1,0 +1,44 @@
+{
+  "contract_id": "gp225_v1920_executable_repair_canary_gate",
+  "mean_brier": 0.34,
+  "mean_log_score": -0.8778102113060909,
+  "outcome": {
+    "actual_cost_agent_minutes": 12.0,
+    "artifact_hash": "96fa3d425f0dbf20318d1eeb963491c230e13542da63ad627e43b7bbb6689f70",
+    "artifact_path": "analytics/public/leanmill/results/v1931_executable_repair_canary.json",
+    "compile_status": "repair_canary_ran_strict_gate_failed",
+    "contract_id": "gp225_v1920_executable_repair_canary_gate",
+    "error_type": "strict_false_accept_guard_failed_with_overclosure_signal",
+    "goal_delta": null,
+    "resolution_note": "v19.31 attempted 9 hydrated canary rows with gold hidden for primary generation. Candidate compile rate was 2/9 and same-target-state rate was 1/9, but strict false_accepts=2 caused contract failure. The apparent false accepts include over-closure candidates, so a saved audit should separate strict target-state mismatch from verified pull-forward closure before deciding whether to use Codex/LLM repair.",
+    "resolved_at": "2026-05-13T23:18:41Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T23:18:46Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "copernicus",
+      "brier": 0.27040000000000003,
+      "cost_error_agent_minutes": 23.0,
+      "domain": "GP-225",
+      "expected_cost_agent_minutes": 35.0,
+      "log_score": -0.7339691750802004,
+      "p_success": 0.52,
+      "success_bool": false
+    },
+    {
+      "actual_cost_agent_minutes": 12.0,
+      "agent_id": "descartes",
+      "brier": 0.4096,
+      "cost_error_agent_minutes": -9.0,
+      "domain": "GP-225",
+      "expected_cost_agent_minutes": 3.0,
+      "log_score": -1.0216512475319814,
+      "p_success": 0.64,
+      "success_bool": false
+    }
+  ]
+}

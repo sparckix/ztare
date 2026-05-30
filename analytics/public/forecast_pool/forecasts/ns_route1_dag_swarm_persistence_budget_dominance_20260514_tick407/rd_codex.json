@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Proceed with reused-agent swarm; integrate only concrete proof nodes/no-go guards, and keep branch dominance separate from route1 closure.",
+  "agent_id": "rd_codex",
+  "contract_id": "ns_route1_dag_swarm_persistence_budget_dominance_20260514_tick407",
+  "contract_question": "Will the route-1 DAG swarm produce at least one usable next proof node or no-go across N1 persistence, N2 lineage schedule budget, and N7 branch dominance, with Lean-facing surfaces and no overclaim?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 70.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "darwin_kills_route": 0.14,
+    "integration_overhead": 0.1,
+    "n1_persistence_missing_side_condition": 0.22,
+    "n2_schedule_budget_reuse_gap": 0.18,
+    "n7_branch_dominance_open": 0.24,
+    "wrapper_only_outputs": 0.12
+  },
+  "forecast_externality_tags": [
+    "gp-233:route1-dag",
+    "swarm-dispatch",
+    "darwin-pressure",
+    "gowers-first-dag"
+  ],
+  "forecasted_at": "2026-05-14T19:18:23Z",
+  "p_dependency_issue": 0.36,
+  "p_needs_new_lemma": 0.74,
+  "p_regression": 0.09,
+  "p_success": 0.66,
+  "rationale_short": "The DAG is now sharp enough for parallel shard work. Probability is decent for a usable next node/no-go, but full route closure is unlikely because branch dominance and persistence remain true PDE/domain obligations.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

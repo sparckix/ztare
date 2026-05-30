@@ -1,0 +1,67 @@
+{
+  "seed": "GP-237-v6-D6b-2026-05-17",
+  "probe_D6a": [
+    {
+      "canonical": "GP-023",
+      "file": "research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-023 \u2014 Ontology Trap / Planck Mechanism Seam"
+    },
+    {
+      "canonical": "GP-035",
+      "file": "research_areas/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-035 Mutator Missing Fit Primitive Seam"
+    },
+    {
+      "canonical": "GP-037",
+      "file": "research_areas/seams/protocol/GP-037_substrate_swap_3b_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-037 Substrate-Swap Sandbox (3b Verifier for GP-035)"
+    },
+    {
+      "canonical": "GP-072",
+      "file": "research_areas/seams/protocol/GP-072_sandbox_14_debate_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-072 Sandbox 14 \u2014 Debate Seam"
+    },
+    {
+      "canonical": "GP-088",
+      "file": "research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-081 \u2014 Peircean Pipeline: Abductive Discovery \u2192 Deductive Verification"
+    }
+  ],
+  "tail_D6b": [
+    {
+      "canonical": "GP-224",
+      "file": "research_areas/seams/engine/ns/GP-224_ns_closure_swarm_decision_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-224 \u2014 NS Closure Swarm vs Typed Endpoint Compression"
+    },
+    {
+      "canonical": "GP-221",
+      "file": "research_areas/seams/apparatus/instrumentation/GP-221_seam_health_telemetry_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-221 \u2014 Seam Health Telemetry"
+    },
+    {
+      "canonical": "GP-189",
+      "file": "research_areas/seams/protocol/GP-189_ns_continuation_criterion_after_bounded_near_miss_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-189 \u2014 NS Continuation Criterion After Bounded Near-Miss"
+    },
+    {
+      "canonical": "GP-169",
+      "file": "research_areas/seams/mission/meta/GP-169_consciousness_decision_protocol_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-169 \u2014 Consciousness Decision Protocol Seam"
+    },
+    {
+      "canonical": "GP-225",
+      "file": "research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md",
+      "in_text_h_ids": [],
+      "title": "GP-225 \u2014 GNN Lemma-Relevance Ranker (lineage seam)"
+    }
+  ]
+}

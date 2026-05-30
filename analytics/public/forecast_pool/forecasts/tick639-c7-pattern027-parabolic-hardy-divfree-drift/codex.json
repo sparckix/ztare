@@ -1,0 +1,22 @@
+{
+  "contract_id": "tick639-c7-pattern027-parabolic-hardy-divfree-drift",
+  "agent_id": "codex",
+  "forecasted_at": "2026-05-17T13:48:15Z",
+  "p_success": 0.17,
+  "rationale_short": "De-anon (i) is structurally faithful and the (ii) exact-criticality power-count (S~lambda^-2, nu|grad xi|^2~lambda^-2, Biot-Savart b~1/|x| exactly-critical-Hardy, kappa_r=O(1)) is independently correct and is a genuine FRAMING sharpening. But (iii) fails: by the C7 doc's own 'critical by construction' observation, q=|omega| IS the positive solution of V, so the Devyver-Fraas-Pinchover/Baras-Goldstein criticality/Green-function discriminator returns the endpoint tautologically -- it is NOT an independently computable scalar, it is the strict-margin atom (kappa_r<=kappa*<1, ratio<1) relabeled, == sec6 Cap_omega and the perennial 2026-05-12 strict-margin atom. (iv) fails: this is C7 doc sec6 (the existing GPT-5.5 ground-state-transform endpoint) + the tick587 honest-terminus, with three named citations and the (real, correct) div-free-drift criticality observation bolted on -- a sharper VOCABULARY/framing of the same open atom, not a sharper computable TARGET. (B) does NOT fire: residual is routed to the Biot-Savart magnitude/nonlocality channel, not the tick585-killed xi-direction-geometry class. Net: structurally honest, power-count right, framing genuinely sharpened, but the claimed NEW computable discriminator collapses to the already-tracked open gap => cite-launder + atom/terminus-relaunder => contract conceded.",
+  "failure_mode_distribution": {
+    "criterion_iii_discriminator_not_independently_computable_collapses_to_strict_margin_atom_citelaunder": 0.42,
+    "criterion_iv_alias_of_sec6_endpoint_and_tick587_terminus_revocabularization": 0.34,
+    "criterion_i_or_ii_de_anon_or_powercount_actually_flawed": 0.07,
+    "all_four_hold_genuinely_sharper_computable_target": 0.17
+  },
+  "verdict": "FLAWED",
+  "kill_findings": [
+    "C7 doc sec6 ALREADY contains this exact de-anonymization (q=|omega| solves (d_t+b.grad-nuLap)q=Vq; parabolic Kato kappa_r~O(1) = 'exactly the parabolic Hardy inverse-square critical threshold'; ground-state transform; capacity-of-separator; explicitly tagged 'Textbook PATTERN-027') -- tick639 adds named citations + the div-free-drift observation but does not produce a new computable object.",
+    "Self-defeating by the doc's own words: 'V is exactly the potential for which q=|omega| is a positive solution, so the operator is critical by construction -- every interior sign/constant argument returns the endpoint.' The Devyver-Pinchover criticality test applied to a critical-by-construction operator returns 'critical' tautologically; it yields NO independent discriminator. Computing the optimality/Green-function functional on the cascade is NOT easier than C7 -- it IS C7 (== sec6 Cap_omega == the perennial strict-margin atom kappa_r<=kappa*<1 / ratio<1 tracked since 2026-05-12, now its ~8th vocabulary drift).",
+    "(A) terminus-relaunder: lands on 'C7 reduces to the SIGN of the div-free-drift Hardy-improvement functional at criticality' with the admission that for exactly-critical drift the ground-state transform gives 'no automatic strict improvement' -- i.e. the tick587 sec6 statement 'every interior sign/constant argument returns the endpoint' with Hardy citations attached; does NOT beat the terminus.",
+    "(B) does NOT fire (sole surviving defense): residual is routed to the Biot-Savart drift magnitude/nonlocality channel, not the tick585-killed xi-direction-geometry class; nu|grad xi|^2 appears only inside the scalar power-count, not as a depletion lever.",
+    "(D) power-count is CORRECT and is the one genuine contribution: S~grad u~lambda^-2, nu|grad xi|^2~lambda^-2 (both critical vs (d_t-nuLap)~lambda^-2), and on a Type-I self-similar cascade b=K*omega scales lambda^-1 => |b|~1/|x| EXACTLY critical-Hardy (not |x|^{-1+delta}) -- the dichotomy does not collapse on a power error; the failure is laundering, not arithmetic."
+  ],
+  "read_only_attestation": true
+}

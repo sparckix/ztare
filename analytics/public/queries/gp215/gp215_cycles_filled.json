@@ -1,0 +1,512 @@
+[
+  {
+    "start_phase": "5bp",
+    "end_phase": "5bp",
+    "lean_files_created": [
+      "ns_spectral_diseconomy_toxic_block.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5bp_mode20_substitution_attack.md",
+      "phase5bp_spectral_n_pre_registration.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The Phase 5BO toxic-block certificate was a concrete mode-20-specific 2\u00d72 SOS receipt that a substitution attack (Phase 5BP) could circumvent by switching to a different mode pair, leaving no portable obstruction object.",
+    "resolution_move": "Lift the mode-specific SOS receipt into an abstract spectral-diseconomy structure (ToxicBlock + schurSlack) that encodes the viscous-quadratic dominance argument independent of which mode index is chosen, making the certificate portable across substitutions.",
+    "what_survived": "The Schur-slack square-completion criterion for the 2\u00d72 amplitude block, formalized as `ToxicBlock.schurSlack`, which holds regardless of which mode pair instantiates the block.",
+    "what_opened": "Whether the abstract spectral-diseconomy bound can be instantiated at each N in the planned spectral-N robustness sweep (N \u2208 {24,32,48,64,96,128}) to certify that \u03bb_min survives N \u2192 \u221e.",
+    "proof_object_delta": {
+      "before": "A mode-20-specific numerical SOS receipt from Phase 5BO with no Lean-portable abstraction over mode index or truncation level.",
+      "after": "ns_spectral_diseconomy_toxic_block.lean \u2014 defines ToxicBlock, ToxicBlock.schurSlack, and ToxicBlock.qform as the obligation skeleton for the spectral-diseconomy bridge theorem.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "certificate_portability_abstraction"
+  },
+  {
+    "start_phase": "5bq",
+    "end_phase": "5cg",
+    "lean_files_created": [
+      "ns_2028_hindsight_obligations.lean",
+      "ns_coherent_stretch_depletion.lean",
+      "ns_commutator_tower_proofsearch.lean",
+      "ns_decisive_ns_theorem_search.lean",
+      "ns_decisive_post_obstruction_theorem_search.lean",
+      "ns_exhaust_scale_reserve_bridge.lean",
+      "ns_gauge_topology_bypass.lean",
+      "ns_l2_carrier_bridge.lean",
+      "ns_l2_carrier_transport.lean",
+      "ns_pressure_hessian_l2_bridge.lean",
+      "ns_quadrupole_identity.lean",
+      "ns_route5_global_offset_sufficiency.lean",
+      "ns_route5_next_killer_hinges.lean",
+      "ns_route5_postrun_survivor_surface.lean",
+      "ns_route5_tensor_absorption_ellipticity.lean",
+      "ns_route5_topological_offset_mismatch.lean",
+      "ns_strain_aligned_connection_bypass.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5cg_2028_hindsight_pullforward.md",
+      "phase5cg_cold_shot_deanchored_summary.md",
+      "phase5cg_deanchored_synthesis_checkpoint.md",
+      "phase5cg_decisive_fork_status.md",
+      "phase5cg_decisive_theorem_run_packet.md",
+      "phase5cg_exhaust_discount_bridge_note.md",
+      "phase5cg_fd_rescaling_sanity.md",
+      "phase5cg_fd_rescaling_sanity_N32.md",
+      "phase5cg_fd_rescaling_sanity_N64.md",
+      "phase5cg_geometric_bypass_note.md",
+      "phase5cg_irrep_panel_debate.md",
+      "phase5cg_l2_carrier_note.md",
+      "phase5cg_leray_rescaling_discriminator_design.md",
+      "phase5cg_literature_novelty_bar.md",
+      "phase5cg_literature_position.md",
+      "phase5cg_local_leray_pilot.md",
+      "phase5cg_local_leray_pilot_N32.md",
+      "phase5cg_local_leray_pilot_N64.md",
+      "phase5cg_paper7_obstruction_candidate.md",
+      "phase5cg_pressure_quadrupole_instrumentation.md",
+      "phase5cg_proofsearch_packet.md",
+      "phase5cg_route1_vs_route5_comparison.md",
+      "phase5cg_route5_denominator_robustness_note.md"
+    ],
+    "n_phases_in_cycle": 17,
+    "failure_signature": "The cycle was stalled by the absence of named first-class proof objects for the pressure-l=2 transport route: the arc had a single Calderon commutator residual and a vague 'scrambling' narrative but no formal obligation skeleton covering the nonlocal pressure tail, iterated commutator tower, continuation handoff, or regime split.",
+    "resolution_move": "Decompose the vague scrambling/transport narrative into a ranked set of named obligation skeletons across multiple Lean files, each isolating one unpaid analytic burden (quadrupole identity, pressure-Hessian l=2 bridge, carrier transport defect, commutator tower, exhaust-scale reserve, gauge/topology bypass, route-5 survivor surface, decisive fork), replacing the single-residual placeholder with a structured multi-file obligation graph.",
+    "what_survived": "The pressure-Hessian l=2 carrier route survived as the primary proof-facing object, with the instantaneous quadrupole identity (ns_quadrupole_identity.lean) confirmed as the exact algebraic layer and the renormalized l=2 carrier per active radial grade retained as the live transport observable.",
+    "what_opened": "The resolution exposed that the iterated commutator tower and the global nonlocal pressure-tail bootstrap are now the two cheapest unpaid load-bearing obligations, and that the route-5 exponential metric branch requires a PDE-native sharp material-control theorem plus a uniform generator cap before the capacity-deficit obstruction can be paid.",
+    "proof_object_delta": {
+      "before": "A single unnamed Calderon commutator residual attached to high modes, with no formal Lean file separating the algebraic, pressure, and transport layers of the l=2 route.",
+      "after": "ns_2028_hindsight_obligations.lean, ns_coherent_stretch_depletion.lean, ns_commutator_tower_proofsearch.lean, ns_decisive_ns_theorem_search.lean, ns_decisive_post_obstruction_theorem_search.lean, ns_exhaust_scale_reserve_bridge.lean, ns_gauge_topology_bypass.lean, ns_l2_carrier_bridge.lean, ns_l2_carrier_transport.lean, ns_pressure_hessian_l2_bridge.lean, ns_quadrupole_identity.lean, ns_route5_global_offset_sufficiency.lean, ns_route5_next_killer_hinges.lean, ns_route5_postrun_survivor_surface.lean, ns_route5_tensor_absorption_ellipticity.lean, ns_route5_topological_offset_mismatch.lean, ns_strain_aligned_connection_bypass.lean",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "obligation_naming"
+  },
+  {
+    "start_phase": "5ch",
+    "end_phase": "5ch",
+    "lean_files_created": [
+      "ns_exponential_metric_nontriviality_bar.lean",
+      "ns_exponential_metric_transport_ratio_obstruction.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ch_capacity_realization_falsifier.md",
+      "phase5ch_capacity_realization_falsifier_packet.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The exponential metric obstruction in `ns_exponential_metric_survivor_obstruction` was inadequate as a mathematical result because its curvature-capacity failure condition was inserted definitionally rather than derived from an external PDE-side hypothesis, making it a branch-kill by stipulation rather than a nontrivial theorem.",
+    "resolution_move": "Split the obstruction package into a nontriviality bar separating the internal definitional kill from a genuine PDE-derived obligation, and erect a transport-ratio bridge theorem naming the exact discriminator future PDE work must pay or falsify.",
+    "what_survived": "The capacity-deficit target in `ns_exponential_metric_capacity_deficit.lean` survives as the scientific invariant anchoring both new files.",
+    "what_opened": "Whether a PDE-side uniform generator cap or ellipticity floor can be derived independently to supply the missing hypothesis and elevate the obstruction from definitional to nontrivial.",
+    "proof_object_delta": {
+      "before": "No formal separation between the internal branch-kill stipulation and a mathematically substantial obstruction; `exponentialMetricSurvivorObstructionTarget` served both roles without distinction.",
+      "after": "`ns_exponential_metric_nontriviality_bar.lean` defining `exponentialMetricNontrivialObstructionTarget` and `ns_exponential_metric_transport_ratio_obstruction.lean` defining `exponentialTransportRatioStressTarget` as the exact theorem-shaped discriminator.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "definitional_kill_stratification"
+  },
+  {
+    "start_phase": "5ci",
+    "end_phase": "5ct",
+    "lean_files_created": [
+      "ns_exhaust_horizon_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ct_exhaust_horizon_bridge.md"
+    ],
+    "n_phases_in_cycle": 12,
+    "failure_signature": "The cycle addresses the stall where raw pressure-Hessian capacity `B := |tau_-Hess(p)|` could not be materially controlled near scale `C*M` with `C` near 1, because the danger-window data showed `|Hess(p)|/|residual|` ratios of 10\u201317, falsifying the near-material control inequality needed to close the route-5 obstruction theorem.",
+    "resolution_move": "Shift from pressure-capacity material-control as the proof hinge to an exhaust-horizon recurrence bridge, encoding the cycle-level non-rearming condition `G(E) <= L(E)` as a formal Lean certificate structure in `ns_exhaust_horizon_bridge.lean`.",
+    "what_survived": "The algebraic branch-degeneracy law `hnorm >= R/C - 1` and `lambdaMin <= exp(1 - R/C)` survived as a scoped science claim calibrated to the source-stratified material-frame transport frontier.",
+    "what_opened": "Whether the exhaust-efficiency condition `resetLoss * escapeSpeed >= productionRate * tubeWidth` can be proved or falsified from PDE-side bounds, which is now the exact open premise of the bridge theorem.",
+    "proof_object_delta": {
+      "before": "No formal object encoding the cycle-level recurrence non-expansion condition; only narrative phase documents (phase5ct_exhaust_horizon_bridge.md) describing the bridge lemma without a Lean structure.",
+      "after": "ns_exhaust_horizon_bridge.lean, which defines `exhaustHorizonBridgeCertificate` and `exhaustEfficiencyNonnegative` as formal Lean propositions encoding the dwell/gain/loss cycle conditions.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "capacity_escape_recurrence_pivot"
+  },
+  {
+    "start_phase": "5cu",
+    "end_phase": "5cz",
+    "lean_files_created": [
+      "ns_exhaust_horizon_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5cz_ztare_anisotropic_fractional_bridge_packet.md"
+    ],
+    "n_phases_in_cycle": 6,
+    "failure_signature": "The cycle-bridge discriminator lacked a formal Lean object encoding the exhaust-efficiency scalar Q(E) = L(E)v(E)/(P(E)w(E)) and its non-circularity contract, leaving the ladder obstruction `no_profitable_ladder_under_exhaust_horizon` without a machine-checkable certificate structure.",
+    "resolution_move": "Lift the scalar exhaust-efficiency inequality and its admissibility preconditions into a Lean definition skeleton (`exhaustHorizonBridgeCertificate` and `exhaustEfficiencyNonnegative`) that encodes the non-circular variable contract as a typed proposition, converting the narrative bridge into an obligation skeleton.",
+    "what_survived": "The cycle-margin decomposition m(E) = L(E) - G(E) and its rewriting as Q(E) = L(E)v(E)/(P(E)w(E)) survived as the canonical scalar hinge connecting PDE estimates to the recurrence theorem.",
+    "what_opened": "Whether the anisotropic metric degeneracy (lambdaMin << 1) produces a real Euclidean Riesz-Hessian projection bound that reduces P(E) enough for Q(E) >= 1, or is a coordinate-substitution fallacy requiring a native thin-source counterexample.",
+    "proof_object_delta": {
+      "before": "No Lean encoding of the exhaust-efficiency scalar or its admissibility preconditions; only narrative phase documents (phase5cu, phase5cw, phase5cx) described the Q(E) bridge variables without a typed contract.",
+      "after": "ns_exhaust_horizon_bridge.lean defining `exhaustHorizonBridgeCertificate` and `exhaustEfficiencyNonnegative` as typed Lean propositions over the five bridge scalars.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "scalar_inequality_obligation_lift"
+  },
+  {
+    "start_phase": "5da",
+    "end_phase": "5dd",
+    "lean_files_created": [
+      "ns_resupply_escape_pincer.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5dd_resupply_escape_pincer.md"
+    ],
+    "n_phases_in_cycle": 4,
+    "failure_signature": "The static fractional bridge (anisotropic metric collapse suppresses projected Euclidean H_33 pressure channel) was killed by Phase 5DB's finite-enstrophy shear construction, leaving no formal object to bound integrated pressure production P_dwell(E).",
+    "resolution_move": "Replace the instantaneous pressure-cap shortcut with a pincer obligation skeleton that decomposes P_dwell into resupply rate, viscous packet lifetime, and signed escape dwell, encoding the three-factor bound as named Lean definitions in ns_resupply_escape_pincer.lean.",
+    "what_survived": "The signed escape coordinate a = 1 - |<omega_hat, e_stretch>| with its sampled exit-speed trace (da/dt \u2248 8.945335) survived as the section-dwell variable feeding T_section(E) \u2264 W(E)/V(E).",
+    "what_opened": "Whether the PDE can be shown to force rho_resupply(E,k) * W(E) * S(E,k) * sqrt(B(E,k)) = o(k^(3/2) * V(E) * nu), i.e., whether the resupply rate is provably sub-critical or an admissible ratchet subsequence can be constructed to prove the opposite.",
+    "proof_object_delta": {
+      "before": "No formal object bounding integrated pressure production; only the dead static fractional bridge imported via ZtareProofs.ns_fractional_dwell_bridge with no dwell or resupply structure.",
+      "after": "ns_resupply_escape_pincer.lean \u2014 an obligation skeleton defining ResupplyRate, SectionDwell, PacketImpulseCap, resupplyCountBoundedByRate, packetImpulseBounded, and resupplyImpulseDominatedByLoss as named Lean Prop-level definitions.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "pincer_obligation_decomposition"
+  },
+  {
+    "start_phase": "5fj",
+    "end_phase": "5fl",
+    "lean_files_created": [
+      "ns_null_profile_cap_branch.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fl_null_profile_cap_branch.md"
+    ],
+    "n_phases_in_cycle": 3,
+    "failure_signature": "The countable-prefix pricing audit (phase5fj) and prefix-weight optimizer (phase5fk) produced zero survivors and zero certificates across 90 and 20 rows respectively, leaving the null-profile branch obligation unnamed and unrouted in the Track B skeleton.",
+    "resolution_move": "Isolate the null-profile cap obligation as a standalone branch-killer with a Lean proof-routing skeleton that encodes the null/non-null dichotomy abstractly, deferring the analytic PDE burden outside the file.",
+    "what_survived": "The chain 'family no-arbitrage -> ThresholdDefectConvexity -> FullLedgerNoSurvivor' and the deterministic below-wall evidence from phases 5EU and 5EV survived as the empirical grounding for the branch.",
+    "what_opened": "The analytic obligation 'P.isNull -> P.payoff <= P.price' for actual Leray/Sobolev null profiles under a fixed, independently declared observable class remains unproved outside the Lean file.",
+    "proof_object_delta": {
+      "before": "No formal routing skeleton for the null-profile branch; the obligation existed only as an implicit gap in the Track B bridge with no named structure or certificate type.",
+      "after": "ns_null_profile_cap_branch.lean, which defines NullProfileCapBranchCertificate and proves profile_no_arbitrage_of_null_split as the abstract branch-killer obligation skeleton.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "branch_obligation_isolation"
+  },
+  {
+    "start_phase": "5fm",
+    "end_phase": "5fm",
+    "lean_files_created": [
+      "ns_low_high_kinematic_dichotomy.lean",
+      "ns_trackb_sos_pricing_kernel_receipt.lean",
+      "ns_universal_state_pricing_split.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fm_trackb_branch_killer_grid.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The arc lacked a mechanical verifier interface connecting finite SOS/PSD certificate objects to the Track B state-pricing split, leaving the claim 'there is a PSD kernel' as an unanchored narrative assertion without an exact receipt object.",
+    "resolution_move": "Introduce a three-file obligation skeleton that separates the kinematic dichotomy ledger, the SOS receipt verifier interface, and the universal state-pricing split into independently checkable Lean adapter stubs, replacing the single narrative invariant with a branched mechanical routing.",
+    "what_survived": "The no-arbitrage split structure\u2014null/cheap routes capped at the 2/3 wall, interacting routes charged by the quartic defect at the threshold root\u2014carried forward as the algebraic routing target in ns_universal_state_pricing_split.lean.",
+    "what_opened": "The construction of a global PDE certificate satisfying RootCoercivityAtThreshold for actual Leray/Sobolev states remains open, now precisely named as the unfilled obligation in ns_universal_state_pricing_split.lean.",
+    "proof_object_delta": {
+      "before": "No exact receipt object linking a PSD/SOS witness to the Track B threshold defect gap; only narrative claims about kernel existence in prior phase documents.",
+      "after": "ns_trackb_sos_pricing_kernel_receipt.lean introducing pricingSumSquares, pricingCertSq_nonneg, and the thresholdDefectGapAtRoot verifier interface as a typed Lean adapter stub.",
+      "delta_type": "lean_adapter"
+    },
+    "structural_move_class": "obligation_skeleton_branching"
+  },
+  {
+    "start_phase": "5fn",
+    "end_phase": "5fq",
+    "lean_files_created": [
+      "ns_concentration_impact_branch.lean",
+      "ns_dichotomy_cross_profile_branch.lean",
+      "ns_null_profile_cap_branch.lean",
+      "ns_vanishing_branch.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fq_trackb_profile_decomposition_obligation.md"
+    ],
+    "n_phases_in_cycle": 4,
+    "failure_signature": "The arc lacked branch-specific Lean proof objects isolating each of the seven profile-decomposition obligations (concentration-impact, vanishing, null-profile cap, cross-profile recombination), leaving them as undifferentiated narrative claims in the audit ledger rather than independently checkable formal structures.",
+    "resolution_move": "Decompose the monolithic pricing-kernel obligation into four named Lean obligation skeletons, each encoding one branch-killer certificate structure and its routing theorem, so that the remaining PDE instantiation burden is precisely localized per branch.",
+    "what_survived": "The exact full-ledger pricing kernel and the 2/3-wall falsification result from prior phases survived intact as the shared import base (`ns_pricing_kernel_limit_passage`) referenced by all four new files.",
+    "what_opened": "The question of whether actual Leray/Sobolev profile decompositions under a fixed predeclared topology can instantiate any of the four branch certificates (ConcentrationImpactProfileCertificate, VanishingProfileCertificate, NullProfileCapBranchCertificate, CrossProfileRecombinationCertificate) with PDE-derived witnesses.",
+    "proof_object_delta": {
+      "before": "No branch-specific Lean files existed; the seven branch-killer obligations were listed only as prose in phase5fq_trackb_profile_decomposition_obligation.md without formal structure.",
+      "after": "ns_concentration_impact_branch.lean, ns_dichotomy_cross_profile_branch.lean, ns_null_profile_cap_branch.lean, ns_vanishing_branch.lean \u2014 four Lean files each declaring a certificate structure and proving the abstract routing theorem conditional on that certificate.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "branch_obligation_decomposition"
+  },
+  {
+    "start_phase": "5fr",
+    "end_phase": "5fr",
+    "lean_files_created": [
+      "ns_littlewood_paley_profile_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fr_littlewood_paley_profile_bridge.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The abstract profile-decomposition spine in ns_trackb_profile_decomposition_spine.lean named the global profile-family object but left shell-level pricing obligations unpinned, enabling post-hoc topology selection.",
+    "resolution_move": "Instantiate the abstract profile obligation into a dyadic-shell pricing stream with pre-declared cross-shell residual ledgers, blocking tautological route selection by fixing the shell stream before payoff is scored.",
+    "what_survived": "The ThresholdDefectConvexity -> FullLedgerNoSurvivor implication from the spine, now fed by the shell-level bridge theorem.",
+    "what_opened": "Whether a standard Littlewood-Paley/Besov or critical-Sobolev decomposition can instantiate the shell bridge hypotheses and which hypothesis first fails under that instantiation.",
+    "proof_object_delta": {
+      "before": "Abstract profile family in ns_trackb_profile_decomposition_spine.lean with no shell-level residual charging structure",
+      "after": "ns_littlewood_paley_profile_bridge.lean with LPShellPricingStream fixing crossPrice and crossPayoff before payoff scoring",
+      "delta_type": "bridge_theorem"
+    },
+    "structural_move_class": "shell_residual_pre_declaration"
+  },
+  {
+    "start_phase": "5fs",
+    "end_phase": "5fs",
+    "lean_files_created": [
+      "ns_littlewood_paley_paraproduct_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fs_littlewood_paley_paraproduct_bridge.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The prior shell-prefix bridge (ns_littlewood_paley_profile_bridge.lean) lacked a named decomposition of which interaction classes could hide a global NS escape, leaving the no-arbitrage obligation structurally underspecified.",
+    "resolution_move": "Introduce a typed inductive partition of Bony/LP interaction classes (lowHigh, highLow, highHigh, sameShell, remainder) and prove an abstract bridge theorem that any above-wall Track B trade must be attributable to one named class, closing the finite-prefix-to-countable-limit passage.",
+    "what_survived": "The existing ThresholdDefectConvexity -> FullLedgerNoSurvivor implication from Track B, which the new bridge feeds as a downstream consumer.",
+    "what_opened": "The question of whether a concrete charging estimate (or explicit falsifying sequence) can be constructed for each named interaction class under a fixed Littlewood-Paley/Besov topology.",
+    "proof_object_delta": {
+      "before": "ns_littlewood_paley_profile_bridge.lean provided only dyadic shell prefixes without naming the interaction classes that must be priced",
+      "after": "ns_littlewood_paley_paraproduct_bridge.lean with LPParaproductClass inductive type, LPInteractionLedger/LPInteractionFamily structures, and the abstract bridge theorem over all five interaction classes",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "interaction_class_partition"
+  },
+  {
+    "start_phase": "5ft",
+    "end_phase": "5ft",
+    "lean_files_created": [
+      "ns_clay_closure_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ft_clay_closure_bridge.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The arc lacked a formal top-level conditional theorem articulating exactly which two PDE obligations (actual-block instantiation and continuation bridge) separate the priced no-arbitrage architecture from a completed Clay proof, leaving the gap vague.",
+    "resolution_move": "Encode the Clay-closure gap as a conditional Lean theorem whose hypotheses name the two missing PDE obligations explicitly, converting narrative caveats into formal proof obligations with named structure types.",
+    "what_survived": "The LP/paraproduct pricing certificate and no-survivor ledger machinery from prior phases survived as imported dependencies (ZtareProofs.ns_littlewood_paley_paraproduct_bridge) inside the new bridge file.",
+    "what_opened": "The four paraproduct charging branches (low-high catalyst, high-low transport, high-high self-tax, same-shell/remainder plus countable-limit) are now the live frontier, recorded in ns_track_b_paraproduct_2026-05-04.json.",
+    "proof_object_delta": {
+      "before": "No formal object stating the conditional shape of a Clay proof; the gap between no-survivor and global regularity existed only as narrative caveat.",
+      "after": "ns_clay_closure_bridge.lean: a conditional top-level theorem with named structure types (SmoothNSInitialData, NSEvolution) and explicit hypothesis slots for actual-block instantiation and continuation bridge.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "gap_obligation_formalization"
+  },
+  {
+    "start_phase": "5fu",
+    "end_phase": "5fu",
+    "lean_files_created": [
+      "ns_littlewood_paley_paraproduct_bridge.lean",
+      "ns_low_high_catalyst_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fu_low_high_catalyst_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The LP/paraproduct bridge (ns_littlewood_paley_paraproduct_bridge.lean) named interaction classes but left the low-high catalyst branch unconnected to the existing continuum tail/leakage budget object (LeakageAbsorptionEstimate), creating an unpriced gap in the first concrete paraproduct branch.",
+    "resolution_move": "Lift the abstract low-high interaction obligation into a Lean adapter that equates interaction payoff/price fields with predeclared leakage ledger entries, bridging ns_littlewood_paley_paraproduct_bridge.lean to ns_continuum_tail_bound.lean via LowHighCatalystLeakageBridge.",
+    "what_survived": "The LPInteractionLedger/InteractionNoArbitrage framework from ns_littlewood_paley_paraproduct_bridge.lean, which prices any interaction class when payoff does not exceed declared price.",
+    "what_opened": "The remaining PDE obligation to prove the actual leakage representation and absorption estimate for the low-high paraproduct class under the declared LP/Besov/Sobolev topology.",
+    "proof_object_delta": {
+      "before": "No formal connection between LPParaproductClass.lowHigh interactions and the existing LeakageAbsorptionEstimate object; the low-high branch was named but unpriced.",
+      "after": "ns_low_high_catalyst_charging_obligation.lean, which proves the adapter theorem low_high_inter... via LowHighCatalystLeakageBridge equating payoff_eq_leakage_gain and price_eq_leakage_loss.",
+      "delta_type": "lean_adapter"
+    },
+    "structural_move_class": "obligation_field_identification"
+  },
+  {
+    "start_phase": "5fv",
+    "end_phase": "5fw",
+    "lean_files_created": [
+      "ns_low_frequency_lipschitz_control_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fw_low_frequency_lipschitz_control_bridge.md"
+    ],
+    "n_phases_in_cycle": 2,
+    "failure_signature": "The cycle addresses the tautology stall where the low-high paraproduct absorption argument (from Phase 5FU) implicitly assumed the low-frequency Lipschitz factor ||grad S_{j-2}u||_infty was integrable, rather than deriving that integrability from the Track B no-survivor/full-ledger mechanism.",
+    "resolution_move": "Lift the continuation-summability obligation into a Lean adapter that explicitly names the three-step pricing chain (block-level Lipschitz cost \u2192 finite-prefix reserve bound \u2192 critical continuation control), preventing the assumption from being smuggled in silently.",
+    "what_survived": "The structural claim that Track B no-survivor blocks must price accumulated low-frequency Lipschitz cost via a declared reserve budget, and that budget implies a standard continuation criterion, encoded as the TrackBNoSurvivorToCriticalControl object.",
+    "what_opened": "Whether, for actual Navier-Stokes LP/Bony blocks, the low-frequency Lipschitz cost can be defined from the fixed decomposition before payoff is scored and every no-survivor block can be shown to charge that cost to a reserve price uniformly bounded by a critical budget.",
+    "proof_object_delta": {
+      "before": "No artifact connecting 'all Track B blocks are no-survivors' to 'NSE evolution satisfies a standard continuation criterion'; the gap was bridged only by implicit assumption of Lipschitz integrability.",
+      "after": "ns_low_frequency_lipschitz_control_bridge.lean, providing the abstract adapter with nsPrefixSum, ns_prefix_sum_le_of_pointwise, and the LipschitzLedger structure targeting TrackBNoSurvivorToCriticalControl.",
+      "delta_type": "lean_adapter"
+    },
+    "structural_move_class": "continuation_obligation_naming"
+  },
+  {
+    "start_phase": "5fx",
+    "end_phase": "5fx",
+    "lean_files_created": [
+      "ns_high_high_self_tax_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fx_high_high_self_tax_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The high-high paraproduct branch remained a loose 'self-tax' phrase without a formal adapter connecting the exact quartic no-survivor theorem to a priced LP interaction, leaving the obligation unnamed and unauditable.",
+    "resolution_move": "Lift the informal 'self-tax' narrative into a typed Lean adapter structure (HighHighSelfTaxBridge) that formally equates interaction payoff to block survival profit and interaction price to the sharp 2/3 wall, then derive InteractionNoArbitrage from the quartic no-survivor hypothesis.",
+    "what_survived": "The exact quartic no-survivor theorem (imported from ns_littlewood_paley_paraproduct_bridge) as the authoritative pricing surface for high-high interactions.",
+    "what_opened": "The residual PDE obligation: proving that actual high-high LP/Bony interactions are represented by Track B full-ledger blocks satisfying threshold-defect convexity.",
+    "proof_object_delta": {
+      "before": "No formal object connecting the high-high paraproduct branch to the Track B ledger; only a narrative 'self-tax' phrase in prior phases.",
+      "after": "ns_high_high_self_tax_charging_obligation.lean, containing HighHighSelfTaxBridge and theorem high_high_interaction_no_arbitrage_of_quartic_no_survivor.",
+      "delta_type": "lean_adapter"
+    },
+    "structural_move_class": "obligation_naming"
+  },
+  {
+    "start_phase": "5fy",
+    "end_phase": "5fy",
+    "lean_files_created": [
+      "ns_high_low_transport_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fy_high_low_transport_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The paraproduct grid lacked a formal proof target for the high-low transport branch, leaving the LPParaproductClass.highLow interaction class without a Lean-certified leakage-reserve adapter analogous to the existing low-high obligation.",
+    "resolution_move": "Mirror the low-high leakage-reserve adapter structure into a dedicated Lean file for the highLow interaction class, instantiating the same HighLowTransportLeakageBridge skeleton and InteractionNoArbitrage theorem target.",
+    "what_survived": "The leakage-reserve adapter shape (predeclared budget, leakage_represents, leakage_absorbing, payoff_eq_leakage_gain, price_eq_leakage_loss) carried over intact from the low-high branch into the high-low branch.",
+    "what_opened": "The non-tautological estimate remains open: identifying the actual interaction payoff and proving reserve absorption for concrete NSE LP/Bony blocks before scoring payoff in the high-low PDE setting.",
+    "proof_object_delta": {
+      "before": "No Lean file covering LPParaproductClass.highLow; the paraproduct grid had low-high, high-high, and low-frequency branches but no high-low transport obligation skeleton.",
+      "after": "ns_high_low_transport_charging_obligation.lean providing HighLowTransportLeakageBridge structure and high_low_interaction_no_arbitrage_of_leakage_absorption theorem stub.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "branch_obligation_mirroring"
+  },
+  {
+    "start_phase": "5fz",
+    "end_phase": "5fz",
+    "lean_files_created": [
+      "ns_profile_lipschitz_clay_bridge.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5fz_profile_lipschitz_clay_bridge.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The arc lacked a composed closure path that connected the profile-decomposition spine (TrackBProfileDecompositionObligation) to the low-frequency Lipschitz control bridge (LowFrequencyLipschitzBridge) in a single non-tautological structure; each interface existed separately but no object enforced their joint fixed-map requirement.",
+    "resolution_move": "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces both maps are declared before payoff scoring, bridging FullLedgerNoSurvivor through criticalControl to globalRegular via the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+    "what_survived": "The anti-tautology boundary condition \u2014 that profile_family_of_block and ledger_of_evolution must be fixed prior to observing a profitable route \u2014 carried through intact into the composed structure.",
+    "what_opened": "The remaining exact PDE burden is now localized to seven named obligations (profile decomposition, payoff semicontinuity, cross-profile recombination, quartic threshold-defect, LP/Bony Lipschitz cost, no-survivor reserve pricing, continuation criterion instantiation) whose independence from each other must be verified.",
+    "proof_object_delta": {
+      "before": "No single Lean object composed the profile-decomposition spine with the Lipschitz control bridge; the two interfaces (ns_trackb_profile_decomposition_spine and ns_low_frequency_lipschitz_control_bridge) were unconnected at the obligation level.",
+      "after": "ns_profile_lipschitz_clay_bridge.lean, containing TrackBProfileLipschitzClayObligation and the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+      "delta_type": "bridge_theorem"
+    },
+    "structural_move_class": "interface_composition_bridge"
+  },
+  {
+    "start_phase": "5ga",
+    "end_phase": "5ga",
+    "lean_files_created": [
+      "ns_same_shell_remainder_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ga_same_shell_remainder_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The paraproduct adapter grid lacked a formal charging route for the same-shell/remainder LP/Bony branch, leaving those interaction terms without a declared profile-family obligation and vulnerable to post-hoc residual hiding.",
+    "resolution_move": "Introduce a dedicated Lean adapter structure (SameShellRemainderProfileBridge) that gates same-shell/remainder pricing on a pre-declared profile family, closing the final gap in the paraproduct class coverage.",
+    "what_survived": "The four-branch paraproduct grid architecture (low-high, high-low, high-high, same-shell/remainder) with each branch requiring an explicit adapter before interaction scoring.",
+    "what_opened": "The PDE instantiation obligation: proving that actual same-shell and remainder interactions in the Leray/Sobolev topology admit the declared fixed profile-family representation, or exhibiting a counterexample payoff that escapes the declared price.",
+    "proof_object_delta": {
+      "before": "No formal adapter for the same-shell/remainder LP/Bony branch; the interaction class was unguarded and could absorb profitable terms into an undeclared residual bucket.",
+      "after": "ns_same_shell_remainder_charging_obligation.lean defining IsSameShellRemainderClass, SameShellRemainderProfileBridge, and same_shell_remainder_priced_of_profile_family_no_arbitrage with SameShellRemainderPDEObligation.",
+      "delta_type": "lean_adapter"
+    },
+    "structural_move_class": "branch_coverage_completion"
+  },
+  {
+    "start_phase": "5gb",
+    "end_phase": "5gb",
+    "lean_files_created": [
+      "ns_flat_torus_killing_mode.lean",
+      "ns_low_high_kinematic_dichotomy.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5gb_low_high_kinematic_dichotomy.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The low-high branch lacked a structural obstruction to the 'orthogonal catalyst' scenario\u2014a low-frequency field transferring high-frequency L2 mass to a higher LP shell with zero deformation cost\u2014because no formal object named or blocked the zero-strain/Killing mode pathway.",
+    "resolution_move": "Split the low-high branch into a rotator/stretcher dichotomy by introducing a flat-torus Killing-mode falsifier theorem (amplitude_zero_of_zero_symmetric_gradient_mode) and a kinematic ledger adapter that gates leakage gain on positive deformation cost.",
+    "what_survived": "The LP interaction no-arbitrage obligation structure from ns_low_high_catalyst_charging_obligation, which the new dichotomy ledger imports and sharpens.",
+    "what_opened": "The analytic burden of proving in Lean that zero deformation cost forces the constant-translation branch and that constant translations preserve LP shells\u2014steps 2\u20135 of the remaining PDE obligation.",
+    "proof_object_delta": {
+      "before": "No formal object blocking the zero-strain rotator scenario; the low-high branch had only a vague heuristic about orthogonal catalysts without a mode-level algebraic obstruction.",
+      "after": "ns_flat_torus_killing_mode.lean (theorem amplitude_zero_of_zero_symmetric_gradient_mode) and ns_low_high_kinematic_dichotomy.lean (LowHighKinematicDichotomyLedger, LowHighKinematicDichotomyCertificate, FlatTorusLowHighKinematicPDEObligation).",
+      "delta_type": "falsifier"
+    },
+    "structural_move_class": "branch_decomposition_with_falsifier"
+  },
+  {
+    "start_phase": "5gc",
+    "end_phase": "5gc",
+    "lean_files_created": [
+      "ns_matrix_block_ledger_charging_obligation.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5gc_matrix_block_ledger_charging_obligation.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The matrix-intertwiner loophole (INS-081) allowed signed Leray-aware coordinate blocks to be treated as positive energy certificates without paying the same ledger charges as every other Track B observable, creating a tautology risk.",
+    "resolution_move": "Encode a mandatory four-charge gate (PSD ballast, damping, independent normalization, cross term) as a Lean predicate `MatrixBlockFullyCharged` that any matrix observable must satisfy before entering a global Track B statement, forcing the matrix branch into an explicit three-bin split (excluded / demoted / still-live).",
+    "what_survived": "The finite audit results from Phase 5ET (13078 charged matrix rows, 0 survivors above 2/3) and Phase 5EX (19617 W-coupled shift-covariant rows, 0 survivors above 2/3) remain valid as local evidence within the now-mechanically-enforced charging framework.",
+    "what_opened": "The global charged matrix threshold-defect theorem under the fixed Leray/Sobolev observable class remains an unpaid bridge: either prove it globally or produce one independently admissible full-ledger matrix violator.",
+    "proof_object_delta": {
+      "before": "No formal gate preventing uncharged matrix intertwiners from being silently promoted to global Track B observables; the split was narrative, not mechanical.",
+      "after": "ns_matrix_block_ledger_charging_obligation.lean, which defines `MatrixBlockFullyCharged` and proves three adapter lemmas enforcing the excluded/demoted/still-live bin assignment.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "obligation_charging_gate"
+  },
+  {
+    "start_phase": "5gd",
+    "end_phase": "5gd",
+    "lean_files_created": [
+      "ns_universal_state_pricing_split.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5gd_universal_state_pricing_split.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The Track B bridge lacked a unified algebraic routing target that separated null/self-tax-free routes (capped at 2/3 wall) from interacting above-wall routes (charged at exact quartic defect), leaving the PDE obligation unnamed and unstructured.",
+    "resolution_move": "Introduce a StatePricingSplitCertificate skeleton that decomposes the global no-survivor obligation into two charged branches plus a matrix-block admissibility gate, converting the open packet-search into a named obligation with an anti-tautology bar.",
+    "what_survived": "The Phase 5GC matrix-block admissibility gate and the sharp 2/3 wall as the branch discriminator both carry forward unchanged into the new split structure.",
+    "what_opened": "The construction of an actual global analytic PSD dual state-pricing kernel for Leray/Sobolev states that satisfies the anti-tautology bar (state space and price terms fixed before payoff is scored) remains entirely open.",
+    "proof_object_delta": {
+      "before": "No structured decomposition of the Track B obligation existed; the arc had ns_matrix_block_ledger_charging_obligation.lean but no routing target separating null-route cap from interacting-root charge.",
+      "after": "ns_universal_state_pricing_split.lean formalizing RootCoercivityAtThreshold, StatePricingSplitCertificate, and UniversalStatePricingKernelObligation with explicit anti-tautology bar.",
+      "delta_type": "obligation_skeleton"
+    },
+    "structural_move_class": "constitutive_split"
+  },
+  {
+    "start_phase": "5ge",
+    "end_phase": "5ge",
+    "lean_files_created": [
+      "ns_trackb_sos_pricing_kernel_receipt.lean"
+    ],
+    "phase_docs_at_end": [
+      "phase5ge_trackb_sos_pricing_kernel_receipt.md"
+    ],
+    "n_phases_in_cycle": 1,
+    "failure_signature": "The universal state-pricing kernel was accepted as prose without a mechanical verifier interface that could check an exact PSD/SOS decomposition of the threshold defect gap at the quartic root ledger.",
+    "resolution_move": "Introduce a Lean verifier interface (SOSThresholdReceipt + UniversalStatePricingSOSReceipt) that gates acceptance of any pricing kernel claim on delivery of an exact nonnegative-slack-plus-sum-of-squares receipt for thresholdDefectGapAtRoot, routing valid receipts into the existing no-survivor theorem.",
+    "what_survived": "The Track B no-survivor theorem and the null/interacting block split from ns_universal_state_pricing_split remain intact as the downstream target that any valid SOS receipt must feed.",
+    "what_opened": "Whether an exact SOS/PSD certificate family for the null/interacting split under the fixed Leray/Sobolev observable class can be constructed, or whether a smooth admissible global block with gamma > 2/3 falsifies the receipt existence.",
+    "proof_object_delta": {
+      "before": "No formal object existed to validate a pricing kernel claim; the universal state-pricing argument was an unverified prose analogy without a receipt schema tied to thresholdDefectGapAtRoot.",
+      "after": "ns_trackb_sos_pricing_kernel_receipt.lean, defining SOSThresholdReceipt, UniversalStatePricingSOSReceipt, root_coercivity_of_sos_receipt, and no_global_survivor_of_sos_pricing_receipt as the gating verifier interface.",
+      "delta_type": "gate"
+    },
+    "structural_move_class": "receipt_interface_gate"
+  }
+]

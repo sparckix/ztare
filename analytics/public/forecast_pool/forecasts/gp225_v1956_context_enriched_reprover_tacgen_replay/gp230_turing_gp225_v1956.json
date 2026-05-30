@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_turing_gp225_v1956",
+  "contract_id": "gp225_v1956_context_enriched_reprover_tacgen_replay",
+  "contract_question": "Will GP-225 v19.56 context/scope-enriched ReProver candidate emission plus top-4 replay produce at least one new strict same-target row on fresh/eligible PDE holdout candidates, with harmful mismatches zero and forbidden gold fields absent?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 44.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "CPU_inference_or_replay_timeouts": 0.08,
+    "candidate_set_not_fresh_enough": 0.16,
+    "context_unseen_by_model_reduces_tactic_quality": 0.2,
+    "other": 0.28,
+    "source_policy_too_strict_for_best_candidate": 0.08,
+    "strict_signal_sparse_but_progress_nonzero": 0.2
+  },
+  "forecasted_at": "2026-05-14T02:26:21Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.22,
+  "p_regression": 0.08,
+  "p_success": 0.46,
+  "rationale_short": "Cached model and v19.55 progress labels make a bounded enriched replay worth trying, but success still depends on finding another simple rewrite-level row.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick626-c3-cz-offdiagonal-pair.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick626-c3-cz-offdiagonal-pair.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/tick626-c3-cz-offdiagonal-pair",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick626-c3-cz-offdiagonal-pair.json",
+    "score": "analytics/public/forecast_pool/scores/tick626-c3-cz-offdiagonal-pair.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 60.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "tick626-c3-cz-offdiagonal-pair",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-17T02:04:51Z",
+  "created_by": "claude:RD",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0435,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "nearest_hybrid_lexical",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_closure_pde_lemma",
+    "score": 0.4,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.4,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0435,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.4,
+        "score_rows": 140,
+        "token_jaccard": 0.4
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0476,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "this tick",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "manual_rd",
+  "question": "tick626 LEMMA: a complementary-scaling-carrier dichotomy for C3 sourced from CZ-kernel H\u00f6rmander OFF-DIAGONAL regularity (structural margin s=1, NOT viscosity) \u2014 single-shell\u21d2scale-invariant principal (A) vs multi-shell\u21d2off-diagonal 2^{-|j-j'|} structural decay (B). Does this evade tick595's C3-non-transfer (which only treated DIAGONAL same-scale carriers, \u03b1=\u03b2=0), or does the C3 separator provably self-similarly single-shell-concentrate so B never triggers (degeneracy returns = atom)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "the lemma direction is GENUINELY OUTSIDE tick595 scope (off-diagonal \u2260 diagonal) AND the single-shell-forced failure mode is the precise honest open hard step (not a hidden recast); success = a real PDE lemma + its sharp failure point, surviving codex adversarial-kill of the ESTIMATE",
+  "task_type": "ns_closure_pde_lemma",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

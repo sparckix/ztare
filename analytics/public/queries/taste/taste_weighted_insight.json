@@ -1,0 +1,258 @@
+{
+  "audit_timestamp_utc": "2026-05-17T02:33:46.123797+00:00",
+  "n_samples_with_ratings": 31,
+  "weeks_observed": [
+    "2026-03-23",
+    "2026-03-30",
+    "2026-04-20",
+    "2026-04-27",
+    "2026-05-04",
+    "2026-05-11"
+  ],
+  "weekly_stats": {
+    "2026-04-27": {
+      "n_rated": 3,
+      "mean_score": 2.67,
+      "max_score": 3,
+      "n_high_quality_ge4": 0,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 0,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "project_workspace_md": 2.67
+      },
+      "top_3_artifacts": [
+        {
+          "sample_id": "SAMPLE_001",
+          "kind": "project_workspace_md",
+          "score": 3,
+          "rationale": "Anti-tautology cascade intake harness; all-zero profit backtest cleanly falsifies the iter-1 cascade thesis",
+          "source_path": "projects/ns_millennium_hunt/workspace/phase5ds_candidate_cascade_audit.md",
+          "from_cache": false
+        },
+        {
+          "sample_id": "SAMPLE_052",
+          "kind": "project_workspace_md",
+          "score": 3,
+          "rationale": "Distributed two-core churn stall-law: positive budget without identity-stable stretching winner \u2014 non-obvious NS read",
+          "source_path": "projects/ns_millennium_hunt/workspace/phase5n_stall_law_audit.md",
+          "from_cache": false
+        },
+        {
+          "sample_id": "SAMPLE_071",
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "Failure-mode audit; optimizer/tube-recovery gap vs negative-block certificate distinction \u2014 useful but expected",
+          "source_path": "projects/ns_millennium_hunt/workspace/phase5br_5bq_failure_mode_audit.md",
+          "from_cache": false
+        }
+      ]
+    },
+    "2026-04-20": {
+      "n_rated": 1,
+      "mean_score": 4,
+      "max_score": 4,
+      "n_high_quality_ge4": 1,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 1,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "raw_evidence_input": 4
+      },
+      "top_3_artifacts": [
+        {
+          "sample_id": "SAMPLE_003",
+          "kind": "raw_evidence_input",
+          "score": 4,
+          "rationale": "F1-F8 operator-seeded failure modes for v2.0 with HIGH-severity numerical-magnitude leak; concrete contamination mechanism",
+          "source_path": "projects/gp165_analogy_architecture_review/raw/starter_failure_modes.md",
+          "from_cache": true
+        }
+      ]
+    },
+    "2026-03-30": {
+      "n_rated": 10,
+      "mean_score": 1.8,
+      "max_score": 3,
+      "n_high_quality_ge4": 0,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 1,
+        "1": 2,
+        "2": 5,
+        "3": 2,
+        "4": 0,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "raw_evidence_input": 3,
+        "project_workspace_md": 1.62,
+        "evidence_file": 2
+      },
+      "top_3_artifacts": [
+        {
+          "sample_id": "SAMPLE_007",
+          "kind": "raw_evidence_input",
+          "score": 3,
+          "rationale": "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
+          "source_path": "projects/epistemic_engine_v4/raw/v3_variant_matrix.md",
+          "from_cache": true
+        },
+        {
+          "sample_id": "SAMPLE_040",
+          "kind": "project_workspace_md",
+          "score": 3,
+          "rationale": "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism",
+          "source_path": "projects/epistemic_engine_v4/debate_log_iter_1775433220.md",
+          "from_cache": true
+        },
+        {
+          "sample_id": "SAMPLE_021",
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "central station debate output; routine",
+          "source_path": "projects/central_station/debate_log_iter_1775255970.md",
+          "from_cache": true
+        }
+      ]
+    },
+    "2026-05-11": {
+      "n_rated": 9,
+      "mean_score": 3.11,
+      "max_score": 4,
+      "n_high_quality_ge4": 3,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 2,
+        "3": 4,
+        "4": 3,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "project_workspace_md": 3.12,
+        "concept_doc": 3
+      },
+      "top_3_artifacts": [
+        {
+          "sample_id": "SAMPLE_009",
+          "kind": "project_workspace_md",
+          "score": 4,
+          "rationale": "Read/write asymmetry not pruning: corrected replay shows middle-stack writes are task-conditional; blocks naive arch claim",
+          "source_path": "projects/neural_hunt/workspace/h136_gpu_burst_synthesis_and_architecture_status_2026_05_12.md",
+          "from_cache": false
+        },
+        {
+          "sample_id": "SAMPLE_045",
+          "kind": "project_workspace_md",
+          "score": 4,
+          "rationale": "Names load-bearing failure: documentary-absence\u2192structural-necessity inference; correctly rescopes \"structurally blind\"",
+          "source_path": "projects/x_algo_goodhart_audit/_run1_archive/debate_log_iter_1778893915.md",
+          "from_cache": false
+        },
+        {
+          "sample_id": "SAMPLE_047",
+          "kind": "project_workspace_md",
+          "score": 4,
+          "rationale": "Caught own vacuous \u2200\u03b8\u03b7/CKN-floor Lean encoding before external response; isolates genuine asymptotic residual to two gaps",
+          "source_path": "projects/ns_millennium_hunt/workspace/external_prover/questions/eigq_2026_05_15_GPT55Pro_asymptotic_super_typeI_sparse_cascade_closure.md",
+          "from_cache": false
+        }
+      ]
+    },
+    "2026-03-23": {
+      "n_rated": 6,
+      "mean_score": 1.83,
+      "max_score": 2,
+      "n_high_quality_ge4": 0,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 0,
+        "1": 1,
+        "2": 5,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "project_workspace_md": 1.83
+      },
+      "top_3_artifacts": [
+        {
+          "sample_id": "SAMPLE_020",
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "activist B2B intervention memo; consolidates known",
+          "source_path": "projects/figs/history/figs_v2_score_68_old.md",
+          "from_cache": true
+        },
+        {
+          "sample_id": "SAMPLE_030",
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "informational-parsimony WAP rebuttal; speculative debate",
+          "source_path": "projects/simulation_god_gemini_gemini/history/v2_score_20.md",
+          "from_cache": true
+        },
+        {
+          "sample_id": "SAMPLE_032",
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "activist memo on marketing co-pay paradox; consolidates argument",
+          "source_path": "projects/figs/history/v1_score_64.md",
+          "from_cache": true
+        }
+      ]
+    },
+    "2026-05-04": {
+      "n_rated": 2,
+      "mean_score": 2.5,
+      "max_score": 3,
+      "n_high_quality_ge4": 0,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 1,
+        "3": 1,
+        "4": 0,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "project_workspace_md": 2.5
+      },
+      "top_3_artifacts": [
+        {
+          "sample_id": "SAMPLE_076",
+          "kind": "project_workspace_md",
+          "score": 3,
+          "rationale": "Thorough 2024-26 lit scan; verdict \"depth-3 isomorphic to C1 Prodi-Serrin polar-slice barrier\" sharply localizes obstruction",
+          "source_path": "projects/ns_millennium_hunt/workspace/research_notes/axisym_with_swirl_liouville_attack_2026_05_07.md",
+          "from_cache": false
+        },
+        {
+          "sample_id": "SAMPLE_064",
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "Divide-and-conquer lane decomposition of GP216 liminf source; structured but standard decomposable-certificate framing",
+          "source_path": "projects/ns_millennium_hunt/workspace/research_notes/ns_trackb_numeric_liminf_divide_conquer.md",
+          "from_cache": false
+        }
+      ]
+    }
+  },
+  "rater_caveat": "Ratings are from an LLM rater (or a stubbed Claude in conversation). Treat as a noisy estimate of insight density, not ground truth. The same sample rated by 5 raters typically shows \u00b11 point spread."
+}

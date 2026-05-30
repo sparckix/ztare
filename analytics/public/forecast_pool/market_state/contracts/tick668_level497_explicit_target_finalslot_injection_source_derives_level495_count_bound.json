@@ -1,0 +1,215 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-27T03:38:57Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 80.0,
+      "expected_value": -13.108427090672356,
+      "p_success": 0.7252542784230037,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.0493
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 80.0,
+    "expected_value": -13.108427090672356,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.14500000000000002,
+    "p_needs_new_lemma": 0.295,
+    "p_regression": 0.09,
+    "p_success": 0.7252542784230037,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "ns_millennium_hunt",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound/codex.json",
+        "forecasted_at": "2026-05-27T03:10:59Z",
+        "p_success": 0.71,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex:RD",
+        "belief_update": false,
+        "domain": "ns_millennium_hunt",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound/codex_rd.json",
+        "forecasted_at": "2026-05-27T03:02:36Z",
+        "p_success": 0.74,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "socket_only_no_incidence_progress",
+        "p": 0.27
+      },
+      {
+        "mode": "lean_universe_or_field_collision",
+        "p": 0.2
+      },
+      {
+        "mode": "downstream_composition_gap",
+        "p": 0.195
+      },
+      {
+        "mode": "explicit_injection_wrapper_missing",
+        "p": 0.155
+      },
+      {
+        "mode": "constructive_bridge_compiles",
+        "p": 0.11
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json",
+    "score": "analytics/public/forecast_pool/scores/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 120.0,
+    "consumes_surfaced": "tick668_level496_target_count_bound_refute",
+    "created_at": "2026-05-27T03:02:15Z",
+    "created_by": "codex:RD",
+    "horizon": "2026-05-27T08:00:00Z",
+    "layer": "meso",
+    "objective_resolver": "checked Lean source plus target-indexed assignment gate and PDE workbench receipts",
+    "question": "TICK668 Level497: construct an explicit target-prefix to final-slot injection source that derives the Level495 target-count final-slot bound and composes to the canonical eventData assignment",
+    "success_threshold": "TRUE iff Lean compiles a general source deriving targetPrefixCount finalSlot <= finalSlot from an explicit injective Fin target -> Fin finalSlot map and feeds the Level495 canonical assignment without endpoint restatement",
+    "task_type": "construct"
+  },
+  "contract_id": "tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex:RD",
+        "raw_agent_ids": [
+          "codex:RD"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "codex:RD"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Proceed: split through the explicit injection source before any incidence chase.",
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_millennium_hunt",
+        "expected_cost_agent_minutes": 80.0,
+        "forecasted_at": "2026-05-27T03:10:59Z",
+        "p_success": 0.71,
+        "rationale_short": "Existing Fintype.card_le_of_injective analogs and the Level495 Fin.castLE assignment make the explicit injection-source wrapper likely; the main risks are a missing bridge field or composition plumbing in the dense bridge file, not the inequality itself.",
+        "specific_failure_mode_ids": [
+          "explicit_injection_wrapper_missing",
+          "downstream_composition_gap"
+        ]
+      },
+      {
+        "action_change_recommendation": "Proceed: a positive explicit-injection source is a narrow useful split after Level496, but immediately continue to incidence construction afterward.",
+        "agent_id": "codex:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick668_level497_explicit_target_finalslot_injection_source_derives_level495_count_bound/codex_rd.json",
+        "canonical_agent_id": null,
+        "domain": "ns_millennium_hunt",
+        "expected_cost_agent_minutes": 80.0,
+        "forecasted_at": "2026-05-27T03:02:36Z",
+        "p_success": 0.74,
+        "rationale_short": "After Level496, Fintype.card_le_of_injective should cheaply derive the count bound from an explicit Fin target -> Fin finalSlot injection; risk is that this is only a sharper socket unless followed by incidence construction.",
+        "specific_failure_mode_ids": [
+          "socket_only_no_incidence_progress",
+          "lean_universe_or_field_collision"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 80.0,
+    "changed_by_forecast_ids": [
+      "codex",
+      "codex:RD"
+    ],
+    "decision_changed_bool": false,
+    "exists": true,
+    "resolved_at": "2026-05-27T03:39:33Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 80.0,
+      "expected_value": -13.108427090672356,
+      "p_success": 0.7252542784230037,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.0493
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 80.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7252542784230037,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "socket_only_no_incidence_progress",
+        "p": 0.27
+      },
+      {
+        "mode": "lean_universe_or_field_collision",
+        "p": 0.2
+      },
+      {
+        "mode": "downstream_composition_gap",
+        "p": 0.195
+      },
+      {
+        "mode": "explicit_injection_wrapper_missing",
+        "p": 0.155
+      },
+      {
+        "mode": "constructive_bridge_compiles",
+        "p": 0.11
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.07585000000000001,
+    "score_rows": 2,
+    "scored_at": "2026-05-27T03:39:42Z"
+  }
+}

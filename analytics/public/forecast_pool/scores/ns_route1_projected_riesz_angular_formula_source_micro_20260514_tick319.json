@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319",
+  "mean_brier": 0.09325,
+  "mean_log_score": -0.3640763948793803,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "76ce39677e74a8cd7f97fef8090eb46cbd710d141b904744c70bf4b04cc2706f",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+    "compile_status": "lake env lean pass; lake build pressure pass; downstream adapter build pass",
+    "contract_id": "ns_route1_projected_riesz_angular_formula_source_micro_20260514_tick319",
+    "error_type": "none",
+    "goal_delta": 2,
+    "resolution_note": "success=true with caveat: added Route1ProjectedRieszAngularFormulaSource and Route1ProjectedRieszAngularMomentStation.ofFormulaSource. Equality is split into pressureTailWindowCarrier_eq_l2Carrier, pressureTailWindowCarrier_eq_absProjectedKernelMoment, and projectedKernelMoment_eq_totalAngularMoment, with fixed-before/not-defined-from guards. This is still frontier sharpening, not PDE discharge.",
+    "resolved_at": "2026-05-14T00:40:05Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T00:40:15Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Hooke",
+      "brier": 0.10239999999999996,
+      "cost_error_agent_minutes": 31.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.3856624808119846,
+      "p_success": 0.68,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:36:48Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:39:52Z",
+        "resolved_at": "2026-05-14T00:40:05Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "Rawls",
+      "brier": 0.08410000000000002,
+      "cost_error_agent_minutes": 10.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 34.0,
+      "log_score": -0.342490308946776,
+      "p_success": 0.71,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T00:36:48Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T00:39:52Z",
+        "resolved_at": "2026-05-14T00:40:05Z"
+      }
+    }
+  ]
+}

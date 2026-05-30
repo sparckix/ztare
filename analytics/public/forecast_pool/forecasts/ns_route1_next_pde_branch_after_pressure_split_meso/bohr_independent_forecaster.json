@@ -1,0 +1,23 @@
+{
+  "agent_id": "bohr_independent_forecaster",
+  "contract_id": "ns_route1_next_pde_branch_after_pressure_split_meso",
+  "contract_question": "Which next NS route1 PDE branch is most likely to produce a compiled non-tautological Lean bridge within the next bounded proof tick: pressure-visible Hessian L2 certificate, pressure-small Q local quadratic one-third channel, pressure-small T transport, or pressure-small C commutator?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 28.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "branch_payment_advances_but_does_not_close_pde_estimate": 0.3,
+    "hessian_certificate_only_projects_existing_receipts": 0.18,
+    "lean_import_or_stale_build_noise": 0.08,
+    "non_tautology_gate_rejects_unused_recovered_pressure_fields": 0.14,
+    "other": 0.18,
+    "route1_matching_equalities_or_nu_bound_not_available": 0.12
+  },
+  "forecasted_at": "2026-05-13T19:54:30Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.06,
+  "p_success": 0.7,
+  "rationale_short": "chosen_branch=A; current Lean surface has Route1PressureHessianL2TailMassCertificate -> Route1PressureTailMassVisibility -> Route1PressureVisibilityLowerBoundProducer -> Route1PressureBranchChannelPayment; B/C/D need pressure-small one-third channel lower bounds.",
+  "read_only_attestation": true
+}

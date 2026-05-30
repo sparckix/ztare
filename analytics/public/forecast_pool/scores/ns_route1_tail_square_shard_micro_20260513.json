@@ -1,0 +1,44 @@
+{
+  "contract_id": "ns_route1_tail_square_shard_micro_20260513",
+  "mean_brier": 0.25010000000000004,
+  "mean_log_score": -0.6929472205492819,
+  "outcome": {
+    "actual_cost_agent_minutes": 20.0,
+    "artifact_hash": null,
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_tail_square_shard_micro_20260513",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Resolved true: added FreshFrequencyTailSquareFixedCarrierIdentity and tail_eq_square_function_of_fixed_carrier_identity below Adapter; module typechecked and built.",
+    "resolved_at": "2026-05-13T21:00:45Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-13T21:00:49Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "bernoulli_independent_forecaster",
+      "brier": 0.3481000000000001,
+      "cost_error_agent_minutes": 55.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 75.0,
+      "log_score": -0.8915981192837836,
+      "p_success": 0.41,
+      "success_bool": true
+    },
+    {
+      "actual_cost_agent_minutes": 20.0,
+      "agent_id": "ohm_independent_forecaster",
+      "brier": 0.1521,
+      "cost_error_agent_minutes": 70.0,
+      "domain": "NS_route1",
+      "expected_cost_agent_minutes": 90.0,
+      "log_score": -0.4942963218147801,
+      "p_success": 0.61,
+      "success_bool": true
+    }
+  ]
+}

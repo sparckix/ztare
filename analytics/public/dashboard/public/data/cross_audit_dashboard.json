@@ -1,0 +1,978 @@
+{
+"audit_timestamp_utc": "2026-05-06T17:36:47.873767+00:00",
+"scorecards_loaded": [
+"reflexive_audit",
+"primitive_roi",
+"seam_health",
+"miner_roi",
+"cap_kind",
+"triangulation",
+"closure_patterns",
+"endpoint_compression",
+"gate_telemetry"
+],
+"n_entities_flagged": 76,
+"n_convergent_signals": 9,
+"convergent_signals": [
+{
+"kind": "primitive",
+"id": "R10",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=433"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of cross_class_extrapolation → R10_cross_class_extrapolation (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of per_class_farther_tail → R10_cross_class_extrapolation (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R11",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=294"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of cross_class_extrapolation → R11_per_class_mre_ceiling (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of per_class_farther_tail → R11_per_class_mre_ceiling (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R13",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=decorative_candidate engagement=38.48% engaged=663 refused=204"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of substrate_critic → R13_substrate_critic_preflight (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of substrate_critic → R13_substrate_critic_post_fit (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R14",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=decorative_candidate engagement=38.48% engaged=663 refused=204"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of noise_profile → R14_noise_profile_preflight (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of noise_profile → R14_noise_profile_post_fit (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R15",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=325"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of analogy → R15_analogy (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R16",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=280"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of framer_1d → R16_framer_pre_fit (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R22",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=433"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of apparatus_meta_runner → R22_apparatus_meta_runner (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R23",
+"n_sources": 2,
+"sources": [
+"gate_telemetry",
+"primitive_roi"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=433"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of sparse_cell_exclusion → R23_sparse_cell_exclusion (count=433)"
+}
+]
+},
+{
+"kind": "target",
+"id": "TrackBProfileDecompositionObligation",
+"n_sources": 2,
+"sources": [
+"endpoint_compression",
+"triangulation"
+],
+"severity": "warn",
+"flags": [
+{
+"source": "triangulation",
+"severity": "warn",
+"detail": "compounding_score=4 events=1"
+},
+{
+"source": "endpoint_compression",
+"severity": "info",
+"detail": "GP-223 Layer 3 candidate: field=threshold_defect_of_family_no_arbitrage pattern=X_of_Y"
+}
+]
+}
+],
+"all_flagged_entities_top": [
+{
+"kind": "primitive",
+"id": "R13",
+"n_sources": 2,
+"n_flags": 3,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=decorative_candidate engagement=38.48% engaged=663 refused=204"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of substrate_critic → R13_substrate_critic_preflight (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of substrate_critic → R13_substrate_critic_post_fit (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R14",
+"n_sources": 2,
+"n_flags": 3,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=decorative_candidate engagement=38.48% engaged=663 refused=204"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of noise_profile → R14_noise_profile_preflight (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of noise_profile → R14_noise_profile_post_fit (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R10",
+"n_sources": 2,
+"n_flags": 3,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=433"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of cross_class_extrapolation → R10_cross_class_extrapolation (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of per_class_farther_tail → R10_cross_class_extrapolation (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R11",
+"n_sources": 2,
+"n_flags": 3,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=294"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of cross_class_extrapolation → R11_per_class_mre_ceiling (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of per_class_farther_tail → R11_per_class_mre_ceiling (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R15",
+"n_sources": 2,
+"n_flags": 2,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=325"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of analogy → R15_analogy (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R16",
+"n_sources": 2,
+"n_flags": 2,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=280"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of framer_1d → R16_framer_pre_fit (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R22",
+"n_sources": 2,
+"n_flags": 2,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=433"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of apparatus_meta_runner → R22_apparatus_meta_runner (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R23",
+"n_sources": 2,
+"n_flags": 2,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=433"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of sparse_cell_exclusion → R23_sparse_cell_exclusion (count=433)"
+}
+]
+},
+{
+"kind": "target",
+"id": "TrackBProfileDecompositionObligation",
+"n_sources": 2,
+"n_flags": 2,
+"flags": [
+{
+"source": "triangulation",
+"severity": "warn",
+"detail": "compounding_score=4 events=1"
+},
+{
+"source": "endpoint_compression",
+"severity": "info",
+"detail": "GP-223 Layer 3 candidate: field=threshold_defect_of_family_no_arbitrage pattern=X_of_Y"
+}
+]
+},
+{
+"kind": "gate_name",
+"id": "cross_class_extrapolation",
+"n_sources": 1,
+"n_flags": 2,
+"flags": [
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R11_per_class_mre_ceiling' (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R10_cross_class_extrapolation' (count=433)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R24",
+"n_sources": 1,
+"n_flags": 2,
+"flags": [
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of feature_bump_pattern → R24_feature_bump_pattern (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "gate_telemetry alias of feature_coverage_adequacy → R24_feature_bump_pattern (count=433)"
+}
+]
+},
+{
+"kind": "gate_name",
+"id": "noise_profile",
+"n_sources": 1,
+"n_flags": 2,
+"flags": [
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R14_noise_profile_preflight' (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R14_noise_profile_post_fit' (count=433)"
+}
+]
+},
+{
+"kind": "gate_name",
+"id": "per_class_farther_tail",
+"n_sources": 1,
+"n_flags": 2,
+"flags": [
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R11_per_class_mre_ceiling' (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R10_cross_class_extrapolation' (count=433)"
+}
+]
+},
+{
+"kind": "gate_name",
+"id": "substrate_critic",
+"n_sources": 1,
+"n_flags": 2,
+"flags": [
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R13_substrate_critic_preflight' (count=433)"
+},
+{
+"source": "gate_telemetry",
+"severity": "info",
+"detail": "expected name absent; actual='R13_substrate_critic_post_fit' (count=433)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp023_crucial_02",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp023_crucial_03",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp023_planck_sandbox_03",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Unknown Layer"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp023_planck_sandbox_05",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Grammar / Tail Law"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp023_planck_sandbox_08",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Unknown Layer"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp042_structural_memory_01",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Unknown Layer"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp069_sandbox_13",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp073_sandbox_15",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp078_cal_sigma_02",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp080_02",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp088_calibration_a01",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "info",
+"detail": "verdict=ambiguous failure_mode=None stuck=None"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp088_oeis_a000607",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp088_oeis_a002858",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Review Layer (Identifiability)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp089_01",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Fit Engine / Primitive Library"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp096_langevin_sandbox_16",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp096_sandbox_18_gagorder",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Fit Engine / Primitive Library"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp096_sandbox_19_gagorder",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Review Layer (Identifiability)"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp116_cot_exchange",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Fit Engine / Primitive Library"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp118_persona_enthusiastic",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Fit Engine / Primitive Library"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp118_persona_neutral",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Fit Engine / Primitive Library"
+}
+]
+},
+{
+"kind": "project",
+"id": "gp118_persona_skeptical",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Fit Engine / Primitive Library"
+}
+]
+},
+{
+"kind": "project",
+"id": "mlh_f1",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "info",
+"detail": "verdict=ambiguous failure_mode=None stuck=None"
+}
+]
+},
+{
+"kind": "project",
+"id": "mlh_f3",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "info",
+"detail": "verdict=ambiguous failure_mode=None stuck=None"
+}
+]
+},
+{
+"kind": "project",
+"id": "mlh_f5",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Review Layer (Identifiability)"
+}
+]
+},
+{
+"kind": "project",
+"id": "oeis_a000009",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=primitive_exhaustion stuck=Fit Engine / Primitive Library"
+}
+]
+},
+{
+"kind": "project",
+"id": "oeis_a001156",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "info",
+"detail": "verdict=ambiguous failure_mode=None stuck=None"
+}
+]
+},
+{
+"kind": "project",
+"id": "oeis_a002865",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "info",
+"detail": "verdict=ambiguous failure_mode=None stuck=None"
+}
+]
+},
+{
+"kind": "project",
+"id": "riemann_lagarias",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "riemann_li",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "info",
+"detail": "verdict=ambiguous failure_mode=None stuck=None"
+}
+]
+},
+{
+"kind": "project",
+"id": "stieltjes_power_sums",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "project",
+"id": "survey_s1",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "reflexive_audit",
+"severity": "warn",
+"detail": "verdict=machinery_broken failure_mode=qualitative_ceiling stuck=Review Layer (Qualitative Scoring)"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "ansatz_survivor",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.43% engaged=8 refused=488"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R8",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=0"
+}
+]
+},
+{
+"kind": "primitive",
+"id": "R9",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "primitive_roi",
+"severity": "warn",
+"detail": "verdict=dead engagement=0.00% engaged=0 refused=0"
+}
+]
+},
+{
+"kind": "seam",
+"id": "GP-130",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "seam_health",
+"severity": "warn",
+"detail": "orphan: open + no spec + no code, age=13d"
+}
+]
+},
+{
+"kind": "seam",
+"id": "GP-140",
+"n_sources": 1,
+"n_flags": 1,
+"flags": [
+{
+"source": "seam_health",
+"severity": "warn",
+"detail": "orphan: open + no spec + no code, age=12d"
+}
+]
+}
+]
+}

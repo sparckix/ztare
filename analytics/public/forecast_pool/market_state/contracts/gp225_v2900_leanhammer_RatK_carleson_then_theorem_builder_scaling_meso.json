@@ -1,0 +1,160 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:25Z",
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.7,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.21
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 90.0,
+    "expected_value": -0.25000000000000006,
+    "forecast_count": 1,
+    "forecast_history_count": 1,
+    "p_dependency_issue": 0.15,
+    "p_needs_new_lemma": 0.2,
+    "p_regression": 0.05,
+    "p_success": 0.7,
+    "participants": [
+      {
+        "agent_id": "claude_rd",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso/claude_rd.json",
+        "forecasted_at": "2026-05-15T12:47:34Z",
+        "p_success": 0.7,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "definitional_bound_rows_yield_single_route_only",
+        "p": 0.4358974358974359
+      },
+      {
+        "mode": "rich_arithmetic_rows_yield_distinct_proofs",
+        "p": 0.38461538461538464
+      },
+      {
+        "mode": "paper_R@1_claim_holds",
+        "p": 0.1794871794871795
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 120.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-15T12:47:34Z",
+    "created_by": "codex:RD",
+    "horizon": "1 tick",
+    "layer": "meso",
+    "objective_resolver": "Premise output parsed for R@K (compare paper R@1=0% claim). For theorem builder: each row scored by structurally-distinct compiling proof count after gold-name + tautology audit.",
+    "question": "On 10 real Carleson theorems, what is LeanHammer cloud R@K? On the 5 v28A.01 Mathlib-only Carleson-style OPEN rows, how many yield 5 structurally-distinct moat-grade compiling proofs via LLM-mediated theorem builder?",
+    "success_threshold": "leanhammer_R@K_quantified_plus_at_least_2_rows_with_5_distinct_moat_grade_proofs",
+    "task_type": "retrieval_baseline_plus_theorem_builder_scaling"
+  },
+  "contract_id": "gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 1,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude_rd"
+        ]
+      }
+    ],
+    "latest_forecast_count": 1,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude_rd"
+    ]
+  },
+  "forecasts": {
+    "history_count": 1,
+    "latest": [
+      {
+        "action_change_recommendation": "Run v29 primary + v29b per-tactic + v29d rounds 2-3 in parallel. Anti-laundering 4-way audit relaxed: per-published-metric, retrieval is the moat axis, not closure-without-machinery.",
+        "agent_id": "claude_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2900_leanhammer_RatK_carleson_then_theorem_builder_scaling_meso/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "gp225_pre_gnn",
+        "expected_cost_agent_minutes": 90.0,
+        "forecasted_at": "2026-05-15T12:47:34Z",
+        "p_success": 0.7,
+        "rationale_short": "Hypothesis: paper R@1=0% on Carleson is outdated; cloud retriever has been updated. Independently: theorem builder works on rich-arithmetic OPEN rows but not on definition-forced rows. Combined the two findings give us a real moat-grade demonstration.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 1
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 95.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-15T12:47:34Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.0,
+      "p_success": 0.7,
+      "reason": "fewer than two independent usable forecasts",
+      "voi_proxy": 0.21
+    },
+    "effective_n": 1,
+    "expected_cost_agent_minutes": 90.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "closed",
+    "p_success": 0.7,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "definitional_bound_rows_yield_single_route_only",
+        "p": 0.4358974358974359
+      },
+      {
+        "mode": "rich_arithmetic_rows_yield_distinct_proofs",
+        "p": 0.38461538461538464
+      },
+      {
+        "mode": "paper_R@1_claim_holds",
+        "p": 0.1794871794871795
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.09000000000000002,
+    "score_rows": 1,
+    "scored_at": "2026-05-19T16:39:14Z"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "agent_id": "rawls_adversarial_tick339",
+  "contract_id": "ns_route1_ckn_tent_share_scout_micro_20260514_tick339",
+  "contract_question": "Will a deterministic fixed-window CKN/tent share scout produce an artifact that separates resolved mean-free, Galilean mean, and leakage payment regimes for pre-summed pressure/Riesz cone stress, with an objective resolution predicate and no pre-GNN mutation?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 92.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "galilean_mean_payment_false": 0.2702702702702703,
+    "leakage_requires_commutator_topology": 0.24324324324324323,
+    "scout_outputs_no_new_lean_action": 0.16216216216216217,
+    "toy_packet_norm_not_ckn_tent_excess": 0.32432432432432434
+  },
+  "forecasted_at": "2026-05-14T03:28:20Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.04,
+  "p_success": 0.46,
+  "rationale_short": "The artifact can probably run, but the success bar requires useful regime separation. Galilean mean and leakage may need a topology absent from a simple fixed-window packet model.",
+  "read_only_attestation": true
+}

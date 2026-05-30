@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T13:36:56Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 28.868695095700737,
+    "expected_value": 0.9867651637011006,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.43081738321019253,
+    "p_needs_new_lemma": 0.7931130374076443,
+    "p_regression": 0.07770434580254815,
+    "p_success": 0.5931564604606561,
+    "participants": [
+      {
+        "agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.67,
+        "weight": 0.9581
+      },
+      {
+        "agent_id": "codex_skeptic",
+        "domain": "navier_stokes_route1",
+        "p_success": 0.49,
+        "weight": 0.7608
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "compiled_lower_source",
+        "p": 0.18951306067834078
+      },
+      {
+        "mode": "too_abstract_to_count",
+        "p": 0.11507824771656291
+      },
+      {
+        "mode": "wrapper_only_risk",
+        "p": 0.11147827098725929
+      },
+      {
+        "mode": "local_energy_identity_not_sourced",
+        "p": 0.10033044388853335
+      },
+      {
+        "mode": "signed_measure_api_deferred",
+        "p": 0.10033044388853335
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_source_local_energy_measure_split_20260514_tick371.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_source_local_energy_measure_split_20260514_tick371.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_source_local_energy_measure_split_20260514_tick371.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_source_local_energy_measure_split_20260514_tick371.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_source_local_energy_measure_split_20260514_tick371.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 35.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T13:36:36Z",
+    "created_by": "codex:RD",
+    "horizon": "same session",
+    "layer": "meso",
+    "objective_resolver": "success iff Lean/work packet adds a lower source surface for Borel-local measure domination from fixed signed pieces plus positive-variation subadditivity, with anti-tautology fields and compile/pass or precise no-go",
+    "question": "Can we pull LocalEnergyPositiveBoundaryFluxMeasureSplitSource one layer lower by encoding a fixed local-energy signed-measure positive-variation source, without hiding singular control in measureDomination?",
+    "success_threshold": "compiled lower source or route-native no-go/guard",
+    "task_type": "math_to_lean_bridge"
+  },
+  "contract_id": "ns_route1_source_local_energy_measure_split_20260514_tick371",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_rd"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_skeptic",
+        "raw_agent_ids": [
+          "codex_skeptic"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_rd",
+      "codex_skeptic"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_rd",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_source_local_energy_measure_split_20260514_tick371/codex_rd.json",
+        "canonical_agent_id": "codex_rd",
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T13:36:49Z",
+        "p_success": 0.67,
+        "rationale_short": "Can add a lower abstract source with signed pieces and positive-variation subadditivity; actual PDE local-energy identity remains an explicit field.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex_skeptic",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_source_local_energy_measure_split_20260514_tick371/codex_skeptic.json",
+        "canonical_agent_id": null,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes": 35.0,
+        "forecasted_at": "2026-05-14T13:36:49Z",
+        "p_success": 0.49,
+        "rationale_short": "Abstract Lean layer may compile but not materially source the PDE identity; keep anti-tautology guard and document remaining PDE theorem.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 13.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T13:38:05Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.5931564604606561,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "compiled_lower_source",
+        "p": 0.18951306067834078
+      },
+      "voi_proxy": 1.1813
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 28.868695095700737,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5931564604606561,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "compiled_lower_source",
+        "p": 0.18951306067834078
+      },
+      {
+        "mode": "too_abstract_to_count",
+        "p": 0.11507824771656291
+      },
+      {
+        "mode": "wrapper_only_risk",
+        "p": 0.11147827098725929
+      },
+      {
+        "mode": "local_energy_identity_not_sourced",
+        "p": 0.10033044388853335
+      },
+      {
+        "mode": "signed_measure_api_deferred",
+        "p": 0.10033044388853335
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.1845,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T13:38:12Z"
+  }
+}

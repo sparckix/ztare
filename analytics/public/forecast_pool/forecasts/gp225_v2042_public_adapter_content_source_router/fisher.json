@@ -1,0 +1,31 @@
+{
+  "action_change_recommendation": "Proceed static router; next candidate content should come from blocked-row source discovery, not replay ranking.",
+  "agent_id": "Fisher",
+  "contract_id": "gp225_v2042_public_adapter_content_source_router",
+  "contract_question": "Will v20.42 emit a no-replay public-adapter content-source router that chooses blocked-row source discovery over rank-policy replay, while keeping external adapters gated by schema mapping?",
+  "domain": "gp225_pre_gnn_route_selection",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "artifact_schema_mismatch": 0.15625,
+    "blocked_row_selection_too_broad": 0.3125,
+    "external_adapter_blocker_underexplained": 0.25,
+    "router_restates_prior_without_new_next_action": 0.28125
+  },
+  "forecast_externality_tags": [
+    "candidate_content_bottleneck",
+    "replay_churn_guard",
+    "external_adapter_schema_gate"
+  ],
+  "forecasted_at": "2026-05-14T17:17:25Z",
+  "p_dependency_issue": 0.08,
+  "p_needs_new_lemma": 0.04,
+  "p_regression": 0.03,
+  "p_success": 0.76,
+  "rationale_short": "All inputs already indicate rank replay abort and zero exact external coverage; likely success if the router names concrete blocked rows and blockers.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "router_restates_prior_without_new_next_action",
+    "blocked_row_selection_too_broad"
+  ]
+}

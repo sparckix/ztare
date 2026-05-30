@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1978_targeted_dual_head_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1978_targeted_dual_head_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1978_targeted_dual_head_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1978_targeted_dual_head_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1978_targeted_dual_head_replay.json"
+  },
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1978_targeted_dual_head_replay",
+  "cost_penalty": 3.0,
+  "created_at": "2026-05-14T04:06:14Z",
+  "created_by": "codex_rd_gp225_2026_05_14",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 31.5,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "gp225_repair_micro",
+    "score": 1.0,
+    "selected_domain": "gp225_repair_micro",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 22,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.2857,
+        "domain": "gp225_micro_probe",
+        "expected_cost_agent_minutes_prior": 4.34,
+        "sample_limited": true,
+        "score": 0.5,
+        "score_rows": 2,
+        "token_jaccard": 0.5
+      },
+      {
+        "char_trigram_jaccard": 0.1364,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 3,
+        "token_jaccard": 0.25
+      },
+      {
+        "char_trigram_jaccard": 0.2143,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.2143,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.1034,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-14T08:00:00Z",
+  "information_value": 8.0,
+  "layer": "micro",
+  "objective_resolver": "Replay v1977 with v1953 bridge; then classify results by v1977 head_target. Success if excluding known wins current_scale_0137/current_scale_0295, fresh strict_step_head rows + fresh solver_closure_head rows >= 1, harmful_compiled_mismatch_actions=0, target_proof_lines_used=false, gold_tactic_text_used=false, training_now=false, gnn_blocked=true.",
+  "question": "Will v19.78 replay of the v19.77 targeted dual-head packet add at least one fresh strict-step or solver-closure row, with harmful mismatches zero and source-policy flags clean?",
+  "risk_penalty": 2.0,
+  "success_threshold": "fresh_strict_step_head_rows + fresh_solver_closure_head_rows >= 1; harmful=0; source_policy_clean=true; gnn_blocked=true; report heads separately",
+  "task_type": "targeted_dual_head_replay",
+  "value_if_success": 12.0,
+  "void_conditions": "void if replay uses target proof lines/gold tactic text for generation, includes known solved rows as fresh wins, or trains any model"
+}

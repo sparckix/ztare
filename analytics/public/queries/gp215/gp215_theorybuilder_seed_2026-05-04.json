@@ -1,0 +1,93 @@
+{
+  "experiment": "theory_builder_seed_vocabulary_on_wiles",
+  "n_ops_proposed": 10,
+  "n_wiles_moves": 11,
+  "result": {
+    "mappings": [
+      {
+        "move_name": "Reframing the target problem",
+        "best_op": "tb9_reduction_to_known",
+        "confidence": "high",
+        "reason": "The move explicitly reduces the isolated FLT problem to a central conjecture in a well-developed theory."
+      },
+      {
+        "move_name": "Translating geometry into representation theory",
+        "best_op": "tb2_reformulation_across_frameworks",
+        "confidence": "high",
+        "reason": "The move is a direct translation of the problem from the language of elliptic curves and modular forms into the unifying framework of Galois representations."
+      },
+      {
+        "move_name": "Adopting a deformation-theoretic framework",
+        "best_op": "tb4_deformation_construction",
+        "confidence": "high",
+        "reason": "The move is a textbook application of Mazur's deformation theory, which is explicitly named in the operation's definition."
+      },
+      {
+        "move_name": "Reducing isomorphism to numerical coincidence",
+        "best_op": "unmapped",
+        "confidence": "high",
+        "reason": "The vocabulary lacks an operation for reducing a qualitative structural problem (isomorphism) to a quantitative numerical check."
+      },
+      {
+        "move_name": "Importing an external bounding machine",
+        "best_op": "tb7_framework_import",
+        "confidence": "high",
+        "reason": "The move is a direct example of importing a tool (Euler systems) from one domain to solve a problem in another."
+      },
+      {
+        "move_name": "Acknowledging and isolating the gap",
+        "best_op": "unmapped",
+        "confidence": "high",
+        "reason": "This move describes a process of error correction and problem decomposition, a meta-mathematical strategy not captured by the object-level theory-building operations."
+      },
+      {
+        "move_name": "Retreating to a simpler tool that suffices",
+        "best_op": "unmapped",
+        "confidence": "high",
+        "reason": "The vocabulary describes constructive moves, not the strategic retreat and recombination of tools in response to a proof failure."
+      },
+      {
+        "move_name": "Using level-lowering to constrain the problem",
+        "best_op": "unmapped",
+        "confidence": "medium",
+        "reason": "This describes a specific proof technique (descent to contradiction) which is not represented in the vocabulary of framework-building operations."
+      },
+      {
+        "move_name": "Bootstrapping from residual to full result",
+        "best_op": "tb6_bootstrap_from_residual",
+        "confidence": "high",
+        "reason": "The move is a textbook example of the 'prove for residual, then lift' strategy described by the operation."
+      },
+      {
+        "move_name": "Conducting the proof in secret isolation",
+        "best_op": "unmapped",
+        "confidence": "high",
+        "reason": "This move describes the social organization of the research, which is entirely outside the scope of the mathematical theory-building operations."
+      },
+      {
+        "move_name": "Verifying the framework fits the specific case",
+        "best_op": "unmapped",
+        "confidence": "medium",
+        "reason": "This move describes the necessary but standard step of verifying hypotheses when applying a general theory, which is not a distinct theory-building operation in the vocabulary."
+      }
+    ],
+    "summary": {
+      "total_moves": 11,
+      "mapped_high": 5,
+      "mapped_medium": 0,
+      "mapped_low": 0,
+      "unmapped": 6,
+      "unmapped_pct_of_total": 0.55
+    },
+    "n_distinct_ops_used": 5,
+    "auditor_judgment": "This theory-builder vocabulary is effective at capturing the high-level architectural decisions in Wiles's proof, successfully mapping about half the moves with high confidence. The mapped moves represent the core strategic pillars: reformulating the problem, importing frameworks, and structuring the argument via reduction and lifting. However, a significant number of moves remain unmapped. These stubborn moves fall into three categories not covered by the vocabulary: (1) specific proof tactics like reducing an isomorphism to a numerical check or using descent to a contradiction, (2) meta-mathematical moves concerning the process of research, such as error correction and strategic retreat, and (3) sociological choices like working in isolation. The vocabulary excels at describing the design of a theoretical argument but lacks terms for its execution, repair, and the human context in which it is built."
+  },
+  "verdict": "FAIL \u2014 theory-builder vocabulary covers <50% of Wiles moves. Theory-building is more than the proposed 10 ops capture.",
+  "comparison_to_paper5_test1": {
+    "paper5_mapped_count": 4,
+    "paper5_unmapped_count": 7,
+    "tb_mapped_count": 5,
+    "tb_unmapped_count": 6,
+    "tb_lift_pct_pts": 9.090909090909086
+  }
+}

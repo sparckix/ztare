@@ -1,0 +1,91 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_angular_carrier_identification_split_micro_20260514_tick316",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json"
+  },
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_angular_carrier_identification_split_micro_20260514_tick316",
+  "cost_penalty": 0.16,
+  "created_at": "2026-05-14T00:11:00Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_lean_proof_surface_split",
+    "score": 0.1667,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 8,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0513,
+        "domain": "lean_replay_verification",
+        "expected_cost_agent_minutes_prior": 1.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 3,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 34,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0488,
+        "domain": "gp225_lean_witness_backfill",
+        "expected_cost_agent_minutes_prior": 1.89,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 4,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0286,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 7,
+        "token_jaccard": 0.125
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "same RD tick, before final response",
+  "information_value": 0.72,
+  "layer": "micro",
+  "objective_resolver": "lake env lean ZtareProofs/ns_pressure_hessian_l2_bridge.lean passes; lake build ZtareProofs.ns_pressure_hessian_l2_bridge passes; rg sorry/admit in target file returns none; new declaration Route1PressureAngularCarrierIdentification and constructor ofCarrierIdentification exist.",
+  "question": "Will this tick add a build-passed route-independent carrier-identification station below Route1PressureAngularCarrierEstimate, splitting l2Carrier_identifies_totalAngularMoment into projected Riesz kernel match, recovered pressure-Hessian tail-window projection, and normalization/anti-tautology fields, plus constructor into Route1PressureAngularCarrierEstimate, with no new sorry/admit?",
+  "risk_penalty": 0.08,
+  "success_threshold": "success=true iff all objective resolver checks pass and the split is below the angular carrier estimate rather than a route receipt wrapper",
+  "task_type": "ns_lean_proof_surface_split",
+  "value_if_success": 0.64,
+  "void_conditions": "Void if the edit mutates GP-225 harness/pre-GNN artifacts, if forecast timestamps are after outcome, or if success is claimed from route receipt reshuffling only."
+}

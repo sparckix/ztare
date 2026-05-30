@@ -1,0 +1,27 @@
+{
+  "_renamed_from": "claude",
+  "action_change_recommendation": "PRE-REGISTER moat-gate v25 audit definition NOW (before run) per Noether: a closure counts moat-grade if and only if (1) candidate name not in gold tactic, (2) candidate not @[simp]/@[grind=] tagged in Mathlib OR closure reproduces when @[simp] set is empty (verified by tactic  instead of ), (3) closure not reproduced by bare  or . Run on 0163/0025/0279 (intersect of Franklin/Noether top picks + tractable shape). Use simple type-token Jaccard over Mathlib graph as the retrieval signal \u2014 no embedding needed.",
+  "agent_id": "claude_rd",
+  "contract_id": "gp225_v2500_type_aware_premise_suggestion_canonical_open_rows_meso",
+  "contract_question": "Will type-aware Mathlib-dep-graph-grounded premise suggestion (top-k by type-similarity over the 122867-decl graph) on 2-3 canonical-train OPEN rows surface at least 1 moat-grade closure (NOT direct gold-name match, NOT indirect-simp-set leakage, NOT definitional triviality)?",
+  "domain": "gp225_pre_gnn",
+  "expected_cost_agent_minutes": 40.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "audit_post_hoc_redefinition_temptation": 0.09523809523809523,
+    "blind_retrieval_excludes_unique_closer": 0.23809523809523808,
+    "cascade_chain_fails": 0.19047619047619047,
+    "definitional_triviality": 0.07142857142857142,
+    "indirect_simp_leakage_dominates": 0.2619047619047619,
+    "no_literal_close_at_all": 0.14285714285714285
+  },
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-15T02:30:15Z",
+  "p_dependency_issue": 0.15,
+  "p_needs_new_lemma": 0.3,
+  "p_regression": 0.05,
+  "p_success": 0.12,
+  "rationale_short": "Franklin 0.09 + Noether 0.11 anchor. Slight upward shade (0.12) for the pre-registered moat-gate carve-out (Noether's sibling-lemma allowance) which structurally raises the moat-audit pass rate without post-hoc redefinition. Dominant failure mode remains indirect-simp-leakage on the simp-shape rows (0025, 0279); the moat-grade candidate is most plausibly on 0163 (exact-class, less leak-prone).",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

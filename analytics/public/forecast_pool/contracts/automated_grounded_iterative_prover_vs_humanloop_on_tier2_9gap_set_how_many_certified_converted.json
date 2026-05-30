@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted.json",
+    "contract": "analytics/public/forecast_pool/contracts/automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted",
+    "outcome": "analytics/public/forecast_pool/outcomes/automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted.json",
+    "score": "analytics/public/forecast_pool/scores/automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted.json"
+  },
+  "baseline_action": "human-in-loop grounded-iterative = 6/9 certified (not automatable as-is)",
+  "budget_agent_minutes": 90.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "automated_grounded_iterative_prover_vs_humanloop_on_tier2_9gap_set_how_many_certified_converted",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "closure-route stays human-in-loop-only",
+  "created_at": "2026-05-17T12:43:16Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0606,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "tier2_mined_corpus_run",
+    "score": 0.0606,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0606,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0606,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.037,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.037,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0312,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.0312,
+        "score_rows": 16,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.025,
+        "domain": "gp225_external_baseline_smoke",
+        "expected_cost_agent_minutes_prior": 15.75,
+        "sample_limited": true,
+        "score": 0.025,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0204,
+        "domain": "gp225_pre_gnn_source_contract_correction",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.0204,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-18",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "bundle_run result.txt on /tmp corpus, gp233 classify with FIXED verifier (hand-classify T2P ids per documented id-regex artifact); compare to human-in-loop 6/9 certified",
+  "question": "An AUTOMATED grounded-iterative prover (seeded by the canonical pinned v4.29.0 sandbox's own simp?/exact?/apply?/aesop? suggestions + error-driven iteration, NO human-in-loop) run on the 12-row powered Tier-2 corpus, verified by the FIXED bundle_verify (EXACT_TIMEOUT never genuine): does it CERTIFIED-convert >= 3 of the 9 prior honest-gap rows into genuine_novel_closures (COMPILE_OK + exact? ran-to-completion could-not-close), beating the blind general battery (which certified-converted 0 of the 9: its only closures were the pre-existing T2P_118 + 2 single-lemma)?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "tier2_mined_corpus_run",
+  "value_if_success": 0.7,
+  "void_conditions": "pinned env broken; FIXED bundle_verify regression"
+}

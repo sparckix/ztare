@@ -1,0 +1,211 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:57:29Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 26.0,
+    "expected_value": 0.3700843130515285,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.21500000000000002,
+    "p_needs_new_lemma": 0.15000000000000002,
+    "p_regression": 0.095,
+    "p_success": 0.4246221027741168,
+    "participants": [
+      {
+        "agent_id": "Dijkstra3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_hydrated_canary_replay",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate/dijkstra3.json",
+        "forecasted_at": "2026-05-14T18:57:25Z",
+        "p_success": 0.46,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "McCarthy3",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_hydrated_canary_replay",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate/mccarthy3.json",
+        "forecasted_at": "2026-05-14T18:57:25Z",
+        "p_success": 0.39,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "branch_hypothesis_name_still_wrong",
+        "p": 0.33499999999999996
+      },
+      {
+        "mode": "bayesRisk_le_mul_argument_shape_mismatch",
+        "p": 0.21000000000000002
+      },
+      {
+        "mode": "finite_bound_simp_needs_extra_instances",
+        "p": 0.185
+      },
+      {
+        "mode": "bridge_hydration_skip",
+        "p": 0.11
+      },
+      {
+        "mode": "gold_witness_target_shape_gap",
+        "p": 0.105
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2066_bayesRisk_hydrated_canary_replay_gate.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:57:10Z",
+    "created_by": "codex:RD",
+    "horizon": "same session 2026-05-14",
+    "layer": "micro",
+    "objective_resolver": "This is a replay-yield market, not a gate-validity market. If the canary replay is run, resolve true iff at least one v20.65 bayesRisk candidate action compiles, harmful compiled mismatches are zero, target proof lines were not used for generation, training remains false, and GNN remains blocked. If the market gate aborts before replay, void as no-run and do not score as success.",
+    "question": "If GP-225 runs the v20.65 hydrated one-row bayesRisk canary replay, will at least one candidate compile with zero harmful mismatches, without using target proof lines for generation?",
+    "success_threshold": "run case: compiled_candidate_actions >= 1 and harmful_compiled_mismatch_actions == 0; no training; GNN blocked",
+    "task_type": "hydrated_canary_replay_gate"
+  },
+  "contract_id": "gp225_v2066_bayesRisk_hydrated_canary_replay_gate",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Dijkstra3",
+        "raw_agent_ids": [
+          "Dijkstra3"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:McCarthy3",
+        "raw_agent_ids": [
+          "McCarthy3"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Dijkstra3",
+      "McCarthy3"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Run only the two hydrated bayesRisk candidates with max_workers=2 and score compile/harmful separately from strict label credit.",
+        "agent_id": "Dijkstra3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate/dijkstra3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_hydrated_canary_replay",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T18:57:25Z",
+        "p_success": 0.46,
+        "rationale_short": "Hydration removed obvious synthetic tokens, but actual branch-local hypothesis shape can still fail; a one-row replay is informative if bounded.",
+        "specific_failure_mode_ids": [
+          "branch_hypothesis_name_still_wrong",
+          "bayesRisk_le_mul_argument_shape_mismatch"
+        ]
+      },
+      {
+        "action_change_recommendation": "Canary replay is worth running only because it is small; do not interpret compile as GNN readiness.",
+        "agent_id": "McCarthy3",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2066_bayesRisk_hydrated_canary_replay_gate/mccarthy3.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_hydrated_canary_replay",
+        "expected_cost_agent_minutes": 28.0,
+        "forecasted_at": "2026-05-14T18:57:25Z",
+        "p_success": 0.39,
+        "rationale_short": "The patch is cleaner than v20.62, but Lean may not expose the exact h\u2113C binder expected by the static tactic.",
+        "specific_failure_mode_ids": [
+          "branch_hypothesis_name_still_wrong",
+          "finite_bound_simp_needs_extra_instances"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 26.0,
+    "changed_by_forecast_ids": [
+      "Dijkstra3",
+      "McCarthy3"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:58:32Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.07,
+      "p_success": 0.4246221027741168,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "branch_hypothesis_name_still_wrong",
+        "p": 0.33499999999999996
+      },
+      "voi_proxy": 0.6643
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 26.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.4246221027741168,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": [
+      {
+        "mode": "branch_hypothesis_name_still_wrong",
+        "p": 0.33499999999999996
+      },
+      {
+        "mode": "bayesRisk_le_mul_argument_shape_mismatch",
+        "p": 0.21000000000000002
+      },
+      {
+        "mode": "finite_bound_simp_needs_extra_instances",
+        "p": 0.185
+      },
+      {
+        "mode": "bridge_hydration_skip",
+        "p": 0.11
+      },
+      {
+        "mode": "gold_witness_target_shape_gap",
+        "p": 0.105
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.18185,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:58:36Z"
+  }
+}

@@ -1,0 +1,292 @@
+You are working on closing the NS Track B Clay obligation `GP216BridgeCompositionReceipt`. You will produce ONE LAKE-CHECKABLE Lean patch in the chosen patch class. Refuse with `# CANNOT PATCH` if you cannot do so within the constraints.
+
+# Target obligation
+
+  GP216BridgeCompositionReceipt
+  leverage_score: 33.61
+  n_fields: 26
+  source file: ztare_proofs/ZtareProofs/ns_gp216_bridge_composition_receipt.lean
+
+# Target field
+
+  Field name: branch_matches_profile_lipschitz_generated_block
+  Field type: branchBlock = (trackBGeneratedLowFrequencyLipschitzLedger continuationSource.handoff.profile_lipschitz continuationSource.handoff.initialData).block profileLipschitzBranchIndex
+  Type head: None
+
+# Resolved target structure body
+
+### structure GP216BridgeCompositionReceipt (from ns_gp216_bridge_composition_receipt.lean)
+Fields:
+  - declaredScope : Prop
+  - branchBlock : FullLedgerBlock
+  - branch_is_global : IsGlobalTrackBBlock branchBlock
+  - highHighSelfTaxPDESource : GP216HighHighSelfTaxPDESourceBundle
+  - selfTaxOutputSource : GP216SelfTaxAuditedOutputSourceBundle
+  - branchSelfTaxThresholdCoordinateIdentities : BranchSelfTaxThresholdCoordinateIdentities
+  - highHigh_same_output_ledger_matches_self_tax_stream : highHighSelfTaxPDESource.obligation.same_leray_output_ledger_declared_before_payoff ↔
+  - coherenceSource : LPBeatBackscatterChargeStreamSource
+  - coherenceCertificate : LPBeatBackscatterLimitCertificate coherenceSource.stream
+  - lowBeatEnvelopeSource : GP216LowBeatEnvelopeSourceBundle
+  - eventRecurrenceSource : GP216EventRecurrenceSourceBundle
+  - continuumSource : GP216ContinuumAllOutputSourceBundle
+  - coordinateReformulation : TrackBCoordinateReformulationReceipt
+  - coordinate_source_is_branch : coordinateReformulation.source = branchBlock
+  - continuationSource : GP216ContinuationSourceBundle
+
+# Existing declarations that PRODUCE the target structure
+
+### def GP216BridgeCompositionReceipt.allOutputCountableTailControl (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.allOutputCountableTailControl
+    (R : GP216BridgeCompositionReceipt) :
+    AllOutputCountableGramTailControlReceipt R.continuumStream :=
+  R.continuumSource.countableTailControl
+
+/-- Generic continuum LSC receipt projected from the same countable
+all-output tail-control source used by the final bridge. -/
+```
+
+### def GP216BridgeCompositionReceipt.allOutputEventRecurrenceCoupling (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.allOutputEventRecurrenceCoupling
+    (R : GP216BridgeCompositionReceipt) :
+    AllOutputEventRecurrenceCoupling
+      R.continuumStream
+      R.eventRecurrence :=
+  R.continuumSource.eventCoupling
+
+/-- Flat-torus Killing conclusion projected from the macroscopic clock source.
+-/
+```
+
+### def GP216BridgeCompositionReceipt.branchProfileFamily (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.branchProfileFamily
+    (R : GP216BridgeCompositionReceipt) :
+    PricingProfileFamily :=
+  R.profileLipschitzObligation.profile_bundle.profile_family_of_block
+    R.branchBlock
+
+/-- Profile-side smoothness prerequisite projected from the continuation
+source bundle. -/
+```
+
+### def GP216BridgeCompositionReceipt.branchQuarticSurvivalAmplitudeObservableSource (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.branchQuarticSurvivalAmplitudeObservableSource
+    (R : GP216BridgeCompositionReceipt) :
+    QuarticSurvivalAmplitudeObservableSource R.branchBlock := by
+  rw [R.branch_matches_profile_lipschitz_generated_block]
+  exact R.profileLipschitzObligation.generated_amplitude_observable_source
+    (R.profileLipschitzObligation.evolution_of_initial_data
+      R.profileLipschitzInitialData)
+    R.profileLipschitzBranchIndex
+
+/-- The branch amplitude-level projection receipt is derived from the
+generated profile/Lipschitz charged-observable source, not supplied as a free
+GP216 field. -/
+```
+
+### def GP216BridgeCompositionReceipt.branchQuarticSurvivalAmplitudeProjection (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.branchQuarticSurvivalAmplitudeProjection
+    (R : GP216BridgeCompositionReceipt) :
+    QuarticSurvivalAmplitudeProjectionReceipt R.branchBlock :=
+  quartic_survival_amplitude_projection_of_observable_source
+    R.branchBlock
+    R.branchQuarticSurvivalAmplitudeObservableSource
+
+/-- The branch projection receipt is derived from the generated
+profile/Lipschitz amplitude receipt, not supplied as a free GP216 field. -/
+```
+
+### def GP216BridgeCompositionReceipt.branchQuarticSurvivalProjection (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.branchQuarticSurvivalProjection
+    (R : GP216BridgeCompositionReceipt) :
+    QuarticSurvivalProjectionReceipt R.branchBlock :=
+  quartic_survival_projection_of_amplitude_receipt
+    R.branchBlock
+    R.branchQuarticSurvivalAmplitudeProjection
+
+/-- The actual GP216 generated branch has the Lipschitz gain-at-amplitude cap.
+
+This is deliberately generated-branch scoped: no global all-`NSEvolution` cap
+is claimed.  The separate `branch_matches_profile_lipschitz_generated_block`
+field ties this generated block to `branchBlock` at downstream branch uses. -/
+```
+
+### def GP216BridgeCompositionReceipt.coherenceSourceReceipt (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.coherenceSourceReceipt
+    (R : GP216BridgeCompositionReceipt) :
+    LPBeatBackscatterDerivedStreamReceipt
+      R.coherenceSource
+      R.coherenceStream :=
+  lpBeatBackscatterDerivedStreamReceiptRefl R.coherenceSource
+
+/-- GP216 consumes coherence through the named source package, not through a
+detached scalar limit inequality. -/
+```
+
+### def GP216BridgeCompositionReceipt.coherenceStream (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.coherenceStream
+    (R : GP216BridgeCompositionReceipt) :
+    LPBeatBackscatterChargeStream :=
+  R.coherenceSource.stream
+
+/-- Reflexive source receipt for the derived GP216 coherence stream. -/
+```
+
+### def GP216BridgeCompositionReceipt.concreteFourierLatencyFalsifier (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.concreteFourierLatencyFalsifier
+    (R : GP216BridgeCompositionReceipt) :
+    ConcreteFourierLatencyFalsifierReceipt :=
+  R.eventRecurrenceAuxiliaryPanels.concreteFourierLatencyFalsifier
+
+/-- Event-section incidence projected from the source bundle, keeping the same
+ledger as the dynamic recurrence certificate. -/
+```
+
+### def GP216BridgeCompositionReceipt.continuationHandoff (in ns_gp216_bridge_composition_receipt.lean, score=7 type_uses=2)
+```lean
+def GP216BridgeCompositionReceipt.continuationHandoff
+    (R : GP216BridgeCompositionReceipt) :
+    TrackBContinuationHandoffReceipt :=
+  R.continuationSource.handoff
+
+/-- Smoothness prerequisite projected from the continuation source bundle. -/
+```
+
+# Resolved type constructors (full type body for type_head)
+
+(NO RESOLVED CONSTRUCTORS — refuse via CANNOT PATCH if patch class needs one)
+
+# Existing declarations that PRODUCE the target type
+
+(NO RESULT-TYPE PRODUCERS FOUND — patch may need a new analytic constructor)
+
+# Theorems that USE this field as a term (top-4 by uses count)
+
+### no_gp216_continuum_all_output_fixed_atoms_provenance_falsifier (in ns_gp216_bridge_composition_receipt.lean, score=1 field_uses=1 type_uses=0)
+```lean
+theorem no_gp216_continuum_all_output_fixed_atoms_provenance_falsifier
+    {S : LeraySelfTaxProfilePriceStream}
+    {E : EventRecurrencePriceLedger}
+    (B : GP216ContinuumAllOutputSourceBundle S E)
+    (F : GP216ContinuumAllOutputFixedAtomsProvenanceFalsifier B) :
+    False :=
+  F.atom_source_mismatch <| by
+    simpa [GP216ContinuumAllOutputSourceBundle.countableTailControl]
+      using B.eventCoupling_fixed_atoms_matches_countable_tail
+
+/-- Composite receipt for the GP-216/5IQ local bridge sta
+```
+
+### GP216BridgeCompositionReceipt.generatedBranchAmpSqLeThresholdRoot (in ns_gp216_bridge_composition_receipt.lean, score=1 field_uses=1 type_uses=0)
+```lean
+theorem GP216BridgeCompositionReceipt.generatedBranchAmpSqLeThresholdRoot
+    (R : GP216BridgeCompositionReceipt)
+    (habove :
+      let U :=
+        R.profileLipschitzObligation.evolution_of_initial_data
+          R.profileLipschitzInitialData
+      let B :=
+        (R.profileLipschitzObligation.lipschitz_bridge.ledger_of_evolution U).block
+          R.profileLipschitzBranchIndex
+      sharpTarget < B.gamma) :
+    let U :=
+      R.profileLipschitzObligation.evolution_of_initial_data
+        R.
+```
+
+### no_gp216_branch_generated_block_identity_falsifier (in ns_gp216_bridge_composition_receipt.lean, score=1 field_uses=1 type_uses=0)
+```lean
+theorem no_gp216_branch_generated_block_identity_falsifier
+    (R : GP216BridgeCompositionReceipt)
+    (F : GP216BranchGeneratedBlockIdentityFalsifier R) :
+    False := by
+  exact F.generated_block_mismatch <| by
+    simpa [GP216BridgeCompositionReceipt.profileLipschitzObligation,
+      GP216BridgeCompositionReceipt.profileLipschitzInitialData]
+      using R.branch_matches_profile_lipschitz_generated_block
+
+/-- Falsifier for a coordinate reformulation whose source is not the GP216
+branch block i
+```
+
+### gp216_branch_no_survivor_of_profile_lipschitz_generated_block (in ns_gp216_bridge_composition_receipt.lean, score=1 field_uses=1 type_uses=0)
+```lean
+theorem gp216_branch_no_survivor_of_profile_lipschitz_generated_block
+    (R : GP216BridgeCompositionReceipt) :
+    FullLedgerNoSurvivor R.branchBlock := by
+  rw [R.branch_matches_profile_lipschitz_generated_block]
+  exact generated_lipschitz_block_no_survivor_of_trackB_profile_closure
+    R.profileLipschitzObligation
+    R.profileLipschitzInitialData
+    R.profileLipschitzBranchIndex
+
+/-- Coherence component of the composite receipt: uniform beat/backscatter
+charging prevents a new limit surplu
+```
+
+# Patch class you MUST use
+
+SOURCE PROVENANCE BRIDGE
+
+You will produce a theorem that relates the target field to its parent
+structure's projection or canonical bound. The shape is:
+
+```lean
+theorem <field>_le_<parent>_<bound>
+    (s : <ParentStruct>) : s.<field> ≤ s.<bound_field> := by
+  exact s.<projection_lemma>
+  -- or: simp [<parent>.<unfold>]; exact s.<inner_lemma>
+```
+
+Constraints:
+- ParentStruct MUST be a resolved structure in the field-type's
+  parent chain.
+- Both s.<field> and s.<bound_field> MUST be resolved fields of
+  ParentStruct.
+- The projection_lemma MUST be an existing lemma of ParentStruct (or
+  a definitional identity).
+- This patch type is appropriate when the field is bounded by an
+  existing projection in its parent structure but the bound has
+  never been stated as a separate theorem.
+
+# Strict constraints
+
+- Only reference identifiers in the resolved target-structure,
+  constructor, type-producer, and using-theorem set above.
+- Do NOT invent names. Do NOT use sorry/admit/axiom/native_decide.
+- Do NOT repeat an existing top-level declaration name.
+- Do NOT return a decorative negation wrapper of the form
+  `theorem no_X (...)(h : ¬ existing_positive_endpoint) : False := h (...)`;
+  it is compiler-green but not endpoint progress.
+- Return a COMPLETE Lean file. Include the needed `import ZtareProofs.<module>`
+  lines and wrap declarations in `namespace ZtareProofs.NS ... end ZtareProofs.NS`
+  whenever using NS spine declarations.
+- Output ONE Lean file in a single ```lean fenced block.
+- If the constraints make the patch impossible (e.g. no usable existing
+  bound for the transitivity adapter), output `# CANNOT PATCH` followed
+  by a one-paragraph specification of the missing analytic inequality
+  or constructor that would be needed.
+
+Return your patch in a single ```lean fenced block, OR output `# CANNOT PATCH` with the diagnosis.
+
+# Important: produce 2 MAXIMALLY DIFFERENT candidates
+
+The apparatus runs all candidates in parallel through lake-build. Diversity
+across candidates is what gives this approach its leverage. So:
+
+  - Each candidate should explore a DIFFERENT structural approach
+    (e.g. one transitivity-style, one direct-construction, one falsifier-style)
+  - Vary the choice of intermediate quantities / hypotheses
+  - Vary the proof strategy (`exact`, `apply`, `refine`, ...)
+
+Output exactly 2 Lean blocks, each in its own ```lean fenced block,
+separated by blank lines. Do NOT output prose between them. Do NOT add
+"# CANNOT PATCH" — even if uncertain, attempt 2 different angles.

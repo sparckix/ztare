@@ -1,0 +1,96 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/rung3_compiler_feedback_repair_uncontaminated_t2p93.json",
+    "contract": "analytics/public/forecast_pool/contracts/rung3_compiler_feedback_repair_uncontaminated_t2p93.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/rung3_compiler_feedback_repair_uncontaminated_t2p93",
+    "outcome": "analytics/public/forecast_pool/outcomes/rung3_compiler_feedback_repair_uncontaminated_t2p93.json",
+    "score": "analytics/public/forecast_pool/scores/rung3_compiler_feedback_repair_uncontaminated_t2p93.json"
+  },
+  "baseline_action": "no repair loop; failed attempt stays a red X",
+  "budget_agent_minutes": 45.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "consumes_surfaced": null,
+  "consumes_surfaced_validation": "surfaced_consumption_gate: non-NS/Track-B tick \u21d2 ADVISORY (the void-audit surfaced set is NS-specific; H5 scope-guarded \u2014 no false-refuse of a legitimate non-NS tick).",
+  "contract_id": "rung3_compiler_feedback_repair_uncontaminated_t2p93",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Path-A composition has no error-driven repair capability",
+  "created_at": "2026-05-17T21:42:27Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "pathA_wedge",
+    "score": 0.0,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "GP-225",
+        "expected_cost_agent_minutes_prior": 14.88,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gnn_synthetic_data_factory",
+        "expected_cost_agent_minutes_prior": 12.48,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "gp225_baseline",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": false,
+        "score": 0.0,
+        "score_rows": 3,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-20",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "direct governance on the post-repair proof; genuine iff print-axioms-clean + exact?-cannot-single-close + target-kind-correct; failure = honest exact-gap (prove_missing_lemma), not laundered",
+  "question": "On the UNCONTAMINATED honest-gap row T2P_93 (no prior certified proof exists; repair-author has no memorized answer), does a compiler-feedback repair loop \u2014 genuine compose attempt from the pinned-primitive pool -> real Lean error -> ONE repair conditioned on {broken proof, Lean error, goal, governance residual} -> govern \u2014 produce a governance-genuine closure (kernel print-axioms-clean + exact?-not-single-lemma + target-kind, two-scoreboard, author!=verifier), cost-accounted, scoped as in-thread-AI capability demonstration NOT unattended solver?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "pathA_wedge",
+  "value_if_success": 0.7,
+  "void_conditions": "repair-author == original-proof-author (contaminated \u2014 why T2P_93 chosen, the only routed row I never certified); T2P_93 turns out single-lemma-trivial at pin (then reclassify Tier-0/1, not a repair datapoint); governance regression"
+}

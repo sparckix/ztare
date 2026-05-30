@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_fixed_window_packet_scout_micro_20260514_tick327",
+  "mean_brier": 0.06760000000000001,
+  "mean_log_score": -0.3011050927839216,
+  "outcome": {
+    "actual_cost_agent_minutes": 24.0,
+    "artifact_hash": "760e18bd6b293f248d8444d1cfdd93dfe81362afac51e15e3ed6fccc13363e43",
+    "artifact_path": "projects/ns_millennium_hunt/workspace/queries/fixed_window_cone_packet_scout_20260514.json",
+    "compile_status": "offline_script_passed",
+    "contract_id": "ns_route1_fixed_window_packet_scout_micro_20260514_tick327",
+    "error_type": null,
+    "goal_delta": 1,
+    "resolution_note": "Added and ran deterministic fixed-window cone packet scout. It emitted JSON/Markdown, constructed exact amplitude-tuned cancellations for 64/64 sampled nonzero symmetric trace-free tensors, and returned GEOMETRY_ONLY_NO_GO. No pre-GNN harness mutation.",
+    "resolved_at": "2026-05-14T01:42:17Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T01:42:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "hooke_forecast_tick327",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 31.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 55.0,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:40:23Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:41:50Z",
+        "resolved_at": "2026-05-14T01:42:17Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 24.0,
+      "agent_id": "rawls_forecast_tick327",
+      "brier": 0.06760000000000001,
+      "cost_error_agent_minutes": 14.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 38.0,
+      "log_score": -0.3011050927839216,
+      "p_success": 0.74,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T01:40:23Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T01:41:59Z",
+        "resolved_at": "2026-05-14T01:42:17Z"
+      }
+    }
+  ]
+}

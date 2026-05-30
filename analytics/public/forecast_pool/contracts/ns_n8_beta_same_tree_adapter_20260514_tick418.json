@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_n8_beta_same_tree_adapter_20260514_tick418.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_n8_beta_same_tree_adapter_20260514_tick418.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_n8_beta_same_tree_adapter_20260514_tick418",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_n8_beta_same_tree_adapter_20260514_tick418.json",
+    "score": "analytics/public/forecast_pool/scores/ns_n8_beta_same_tree_adapter_20260514_tick418.json"
+  },
+  "baseline_action": "Leave beta branch at generic BadCenterWeightedSquareIncidenceFailure",
+  "budget_agent_minutes": 22.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_n8_beta_same_tree_adapter_20260514_tick418",
+  "cost_penalty": 0.05,
+  "counterfactual_action": "Connect beta branch to existing L3 same-tree incidence/carleson constructors",
+  "created_at": "2026-05-14T21:26:58Z",
+  "created_by": "codex-rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns-proof-frontier-beta-adapter",
+    "score": 0.1667,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.1667,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 10,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1429,
+        "score_rows": 2,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 140,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.125,
+        "score_rows": 7,
+        "token_jaccard": 0.125
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1,
+        "score_rows": 4,
+        "token_jaccard": 0.1
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "adapter_only_no_source_proof",
+      "type_mismatch_with_generic_surface"
+    ],
+    "positive": [
+      "reuses_existing_L3_source",
+      "smaller_beta_next_theorem"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.44,
+  "layer": "micro",
+  "objective_resolver": "Resolve true iff the Lean file compiles, no sorry/admit is introduced, and the tick adds beta adapter structures/theorems that reuse existing L3 same-tree incidence/carleson objects while preserving the missing-source boundary.",
+  "question": "Will the beta same-tree adapter tick add compiling Lean glue from existing SameTreeNonadaptiveEventIncidenceCarleson and BadCenterBetaSquareCarlesonDrop source objects to the N8 beta reduced frontier, without claiming the same-tree incidence primitive is proved?",
+  "risk_penalty": 0.08,
+  "success_threshold": "Lean compile plus beta same-tree adapter surface/theorem",
+  "task_type": "ns-proof-frontier-beta-adapter",
+  "value_if_success": 0.48,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

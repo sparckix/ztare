@@ -1,0 +1,94 @@
+{
+  "contract_id": "re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_",
+  "externality_audit": {
+    "contract_fields": {},
+    "forecast_rows_with_action_change_recommendation": 0,
+    "forecast_rows_with_externality_tags": 0,
+    "forecast_rows_with_specific_failure_mode_ids": 0,
+    "outcome_fields": {
+      "decision_changed_bool": true,
+      "new_next_action": "static premise index REFUTED as the lever; refined untested belief = REAL in-sandbox agentic tool execution (prover iteratively runs exact?/apply?/loogle vs pinned Mathlib), distinct from both static-index and one-shot-LLM; that is the meta-apparatus change to test next IFF pursued",
+      "old_next_action": "build pinned-v4.29.0 premise name+shape index (static retrieval) to lift Path A research-tier"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.30805000000000005,
+  "mean_log_score": -0.809744124143801,
+  "outcome": {
+    "actual_cost_agent_minutes": 55.0,
+    "artifact_hash": null,
+    "artifact_path": null,
+    "changed_by_forecast_ids": [],
+    "compile_status": null,
+    "contract_id": "re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_",
+    "counterfactual_value_bucket": null,
+    "decision_changed_bool": true,
+    "error_type": null,
+    "externality_tags": [],
+    "failure_mode_preconditioner_used": null,
+    "goal_delta": null,
+    "negative_externality_tags": [],
+    "new_next_action": "static premise index REFUTED as the lever; refined untested belief = REAL in-sandbox agentic tool execution (prover iteratively runs exact?/apply?/loogle vs pinned Mathlib), distinct from both static-index and one-shot-LLM; that is the meta-apparatus change to test next IFF pursued",
+    "old_next_action": "build pinned-v4.29.0 premise name+shape index (static retrieval) to lift Path A research-tier",
+    "preconditioner_effect": null,
+    "preconditioner_source": null,
+    "realized_failure_mode_ids": [],
+    "resolution_note": "FALSE + belief-1 REFUTED: tooled-retrieval ablation = 0/10 genuine (8 FAIL, 2 genuine-construction GAP) through canonical v4.29.0, identical to original 0. Granting 'closer exists, search' did NOT recover any C-gap. So research-grade ceiling is NOT merely retrieval/name-resolution (prior void-mine conclusion too simplistic). Prover reasons from stale training memory; one-shot reasoning-about-exact? != running it. RD p0.55/codex p0.56 both over-optimistic (predicted >=5, actual 0) - honest calibration miss recorded.",
+    "resolved_at": "2026-05-16T20:41:17Z",
+    "sorry_delta": null,
+    "success_bool": false,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-19T16:39:18Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 55.0,
+      "agent_id": "codex",
+      "brier": 0.31360000000000005,
+      "cost_error_agent_minutes": -11.0,
+      "domain": "tooled_retrieval_ablation_c_gaps",
+      "expected_cost_agent_minutes": 44.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.8209805520698303,
+      "p_success": 0.56,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T20:28:27Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T20:29:58Z",
+        "resolved_at": "2026-05-16T20:41:17Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 55.0,
+      "agent_id": "research_director_claude_opus_4_7",
+      "brier": 0.30250000000000005,
+      "cost_error_agent_minutes": 5.0,
+      "domain": "general",
+      "expected_cost_agent_minutes": 60.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.7985076962177717,
+      "p_success": 0.55,
+      "success_bool": false,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-16T20:28:27Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-16T20:28:27Z",
+        "resolved_at": "2026-05-16T20:41:17Z"
+      }
+    }
+  ]
+}

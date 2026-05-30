@@ -1,0 +1,21 @@
+{
+  "agent_id": "hooke_forecast_tick335",
+  "contract_id": "ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335",
+  "contract_question": "Will a fixed-kernel operator-norm scout plus Lean source show that local quadratic receipts can pay the pre-summed pressure/Riesz cone charge, avoiding the final-carrier No-Go?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 72.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "build_regression": 0.25,
+    "lean_sum_nonneg_gap": 0.2,
+    "local_quadratic_receipt_origin_ambiguous": 0.3,
+    "operator_norm_scout_too_toy": 0.25
+  },
+  "forecasted_at": "2026-05-14T03:02:47Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.68,
+  "p_regression": 0.18,
+  "p_success": 0.64,
+  "rationale_short": "Operator-norm domination is mathematically straightforward for fixed kernels, but the value depends on connecting the local quadratic receipt to pre-summed stress mass without smuggling carrier positivity.",
+  "read_only_attestation": true
+}

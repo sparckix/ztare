@@ -1,0 +1,103 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_n8_branch_guard_formalization_20260514_tick410.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_n8_branch_guard_formalization_20260514_tick410.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_n8_branch_guard_formalization_20260514_tick410",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_n8_branch_guard_formalization_20260514_tick410.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_n8_branch_guard_formalization_20260514_tick410.json"
+  },
+  "baseline_action": "Stop after route1 pincer packet",
+  "budget_agent_minutes": 25.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_n8_branch_guard_formalization_20260514_tick410",
+  "cost_penalty": 0.06,
+  "counterfactual_action": "Formalize N8 branch guards and upstream closure theorem surfaces",
+  "created_at": "2026-05-14T20:05:45Z",
+  "created_by": "codex-rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.0,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "ns-proof-frontier-formalization",
+    "score": 0.2,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.2,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.2,
+        "score_rows": 10,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.1667,
+        "score_rows": 2,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 0.1667,
+        "score_rows": 140,
+        "token_jaccard": 0.1667
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.1429,
+        "score_rows": 7,
+        "token_jaccard": 0.1429
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.1111,
+        "score_rows": 4,
+        "token_jaccard": 0.1111
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": [
+      "may_add_wrappers_without_new_pde",
+      "could_duplicate_existing_branch_surfaces"
+    ],
+    "positive": [
+      "prevents_route1_to_clay_overclaim",
+      "makes_n8_branches_machine_visible"
+    ]
+  },
+  "horizon": "2026-05-14",
+  "information_value": 0.38,
+  "layer": "meso",
+  "objective_resolver": "Resolve true iff ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean compiles, no sorry/admit is introduced in that file, and the added surfaces distinguish route1 closure from N8 branch closure.",
+  "question": "Will the N8 branch guard formalization tick add compiling Lean surfaces for upstream branch exhaustion and non-route branch guards without overclaiming route-1 closure as critical-increment closure?",
+  "risk_penalty": 0.1,
+  "success_threshold": "Lean compile plus no-sorry scan plus explicit N8 guard surfaces",
+  "task_type": "ns-proof-frontier-formalization",
+  "value_if_success": 0.42,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

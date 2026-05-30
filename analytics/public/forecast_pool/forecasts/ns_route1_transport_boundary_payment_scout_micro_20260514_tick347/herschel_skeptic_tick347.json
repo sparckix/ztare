@@ -1,0 +1,22 @@
+{
+  "agent_id": "herschel_skeptic_tick347",
+  "contract_id": "ns_route1_transport_boundary_payment_scout_micro_20260514_tick347",
+  "contract_question": "Can we add and run a deterministic scout that distinguishes fixed route-flux/tent-boundary lower-payment regimes from transport/boundary undercharge regimes, without final-carrier magnitude or overflow-excess sizing?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 58.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "normalizer_interaction_confounds_result": 0.16,
+    "other": 0.17,
+    "scout_confirms_only_existing_guard": 0.31,
+    "script_bug": 0.12,
+    "transport_and_boundary_need_separate_scouts": 0.24
+  },
+  "forecasted_at": "2026-05-14T04:16:42Z",
+  "p_dependency_issue": 0.28,
+  "p_needs_new_lemma": 0.35,
+  "p_regression": 0.05,
+  "p_success": 0.69,
+  "rationale_short": "Useful if it separates transport and boundary lower-comparison failures; less useful if it only repeats the summed undercharge guard.",
+  "read_only_attestation": true
+}

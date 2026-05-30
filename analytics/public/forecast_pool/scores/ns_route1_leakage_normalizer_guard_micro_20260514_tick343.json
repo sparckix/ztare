@@ -1,0 +1,58 @@
+{
+  "contract_id": "ns_route1_leakage_normalizer_guard_micro_20260514_tick343",
+  "mean_brier": 0.09359999999999999,
+  "mean_log_score": -0.36036197416508986,
+  "outcome": {
+    "actual_cost_agent_minutes": 31.0,
+    "artifact_hash": "ed8cb8b37370cf04c405d688866940d9f6c7dfddbe4fa687184084ba3b2e5a16",
+    "artifact_path": "ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean",
+    "compile_status": "passed",
+    "contract_id": "ns_route1_leakage_normalizer_guard_micro_20260514_tick343",
+    "error_type": null,
+    "goal_delta": 3,
+    "resolution_note": "Added FixedWindowLeakageNormalizerCompatibilitySource, scalar bridge frequencyLeakageWeightedStress_le_shardCCharges_of_normalizerCompatibility, and guard FixedWindowLeakageNormalizerMismatchGap/no_leakageNormalizerCompatibility_of_mismatchGap. lake env lean and lake build passed; touched-file sorry/admit scan clean.",
+    "resolved_at": "2026-05-14T03:59:07Z",
+    "sorry_delta": 0,
+    "success_bool": true,
+    "voided": false
+  },
+  "scored_at": "2026-05-14T03:59:14Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 31.0,
+      "agent_id": "herschel_skeptic_tick343",
+      "brier": 0.0576,
+      "cost_error_agent_minutes": 3.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 34.0,
+      "log_score": -0.2744368457017603,
+      "p_success": 0.76,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:56:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:57:14Z",
+        "resolved_at": "2026-05-14T03:59:07Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 31.0,
+      "agent_id": "hooke_forecast_tick343",
+      "brier": 0.1296,
+      "cost_error_agent_minutes": 44.0,
+      "domain": "ns_route1_pde",
+      "expected_cost_agent_minutes": 75.0,
+      "log_score": -0.4462871026284195,
+      "p_success": 0.64,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T03:56:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T03:57:14Z",
+        "resolved_at": "2026-05-14T03:59:07Z"
+      }
+    }
+  ]
+}

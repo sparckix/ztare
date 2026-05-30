@@ -1,0 +1,31 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1990_clean_strict_two_row_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1990_clean_strict_two_row_replay.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/gp225_v1990_clean_strict_two_row_replay",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1990_clean_strict_two_row_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1990_clean_strict_two_row_replay.json"
+  },
+  "budget_agent_minutes": 30.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "gp225_v1990_clean_strict_two_row_replay",
+  "cost_penalty": 3.0,
+  "created_at": "2026-05-14T08:45:00Z",
+  "created_by": "codex_rd_gp225_2026_05_14",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "horizon": "2026-05-14T10:00:00Z",
+  "information_value": 9.0,
+  "layer": "micro",
+  "objective_resolver": "Replay v1989 with v1953 bridge; success if at least one fresh primary strict target-state row is verified from current_scale_0038 or current_scale_0121, harmful_compiled_mismatch_actions=0, source-policy flags clean, training_now=false, and gnn_blocked=true. Solver/auxiliary-only closures do not satisfy this contract.",
+  "question": "Will v19.90 replay of the v19.89 clean strict two-row packet add at least one fresh primary strict target-state row with harmful mismatches zero?",
+  "risk_penalty": 2.5,
+  "success_threshold": "fresh_primary_strict_rows >= 1; harmful=0; source_policy_clean=true; training_now=false; gnn_blocked=true",
+  "task_type": "clean_strict_two_row_replay",
+  "value_if_success": 14.0,
+  "void_conditions": "void if replay uses target proof lines/gold tactic text for generation, includes quarantined rows current_scale_0004/current_scale_0299 as primary strict candidates, or trains any model"
+}

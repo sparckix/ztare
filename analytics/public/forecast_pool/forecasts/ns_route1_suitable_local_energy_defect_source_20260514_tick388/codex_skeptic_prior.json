@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": "Treat suitable local energy as inequality plus explicit defect equality; add guard if equality is not independently sourced.",
+  "agent_id": "codex_skeptic_prior",
+  "contract_id": "ns_route1_suitable_local_energy_defect_source_20260514_tick388",
+  "contract_question": "Can this tick add a compiled non-tautological suitable-local-energy defect source below FixedCutoffLocalEnergySignedMeasureIdentitySource?",
+  "domain": "ns_route1_local_energy_measure_split",
+  "expected_cost_agent_minutes": 44.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "alphaI_final_slack_smuggling": 0.39,
+    "lean_type_breakage": 0.12,
+    "measure_source_still_global_not_borel_local": 0.16,
+    "suitable_inequality_not_signed_identity": 0.33
+  },
+  "forecast_externality_tags": [
+    "failure_mode_preconditioning",
+    "missing_hypothesis_discriminator"
+  ],
+  "forecasted_at": "2026-05-14T14:41:41Z",
+  "p_dependency_issue": 0.54,
+  "p_needs_new_lemma": 0.78,
+  "p_regression": 0.2,
+  "p_success": 0.58,
+  "rationale_short": "The hard point is converting inequality/slack into an independent signed event-local residual. Good if stated honestly; bad if it just restates the desired split.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "alphaI_final_slack_smuggling",
+    "suitable_inequality_not_signed_identity"
+  ]
+}

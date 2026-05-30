@@ -1,0 +1,73 @@
+{
+  "ts": "2026-05-06T14:58:04.648817+00:00",
+  "target": "PhaseLatencyProfileLipschitzReserveSource",
+  "field": "phase_control_embeds_in_generated_lipschitz_ledger",
+  "classification": {
+    "gap_type": "PROPAGATION",
+    "confidence": "medium",
+    "rationale": "Local lexical classifier matched PROPAGATION evidence in the field/type string.",
+    "classifier": "local_heuristic"
+  },
+  "gap_specific_lemmas": [
+    {
+      "name": "AEContinuous",
+      "file": "Analysis/BoxIntegral/Integrability.lean",
+      "preview": "theorem AEContinuous.hasBoxIntegral [CompleteSpace E] {f : (\u03b9 \u2192 \u211d) \u2192 E} (\u03bc : Measure (\u03b9 \u2192 \u211d))     [IsLocallyFiniteMeasure \u03bc] {I : Box \u03b9} (hb : \u2203 C : \u211d, \u2200 x \u2208 Box.Icc I, \u2016f x\u2016 \u2264 C)     (hc : \u2200\u1d50 x \u2202\u03bc, C"
+    },
+    {
+      "name": "A_mem_nhdsGT",
+      "file": "Analysis/Calculus/FDeriv/Measurable.lean",
+      "preview": "theorem A_mem_nhdsGT {L : F} {r \u03b5 x : \u211d} (hx : x \u2208 A f L r \u03b5) : A f L r \u03b5 \u2208 \ud835\udcdd[>] x := by   rcases hx with \u27e8r', rr', hr'\u27e9   obtain \u27e8s, s_gt, s_lt\u27e9 : \u2203 s : \u211d, r / 2 < s \u2227 s < r' := exists_between rr'.1 "
+    },
+    {
+      "name": "A_mono",
+      "file": "Analysis/Calculus/FDeriv/Measurable.lean",
+      "preview": "theorem A_mono (L : F) (r : \u211d) {\u03b5 \u03b4 : \u211d} (h : \u03b5 \u2264 \u03b4) : A f L r \u03b5 \u2286 A f L r \u03b4 := by   rintro x \u27e8r', r'r, hr'\u27e9   refine \u27e8r', r'r, fun y hy z hz => (hr' y hy z hz).trans (mul_le_mul_of_nonneg_right h ?_)"
+    },
+    {
+      "name": "AbsoluteValue",
+      "file": "Algebra/Order/BigOperators/Ring/Finset.lean",
+      "preview": "lemma AbsoluteValue.sum_le [Semiring R] [Semiring S] [PartialOrder S] [IsOrderedRing S]     (abv : AbsoluteValue R S)     (s : Finset \u03b9) (f : \u03b9 \u2192 R) : abv (\u2211 i \u2208 s, f i) \u2264 \u2211 i \u2208 s, abv (f i) :=   Fins"
+    },
+    {
+      "name": "AccPt",
+      "file": "Topology/Perfect.lean",
+      "preview": "theorem AccPt.nhds_inter {x : \u03b1} {U : Set \u03b1} (h_acc : AccPt x (\ud835\udcdf C)) (hU : U \u2208 \ud835\udcdd x) :     AccPt x (\ud835\udcdf (U \u2229 C)) := by   have : \ud835\udcdd[\u2260] x \u2264 \ud835\udcdf U := by     rw [le_principal_iff]     exact mem_nhdsWithin_of_me"
+    },
+    {
+      "name": "AddContent",
+      "file": "MeasureTheory/Measure/AddContent.lean",
+      "preview": "lemma AddContent.onIoc_apply {f : \u03b1 \u2192 G} {u v : \u03b1} (h : u \u2264 v) :     AddContent.onIoc f (Ioc u v) = f v - f u :=   AddContent.onIocAux_apply h  end OnIoc  section AddContentExtend   protected noncompu"
+    },
+    {
+      "name": "AddHom",
+      "file": "Algebra/Order/Sub/Unbundled/Hom.lean",
+      "preview": "theorem AddHom.le_map_tsub [Preorder \u03b2] [Add \u03b2] [Sub \u03b2] [OrderedSub \u03b2] (f : AddHom \u03b1 \u03b2)     (hf : Monotone f) (a b : \u03b1) : f a - f b \u2264 f (a - b) := by   rw [tsub_le_iff_right, \u2190 f.map_add]   exact hf l"
+    },
+    {
+      "name": "AddMonoidHom",
+      "file": "Algebra/Order/Sub/Unbundled/Hom.lean",
+      "preview": "theorem AddMonoidHom.le_map_tsub [Preorder \u03b2] [AddZeroClass \u03b2] [Sub \u03b2] [OrderedSub \u03b2] (f : \u03b1 \u2192+ \u03b2)     (hf : Monotone f) (a b : \u03b1) : f a - f b \u2264 f (a - b) :=   f.toAddHom.le_map_tsub hf a b  end Preor"
+    },
+    {
+      "name": "AddValuation",
+      "file": "NumberTheory/Padics/PadicNumbers.lean",
+      "preview": "theorem AddValuation.map_add (x y : \u211a_[p]) :     min (addValuationDef x) (addValuationDef y) \u2264 addValuationDef (x + y : \u211a_[p]) := by   simp only [addValuationDef]   by_cases hxy : x + y = 0   \u00b7 rw [hx"
+    },
+    {
+      "name": "AlternatingMap",
+      "file": "Analysis/Normed/Module/Alternating/Basic.lean",
+      "preview": "theorem AlternatingMap.mkContinuous_norm_le' (f : E [\u22c0^\u03b9]\u2192\u2097[\ud835\udd5c] F) {C : \u211d}     (H : \u2200 m, \u2016f m\u2016 \u2264 C * \u220f i, \u2016m i\u2016) : \u2016f.mkContinuous C H\u2016 \u2264 max C 0 :=   ContinuousMultilinearMap.opNorm_le_bound (le_max_r"
+    },
+    {
+      "name": "AntisymmRel",
+      "file": "Order/Antisymmetrization.lean",
+      "preview": "theorem AntisymmRel.symmGen_congr_right (h : AntisymmRel (\u00b7 \u2264 \u00b7) b c) :     SymmGen (\u00b7 \u2264 \u00b7) a b \u2194 SymmGen (\u00b7 \u2264 \u00b7) a c :=   AntisymmRel.rfl.symmGen_congr h  end SymmGen  section Prod  variable (\u03b1 \u03b2) [P"
+    },
+    {
+      "name": "Bound",
+      "file": "Algebra/Order/GroupWithZero/Unbundled/Basic.lean",
+      "preview": "lemma Bound.le_self_pow_of_pos [ZeroLEOneClass M\u2080] [PosMulMono M\u2080] (ha : 1 \u2264 a) (hn : 0 < n) :     a \u2264 a ^ n := le_self_pow\u2080 ha hn.ne'  @[mono, gcongr, bound]"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "actual_cost_agent_minutes": 19.0,
+  "artifact_hash": "17eff1252ac337fe92c0de40324770d94ad38e12c90a5a135baf2b5be47b60b7",
+  "artifact_path": "ztare_proofs/ZtareProofs/ns_pressure_hessian_l2_bridge.lean",
+  "changed_by_forecast_ids": [],
+  "compile_status": "lean_pass",
+  "contract_id": "ns_pressure_ckn_to_split_receipt_gap_tick430_20260514",
+  "counterfactual_value_bucket": "positive",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "positive-pressure-gap-localization",
+    "final-carrier-shortcut-blocked"
+  ],
+  "failure_mode_preconditioner_used": null,
+  "goal_delta": 1,
+  "negative_externality_tags": [
+    "interface-layer-no-pde-proof-yet"
+  ],
+  "new_next_action": "Source the three receipt-share routings: resolved mean-free to local quadratic receipt, Galilean mean to pressure reserve, frequency leakage to child/tent charge.",
+  "old_next_action": "Attack FixedWindowPreSummedStressMassSplitReceiptSource as a top-level pressure source.",
+  "preconditioner_effect": null,
+  "preconditioner_source": null,
+  "realized_failure_mode_ids": [
+    "receipt-share-routing-is-next-source",
+    "ckn-tent-alone-insufficient"
+  ],
+  "resolution_note": "Lean compiled after adding FixedWindowCKNTentStressSharesRouteToPressureReceipts, a projection from CKN/tent compatibility plus explicit receipt-share routing to FixedWindowPreSummedStressMassSplitReceiptSource, and a guard that CKN/tent compatibility alone does not source split receipts.",
+  "resolved_at": "2026-05-14T23:20:20Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

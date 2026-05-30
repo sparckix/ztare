@@ -1,0 +1,94 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json",
+    "contract": "analytics/public/forecast_pool/contracts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun",
+    "outcome": "analytics/public/forecast_pool/outcomes/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json",
+    "score": "analytics/public/forecast_pool/scores/a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun.json"
+  },
+  "baseline_action": null,
+  "budget_agent_minutes": 75.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "a_deterministic_automated_grounded_iterative_scaffold_auto_check_exact_apply_hammer_name_harvest_compile_error_read_boun",
+  "cost_penalty": 0.01,
+  "counterfactual_action": null,
+  "created_at": "2026-05-16T23:10:08Z",
+  "created_by": "research_director_claude_opus_4_7",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 0.093,
+    "expected_cost_agent_minutes_prior": null,
+    "match_type": "no_acceptable_prior_domain",
+    "min_similarity": 0.35,
+    "requested_domain": "automated_grounded_iterative_scaffold",
+    "score": 0.093,
+    "selected_domain": null,
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 0.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 0.093,
+        "domain": "ns_live_scalar_hinge",
+        "expected_cost_agent_minutes_prior": 10.5,
+        "sample_limited": false,
+        "score": 0.093,
+        "score_rows": 7,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0417,
+        "domain": "gp225_blended_contract",
+        "expected_cost_agent_minutes_prior": 21.0,
+        "sample_limited": true,
+        "score": 0.0417,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0339,
+        "domain": "gp225_pre_gnn_candidate_static_check",
+        "expected_cost_agent_minutes_prior": 50.75,
+        "sample_limited": true,
+        "score": 0.0339,
+        "score_rows": 2,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.0278,
+        "domain": "general",
+        "expected_cost_agent_minutes_prior": 36.75,
+        "sample_limited": false,
+        "score": 0.0278,
+        "score_rows": 8,
+        "token_jaccard": 0.0
+      },
+      {
+        "char_trigram_jaccard": 0.027,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.027,
+        "score_rows": 10,
+        "token_jaccard": 0.0
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-17",
+  "information_value": 0.0,
+  "layer": "micro",
+  "objective_resolver": "automated scaffold vs canonical v4.29.0 on C10/C15/C06; >=2/3 genuine = deterministic-lever; <2/3 = LLM-assembly load-bearing",
+  "question": "A DETERMINISTIC automated grounded-iterative scaffold (auto #check/exact?/apply?/hammer name-harvest + compile + error-read + bounded retry, NO human iteration, LLM-assembly held fixed) re-run on the n=3 ground truth C10/C15/C06: does it reproduce >=2/3 genuine closures \u2014 i.e. is the automatable-deterministic part the lever, or is the LLM-assembly step load-bearing?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "automated_grounded_iterative_scaffold",
+  "value_if_success": 0.9,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

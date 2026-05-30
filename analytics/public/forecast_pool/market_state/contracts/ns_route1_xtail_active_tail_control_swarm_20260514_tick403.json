@@ -1,0 +1,216 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:55:39Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 65.0,
+    "expected_value": -9.198292288894386,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.44,
+    "p_needs_new_lemma": 0.74,
+    "p_regression": 0.08,
+    "p_success": 0.5516923274795945,
+    "participants": [
+      {
+        "agent_id": "codex_forecaster",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403/codex_forecaster.json",
+        "forecasted_at": "2026-05-14T18:55:10Z",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex_rd_tick403",
+        "belief_update": false,
+        "domain": "ns_route1_pde",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403/codex_rd_tick403.json",
+        "forecasted_at": "2026-05-14T18:53:23Z",
+        "p_success": 0.46,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "activeTail_too_narrow_for_Xtail",
+        "p": 0.27
+      },
+      {
+        "mode": "same_carrier_definition_missing",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "proof_route_only_conditional",
+        "p": 0.16
+      },
+      {
+        "mode": "route_tail_raw_energy_countermodel",
+        "p": 0.15000000000000002
+      },
+      {
+        "mode": "tautological_tail_control",
+        "p": 0.14500000000000002
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_xtail_active_tail_control_swarm_20260514_tick403.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 90.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:53:13Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "At least one agent report plus local synthesis identifies PROOF_ROUTE/MISSING_HYPOTHESIS/NO_GO; if positive, a Lean-facing source/guard is added or precisely specified; no claim of upstream Clay closure.",
+    "question": "Will a 3-agent swarm plus local work produce a usable proof route or decisive no-go for same-carrier tail control X_tail <= C_A * activeTail in route 1?",
+    "success_threshold": "usable_route_or_decisive_no_go",
+    "task_type": "ns_route1_swarm_proof_attack"
+  },
+  "contract_id": "ns_route1_xtail_active_tail_control_swarm_20260514_tick403",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex_forecaster"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:codex_rd_tick403",
+        "raw_agent_ids": [
+          "codex_rd_tick403"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex_forecaster",
+      "codex_rd_tick403"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Keep the same-carrier bridge explicit; if the swarm cannot lift X_tail into the activeTail carrier, stop at a named no-go instead of broadening the theorem.",
+        "agent_id": "codex_forecaster",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403/codex_forecaster.json",
+        "canonical_agent_id": "codex",
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 55.0,
+        "forecasted_at": "2026-05-14T18:55:10Z",
+        "p_success": 0.64,
+        "rationale_short": "Route 1 now has explicit same-carrier tail control and the finite-tail amortized strictness interface; the remaining risk is whether the swarm can lift that into a usable proof/no-go without falling back to a tautological carrier swap.",
+        "specific_failure_mode_ids": [
+          "activeTail_too_narrow_for_Xtail",
+          "proof_route_only_conditional",
+          "route_tail_raw_energy_countermodel"
+        ]
+      },
+      {
+        "action_change_recommendation": "Attack same-carrier tail control with proof and no-go agents before adding a positive Lean source.",
+        "agent_id": "codex_rd_tick403",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_xtail_active_tail_control_swarm_20260514_tick403/codex_rd_tick403.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 75.0,
+        "forecasted_at": "2026-05-14T18:53:23Z",
+        "p_success": 0.46,
+        "rationale_short": "This is the central remaining adapter after prefix strictness. It is likely to need a new same-carrier definition or produce a no-go if X_tail is broader than active local-energy tail.",
+        "specific_failure_mode_ids": [
+          "activeTail_too_narrow_for_Xtail",
+          "same_carrier_definition_missing",
+          "tautological_tail_control"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 42.0,
+    "changed_by_forecast_ids": [
+      "codex_forecaster",
+      "codex_rd_tick403",
+      "peirce",
+      "lovelace",
+      "arendt"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:58:07Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.18,
+      "p_success": 0.5516923274795945,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "activeTail_too_narrow_for_Xtail",
+        "p": 0.27
+      },
+      "voi_proxy": 1.1273
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 65.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5516923274795945,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "activeTail_too_narrow_for_Xtail",
+        "p": 0.27
+      },
+      {
+        "mode": "same_carrier_definition_missing",
+        "p": 0.20500000000000002
+      },
+      {
+        "mode": "proof_route_only_conditional",
+        "p": 0.16
+      },
+      {
+        "mode": "route_tail_raw_energy_countermodel",
+        "p": 0.15000000000000002
+      },
+      {
+        "mode": "tautological_tail_control",
+        "p": 0.14500000000000002
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.2106,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:58:12Z"
+  }
+}

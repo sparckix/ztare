@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:43:03Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 23.0,
+    "expected_value": -4.0052910205345285,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.065,
+    "p_needs_new_lemma": 0.045,
+    "p_regression": 0.045,
+    "p_success": 0.33348469370204237,
+    "participants": [
+      {
+        "agent_id": "gp230_lamport_gp225_v1973",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.29,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "gp230_shannon_gp225_v1973",
+        "domain": "gp225_repair_micro",
+        "p_success": 0.38,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lane_specific_candidates_still_generic",
+        "p": 0.27
+      },
+      {
+        "mode": "closure_conversion_still_zero",
+        "p": 0.24
+      },
+      {
+        "mode": "compile_rate_below_0_08",
+        "p": 0.16999999999999998
+      },
+      {
+        "mode": "fresh_strict_label_zero",
+        "p": 0.15000000000000002
+      },
+      {
+        "mode": "other",
+        "p": 0.11000000000000001
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v1973_lane_specific_small_replay.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v1973_lane_specific_small_replay.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v1973_lane_specific_small_replay.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v1973_lane_specific_small_replay.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v1973_lane_specific_small_replay.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 31.5,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:42:49Z",
+    "created_by": "codex_rd_gp225",
+    "horizon": "same session if replay launched",
+    "layer": "micro",
+    "objective_resolver": "Resolve from v19.73 replay artifact: attempted_candidate_rows>=16, compiled_candidate_action_rate>=0.08, fresh_new_strict_same_target_rows>=1 OR target_state_to_full_closure_conversions>=1, harmful_compiled_mismatch_actions==0, train_gnn_now==false, gnn_blocked==true. Known strict row current_scale_0295 does not count as fresh.",
+    "question": "Will the v19.72 lane-specific candidate packet replay improve over v19.69 by reaching compile_rate>=0.08 and producing at least one fresh strict target-state or closure-conversion label, with harmful mismatches zero and GNN still blocked?",
+    "success_threshold": "attempted_candidate_rows>=16 AND compiled_candidate_action_rate>=0.08 AND (fresh_new_strict_same_target_rows>=1 OR target_state_to_full_closure_conversions>=1) AND harmful_compiled_mismatch_actions==0 AND train_gnn_now==false AND gnn_blocked==true",
+    "task_type": "lane_specific_candidate_replay"
+  },
+  "contract_id": "gp225_v1973_lane_specific_small_replay",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:gp230_lamport_gp225_v1973",
+        "raw_agent_ids": [
+          "gp230_lamport_gp225_v1973"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:gp230_shannon_gp225_v1973",
+        "raw_agent_ids": [
+          "gp230_shannon_gp225_v1973"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "gp230_lamport_gp225_v1973",
+      "gp230_shannon_gp225_v1973"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_lamport_gp225_v1973",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1973_lane_specific_small_replay/gp230_lamport_gp225_v1973.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 24.0,
+        "forecasted_at": "2026-05-14T03:43:00Z",
+        "p_success": 0.29,
+        "rationale_short": "The packet is better scoped but still mostly heuristic tactics. It may improve compile rate, but fresh strict labels beyond the known simp/range case and closure conversion remain unlikely.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "gp230_shannon_gp225_v1973",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v1973_lane_specific_small_replay/gp230_shannon_gp225_v1973.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_repair_micro",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T03:43:00Z",
+        "p_success": 0.38,
+        "rationale_short": "v19.72 is smaller and conditioned on failures, so it has better odds than blind rank widening. But the tactics are still not model-generated/source-proven, so success remains below even odds.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 16.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:45:41Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 23.0,
+      "expected_value": -4.0052910205345285,
+      "p_success": 0.33348469370204237,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 1.1323
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 23.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.33348469370204237,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "lane_specific_candidates_still_generic",
+        "p": 0.27
+      },
+      {
+        "mode": "closure_conversion_still_zero",
+        "p": 0.24
+      },
+      {
+        "mode": "compile_rate_below_0_08",
+        "p": 0.16999999999999998
+      },
+      {
+        "mode": "fresh_strict_label_zero",
+        "p": 0.15000000000000002
+      },
+      {
+        "mode": "other",
+        "p": 0.11000000000000001
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.11424999999999999,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:45:44Z"
+  }
+}

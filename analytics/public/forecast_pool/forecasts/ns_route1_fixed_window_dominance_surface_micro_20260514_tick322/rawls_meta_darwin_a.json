@@ -1,0 +1,23 @@
+{
+  "agent_id": "rawls_meta_darwin_A",
+  "contract_id": "ns_route1_fixed_window_dominance_surface_micro_20260514_tick322",
+  "contract_question": "Will the next local NS proof tick add a build-passed fixed-window angular-dominance source or same-window cancellation countermodel surface below the pressure/Riesz formula source, without adding a wrapper that assumes the target carrier lower bound?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 45.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "angular_dominance_requires_unavailable_ns_estimate": 0.18,
+    "artifact_compiles_but_only_prop_packaging": 0.2,
+    "carrier_lower_bound_smuggled_through_fixed_window_source": 0.28,
+    "gp233_rejects_no_lever_change": 0.05,
+    "lean_rewrite_or_import_friction": 0.07,
+    "same_window_hypotheses_too_weak_to_make_countermodel_nontrivial": 0.22
+  },
+  "forecasted_at": "2026-05-14T01:01:39Z",
+  "p_dependency_issue": 0.1,
+  "p_needs_new_lemma": 0.58,
+  "p_regression": 0.08,
+  "p_success": 0.66,
+  "rationale_short": "Cancellation countermodel surface is safer; angular-dominance source is higher value but risks opaque Prop packaging.",
+  "read_only_attestation": true
+}

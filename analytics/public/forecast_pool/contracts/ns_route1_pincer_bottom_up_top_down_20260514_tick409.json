@@ -1,0 +1,97 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_route1_pincer_bottom_up_top_down_20260514_tick409",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_pincer_bottom_up_top_down_20260514_tick409.json"
+  },
+  "baseline_action": "continue bottom-up N2 only",
+  "budget_agent_minutes": 80.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_route1_pincer_bottom_up_top_down_20260514_tick409",
+  "cost_penalty": 0.12,
+  "counterfactual_action": "pincer: bottom-up N1/N2/N3 route closure plus top-down critical-increment branch dominance audit",
+  "created_at": "2026-05-14T19:37:13Z",
+  "created_by": "codex_rd",
+  "effort_calibration": {
+    "agent_instruction": "Use this prior as a baseline when estimating effort; override only by naming why this contract differs structurally.",
+    "char_trigram_jaccard": 1.0,
+    "expected_cost_agent_minutes_prior": 54.25,
+    "match_type": "exact",
+    "min_similarity": 0.35,
+    "requested_domain": "ns_route1_pde",
+    "score": 1.0,
+    "selected_domain": "ns_route1_pde",
+    "similarity_method": "exact_domain_or_hybrid_lexical",
+    "source": "analytics/public/forecast_pool/calibration_weights.json",
+    "token_jaccard": 1.0,
+    "top_candidates": [
+      {
+        "char_trigram_jaccard": 1.0,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes_prior": 54.25,
+        "sample_limited": false,
+        "score": 1.0,
+        "score_rows": 140,
+        "token_jaccard": 1.0
+      },
+      {
+        "char_trigram_jaccard": 0.6667,
+        "domain": "NS_route1",
+        "expected_cost_agent_minutes_prior": 42.0,
+        "sample_limited": false,
+        "score": 0.6667,
+        "score_rows": 10,
+        "token_jaccard": 0.6667
+      },
+      {
+        "char_trigram_jaccard": 0.1875,
+        "domain": "ns_route1_local_energy_measure_split",
+        "expected_cost_agent_minutes_prior": 38.5,
+        "sample_limited": false,
+        "score": 0.2857,
+        "score_rows": 4,
+        "token_jaccard": 0.2857
+      },
+      {
+        "char_trigram_jaccard": 0.25,
+        "domain": "navier_stokes_route1",
+        "expected_cost_agent_minutes_prior": 28.88,
+        "sample_limited": false,
+        "score": 0.25,
+        "score_rows": 16,
+        "token_jaccard": 0.2
+      },
+      {
+        "char_trigram_jaccard": 0.0,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes_prior": 31.5,
+        "sample_limited": true,
+        "score": 0.2,
+        "score_rows": 2,
+        "token_jaccard": 0.2
+      }
+    ]
+  },
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {
+    "negative": "may add branch wrappers without sourcing dominance or finite-mass semantics",
+    "positive": "may expose whether route-1 closure is enough for upstream branch exhaustion or only closes one disjunct"
+  },
+  "horizon": "2026-05-14T23:59:00Z",
+  "information_value": 0.42,
+  "layer": "meso",
+  "objective_resolver": "artifact-backed: success iff a pincer work packet is saved, Lean route1 adapter compiles after adding any source/guard surfaces, no sorry/admit is introduced in the touched Lean file, and the result explicitly preserves N7/non-route branch obligations",
+  "question": "Can this tick build a route-1 pincer work packet and compile a Lean surface that links bottom-up N1/N2/N3 schedule closure to top-down branch-dominance obligations, without claiming full upstream Clay closure?",
+  "risk_penalty": 0.22,
+  "success_threshold": "pincer_packet_saved_and_lean_passes_no_sorry_no_upstream_overclaim",
+  "task_type": "ns_route1_pde",
+  "value_if_success": 0.7,
+  "void_conditions": "infra failure, resolver unavailable, or contract artifact missing"
+}

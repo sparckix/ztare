@@ -1,0 +1,34 @@
+{
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json",
+    "forecast_dir": "analytics/public/forecast_pool/forecasts/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json",
+    "score": "analytics/public/forecast_pool/scores/ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514.json"
+  },
+  "baseline_action": "Ship a tick454 read-only adversarial Meta-Darwin audit applying the 6-point checklist (null, distinct-outcome, class-balance, LOO, floor-satisfiable, source-leakage) to every named primitive added in tick446 / tick447 / tick449 / tick450 on top of the tick432-tick445 chain. Produce per-primitive HONEST / WRAPPER / LAUNDERED / PURE_NAMING / UNCLEAR verdicts. Pay special attention to (a) tick446 r*M^3 'scaling identity' rfl theorems — is M^3 carrier-forced or definitional fiat?; (b) tick447 self-flagged 'typed bridge, not derivation' — confirm or refute; (c) tick449 Sum.elim 2->1 reduction — real reduction or renaming?; (d) tick450 dyadic instance — real combinatorial substance or wrapper in disguise?",
+  "budget_agent_minutes": 35.0,
+  "budget_agent_minutes_source": "operator_supplied",
+  "contract_id": "ns_clay_meta_darwin_v2_audit_tick446_to_450_tick454_20260514",
+  "cost_penalty": 0.01,
+  "counterfactual_action": "Skip the audit; accept the in-artifact scope guards on tick446/447/449/450 as the only kill-test. Risk: tick448's previous Meta-Darwin pass found 11/13 wrappers in the prior chain; without a second outsider pass on the post-tick448 additions, wrapper inflation can hide behind 'principal acknowledged the 11/13 verdict' framing and ship more typed bridges without challenging the M^3 definitional-fiat pattern or the Sum.elim renaming-as-compression pattern.",
+  "created_at": "2026-05-15T02:30:00Z",
+  "created_by": "claude_principal",
+  "execution_layer_policy": {
+    "builders_no_stake": true,
+    "forecasters_read_only": true,
+    "live_price_hidden_from_builders": true,
+    "sealed_batch": true
+  },
+  "externality_hypotheses": {},
+  "horizon": "2026-05-15T23:59:59Z",
+  "information_value": 0.4,
+  "layer": "micro",
+  "objective_resolver": "(1) analytics/public/audits/meta_darwin_tick454_audit_tick446_to_450.md exists and applies the 6-point checklist to every named primitive added in tick446/447/449/450; (2) each primitive receives a verdict in {HONEST, WRAPPER, LAUNDERED, PURE_NAMING, UNCLEAR}; (3) audit explicitly inspects (a) the M^3 'scaling identity' rfl theorems in tick446, (b) the tick447 'typed bridge' self-flag, (c) the tick449 Sum.elim 2->1 reduction, (d) the tick450 dyadic depth_child_le / flat_children_radius_sum_le proofs; (4) NO Lean files modified during audit; (5) GP-233 ledger entry + E-row + F-row + handover updated with retraction or demotion recommendations if warranted.",
+  "question": "Will the tick454 Meta-Darwin v2 audit of the tick446-tick450 Lean additions (a) ship per-primitive HONEST/WRAPPER/LAUNDERED/PURE_NAMING verdicts using the 6-point checklist, (b) identify whether tick450 is honest combinatorial substance or a wrapper in disguise, (c) confirm or refute tick446's r*M^3 scaling identity as carrier-forced vs definitional fiat, (d) confirm or refute tick449's Sum.elim as a real 2->1 reduction vs renaming, and (e) leave Lean files unmodified?",
+  "risk_penalty": 1.0,
+  "success_threshold": "0.5",
+  "task_type": "meta_darwin_lean_audit",
+  "value_if_success": 1.0,
+  "void_conditions": "infra failure, resolver unavailable, or audit file missing"
+}

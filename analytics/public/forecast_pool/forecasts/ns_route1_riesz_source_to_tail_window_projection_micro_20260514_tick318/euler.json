@@ -1,0 +1,23 @@
+{
+  "agent_id": "Euler",
+  "contract_id": "ns_route1_riesz_source_to_tail_window_projection_micro_20260514_tick318",
+  "contract_question": "Can this tick connect the existing recovered-Riesz/local-pressure source machinery to the new Route1PressureHessianTailWindowProjectionStation without claiming the older source upper-bound arc proves pressure visibility?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "constructor_field_drift": 0.13,
+    "gp233_non_tautology_rejection": 0.13,
+    "import_cycle_or_wrong_file_choice": 0.14,
+    "sorry_admit_or_build_hygiene_failure": 0.08,
+    "tail_window_station_type_mismatch": 0.22,
+    "upper_control_smuggled_as_lower_visibility": 0.3
+  },
+  "forecasted_at": "2026-05-14T00:35:17Z",
+  "p_dependency_issue": 0.21,
+  "p_needs_new_lemma": 0.38,
+  "p_regression": 0.09,
+  "p_success": 0.69,
+  "rationale_short": "adapter route feasible; success depends on lower carrier-projection station consuming recovered Riesz without claiming upper pressure-excess control proves visibility.",
+  "read_only_attestation": true
+}

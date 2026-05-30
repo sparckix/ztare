@@ -1,0 +1,34 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "scaling_the_validated_grounded_iterative_lever_across_the_6_remaining_c_gaps_c02_c04_c05_c14_retrieval_class_c08_c13_pro",
+  "contract_question": "Scaling the validated grounded-iterative lever across the 6 remaining C-gaps (C02,C04,C05,C14 retrieval-class + C08,C13 prover-called-genuine-construction): will >=4/6 close GENUINE in canonical v4.29.0, and will C08/C13 reveal whether a TRUE reasoning ceiling exists or also fall to grounding?",
+  "domain": "scale_grounded_iterative_remaining_cgaps",
+  "expected_cost_agent_minutes": 50.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "c08_reasoning_or_search_ceiling": 0.17,
+    "c13_genuine_construction_ceiling": 0.28,
+    "exact_checker_or_namespace_drift": 0.2,
+    "retrieval_class_partial_generalization": 0.35
+  },
+  "forecast_externality_tags": [
+    "grounded_iterative_scaling",
+    "retrieval_gap_closure",
+    "reasoning_ceiling_probe",
+    "read_only_attestation"
+  ],
+  "forecasted_at": "2026-05-16T21:34:21Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.24,
+  "p_regression": 0.06,
+  "p_success": 0.63,
+  "rationale_short": "Four retrieval-class gaps are likely to yield to the validated grounded-iterative lever; the residual risk is that C13 stays a genuine construction gap and C08 exposes a ceiling, but the threshold only needs 4/6.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "retrieval_class_partial_generalization",
+    "c13_genuine_construction_ceiling",
+    "c08_reasoning_or_search_ceiling",
+    "exact_checker_or_namespace_drift"
+  ]
+}

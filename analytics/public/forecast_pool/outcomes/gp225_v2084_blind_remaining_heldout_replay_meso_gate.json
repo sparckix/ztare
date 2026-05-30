@@ -1,0 +1,30 @@
+{
+  "actual_cost_agent_minutes": 31.0,
+  "artifact_hash": "fdf5c8fbfab75e1d960ec74d84d1d7a549b02b41767b7cbd9a0cc9817ba41c28",
+  "artifact_path": "analytics/public/leanmill/results/v2084_blind_remaining_heldout_replay.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": "replay_passed",
+  "contract_id": "gp225_v2084_blind_remaining_heldout_replay_meso_gate",
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "meso_only_forecast",
+    "heldout_strict_yield",
+    "blind_signature_synthesis",
+    "anti_goodhart"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 1,
+  "negative_externality_tags": [],
+  "new_next_action": "manifest refresh to add current_scale_0036 and re-evaluate baseline/model gate",
+  "old_next_action": "replay gate only, no strict promotion yet",
+  "preconditioner_effect": "v20.83 blind signature synthesis produced a map_direction changed arm that replayed strict while dist_map_map_zero_lt exposed a metric-rewrite shape gap.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2083_blind_remaining_heldout_signature_synthesis.json",
+  "realized_failure_mode_ids": [
+    "dist_lt_shape_or_dist_comm_orientation_mismatch"
+  ],
+  "resolution_note": "v20.84 bounded replay ran on four blind changed arms across two heldout rows. Result: 2/4 compiled, 1 new strict same-target heldout row current_scale_0036/map_direction, 0 harmful mismatches, no target proof/gold-state generation, training=false, GNN blocked=true.",
+  "resolved_at": "2026-05-14T20:18:29Z",
+  "success_bool": true,
+  "voided": false
+}

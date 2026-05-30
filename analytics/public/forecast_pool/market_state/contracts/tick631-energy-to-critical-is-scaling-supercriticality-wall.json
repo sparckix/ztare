@@ -1,0 +1,156 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-17T03:26:23Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 36.75,
+    "expected_value": 0.13460619706654386,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.05,
+    "p_needs_new_lemma": 0.05,
+    "p_regression": 0.05,
+    "p_success": 0.5521061970665438,
+    "participants": [
+      {
+        "agent_id": "claude:RD",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick631-energy-to-critical-is-scaling-supercriticality-wall/claude_rd.json",
+        "forecasted_at": "2026-05-17T03:26:23Z",
+        "p_success": 0.3,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/tick631-energy-to-critical-is-scaling-supercriticality-wall/codex.json",
+        "forecasted_at": "2026-05-17T03:26:23Z",
+        "p_success": 0.78,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/tick631-energy-to-critical-is-scaling-supercriticality-wall.json",
+    "contract": "analytics/public/forecast_pool/contracts/tick631-energy-to-critical-is-scaling-supercriticality-wall.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/tick631-energy-to-critical-is-scaling-supercriticality-wall.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/tick631-energy-to-critical-is-scaling-supercriticality-wall.json",
+    "score": "analytics/public/forecast_pool/scores/tick631-energy-to-critical-is-scaling-supercriticality-wall.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-17T03:25:12Z",
+    "created_by": "claude:RD",
+    "horizon": "this tick",
+    "layer": "micro",
+    "objective_resolver": "manual_rd",
+    "question": "tick631: is the energy\u2192critical gap (CKN P^1(S)=0 from finite energy-dissipation, vs ESS critical L^inf_t L^3) NOT bridgeable by interpolation because it IS exactly 3D-NS scaling-supercriticality \u2014 the energy norm scales as a POSITIVE power of lambda (supercritical) while L^3/Hdot^{1/2} is scale-invariant (critical), and no interpolation/Sobolev embedding raises a supercritical a-priori bound to a scale-invariant one without genuinely new critical input?",
+    "success_threshold": "the scaling computation (energy norm supercritical exponent vs critical scale-invariance) is correct AND the 'no interpolation bridges supercritical\u2192critical' is honestly stated as the supercriticality wall (not a re-expression dressed as progress); survives codex kill",
+    "task_type": "ns_closure_pde_lemma"
+  },
+  "contract_id": "tick631-energy-to-critical-is-scaling-supercriticality-wall",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "claude:RD"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "claude:RD",
+      "codex"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "claude:RD",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick631-energy-to-critical-is-scaling-supercriticality-wall/claude_rd.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T03:26:23Z",
+        "p_success": 0.3,
+        "rationale_short": "conceding: my scaling sub-claim (raw dissipation scale-invariant) was WRONG (codex-corrected: supercritical l^-1; scale-inv object is local r^-1\u222b\u222b_Qr|\u2207u|\u00b2); AND amnesia manifest:182/tick601 \u2014 this is the known route-invariant scaling-supercriticality terminus RE-PLACED at CKN\u2194ESS, not new progress. Threshold required correct scaling \u2014 failed",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/tick631-energy-to-critical-is-scaling-supercriticality-wall/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "general",
+        "expected_cost_agent_minutes": 36.75,
+        "forecasted_at": "2026-05-17T03:26:23Z",
+        "p_success": 0.78,
+        "rationale_short": "core wall-framing right (energy/dissip can't interpolate up to ESS-critical) but scaling sub-claim ERRONEOUS: \u222b\u222b|\u2207u|\u00b2 scales l^-1 (supercritical), scale-invariant object is local r^-1\u222b\u222b_Qr|\u2207u|\u00b2",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-17T03:26:23Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "forecast_spread": 0.48,
+      "p_success": 0.5521061970665438,
+      "reason": "large cross-forecaster disagreement",
+      "voi_proxy": 0.7273
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 36.75,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5521061970665438,
+    "routing_hint": "run_or_continue",
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.3492,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:36:53Z"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "tick": "TICK668",
+  "level": 510,
+  "residual": "Level509 supplies targetEventDataIndex directly.",
+  "pattern_chain": [
+    "PATTERN-011 hard mathematical residual swarm lane",
+    "PATTERN-028 recursive tool-depth loop",
+    "Gowers-First-Formalize-Second",
+    "positive source-ladder reduction"
+  ],
+  "anti_pattern_guards": [
+    "ANTI-PATTERN-018 tool underuse formal satisficing",
+    "endpoint capacity as cover",
+    "label-only prefix domination",
+    "post-payoff selected index"
+  ],
+  "carrier_schema_receipts": {
+    "claim_boundary": {
+      "broad": "same-tree prefix domination should cover target bad-center prefix nodes by eventData indices",
+      "narrow": "Level510 only packages a selected eventData index from an explicit target/index prefix-cover relation into Level509"
+    },
+    "residual_to_check": {
+      "residual": "targetEventDataIndex is still a direct field",
+      "check": "strict G-TARGET-EVENTDATA-INDEX-PREFIX-COVER receipt plus Lean constructor to Level509"
+    },
+    "surplus_projection_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level510_prefix_cover_eventdata_index_pencil.md"
+  },
+  "nearest_universal_op": "gp219_estimate_craft__source_ladder",
+  "nearest_confuser": "selected index chosen from endpoint capacity or target/source count deficit",
+  "next_lever": "derive targetEventDataIndexCover totality and selected-index membership from finiteScalePrefixComparison and eventPrefixCofinalWithScalePrefix"
+}

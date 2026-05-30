@@ -1,0 +1,196 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T03:03:06Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 82.0,
+    "expected_value": -149.5105981806689,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.33,
+    "p_needs_new_lemma": 0.74,
+    "p_regression": 0.21,
+    "p_success": 0.590940181933108,
+    "participants": [
+      {
+        "agent_id": "hooke_forecast_tick335",
+        "domain": "ns_route1_pde",
+        "p_success": 0.64,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "rawls_adversarial_tick335",
+        "domain": "ns_route1_pde",
+        "p_success": 0.54,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "q_receipt_not_same_as_stress_mass",
+        "p": 0.175
+      },
+      {
+        "mode": "local_quadratic_receipt_origin_ambiguous",
+        "p": 0.15
+      },
+      {
+        "mode": "build_regression",
+        "p": 0.125
+      },
+      {
+        "mode": "operator_norm_scout_too_toy",
+        "p": 0.125
+      },
+      {
+        "mode": "source_still_conditional",
+        "p": 0.125
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 80.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T03:02:47Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T07:00:00Z",
+    "layer": "micro",
+    "objective_resolver": "Success iff scout artifact verifies the operator-norm cone-charge bound, Lean source constructs the pressure receipt bridge from a local quadratic receipt plus nonnegative reserve/child receipts, no sorry/admit introduced, downstream build passes, and GP-233/E rows are written.",
+    "question": "Will a fixed-kernel operator-norm scout plus Lean source show that local quadratic receipts can pay the pre-summed pressure/Riesz cone charge, avoiding the final-carrier No-Go?",
+    "success_threshold": "scout+lean_source+build+ledger",
+    "task_type": "ns_route1_pde"
+  },
+  "contract_id": "ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:hooke_forecast_tick335",
+        "raw_agent_ids": [
+          "hooke_forecast_tick335"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:rawls_adversarial_tick335",
+        "raw_agent_ids": [
+          "rawls_adversarial_tick335"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "hooke_forecast_tick335",
+      "rawls_adversarial_tick335"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "hooke_forecast_tick335",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335/hooke_forecast_tick335.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 72.0,
+        "forecasted_at": "2026-05-14T03:02:47Z",
+        "p_success": 0.64,
+        "rationale_short": "Operator-norm domination is mathematically straightforward for fixed kernels, but the value depends on connecting the local quadratic receipt to pre-summed stress mass without smuggling carrier positivity.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "rawls_adversarial_tick335",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_pressure_cone_local_quadratic_payment_micro_20260514_tick335/rawls_adversarial_tick335.json",
+        "canonical_agent_id": null,
+        "domain": "ns_route1_pde",
+        "expected_cost_agent_minutes": 92.0,
+        "forecasted_at": "2026-05-14T03:02:59Z",
+        "p_success": 0.54,
+        "rationale_short": "The bound is true as linear algebra, but may remain conditional unless the local quadratic receipt is tied to actual CKN/tent excess already present in route-1.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 45.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T03:07:45Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "split_contract",
+      "forecast_spread": 0.1,
+      "p_success": 0.590940181933108,
+      "reason": "uncertainty is concentrated enough to price a smaller branch",
+      "top_failure_mode": {
+        "mode": "q_receipt_not_same_as_stress_mass",
+        "p": 0.175
+      },
+      "voi_proxy": 9.3417
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 82.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.590940181933108,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "q_receipt_not_same_as_stress_mass",
+        "p": 0.175
+      },
+      {
+        "mode": "local_quadratic_receipt_origin_ambiguous",
+        "p": 0.15
+      },
+      {
+        "mode": "build_regression",
+        "p": 0.125
+      },
+      {
+        "mode": "operator_norm_scout_too_toy",
+        "p": 0.125
+      },
+      {
+        "mode": "source_still_conditional",
+        "p": 0.125
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.17059999999999997,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T03:07:45Z"
+  }
+}

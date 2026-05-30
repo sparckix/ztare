@@ -1,0 +1,124 @@
+{
+  "providers_responded": [
+    "gemini",
+    "claude",
+    "openai"
+  ],
+  "per_provider_nomination_counts": {
+    "gemini": 3,
+    "claude": 3,
+    "openai": 0
+  },
+  "aggregate": {
+    "convergent_theorem_names": {},
+    "convergent_quantities": {
+      "B.gamma": [
+        "claude",
+        "gemini"
+      ],
+      "S.payoffLimit": [
+        "claude",
+        "gemini"
+      ],
+      "leraySelfTaxLimitPrice": [
+        "claude",
+        "gemini"
+      ],
+      "nu": [
+        "claude",
+        "gemini"
+      ],
+      "sharpTarget": [
+        "claude",
+        "gemini"
+      ],
+      "shell": [
+        "claude",
+        "gemini"
+      ],
+      "branchA": [
+        "claude",
+        "gemini"
+      ],
+      "branchB": [
+        "claude",
+        "gemini"
+      ],
+      "crossAB": [
+        "claude",
+        "gemini"
+      ],
+      "crossAC": [
+        "claude",
+        "gemini"
+      ],
+      "crossBC": [
+        "claude",
+        "gemini"
+      ],
+      "mixedC": [
+        "claude",
+        "gemini"
+      ],
+      "threeProfileAssembledTax": [
+        "claude",
+        "gemini"
+      ],
+      "threeProfilePositiveCoherencePrice": [
+        "claude",
+        "gemini"
+      ],
+      "gamma": [
+        "claude",
+        "gemini"
+      ]
+    },
+    "all_quantity_counts": {
+      "AssembledTax": 1,
+      "B.gamma": 2,
+      "R.shellN": 1,
+      "R.viscosity": 1,
+      "S.payoffLimit": 2,
+      "branch": 1,
+      "cross": 1,
+      "leraySelfTaxLimitPrice": 2,
+      "nu": 2,
+      "sharpTarget": 2,
+      "shell": 2,
+      "TriProfile": 1,
+      "branchA": 2,
+      "branchB": 2,
+      "crossAB": 2,
+      "crossAC": 2,
+      "crossBC": 2,
+      "mixedC": 2,
+      "threeProfileAssembledTax": 2,
+      "threeProfilePositiveCoherencePrice": 2,
+      "three_profile_assembly_bound": 1,
+      "VelocityField": 1,
+      "shellN": 1,
+      "shell_viscosity_bound": 1,
+      "gamma": 2,
+      "leray_self_tax_limit_bound": 1,
+      "B.selfTax": 1,
+      "R.gramianConstant": 1,
+      "continuumGlobalSelfTaxTarget": 1,
+      "gap": 1,
+      "le_trans": 1,
+      "norm_num": 1,
+      "pricingSumSquares": 1,
+      "sumSquares": 1,
+      "unfold": 1,
+      "xs": 1,
+      "Profile": 1,
+      "selfTax": 1,
+      "threeProfileAssembledTax_le_leraySelfTaxLimitPrice": 1,
+      "coreFloor": 1,
+      "coreFloor_le_epsilon_mul_shell": 1,
+      "epsilon": 1,
+      "hnu": 1,
+      "Fin": 1,
+      "gap_le_pricingSumSquares_of_sumSquares": 1
+    }
+  }
+}

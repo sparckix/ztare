@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T00:12:18Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 19.0,
+    "expected_value": -1.8315154934467441,
+    "forecast_count": 2,
+    "forecast_history_count": null,
+    "p_dependency_issue": 0.13,
+    "p_needs_new_lemma": 0.21,
+    "p_regression": 0.065,
+    "p_success": 0.7713820414894621,
+    "participants": [
+      {
+        "agent_id": "Euler",
+        "domain": "ns_lean_micro",
+        "p_success": 0.74,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Gibbs",
+        "domain": "ns_lean_micro",
+        "p_success": 0.8,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tautological_rename",
+        "p": 0.24
+      },
+      {
+        "mode": "missing_compositional_equality",
+        "p": 0.175
+      },
+      {
+        "mode": "identification_lacks_equality",
+        "p": 0.16
+      },
+      {
+        "mode": "constructor_churn",
+        "p": 0.09
+      },
+      {
+        "mode": "field_order_or_constructor_drift",
+        "p": 0.09
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json",
+    "contract": "analytics/public/forecast_pool/contracts/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json",
+    "score": "analytics/public/forecast_pool/scores/ns_route1_angular_carrier_identification_split_micro_20260514_tick316.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 30.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T00:11:00Z",
+    "created_by": "codex_rd",
+    "horizon": "same RD tick, before final response",
+    "layer": "micro",
+    "objective_resolver": "lake env lean ZtareProofs/ns_pressure_hessian_l2_bridge.lean passes; lake build ZtareProofs.ns_pressure_hessian_l2_bridge passes; rg sorry/admit in target file returns none; new declaration Route1PressureAngularCarrierIdentification and constructor ofCarrierIdentification exist.",
+    "question": "Will this tick add a build-passed route-independent carrier-identification station below Route1PressureAngularCarrierEstimate, splitting l2Carrier_identifies_totalAngularMoment into projected Riesz kernel match, recovered pressure-Hessian tail-window projection, and normalization/anti-tautology fields, plus constructor into Route1PressureAngularCarrierEstimate, with no new sorry/admit?",
+    "success_threshold": "success=true iff all objective resolver checks pass and the split is below the angular carrier estimate rather than a route receipt wrapper",
+    "task_type": "ns_lean_proof_surface_split"
+  },
+  "contract_id": "ns_route1_angular_carrier_identification_split_micro_20260514_tick316",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Euler",
+        "raw_agent_ids": [
+          "Euler"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Gibbs",
+        "raw_agent_ids": [
+          "Gibbs"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Euler",
+      "Gibbs"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Euler",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_angular_carrier_identification_split_micro_20260514_tick316/euler.json",
+        "canonical_agent_id": null,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes": 22.0,
+        "forecasted_at": "2026-05-14T00:12:14Z",
+        "p_success": 0.74,
+        "rationale_short": "Compile-favorable because current station exposes the ingredients; risk is carrying only Prop guards without equality strong enough to construct the estimate.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "Gibbs",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/ns_route1_angular_carrier_identification_split_micro_20260514_tick316/gibbs.json",
+        "canonical_agent_id": null,
+        "domain": "ns_lean_micro",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T00:12:14Z",
+        "p_success": 0.8,
+        "rationale_short": "Good micro tick if identification carries the final equality while separately naming projection, Riesz/angular match, normalization, and anti-tautology guards.",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 18.0,
+    "changed_by_forecast_ids": null,
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-05-14T00:19:51Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 19.0,
+      "expected_value": -1.8315154934467441,
+      "p_success": 0.7713820414894621,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.9564
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 19.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.7713820414894621,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "tautological_rename",
+        "p": 0.24
+      },
+      {
+        "mode": "missing_compositional_equality",
+        "p": 0.175
+      },
+      {
+        "mode": "identification_lacks_equality",
+        "p": 0.16
+      },
+      {
+        "mode": "constructor_churn",
+        "p": 0.09
+      },
+      {
+        "mode": "field_order_or_constructor_drift",
+        "p": 0.09
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.053799999999999994,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T00:19:58Z"
+  }
+}

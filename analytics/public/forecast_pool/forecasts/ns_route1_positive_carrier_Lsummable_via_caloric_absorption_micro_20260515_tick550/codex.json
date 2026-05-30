@@ -1,0 +1,30 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "codex",
+  "contract_id": "ns_route1_positive_carrier_Lsummable_via_caloric_absorption_micro_20260515_tick550",
+  "contract_question": "The whole strict-margin arc localizes (tick550) to ONE existing open field: tick491/492 L_summable (weighted no-reuse of the positive same-carrier transport/kinetic cutoff-flux charge). Can L_summable be discharged via the Young/Bernstein CALORIC ABSORPTION route (tick396 attack, F-293 'PDE-native but unpaid'), given all surrounding machinery is proved (tick491/492 Cauchy-Schwarz, substrate SameCarrierPositiveTransportFluxReceipt, tick548/549 signed-futile/positive-unique)?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "cutoff_scale_or_weight_mismatch": 0.13,
+    "hidden_coupling_between_receipt_and_caloric_absorption": 0.1,
+    "one_new_no_reuse_lemma_required": 0.31,
+    "same_window_no_reuse_obstruction_reappears": 0.46
+  },
+  "forecast_externality_tags": [
+    "same_carrier_guard",
+    "no_reuse_guard"
+  ],
+  "forecasted_at": "2026-05-15T23:10:08Z",
+  "p_dependency_issue": 0.11,
+  "p_needs_new_lemma": 0.83,
+  "p_regression": 0.05,
+  "p_success": 0.29,
+  "rationale_short": "Calibration is close to claude_rd but slightly more conservative: the route is PDE-native and the surrounding C-S / receipt machinery is done, yet the open item is exactly the weighted no-reuse bound, which already behaved like the deep residual in tick396. Most mass stays on a same-window reuse obstruction or the need for one genuinely new no-reuse lemma rather than extra PDE infrastructure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "same_window_no_reuse_obstruction_reappears",
+    "one_new_no_reuse_lemma_required"
+  ]
+}

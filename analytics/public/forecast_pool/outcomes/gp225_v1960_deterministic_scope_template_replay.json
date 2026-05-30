@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 18.0,
+  "artifact_hash": "9c49c476d8025a50ad2592a3590b755c4e2fedc62d41541fe7977b745a79f6dc",
+  "artifact_path": "analytics/public/leanmill/results/v1960_deterministic_scope_template_replay.json",
+  "compile_status": "target_state_label_no_full_closure",
+  "contract_id": "gp225_v1960_deterministic_scope_template_replay",
+  "error_type": null,
+  "goal_delta": 1,
+  "resolution_note": "Resolved true: deterministic scope-template packet emitted 3 candidates across 2 rows; replay attempted 3, found 1 new strict target-state label, 0 pull-forward closures, 0 harmful compiled mismatches, no forbidden source fields, train_gnn_now=false. Full compiled closure count remains 0, so this is target-state label progress only.",
+  "resolved_at": "2026-05-14T02:53:46Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

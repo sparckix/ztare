@@ -1,0 +1,32 @@
+{
+  "tick_id": "tick668",
+  "contract_id": "tick668_level527_bounded_coverage_appearance_event_index_source",
+  "surface": "NS Track-B L3A bounded coverage-appearance event index source",
+  "selected_patterns": [
+    "PATTERN-011",
+    "PATTERN-028",
+    "Gowers-First-Formalize-Second"
+  ],
+  "anti_patterns_guarded": [
+    "tool_underuse_formal_satisficing",
+    "downstream_source_laundering",
+    "bounded_natural_packet_self-source",
+    "bare_prop_choice",
+    "endpoint_capacity_as_bound",
+    "shell_only_enumeration"
+  ],
+  "carrier_schema_receipts": {
+    "residual_to_check_edge": {
+      "residual": "Level526 requires a typed coverage appearance witness, while the next source should expose the event index and final-prefix bound separately.",
+      "check": "Require a coverage-specific Nat event index, strict bound, and eventToBadNode equality, with Level518/519/517 source families forbidden.",
+      "artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level527_provenance_acyclic_edge_receipt.json"
+    },
+    "surplus_projection_artifact": {
+      "surplus": "A bounded Nat index is enough to construct the finite typed witness while exposing the event-ordering obligation.",
+      "projection": "Pair coverageAppearanceEventIndex with its strict bound as a Fin value and carry the displayed equality.",
+      "artifact": "ztare_proofs/ZtareProofs/ns_material_window_channel_decrement_bridge.lean"
+    }
+  },
+  "nearest_universal_op": "GP-219 estimate-craft bounded-event-index extraction and provenance acyclicity",
+  "nearest_confuser": "L3ABoundedNaturalEventEnumerationPacketSource.selectedBadNodeNaturalEventEnumeration"
+}

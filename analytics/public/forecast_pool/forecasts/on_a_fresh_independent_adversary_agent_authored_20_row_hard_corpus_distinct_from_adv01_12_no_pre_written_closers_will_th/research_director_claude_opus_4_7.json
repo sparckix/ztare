@@ -1,0 +1,19 @@
+{
+  "action_change_recommendation": null,
+  "agent_id": "research_director_claude_opus_4_7",
+  "contract_id": "on_a_fresh_independent_adversary_agent_authored_20_row_hard_corpus_distinct_from_adv01_12_no_pre_written_closers_will_th",
+  "contract_question": "On a fresh INDEPENDENT adversary-agent-authored 20-row hard corpus (distinct from ADV01-12, no pre-written closers), will the frozen clean-prover + pinned-v4.29.0+exact? governance yield >=8 genuine novel closures (compile + exact? cannot single-close) with 0 false ratifications?",
+  "domain": "general",
+  "expected_cost_agent_minutes": 90.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-05-16T16:32:40Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.45,
+  "rationale_short": "ADV01-12=5/10 genuine(50%); harder+larger independent corpus likely lowers genuine-rate; >=8/20=40% plausible not favored",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

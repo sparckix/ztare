@@ -1,0 +1,22 @@
+{
+  "agent_id": "gp230_noether_gp225_v1978",
+  "contract_id": "gp225_v1978_targeted_dual_head_replay",
+  "contract_question": "Will v19.78 replay of the v19.77 targeted dual-head packet add at least one fresh strict-step or solver-closure row, with harmful mismatches zero and source-policy flags clean?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 20.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "handcrafted_candidates_do_not_compile": 0.31,
+    "other": 0.12,
+    "small_packet_variance": 0.13,
+    "solver_closure_candidates_progress_but_do_not_close": 0.24,
+    "strict_step_alignment_still_wrong_object": 0.2
+  },
+  "forecasted_at": "2026-05-14T04:06:25Z",
+  "p_dependency_issue": 0.12,
+  "p_needs_new_lemma": 0.08,
+  "p_regression": 0.05,
+  "p_success": 0.33,
+  "rationale_short": "Small targeted packet has better information value than broad replay, but candidates are still mostly hand-written from progress witnesses and prior compile rate was low. I price one fresh dual-head win below even odds.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,134 @@
+{
+  "contract_id": "gp225_v2065_public_union_hydrated_top_row_patch",
+  "externality_audit": {
+    "contract_fields": {
+      "baseline_action": "Replay or reprice the synthetic v20.62 bayesRisk candidates.",
+      "counterfactual_action": "Patch bayesRisk binder/finite-bound hydration before replay pricing.",
+      "externality_hypotheses": {
+        "negative": [
+          "still static-only",
+          "branch-local hypothesis name may still differ in replay harness"
+        ],
+        "positive": [
+          "removes synthetic binder failure before replay",
+          "creates a smaller executable canary target"
+        ]
+      }
+    },
+    "forecast_rows_with_action_change_recommendation": 2,
+    "forecast_rows_with_externality_tags": 2,
+    "forecast_rows_with_specific_failure_mode_ids": 2,
+    "outcome_fields": {
+      "changed_by_forecast_ids": [
+        "Babbage3",
+        "Shannon3"
+      ],
+      "counterfactual_value_bucket": "medium",
+      "decision_changed_bool": true,
+      "externality_tags": [
+        "hydrated_patch",
+        "replay_preconditioner",
+        "anti_goodhart"
+      ],
+      "failure_mode_preconditioner_used": true,
+      "negative_externality_tags": [
+        "static_only",
+        "replay_deferred"
+      ],
+      "new_next_action": "price one-row hydrated bayesRisk canary replay",
+      "old_next_action": "reprice synthetic bayesRisk candidates",
+      "preconditioner_effect": "Converted bayesRisk hydration obligations into a one-row static patch.",
+      "preconditioner_source": "analytics/public/leanmill/results/v2064_public_union_context_hydration_reducer.json"
+    }
+  },
+  "forecast_history_count": 2,
+  "mean_brier": 0.0365,
+  "mean_log_score": -0.21102595585628164,
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "artifact_hash": "b43243d2fd4a1ce02604a3c00627f6635be59569e2846968f027b712a92e44ce",
+    "artifact_path": "analytics/public/leanmill/results/v2065_public_union_hydrated_top_row_patch.json",
+    "changed_by_forecast_ids": [
+      "Babbage3",
+      "Shannon3"
+    ],
+    "compile_status": "static_hydrated_top_row_patch_passed",
+    "contract_id": "gp225_v2065_public_union_hydrated_top_row_patch",
+    "counterfactual_value_bucket": "medium",
+    "decision_changed_bool": true,
+    "error_type": "none",
+    "externality_tags": [
+      "hydrated_patch",
+      "replay_preconditioner",
+      "anti_goodhart"
+    ],
+    "failure_mode_preconditioner_used": true,
+    "goal_delta": 0,
+    "negative_externality_tags": [
+      "static_only",
+      "replay_deferred"
+    ],
+    "new_next_action": "price one-row hydrated bayesRisk canary replay",
+    "old_next_action": "reprice synthetic bayesRisk candidates",
+    "preconditioner_effect": "Converted bayesRisk hydration obligations into a one-row static patch.",
+    "preconditioner_source": "analytics/public/leanmill/results/v2064_public_union_context_hydration_reducer.json",
+    "realized_failure_mode_ids": [],
+    "resolution_note": "v20.65 passed: generated two hydrated bayesRisk candidates, removed synthetic pi/hLC/hP_bound tokens, preserved P.bound_lt_top finite-bound simplification, no replay/training, GNN blocked.",
+    "resolved_at": "2026-05-14T18:48:19Z",
+    "sorry_delta": null,
+    "success_bool": true,
+    "voided": false
+  },
+  "score_policy": "latest_forecast_per_agent_id",
+  "scored_at": "2026-05-14T18:48:22Z",
+  "scores": [
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "Babbage3",
+      "brier": 0.028900000000000012,
+      "cost_error_agent_minutes": -1.0,
+      "domain": "gp225_pre_gnn_hydrated_candidate_patch",
+      "expected_cost_agent_minutes": 13.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.18632957819149348,
+      "p_success": 0.83,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:46:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:47:06Z",
+        "resolved_at": "2026-05-14T18:48:19Z"
+      }
+    },
+    {
+      "actual_cost_agent_minutes": 14.0,
+      "agent_id": "Shannon3",
+      "brier": 0.044099999999999986,
+      "cost_error_agent_minutes": 1.0,
+      "domain": "gp225_pre_gnn_hydrated_candidate_patch",
+      "expected_cost_agent_minutes": 15.0,
+      "externality_audit": {
+        "failure_mode_realized_mass": null,
+        "failure_mode_top1_hit": null,
+        "realized_failure_mode_ids_available": false,
+        "specific_failure_mode_id_hit": null
+      },
+      "log_score": -0.23572233352106983,
+      "p_success": 0.79,
+      "success_bool": true,
+      "temporal_audit": {
+        "contract_created_at": "2026-05-14T18:46:39Z",
+        "forecast_after_contract": true,
+        "forecast_before_resolution": true,
+        "forecasted_at": "2026-05-14T18:46:52Z",
+        "resolved_at": "2026-05-14T18:48:19Z"
+      }
+    }
+  ]
+}

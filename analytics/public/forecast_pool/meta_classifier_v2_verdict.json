@@ -1,0 +1,19 @@
+{
+  "n_pool": 579,
+  "n_v10": 358,
+  "n_v10_1": 469,
+  "n_v11": 90,
+  "n_v6_1": 240,
+  "n_combined": 1736,
+  "combined_cv_r2_mean": 0.5064023051604168,
+  "combined_cv_mae_mean": 0.09872443564720165,
+  "agent_family_distribution": {
+    "codex_family_other": 199,
+    "other": 271,
+    "meta_darwin_family": 36,
+    "claude_family": 461,
+    "rd_family_other": 1,
+    "codex_5large_family": 387,
+    "codex_5mini_family": 381
+  }
+}

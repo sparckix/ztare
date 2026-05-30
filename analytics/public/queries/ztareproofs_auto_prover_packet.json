@@ -1,0 +1,1703 @@
+{
+  "adapter": "scripts/public/lean/ztareproofs_auto_prover_packet.py",
+  "artifact_boundary": {
+    "canonical_truth": "ZtareProofs filesystem scan; not a Lean compile or governance receipt",
+    "write_mode": "atomic_replace"
+  },
+  "auto_prover_command": "scripts/public/lean/auto_prover_harness.py --obligations-json /Users/daalami/figs_activist_loop/analytics/public/queries/ztareproofs_auto_prover_packet.json --dry-run",
+  "closed_file_audits": [
+    {
+      "audit_schema": "leanmill-ztareproofs-closed-file-static-l3-audit-v1",
+      "audit_status": "static_l3_clean_pending_kernel_receipts",
+      "axiom_count": 0,
+      "boundary": "Static L3 scan only. Moat-grade PR status still requires lake build, axiom receipt, usedConstants review, and matched-negative-control governance.",
+      "confirmed_flags": [],
+      "decl_audits": [
+        {
+          "kind": "lemma",
+          "line": 42,
+          "name": "osc_integral_trivial_bound",
+          "ordinal_in_file": 0,
+          "sorry_count": 0,
+          "static_l3_audit": {
+            "confirmed_flags": [],
+            "details": {
+              "currency_mismatch_shape": {
+                "conclusion_is_scalar": true,
+                "field_obligation_token": null,
+                "preview": "lemma osc_integral_trivial_bound\n    {R : \u211d} (hR : 0 \u2264 R) (\u03be : \u211d) :\n    \u2016\u222b t in (Set.Icc (-R) R),\n        Complex.exp ((-(2 * Real.pi) * Complex.I * (\u03be : \u2102)) * ",
+                "scalar_wrapper_suspect": false
+              },
+              "gold_name_verbatim": {
+                "confirmed": false,
+                "corpus": {
+                  "in_mathlib": false
+                },
+                "detect": {
+                  "body_preview": "have _used_hR : 0 \u2264 R := hR\n  \n  have hmeas_lt : (volume (Set.Icc (-R) R) : ENNReal) < \u22a4 := by\n    rw [Real.volume_Icc]; exact ENNReal.ofReal_lt_top\n  \n  have h",
+                  "distinct_cited_lemmas": [
+                    "ENNReal.ofReal_lt_top",
+                    "MeasureTheory.norm_setIntegral_le_of_norm_le_const"
+                  ],
+                  "distinct_have_lemmas": [
+                    "MeasureTheory.norm_setIntegral_le_of_norm_le_const"
+                  ],
+                  "gold_name_verbatim_suspect": false,
+                  "has_multistep_composition": true,
+                  "n_have_lemma_lines": 5,
+                  "primary_cited": "ENNReal.ofReal_lt_top"
+                }
+              },
+              "indirect_leakage_shape": {
+                "body_preview": "have _used_hR : 0 \u2264 R := hR\n  \n  have hmeas_lt : (volume (Set.Icc (-R) R) : ENNReal) < \u22a4 := by\n    rw [Real.volume_Icc]; exact ENNReal.ofRea",
+                "closer_tactic": "simp",
+                "explicit_lemma_args": true,
+                "has_multistep_composition": true,
+                "indirect_leakage_suspect": false,
+                "n_have": 8
+              },
+              "vacuity_preflight": {
+                "opaque_predicate_present": false,
+                "risk_flags": [],
+                "statement_preview": "lemma osc_integral_trivial_bound\n    {R : \u211d} (hR : 0 \u2264 R) (\u03be : \u211d) :\n    \u2016\u222b t in (Set.Icc (-R) R),\n        Complex.exp ((-(2 * Real.pi) * Complex.I * (\u03be : \u2102)) * (t : \u211d))\u2016 \u2264\n      2 * R := by\n  \n  have ",
+                "vacuity_suspected": false
+              }
+            },
+            "flags": [],
+            "status": "static_l3_clean_no_confirmed_laundering"
+          }
+        },
+        {
+          "kind": "lemma",
+          "line": 87,
+          "name": "integral_Icc_exp_mul",
+          "ordinal_in_file": 1,
+          "sorry_count": 0,
+          "static_l3_audit": {
+            "confirmed_flags": [],
+            "details": {
+              "currency_mismatch_shape": {
+                "conclusion_is_scalar": true,
+                "field_obligation_token": null,
+                "preview": "lemma integral_Icc_exp_mul {R : \u211d} (hR : 0 \u2264 R) {c : \u2102} (hc : c \u2260 0) :\n    (\u222b t in (Set.Icc (-R) R), Complex.exp (c * (t : \u211d))) =\n      (Complex.exp (c * R) - C",
+                "scalar_wrapper_suspect": false
+              },
+              "gold_name_verbatim": {
+                "confirmed": false,
+                "corpus": {
+                  "in_mathlib": false
+                },
+                "detect": {
+                  "body_preview": "have _used_hR : 0 \u2264 R := hR\n  have _used_hc : c \u2260 0 := hc\n  \n  have hle : (-R : \u211d) \u2264 R := by linarith\n  \n  rw [MeasureTheory.integral_Icc_eq_integral_Ioc]\n  \n  ",
+                  "distinct_cited_lemmas": [
+                    "integral_exp_mul_complex"
+                  ],
+                  "distinct_have_lemmas": [
+                    "integral_exp_mul_complex"
+                  ],
+                  "gold_name_verbatim_suspect": false,
+                  "has_multistep_composition": true,
+                  "n_have_lemma_lines": 4,
+                  "primary_cited": "integral_exp_mul_complex"
+                }
+              },
+              "indirect_leakage_shape": {
+                "body_preview": "have _used_hR : 0 \u2264 R := hR\n  have _used_hc : c \u2260 0 := hc\n  \n  have hle : (-R : \u211d) \u2264 R := by linarith\n  \n  rw [MeasureTheory.integral_Icc_eq",
+                "closer_tactic": null,
+                "explicit_lemma_args": false,
+                "has_multistep_composition": true,
+                "indirect_leakage_suspect": false,
+                "n_have": 4
+              },
+              "vacuity_preflight": {
+                "opaque_predicate_present": false,
+                "risk_flags": [],
+                "statement_preview": "lemma integral_Icc_exp_mul {R : \u211d} (hR : 0 \u2264 R) {c : \u2102} (hc : c \u2260 0) :\n    (\u222b t in (Set.Icc (-R) R), Complex.exp (c * (t : \u211d))) =\n      (Complex.exp (c * R) - Complex.exp (c * (-R))) / c := by\n  \n  ha",
+                "vacuity_suspected": false
+              }
+            },
+            "flags": [],
+            "status": "static_l3_clean_no_confirmed_laundering"
+          }
+        },
+        {
+          "kind": "lemma",
+          "line": 120,
+          "name": "osc_integral_norm_bound",
+          "ordinal_in_file": 2,
+          "sorry_count": 0,
+          "static_l3_audit": {
+            "confirmed_flags": [],
+            "details": {
+              "currency_mismatch_shape": {
+                "conclusion_is_scalar": true,
+                "field_obligation_token": null,
+                "preview": "lemma osc_integral_norm_bound\n    {R : \u211d} (hR : 0 \u2264 R) {\u03be : \u211d} (h\u03be : \u03be \u2260 0) :\n    \u2016(Complex.exp ((-(2 * Real.pi) * Complex.I * (\u03be : \u2102)) * R) -\n        Complex.e",
+                "scalar_wrapper_suspect": false
+              },
+              "gold_name_verbatim": {
+                "confirmed": false,
+                "corpus": {
+                  "in_mathlib": false
+                },
+                "detect": {
+                  "body_preview": "have _used_hR : 0 \u2264 R := hR\n  have _used_h\u03be : \u03be \u2260 0 := h\u03be\n  set c : \u2102 := -(2 * Real.pi) * Complex.I * (\u03be : \u2102)\n  \n  have hpi_pos : (0 : \u211d) < Real.pi := Real.pi_p",
+                  "distinct_cited_lemmas": [
+                    "Complex.norm_real",
+                    "Real.pi_pos",
+                    "abs_of_pos",
+                    "div_le_div_of_nonneg_right",
+                    "lt_irrefl",
+                    "mul_pos",
+                    "ne_of_gt",
+                    "norm_sub_le"
+                  ],
+                  "distinct_have_lemmas": [
+                    "Complex.norm_real",
+                    "Real.pi_pos",
+                    "mul_pos",
+                    "ne_of_gt"
+                  ],
+                  "gold_name_verbatim_suspect": false,
+                  "has_multistep_composition": true,
+                  "n_have_lemma_lines": 15,
+                  "primary_cited": "Complex.norm_real"
+                }
+              },
+              "indirect_leakage_shape": {
+                "body_preview": "have _used_hR : 0 \u2264 R := hR\n  have _used_h\u03be : \u03be \u2260 0 := h\u03be\n  set c : \u2102 := -(2 * Real.pi) * Complex.I * (\u03be : \u2102)\n  \n  have hpi_pos : (0 : \u211d) < ",
+                "closer_tactic": "simp",
+                "explicit_lemma_args": true,
+                "has_multistep_composition": true,
+                "indirect_leakage_suspect": false,
+                "n_have": 20
+              },
+              "vacuity_preflight": {
+                "opaque_predicate_present": false,
+                "risk_flags": [],
+                "statement_preview": "lemma osc_integral_norm_bound\n    {R : \u211d} (hR : 0 \u2264 R) {\u03be : \u211d} (h\u03be : \u03be \u2260 0) :\n    \u2016(Complex.exp ((-(2 * Real.pi) * Complex.I * (\u03be : \u2102)) * R) -\n        Complex.exp ((-(2 * Real.pi) * Complex.I * (\u03be : \u2102",
+                "vacuity_suspected": false
+              }
+            },
+            "flags": [],
+            "status": "static_l3_clean_no_confirmed_laundering"
+          }
+        },
+        {
+          "kind": "lemma",
+          "line": 213,
+          "name": "cube_integral_prod_factor",
+          "ordinal_in_file": 3,
+          "sorry_count": 0,
+          "static_l3_audit": {
+            "confirmed_flags": [],
+            "details": {
+              "currency_mismatch_shape": {
+                "conclusion_is_scalar": true,
+                "field_obligation_token": null,
+                "preview": "lemma cube_integral_prod_factor\n    (R : \u211d) (g : Fin n \u2192 \u211d \u2192 \u2102)\n    (hg : \u2200 i, IntervalIntegrable (g i) MeasureTheory.volume (-R) R) :\n    (\u222b x in (cube R : Set",
+                "scalar_wrapper_suspect": false
+              },
+              "gold_name_verbatim": {
+                "confirmed": false,
+                "corpus": {
+                  "in_mathlib": false
+                },
+                "detect": {
+                  "body_preview": "have _used_hg : \u2200 i, IntervalIntegrable (g i) MeasureTheory.volume (-R) R := hg\n  \n  show (\u222b x in Set.univ.pi (fun _ : Fin n => Set.Icc (-R) R), \u220f i, g i (x i))",
+                  "distinct_cited_lemmas": [
+                    "Measure.restrict_pi_pi",
+                    "MeasureTheory.integral_fin_nat_prod_eq_prod",
+                    "volume_pi"
+                  ],
+                  "distinct_have_lemmas": [
+                    "volume_pi"
+                  ],
+                  "gold_name_verbatim_suspect": false,
+                  "has_multistep_composition": false,
+                  "n_have_lemma_lines": 2,
+                  "primary_cited": "Measure.restrict_pi_pi"
+                }
+              },
+              "indirect_leakage_shape": {
+                "body_preview": "have _used_hg : \u2200 i, IntervalIntegrable (g i) MeasureTheory.volume (-R) R := hg\n  \n  show (\u222b x in Set.univ.pi (fun _ : Fin n => Set.Icc (-R)",
+                "closer_tactic": null,
+                "explicit_lemma_args": false,
+                "has_multistep_composition": false,
+                "indirect_leakage_suspect": false,
+                "n_have": 3
+              },
+              "vacuity_preflight": {
+                "opaque_predicate_present": false,
+                "risk_flags": [],
+                "statement_preview": "lemma cube_integral_prod_factor\n    (R : \u211d) (g : Fin n \u2192 \u211d \u2192 \u2102)\n    (hg : \u2200 i, IntervalIntegrable (g i) MeasureTheory.volume (-R) R) :\n    (\u222b x in (cube R : Set (Fin n \u2192 \u211d)), \u220f i, g i (x i)) =\n      \u220f",
+                "vacuity_suspected": false
+              }
+            },
+            "flags": [],
+            "status": "static_l3_clean_no_confirmed_laundering"
+          }
+        },
+        {
+          "kind": "lemma",
+          "line": 246,
+          "name": "const_div_atTop_zero",
+          "ordinal_in_file": 4,
+          "sorry_count": 0,
+          "static_l3_audit": {
+            "confirmed_flags": [],
+            "details": {
+              "currency_mismatch_shape": {
+                "conclusion_is_scalar": true,
+                "field_obligation_token": null,
+                "preview": "lemma const_div_atTop_zero (K : \u211d) :\n    Filter.Tendsto (fun R : \u211d => K / R) Filter.atTop (\ud835\udcdd 0) := by\n  have h\u2080 : Filter.Tendsto (fun R : \u211d => R\u207b\u00b9) Filter.atTop",
+                "scalar_wrapper_suspect": false
+              },
+              "gold_name_verbatim": {
+                "confirmed": false,
+                "corpus": {
+                  "in_mathlib": false
+                },
+                "detect": {
+                  "body_preview": "have h\u2080 : Filter.Tendsto (fun R : \u211d => R\u207b\u00b9) Filter.atTop (\ud835\udcdd 0) :=\n    tendsto_inv_atTop_zero\n  have hK : Filter.Tendsto (fun R : \u211d => K * R\u207b\u00b9) Filter.atTop (\ud835\udcdd (",
+                  "distinct_cited_lemmas": [
+                    "h\u2080.const_mul",
+                    "tendsto_inv_atTop_zero"
+                  ],
+                  "distinct_have_lemmas": [
+                    "h\u2080.const_mul",
+                    "tendsto_inv_atTop_zero"
+                  ],
+                  "gold_name_verbatim_suspect": false,
+                  "has_multistep_composition": false,
+                  "n_have_lemma_lines": 2,
+                  "primary_cited": "h\u2080.const_mul"
+                }
+              },
+              "indirect_leakage_shape": {
+                "body_preview": "have h\u2080 : Filter.Tendsto (fun R : \u211d => R\u207b\u00b9) Filter.atTop (\ud835\udcdd 0) :=\n    tendsto_inv_atTop_zero\n  have hK : Filter.Tendsto (fun R : \u211d => K * R\u207b",
+                "closer_tactic": null,
+                "explicit_lemma_args": false,
+                "has_multistep_composition": false,
+                "indirect_leakage_suspect": false,
+                "n_have": 2
+              },
+              "vacuity_preflight": {
+                "opaque_predicate_present": false,
+                "risk_flags": [],
+                "statement_preview": "lemma const_div_atTop_zero (K : \u211d) :\n    Filter.Tendsto (fun R : \u211d => K / R) Filter.atTop (\ud835\udcdd 0) := by\n  have h\u2080 : Filter.Tendsto (fun R : \u211d => R\u207b\u00b9) Filter.atTop (\ud835\udcdd 0) :=\n    tendsto_inv_atTop_zero\n  h",
+                "vacuity_suspected": false
+              }
+            },
+            "flags": [],
+            "status": "static_l3_clean_no_confirmed_laundering"
+          }
+        }
+      ],
+      "decl_count": 5,
+      "exists": true,
+      "line_count": 261,
+      "path": "ztare_proofs/ZtareProofs/PR_A1_BohrCoeffExpNe_Discharge.lean",
+      "print_axioms_targets": [
+        "AlmostPeriodicBohrCoeffExpNeDischarge.osc_integral_trivial_bound",
+        "AlmostPeriodicBohrCoeffExpNeDischarge.integral_Icc_exp_mul",
+        "AlmostPeriodicBohrCoeffExpNeDischarge.osc_integral_norm_bound",
+        "AlmostPeriodicBohrCoeffExpNeDischarge.cube_integral_prod_factor"
+      ],
+      "raw_sorry_count": 0
+    }
+  ],
+  "difficulty_counts": {
+    "analysis_premise_bound": 23,
+    "complex_harmonic_bridge": 1,
+    "hard_open_math_or_axiom_surface": 12,
+    "limit_or_series_bridge": 1,
+    "medium_formalization_gap": 8
+  },
+  "family_counts": {
+    "analysis_complex_or_fourier": 3,
+    "analysis_measure_or_almost_periodic": 1,
+    "ns_trackb": 29,
+    "oeis": 7,
+    "pr_a1_almost_periodic_bohr": 1,
+    "uncategorized_formal": 4
+  },
+  "file_count": 617,
+  "file_family_counts": {
+    "analysis_measure_or_almost_periodic": 19,
+    "ns_trackb": 546,
+    "ns_trackb_generated_patch": 1,
+    "oeis": 3,
+    "pr_a1_almost_periodic_bohr": 11,
+    "pr_a2_almost_periodic": 1,
+    "pr_b_finite_spec": 5,
+    "uncategorized_formal": 31
+  },
+  "obligation_count": 45,
+  "obligations": [
+    {
+      "decl_line_count": 44,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem cube_shift_negligible\n    {n : \u2115} (hn : 0 < n) (t : Fin n \u2192 \u211d) {R : \u211d}\n    (hR_pos : 0 < R)\n    (hR_geq : \u2200 i, |t i| \u2264 R) :\n    volume ((cube R : Set (Fin n \u2192 \u211d)) \u2206 cubeShifted R t) \u2264\n      ENNReal.ofReal (2 * n * (Finset.univ.sup' \u27e8\u27e80, hn\u27e9, Finset.mem_univ _\u27e9\n        (fun i => |t i|)) * (2 * R) ^ (n - 1)) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "import Mathlib.MeasureTheory.Constructions.Pi",
+        "import Mathlib.Order.SymmDiff"
+      ],
+      "kind": "theorem",
+      "line": 48,
+      "name": "cube_shift_negligible",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/PR_A1_CubeShiftNegligible_SmokeTest.lean",
+      "rank_score": 60,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "pr_a1_almost_periodic_bohr"
+    },
+    {
+      "decl_line_count": 90,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem LionsPeetre_main_via_change_of_variables\n    (T : CoupleOperator \ud835\udc9e \ud835\udc9f) (\u03d6 : InterpParam)\n    (h_cov : sub_KFunctional_change_of_variables T \u03d6) :\n    LionsPeetre_main_statement T \u03d6 := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 2,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Pow.NNReal",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Analysis.MeanInequalitiesPow",
+        "import Mathlib.Analysis.Normed.Group.Basic",
+        "import Mathlib.Analysis.Normed.Operator.ContinuousLinearMap",
+        "import Mathlib.Order.CompleteLattice.Basic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+        "import Mathlib.Topology.Instances.ENNReal.Lemmas"
+      ],
+      "kind": "theorem",
+      "line": 458,
+      "name": "LionsPeetre_main_via_change_of_variables",
+      "ordinal_in_file": 6,
+      "path": "ztare_proofs/ZtareProofs/SQ3/MLG_LionsPeetre_interpolation.lean",
+      "rank_score": 71,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "uncategorized_formal"
+    },
+    {
+      "decl_line_count": 12,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem v30_lintegral_Lp_integral_le {p : \u211d} (hp1 : 1 \u2264 p)\n    {F : \u03b1 \u2192 \u03b2 \u2192 \u211d\u22650\u221e} (hF : Measurable (Function.uncurry F)) :\n    (\u222b\u207b x, (\u222b\u207b y, F x y \u2202\u03bd) ^ p \u2202\u03bc) ^ (1 / p) \u2264\n      \u222b\u207b y, (\u222b\u207b x, (F x y) ^ p \u2202\u03bc) ^ (1 / p) \u2202\u03bd := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality",
+        "import Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Measure.Prod",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Analysis.MeanInequalitiesPow"
+      ],
+      "kind": "theorem",
+      "line": 18,
+      "name": "v30_lintegral_Lp_integral_le",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/V30Mink/PR1b_Minkowski_attempt_v1.lean",
+      "rank_score": 52,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "analysis_complex_or_fourier"
+    },
+    {
+      "decl_line_count": 7,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem power_law_class_exhausted :\n  \u2200 f \u2208 topology_class_power_law,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 264,
+      "name": "power_law_class_exhausted",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/gp088calibrationa01.lean",
+      "rank_score": 55,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "uncategorized_formal"
+    },
+    {
+      "decl_line_count": 7,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem power_law_class_exhausted :\n  \u2200 f \u2208 topology_class_power_law,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 87,
+      "name": "power_law_class_exhausted",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/gp096sandbox20.lean",
+      "rank_score": 55,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "uncategorized_formal"
+    },
+    {
+      "decl_line_count": 44,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem lintegral_Lp_integral_le {p : \u211d} (hp1 : 1 \u2264 p)\n    {F : \u03b1 \u2192 \u03b2 \u2192 \u211d\u22650\u221e} (hF : Measurable (Function.uncurry F)) :\n    (\u222b\u207b x, (\u222b\u207b y, F x y \u2202\u03bd) ^ p \u2202\u03bc) ^ (1 / p) \u2264\n      \u222b\u207b y, (\u222b\u207b x, (F x y) ^ p \u2202\u03bc) ^ (1 / p) \u2202\u03bd := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality",
+        "import Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Measure.Prod",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Analysis.MeanInequalitiesPow",
+        "import ZtareProofs.mathlib_pr_drafts.PR_1a_translate_eLpNorm_continuity"
+      ],
+      "kind": "theorem",
+      "line": 93,
+      "name": "lintegral_Lp_integral_le",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/mathlib_pr_drafts/PR_1b_minkowski_rate.lean",
+      "rank_score": 60,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "analysis_complex_or_fourier"
+    },
+    {
+      "decl_line_count": 51,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem eLpNorm_integral_le {p : \u211d\u22650\u221e} (hp1 : 1 \u2264 p) (hp_top : p \u2260 \u221e)\n    {G : \u03b1 \u2192 \u03b2 \u2192 E}\n    (hG_meas : Measurable (Function.uncurry G))\n    (hG_int : \u2200\u1d50 x \u2202\u03bc, Integrable (fun y => G x y) \u03bd) :\n    eLpNorm (fun x => \u222b y, G x y \u2202\u03bd) p \u03bc \u2264\n      \u222b\u207b y, eLpNorm (fun x => G x y) p \u03bc \u2202\u03bd := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality",
+        "import Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Measure.Prod",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Analysis.MeanInequalitiesPow",
+        "import ZtareProofs.mathlib_pr_drafts.PR_1a_translate_eLpNorm_continuity"
+      ],
+      "kind": "theorem",
+      "line": 137,
+      "name": "eLpNorm_integral_le",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/mathlib_pr_drafts/PR_1b_minkowski_rate.lean",
+      "rank_score": 61,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "analysis_complex_or_fourier"
+    },
+    {
+      "decl_line_count": 57,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem eLpNorm_convolution_sub_le\n    {p : \u211d\u22650\u221e} (hp_top : p \u2260 \u221e) (hp1 : 1 \u2264 p)\n    {\u03c1 : G \u2192 \u211d} (h\u03c1_nonneg : \u2200 x, 0 \u2264 \u03c1 x) (h\u03c1_int : Integrable \u03c1 \u03bcG)\n    (h\u03c1_norm : \u222b y, \u03c1 y \u2202\u03bcG = 1)\n    {f : G \u2192 \u211d} (hf : MemLp f p \u03bcG) :\n    eLpNorm\n      (fun x => (\u222b y, \u03c1 y * f (x - y) \u2202\u03bcG) - f x) p \u03bcG\n      \u2264 \u222b\u207b y, ENNReal.ofReal (\u03c1 y) *\n              eLpNorm (fun x => f (x - y) - f x) p \u03bcG \u2202\u03bcG := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality",
+        "import Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Measure.Prod",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Analysis.MeanInequalitiesPow",
+        "import ZtareProofs.mathlib_pr_drafts.PR_1a_translate_eLpNorm_continuity"
+      ],
+      "kind": "theorem",
+      "line": 188,
+      "name": "eLpNorm_convolution_sub_le",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/mathlib_pr_drafts/PR_1b_minkowski_rate.lean",
+      "rank_score": 63,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "analysis_measure_or_almost_periodic"
+    },
+    {
+      "decl_line_count": 26,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem epsilon_regularity_with_vanishing_defect :\n    \u2203 (\u03b5Star \u03b8 C : \u211d),\n      0 < \u03b5Star \u2227 0 < \u03b8 \u2227 \u03b8 < 1/2 \u2227 0 < C \u2227\n      (\u2200 (u : TimeSpaceLerayHopfSolution) (x\u2080 : Fin 3 \u2192 \u211d)\n         (t\u2080 r : \u211d) (_hr : 0 < r),\n        defectMassOfCylinder (RadonDefectMeasure u)\n            (parabolicCylinder x\u2080 t\u2080 r) = 0 \u2192\n        criticalCubeIntegral u (parabolicCylinder x\u2080 t\u2080 r) \u2264 \u03b5Star \u2192\n        SmoothOnCylinder u (parabolicCylinder x\u2080 t\u2080 (\u03b8 * r)) \u2227\n        QuantitativeRigidityBound u\n            (parabolicCylinder x\u2080 t\u2080 (\u03b8 * r)) r \u03b5Star C) := by\n  sorry",
+      "file_axiom_count": 13,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic"
+      ],
+      "kind": "theorem",
+      "line": 540,
+      "name": "epsilon_regularity_with_vanishing_defect",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/ns_defect_calculus_skeleton.lean",
+      "rank_score": 100,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 99,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem defect_zero_implies_smoothness\n    (u : TimeSpaceLerayHopfSolution)\n    (_h\u03bc : \u2203 z : SpaceTimeRadonMeasure, RadonDefectMeasure u = z \u2227\n            \u2200 w : TimeSpaceLerayHopfSolution, RadonDefectMeasure w = z) :\n    IsSmoothLerayHopf u := by\n  sorry",
+      "file_axiom_count": 13,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic"
+      ],
+      "kind": "theorem",
+      "line": 566,
+      "name": "defect_zero_implies_smoothness",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/ns_defect_calculus_skeleton.lean",
+      "rank_score": 118,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 15,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem minimal_blowup_positive_defect_classification\n    (u : TimeSpaceLerayHopfSolution)\n    (_hu : IsMinimalBlowup u) :\n    DefectMeasureIsPositive (RadonDefectMeasure u) := by\n  sorry",
+      "file_axiom_count": 13,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic"
+      ],
+      "kind": "theorem",
+      "line": 665,
+      "name": "minimal_blowup_positive_defect_classification",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_defect_calculus_skeleton.lean",
+      "rank_score": 97,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 44,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem W6_NEW3_filtered_energy_identity_conditional\n    {u : Type*} [IsDivFreeT3 u]\n    (\u03a3\u03c9_LiouvilleRank2 : True)\n    (residual_void :\n      \u2203 \u03c3 a C : \u211d,\n        0 < \u03c3 \u2227 a < \u03c3 \u2227 0 < C \u2227\n        \u2200 (R : \u211d),\n          normHighL2 R u \u2264 C * R ^ (-\u03c3) \u2227\n          normLinftyLow R u + normGradLowLinfty R u \u2264 C * R ^ a) :\n    W6Trivial u := by\n  sorry",
+      "file_axiom_count": 5,
+      "file_raw_sorry_count": 1,
+      "imports": [],
+      "kind": "theorem",
+      "line": 298,
+      "name": "W6_NEW3_filtered_energy_identity_conditional",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_NEW_3_LeraySkewCommutator.lean",
+      "rank_score": 105,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 33,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "lemma weight_blowup_at_liouvillian_forces_zero_coeff\n    {nse : NavierStokes.NavierStokesEquations 3}\n    (sol : AncientMildSolution nse)\n    (\u03c4 c : \u211d) (h\u03c4 : 1 < \u03c4) (hc : 0 < c)\n    (h_in_space : InBohrSpaceDioph sol \u03c4 c)\n    (\u03be : Euc \u211d 3) (h\u03be : \u03be \u2208 LiouvillianSet \u03c4 c) :\n    BohrCoeff sol \u03be = 0 := by\n  sorry",
+      "file_axiom_count": 5,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic",
+        "import ZtareProofs.lean_dojo_ns.Navierstokes",
+        "import ZtareProofs.ns_trackb_ancient_liouville_rigidity",
+        "import ZtareProofs.ns_trackb_ap_liouville_single_mode",
+        "import ZtareProofs.ns_trackb_W6_conditional_impossibility"
+      ],
+      "kind": "lemma",
+      "line": 316,
+      "name": "weight_blowup_at_liouvillian_forces_zero_coeff",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_redefine_space_track.lean",
+      "rank_score": 102,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 39,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "lemma liouvillian_coeffs_vanish_of_inBohrSpaceDioph\n    {nse : NavierStokes.NavierStokesEquations 3}\n    (sol : AncientMildSolution nse)\n    (\u03c4 c : \u211d) (h\u03c4 : 1 < \u03c4) (hc : 0 < c)\n    (h_in_space : InBohrSpaceDioph sol \u03c4 c) :\n    LiouvillianCoeffsVanishInBohrSpaceDioph sol \u03c4 c := by\n  sorry",
+      "file_axiom_count": 5,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic",
+        "import ZtareProofs.lean_dojo_ns.Navierstokes",
+        "import ZtareProofs.ns_trackb_ancient_liouville_rigidity",
+        "import ZtareProofs.ns_trackb_ap_liouville_single_mode",
+        "import ZtareProofs.ns_trackb_W6_conditional_impossibility"
+      ],
+      "kind": "lemma",
+      "line": 349,
+      "name": "liouvillian_coeffs_vanish_of_inBohrSpaceDioph",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_redefine_space_track.lean",
+      "rank_score": 103,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 69,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "lemma redefine_space_fires_where_restrict_sigma_does_not\n    {nse : NavierStokes.NavierStokesEquations 3} :\n    \u2203 (sol : AncientMildSolution nse) (\u03c4 c : \u211d),\n      1 < \u03c4 \u2227 0 < c \u2227 InBohrSpaceDioph sol \u03c4 c \u2227 SolHasW6Stratum sol := by\n  sorry",
+      "file_axiom_count": 5,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic",
+        "import ZtareProofs.lean_dojo_ns.Navierstokes",
+        "import ZtareProofs.ns_trackb_ancient_liouville_rigidity",
+        "import ZtareProofs.ns_trackb_ap_liouville_single_mode",
+        "import ZtareProofs.ns_trackb_W6_conditional_impossibility"
+      ],
+      "kind": "lemma",
+      "line": 506,
+      "name": "redefine_space_fires_where_restrict_sigma_does_not",
+      "ordinal_in_file": 3,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_redefine_space_track.lean",
+      "rank_score": 111,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 131,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem diophantine_excludes_multi_liouvillian\n    (BohrSpec : Set (Euc \u211d 3))\n    (_h_dioph : DiophantineSpectrum BohrSpec) :\n    \u00ac W6_MultiLiouvillian BohrSpec := by\n  sorry",
+      "file_axiom_count": 2,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import ZtareProofs.lean_dojo_ns.Navierstokes",
+        "import ZtareProofs.ns_trackb_ancient_liouville_rigidity",
+        "import ZtareProofs.ns_trackb_ap_liouville_single_mode",
+        "import ZtareProofs.ns_trackb_W6_conditional_impossibility"
+      ],
+      "kind": "theorem",
+      "line": 124,
+      "name": "diophantine_excludes_multi_liouvillian",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_restrict_sigma_track.lean",
+      "rank_score": 124,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 27,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem aubin_lions_residual_void\n    {X : Type u} [NormedAddCommGroup X]\n    {B : Type v} [NormedAddCommGroup B]\n    {Y : Type w} [NormedAddCommGroup Y]\n    {incl_XB : X \u2192 B} {incl_BY : B \u2192 Y}\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 X} {dtu : \u2115 \u2192 \u211d \u2192 Y}\n    (_D : AubinLionsData X B Y incl_XB incl_BY T u dtu) :\n    \u2203 (uInf : \u211d \u2192 B),\n      Tendsto\n        (fun n => \u222b t in Set.Icc 0 T, \u2016incl_XB (u (id n) t) - uInf t\u2016^2)\n        atTop (\ud835\udcdd 0) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.Topology.MetricSpace.Sequences"
+      ],
+      "kind": "theorem",
+      "line": 189,
+      "name": "aubin_lions_residual_void",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_aubin_lions_stub.lean",
+      "rank_score": 55,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 70,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem krf_subseq_ae_of_translation\n    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]\n    [BorelSpace B] [SecondCountableTopology B]\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 B}\n    (_D : KolmogorovRieszFrechetData B T u) :\n    \u2203 (\u03c6 : \u2115 \u2192 \u2115), StrictMono \u03c6 \u2227\n    \u2203 (uInf : \u211d \u2192 B),\n      \u2200\u1d50 t \u2202(MeasureTheory.volume.restrict (Set.Icc 0 T)),\n        Tendsto (fun n => u (\u03c6 n) t) atTop (\ud835\udcdd (uInf t)) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.Topology.MetricSpace.Sequences"
+      ],
+      "kind": "theorem",
+      "line": 407,
+      "name": "krf_subseq_ae_of_translation",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_aubin_lions_stub.lean",
+      "rank_score": 66,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 29,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem vitali_to_integral\n    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]\n    [BorelSpace B] [SecondCountableTopology B]\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 B}\n    (_D : KolmogorovRieszFrechetData B T u)\n    (\u03c6 : \u2115 \u2192 \u2115) (_h\u03c6 : StrictMono \u03c6) (uInf : \u211d \u2192 B)\n    (_h_ae : \u2200\u1d50 t \u2202(MeasureTheory.volume.restrict (Set.Icc 0 T)),\n              Tendsto (fun n => u (\u03c6 n) t) atTop (\ud835\udcdd (uInf t))) :\n    Tendsto\n      (fun n => \u222b t in Set.Icc 0 T, \u2016u (\u03c6 n) t - uInf t\u2016^2)\n      atTop (\ud835\udcdd 0) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.Topology.MetricSpace.Sequences"
+      ],
+      "kind": "theorem",
+      "line": 477,
+      "name": "vitali_to_integral",
+      "ordinal_in_file": 3,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_aubin_lions_stub.lean",
+      "rank_score": 56,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 104,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem weak_momentum_PASS_holds\n    {nse : NavierStokesEquations 3} {T_star : \u211d}\n    (B : BlowUpScenario nse T_star) :\n    weak_momentum_PASS B := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "import Mathlib.Topology.Order.LiminfLimsup",
+        "import ZtareProofs.lean_dojo_ns.Navierstokes"
+      ],
+      "kind": "theorem",
+      "line": 196,
+      "name": "weak_momentum_PASS_holds",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_blowup_falsifier.lean",
+      "rank_score": 120,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 27,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "private lemma right_dini_of_hasDerivWithinAt\n    {f : \u211d \u2192 \u211d} {f' : \u211d \u2192 \u211d} {a b : \u211d}\n    (hf : \u2200 t : \u211d, HasDerivWithinAt f (f' t) (Set.Ici t) t) :\n    \u2200 x \u2208 Set.Ico a b,\n      (Filter.liminf (fun z => (f z - f x) / (z - x))\n         (\ud835\udcdd[>] x)) \u2264 f' x := by\n  sorry",
+      "file_axiom_count": 1,
+      "file_raw_sorry_count": 2,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic",
+        "import Mathlib.Analysis.ODE.Gronwall",
+        "import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "import ZtareProofs.lean_dojo_ns.Navierstokes",
+        "import ZtareProofs.ns_trackb_constantin_fefferman_proof_skeleton",
+        "import ZtareProofs.ns_trackb_bkm_proof_skeleton"
+      ],
+      "kind": "lemma",
+      "line": 251,
+      "name": "right_dini_of_hasDerivWithinAt",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_cf_barrier_construction.lean",
+      "rank_score": 100,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 63,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem cfLyapunovBarrier_uniformly_bounded\n    (u : VelocityField 3) (penaltySurr : \u211d \u2192 \u211d) (\u03ba_pen : \u211d)\n    (h\u03bapen_nonneg : 0 \u2264 \u03ba_pen)\n    (C : \u211d) (hC_nonneg : 0 \u2264 C)\n    (T : \u211d) (_hT_pos : 0 < T) :\n    \u2203 M : \u211d, 0 \u2264 M \u2227\n      \u2200 t : \u211d, 0 \u2264 t \u2192 t \u2264 T \u2192\n        cfLyapunovBarrier u penaltySurr \u03ba_pen t \u2264 M := by\n  sorry",
+      "file_axiom_count": 1,
+      "file_raw_sorry_count": 2,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.ContDiff.Basic",
+        "import Mathlib.Analysis.ODE.Gronwall",
+        "import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "import ZtareProofs.lean_dojo_ns.Navierstokes",
+        "import ZtareProofs.ns_trackb_constantin_fefferman_proof_skeleton",
+        "import ZtareProofs.ns_trackb_bkm_proof_skeleton"
+      ],
+      "kind": "theorem",
+      "line": 278,
+      "name": "cfLyapunovBarrier_uniformly_bounded",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_cf_barrier_construction.lean",
+      "rank_score": 109,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 14,
+      "difficulty_class": "hard_open_math_or_axiom_surface",
+      "doc_excerpt": "theorem trivial_zero_divergence_free :\n    \u2200 x : Euc \u211d 4, NavierStokes.DivergenceFreeAt trivialZeroVelocity x := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import ZtareProofs.ns_trackb_godel_meta_consistency"
+      ],
+      "kind": "theorem",
+      "line": 305,
+      "name": "trivial_zero_divergence_free",
+      "ordinal_in_file": 3,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_inversor_axiom_consistency.lean",
+      "rank_score": 97,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 16,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem mollifier_rate_from_piece1\n    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]\n    [BorelSpace B] [SecondCountableTopology B]\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 B}\n    (_D : KolmogorovRieszFrechetData B T u) :\n    MollifierRateOutput T u := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 4,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import ZtareProofs.ns_trackb_aubin_lions_stub"
+      ],
+      "kind": "theorem",
+      "line": 179,
+      "name": "mollifier_rate_from_piece1",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_master_assembly.lean",
+      "rank_score": 53,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 21,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem arzela_ascoli_from_piece2\n    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]\n    [BorelSpace B] [SecondCountableTopology B]\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 B}\n    (_D : KolmogorovRieszFrechetData B T u) :\n    ArzelaAscoliOutput T u := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 4,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import ZtareProofs.ns_trackb_aubin_lions_stub"
+      ],
+      "kind": "theorem",
+      "line": 195,
+      "name": "arzela_ascoli_from_piece2",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_master_assembly.lean",
+      "rank_score": 54,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 34,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem cantor_diagonal_from_piece3\n    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]\n    [BorelSpace B] [SecondCountableTopology B]\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 B}\n    (_D : KolmogorovRieszFrechetData B T u)\n    (_rate : MollifierRateOutput T u)\n    (_aa : ArzelaAscoliOutput T u) :\n    CantorDiagonalOutput T u := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 4,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import ZtareProofs.ns_trackb_aubin_lions_stub"
+      ],
+      "kind": "theorem",
+      "line": 216,
+      "name": "cantor_diagonal_from_piece3",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_master_assembly.lean",
+      "rank_score": 57,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 42,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem krf_master_compactness_ae\n    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]\n    [BorelSpace B] [SecondCountableTopology B]\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 B}\n    (D : KolmogorovRieszFrechetData B T u) :\n    \u2203 (\u03c6 : \u2115 \u2192 \u2115), StrictMono \u03c6 \u2227\n    \u2203 (uInf : \u211d \u2192 B),\n      \u2200\u1d50 t \u2202(MeasureTheory.volume.restrict (Set.Icc 0 T)),\n        Tendsto (fun n => u (\u03c6 n) t) atTop (\ud835\udcdd (uInf t)) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 4,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import ZtareProofs.ns_trackb_aubin_lions_stub"
+      ],
+      "kind": "theorem",
+      "line": 279,
+      "name": "krf_master_compactness_ae",
+      "ordinal_in_file": 4,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_master_assembly.lean",
+      "rank_score": 59,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 50,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem stub_named_sorry_discharge\n    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]\n    [BorelSpace B] [SecondCountableTopology B]\n    {T : \u211d} {u : \u2115 \u2192 \u211d \u2192 B}\n    (D : KolmogorovRieszFrechetData B T u) :\n    \u2203 (\u03c6 : \u2115 \u2192 \u2115), StrictMono \u03c6 \u2227\n    \u2203 (uInf : \u211d \u2192 B),\n      \u2200\u1d50 t \u2202(MeasureTheory.volume.restrict (Set.Icc 0 T)),\n        Tendsto (fun n => u (\u03c6 n) t) atTop (\ud835\udcdd (uInf t)) :=\n  krf_master_compactness_ae D\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nend\n\nend ZtareProofs.NS.KRFMaster := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 4,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import ZtareProofs.ns_trackb_aubin_lions_stub"
+      ],
+      "kind": "theorem",
+      "line": 321,
+      "name": "stub_named_sorry_discharge",
+      "ordinal_in_file": 5,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_master_assembly.lean",
+      "rank_score": 57,
+      "sorry_count_in_decl": 0,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 50,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem mollifier_rate_uniform\n    {\u03a9 : Set (EuclideanSpace \u211d (Fin d))} {f : \u2115 \u2192 EuclideanSpace \u211d (Fin d) \u2192 \u211d}\n    (D : KolmogorovRieszFrechetSeq \u03a9 f) :\n    \u2200 \u03b5 : \u211d, 0 < \u03b5 \u2192 \u2203 \u03b4 : \u211d, 0 < \u03b4 \u2227\n      \u2200 (\u03c6 : ContDiffBump (0 : EuclideanSpace \u211d (Fin d))),\n        \u03c6.rOut < \u03b4 \u2192\n          \u2200 n,\n            eLpNorm\n              (fun x =>\n                (\u03c6.normed (volume) \u22c6[ContinuousLinearMap.lsmul \u211d \u211d, volume]\n                  (\u03a9.indicator (f n))) x - \u03a9.indicator (f n) x)\n              2 volume\n              < ENNReal.ofReal \u03b5 := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 5,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Topology.UniformSpace.Ascoli",
+        "import Mathlib.Topology.UniformSpace.Equicontinuity",
+        "import Mathlib.Topology.UniformSpace.CompactConvergence",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import Mathlib.Tactic"
+      ],
+      "kind": "theorem",
+      "line": 167,
+      "name": "mollifier_rate_uniform",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mathlib_pr_ready.lean",
+      "rank_score": 61,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 41,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem arzela_ascoli_mollified_subsequence\n    {X : Type*} [TopologicalSpace X] [T2Space X] [SigmaCompactSpace X]\n    [SecondCountableTopology X]\n    {g : \u2115 \u2192 X \u2192 \u211d} (H : MollifiedFamilyHypotheses g) :\n    \u2203 (\u03c6 : \u2115 \u2192 \u2115) (gInf : X \u2192 \u211d),\n      StrictMono \u03c6 \u2227 Continuous gInf \u2227\n      \u2200 K : Set X, IsCompact K \u2192\n        TendstoUniformlyOn (fun n x => g (\u03c6 n) x) gInf atTop K := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 5,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Topology.UniformSpace.Ascoli",
+        "import Mathlib.Topology.UniformSpace.Equicontinuity",
+        "import Mathlib.Topology.UniformSpace.CompactConvergence",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import Mathlib.Tactic"
+      ],
+      "kind": "theorem",
+      "line": 267,
+      "name": "arzela_ascoli_mollified_subsequence",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mathlib_pr_ready.lean",
+      "rank_score": 59,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 47,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem kolmogorov_riesz_frechet_compactness\n    {\u03a9 : Set (EuclideanSpace \u211d (Fin d))} {f : \u2115 \u2192 EuclideanSpace \u211d (Fin d) \u2192 \u211d}\n    (D : KolmogorovRieszFrechetSeq \u03a9 f) :\n    \u2203 (\u03c8 : \u2115 \u2192 \u2115) (fInf : EuclideanSpace \u211d (Fin d) \u2192 \u211d),\n      StrictMono \u03c8 \u2227 AEStronglyMeasurable fInf volume \u2227\n      Tendsto\n        (fun n => eLpNorm (\u03a9.indicator (f (\u03c8 n)) - \u03a9.indicator fInf) 2 volume)\n        atTop (\ud835\udcdd 0) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 5,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Topology.UniformSpace.Ascoli",
+        "import Mathlib.Topology.UniformSpace.Equicontinuity",
+        "import Mathlib.Topology.UniformSpace.CompactConvergence",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import Mathlib.Tactic"
+      ],
+      "kind": "theorem",
+      "line": 402,
+      "name": "kolmogorov_riesz_frechet_compactness",
+      "ordinal_in_file": 4,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mathlib_pr_ready.lean",
+      "rank_score": 60,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 53,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem kolmogorov_riesz_frechet_compactness_ae\n    {\u03a9 : Set (EuclideanSpace \u211d (Fin d))} {f : \u2115 \u2192 EuclideanSpace \u211d (Fin d) \u2192 \u211d}\n    (D : KolmogorovRieszFrechetSeq \u03a9 f) :\n    \u2203 (\u03c8 : \u2115 \u2192 \u2115) (fInf : EuclideanSpace \u211d (Fin d) \u2192 \u211d),\n      StrictMono \u03c8 \u2227\n      \u2200\u1d50 x \u2202(volume.restrict \u03a9),\n        Tendsto (fun n => f (\u03c8 n) x) atTop (\ud835\udcdd (fInf x)) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 5,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Topology.UniformSpace.Ascoli",
+        "import Mathlib.Topology.UniformSpace.Equicontinuity",
+        "import Mathlib.Topology.UniformSpace.CompactConvergence",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import Mathlib.Tactic"
+      ],
+      "kind": "theorem",
+      "line": 449,
+      "name": "kolmogorov_riesz_frechet_compactness_ae",
+      "ordinal_in_file": 5,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mathlib_pr_ready.lean",
+      "rank_score": 62,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 55,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem tendsto_translate_eLpNorm_zero\n    {f : EuclideanSpace \u211d (Fin d) \u2192 \u211d} (_hf : MemLp f 2 volume) :\n    Tendsto (fun h : EuclideanSpace \u211d (Fin d) =>\n      eLpNorm (fun x => f (x + h) - f x) 2 volume) (\ud835\udcdd 0) (\ud835\udcdd 0) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 5,
+      "imports": [
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Function.UnifTight",
+        "import Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.Topology.UniformSpace.Ascoli",
+        "import Mathlib.Topology.UniformSpace.Equicontinuity",
+        "import Mathlib.Topology.UniformSpace.CompactConvergence",
+        "import Mathlib.Topology.MetricSpace.Sequences",
+        "import Mathlib.Tactic"
+      ],
+      "kind": "theorem",
+      "line": 502,
+      "name": "tendsto_translate_eLpNorm_zero",
+      "ordinal_in_file": 6,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mathlib_pr_ready.lean",
+      "rank_score": 62,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 46,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem mollifier_rate_pointwise\n    {G : Type u} [NormedAddCommGroup G] [NormedSpace \u211d G]\n    [MeasurableSpace G] [BorelSpace G] [FiniteDimensional \u211d G]\n    [HasContDiffBump G]\n    {\u03bc : MeasureTheory.Measure G} [\u03bc.IsAddHaarMeasure]\n    {\u03b9 : Type*} {l : Filter \u03b9} (\u03a6 : MollifierFamily G \u03b9 l)\n    {f : G \u2192 \u211d} (_hf_meas : AEStronglyMeasurable f \u03bc)\n    (_hf_memLp : MemLp f 2 \u03bc)\n    (_hf_transl : TranslationContinuousL2 G \u03bc f) :\n    Tendsto\n      (fun i =>\n        eLpNorm\n          (fun x => (\u03a6.kernel \u03bc i \u22c6[ContinuousLinearMap.lsmul \u211d \u211d, \u03bc] f) x - f x)\n          2 \u03bc)\n      l (\ud835\udcdd 0) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis"
+      ],
+      "kind": "theorem",
+      "line": 222,
+      "name": "mollifier_rate_pointwise",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mollifier_rate.lean",
+      "rank_score": 60,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 51,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem mollifier_rate_uniform\n    {G : Type u} [NormedAddCommGroup G] [NormedSpace \u211d G]\n    [MeasurableSpace G] [BorelSpace G] [FiniteDimensional \u211d G]\n    [HasContDiffBump G]\n    {\u03bc : MeasureTheory.Measure G} [\u03bc.IsAddHaarMeasure]\n    {\u03b9 : Type*} {l : Filter \u03b9} (\u03a6 : MollifierFamily G \u03b9 l)\n    {f : \u2115 \u2192 G \u2192 \u211d}\n    (_hf_meas : \u2200 n, AEStronglyMeasurable (f n) \u03bc)\n    (_hf_memLp : \u2200 n, MemLp (f n) 2 \u03bc)\n    (_hf_unif : TranslationEquicontinuousL2 G \u03bc f) :\n    \u2200 \u03b5 : \u211d, 0 < \u03b5 \u2192 \u2200\u1da0 i in l,\n      \u2200 n, eLpNorm\n            (fun x =>\n              (\u03a6.kernel \u03bc i \u22c6[ContinuousLinearMap.lsmul \u211d \u211d, \u03bc] f n) x\n                - f n x)\n            2 \u03bc\n        < ENNReal.ofReal \u03b5 := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis"
+      ],
+      "kind": "theorem",
+      "line": 268,
+      "name": "mollifier_rate_uniform",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mollifier_rate.lean",
+      "rank_score": 61,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 77,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem translation_continuous_of_memLp_two\n    {G : Type u} [NormedAddCommGroup G] [NormedSpace \u211d G]\n    [MeasurableSpace G] [BorelSpace G] [FiniteDimensional \u211d G]\n    {\u03bc : MeasureTheory.Measure G} [\u03bc.IsAddHaarMeasure]\n    {f : G \u2192 \u211d} (_hf : MemLp f 2 \u03bc) :\n    TranslationContinuousL2 G \u03bc f := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Basic",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Normed",
+        "import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension",
+        "import Mathlib.Analysis.Calculus.BumpFunction.Convolution",
+        "import Mathlib.Analysis.Convolution",
+        "import Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "import Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "import Mathlib.MeasureTheory.Measure.Haar.OfBasis"
+      ],
+      "kind": "theorem",
+      "line": 319,
+      "name": "translation_continuous_of_memLp_two",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mollifier_rate.lean",
+      "rank_score": 68,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 53,
+      "difficulty_class": "limit_or_series_bridge",
+      "doc_excerpt": "theorem selfTaxObservableLiminfRealization_of_tendsto\n    (idx : \u2115 \u2192 \u2115)\n    (G : GalerkinStreamData)\n    (L : \u211d)\n    (h_neBot : Filter.NeBot (Filter.comap idx Filter.atTop))\n    (h_tendsto :\n      Filter.Tendsto (selfTaxObservable idx G)\n        (Filter.comap idx Filter.atTop) (\ud835\udcdd L)) :\n    GP216SelectedFamilyLiminfRealization \u2115 idx\n      (selfTaxObservable idx G) L := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.Tactic",
+        "import Mathlib.Order.LiminfLimsup",
+        "import Mathlib.Topology.Order.LiminfLimsup",
+        "import ZtareProofs.ns_trackb_galerkin_stream_construction",
+        "import ZtareProofs.ns_trackb_liminf_forward_constructor"
+      ],
+      "kind": "theorem",
+      "line": 213,
+      "name": "selfTaxObservableLiminfRealization_of_tendsto",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_self_tax_observable_bridge.lean",
+      "rank_score": 52,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "ns_trackb"
+    },
+    {
+      "decl_line_count": 11,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem log_polynomial_class_exhausted :\n  \u2200 f \u2208 topology_class_log_polynomial,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 2,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 50189,
+      "name": "log_polynomial_class_exhausted",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000009.lean",
+      "rank_score": 56,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "oeis"
+    },
+    {
+      "decl_line_count": 7,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem power_law_class_exhausted :\n  \u2200 f \u2208 topology_class_power_law,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 2,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 50200,
+      "name": "power_law_class_exhausted",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000009.lean",
+      "rank_score": 55,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "oeis"
+    },
+    {
+      "decl_line_count": 11,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem log_polynomial_class_exhausted :\n  \u2200 f \u2208 topology_class_log_polynomial,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 2,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 316,
+      "name": "log_polynomial_class_exhausted",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000607.lean",
+      "rank_score": 56,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "oeis"
+    },
+    {
+      "decl_line_count": 7,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem power_law_class_exhausted :\n  \u2200 f \u2208 topology_class_power_law,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 2,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 327,
+      "name": "power_law_class_exhausted",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000607.lean",
+      "rank_score": 55,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "oeis"
+    },
+    {
+      "decl_line_count": 11,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem log_polynomial_class_exhausted :\n  \u2200 f \u2208 topology_class_log_polynomial,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 49681,
+      "name": "log_polynomial_class_exhausted",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000959.lean",
+      "rank_score": 56,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "oeis"
+    },
+    {
+      "decl_line_count": 11,
+      "difficulty_class": "medium_formalization_gap",
+      "doc_excerpt": "theorem power_law_class_exhausted :\n  \u2200 f \u2208 topology_class_power_law,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 49692,
+      "name": "power_law_class_exhausted",
+      "ordinal_in_file": 1,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000959.lean",
+      "rank_score": 56,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "oeis"
+    },
+    {
+      "decl_line_count": 7,
+      "difficulty_class": "complex_harmonic_bridge",
+      "doc_excerpt": "theorem exponential_class_exhausted :\n  \u2200 f \u2208 topology_class_exponential,\n    \u2203 (n v) \u2208 farther_tail_grid,\n      |f n - v| \u2265 farther_tail_threshold := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 3,
+      "imports": [
+        "import Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "import Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "import Mathlib.Data.Fin.Basic"
+      ],
+      "kind": "theorem",
+      "line": 49703,
+      "name": "exponential_class_exhausted",
+      "ordinal_in_file": 2,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000959.lean",
+      "rank_score": 35,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "oeis"
+    },
+    {
+      "decl_line_count": 10,
+      "difficulty_class": "analysis_premise_bound",
+      "doc_excerpt": "theorem heat_kernel_average_decay_of_Lp_velocity\n    {u : EuclideanSpace \u211d (Fin 3) \u2192 EuclideanSpace \u211d (Fin 3)}\n    (hu_bdd : \u2203 M : \u211d, \u2200 x, \u2016u x\u2016 \u2264 M)\n    (hu_Lp : \u2203 p : \u211d, 1 \u2264 p \u2227 p < \u22a4 \u2227 Mem\u2112p u (ENNReal.ofReal p) volume)\n    \n    : Tendsto (fun t : \u211d => \u2016gaussianKernel t \u22c6 u\u2016_\u221e) atTop (nhds 0) := by\n  sorry",
+      "file_axiom_count": 0,
+      "file_raw_sorry_count": 1,
+      "imports": [
+        "import Mathlib.Analysis.InnerProductSpace.Basic",
+        "import Mathlib.MeasureTheory.Integral.Bochner",
+        "import Mathlib.Analysis.SpecialFunctions.Gaussian"
+      ],
+      "kind": "theorem",
+      "line": 22,
+      "name": "heat_kernel_average_decay_of_Lp_velocity",
+      "ordinal_in_file": 0,
+      "path": "ztare_proofs/ZtareProofs/swarm_attempts/openmath_liouville_claude_opus_4_7.lean",
+      "rank_score": 51,
+      "sorry_count_in_decl": 1,
+      "source": "ztareproofs_sorry_inventory",
+      "status": "open_obligation",
+      "structural_family": "uncategorized_formal"
+    }
+  ],
+  "open_obligation_boundary": "declaration-level obligations only; raw sorry count may be higher when multiple sorries sit inside one declaration or outside theorem/lemma blocks",
+  "proof_credit": "none_packet_only_no_prover_invoked",
+  "raw_sorry_count": 51,
+  "root": "ztare_proofs/ZtareProofs",
+  "root_ref": {
+    "exists": true,
+    "is_dir": true,
+    "path": "ztare_proofs/ZtareProofs"
+  },
+  "schema": "leanmill-ztareproofs-auto-prover-packet-v1",
+  "top_files_by_sorry_count": [
+    {
+      "axiom_count": 0,
+      "import_count": 15,
+      "line_count": 556,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mathlib_pr_ready.lean",
+      "raw_sorry_count": 5,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 7,
+      "line_count": 370,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_master_assembly.lean",
+      "raw_sorry_count": 4,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 1,
+      "line_count": 194,
+      "path": "ztare_proofs/ZtareProofs/scratch_pent.lean",
+      "raw_sorry_count": 4,
+      "structural_family": "uncategorized_formal",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 8,
+      "line_count": 244,
+      "path": "ztare_proofs/ZtareProofs/mathlib_pr_drafts/PR_1b_minkowski_rate.lean",
+      "raw_sorry_count": 3,
+      "structural_family": "analysis_measure_or_almost_periodic",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 13,
+      "import_count": 3,
+      "line_count": 679,
+      "path": "ztare_proofs/ZtareProofs/ns_defect_calculus_skeleton.lean",
+      "raw_sorry_count": 3,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 5,
+      "import_count": 6,
+      "line_count": 574,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_redefine_space_track.lean",
+      "raw_sorry_count": 3,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 5,
+      "line_count": 640,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_aubin_lions_stub.lean",
+      "raw_sorry_count": 3,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 9,
+      "line_count": 395,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_krf_mollifier_rate.lean",
+      "raw_sorry_count": 3,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 3,
+      "line_count": 49709,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000959.lean",
+      "raw_sorry_count": 3,
+      "structural_family": "oeis",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 9,
+      "line_count": 547,
+      "path": "ztare_proofs/ZtareProofs/SQ3/MLG_LionsPeetre_interpolation.lean",
+      "raw_sorry_count": 2,
+      "structural_family": "analysis_measure_or_almost_periodic",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 1,
+      "import_count": 7,
+      "line_count": 457,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_cf_barrier_construction.lean",
+      "raw_sorry_count": 2,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 9,
+      "line_count": 582,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_ess_l3_endpoint.lean",
+      "raw_sorry_count": 2,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 3,
+      "line_count": 50206,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000009.lean",
+      "raw_sorry_count": 2,
+      "structural_family": "oeis",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 3,
+      "line_count": 333,
+      "path": "ztare_proofs/ZtareProofs/oeis_a000607.lean",
+      "raw_sorry_count": 2,
+      "structural_family": "oeis",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 3,
+      "line_count": 91,
+      "path": "ztare_proofs/ZtareProofs/PR_A1_CubeShiftNegligible_SmokeTest.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "pr_a1_almost_periodic_bohr",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 7,
+      "line_count": 29,
+      "path": "ztare_proofs/ZtareProofs/V30Mink/PR1b_Minkowski_attempt_v1.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "analysis_measure_or_almost_periodic",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 3,
+      "line_count": 270,
+      "path": "ztare_proofs/ZtareProofs/gp088calibrationa01.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "uncategorized_formal",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 3,
+      "line_count": 93,
+      "path": "ztare_proofs/ZtareProofs/gp096sandbox20.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "uncategorized_formal",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 5,
+      "import_count": 0,
+      "line_count": 341,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_NEW_3_LeraySkewCommutator.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 2,
+      "import_count": 5,
+      "line_count": 342,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_W6_restrict_sigma_track.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 4,
+      "line_count": 397,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_blowup_falsifier.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 2,
+      "line_count": 424,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_inversor_axiom_consistency.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 5,
+      "line_count": 587,
+      "path": "ztare_proofs/ZtareProofs/ns_trackb_self_tax_observable_bridge.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "ns_trackb",
+      "unsafe_token_count": 0
+    },
+    {
+      "axiom_count": 0,
+      "import_count": 3,
+      "line_count": 31,
+      "path": "ztare_proofs/ZtareProofs/swarm_attempts/openmath_liouville_claude_opus_4_7.lean",
+      "raw_sorry_count": 1,
+      "structural_family": "analysis_measure_or_almost_periodic",
+      "unsafe_token_count": 0
+    }
+  ]
+}

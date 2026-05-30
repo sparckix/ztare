@@ -1,0 +1,24 @@
+{
+  "agent_id": "kant_skeptical_forecaster",
+  "contract_id": "gp225_v1908_parallel_replay_bundle",
+  "contract_question": "Will the next GP-225 parallel replay bundle over the v19.07 PDE+functional shard and v19.06 non-PDE variety shard complete cleanly, keep false accepts at zero, and produce at least one validated high-density holdout shard while keeping GNN blocked?",
+  "domain": "gp225_parallel_replay",
+  "expected_cost_agent_minutes": 32.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "breadth_gate_or_resolver_mismatch": 0.05,
+    "false_accept_or_post_quarantine_hygiene_failure": 0.13,
+    "no_lane_reaches_density_0_50": 0.24,
+    "one_or_both_lanes_clean_replay_rows_below_90": 0.3,
+    "parallel_runner_or_worker_contention_blocks_completion": 0.16,
+    "source_hydration_or_static_selection_mismatch": 0.1,
+    "unexpected_training_or_gnn_unblock_state": 0.02
+  },
+  "forecasted_at": "2026-05-13T20:57:59Z",
+  "p_dependency_issue": 0.34,
+  "p_needs_new_lemma": 0.02,
+  "p_regression": 0.06,
+  "p_success": 0.31,
+  "rationale_short": "Static blocker is repaired, but clean replay threshold is close to prior empirical rates and density mostly depends on PDE+functional preserving the earlier PDE signal after broadening.",
+  "read_only_attestation": true
+}

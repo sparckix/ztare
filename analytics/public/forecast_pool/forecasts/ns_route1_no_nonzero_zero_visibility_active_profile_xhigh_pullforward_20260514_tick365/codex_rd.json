@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_rd",
+  "contract_id": "ns_route1_no_nonzero_zero_visibility_active_profile_xhigh_pullforward_20260514_tick365",
+  "contract_question": "Can an xhigh pull-forward agent produce a useful proof route, missing-sublemma split, or countermodel for NoNonzeroZeroVisibilityActiveProfile?",
+  "domain": "navier_stokes_route1",
+  "expected_cost_agent_minutes": 38.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "commutator_topology_underdefined": 0.18,
+    "countermodel_to_raw_carrier_only": 0.18,
+    "pressure_visibility_underdefined": 0.2,
+    "restates_missing_hypothesis": 0.32,
+    "useful_sublemma_split": 0.12
+  },
+  "forecasted_at": "2026-05-14T12:53:18Z",
+  "p_dependency_issue": 0.35,
+  "p_needs_new_lemma": 0.88,
+  "p_regression": 0.08,
+  "p_success": 0.52,
+  "rationale_short": "The lemma is correctly isolated, but a full proof needs compactness and lower-semicontinuity not present in current artifacts; a useful sublemma split is plausible.",
+  "read_only_attestation": true
+}

@@ -1,0 +1,31 @@
+{
+  "actual_cost_agent_minutes": 16.0,
+  "artifact_hash": "7f6104fa70bfa2711ba4994e4daeef90fea8ee4fe5a854825f2cdf34ba2a7ec6",
+  "artifact_path": "analytics/public/leanmill/results/v2071_post_bayesRisk_union_heldout_delta_packet.json",
+  "changed_by_forecast_ids": [],
+  "compile_status": "py_compile_passed",
+  "contract_id": "gp225_v2071_post_bayesRisk_union_heldout_delta_packet",
+  "counterfactual_value_bucket": null,
+  "decision_changed_bool": true,
+  "error_type": null,
+  "externality_tags": [
+    "anti_goodhart",
+    "training_delta_triage",
+    "heldout_policy_delta"
+  ],
+  "failure_mode_preconditioner_used": true,
+  "goal_delta": 0,
+  "negative_externality_tags": [],
+  "new_next_action": "parallelize label-inventory, heldout candidate-content delta, and null-training-baseline gates; keep GNN blocked",
+  "old_next_action": "start or discuss GNN training after 15 strict rows",
+  "preconditioner_effect": "v20.70 forced heldout-policy evidence before training, preventing row-count Goodharting.",
+  "preconditioner_source": "analytics/public/leanmill/results/v2070_union_training_readiness_gate_after_bayesRisk_strict.json",
+  "realized_failure_mode_ids": [
+    "no_replayable_policy_delta"
+  ],
+  "resolution_note": "v20.71 passed as a no-replay/no-training post-bayesRisk heldout delta packet. It found 0/5 replayable changed heldout policy arms from the bayesRisk strict row, preserved 15 strict rows, and routed to v20.72 parallel training-delta triage rather than GNN training.",
+  "resolved_at": "2026-05-14T19:14:56Z",
+  "sorry_delta": null,
+  "success_bool": true,
+  "voided": false
+}

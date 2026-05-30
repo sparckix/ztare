@@ -1,0 +1,22 @@
+{
+  "agent_id": "codex_gp230_readonly_gp225_v1844_macro",
+  "contract_id": "gp225_v1844_macro_harness_solver_detour",
+  "contract_question": "Should GP-225 continue the pre-GNN harness-solver detour as the route to a general-purpose Lean/harness solver before returning to NS, rather than stopping at deterministic CPU sidecar work?",
+  "domain": "gp225_harness_solver",
+  "expected_cost_agent_minutes": 42.0,
+  "failure_mode_distribution": {
+    "false_accept_or_action_delta_quarantine_reduces_usable_rows": 0.08,
+    "insufficient_unsaturated_rows_after_bm25_cpu_action_sweep": 0.33,
+    "proof_delta_labels_are_replayable_but_not_general_purpose_solver_path": 0.12,
+    "same_factory_oracle_trace_overfit_survives_as_false_signal": 0.22,
+    "saved_artifacts_do_not_yield_50_replayable_state_action_rows": 0.17,
+    "schema_or_lean_extraction_dependency_blocks_clean_inventory": 0.08
+  },
+  "forecasted_at": "2026-05-13T15:19:11Z",
+  "p_dependency_issue": 0.22,
+  "p_needs_new_lemma": 0.14,
+  "p_regression": 0.38,
+  "p_success": 0.32,
+  "rationale_short": "Continue only as bounded v18.44-v18.46 discriminator, not confident two-day detour. Same-factory learning failed; natural proof-step substrate is plausible but still small/oracle-shaped. If v18.44 misses replayable/unsaturated thresholds, return to NS with GP-225 as deterministic triage.",
+  "read_only_attestation": true
+}

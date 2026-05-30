@@ -1,0 +1,35 @@
+{
+  "action_change_recommendation": "proceed_but_do_not_claim_closure",
+  "agent_id": "codex-meta-darwin-proxy",
+  "contract_id": "ns_n8_corona_fresh_domination_surface_20260514_tick413",
+  "contract_question": "Will the corrected N8 corona tick add compiling Lean surfaces for TriCarrierCoronaPotential and TriCarrierFreshDomination, preserving the distinction between telescoping measure closure and the unproved local component estimates?",
+  "domain": "ns-proof-falsification",
+  "expected_cost_agent_minutes": 44.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "beta_incidence_missing": 0.2,
+    "component_estimates_are_the_real_theorem": 0.3,
+    "lean_compile_issue": 0.1,
+    "pressure_measure_nonlocal": 0.2,
+    "radius_charge_not_sourced": 0.2
+  },
+  "forecast_externality_tags": [
+    "new-lemma-risk",
+    "n8-not-closed",
+    "darwin-pressure"
+  ],
+  "forecasted_at": "2026-05-14T20:23:12Z",
+  "p_dependency_issue": 0.66,
+  "p_needs_new_lemma": 0.76,
+  "p_regression": 0.14,
+  "p_success": 0.57,
+  "rationale_short": "Corona fixes telescoping, not PDE content. Success should mean a sharper target, not closure.",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": [
+    "component_estimates_are_the_real_theorem",
+    "pressure_measure_nonlocal",
+    "beta_incidence_missing",
+    "radius_charge_not_sourced",
+    "lean_compile_issue"
+  ]
+}

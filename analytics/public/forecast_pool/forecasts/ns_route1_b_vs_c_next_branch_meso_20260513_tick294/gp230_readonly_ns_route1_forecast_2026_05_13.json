@@ -1,0 +1,23 @@
+{
+  "agent_id": "gp230_readonly_ns_route1_forecast_2026_05_13",
+  "contract_id": "ns_route1_b_vs_c_next_branch_meso_20260513_tick294",
+  "contract_question": "Is shard B mean-free Poincare the better next branch than shard C transportCharge_bound, measured by a compiled theorem/source bridge with fewer unpaid fields in this tick?",
+  "domain": "ns_route1_pde",
+  "expected_cost_agent_minutes": 95.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "b_still_has_two_unpaid_numeric_fields": 0.24,
+    "c_transport_turns_out_easier_via_existing_l2_transport_obligation": 0.16,
+    "existing_l3_ckn_primitives_too_propositional_to_pay_inequality": 0.22,
+    "lean_dependent_parameter_friction": 0.14,
+    "minor_build_regression": 0.08,
+    "non_tautology_gate_rejects_wrapper": 0.16
+  },
+  "forecasted_at": "2026-05-13T21:55:09Z",
+  "p_dependency_issue": 0.16,
+  "p_needs_new_lemma": 0.43,
+  "p_regression": 0.12,
+  "p_success": 0.69,
+  "rationale_short": "B is narrower: squareFunction_split and resolvedMeanFreeTentSquare_bound are isolated near event-tent, fanout, CKN split, and residual-fresh provenance; C still carries route-flux charge difficulty.",
+  "read_only_attestation": true
+}

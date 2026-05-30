@@ -1,0 +1,23 @@
+{
+  "agent_id": "peirce_readonly_forecaster",
+  "contract_id": "gp225_v1937_source_indexed_repair_execution",
+  "contract_question": "Will v19.37 source-indexed primary repair execution improve beyond v19.35 by reaching at least two strict-or-pull-forward successes with zero harmful compiled mismatches, using non-target mined local declaration packets and excluding teacher/oracle candidates from primary evidence?",
+  "domain": "gp225_repair_micro",
+  "expected_cost_agent_minutes": 22.0,
+  "expected_cost_source": "forecaster_supplied",
+  "failure_mode_distribution": {
+    "harmful_compiled_mismatch": 0.04,
+    "local_declaration_names_need_unmined_arguments": 0.11,
+    "mined_names_compile_but_wrong_shape": 0.2,
+    "only_existing_pull_forward_repeats": 0.08,
+    "source_name_packet_enables_second_hit": 0.44,
+    "target_proof_contamination_guard_blocks_useful_context": 0.13
+  },
+  "forecasted_at": "2026-05-13T23:44:16Z",
+  "p_dependency_issue": 0.38,
+  "p_needs_new_lemma": 0.36,
+  "p_regression": 0.1,
+  "p_success": 0.44,
+  "rationale_short": "v19.36 materially improves the bottleneck versus v19.35 by replacing generic template guessing with source-indexed non-target local declaration packets, but Lean tactic assembly may still fail on argument shape, namespaces, or theorem-specific setup.",
+  "read_only_attestation": true
+}

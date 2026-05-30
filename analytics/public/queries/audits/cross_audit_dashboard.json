@@ -1,0 +1,899 @@
+{
+  "audit_timestamp_utc": "2026-05-09T23:24:02.295716+00:00",
+  "scorecards_loaded": [
+    "primitive_roi",
+    "seam_health",
+    "miner_roi",
+    "cap_kind",
+    "triangulation",
+    "closure_patterns",
+    "endpoint_compression",
+    "gate_telemetry"
+  ],
+  "n_entities_flagged": 44,
+  "n_convergent_signals": 9,
+  "convergent_signals": [
+    {
+      "kind": "primitive",
+      "id": "R10",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=444"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of cross_class_extrapolation \u2192 R10_cross_class_extrapolation (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of per_class_farther_tail \u2192 R10_cross_class_extrapolation (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R11",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=294"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of cross_class_extrapolation \u2192 R11_per_class_mre_ceiling (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of per_class_farther_tail \u2192 R11_per_class_mre_ceiling (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R13",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=decorative_candidate engagement=38.24% engaged=663 refused=226"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of substrate_critic \u2192 R13_substrate_critic_post_fit (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of substrate_critic \u2192 R13_substrate_critic_preflight (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R14",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=decorative_candidate engagement=38.24% engaged=663 refused=226"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of noise_profile \u2192 R14_noise_profile_post_fit (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of noise_profile \u2192 R14_noise_profile_preflight (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R15",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=325"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of analogy \u2192 R15_analogy (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R16",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=280"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of framer_1d \u2192 R16_framer_pre_fit (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R22",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=444"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of apparatus_meta_runner \u2192 R22_apparatus_meta_runner (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R23",
+      "n_sources": 2,
+      "sources": [
+        "gate_telemetry",
+        "primitive_roi"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=444"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of sparse_cell_exclusion \u2192 R23_sparse_cell_exclusion (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "target",
+      "id": "TrackBProfileDecompositionObligation",
+      "n_sources": 2,
+      "sources": [
+        "endpoint_compression",
+        "triangulation"
+      ],
+      "severity": "warn",
+      "flags": [
+        {
+          "source": "triangulation",
+          "severity": "warn",
+          "detail": "compounding_score=4 events=1"
+        },
+        {
+          "source": "endpoint_compression",
+          "severity": "info",
+          "detail": "GP-223 Layer 3 candidate: field=threshold_defect_of_family_no_arbitrage pattern=X_of_Y"
+        }
+      ]
+    }
+  ],
+  "all_flagged_entities_top": [
+    {
+      "kind": "primitive",
+      "id": "R13",
+      "n_sources": 2,
+      "n_flags": 3,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=decorative_candidate engagement=38.24% engaged=663 refused=226"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of substrate_critic \u2192 R13_substrate_critic_post_fit (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of substrate_critic \u2192 R13_substrate_critic_preflight (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R14",
+      "n_sources": 2,
+      "n_flags": 3,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=decorative_candidate engagement=38.24% engaged=663 refused=226"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of noise_profile \u2192 R14_noise_profile_post_fit (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of noise_profile \u2192 R14_noise_profile_preflight (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R10",
+      "n_sources": 2,
+      "n_flags": 3,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=444"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of cross_class_extrapolation \u2192 R10_cross_class_extrapolation (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of per_class_farther_tail \u2192 R10_cross_class_extrapolation (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R11",
+      "n_sources": 2,
+      "n_flags": 3,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=294"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of cross_class_extrapolation \u2192 R11_per_class_mre_ceiling (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of per_class_farther_tail \u2192 R11_per_class_mre_ceiling (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R15",
+      "n_sources": 2,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=325"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of analogy \u2192 R15_analogy (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R16",
+      "n_sources": 2,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=280"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of framer_1d \u2192 R16_framer_pre_fit (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R22",
+      "n_sources": 2,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=444"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of apparatus_meta_runner \u2192 R22_apparatus_meta_runner (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R23",
+      "n_sources": 2,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.00% engaged=0 refused=444"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of sparse_cell_exclusion \u2192 R23_sparse_cell_exclusion (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "target",
+      "id": "TrackBProfileDecompositionObligation",
+      "n_sources": 2,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "triangulation",
+          "severity": "warn",
+          "detail": "compounding_score=4 events=1"
+        },
+        {
+          "source": "endpoint_compression",
+          "severity": "info",
+          "detail": "GP-223 Layer 3 candidate: field=threshold_defect_of_family_no_arbitrage pattern=X_of_Y"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "cross_class_extrapolation",
+      "n_sources": 1,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R10_cross_class_extrapolation' (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R11_per_class_mre_ceiling' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R24",
+      "n_sources": 1,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of feature_bump_pattern \u2192 R24_feature_bump_pattern (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of feature_coverage_adequacy \u2192 R24_feature_bump_pattern (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "noise_profile",
+      "n_sources": 1,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R14_noise_profile_post_fit' (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R14_noise_profile_preflight' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "per_class_farther_tail",
+      "n_sources": 1,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R10_cross_class_extrapolation' (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R11_per_class_mre_ceiling' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "substrate_critic",
+      "n_sources": 1,
+      "n_flags": 2,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R13_substrate_critic_post_fit' (count=552)"
+        },
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R13_substrate_critic_preflight' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "ansatz_survivor",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "primitive_roi",
+          "severity": "warn",
+          "detail": "verdict=dead engagement=0.85% engaged=16 refused=491"
+        }
+      ]
+    },
+    {
+      "kind": "seam",
+      "id": "GP-130",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "seam_health",
+          "severity": "warn",
+          "detail": "orphan: open + no spec + no code, age=13d"
+        }
+      ]
+    },
+    {
+      "kind": "seam",
+      "id": "GP-140",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "seam_health",
+          "severity": "warn",
+          "detail": "orphan: open + no spec + no code, age=12d"
+        }
+      ]
+    },
+    {
+      "kind": "seam",
+      "id": "GP-173",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "seam_health",
+          "severity": "warn",
+          "detail": "orphan: open + no spec + no code, age=8d"
+        }
+      ]
+    },
+    {
+      "kind": "seam",
+      "id": "GP-188",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "seam_health",
+          "severity": "warn",
+          "detail": "orphan: open + no spec + no code, age=6d"
+        }
+      ]
+    },
+    {
+      "kind": "seam",
+      "id": "GP-192",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "seam_health",
+          "severity": "warn",
+          "detail": "orphan: open + no spec + no code, age=5d"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_climb_triggers.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_pivot_effectiveness.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_score_ceilings.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_judge_stratified.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_lollapalooza_hypothesis.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_trajectories.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_champion_trajectory_sequence.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/mining/mine_cross_provider_classifier_agreement.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/audits/audit_gate_coverage.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/audits/audit_gate_effectiveness.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/audits/audit_gate_engagement.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/audits/audit_judge_drift.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "miner",
+      "id": "scripts/lean/typed_endpoint_agent_panel_harvest.py",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "miner_roi",
+          "severity": "warn",
+          "detail": "verdict=dead_no_output last_run_age=None refs=0"
+        }
+      ]
+    },
+    {
+      "kind": "target",
+      "id": "TrackBProfileLipschitzControlObligation",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "triangulation",
+          "severity": "warn",
+          "detail": "compounding_score=20 events=8"
+        }
+      ]
+    },
+    {
+      "kind": "target",
+      "id": "GP216ContinuumProjectedSelectedBranchCompactnessMeasureValuedAuditedOutputSource",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "triangulation",
+          "severity": "warn",
+          "detail": "compounding_score=9 events=3"
+        }
+      ]
+    },
+    {
+      "kind": "target",
+      "id": "TrackBProfileLipschitzClayObligation",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "triangulation",
+          "severity": "warn",
+          "detail": "compounding_score=7 events=3"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "analogy",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R15_analogy' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "apparatus_meta_runner",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R22_apparatus_meta_runner' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "effective_parameter_count",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R21_effective_parameter_count' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "primitive",
+      "id": "R21",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "gate_telemetry alias of effective_parameter_count \u2192 R21_effective_parameter_count (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "feature_bump_pattern",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R24_feature_bump_pattern' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "feature_coverage_adequacy",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R24_feature_bump_pattern' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "framer_1d",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R16_framer_pre_fit' (count=552)"
+        }
+      ]
+    },
+    {
+      "kind": "gate_name",
+      "id": "sparse_cell_exclusion",
+      "n_sources": 1,
+      "n_flags": 1,
+      "flags": [
+        {
+          "source": "gate_telemetry",
+          "severity": "info",
+          "detail": "expected name absent; actual='R23_sparse_cell_exclusion' (count=552)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "tick_id": "TICK668",
+  "level": 541,
+  "selected_chain": [
+    "PATTERN-028",
+    "PATTERN-011",
+    "PATTERN-014",
+    "ANTI-PATTERN-018"
+  ],
+  "residual_to_check_edge": {
+    "residual": "Level540 canonical last-hit still packages the last-hit order law directly",
+    "check": "derive the last-hit equality and order law from finite event-preimage support membership plus support maximum domination"
+  },
+  "required_artifact_slots": {
+    "orientation_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level541_finite_event_preimage_max_last_hit_pencil.md",
+    "stress_test_artifact": "projects/ns_millennium_hunt/workspace/queries/tick668_level541_finite_support_extraction_receipt.json",
+    "verification_artifact": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260527T_level541_finite_event_preimage_max_last_hit"
+  },
+  "anti_pattern_guards": [
+    "no support label as finite support",
+    "no Level540 last-hit law assumption",
+    "no endpoint capacity-only max",
+    "no post-payoff support extraction"
+  ],
+  "positive_forecast": "If the event-preimage support is concrete and its maximum dominates every member, the canonical last-hit source is obtained by membership transport."
+}

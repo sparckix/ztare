@@ -1,0 +1,373 @@
+{
+  "experiment": "gp216_pass3_held_out",
+  "vocabulary_n_ops": 9,
+  "held_out_arcs": [
+    "galois_theory",
+    "godel_incompleteness",
+    "turing_universal_machine"
+  ],
+  "results": [
+    {
+      "arc": "galois_theory",
+      "n_moves": 8,
+      "moves": [
+        {
+          "name": "Defining the Central Problem",
+          "signature": "Articulating a general, unanswered question that motivates the inquiry.",
+          "anchor": "which polynomial equations are solvable by radicals?"
+        },
+        {
+          "name": "Bounding Prior Art",
+          "signature": "Identifying the limits of existing approaches to frame the need for a new method.",
+          "anchor": "had no general criterion"
+        },
+        {
+          "name": "Constructing a Formal Proxy",
+          "signature": "Associating a novel, structured object with each instance of the problem.",
+          "anchor": "associated to each polynomial a finite group of permutations of its roots"
+        },
+        {
+          "name": "Specifying Object Semantics",
+          "signature": "Defining the internal logic and constituent elements of the newly constructed object.",
+          "anchor": "defined as the automorphisms of the splitting field that fix the base field"
+        },
+        {
+          "name": "Forging a Property Equivalence",
+          "signature": "Demonstrating that a key property in the original domain maps directly to a specific property in the new representational domain.",
+          "anchor": "solvability by radicals corresponds exactly to the Galois group being a 'solvable group'"
+        },
+        {
+          "name": "Articulating a Decisive Criterion",
+          "signature": "Specifying the precise structural condition within the new domain that resolves the original question.",
+          "anchor": "a tower of normal subgroups with abelian quotients"
+        },
+        {
+          "name": "Translating the Core Inquiry",
+          "signature": "Reformulating the central problem entirely in terms of the properties of the new proxy object.",
+          "anchor": "the question 'is this equation solvable?' becomes 'does this group have a particular subgroup tower?'"
+        },
+        {
+          "name": "Migrating the Problem Space",
+          "signature": "Moving the locus of investigation from one formal discipline to another with more suitable tools.",
+          "anchor": "moves the problem from analysis to combinatorics of finite group structure"
+        }
+      ],
+      "mapping": {
+        "arc_id": "galois_theory",
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Defining the Central Problem",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Stating the motivating question is problem framing, not one of the listed theory-building operations."
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Bounding Prior Art",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Identifying limitations of existing methods is contextual framing rather than a structural operation in the vocabulary."
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Constructing a Formal Proxy",
+            "best_op": "tb_03",
+            "confidence": "high",
+            "reason": "Associating a polynomial to a finite group creates a surrogate object through which the original solvability problem can be attacked."
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Specifying Object Semantics",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "Defining the proxy object's internal semantics is necessary formal setup but is not specifically captured by any listed operation."
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Forging a Property Equivalence",
+            "best_op": "tb_03",
+            "confidence": "high",
+            "reason": "It establishes that solving the surrogate group-theoretic property exactly resolves the original radical-solvability question."
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Articulating a Decisive Criterion",
+            "best_op": "tb_03",
+            "confidence": "medium",
+            "reason": "The subgroup-tower criterion is the tractable surrogate-domain condition used to decide the original problem."
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Translating the Core Inquiry",
+            "best_op": "tb_03",
+            "confidence": "high",
+            "reason": "The original equation-solvability question is reformulated as a question about the associated group's structure."
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Migrating the Problem Space",
+            "best_op": "tb_03",
+            "confidence": "high",
+            "reason": "The inquiry is shifted from equations to finite group structure as a more tractable surrogate domain."
+          }
+        ],
+        "summary": {
+          "total": 8,
+          "high": 6,
+          "medium": 2,
+          "low": 0,
+          "unmapped": 3
+        }
+      },
+      "high_med_coverage_pct": 100.0,
+      "unmapped_pct": 37.5
+    },
+    {
+      "arc": "godel_incompleteness",
+      "n_moves": 9,
+      "moves": [
+        {
+          "name": "Engaging a Foundational Program",
+          "signature": "Addressing a central conjecture or challenge that defines the prevailing research paradigm in a field.",
+          "anchor": "Hilbert's program asked whether mathematics could be reduced"
+        },
+        {
+          "name": "Internalizing the Meta-Language",
+          "signature": "Devising a systematic scheme to represent statements about a system as statements within that same system.",
+          "anchor": "every formula in the formal system encoded as a natural number"
+        },
+        {
+          "name": "Translating Across Domains",
+          "signature": "Re-casting a problem from an external, descriptive domain into the native, operational domain of the system under study.",
+          "anchor": "statements ABOUT formulas became statements about numbers"
+        },
+        {
+          "name": "Establishing an Expressivity Condition",
+          "signature": "Identifying the minimum representational power a system must have for a specific self-analytic construction to be possible.",
+          "anchor": "the formal system was expressive enough to represent its own provability predicate"
+        },
+        {
+          "name": "Constructing a Self-Referential Object",
+          "signature": "Using a system's own rules to build an entity that makes a claim about its own status relative to those rules.",
+          "anchor": "construct a self-referential sentence"
+        },
+        {
+          "name": "Forcing a Paradoxical Choice",
+          "signature": "Creating a scenario where a system's own logic forces it into either contradiction or admitting its own limitations.",
+          "anchor": "'this sentence is not provable in PA'"
+        },
+        {
+          "name": "Exposing an Inherent Limit",
+          "signature": "Demonstrating that any system of a certain type will necessarily have phenomena it cannot fully account for.",
+          "anchor": "any consistent formal system... is incomplete"
+        },
+        {
+          "name": "Barring Internal Self-Verification",
+          "signature": "Proving that a system cannot use its own internal mechanisms to formally establish its own soundness or reliability.",
+          "anchor": "cannot prove its own consistency"
+        },
+        {
+          "name": "Generalizing the Limitative Result",
+          "signature": "Abstracting a specific limitation into a universal principle applicable to all systems that meet a defined set of criteria.",
+          "anchor": "The same arithmetization technique generalized to other formal systems"
+        }
+      ],
+      "mapping": {
+        "arc_id": "godel_incompleteness",
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Engaging a Foundational Program",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "This is a choice of target problem within a paradigm, not a structural theory-building operation in the vocabulary."
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Internalizing the Meta-Language",
+            "best_op": "tb_02",
+            "confidence": "high",
+            "reason": "It unifies meta-mathematical syntax with arithmetic by constructing a translation between statements about formulas and statements about numbers."
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Translating Across Domains",
+            "best_op": "tb_02",
+            "confidence": "high",
+            "reason": "The move explicitly transfers problems from a descriptive meta-domain into the native arithmetic domain via a shared formal representation."
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Establishing an Expressivity Condition",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "It identifies a threshold condition for self-representation, but does not itself import, lift, substitute, or force a solution in the vocabulary's sense."
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Constructing a Self-Referential Object",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Self-reference or diagonal construction is not directly represented by any listed operation."
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Forcing a Paradoxical Choice",
+            "best_op": "tb_04",
+            "confidence": "medium",
+            "reason": "The system's consistency constraints force a narrow dichotomy between contradiction and incompleteness."
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Exposing an Inherent Limit",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "A limitative impossibility result is not captured by the available constructive or translational operations."
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Barring Internal Self-Verification",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "The prohibition on internal consistency proof is a specific limitative result absent from the vocabulary."
+          },
+          {
+            "move_idx": 9,
+            "move_name": "Generalizing the Limitative Result",
+            "best_op": "unmapped",
+            "confidence": "medium",
+            "reason": "Although it abstracts a theorem across systems, the vocabulary lacks an operation for generalizing impossibility principles."
+          }
+        ],
+        "summary": {
+          "total": 9,
+          "high": 6,
+          "medium": 3,
+          "low": 0,
+          "unmapped": 6
+        }
+      },
+      "high_med_coverage_pct": 100.0,
+      "unmapped_pct": 66.66666666666666
+    },
+    {
+      "arc": "turing_universal_machine",
+      "n_moves": 8,
+      "moves": [
+        {
+          "name": "Formalize an Intuitive Notion",
+          "signature": "Define a vague, intuitive concept using a concrete, formal system.",
+          "anchor": "introduced the abstract machine \u2014 a finite-state controller reading and writing symbols on an infinite tape \u2014 as a formal model of mechanical computation."
+        },
+        {
+          "name": "Assert Representational Completeness",
+          "signature": "Propose that the specific formal model is powerful enough to capture all relevant instances of the general concept.",
+          "anchor": "He defined 'computable' to mean 'computable by such a machine' (Church-Turing thesis)."
+        },
+        {
+          "name": "Construct a Universal Instance",
+          "signature": "Create an entity within the formal system that can simulate any other entity within that same system.",
+          "anchor": "He constructed a UNIVERSAL machine that, given as input the description of any other Turing machine plus that machine's input, simulates the other machine's computation."
+        },
+        {
+          "name": "Pose a Self-Referential Problem",
+          "signature": "Formulate a problem where the system must analyze its own properties or the properties of its components.",
+          "anchor": "no Turing machine can decide whether arbitrary Turing machines halt."
+        },
+        {
+          "name": "Import a Paradoxical Method",
+          "signature": "Employ a known logical technique that generates contradictions through self-reference to prove a negative claim.",
+          "anchor": "Using a diagonal argument structurally similar to G\u00f6del's"
+        },
+        {
+          "name": "Establish an Inherent Limit",
+          "signature": "Demonstrate that a certain question cannot be answered by any procedure within the defined formal system.",
+          "anchor": "he showed the halting problem is undecidable"
+        },
+        {
+          "name": "Generalize the Negative Result",
+          "signature": "Show that the proven limitation within the formal model resolves a broader, pre-existing problem.",
+          "anchor": "This implied the Entscheidungsproblem has a negative answer."
+        },
+        {
+          "name": "Leverage Universality for Limitation",
+          "signature": "Use a system's ability to represent itself to prove what that system cannot do.",
+          "anchor": "using the universality to construct undecidable problems."
+        }
+      ],
+      "mapping": {
+        "arc_id": "turing_universal_machine",
+        "mappings": [
+          {
+            "move_idx": 1,
+            "move_name": "Formalize an Intuitive Notion",
+            "best_op": "tb_06",
+            "confidence": "high",
+            "reason": "It turns the vague notion of mechanical computation into an explicit formal model."
+          },
+          {
+            "move_idx": 2,
+            "move_name": "Assert Representational Completeness",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "The vocabulary lacks an operation for asserting that a formal model exhausts an intuitive concept."
+          },
+          {
+            "move_idx": 3,
+            "move_name": "Construct a Universal Instance",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "A universal self-simulating interpreter within the same formal system is not captured by the listed operations."
+          },
+          {
+            "move_idx": 4,
+            "move_name": "Pose a Self-Referential Problem",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Formulating a problem about the system's own components or behavior is absent from the vocabulary."
+          },
+          {
+            "move_idx": 5,
+            "move_name": "Import a Paradoxical Method",
+            "best_op": "tb_05",
+            "confidence": "medium",
+            "reason": "It adapts diagonal/self-reference methods from logic as an external proof technique."
+          },
+          {
+            "move_idx": 6,
+            "move_name": "Establish an Inherent Limit",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Proving undecidability is a limit result rather than one of the listed theory-building operations."
+          },
+          {
+            "move_idx": 7,
+            "move_name": "Generalize the Negative Result",
+            "best_op": "tb_03",
+            "confidence": "medium",
+            "reason": "It uses a formal reduction-like substitution to transfer the model-internal negative result to the broader Entscheidungsproblem."
+          },
+          {
+            "move_idx": 8,
+            "move_name": "Leverage Universality for Limitation",
+            "best_op": "unmapped",
+            "confidence": "high",
+            "reason": "Using universality and self-representation to derive impossibility is distinct from the available operations."
+          }
+        ],
+        "summary": {
+          "total": 8,
+          "high": 6,
+          "medium": 2,
+          "low": 0,
+          "unmapped": 5
+        }
+      },
+      "high_med_coverage_pct": 100.0,
+      "unmapped_pct": 62.5
+    }
+  ],
+  "mean_high_med_coverage": 100.0,
+  "verdict": "PASS \u2014 all held-out arcs \u226570% high/medium coverage. Vocabulary survives OOD."
+}

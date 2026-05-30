@@ -1,0 +1,200 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-14T18:25:33Z",
+    "allocation_recommendation": null,
+    "exists": true,
+    "expected_cost_agent_minutes": 15.0,
+    "expected_value": -0.6213953699001369,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.055,
+    "p_needs_new_lemma": 0.02,
+    "p_regression": 0.025,
+    "p_success": 0.8163148155382509,
+    "participants": [
+      {
+        "agent_id": "Bayes2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_union_training_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2059_union_training_readiness_gate_after_charfun_strict/bayes2.json",
+        "forecasted_at": "2026-05-14T18:25:30Z",
+        "p_success": 0.84,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "Fisher2",
+        "belief_update": false,
+        "domain": "gp225_pre_gnn_union_training_gate",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2059_union_training_readiness_gate_after_charfun_strict/fisher2.json",
+        "forecasted_at": "2026-05-14T18:25:21Z",
+        "p_success": 0.79,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "manifest_count_mismatch",
+        "p": 0.29000000000000004
+      },
+      {
+        "mode": "next_gate_too_vague",
+        "p": 0.26
+      },
+      {
+        "mode": "quarantine_lost",
+        "p": 0.26
+      },
+      {
+        "mode": "training_boundary_not_explicit",
+        "p": 0.19
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "contract": "analytics/public/forecast_pool/contracts/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json",
+    "score": "analytics/public/forecast_pool/scores/gp225_v2059_union_training_readiness_gate_after_charfun_strict.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 18.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-14T18:25:21Z",
+    "created_by": "codex_rd",
+    "horizon": "2026-05-14T23:59:00Z",
+    "layer": "meso",
+    "objective_resolver": "Resolve true iff analytics/public/leanmill/results/v2059_union_training_readiness_gate_after_charfun_strict.json has status passed, strict rows=14, repaired charFunDual counted, older quarantines preserved, training_now=false, gnn_blocked=true, and next action is heldout/broader union accounting rather than immediate model training.",
+    "question": "Will v20.59 produce a union training-readiness gate after the repaired charFunDual strict row that preserves the 14-row manifest update but keeps GNN/cross-encoder training blocked with a concrete next gate?",
+    "success_threshold": "1.0",
+    "task_type": "pre_gnn_union_training_gate"
+  },
+  "contract_id": "gp225_v2059_union_training_readiness_gate_after_charfun_strict",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "legacy_or_named_agent:Bayes2",
+        "raw_agent_ids": [
+          "Bayes2"
+        ]
+      },
+      {
+        "group": "legacy_or_named_agent:Fisher2",
+        "raw_agent_ids": [
+          "Fisher2"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "Bayes2",
+      "Fisher2"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": "Gate training; preserve strict row but require heldout/broader union delta.",
+        "agent_id": "Bayes2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2059_union_training_readiness_gate_after_charfun_strict/bayes2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_union_training_gate",
+        "expected_cost_agent_minutes": 14.0,
+        "forecasted_at": "2026-05-14T18:25:30Z",
+        "p_success": 0.84,
+        "rationale_short": "The inputs are closed and deterministic; the main risk is wording or accounting drift, not theorem uncertainty.",
+        "specific_failure_mode_ids": [
+          "manifest_count_mismatch",
+          "quarantine_lost"
+        ]
+      },
+      {
+        "action_change_recommendation": "Make the gate explicit: no training until a post-charFun heldout replay/union delta succeeds.",
+        "agent_id": "Fisher2",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/gp225_v2059_union_training_readiness_gate_after_charfun_strict/fisher2.json",
+        "canonical_agent_id": null,
+        "domain": "gp225_pre_gnn_union_training_gate",
+        "expected_cost_agent_minutes": 16.0,
+        "forecasted_at": "2026-05-14T18:25:21Z",
+        "p_success": 0.79,
+        "rationale_short": "A single repaired strict row is useful but obviously insufficient for training; the gate should be easy if it preserves the latest manifest and v2041 abort context.",
+        "specific_failure_mode_ids": [
+          "next_gate_too_vague",
+          "training_boundary_not_explicit"
+        ]
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 14.0,
+    "changed_by_forecast_ids": [
+      "Bayes2",
+      "Fisher2"
+    ],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-14T18:26:43Z",
+    "success_bool": true,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 15.0,
+      "expected_value": -0.6213953699001369,
+      "p_success": 0.8163148155382509,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.5499
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 15.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.8163148155382509,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "manifest_count_mismatch",
+        "p": 0.29000000000000004
+      },
+      {
+        "mode": "next_gate_too_vague",
+        "p": 0.26
+      },
+      {
+        "mode": "quarantine_lost",
+        "p": 0.26
+      },
+      {
+        "mode": "training_boundary_not_explicit",
+        "p": 0.19
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.03485,
+    "score_rows": 2,
+    "scored_at": "2026-05-14T18:26:53Z"
+  }
+}

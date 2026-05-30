@@ -1,0 +1,377 @@
+{
+  "experiment": "gp216_lean_autonomous_bridge_A",
+  "n_files": 153,
+  "n_features": 51,
+  "k": 6,
+  "method": "deterministic kmeans on normalized syntactic features (no LLM at clustering)",
+  "clusters": [
+    {
+      "cluster_id": "lean_cluster_0",
+      "n_files": 19,
+      "top_features": [
+        [
+          "tac_apply",
+          2.32
+        ],
+        [
+          "shape_no_X_certificate",
+          1.31
+        ],
+        [
+          "tac_intro",
+          0.98
+        ],
+        [
+          "tac_nlinarith",
+          0.44
+        ],
+        [
+          "shape_X_implies_Y",
+          0.42
+        ],
+        [
+          "tac_have",
+          0.35
+        ],
+        [
+          "def_lemma",
+          0.29
+        ],
+        [
+          "tac_ring",
+          0.2
+        ],
+        [
+          "tac_match",
+          0.17
+        ],
+        [
+          "tac_exact",
+          0.14
+        ]
+      ],
+      "sample_files": [
+        "ns_abstract_eviction_implication.lean",
+        "ns_concentration_impact_branch.lean",
+        "ns_continuum_tail_bound.lean",
+        "ns_core_tail_budget_bridge.lean",
+        "ns_cycle_resupply_threshold.lean",
+        "ns_exponential_metric_capacity_deficit.lean",
+        "ns_exponential_metric_transport_ratio_obstruction.lean",
+        "ns_knife_edge_gridlock_closure.lean"
+      ]
+    },
+    {
+      "cluster_id": "lean_cluster_1",
+      "n_files": 12,
+      "top_features": [
+        [
+          "def_theorem",
+          1.97
+        ],
+        [
+          "tac_by_contra",
+          1.82
+        ],
+        [
+          "shape_no_X_falsifier",
+          1.8
+        ],
+        [
+          "tac_have",
+          1.67
+        ],
+        [
+          "def_structure",
+          1.51
+        ],
+        [
+          "tac_let",
+          1.46
+        ],
+        [
+          "tac_rewrite",
+          1.41
+        ],
+        [
+          "shape_no_X_with_Y",
+          1.31
+        ],
+        [
+          "tac_exact",
+          1.2
+        ],
+        [
+          "tac_nlinarith",
+          1.19
+        ]
+      ],
+      "sample_files": [
+        "ns_discrete_recurrence_map.lean",
+        "ns_high_high_resonance_route_adapter.lean",
+        "ns_high_high_self_tax_charging_obligation.lean",
+        "ns_kinematic_compensation.lean",
+        "ns_low_high_kinematic_dichotomy.lean",
+        "ns_low_high_lipschitz_reserve_adapter.lean",
+        "ns_profile_lipschitz_clay_bridge.lean",
+        "ns_same_shell_remainder_charging_obligation.lean"
+      ]
+    },
+    {
+      "cluster_id": "lean_cluster_2",
+      "n_files": 5,
+      "top_features": [
+        [
+          "tac_induction",
+          4.35
+        ],
+        [
+          "tac_simp",
+          3.67
+        ],
+        [
+          "def_lemma",
+          3.43
+        ],
+        [
+          "tac_intro",
+          2.29
+        ],
+        [
+          "tac_exact",
+          1.63
+        ],
+        [
+          "tac_have",
+          1.31
+        ],
+        [
+          "tac_fun",
+          1.24
+        ],
+        [
+          "def_structure",
+          1.23
+        ],
+        [
+          "def_def",
+          0.73
+        ],
+        [
+          "def_theorem",
+          0.64
+        ]
+      ],
+      "sample_files": [
+        "ns_flat_torus_killing_mode.lean",
+        "ns_littlewood_paley_paraproduct_bridge.lean",
+        "ns_low_frequency_lipschitz_control_bridge.lean",
+        "ns_mixed_self_resonance_partition.lean",
+        "ns_pricing_kernel_limit_passage.lean"
+      ]
+    },
+    {
+      "cluster_id": "lean_cluster_3",
+      "n_files": 5,
+      "top_features": [
+        [
+          "def_axiom",
+          4.5
+        ],
+        [
+          "imp_imports_mathlib",
+          3.69
+        ],
+        [
+          "n_chars",
+          3.42
+        ],
+        [
+          "n_lines",
+          3.42
+        ],
+        [
+          "tac_decide",
+          3.3
+        ],
+        [
+          "def_class",
+          2.66
+        ],
+        [
+          "tac_match",
+          1.73
+        ],
+        [
+          "tac_fun",
+          1.2
+        ],
+        [
+          "def_def",
+          1.16
+        ],
+        [
+          "def_inductive",
+          0.4
+        ]
+      ],
+      "sample_files": [
+        "gp088calibrationa01.lean",
+        "ns_bounded_state_eviction.lean",
+        "oeis_a000009.lean",
+        "oeis_a000607.lean",
+        "oeis_a000959.lean"
+      ]
+    },
+    {
+      "cluster_id": "lean_cluster_4",
+      "n_files": 18,
+      "top_features": [
+        [
+          "def_abbrev",
+          2.32
+        ],
+        [
+          "def_def",
+          0.33
+        ],
+        [
+          "tac_cases",
+          0.25
+        ],
+        [
+          "tac_exfalso",
+          0.07
+        ],
+        [
+          "tac_constructor",
+          0.03
+        ],
+        [
+          "imp_imports_init",
+          0.0
+        ],
+        [
+          "imp_imports_std",
+          0.0
+        ],
+        [
+          "shape_X_canonical",
+          0.0
+        ],
+        [
+          "shape_X_classification",
+          0.0
+        ],
+        [
+          "shape_X_equiv",
+          0.0
+        ]
+      ],
+      "sample_files": [
+        "ns_2028_hindsight_obligations.lean",
+        "ns_commutator_cutoff_penalty.lean",
+        "ns_commutator_microstructure_escape.lean",
+        "ns_commutator_tower_proofsearch.lean",
+        "ns_dyadic_annulus_commutator_obstruction.lean",
+        "ns_eigenvalue_repulsion_or_collapse.lean",
+        "ns_frequency_sensitive_commutator_collapse.lean",
+        "ns_gauge_topology_bypass.lean"
+      ]
+    },
+    {
+      "cluster_id": "lean_cluster_5",
+      "n_files": 94,
+      "top_features": [
+        [
+          "imp_imports_local",
+          0.13
+        ],
+        [
+          "tac_omega",
+          0.11
+        ],
+        [
+          "shape_X_obstruction",
+          0.09
+        ],
+        [
+          "tac_exfalso",
+          0.05
+        ],
+        [
+          "tac_show",
+          0.03
+        ],
+        [
+          "tac_rfl",
+          0.03
+        ],
+        [
+          "shape_X_decomposition",
+          0.01
+        ],
+        [
+          "imp_imports_init",
+          0.0
+        ],
+        [
+          "imp_imports_std",
+          0.0
+        ],
+        [
+          "shape_X_canonical",
+          0.0
+        ]
+      ],
+      "sample_files": [
+        "Basic.lean",
+        "gp096sandbox20.lean",
+        "hallucination_smoke_iter.lean",
+        "lean_proof_gate_smoke_iter.lean",
+        "ns_angular_moment_pressure_target.lean",
+        "ns_asymptotic_margin_extraction.lean",
+        "ns_calderon_zygmund_stealth_obstruction.lean",
+        "ns_centrifugal_transversality.lean"
+      ]
+    }
+  ],
+  "corpus_aggregate_features": {
+    "n_chars": 4222903,
+    "n_lines": 120010,
+    "def_theorem": 709,
+    "tac_exact": 703,
+    "def_def": 526,
+    "tac_have": 440,
+    "imp_imports_local": 215,
+    "imp_imports_mathlib": 171,
+    "tac_intro": 170,
+    "def_structure": 168,
+    "tac_nlinarith": 119,
+    "tac_rewrite": 97,
+    "def_abbrev": 87,
+    "tac_cases": 85,
+    "tac_fun": 68,
+    "tac_constructor": 60,
+    "def_class": 51,
+    "def_axiom": 48,
+    "tac_let": 42,
+    "tac_simp": 36,
+    "tac_decide": 35,
+    "tac_apply": 22,
+    "def_lemma": 22,
+    "tac_ring": 16,
+    "tac_show": 13,
+    "shape_no_X_certificate": 12,
+    "shape_no_X_with_Y": 12,
+    "shape_no_X_falsifier": 11,
+    "shape_X_obstruction": 11,
+    "def_inductive": 10,
+    "tac_exfalso": 9,
+    "tac_by_contra": 9,
+    "tac_induction": 7,
+    "tac_match": 7,
+    "tac_rfl": 6,
+    "tac_omega": 6
+  }
+}

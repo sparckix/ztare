@@ -1,0 +1,14 @@
+{
+  "actual_cost_agent_minutes": 0.3,
+  "artifact_hash": "0a813ef16108dd902c25f5bba052273fe832cb22e57326ac572ad850d99c5647",
+  "artifact_path": "analytics/public/leanmill/results/v1845_public_trace_candidate_pool_and_target_label_builder.json",
+  "compile_status": "pass",
+  "contract_id": "gp225_v1845_public_trace_label_builder",
+  "error_type": "none",
+  "goal_delta": 0,
+  "resolution_note": "v18.45 passed label-builder inventory: rows=120, extractable_target_ref_rows=85, candidate_pool_rows=85, baseline_unsaturated_rows=35, closure_value_label_ready_rows=32, unquarantined_false_accepts=0, training_now=false, gnn_blocked=true. Caveat: target refs are tactic-string-derived and require replay/compile verification before training.",
+  "resolved_at": "2026-05-13T15:25:34Z",
+  "sorry_delta": 0,
+  "success_bool": true,
+  "voided": false
+}

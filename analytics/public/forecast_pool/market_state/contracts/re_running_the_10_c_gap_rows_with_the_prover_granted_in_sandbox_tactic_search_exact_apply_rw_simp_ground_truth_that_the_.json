@@ -1,0 +1,206 @@
+{
+  "aggregate": {
+    "aggregated_at": "2026-05-19T16:36:35Z",
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 52.0,
+      "expected_value": -0.07549498885792827,
+      "p_success": 0.5550055679356353,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.257
+    },
+    "exists": true,
+    "expected_cost_agent_minutes": 52.0,
+    "expected_value": -0.07549498885792827,
+    "forecast_count": 2,
+    "forecast_history_count": 2,
+    "p_dependency_issue": 0.10500000000000001,
+    "p_needs_new_lemma": 0.165,
+    "p_regression": 0.055,
+    "p_success": 0.5550055679356353,
+    "participants": [
+      {
+        "agent_id": "codex",
+        "belief_update": false,
+        "domain": "tooled_retrieval_ablation_c_gaps",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_/codex.json",
+        "forecasted_at": "2026-05-16T20:29:58Z",
+        "p_success": 0.56,
+        "weight": 1.0
+      },
+      {
+        "agent_id": "research_director_claude_opus_4_7",
+        "belief_update": false,
+        "domain": "general",
+        "forecast_artifact_path": "analytics/public/forecast_pool/forecasts/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_/research_director_claude_opus_4_7.json",
+        "forecasted_at": "2026-05-16T20:28:27Z",
+        "p_success": 0.55,
+        "weight": 1.0
+      }
+    ],
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "retrieval_miss_of_true_closer",
+        "p": 0.17
+      },
+      {
+        "mode": "compile_or_plumbing_blocks_genuine_close",
+        "p": 0.11
+      },
+      {
+        "mode": "single_lemma_laundering_detected",
+        "p": 0.09
+      },
+      {
+        "mode": "tactic_search_local_minima_or_timeout",
+        "p": 0.08
+      },
+      {
+        "mode": "v4290_pin_or_dependency_mismatch",
+        "p": 0.05
+      }
+    ]
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_.json",
+    "contract": "analytics/public/forecast_pool/contracts/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_.json",
+    "score": "analytics/public/forecast_pool/scores/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-05-16T20:28:27Z",
+    "created_by": "research_director_claude_opus_4_7",
+    "horizon": "2026-05-17",
+    "layer": "micro",
+    "objective_resolver": "gp233_adversary_yield_decomp.py --result /tmp/adv_verify_Cg/result.txt vs prior C 3-genuine; +oracle-class delta on the 10 gaps",
+    "question": "Re-running the 10 C-gap rows with the prover granted in-sandbox tactic search (exact?/apply?/rw?/simp?) + ground-truth that the closer exists at the v4.29.0 pin: will >=5/10 now close genuine (compile + not single-lemma-laundered), confirming the research-grade ceiling is RETRIEVAL-bound not reasoning-bound?",
+    "success_threshold": "0.5",
+    "task_type": "tooled_retrieval_ablation_c_gaps"
+  },
+  "contract_id": "re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 2,
+    "independence_groups": [
+      {
+        "group": "independent_agent_family:claude",
+        "raw_agent_ids": [
+          "research_director_claude_opus_4_7"
+        ]
+      },
+      {
+        "group": "independent_agent_family:codex",
+        "raw_agent_ids": [
+          "codex"
+        ]
+      }
+    ],
+    "latest_forecast_count": 2,
+    "meets_two_independent_agents": true,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": [
+      "codex",
+      "research_director_claude_opus_4_7"
+    ]
+  },
+  "forecasts": {
+    "history_count": 2,
+    "latest": [
+      {
+        "action_change_recommendation": null,
+        "agent_id": "codex",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_/codex.json",
+        "canonical_agent_id": "codex",
+        "domain": "tooled_retrieval_ablation_c_gaps",
+        "expected_cost_agent_minutes": 44.0,
+        "forecasted_at": "2026-05-16T20:29:58Z",
+        "p_success": 0.56,
+        "rationale_short": "Sandbox tactic search plus the asserted ground-truth closer should lift the floor above the prior 3/10, but the main residuals are still retrieval miss, compile/plumbing failure, and laundering rather than pure reasoning.",
+        "specific_failure_mode_ids": []
+      },
+      {
+        "action_change_recommendation": null,
+        "agent_id": "research_director_claude_opus_4_7",
+        "artifact_path": "analytics/public/forecast_pool/forecasts/re_running_the_10_c_gap_rows_with_the_prover_granted_in_sandbox_tactic_search_exact_apply_rw_simp_ground_truth_that_the_/research_director_claude_opus_4_7.json",
+        "canonical_agent_id": "claude_rd",
+        "domain": "general",
+        "expected_cost_agent_minutes": 60.0,
+        "forecasted_at": "2026-05-16T20:28:27Z",
+        "p_success": 0.55,
+        "rationale_short": "void-mine says 9/10 are retrieval-not-reasoning; granting in-sandbox exact?/apply? + 'closer exists' should recover most name-resolution gaps (7) but C13 genuine-construction + C02/C11 shape-bridge may resist; >=5/10 plausible-favored but partial-recovery (3-4) also likely",
+        "specific_failure_mode_ids": []
+      }
+    ],
+    "latest_count": 2
+  },
+  "generated_at": "2026-05-27T05:49:11Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "closed",
+    "state": "resolved_scored"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": 55.0,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": true,
+    "exists": true,
+    "resolved_at": "2026-05-16T20:41:17Z",
+    "success_bool": false,
+    "voided": false
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "defer",
+      "expected_cost_agent_minutes": 52.0,
+      "expected_value": -0.07549498885792827,
+      "p_success": 0.5550055679356353,
+      "reason": "negative expected value; keep as later option unless new evidence arrives",
+      "voi_proxy": 0.257
+    },
+    "effective_n": 2,
+    "expected_cost_agent_minutes": 52.0,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": true,
+    "next_action": "closed",
+    "p_success": 0.5550055679356353,
+    "routing_hint": "audit_or_explore_only",
+    "top_failure_modes": [
+      {
+        "mode": "retrieval_miss_of_true_closer",
+        "p": 0.17
+      },
+      {
+        "mode": "compile_or_plumbing_blocks_genuine_close",
+        "p": 0.11
+      },
+      {
+        "mode": "single_lemma_laundering_detected",
+        "p": 0.09
+      },
+      {
+        "mode": "tactic_search_local_minima_or_timeout",
+        "p": 0.08
+      },
+      {
+        "mode": "v4290_pin_or_dependency_mismatch",
+        "p": 0.05
+      }
+    ]
+  },
+  "score": {
+    "exists": true,
+    "mean_brier": 0.30805000000000005,
+    "score_rows": 2,
+    "scored_at": "2026-05-19T16:39:18Z"
+  }
+}
