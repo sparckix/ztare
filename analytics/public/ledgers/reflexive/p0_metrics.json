@@ -1,0 +1,420 @@
+{
+  "generated_utc": "2026-05-23T22:46:54.037933+00:00",
+  "spec": "research_areas/private/seams/apparatus/instrumentation/GP-236_p0_metrics_rollup_seam.md",
+  "page_caveat": "Every metric except group 3.1_exogenous is self-produced, self-labeled, self-ratified by the apparatus it measures. A self-measured metrics page is itself the Goodhart layer; only external review catches spec-layer self-deception. No self-measured metric is a standalone headline.",
+  "group_order": [
+    "3.1_exogenous",
+    "3.2_state",
+    "3.3_insight",
+    "3.4_recursive"
+  ],
+  "status_counts": {
+    "ok": 18,
+    "partial": 2,
+    "not_yet_computable": 2
+  },
+  "metrics": [
+    {
+      "group": "3.1_exogenous",
+      "key": "external_validation_events",
+      "label": "External-validation events (independent replication / external review)",
+      "value": null,
+      "unit": "",
+      "lane": "out_of_loop",
+      "tier": "A",
+      "source": "papers/ + external-review artifacts",
+      "caveat": "No canonical exogenous-validation ledger exists yet. This is the ONLY Goodhart-resistant signal and per the adversary it is not even a metric \u2014 needs a tracked external_validation ledger before it can be a number. Deliberately null, not faked.",
+      "self_measured": true,
+      "status": "not_yet_computable",
+      "owner": "p0_rollup",
+      "value_kind": "null"
+    },
+    {
+      "group": "3.1_exogenous",
+      "key": "operator_vs_apparatus_diagnosis_ratio",
+      "label": "Operator-vs-apparatus diagnosis ratio",
+      "value": {
+        "operator": 5,
+        "apparatus": 142,
+        "operator_share": 0.034
+      },
+      "unit": "ratio",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/ledgers/catch/catch_ledger.jsonl",
+      "caveat": "HEURISTIC on author_agent (no diagnosed_by field). The apparatus's reason to exist is to compress operator load; per goodhart_at_every_layer \u00a73-4 spec-layer failures are ~100% operator-caught \u2014 interpret accordingly. Needs a real diagnosed_by field to be trustworthy.",
+      "self_measured": false,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.1_exogenous",
+      "key": "cross_family_disagreement_rate",
+      "label": "Cross-family disagreement rate + resolution",
+      "value": {
+        "rate": 0.1325,
+        "n_shared_contracts": 83,
+        "n_disagree": 11,
+        "resolution_split": {
+          "success": 48,
+          "fail": 16,
+          "unresolved": 19
+        }
+      },
+      "unit": "rate",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/forecast_pool/p0_calibration.json#cross_family_disagreement",
+      "caveat": "CONSUMED from the calibration track (Claude vs Codex; families split across p=0.5 OR family-mean spread > 0.25). The genuine-independence signal \u2014 net-new, computed in their track, read-only here.",
+      "self_measured": false,
+      "status": "ok",
+      "owner": "forecast_pool_track",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.2_state",
+      "key": "experiment_f_rows",
+      "label": "Experiment F/E rows",
+      "value": 1183,
+      "unit": "rows",
+      "lane": "meta",
+      "tier": "A",
+      "source": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "caveat": "genuine A (pure file fact); volume not quality",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "scalar"
+    },
+    {
+      "group": "3.2_state",
+      "key": "papers",
+      "label": "Paper manuscripts",
+      "value": 7,
+      "unit": "papers",
+      "lane": "meta",
+      "tier": "A",
+      "source": "papers/",
+      "caveat": "volume not quality",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "scalar"
+    },
+    {
+      "group": "3.2_state",
+      "key": "out_of_loop_share",
+      "label": "Out-of-loop share (cumulative / live-7d)",
+      "value": {
+        "cumulative_pct": 76,
+        "live_7d_pct": 92
+      },
+      "unit": "%",
+      "lane": "out_of_loop",
+      "tier": "B",
+      "source": "analytics/public/ledgers/reflexive/bifurcation_report.json",
+      "caveat": "A\u2192B (adversary): the iter** classifier changed 2026-05-16 \u2014 recomputing day-0 with today's classifier is redefinition, not recomputation. Carry the classifier-version window.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.2_state",
+      "key": "iter_loop_files",
+      "label": "Iter-loop work files",
+      "value": 8526,
+      "unit": "files",
+      "lane": "in_loop",
+      "tier": "B",
+      "source": "analytics/public/ledgers/reflexive/bifurcation_report.json",
+      "caveat": "dormant substrate; same classifier-version caveat",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "scalar"
+    },
+    {
+      "group": "3.2_state",
+      "key": "authored_artifacts_indexed",
+      "label": "Authored artifacts indexed",
+      "value": 35630,
+      "unit": "files",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/ledgers/reflexive/bifurcation_report.json",
+      "caveat": "A\u2192B: mtime\u2248authorship broken by the May reorg for moved files; not true-A until a git-authorship-date fix lands",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "scalar"
+    },
+    {
+      "group": "3.2_state",
+      "key": "sorry_free_lean",
+      "label": "Sorry-free authored .lean files",
+      "value": 478,
+      "unit": "files",
+      "lane": "meta",
+      "tier": "C",
+      "source": "ztare_proofs/ZtareProofs/**",
+      "caveat": "A\u2192C: NON-VACUITY NOT AUDITED. Vacuous / trivially-true sorry-free files = formal-output theatre = monotone-count laundering. The non-vacuity caveat is primary, not parenthetical.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "scalar"
+    },
+    {
+      "group": "3.3_insight",
+      "key": "contextualized_taste",
+      "label": "Contextualized taste \u2014 the PLATEAU is the headline",
+      "value": {
+        "latest": 3.11,
+        "min": 1.44,
+        "max": 3.11,
+        "weeks": 8,
+        "shape": "plateau",
+        "scope": "full historical ledger, rater-segregated \u2014 NOT sample-scoped",
+        "rater": "cold_subagent_contextualized"
+      },
+      "unit": "0-5",
+      "lane": "out_of_loop",
+      "tier": "C",
+      "source": "analytics/public/queries/taste/taste_canonical_series.json",
+      "caveat": "B\u2192C: circular (apparatus rating its own insight on an in-system rubric); the series splices pre/post-2026-05-16 rater RCA = two instruments. Report the PLATEAU, not 'rising'. Needs an external/held-out human anchor to be B.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.3_insight",
+      "key": "gp233_decision_events",
+      "label": "GP-233 decision-change events (RAW counts, NOT a ratio)",
+      "value": {
+        "positive": 56,
+        "superseded_positive": 1,
+        "negative": 0
+      },
+      "unit": "events",
+      "lane": "meta",
+      "tier": "C",
+      "source": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+      "caveat": "B\u2192C: NO real negative bucket + self-labeled + survivorship. The old 56:1 'ratio' was monotone-in-disguise. Show raw events only; a ratio is forbidden until a pre-committed +/-/null rubric AND an independent labeler AND a growable negative bucket exist.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.3_insight",
+      "key": "compounding_ratio",
+      "label": "Compounding ratio (peak)",
+      "value": 0.24,
+      "unit": "ratio",
+      "lane": "out_of_loop",
+      "tier": "C",
+      "source": "analytics/public/queries/reference_graph.json",
+      "caveat": "B\u2192C: node-cap (2000) makes late vs early incomparable; cross-referencing inflates it; unfalsifiable without a paired lagging outcome.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "scalar"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "catch_rate_per_unit_work",
+      "label": "Catch-rate per unit work + category drift + ratified-fraction",
+      "value": {
+        "catches": 147,
+        "per_1k_artifacts": 4.13,
+        "distinct_categories": 89,
+        "ratified_fraction": 0.231
+      },
+      "unit": "rate",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/ledgers/catch/catch_ledger.jsonl",
+      "caveat": "primary recursive signal \u2014 HARDENED: false-negatives are invisible (rising rate is equally consistent with easy modes saturating while dangerous ones leak); 'new category' has the mirror 'prior blindness', no disambiguator; HARD pre/post 2026-05-15 split (pre = unsound, validator dead-path-bugged); both numerator and denominator gameable. Read PAIRED with \u00a73.1 operator-vs-apparatus or it self-congratulates.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "time_to_catch_latency",
+      "label": "Time-to-catch latency",
+      "value": null,
+      "unit": "",
+      "lane": "meta",
+      "tier": "B",
+      "source": "catch_ledger ts vs caught-artifact git date",
+      "caveat": "Catch ledger has ratified_at but no catch-created / artifact-introduced timestamp, and the tree is uncommitted (no git authorship dates). Not reliably computable until those exist.",
+      "self_measured": true,
+      "status": "not_yet_computable",
+      "owner": "p0_rollup",
+      "value_kind": "null"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "dead_letter_rate",
+      "label": "Dead-letter rate (candidates surfaced vs ever-actioned)",
+      "value": {
+        "surfaced": 18,
+        "actioned": null
+      },
+      "unit": "rate",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/queries/trajectory/recursive_gain_candidates.json",
+      "caveat": "surfaced count is reliable; 'actioned' detection (candidate\u2192seam/commit follow-through) needs a committed tree + a candidate\u2192outcome link not yet wired. Honest partial.",
+      "self_measured": true,
+      "status": "partial",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "regression_rework_rate",
+      "label": "Regression/rework rate (non-accumulation, two-sided, bad=UP)",
+      "value": {
+        "rate": 0.0,
+        "regressed": 0,
+        "prev_clean": 2434,
+        "verdict": "no-regression"
+      },
+      "unit": "rate",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/ledgers/reflexive/proof_health.json#regression_rework",
+      "caveat": "STRUCTURAL proxy (fingerprint-diff, not git, not a full kernel re-verify \u2014 a green decl broken by an upstream change with no local sorry is NOT caught; stated, not hidden). CAN return 'treadmilling/regression' \u2014 the honest non-accumulation signal v1/v3/v4 could not. NOT a sophistication score.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "laundering_tripwire",
+      "label": "Laundering tripwire (binary, per cycle)",
+      "value": {
+        "introduced": true,
+        "n_laundered": 240,
+        "dup_fp_groups": 16
+      },
+      "unit": "bool",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/ledgers/reflexive/proof_health.json#laundering_tripwire",
+      "caveat": "F1-dogfooded (self-rejects with exit 3 if the gate is broken). Immune-system signal; conceptual triviality not detected (adversary's known limit, stated).",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "brier_per_period",
+      "label": "Brier per period (CONSUMED; supersedes pooled N=17)",
+      "value": [
+        {
+          "period": "2026-W20",
+          "N": 261,
+          "brier": 0.1628,
+          "uniform_baseline": 0.25
+        }
+      ],
+      "unit": "brier",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/forecast_pool/p0_calibration.json#brier_per_period",
+      "caveat": "CONSUMED. Per-period with N visible \u2014 defeats the pooled-N kill. Honest limit: only 1 period (2026-W20, N=261, brier 0.16 < 0.25 baseline) \u2014 structure correct, trajectory needs multi-week accrual.",
+      "self_measured": false,
+      "status": "ok",
+      "owner": "forecast_pool_track",
+      "value_kind": "series"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "prediction_resolution_rate",
+      "label": "Prediction resolution rate + latency (CONSUMED)",
+      "value": {
+        "resolved": 270,
+        "total": 301,
+        "rate": 0.897,
+        "voided": 26,
+        "median_latency_days": 0.002
+      },
+      "unit": "rate",
+      "lane": "meta",
+      "tier": "C",
+      "source": "analytics/public/forecast_pool/p0_calibration.json#resolution",
+      "caveat": "CONSUMED. Survivorship exposed (voided + unresolved). median_latency \u22480.002d \u2248 3min reflects same-session rapid resolve, NOT a realistic forecasting horizon.",
+      "self_measured": false,
+      "status": "ok",
+      "owner": "forecast_pool_track",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.3_insight",
+      "key": "forecast_externalities",
+      "label": "Forecast externalities (CONSUMED \u2014 the honest calibration headline)",
+      "value": {
+        "positive": {
+          "distinct_tags": 211,
+          "total_count": 306
+        },
+        "negative": {
+          "distinct_tags": 95,
+          "total_count": 123
+        },
+        "ratio_count": 2.488
+      },
+      "unit": "ratio",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/forecast_pool/p0_calibration.json#externalities",
+      "caveat": "CONSUMED. Has a REAL negative bucket (211 pos : 95 neg distinct, ratio ~2.49) \u2014 Tier-B, the honest calibration headline ahead of GP-233 (no neg bucket) and the N=17 Brier. by_period honestly empty (externalities infra dormant this cycle \u2014 reported, not fabricated).",
+      "self_measured": false,
+      "status": "ok",
+      "owner": "forecast_pool_track",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.2_state",
+      "key": "scientific_frontier_state",
+      "label": "Scientific frontier STATE (per-project status distribution)",
+      "value": {},
+      "unit": "projects",
+      "lane": "out_of_loop",
+      "tier": "C",
+      "source": "ztare_workspace/frontier_state/*.json (status only, no slugs)",
+      "caveat": "NOT a progress score (a score over honestly-stuck hard-math is laundering). State only. STALE: newest file 2026-05-10; daemon-written and the VPS workers were not run this cycle. The hard-math frontier is stuck per the terminal characterizations (NS strict-margin atom open, gravity portability unearned, neural law failed) \u2014 a flat/stuck distribution IS the honest signal.",
+      "self_measured": false,
+      "status": "partial",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "capability_engaged_count",
+      "label": "Capability engaged-count (weak observability only)",
+      "value": {
+        "engaged": 4,
+        "dead": 7,
+        "insufficient": 7
+      },
+      "unit": "count",
+      "lane": "meta",
+      "tier": "C",
+      "source": "analytics/public/queries/reflexive_primitive_roi.json",
+      "caveat": "bounded 28-day project-scope ROI artifact; primitives are mostly stable (operator) \u2014 observability ONLY, NO churn-as-gain framing.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    }
+  ]
+}
