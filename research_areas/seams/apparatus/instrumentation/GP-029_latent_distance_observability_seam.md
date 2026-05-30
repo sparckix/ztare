@@ -1,8 +1,11 @@
 # GP-029 Latent Distance Observability Seam
 
+> **Seam metadata** · `seam_id:` GP-029 · `track:` apparatus · `status:` Closed, 2026-04-14. GP-023 Phase 1 complete; EU failure-prob · `last_updated:` 2026-05-17
+
+
 ## Status
 
-Closed — 2026-04-14. GP-023 Phase 1 complete; EU failure-probability run complete. First slice (`src/ztare/validator/latent_distance.py`) shipped and live. Later-slice threshold calibration deferred to future work per original decision. Stale-active status corrected on visibility audit.
+Closed, 2026-04-14. GP-023 Phase 1 complete; EU failure-probability run complete. First slice (`src/ztare/validator/latent_distance.py`) shipped and live. Later-slice threshold calibration deferred to future work per original decision. Stale-active status corrected on visibility audit.
 
 ## Compressed Framing
 
@@ -12,8 +15,8 @@ Closed — 2026-04-14. GP-023 Phase 1 complete; EU failure-probability run compl
 
 ZTARE currently has exactly two signals about where the mutator is in thesis-space:
 
-1. **Score** — a scalar projection of a high-dimensional thesis onto a single rubric axis
-2. **Novelty flags** — discrete set-membership signals (new attack IDs, new hinge IDs, new primitive IDs)
+1. **Score**, a scalar projection of a high-dimensional thesis onto a single rubric axis
+2. **Novelty flags**, discrete set-membership signals (new attack IDs, new hinge IDs, new primitive IDs)
 
 Both are indirect. A mutator that is cycling through the same three functional-form families with different parameterizations can produce large score fluctuations without actually moving in semantic space. A mutator that makes a genuine basin jump can produce zero score change if both basins are equally bad. The current signals cannot distinguish these cases.
 
@@ -25,7 +28,7 @@ The GP-023 smoke run made this concrete. The mutator moved through: power-law �
 
 That is a single-axis drift measurement (charter vs. test suite). It is not an iteration-over-iteration motion measurement. But it means:
 
-- GP-029 does NOT need a new Jaccard primitive — the function already exists and is battle-tested
+- GP-029 does NOT need a new Jaccard primitive, the function already exists and is battle-tested
 - GP-029 DOES need a new caller that invokes `jaccard_distance` across the right pairs of sets (iter N constraints vs iter N−1 constraints, etc.)
 - The implementation burden is smaller than I originally scoped: one extraction pass per iter + calls to the existing helper + one embedding call + one artifact writer
 
@@ -50,9 +53,9 @@ All four look identical on the score axis when all four score 0.
 
 ## Why This Is Not GP-028
 
-GP-028 preserves speculative wedges that the scoring surface would kill. That is a **memory** fix — it adds a second artifact to hold content the score would discard.
+GP-028 preserves speculative wedges that the scoring surface would kill. That is a **memory** fix, it adds a second artifact to hold content the score would discard.
 
-GP-029 measures whether the mutator is actually moving. That is an **observability** fix — it adds a second signal to describe motion the score can't see.
+GP-029 measures whether the mutator is actually moving. That is an **observability** fix, it adds a second signal to describe motion the score can't see.
 
 They are complementary:
 
@@ -63,7 +66,7 @@ Shipping GP-028 without GP-029 means you still can't tell whether the preserved 
 
 ## Option Space
 
-### Option A — Hand reading only
+### Option A, Hand reading only
 
 Current state. Operator reads debate logs and workspace snapshots to infer motion.
 
@@ -71,17 +74,17 @@ Current state. Operator reads debate logs and workspace snapshots to infer motio
 - **Con**: does not scale; was the exact failure mode that made the 20-iter smoke run hard to interpret
 - **Verdict**: insufficient
 
-### Option B — Passive distance artifact (first slice)
+### Option B, Passive distance artifact (first slice)
 
 After each iteration, compute a small set of distance metrics between iter N and iter N−1 content, and write them to `workspace/latent_distance.json`. No score impact, no mutation path, no feedback loop.
 
 **Metrics in the first slice:**
 
-1. **Jaccard over derived constraints** — how much of the constraint set changed
-2. **Jaccard over attack surface IDs** — how much of the falsifier's probe surface changed
-3. **Jaccard over named primitives** — how much of the thesis primitive set changed
-4. **Character-level Levenshtein (normalized) over thesis.md** — crude but useful for freeze detection
-5. **Cosine distance over thesis-claim sentence embeddings** — requires one embedding call per iter, gives the "did the thesis actually move" signal independent of score
+1. **Jaccard over derived constraints**, how much of the constraint set changed
+2. **Jaccard over attack surface IDs**, how much of the falsifier's probe surface changed
+3. **Jaccard over named primitives**, how much of the thesis primitive set changed
+4. **Character-level Levenshtein (normalized) over thesis.md**, crude but useful for freeze detection
+5. **Cosine distance over thesis-claim sentence embeddings**, requires one embedding call per iter, gives the "did the thesis actually move" signal independent of score
 
 Per-iteration output:
 
@@ -108,7 +111,7 @@ The `interpretation_hint` is a derived classifier based on the metric combinatio
 
 No score impact. No mutation path. No loop control read access. Pure observability.
 
-### Option C — Active distance-aware loop control
+### Option C, Active distance-aware loop control
 
 Feed the distance metrics back into loop control so the pivot can fire on `orbiting` detection (low semantic motion) even when the catastrophic-failure streak hasn't triggered the usual pivot threshold.
 
@@ -116,11 +119,11 @@ Feed the distance metrics back into loop control so the pivot can fire on `orbit
 - **Con**: couples loop control to a new uncalibrated signal; risk of false-positive pivots
 - **Verdict**: later-slice, only after Option B has produced enough live data to calibrate thresholds
 
-### Option D — Distance-aware scoring bonus
+### Option D, Distance-aware scoring bonus
 
 Let the evaluator see distance metrics and reward basin jumps with a score bonus.
 
-- **Verdict**: do not build. This reopens the GP-012 / GP-014 laundering surface — anything that lets distance influence score lets the mutator game distance.
+- **Verdict**: do not build. This reopens the GP-012 / GP-014 laundering surface, anything that lets distance influence score lets the mutator game distance.
 
 ## Recommendation
 
@@ -129,26 +132,26 @@ Implement Option B only. The metrics are cheap (4 set operations + 1 edit distan
 ## Dependencies
 
 - **Does not depend on GP-028.** Orthogonal. Can ship first, second, or in parallel.
-- **Touches GP-013 (regime fingerprinting).** The regime fingerprint should NOT include distance metrics — that would couple the scoring regime to observational content.
+- **Touches GP-013 (regime fingerprinting).** The regime fingerprint should NOT include distance metrics, that would couple the scoring regime to observational content.
 - **Touches GP-023 interpretation.** If shipped before GP-023 main run completes, debate logs can be re-read with the distance trace as interpretation context. If shipped after, the GP-023 result is still valid but the observability gap I flagged in GP-023 Turn 3 remains for that run.
 
 ## Laundering Risk
 
-None if Option B is implemented as specified. The metrics never influence the scoring path. The only risk is if Option C or D are built later without the Option B calibration phase — that would couple a new signal to the score, which is exactly how GP-012 was born. The seam should explicitly gate Option C behind "Option B has produced ≥ 2 live runs of metric trace data and calibrated thresholds."
+None if Option B is implemented as specified. The metrics never influence the scoring path. The only risk is if Option C or D are built later without the Option B calibration phase, that would couple a new signal to the score, which is exactly how GP-012 was born. The seam should explicitly gate Option C behind "Option B has produced ≥ 2 live runs of metric trace data and calibrated thresholds."
 
 ## Why This Matters For GP-028
 
-The GP-028 concern was "v4 suppresses creativity." The unspoken assumption behind that concern is "the mutator IS being creative and we can't see it." GP-029 tests that assumption. If the distance metrics show the mutator is orbiting (low semantic motion) even when v4 gates are lifted, then GP-028's preservation lane won't help — there is nothing worth preserving. If the distance metrics show genuine exploration that gets killed by the scoring surface, GP-028 is validated as exactly the right fix.
+The GP-028 concern was "v4 suppresses creativity." The unspoken assumption behind that concern is "the mutator IS being creative and we can't see it." GP-029 tests that assumption. If the distance metrics show the mutator is orbiting (low semantic motion) even when v4 gates are lifted, then GP-028's preservation lane won't help, there is nothing worth preserving. If the distance metrics show genuine exploration that gets killed by the scoring surface, GP-028 is validated as exactly the right fix.
 
 **GP-029 is the test of whether GP-028 is the right medicine.**
 
 ## Debate Log
 
-### Turn 1 — Claude (2026-04-11) — Opening
+### Turn 1, Claude (2026-04-11), Opening
 
 The v1/v4 creativity discussion made it clear that ZTARE's observability of mutator motion is one scalar (score) plus a handful of discrete novelty flags. That is enough to detect "it's working" or "it's stuck," but not enough to distinguish "stuck in one basin" from "moving between equally bad basins" from "trivially repeating." All three look the same from the score axis.
 
-The operator has been filling this gap by hand-reading debate logs. That was tolerable at 20 iters. It will not be tolerable at 100, and it is already the reason we couldn't diagnose the GP-023 smoke run quickly — we had to read 15 debate logs to confirm the mutator was actually moving through distinct functional-form families.
+The operator has been filling this gap by hand-reading debate logs. That was tolerable at 20 iters. It will not be tolerable at 100, and it is already the reason we couldn't diagnose the GP-023 smoke run quickly, we had to read 15 debate logs to confirm the mutator was actually moving through distinct functional-form families.
 
 The fix is observability instrumentation, not scoring-surface change. Cheap set-theoretic and embedding distance metrics between consecutive iterations, written to a passive workspace artifact. No feedback loop. No score impact. Just: "how far did it move this turn."
 
@@ -156,7 +159,7 @@ This also gives us the diagnostic we need to know whether GP-028 is solving a re
 
 Next step: draft the schema, pick the embedding model (probably a small one, family-coupled to the mutator to avoid contamination), and write the interpretation-hint classifier. No implementation until the schema is reconciled with GP-028's workspace layout.
 
-### Turn 2 — Codex (2026-04-11) — Deterministic first slice before any embedding call
+### Turn 2, Codex (2026-04-11), Deterministic first slice before any embedding call
 
 The seam is real. The GP-023 smoke run already proved the core claim: score is an inadequate proxy for motion. A run can remain at `0` while still moving through distinct structural neighborhoods, and the only reason we know that today is because the operator read the debate logs by hand.
 
@@ -209,7 +212,7 @@ So my current recommendation is:
 
 If later runs show that deterministic metrics are too blunt to distinguish real semantic movement from verbose paraphrase, that is when an embedding-based second slice becomes justified. Not before.
 
-### Turn 3 — Codex (2026-04-11) — GP-023 live run evidence
+### Turn 3, Codex (2026-04-11), GP-023 live run evidence
 
 The live GP-023 main run strengthens this seam materially.
 
@@ -232,7 +235,7 @@ This does not yet prove the mutator is productively exploring. It does prove tha
 
 That is enough to strengthen GP-029's evidence base beyond the smoke-run argument alone.
 
-### Turn 4 — Codex (2026-04-11) — EU run is the second live confirmation
+### Turn 4, Codex (2026-04-11), EU run is the second live confirmation
 
 The EU failure-probability run is the second live environment this seam needed.
 

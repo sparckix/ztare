@@ -1,5 +1,8 @@
 # GP-011 Derived Constraints Lane Seam
 
+> **Seam metadata** · `seam_id:` GP-011 · `track:` engine · `status:` unrecorded · `last_updated:` 2026-05-17
+
+
 ## Problem Snapshot
 
 ZTARE had a clean boundary between:
@@ -37,7 +40,7 @@ What remains is live verification that:
 
 ## Debate Log
 
-### Turn 1 — Codex
+### Turn 1, Codex
 
 The core seam was clarified:
 
@@ -51,7 +54,7 @@ This established the lane boundary:
 - derived constraints
 - thesis
 
-### Turn 2 — Codex
+### Turn 2, Codex
 
 The main design risk was identified as second-order Goodhart pressure:
 
@@ -63,7 +66,7 @@ The architecture answer stabilized around three defenses:
 - require multi-run confirmation before promotion
 - keep constraints provenance-separated from source evidence
 
-### Turn 3 — Codex
+### Turn 3, Codex
 
 Implementation boundary stabilized:
 
@@ -71,7 +74,7 @@ Implementation boundary stabilized:
 - only confirmed constraints should re-enter the mutator prompt
 - confirmation should require distinct runs, not duplicate proposals inside one run
 
-### Turn 4 — Codex
+### Turn 4, Codex
 
 First slice implemented in code:
 
@@ -87,7 +90,7 @@ Artifacts now exist:
 - `derived_constraints.json`
 - `derived_constraints_brief.md`
 
-### Turn 5 — Codex
+### Turn 5, Codex
 
 Local verification passed:
 
@@ -102,12 +105,12 @@ It is now:
 - does the lane behave correctly in a real project under repeated runs?
 - and does confirmed-constraint feedback help without freezing useful search?
 
-### Turn 6 — Claude (2026-04-21)
+### Turn 6, Claude (2026-04-21)
 
 Two bugs found in live qualitative project (seattle_tech_housing, ~40 iterations):
 
 **Bug 1: Confirmation never fires on qualitative projects.**
-The signature hash uses exact-text match on `constraint + applies_to + failure_family`. For math/deterministic projects, the judge is stable enough that the same constraint recurs with identical text. For qualitative/policy projects, the judge rephrases naturally each iteration — same failure family, different surface text → different hash → constraint stays provisional forever. Result: 87 provisional constraints, 0 confirmed, zero injection into mutator prompt. The “never repeat this failure” memory was completely inert for the entire run.
+The signature hash uses exact-text match on `constraint + applies_to + failure_family`. For math/deterministic projects, the judge is stable enough that the same constraint recurs with identical text. For qualitative/policy projects, the judge rephrases naturally each iteration, same failure family, different surface text → different hash → constraint stays provisional forever. Result: 87 provisional constraints, 0 confirmed, zero injection into mutator prompt. The “never repeat this failure” memory was completely inert for the entire run.
 
 Fix: expose `confirmation_threshold_runs` as a rubric flag (default 2, unchanged for existing projects). Qualitative project rubrics can set it to 1 to confirm on first appearance. `_refresh_derived_constraints_from_eval` now reads `rubric_data.get(“confirmation_threshold_runs”, 2)` and passes it through.
 
@@ -116,4 +119,4 @@ Fix: expose `confirmation_threshold_runs` as a rubric flag (default 2, unchanged
 
 Fix: sorted by `seen_count_runs` descending, capped at top 20. High-repetition constraints (the ones the judge actually keeps returning to) get priority.
 
-**Live evidence for qualitative projects:** seattle_tech_housing top constraints after 40+ iterations are all variants of the aggregate fallacy family — `distributional_inference_from_aggregates`, `false_positive_negative_on_distributional_harm`, `aggregate_fallacy`. These represent a genuine structural constraint: the thesis cannot earn causal attribution points without stratum-level peer comparison data. The constraint lane correctly identified this as the binding constraint across all iterations.
+**Live evidence for qualitative projects:** seattle_tech_housing top constraints after 40+ iterations are all variants of the aggregate fallacy family, `distributional_inference_from_aggregates`, `false_positive_negative_on_distributional_harm`, `aggregate_fallacy`. These represent a genuine structural constraint: the thesis cannot earn causal attribution points without stratum-level peer comparison data. The constraint lane correctly identified this as the binding constraint across all iterations.

@@ -1,4 +1,7 @@
-# GP-123 — Underutilized Bayesian DAG: Closing the Decision Loop
+# GP-123, Underutilized Bayesian DAG: Closing the Decision Loop
+
+> **Seam metadata** · `seam_id:` GP-123 · `track:` apparatus · `status:` OPEN · `last_updated:` 2026-05-17
+
 
 **Status:** OPEN
 **Opened:** 2026-04-22

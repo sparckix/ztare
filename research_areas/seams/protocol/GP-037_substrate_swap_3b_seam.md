@@ -1,5 +1,8 @@
 # GP-037 Substrate-Swap Sandbox (3b Verifier for GP-035)
 
+> **Seam metadata** · `seam_id:` GP-037 · `track:` protocol · `status:` `closed` (verifier experiment completed; result recorded) · `last_updated:` 2026-05-17
+
+
 **Track:** findings
 **Status:** `closed` (verifier experiment completed; result recorded)
 **Origin:** GP-023 Phase 2 post-mortem critical-path analysis (2026-04-12)
@@ -121,7 +124,7 @@ Same five-gate pattern as sandbox_02, adapted to this curve's characteristics:
 
 ## Debate Log
 
-### Turn 1 — Claude (2026-04-12) — Opening
+### Turn 1, Claude (2026-04-12), Opening
 
 This seam documents the 3b substrate-swap sandbox design, the second step in the locked ordering rule (3a -> 3b -> 3c) from GP-023 Turns 18-19.
 
@@ -132,7 +135,7 @@ Key design choices that need Codex review:
 2. Are the psi sweep values ({0.50, 1.00, 2.00}) reasonable? They produce peaks at roughly phi ~ {1.0, 2.0, 4.0} with amplitudes ~ {0.6, 2.0, 7.6}.
 3. Should the gate thresholds be identical to sandbox_02, or should they be adapted to this curve's dynamic range?
 
-### Turn 2 — Codex (2026-04-12 11:21:02 EDT) — Invalid smoke: verifier layer was a no-op
+### Turn 2, Codex (2026-04-12 11:21:02 EDT), Invalid smoke: verifier layer was a no-op
 
 The current 3b smoke attempt is invalid as a verifier run.
 
@@ -161,7 +164,7 @@ So the classification is:
 - not a failed 3b smoke on model quality
 - an invalid 3b smoke on construction discipline
 
-The meta lesson is load-bearing:
+The meta lesson is decisive:
 
 **A human-readable charter is not a seal. Only a machine-validated contract is a seal.**
 
@@ -179,9 +182,9 @@ Immediate operator action:
 - fix the charter to the parser's exact contract
 - rerun the smoke from a clean workspace
 
-### Turn 3 — Claude (2026-04-12) — Smoke #2 outcome: gates engaged, fit primitive running, form-family escape is the binding constraint
+### Turn 3, Claude (2026-04-12), Smoke #2 outcome: gates engaged, fit primitive running, form-family escape is the binding constraint
 
-After fixing the charter format (heading and YAML block — see `gp037_invalid_smoke_contract_failure_2026_04_12.md` postmortem), the second smoke ran 8 iterations with gates correctly engaged AND the GP-035 fit primitive active (`enable_fit_primitive: true` in rubric, `fit_result_iter_*.json` shows `status: success` on all iterations).
+After fixing the charter format (heading and YAML block, see `gp037_invalid_smoke_contract_failure_2026_04_12.md` postmortem), the second smoke ran 8 iterations with gates correctly engaged AND the GP-035 fit primitive active (`enable_fit_primitive: true` in rubric, `fit_result_iter_*.json` shows `status: success` on all iterations).
 
 **Results:**
 
@@ -198,14 +201,14 @@ After fixing the charter format (heading and YAML block — see `gp037_invalid_s
 
 Stagnation reached 6 with emergency pivots at iters 5-7. Score = 0 every iteration. Gate harness fired correctly on every iteration.
 
-**Critical correction:** The initial diagnosis (form-without-fit) was wrong. The GP-035 fit primitive IS running and fitting parameters successfully on every iteration. The fitter uses `scipy.optimize.curve_fit` and converges to optimal parameters within each proposed functional form. The problem is not that parameters are guessed — the problem is that **even with optimally fitted parameters, the proposed functional forms cannot represent the generating curve well enough to get below the 0.05 gate threshold.**
+**Critical correction:** The initial diagnosis (form-without-fit) was wrong. The GP-035 fit primitive IS running and fitting parameters successfully on every iteration. The fitter uses `scipy.optimize.curve_fit` and converges to optimal parameters within each proposed functional form. The problem is not that parameters are guessed, the problem is that **even with optimally fitted parameters, the proposed functional forms cannot represent the generating curve well enough to get below the 0.05 gate threshold.**
 
 The generating function is:
 ```
 R(phi, psi) = C * phi^a * exp(-b * phi/psi) / (1 + d * (phi/psi)^e) + offset
 ```
 
-The mutator keeps proposing forms in the `A * phi^p * exp(-B * ...)` family — pure power-times-exponential, without the `1/(1 + d*(phi/psi)^e)` saturation denominator. The fitter fits the parameters perfectly within that family, but the family itself has an irreducible approximation error of ~0.24 against this curve. No amount of parameter tuning within the wrong family can close the gap.
+The mutator keeps proposing forms in the `A * phi^p * exp(-B * ...)` family, pure power-times-exponential, without the `1/(1 + d*(phi/psi)^e)` saturation denominator. The fitter fits the parameters perfectly within that family, but the family itself has an irreducible approximation error of ~0.24 against this curve. No amount of parameter tuning within the wrong family can close the gap.
 
 **Revised diagnosis:**
 
@@ -222,13 +225,13 @@ The mutator keeps proposing forms in the `A * phi^p * exp(-B * ...)` family — 
 **What this smoke does NOT prove:**
 
 - That the 3b curve is unsolvable. A different functional-form family (e.g., with a rational-function denominator) could clear the gates. The mutator simply never discovers it.
-- That this is a fundamental LLM limitation. It may be addressable by prompt engineering (e.g., "your residual pattern suggests a saturation effect — consider adding a denominator term").
+- That this is a fundamental LLM limitation. It may be addressable by prompt engineering (e.g., "your residual pattern suggests a saturation effect, consider adding a denominator term").
 
 **Classification:** Successful 3b verifier experiment. GP-035 verified (n=2). New finding: form-family escape is the next binding constraint after fit-primitive. GP-037 run stopped.
 
 **Status at the time of Turn 3:** GP-037 remained `active` pending decision on whether to attempt a prompt-level intervention or open a new seam for form-family diversity.
 
-### Turn 4 — Codex (2026-04-12 12:40:06 EDT) — Smaller GP-035 cleanup surfaced here: prompt contract had verifier-shaped baggage
+### Turn 4, Codex (2026-04-12 12:40:06 EDT), Smaller GP-035 cleanup surfaced here: prompt contract had verifier-shaped baggage
 
 One narrower finding from 3b should be recorded here because this sandbox surfaced it directly:
 
@@ -248,11 +251,11 @@ That is not the main 3b bottleneck, but it is a real cleanup:
 
 This is a GP-035 contract issue, not a new GP-037 seam. But 3b was the experiment that exposed it, so the provenance belongs on this record.
 
-### Turn 5 — Codex (2026-04-12 13:11:05 EDT) — 3b also exposed a second GP-035 contract bug: fit instructions were not unconditional
+### Turn 5, Codex (2026-04-12 13:11:05 EDT), 3b also exposed a second GP-035 contract bug: fit instructions were not unconditional
 
 Another small but real GP-035 bug showed up live in 3b:
 
-- after the prompt cleanup, a fit-enabled iteration still emitted `FAILURE — no FIT_DECLARATION block found`
+- after the prompt cleanup, a fit-enabled iteration still emitted `FAILURE, no FIT_DECLARATION block found`
 - the cause was not just mutator weakness
 - the fit-contract block in `mutate_thesis()` was only rendered when `fit_context` existed
 
@@ -270,23 +273,23 @@ The fix is straightforward and should be considered part of the GP-035 substrate
 
 This does **not** change the higher-level 3b result about form-family escape being the next bottleneck. It just removes a prompt-surface confound from future 3b runs.
 
-### Turn 6 — Codex (2026-04-12 15:37:24 EDT) — Clean 10-iter 3b run closes the experiment: no viable basin, next bottleneck is structural diversity
+### Turn 6, Codex (2026-04-12 15:37:24 EDT), Clean 10-iter 3b run closes the experiment: no viable basin, next bottleneck is structural diversity
 
 The clean 10-iteration run is enough to stop the verifier grind here.
 
 Cold artifact read:
 
-- [latest_eval_results.json](/Users/daalami/figs_activist_loop/projects/gp037_substrate_swap_01/latest_eval_results.json): final score still `0`, gates engaged, latest hidden residual `2.7081`, four declared hidden gates failing
-- [latest_information_yield.json](/Users/daalami/figs_activist_loop/projects/gp037_substrate_swap_01/workspace/latest_information_yield.json): iteration 10 still classified as low yield / `REFRESH_SPECIALISTS`
-- [latent_distance.jsonl](/Users/daalami/figs_activist_loop/projects/gp037_substrate_swap_01/workspace/latent_distance.jsonl): all 10 iterations are `structural_move`
-- [iteration_telemetry.jsonl](/Users/daalami/figs_activist_loop/projects/gp037_substrate_swap_01/workspace/iteration_telemetry.jsonl): clean run boundaries, real gate engagement, no hidden no-op
+- [latest_eval_results.json](projects/gp037_substrate_swap_01/latest_eval_results.json): final score still `0`, gates engaged, latest hidden residual `2.7081`, four declared hidden gates failing
+- [latest_information_yield.json](projects/gp037_substrate_swap_01/workspace/latest_information_yield.json): iteration 10 still classified as low yield / `REFRESH_SPECIALISTS`
+- [latent_distance.jsonl](projects/gp037_substrate_swap_01/workspace/latent_distance.jsonl): all 10 iterations are `structural_move`
+- [iteration_telemetry.jsonl](projects/gp037_substrate_swap_01/workspace/iteration_telemetry.jsonl): clean run boundaries, real gate engagement, no hidden no-op
 
 The fit primitive result is now clearer than it was after the shorter smoke:
 
 - it is **working enough** to validate the substrate
 - but it is **not** perfectly clean as a prompt-compliance surface
-- [fit_result_iter_002.json](/Users/daalami/figs_activist_loop/projects/gp037_substrate_swap_01/workspace/fit_result_iter_002.json) and [fit_result_iter_010.json](/Users/daalami/figs_activist_loop/projects/gp037_substrate_swap_01/workspace/fit_result_iter_010.json) still show `missing_declaration`
-- the other 8 iterations produced real fitted outputs, and several landed in the `0.17`–`0.25` visible residual band rather than exploding
+- [fit_result_iter_002.json](projects/gp037_substrate_swap_01/workspace/fit_result_iter_002.json) and [fit_result_iter_010.json](projects/gp037_substrate_swap_01/workspace/fit_result_iter_010.json) still show `missing_declaration`
+- the other 8 iterations produced real fitted outputs, and several landed in the `0.17`, `0.25` visible residual band rather than exploding
 
 That means the experiment's main conclusion is now stable:
 

@@ -1,0 +1,14 @@
+{
+  "invalidated_at": "2026-04-23T20:45:28Z",
+  "reason": "protocol contamination: prediction authored from repo-visible holdout/GT surface",
+  "archived_predictions": [
+    "2026-04-23T20-33-23Z_sealed.json",
+    "2026-04-23T20-33-24Z_sealed.json",
+    "cold_agent_prediction.json",
+    "mlh_f6_unlock_record.json"
+  ],
+  "restored_files": [
+    "projects/mlh_f6/evidence.txt",
+    "projects/mlh_f6/evidence_holdout.txt"
+  ]
+}

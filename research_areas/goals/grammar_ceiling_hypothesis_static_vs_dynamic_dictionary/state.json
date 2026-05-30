@@ -1,0 +1,13 @@
+{
+  "name": "Grammar Ceiling Hypothesis \u2014 Static vs Dynamic Dictionary",
+  "slug": "grammar_ceiling_hypothesis_static_vs_dynamic_dictionary",
+  "description": "Formalizes the Grammar Ceiling Hypothesis (GCH): the claim that for a bounded symbolic grammar, additional compute yields no structural progress beyond the grammar ceiling, and that operator-guided grammar expansion is the correct mechanism for breaking it. Debates the static-vs-dynamic dictionary argument, the alien math API counter-hypothesis, roadmap implications for tacrolimus biological primitives, and the paper5 framing of GCH as a standalone publishable scientific claim.",
+  "target_type": "exploratory",
+  "current_stage": "SCOPING",
+  "status": "active",
+  "created_at": "2026-04-18T16:32:11.450171+00:00",
+  "owner": "",
+  "schema_version": 1,
+  "gate_pending_reason": null,
+  "gate_escalation_hashes": {}
+}

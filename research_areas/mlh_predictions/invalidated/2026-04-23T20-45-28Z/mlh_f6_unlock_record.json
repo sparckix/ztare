@@ -1,0 +1,14 @@
+{
+  "unlocked_at": "2026-04-23T20:33:30Z",
+  "sealed_prediction": "research_areas/private/mlh_predictions/2026-04-23T20-33-24Z_sealed.json",
+  "unlocked_files": [
+    {
+      "name": "evidence.txt",
+      "sha256": "1f76ca87fc375db7aba5ea758bc77c87ef92cf88192689d5cc90c9c6ed4a1181"
+    },
+    {
+      "name": "evidence_holdout.txt",
+      "sha256": "967ff264dbc7353f598b192516af6f38e97f84acc8b4109901a35d26ef3ba1ab"
+    }
+  ]
+}

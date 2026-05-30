@@ -1,4 +1,6 @@
 # Post-Mortem: gp096_sandbox_20 Division B
+
+> **Seam metadata** · `seam_id:` gp096_sandbox_20_division_b_postmortem · `track:` substrates · `status:` unrecorded · `last_updated:` 2026-05-17
 **Closed: 2026-04-20**
 **Experiment ID:** E-GP096-SB20-DIV-B-01
 **Finding ID:** F-GP096-SB20-01
@@ -27,9 +29,9 @@ A = 0.006598,  B = 0.4328,  C = 0.7544
 |------|-------|-----------|--------|
 | Visible normalised RMSE | 4.80% | 8% | PASS |
 | Holdout normalised RMSE (farther tail) | passes | 12% | PASS |
-| Judge score | 87/100 | — | Champion |
+| Judge score | 87/100 |, | Champion |
 
-**Rival (Family B — log-quadratic exponential):**
+**Rival (Family B, log-quadratic exponential):**
 ```
 G_rival(t) = exp(−a·log(t/t0) − b·[log(t/t0)]^2)
 ```
@@ -37,7 +39,7 @@ Systematic failure on farther-tail points. Higher visible RMSE (~20%). Ruled out
 
 ---
 
-## 3. Parameter Stability — The Core Finding
+## 3. Parameter Stability, The Core Finding
 
 | Run | Visible points | Gate | B | C | A |
 |-----|---------------|------|---|---|---|
@@ -71,7 +73,7 @@ Node D (p=0.52) is the correct epistemological ceiling. With 22 sparse points an
 
 1. **Fit quality:** G(t) = A·t^(−B)·exp(−C·t) fits 22 points with 4.8% normalised RMSE. This is a strong fit on a sparse 5.4-decade dataset.
 
-2. **Extrapolation:** Formula passes 4 farther-tail holdout points outside the interpolation window. This is not interpolation — the engine generalises beyond the visible range.
+2. **Extrapolation:** Formula passes 4 farther-tail holdout points outside the interpolation window. This is not interpolation, the engine generalises beyond the visible range.
 
 3. **Parameter grounding:** Each parameter maps to a distinct observable feature of the data.
    - B: log-log slope at small t. Slope between (8.98e-6, 1.0) and (4.11e-4, 0.186) → −0.43.
@@ -94,9 +96,9 @@ Node D (p=0.52) is the correct epistemological ceiling. With 22 sparse points an
 
 | Threshold | Status |
 |-----------|--------|
-| 1 — Novel reproduction under discipline (independent operator, unknown target) | Not assessed — GT not disclosed in charter |
-| 2 — Novel discovery on pre-registered unknown | Candidate: charter says "no physical interpretation given"; if GT was not planted by operator, this qualifies for Threshold 2 review |
-| 3 — Reproducible capability ceiling | Partially met: B stability across dataset expansion is a reproducible apparatus claim |
+| 1, Novel reproduction under discipline (independent operator, unknown target) | Not assessed, GT not disclosed in charter |
+| 2, Novel discovery on pre-registered unknown | Candidate: charter says "no physical interpretation given"; if GT was not planted by operator, this qualifies for Threshold 2 review |
+| 3, Reproducible capability ceiling | Partially met: B stability across dataset expansion is a reproducible apparatus claim |
 
 **Honest verdict:** The result meets the reproducibility standard for a strong positive finding. Whether it meets Threshold 2 requires knowing whether the operator knew the functional form at seal time. If they did not, B≈0.433 is an empirically recovered structural constant from blind data, and the result qualifies for independent physical review. If they did, it is a successful discipline-constrained reproduction.
 
@@ -124,7 +126,7 @@ Division A produced 20 zero scores despite iter 17 passing all gates (5% RMSE). 
 
 **Outcome:** Pre-registered hypothesis confirmed. Family A passes visible + farther-tail gates. Family B fails farther-tail gate. B stable under expansion.
 
-**Status: CLOSED — positive.**
+**Status: CLOSED, positive.**
 
 ---
 
@@ -134,4 +136,4 @@ Division A produced 20 zero scores despite iter 17 passing all gates (5% RMSE). 
 
 2. **Extended rival sweep (optional):** If the domain context suggests other structural families are plausible, run a targeted Division C that adds stretched exponential and Weibull as explicit rivals, testing whether they pass the farther-tail gate. This would raise Node D probability above 0.52 if all additional rivals fail.
 
-3. **Record in Paper 5 Appendix A:** The infrastructure bugs (particularly the key-name mismatch and harness flag) are a concrete instance of the apparatus-honesty principle — silent gate misconfiguration is worse than a gate failure because it produces false negatives invisibly.
+3. **Record in Paper 5 Appendix A:** The infrastructure bugs (particularly the key-name mismatch and harness flag) are a concrete instance of the apparatus-honesty principle, silent gate misconfiguration is worse than a gate failure because it produces false negatives invisibly.

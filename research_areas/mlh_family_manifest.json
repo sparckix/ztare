@@ -1,0 +1,39 @@
+{
+  "generated_slugs": [
+    "mlh_f1",
+    "mlh_f2",
+    "mlh_f3",
+    "mlh_f4",
+    "mlh_f5",
+    "mlh_f6"
+  ],
+  "holdout_range": [
+    81,
+    120
+  ],
+  "holdout_substrate": "mlh_f6",
+  "open_substrates": [
+    "mlh_f1",
+    "mlh_f2",
+    "mlh_f3",
+    "mlh_f4",
+    "mlh_f5"
+  ],
+  "program": "GP-135 Meta-Law Hypothesis Family",
+  "protocol_doc": "docs/concepts/mlh_family_protocol.md",
+  "sealed_holdout_hash": {
+    "evidence.txt": {
+      "n_points": 79,
+      "sha256": "1f76ca87fc375db7aba5ea758bc77c87ef92cf88192689d5cc90c9c6ed4a1181"
+    },
+    "evidence_holdout.txt": {
+      "n_points": 40,
+      "sha256": "967ff264dbc7353f598b192516af6f38e97f84acc8b4109901a35d26ef3ba1ab"
+    }
+  },
+  "seam": "research_areas/private/seams/mission/GP-135_meta_law_hypothesis_family_program_seam.md",
+  "visible_range": [
+    2,
+    80
+  ]
+}

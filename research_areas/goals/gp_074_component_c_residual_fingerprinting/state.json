@@ -1,0 +1,13 @@
+{
+  "name": "GP-074 Component C Residual Fingerprinting",
+  "slug": "gp_074_component_c_residual_fingerprinting",
+  "description": "Seam-to-spec for Component C: positive-space residual shape guidance for the mutator. Tests whether minimal geometric descriptors (not coefficients) help the mutator escape corrector-term basins without oracle contamination.",
+  "target_type": "science_sandbox",
+  "current_stage": "PENDING_SPEC_DRAFT",
+  "status": "active",
+  "created_at": "2026-04-16T22:38:06.297394+00:00",
+  "owner": "Daniel Alami",
+  "schema_version": 1,
+  "gate_pending_reason": null,
+  "gate_escalation_hashes": {}
+}

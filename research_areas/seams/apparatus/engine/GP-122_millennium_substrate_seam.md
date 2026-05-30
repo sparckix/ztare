@@ -1,9 +1,12 @@
-# GP-122 — ZTARE as Dimensionality Reduction Engine for Millennium Problems
+# GP-122, ZTARE as Dimensionality Reduction Engine for Millennium Problems
+
+> **Seam metadata** · `seam_id:` GP-122 · `track:` apparatus · `status:` OPEN (speculative, no implementation) · `last_updated:` 2026-05-17
+
 
 **Status:** OPEN (speculative, no implementation)
 **Opened:** 2026-04-22
 **Category:** Apparatus / Engine / Frontier Application
-**Origin:** Gemini Pro framing — "ZTARE finds the dimensional rotation
+**Origin:** Gemini Pro framing, "ZTARE finds the dimensional rotation
 that makes the proof trivial"
 
 *All panelist names are fictitious personas used as adversarial reasoning
@@ -14,7 +17,7 @@ lenses, not real individuals or endorsements.*
 Pure mathematics is physics we haven't found the right coordinate
 system for yet. The Millennium Problems are not logical riddles
 requiring human axiomatic leaps. They are empirical topological
-spaces. ZTARE doesn't write the proof — it finds the coordinate
+spaces. ZTARE doesn't write the proof, it finds the coordinate
 transform that makes the proof visible.
 
 ## Three Candidate Substrates
@@ -28,7 +31,7 @@ in the milliseconds before numerical blowup.
 phase-transition threshold. The sigmoid/threshold templates identify
 the exact conditions under which smoothness breaks.
 **What success gives the mathematician:** The spatial coordinates
-and velocity conditions of the blowup — the proof of non-smoothness
+and velocity conditions of the blowup, the proof of non-smoothness
 reduces to verifying the threshold equation.
 
 ### 2. Riemann Hypothesis (Observable Rotation)
@@ -40,7 +43,7 @@ residual stream of a generating function.
 (log, 1/z, diff) until the zero-spacing distribution compresses.
 The rotation that makes it compressible reveals the hidden symmetry.
 **What success gives the mathematician:** The geometric invariance
-that forces zeros onto the critical line — the proof follows from
+that forces zeros onto the critical line, the proof follows from
 the invariance.
 
 ### 3. Yang-Mills Mass Gap (Irreducible Floor)
@@ -99,11 +102,11 @@ Data → ZTARE rotation loop → compressed form f(n)
 ```
 
 What's needed:
-1. Empirical data (LMFDB zeros — freely available)
-2. Rotation feedback loop (GP-121 Fix 1 — IMPLEMENTED)
-3. Lean stub from compression (lean_compiler — EXISTS)
-4. AI proof completion (frontier reasoning model — available)
-5. Lean verification (Lean 4 — available)
+1. Empirical data (LMFDB zeros, freely available)
+2. Rotation feedback loop (GP-121 Fix 1, IMPLEMENTED)
+3. Lean stub from compression (lean_compiler, EXISTS)
+4. AI proof completion (frontier reasoning model, available)
+5. Lean verification (Lean 4, available)
 
 The Lean verifier is the ultimate hard gate: if the proof
 typechecks, it's correct. No narrative, no gaming, no artifacts.

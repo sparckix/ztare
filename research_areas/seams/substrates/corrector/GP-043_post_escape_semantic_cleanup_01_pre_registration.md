@@ -1,4 +1,7 @@
-# GP-043 Post-Escape Semantic Cleanup Verifier 01 — Pre-Registration
+# GP-043 Post-Escape Semantic Cleanup Verifier 01, Pre-Registration
+
+> **Seam metadata** · `seam_id:` GP-043 · `track:` substrates · `status:` Sealed 2026-04-12 17:39:48 EDT. · `last_updated:` 2026-05-17
+
 
 ## Status
 
@@ -67,11 +70,11 @@ Recorded 2026-04-12 17:44:59 EDT.
 
 Cold-artifact summary:
 
-- [latest_eval_results.json](/Users/daalami/figs_activist_loop/projects/gp043_post_escape_cleanup_01/latest_eval_results.json) shows:
+- [latest_eval_results.json](projects/gp043_post_escape_cleanup_01/latest_eval_results.json) shows:
   - no hard self-reference
   - all hidden deterministic gates passed
   - remaining visible residual failure
-- [debate_log_iter_1776029995.md](/Users/daalami/figs_activist_loop/projects/gp043_post_escape_cleanup_01/debate_log_iter_1776029995.md) localizes the miss:
+- [debate_log_iter_1776029995.md](projects/gp043_post_escape_cleanup_01/debate_log_iter_1776029995.md) localizes the miss:
   - `I_obs=1.82642`
   - `I_model=1.764319118173269`
 

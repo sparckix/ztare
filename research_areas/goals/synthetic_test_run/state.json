@@ -1,0 +1,13 @@
+{
+  "name": "synthetic_test_run",
+  "slug": "synthetic_test_run",
+  "description": "Integration test of the orchestrator core",
+  "target_type": "synthetic_test",
+  "current_stage": "CLOSED",
+  "status": "active",
+  "created_at": "2026-04-16T13:44:07.005307+00:00",
+  "owner": "",
+  "schema_version": 1,
+  "gate_pending_reason": null,
+  "gate_escalation_hashes": {}
+}

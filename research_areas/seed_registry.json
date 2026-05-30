@@ -28,7 +28,7 @@
       "superseded_by": [
         "research_areas/drafts/paper4_full_working.md",
         "papers/paper4/main.tex",
-        "research_areas/archive/paper4_supervisor/"
+        "research_areas/_archive/paper4_supervisor/"
       ]
     },
     "paper4_manuscript": {
@@ -40,7 +40,7 @@
       "superseded_by": [
         "research_areas/drafts/paper4_full_working.md",
         "papers/paper4/main.tex",
-        "research_areas/archive/paper4_supervisor/"
+        "research_areas/_archive/paper4_supervisor/"
       ]
     },
     "v3_interface": {

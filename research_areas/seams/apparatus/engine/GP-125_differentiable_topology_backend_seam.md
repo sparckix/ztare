@@ -1,6 +1,9 @@
-# GP-125 — Differentiable Topology Backend for ZTARE
+# GP-125, Differentiable Topology Backend for ZTARE
 
-**Status:** OPEN — implementation pending panel review
+> **Seam metadata** · `seam_id:` GP-125 · `track:` apparatus · `status:` OPEN, implementation pending panel review · `last_updated:` 2026-05-17
+
+
+**Status:** OPEN, implementation pending panel review
 **Opened:** 2026-04-22
 **Category:** Apparatus / Engine / Architectural Extension
 
@@ -12,7 +15,7 @@ ZTARE is already a dual-loop optimizer:
 - Gates verify quality
 - BIC penalizes complexity
 
-The Millennium Problem gap is NOT the architecture — it's the
+The Millennium Problem gap is NOT the architecture, it's the
 BACKEND. The inner loop uses curve_fit on 1D scalar templates.
 For operator discovery (Hilbert-Pólya), it needs torch.linalg.eigh
 on N×N matrix generators with backpropagation.
@@ -64,7 +67,7 @@ discovery.
    eigendecomposition.
 
 2. **Trivial solution (Goodhart):** LLM proposes diagonal matrix
-   populated with the zeros. BIC penalty handles this — diagonal
+   populated with the zeros. BIC penalty handles this, diagonal
    matrix has k = N parameters.
 
 3. **Local minima:** The loss landscape for operator parameters
@@ -92,7 +95,7 @@ discovery.
 ### The Precision Trap (Gemini Pro)
 
 AdamW converges to ~7 stable digits. PSLQ needs 15-20 digits to avoid
-the "Law of Small Numbers" — a spurious fraction like 43π/211 fits
+the "Law of Small Numbers", a spurious fraction like 43π/211 fits
 7 digits perfectly but diverges at digit 8. This is a structural risk,
 not a corner case.
 
@@ -106,7 +109,7 @@ Stage 3: PSLQ + mpmath.identify → algebraic identifications
 
 **Stage 2 details:** Freeze topology, switch from AdamW to L-BFGS
 (quasi-Newton, quadratic convergence), run in float64. L-BFGS uses
-approximate Hessian — near a minimum it converges quadratically
+approximate Hessian, near a minimum it converges quadratically
 vs AdamW's linear. Tolerance set to 1e-15.
 
 **Stage 3 details:** Two parallel strategies:
@@ -130,14 +133,14 @@ New file: `src/ztare/fit/constant_recognition.py`
 | Loss plateau   | Action                                    |
 |---------------|-------------------------------------------|
 | > 0.3         | Manifold lacks complexity → expand grammar |
-| 0.01 – 0.3    | Viable but not converged → more restarts   |
+| 0.01, 0.3    | Viable but not converged → more restarts   |
 | < 0.01        | Run precision_polish() → constant_recognition |
 | < 1e-6        | High-confidence PSLQ viable                |
 
 ### Reality Check (2026-04-22, Gemini Pro)
 
 Current best loss across 5 generators: ~0.23. Constant recognition
-activates at < 0.01 — two orders of magnitude away. The recognition
+activates at < 0.01, two orders of magnitude away. The recognition
 pipeline is correct engineering but cannot bail out the current run.
 
 The bottleneck is the GENERATOR GRAMMAR, not parameter precision.
@@ -145,12 +148,12 @@ Sierra-Townsend-style logarithmic confinement is mathematically too
 restrictive to encode the GUE statistics of Riemann zeros. Breaking
 below 0.05 requires:
 
-1. **Larger matrix size** (N=500-1000) — cost O(N³)
-2. **Different operator class** — modified BBM, Berry-Connes,
+1. **Larger matrix size** (N=500-1000), cost O(N³)
+2. **Different operator class**, modified BBM, Berry-Connes,
    or Connes' adelic operator
-3. **Per-zero adaptive optimization** — decompose spectrum into
+3. **Per-zero adaptive optimization**, decompose spectrum into
    spectral bands, fit each separately
-4. **Non-polynomial confinement** — log-based or number-theoretic
+4. **Non-polynomial confinement**, log-based or number-theoretic
    potentials (Mangoldt function, prime-counting step functions)
 
 The constant recognition is a DEPOSIT for when the grammar catches up.

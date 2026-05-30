@@ -8,7 +8,7 @@ Active
 
 - define the difference between bounded directional forecast projects and probabilistic point-forecast projects
 - define how that distinction should live in the charter and scorer contract
-- keep the EU load-bearing project valid on its own terms
+- keep the EU decisive project valid on its own terms
 
 Does not cover:
 
@@ -45,7 +45,7 @@ If a project that is really about current-state classification or pillar ranking
 
 ## Options
 
-### Option A — Keep The Distinction Informal
+### Option A, Keep The Distinction Informal
 
 **Description**
 
@@ -65,7 +65,7 @@ Rely on README prose and operator judgment.
 
 Not enough.
 
-### Option B — Charter Typing Only
+### Option B, Charter Typing Only
 
 **Description**
 
@@ -85,7 +85,7 @@ Add forecast type to the charter and prompts, but not the scorer.
 
 Incomplete.
 
-### Option C — Charter Typing Plus Scorer Gate
+### Option C, Charter Typing Plus Scorer Gate
 
 **Description**
 
@@ -119,7 +119,7 @@ Current first two slices are shipped:
   - `unsupported_point_probability_claim`
   - `forecast_overclaim_rationale`
 
-The EU load-bearing project remains a `directional_forecast`.
+The EU decisive project remains a `directional_forecast`.
 
 ## Implementation Sketch
 

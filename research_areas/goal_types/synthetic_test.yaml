@@ -1,0 +1,32 @@
+schema_version: 1
+target_type: synthetic_test
+description: >
+  Synthetic test module for GP-070 orchestrator integration testing.
+  Two working stages, one gate. Exercises create → advance → gate → resume → close.
+
+entry_stage: STARTED
+terminal_stages:
+  - CLOSED
+
+stages:
+  - name: STARTED
+    description: Initial stage. No work to do — advance immediately.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: WORKING
+    description: Simulated work stage. Advance when done.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: REVIEW
+    description: Human review gate. Operator must inspect the work artifact and resume.
+    is_gate: true
+    gate_description: Review the work artifact before closing.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: CLOSED
+    description: Goal complete.
+    dispatch: operator_manual
+    idempotent: true

@@ -1,8 +1,11 @@
 # GP-043 Post-Escape Semantic Cleanup Seam
 
+> **Seam metadata** · `seam_id:` GP-043 · `track:` substrates · `status:` Active, 2026-04-12 17:39:48 EDT · `last_updated:` 2026-05-17
+
+
 ## Status
 
-Active — 2026-04-12 17:39:48 EDT
+Active, 2026-04-12 17:39:48 EDT
 
 ## Problem
 
@@ -16,7 +19,7 @@ So the next eigenquestion is narrower:
 
 > once the escaped family is restated without semantic contamination, does the family remain a viable candidate, or does it still fail on the substance?
 
-## Turn 1 — Codex (2026-04-12 17:39:48 EDT) — Freeze family, strip semantic contamination, test baseline directly
+## Turn 1, Codex (2026-04-12 17:39:48 EDT), Freeze family, strip semantic contamination, test baseline directly
 
 The correct first slice is not another mutator loop and not a model-family matrix.
 
@@ -49,7 +52,7 @@ So GP-043 is a direct falsification object for the post-GP-042 frontier:
 - if the cleaned seed lifts materially, the blocker was mainly semantic contamination
 - if it still fails cleanly, the family itself remains inadequate
 
-## Turn 2 — Codex (2026-04-12 17:44:59 EDT) — GP-043 says semantic contamination was real, but not the whole blocker
+## Turn 2, Codex (2026-04-12 17:44:59 EDT), GP-043 says semantic contamination was real, but not the whole blocker
 
 The sealed GP-043 baseline is complete.
 
@@ -85,7 +88,7 @@ This gives a clean split:
   - `I_model=1.764319118173269`
   - `abs residual ≈ 0.0621 > 0.05`
 
-3. The family is still load-bearing.
+3. The family is still decisive.
 - all hidden deterministic gates passed on the cleaned seed
 - so this is not junk-family collapse
 - it is a serious near-pass family
@@ -102,11 +105,11 @@ That points to a structural next slice, not more wrapper cleanup. The most plaus
 
 **What the verifier answered:**
 
-Semantic contamination in the GP-042 iter-8 thesis was real — self-reference, internal-parameter discriminators, and global-floor overclaim all cleared once the wrapper was stripped. But the family still fails the visible residual contract on substance: `abs residual ≈ 0.0621 > 0.05` at `phi=11.6462, psi=2.0`. The miss is narrow and localized. Hidden holdout gates remain fully passed, which means the family is load-bearing, not junk.
+Semantic contamination in the GP-042 iter-8 thesis was real, self-reference, internal-parameter discriminators, and global-floor overclaim all cleared once the wrapper was stripped. But the family still fails the visible residual contract on substance: `abs residual ≈ 0.0621 > 0.05` at `phi=11.6462, psi=2.0`. The miss is narrow and localized. Hidden holdout gates remain fully passed, which means the family is decisive, not junk.
 
 **What the verifier did not answer:**
 
-Whether a structurally minimal extension of the escaped family — specifically a psi-dependent floor term replacing the global floor constant — can close the visible residual gap without losing the holdout pass.
+Whether a structurally minimal extension of the escaped family, specifically a psi-dependent floor term replacing the global floor constant, can close the visible residual gap without losing the holdout pass.
 
 **Handoff:**
 

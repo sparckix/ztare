@@ -1,5 +1,8 @@
 # GP-026 Runner No-Suite Rejection Seam
 
+> **Seam metadata** · `seam_id:` GP-026 · `track:` apparatus · `status:` unrecorded · `last_updated:` 2026-05-17
+
+
 ## Problem Snapshot
 
 During a long Gemini hardening run on a private domain project, several low-scoring mutations were expected and legitimate. One failure mode was not.
@@ -31,13 +34,13 @@ This behavior was first observed in a private project's debate log (kept out of 
 
 ## Debate Log
 
-### Turn 1 — Why this is not just “bad mutation”
+### Turn 1, Why this is not just “bad mutation”
 
 The mutator is allowed to explore bad basins. That is normal. But a candidate with no usable falsification suite is not a meaningful basin; it is a malformed artifact.
 
 ZTARE already has Runner R1 / R3 rejection logic for malformed or inadmissible candidates. This specific case belongs there.
 
-### Turn 2 — Why it existed
+### Turn 2, Why it existed
 
 The sentinel fallback was originally a pragmatic fail-closed mechanism:
 
@@ -48,7 +51,7 @@ That logic is still directionally right, but in long-run hardening it is no long
 - preserve fail-closed rigor
 - reject the malformed candidate before evaluation
 
-### Turn 3 — Correct boundary
+### Turn 3, Correct boundary
 
 Missing-suite and explicit sentinel-suite candidates should be:
 

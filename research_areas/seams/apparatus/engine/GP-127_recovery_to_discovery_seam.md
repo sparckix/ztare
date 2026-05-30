@@ -1,6 +1,9 @@
-# GP-127 — Recovery to Discovery: Three Capability Upgrades
+# GP-127, Recovery to Discovery: Three Capability Upgrades
 
-**Status:** IMPLEMENTED — backtested on A000009
+> **Seam metadata** · `seam_id:` GP-127 · `track:` apparatus · `status:` IMPLEMENTED, backtested on A000009 · `last_updated:` 2026-05-17
+
+
+**Status:** IMPLEMENTED, backtested on A000009
 **Opened:** 2026-04-23
 **Category:** Apparatus / Engine / Discovery Capability
 **Trigger:** Survey hit rate 0/3 on unknown substrates. Panel verdict: engine is a recovery instrument, not yet a discovery engine.
@@ -13,8 +16,8 @@ After GP-126 sky survey (3 unknown substrates, 0 discoveries):
 - S3 (prime gaps normalized): correct null (incompressible)
 
 Panel identified three structural gaps between recovery and discovery:
-1. Grammar is fixed — engine can't learn from its own successful compressions
-2. Representation is limited — only 3 transforms (log, reciprocal, diff)
+1. Grammar is fixed, engine can't learn from its own successful compressions
+2. Representation is limited, only 3 transforms (log, reciprocal, diff)
 3. Grammar self-expansion exists (GP-115) but suggestions aren't tried
 
 ## The Debate (2026-04-23)
@@ -52,11 +55,11 @@ Implementation estimates after inversion:
 **File:** `src/ztare/fit/post_underidentified.py`
 
 Added 5 new transforms to observable rotation:
-- `diff(log(z))` — log-differences (catches geometric/multiplicative)
-- `cumavg(z)` — running average (smooths fluctuations)
-- `z*x` — un-normalizes ratios
-- `z^2` — quadratic (variance structure)
-- `sqrt(|z|)` — compresses large values
+- `diff(log(z))`, log-differences (catches geometric/multiplicative)
+- `cumavg(z)`, running average (smooths fluctuations)
+- `z*x`, un-normalizes ratios
+- `z^2`, quadratic (variance structure)
+- `sqrt(|z|)`, compresses large values
 
 Total transforms: 3 (existing) + 5 (new) = 8
 
@@ -87,9 +90,9 @@ A000009 (partitions into distinct parts):
 ## What This Enables
 
 The engine now has:
-- **Memory across substrates** — forms that worked before are tried first
-- **More representations** — 8 transforms instead of 3
-- **Self-diagnosing grammar** — when templates fail, residual shape
+- **Memory across substrates**, forms that worked before are tried first
+- **More representations**, 8 transforms instead of 3
+- **Self-diagnosing grammar**, when templates fail, residual shape
   generates new candidates mechanically
 
 Whether these cross the recovery-discovery boundary is an empirical

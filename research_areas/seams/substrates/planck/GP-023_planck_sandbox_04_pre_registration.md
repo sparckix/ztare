@@ -1,4 +1,7 @@
-# GP-023 Planck Sandbox 04 — Apparatus-Feedback Verifier Pre-Registration
+# GP-023 Planck Sandbox 04, Apparatus-Feedback Verifier Pre-Registration
+
+> **Seam metadata** · `seam_id:` GP-023 · `track:` substrates · `status:` Drafted 2026-04-12 23:16:00 EDT as a stronger-mutator verifi · `last_updated:` 2026-05-17
+
 
 ## Status
 

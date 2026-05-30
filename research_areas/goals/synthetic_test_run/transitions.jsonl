@@ -1,0 +1,4 @@
+{"timestamp_utc": "2026-04-16T13:44:07.005721+00:00", "from_stage": "", "to_stage": "STARTED", "action": "goal_created", "reason": "Goal 'synthetic_test_run' created with type 'synthetic_test'", "artifact_hashes": {}, "artifact_drift": false, "drifted_files": [], "metadata": {}}
+{"timestamp_utc": "2026-04-16T13:44:07.068909+00:00", "from_stage": "STARTED", "to_stage": "WORKING", "action": "advance", "reason": "", "artifact_hashes": {}, "artifact_drift": false, "drifted_files": [], "metadata": {}}
+{"timestamp_utc": "2026-04-16T13:44:07.132338+00:00", "from_stage": "WORKING", "to_stage": "REVIEW", "action": "advance", "reason": "", "artifact_hashes": {}, "artifact_drift": false, "drifted_files": [], "metadata": {}}
+{"timestamp_utc": "2026-04-16T13:44:07.300355+00:00", "from_stage": "REVIEW", "to_stage": "CLOSED", "action": "gate_resume", "reason": "Operator cleared gate at 'REVIEW'", "artifact_hashes": {}, "artifact_drift": false, "drifted_files": [], "metadata": {}}

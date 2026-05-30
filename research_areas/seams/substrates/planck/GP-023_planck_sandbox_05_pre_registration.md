@@ -1,4 +1,7 @@
-# GP-023 Planck Sandbox 05 — Stronger-Mutator Successor Pre-Registration
+# GP-023 Planck Sandbox 05, Stronger-Mutator Successor Pre-Registration
+
+> **Seam metadata** · `seam_id:` GP-023 · `track:` substrates · `status:` Drafted 2026-04-13 22:16:54 EDT as the post-`sandbox_04` str · `last_updated:` 2026-05-17
+
 
 ## Status
 

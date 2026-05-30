@@ -1,0 +1,13 @@
+{
+  "name": "gp075_rubric_for_unknowns",
+  "slug": "gp075_rubric_for_unknowns",
+  "description": "Can ZTARE generate structurally valid rubrics for domains where no GT exists? Rubric-as-method vs rubric-as-key. Which criteria are GT-independent? Where does Goodhart bite when the rubric itself is the optimization target? Connects to INS-012 (rubric-as-eval gaming) and the calibration-to-discovery transition.",
+  "target_type": "exploratory",
+  "current_stage": "SCOPING",
+  "status": "active",
+  "created_at": "2026-04-16T23:53:33.235772+00:00",
+  "owner": "",
+  "schema_version": 1,
+  "gate_pending_reason": null,
+  "gate_escalation_hashes": {}
+}

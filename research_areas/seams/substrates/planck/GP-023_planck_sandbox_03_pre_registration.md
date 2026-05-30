@@ -1,10 +1,13 @@
-# GP-023 Planck Sandbox 03 — Phase 3 Pre-Registration
+# GP-023 Planck Sandbox 03, Phase 3 Pre-Registration
+
+> **Seam metadata** · `seam_id:` GP-023 · `track:` substrates · `status:` Drafted 2026-04-12 21:26:07 EDT. Machine-path pre-seal verif · `last_updated:` 2026-05-17
+
 
 ## Status
 
-Drafted 2026-04-12 21:26:07 EDT. Machine-path pre-seal verification completed 2026-04-12 21:35:50 EDT. First seed-thesis leak patch applied 2026-04-12 21:49:19 EDT to `thesis.md` / `current_iteration.md`. A remaining mutator-visible leak in `test_model.py` was then discovered and patched at 2026-04-12 21:54:36 EDT (`MODEL_PARAMS["p"]: 2.7 -> 1.5`), with smoke gate re-verified PASS afterward. A further mutator-visible ontology leak in `project_charter.md` was then discovered and scrubbed at 2026-04-12 21:59:40 EDT (removed `Planck`/project-path header leakage), with parser and smoke checks re-verified PASS afterward. A final prompt-visible metadata leak in HTML comments inside `thesis.md` / `current_iteration.md` was then removed at 2026-04-12 22:04:40 EDT, with smoke gate re-verified PASS afterward. The earlier 2026-04-12 21:50:02 EDT seal, 2026-04-12 21:54:36 EDT reseal, and 2026-04-12 21:59:40 EDT reseal were therefore premature and are superseded. **Resealed 2026-04-12 22:04:40 EDT** pending operator invocation of the run command in §Seal. Correction log: `research_areas/private/postmortems/gp023_phase3_prompt_surface_contamination_2026_04_12.md`.
+Drafted 2026-04-12 21:26:07 EDT. Machine-path pre-seal verification completed 2026-04-12 21:35:50 EDT. First seed-thesis leak patch applied 2026-04-12 21:49:19 EDT to `thesis.md` / `current_iteration.md`. A remaining mutator-visible leak in `test_model.py` was then discovered and patched at 2026-04-12 21:54:36 EDT (`MODEL_PARAMS["p"]: 2.7 -> 1.5`), with smoke gate re-verified PASS afterward. A further mutator-visible ontology leak in `project_charter.md` was then discovered and scrubbed at 2026-04-12 21:59:40 EDT (removed `Planck`/project-path header leakage), with parser and smoke checks re-verified PASS afterward. A final prompt-visible metadata leak in HTML comments inside `thesis.md` / `current_iteration.md` was then removed at 2026-04-12 22:04:40 EDT, with smoke gate re-verified PASS afterward. The earlier 2026-04-12 21:50:02 EDT seal, 2026-04-12 21:54:36 EDT reseal, and 2026-04-12 21:59:40 EDT reseal were therefore premature and are superseded. **Resealed 2026-04-12 22:04:40 EDT** pending operator invocation of the run command in §Seal. Correction log: `research_areas/[redacted]`.
 
-This document supersedes `research_areas/private/seams/GP-023_planck_sandbox_02_pre_registration.md` for any work touching `projects/gp023_planck_sandbox_03/`. Sandbox_02 remains frozen as the Phase 2 historical record.
+This document supersedes `GP-023 (internal seam)` for any work touching `projects/gp023_planck_sandbox_03/`. Sandbox_02 remains frozen as the Phase 2 historical record.
 
 ## Purpose
 
@@ -213,7 +216,7 @@ Items 1-4 above were satisfied on the drafted packet as of 2026-04-12 21:35:50 E
 
 ## Seal
 
-**Resealed 2026-04-12 22:04:40 EDT.** The prior 2026-04-12 21:50:02 EDT seal, 2026-04-12 21:54:36 EDT reseal, and 2026-04-12 21:59:40 EDT reseal are superseded by the corrections recorded in `research_areas/private/postmortems/gp023_phase3_prompt_surface_contamination_2026_04_12.md`.
+**Resealed 2026-04-12 22:04:40 EDT.** The prior 2026-04-12 21:50:02 EDT seal, 2026-04-12 21:54:36 EDT reseal, and 2026-04-12 21:59:40 EDT reseal are superseded by the corrections recorded in `research_areas/[redacted]`.
 
 ### Sealed values
 

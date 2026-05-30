@@ -1,0 +1,78 @@
+schema_version: 1
+target_type: claude_manager
+description: >
+  Persistent-manager-agent lifecycle. One instance represents Claude acting
+  as manager for a research program over multiple sessions. Claude receives
+  work from the principal or discovers it from the state of ongoing
+  programs, executes within the scope defined by the claude_manager_mandate
+  (research_areas/private/mandates/claude_manager_mandate.md), and
+  escalates strategic decisions to the inbox (non-urgent) or via ntfy push
+  (urgent). Terminal only when the principal explicitly closes the program.
+
+entry_stage: IDLE
+terminal_stages:
+  - CLOSED_PROGRAM
+
+stages:
+  - name: IDLE
+    description: >
+      Manager is waiting for work. No active execution. This is the normal
+      resting state between tasks. On the first new task (from principal
+      or discovered in the program state), transitions to RECEIVING_WORK.
+    dispatch: agent
+    idempotent: true
+
+  - name: RECEIVING_WORK
+    description: >
+      Manager has received a task (from principal message, from a new gate
+      resolution, from monitoring another program's state, or from its own
+      standing directives). Parses intent, classifies the task against the
+      mandate's scope (autonomous / inbox-escalation / push-escalation /
+      forbidden), and decides next transition.
+    dispatch: agent
+    idempotent: true
+
+  - name: EXECUTING
+    description: >
+      Task is in scope for autonomous action per mandate. Manager executes
+      directly (may spawn workers, run commands, edit files, monitor
+      experiments, etc.). Should produce an audit trail of what was done.
+      On completion, returns to IDLE. On encountering a decision outside
+      mandate scope, transitions to DECISION_PENDING.
+    dispatch: agent
+    idempotent: false
+
+  - name: DECISION_PENDING
+    description: >
+      Task hit a decision point outside autonomous scope. Manager writes a
+      gate-escalation JSON to ztare_workspace/gates/pending/ via
+      write_gate_escalation(). If the decision is time-urgent per the
+      mandate's push-escalation criteria, also triggers a ntfy push via
+      push_gate_escalation(). Then returns to IDLE awaiting principal
+      resolution.
+    is_gate: true
+    gate_description: >
+      Manager has escalated a decision that exceeds its autonomous mandate.
+      Principal reviews in inbox (and/or ntfy) and resolves via `ztare goal
+      resume <slug>` (which transitions back to EXECUTING or IDLE) or by
+      editing the mandate if scope needs to change.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: RESOLVED
+    description: >
+      Principal has resolved a DECISION_PENDING. Manager reads the
+      resolution, updates its working state, returns to EXECUTING (if the
+      principal said "proceed") or IDLE (if the principal said "wait" or
+      "do something else"). Any mandate-scope updates are captured here
+      for future sessions.
+    dispatch: agent
+    idempotent: true
+
+  - name: CLOSED_PROGRAM
+    description: >
+      Principal has explicitly closed this manager instance. Used when a
+      research program wraps up or a mandate is retired. Captures final
+      state snapshot to research_areas/private/goals/<slug>/closure.md.
+    dispatch: operator_manual
+    idempotent: true

@@ -1,4 +1,7 @@
-# GP-121 — Cross-Entity Substrates: What Would It Take?
+# GP-121, Cross-Entity Substrates: What Would It Take?
+
+> **Seam metadata** · `seam_id:` GP-121 · `track:` apparatus · `status:` OPEN · `last_updated:` 2026-05-17
+
 
 **Status:** OPEN
 **Opened:** 2026-04-22
@@ -24,7 +27,7 @@ and the observable is a measured property (cancellation delta) as a
 function of another measured property (weight norm). The points are:
 - Not integer-indexed (weight norms are 24.66, 43.77, 59.19, ...)
 - Not smooth (scatter from measurement noise + model heterogeneity)
-- Not extrapolatable (there is no "farther tail" — each point is a
+- Not extrapolatable (there is no "farther tail", each point is a
   different entity, not the next value in a sequence)
 - Small sample (6 points, not 30+)
 
@@ -70,9 +73,9 @@ Gates auto-calibrate:
 
 Cross-entity substrates need forms the current library lacks:
 - **Sigmoid/logistic:** z = a / (1 + exp(-b*(n-c))) + d
-  (threshold effect — alignment appears above a norm cutoff)
+  (threshold effect, alignment appears above a norm cutoff)
 - **Piecewise constant:** z = a if n < c, z = b if n >= c
-  (binary classification — two basins)
+  (binary classification, two basins)
 - **Linear with saturation:** z = max(a*n + b, floor)
   (linear relationship that floors at zero)
 
@@ -88,13 +91,13 @@ For cross-entity substrates, the holdout should be:
 
 Sequential substrates assume the underlying function is exact and
 residuals are measurement error. Cross-entity substrates have
-INTRINSIC scatter — different training recipes, different init
+INTRINSIC scatter, different training recipes, different init
 schemes, different data produce different outcomes even for the
 same architecture. The noise is part of the signal.
 
 The gate should distinguish:
-- Systematic residual (the form is wrong) — FAIL
-- Scattered residual (entity heterogeneity) — PASS with caveat
+- Systematic residual (the form is wrong), FAIL
+- Scattered residual (entity heterogeneity), PASS with caveat
 
 ### 5. Sample Size Awareness
 
@@ -131,14 +134,14 @@ allowing the data to speak.
 
 Panel: Knuth / Dijkstra / Karpathy / Popper / Munger
 
-### Fix 1: Rotation Feedback Loop — IMPLEMENT (Priority 1)
+### Fix 1: Rotation Feedback Loop, IMPLEMENT (Priority 1)
 - Unanimous: highest value, lowest risk
 - Ulam 1/z residual 0.002 proves the engine finds the answer and ignores it
 - Modifications: run full fitting pipeline (not just compress_champion),
   validate composed form on ORIGINAL holdout, Bonferroni correction (disputed by Knuth)
 - **STATUS: IMPLEMENTED** in post_underidentified.py Strategy E
 
-### Fix 2: Cross-Entity Substrate Support — DEFER (Priority 3)
+### Fix 2: Cross-Entity Substrate Support, DEFER (Priority 3)
 - 4-1 defer (Karpathy dissents: ship hard-coded GP-116 override now)
 - Single data point (GP-116 weight-norm); building general framework from one
   example is overfitting to the training set
@@ -148,7 +151,7 @@ Panel: Knuth / Dijkstra / Karpathy / Popper / Munger
 - Munger: "what if the engine should NOT handle cross-entity substrates at all?"
 - **STATUS: k < n/3 constraint to be shipped. Full framework deferred.**
 
-### Fix 3: GP-115 Trigger Expansion — PARTIAL (Priority 2)
+### Fix 3: GP-115 Trigger Expansion, PARTIAL (Priority 2)
 - Ship logging of all GP-115 activity (detectors, suggestions, ratios, rejections)
 - Ship constraint-ledger wiring via diagnosis_feedback.py pattern
 - DEFER trigger scope expansion (needs logging data first)

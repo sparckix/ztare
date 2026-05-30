@@ -1,0 +1,57 @@
+schema_version: 1
+target_type: exploratory
+description: >
+  Lightweight probe or investigation. No pre-registration, no seal gate,
+  no leak audit. Use for model capability probes, parameter sweeps,
+  instrumentation tests, or any question that needs a structured answer
+  but not the full science_sandbox ceremony.
+
+entry_stage: SCOPING
+terminal_stages:
+  - CLOSED
+  - CLOSED_INCONCLUSIVE
+
+stages:
+  - name: SCOPING
+    description: >
+      Define the question, substrate, and success criterion. Output: a
+      one-paragraph scope statement and a run config (model, iters, mode).
+    dispatch: agent
+    idempotent: true
+
+  - name: PROBING
+    description: >
+      Run the probe. This may be a single autoresearch run, a manual
+      experiment, or a parameter sweep. Monitor and log results.
+    dispatch: autoresearch
+    idempotent: false
+
+  - name: HARVESTING
+    description: >
+      Extract findings from the probe. Classify outcome (confirmed,
+      refuted, inconclusive, model_too_weak, apparatus_bug). Log to
+      phase2_ab_results.jsonl or equivalent.
+    dispatch: agent
+    idempotent: true
+
+  - name: DECISION
+    description: >
+      Decide next action based on probe results. Options: promote to
+      science_sandbox (formal experiment), close with finding, close
+      inconclusive, or pivot scope and re-probe.
+    is_gate: true
+    gate_description: >
+      Operator reviews probe results and decides: promote to formal
+      experiment, close, or pivot.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: CLOSED
+    description: Probe closed with a finding or decision. Log outcome.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: CLOSED_INCONCLUSIVE
+    description: Probe closed without a clear result. Log why.
+    dispatch: operator_manual
+    idempotent: true

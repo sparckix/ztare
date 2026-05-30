@@ -1,5 +1,8 @@
 # GP-023 Planck Mechanism Pre-Registration
 
+> **Seam metadata** · `seam_id:` GP-023 · `track:` substrates · `status:` Drafted 2026-04-10. Freeze before sandbox construction begin · `last_updated:` 2026-05-17
+
+
 ## Status
 
 Drafted 2026-04-10. Freeze before sandbox construction begins.
@@ -7,11 +10,11 @@ Drafted 2026-04-10. Freeze before sandbox construction begins.
 **Sealed 2026-04-10** after contamination audit 01 passed.
 - Sandbox: `projects/gp023_planck_sandbox_01/` (construction record at `projects/gp023_planck_sandbox_01/sandbox_construction_record.md`)
 - Rubric: `rubrics/gp023_planck_sandbox_01.json`, `falsification_mode: bounded_discriminator`
-- Independent contamination checker: **gpt-4o (OpenAI family)**; audit log at `research_areas/private/gp023_contamination_audit_01.md`; verdict PASS (checker's top guess was "driven harmonic oscillator / RLC resonance", 95% confidence on the forensic probe — wrong retrieval basin, perturbations held).
+- Independent contamination checker: **gpt-4o (OpenAI family)**; audit log at `[internal-ref]`; verdict PASS (checker's top guess was "driven harmonic oscillator / RLC resonance", 95% confidence on the forensic probe, wrong retrieval basin, perturbations held).
 - **Runtime mutator family (sealed):** Gemini (`gemini-2.5-flash` via `MODEL_MAP["gemini"]`)
 - **Runtime judge family (sealed):** Gemini (`gemini-2.5-flash`)
 - **Forbidden as runtime for this experiment:** gpt-4o / OpenAI family (burned as contamination checker, independence would be violated)
-- **UNDERIDENTIFIED exit suppression:** the run MUST be invoked with `--underidentified_after 20` (smoke run) or `--underidentified_after 100` (main run). Without this flag, the UNDERIDENTIFIED gate fires after just 3 consecutive catastrophic iterations in bounded_discriminator mode and breaks the loop — preempting the pivot entirely. GP-023's seed is deliberately designed to produce catastrophic failures until the pivot forces a structural break, so the default threshold of 3 is invalid for this experiment. The threshold must be at least equal to the iteration budget. Discovered 2026-04-10 during the smoke run at iteration 4. Fix: new `--underidentified_after` flag in `autoresearch_loop.py`; `information_yield.py:evaluate_information_yield` now accepts a separate `underidentified_after` param decoupled from `pivot_after`.
+- **UNDERIDENTIFIED exit suppression:** the run MUST be invoked with `--underidentified_after 20` (smoke run) or `--underidentified_after 100` (main run). Without this flag, the UNDERIDENTIFIED gate fires after just 3 consecutive catastrophic iterations in bounded_discriminator mode and breaks the loop, preempting the pivot entirely. GP-023's seed is deliberately designed to produce catastrophic failures until the pivot forces a structural break, so the default threshold of 3 is invalid for this experiment. The threshold must be at least equal to the iteration budget. Discovered 2026-04-10 during the smoke run at iteration 4. Fix: new `--underidentified_after` flag in `autoresearch_loop.py`; `information_yield.py:evaluate_information_yield` now accepts a separate `underidentified_after` param decoupled from `pivot_after`.
 - **Model-fallback lock:** the run MUST be invoked with `--no_model_fallback`. Without that flag, `llm_runtime.FALLBACK_MODEL_CHAINS` silently cascades Gemini → `claude-sonnet-4-6` → `gpt-4o` on transient provider errors, which would (a) break the sealed runtime family and (b) in the worst case hand the run to the burned contamination checker. Added 2026-04-10 as a direct response to a pre-kickoff audit of the runtime code path. Enforcement is via the env var `ZTARE_DISABLE_MODEL_FALLBACK=1` which the flag sets at startup; `call_text` reads the env var on every call, so the lock applies to mutator, judge, and any helper path without kwarg threading. A valid GP-023 run must show the `🔒 Model fallback DISABLED` banner in the run log.
 - Pivot profile sealed: `bounded_discriminator` (9-module expanded set per GP-021 Turn 6 fix, verified in `src/ztare/validator/pivot_heuristics.py`)
 - Execution plan: 20-iteration smoke run first (gate before full 100), then 100-iteration main run on operator go-ahead. The 20-iter smoke run exists only to verify that the pivot fires, the seed is falsified in logs, and no contamination surfaces in the runtime's own text. Its result does not count toward or against the primary hypothesis.
@@ -136,7 +139,7 @@ The run counts as a positive GP-023 result only if all three hold:
 
 2. **Anchor-proxy bridge**
    - the primitive is tied to observable structure in the perturbed target curve
-   - the bridge is load-bearing, not decorative
+   - the bridge is decisive, not decorative
 
 3. **Trace emergence**
    - the debate/thesis trace shows the primitive emerging from multi-step reasoning over renamed variables

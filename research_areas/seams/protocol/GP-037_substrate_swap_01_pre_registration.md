@@ -1,4 +1,7 @@
-# GP-037 Substrate-Swap Sandbox 01 — Pre-Registration
+# GP-037 Substrate-Swap Sandbox 01, Pre-Registration
+
+> **Seam metadata** · `seam_id:` GP-037 · `track:` protocol · `status:` Drafted 2026-04-12. **Sealed 2026-04-12. Frozen 2026-04-12 1 · `last_updated:` 2026-05-17
+
 
 ## Status
 
@@ -28,7 +31,7 @@ So GP-037 should be treated as **frozen and closed**, but **not** as a fully exe
 
 ## Primary Hypothesis
 
-A ZTARE mutator equipped with a post-LLM numerical fitting step (GP-035) can discover a composite functional form that clears residual, peak-location, and decay-ratio gates on a hidden holdout slice — the same gate structure that the GP-023 Phase 2 mutator failed to clear without the fit primitive.
+A ZTARE mutator equipped with a post-LLM numerical fitting step (GP-035) can discover a composite functional form that clears residual, peak-location, and decay-ratio gates on a hidden holdout slice, the same gate structure that the GP-023 Phase 2 mutator failed to clear without the fit primitive.
 
 ## Null Hypothesis
 
@@ -159,5 +162,5 @@ python -m src.ztare.validator.autoresearch_loop \
     --judge_model gemini
 ```
 
-**Pre-run smoke gate verified:** yes — test_model.py exits 1 (naive seed fails visible assertions), gate_harness.py exits 0 with 5 gates all `passed: false` and all `actual` finite (re-verified 2026-04-12 after seed restoration)
+**Pre-run smoke gate verified:** yes, test_model.py exits 1 (naive seed fails visible assertions), gate_harness.py exits 0 with 5 gates all `passed: false` and all `actual` finite (re-verified 2026-04-12 after seed restoration)
 **Operator seal timestamp:** 2026-04-12T22:30Z

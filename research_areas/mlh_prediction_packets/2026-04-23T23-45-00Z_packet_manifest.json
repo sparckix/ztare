@@ -1,0 +1,235 @@
+{
+  "generated_at": "2026-04-23T23:45:00Z",
+  "packet_id": "2026-04-23T23-45-00Z",
+  "packet_hash": "7ac63d4572f259e2223d536049b5943f5e5b20736f21f34bdc61e9f23e2b876d",
+  "packet_dir": "/tmp/2026-04-23T23-45-00Z_mlh_prediction_packet",
+  "open_substrates": [
+    "mlh_f1",
+    "mlh_f2",
+    "mlh_f3",
+    "mlh_f4",
+    "mlh_f5"
+  ],
+  "files": [
+    {
+      "relative_path": "README.md",
+      "sha256": "0be02dba6575475bfcd9a4528a9b81ed0ddc90667a0172dfa38b7c240927f27f",
+      "bytes": 510
+    },
+    {
+      "relative_path": "docs/mlh_family_protocol.md",
+      "sha256": "a89959944fe75f1160959b771a1f2e4ea881964125c1fc081752f6ec054eb4e5",
+      "bytes": 8171
+    },
+    {
+      "relative_path": "projects/mlh_f1/champion_eval_results.json",
+      "sha256": "02d7358f6d958fe8c287c58a02f0bbb42753e39e0e760602e051889c7fea2f31",
+      "bytes": 6644
+    },
+    {
+      "relative_path": "projects/mlh_f1/evidence.txt",
+      "sha256": "98b48e104bd14e055dcf91dc17f113e5763fe6578f050727f0525f71552aed67",
+      "bytes": 619
+    },
+    {
+      "relative_path": "projects/mlh_f1/latest_eval_results.json",
+      "sha256": "930a97b98c6a9b7a6ecda28f6b6edd03c1d16fb6cdd2859a7b1d367f6370ebb4",
+      "bytes": 7389
+    },
+    {
+      "relative_path": "projects/mlh_f1/latest_probability_dag.json",
+      "sha256": "48ad29c5979d9d9ee9cf3c4dab2eb313e3ef8f356005376968bf496aa35d2f48",
+      "bytes": 1389
+    },
+    {
+      "relative_path": "projects/mlh_f1/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f1/thesis.md",
+      "sha256": "f2f03753c0cfa9a2ea37130d1f52c55d316c1701ed21fc8cca18f469bdef55a6",
+      "bytes": 3852
+    },
+    {
+      "relative_path": "projects/mlh_f1/workspace/latest_information_yield.json",
+      "sha256": "24d1df0c97b6d18308e469adab4e6ca66aa111cc01605471a68c1b928b21ac6b",
+      "bytes": 1514
+    },
+    {
+      "relative_path": "projects/mlh_f1/workspace/latest_loop_event.json",
+      "sha256": "c6b5c9ea0b5a5a5eac80ddffae9d8b176f4c8613cf3c121c8fd1597b8370d153",
+      "bytes": 717
+    },
+    {
+      "relative_path": "projects/mlh_f2/champion_eval_results.json",
+      "sha256": "a83a2be87dc35b502de0d9d5b301067891b6adbc0486ed1a71e62cd58ff68d0a",
+      "bytes": 7852
+    },
+    {
+      "relative_path": "projects/mlh_f2/evidence.txt",
+      "sha256": "173421a884d560f718327be22b570934e5b6da98472ed1c67b77efea6f3712f3",
+      "bytes": 604
+    },
+    {
+      "relative_path": "projects/mlh_f2/latest_eval_results.json",
+      "sha256": "ede8840cffa047e011c5946dc1a921211c4b68d4d7f342dac5d4a301df74fc40",
+      "bytes": 7772
+    },
+    {
+      "relative_path": "projects/mlh_f2/latest_probability_dag.json",
+      "sha256": "338cc3f09b0000dc17931359a0879c48038f978e4fefabf7f92503f5b004769b",
+      "bytes": 1423
+    },
+    {
+      "relative_path": "projects/mlh_f2/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f2/thesis.md",
+      "sha256": "13a920f37f8847f76cd12dc8ab547e71661b9883f2048962924400fc82bb67a3",
+      "bytes": 6483
+    },
+    {
+      "relative_path": "projects/mlh_f2/workspace/latest_information_yield.json",
+      "sha256": "88a684d08508a2f82a37794c6503f66344eceed49f2680c5f46ad2d9d03f609d",
+      "bytes": 1373
+    },
+    {
+      "relative_path": "projects/mlh_f3/champion_eval_results.json",
+      "sha256": "b93ed12796f9e202ce60b6020b9491155264597c53f5baf888ab65dd0dc2685e",
+      "bytes": 7431
+    },
+    {
+      "relative_path": "projects/mlh_f3/evidence.txt",
+      "sha256": "3c941607951b40ab2548ba16538fef06055cf6918e93d1be454fe778418e5af3",
+      "bytes": 557
+    },
+    {
+      "relative_path": "projects/mlh_f3/latest_eval_results.json",
+      "sha256": "2a42c5aa5f00cabb336f06490b1e114e18f928adc2fc2156e32a14efa66ef752",
+      "bytes": 6409
+    },
+    {
+      "relative_path": "projects/mlh_f3/latest_probability_dag.json",
+      "sha256": "0d547015877a942f2f2e2b2fca2480ca8ba0b19952194c19b006dda1eb99f576",
+      "bytes": 992
+    },
+    {
+      "relative_path": "projects/mlh_f3/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f3/thesis.md",
+      "sha256": "c2145c21e3d6af804de62320b9eb199cb8fb5d02b8e9627a1cbf9a70fb23f4cd",
+      "bytes": 3827
+    },
+    {
+      "relative_path": "projects/mlh_f3/workspace/latest_information_yield.json",
+      "sha256": "3525409429f798fbbdc6addce82a7b03cf315f2d36f83e91f1081a3c73a900ae",
+      "bytes": 1412
+    },
+    {
+      "relative_path": "projects/mlh_f4/champion_eval_results.json",
+      "sha256": "946103ee6a4b35f0e7089ed12573035be6dd563ab49c305603709dcdd3ebf1b6",
+      "bytes": 7680
+    },
+    {
+      "relative_path": "projects/mlh_f4/evidence.txt",
+      "sha256": "950e8d41423e2d452f530d75e42ec6dcc8c36b447ea88b768cab088e729c7fe1",
+      "bytes": 557
+    },
+    {
+      "relative_path": "projects/mlh_f4/latest_eval_results.json",
+      "sha256": "dc468f467087783245308837c3344a674e5271fcfe0ce1ea361474c65634043e",
+      "bytes": 7022
+    },
+    {
+      "relative_path": "projects/mlh_f4/latest_probability_dag.json",
+      "sha256": "275ad9e2e01b2314970124928f24dd56742f299d3cb451b216249ef7300e69d4",
+      "bytes": 1327
+    },
+    {
+      "relative_path": "projects/mlh_f4/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f4/thesis.md",
+      "sha256": "44614373e7776ac1127b998dddb379106aebfb081dfe40d52ed59da789b98296",
+      "bytes": 5654
+    },
+    {
+      "relative_path": "projects/mlh_f4/workspace/latest_information_yield.json",
+      "sha256": "020c7caeec1d5cca60a54773ec23201ced2f74e6b7b470bcccb4f5ccf285a5d7",
+      "bytes": 1392
+    },
+    {
+      "relative_path": "projects/mlh_f5/champion_eval_results.json",
+      "sha256": "85305eb97c01d48b40faa5d2a6d516ccb9da050ac95f30e373b9db4d6e5a11be",
+      "bytes": 8215
+    },
+    {
+      "relative_path": "projects/mlh_f5/evidence.txt",
+      "sha256": "07dd2ce147e651c099f5e54bcc073de6e6bbb4f6696b8d19e903976903122ca4",
+      "bytes": 561
+    },
+    {
+      "relative_path": "projects/mlh_f5/latest_eval_results.json",
+      "sha256": "6ccd56015d28a59211bf3d63dee85d538dec86f738aa1f0ba691169aa3a722f3",
+      "bytes": 7173
+    },
+    {
+      "relative_path": "projects/mlh_f5/latest_probability_dag.json",
+      "sha256": "08cdbe363aaaa7f2de09b273b353ce0f5ee4f6c374e7b9474aa239743b764d5b",
+      "bytes": 1468
+    },
+    {
+      "relative_path": "projects/mlh_f5/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f5/thesis.md",
+      "sha256": "b9c9b93723c2c93d451505329d1d2125c906cac376cf40ef8037510fa035f160",
+      "bytes": 3540
+    },
+    {
+      "relative_path": "projects/mlh_f5/workspace/latest_information_yield.json",
+      "sha256": "c5b6947ee40626c36acd50363b56aff76eb7dd4f0afe234abcca48e7c2dc8c07",
+      "bytes": 1383
+    },
+    {
+      "relative_path": "projects/mlh_f5/workspace/latest_loop_event.json",
+      "sha256": "90f72110c735cfa4ce77ff866c7e8953b18af0ccef08efe48d36ce6536b53f3a",
+      "bytes": 717
+    },
+    {
+      "relative_path": "rubrics/mlh_f1.json",
+      "sha256": "9270a25c0e696b300d8b96fde964a51a4a6e2ca778e25b872515f8e0cac32e99",
+      "bytes": 7240
+    },
+    {
+      "relative_path": "rubrics/mlh_f2.json",
+      "sha256": "cca60136b5bb93bcf1e7eccd31acf9d40ae5d31aecd4b549cf8207ab1228416b",
+      "bytes": 7240
+    },
+    {
+      "relative_path": "rubrics/mlh_f3.json",
+      "sha256": "e54f3575c0f2180b29381b69458bbcea1537ee3f61ef999c2e13f897472f8083",
+      "bytes": 7240
+    },
+    {
+      "relative_path": "rubrics/mlh_f4.json",
+      "sha256": "d4ac971b7a39517962af889a2c7bf52602088b3983114d65c6c558a9c99a7583",
+      "bytes": 7240
+    },
+    {
+      "relative_path": "rubrics/mlh_f5.json",
+      "sha256": "d1ec8a7a320bf01709ad26387f65eb12ff9583ade24389ba5faf3f55d073da34",
+      "bytes": 7240
+    }
+  ]
+}

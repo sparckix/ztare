@@ -1,0 +1,35 @@
+{
+  "scored_at": "2026-04-23T23:58:24Z",
+  "prediction_file": "research_areas/private/mlh_predictions/2026-04-23T23-56-17Z_sealed.json",
+  "seal_ok": true,
+  "composition_class": {
+    "predicted": "multiplicative",
+    "actual": "multiplicative",
+    "accuracy": 1.0
+  },
+  "point_predictions": {
+    "correct": 40,
+    "total": 40,
+    "accuracy": 1.0
+  },
+  "rule_validity": {
+    "prime_power_rule_score": 0.7,
+    "prime_power_rule_reason": "non-python rule, 58 chars (concise)",
+    "composition_rule_score": 0.7,
+    "composition_rule_reason": "non-python rule, 192 chars (concise)",
+    "combined": 0.7
+  },
+  "at_n1": {
+    "predicted": 1,
+    "actual": 1,
+    "match": true
+  },
+  "newton_gate": {
+    "thresholds": {
+      "composition_class_accuracy": 1.0,
+      "point_prediction_accuracy": 0.9,
+      "rule_validity": 0.8
+    },
+    "pass": false
+  }
+}

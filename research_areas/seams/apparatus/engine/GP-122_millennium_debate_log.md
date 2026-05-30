@@ -1,12 +1,15 @@
 # GP-122 Millennium Debate Log (2026-04-22)
 
+> **Seam metadata** · `seam_id:` GP-122 · `track:` apparatus · `status:` unrecorded · `last_updated:` 2026-05-17
+
+
 ## Panel: Tao / Lagarias / de Branges / Buzzard / Munger
 
 ### Unanimous Verdict: Lagarias curve-fitting is a dead end for PROOF
 
 Key points:
 - The decreasing Robin gap is EXPECTED (O(1/sqrt(ln(ln(n)))))
-- Curve-fitting can't prove "for all n" — that IS the hard part
+- Curve-fitting can't prove "for all n", that IS the hard part
 - The zero-spacing substrate (Montgomery-Odlyzko) is where ZTARE 
   demonstrated actual capability
 - 12 hours is cheap; null result is clean and honest
@@ -20,7 +23,7 @@ The initial Robin gap computation used the WRONG inequality:
 
 Pure prime powers (2^k) have LARGE Robin gaps, not small ones.
 The tightest gaps are at superabundant numbers with many small
-prime factors — the opposite of what was initially computed.
+prime factors, the opposite of what was initially computed.
 
 ### The S_k Path (highest-probability direct route)
 

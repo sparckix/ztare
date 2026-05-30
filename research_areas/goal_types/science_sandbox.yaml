@@ -1,0 +1,103 @@
+schema_version: 1
+target_type: science_sandbox
+description: >
+  Lifecycle of a pre-registered ZTARE experiment. Maps the full path from
+  seam drafting through sandbox execution to finding extraction. Gates
+  enforce scientific integrity at leak-audit, pre-reg seal, and next-question
+  decision points.
+
+entry_stage: DRAFTING_SEAM
+terminal_stages:
+  - CLOSED
+  - CLOSED_NULL
+
+stages:
+  - name: DRAFTING_SEAM
+    description: >
+      Draft the experiment seam file. Define the eigenquestion, substrate,
+      and measurement protocol. Output: a seam file in research_areas/private/seams/.
+    dispatch: agent
+    idempotent: true
+
+  - name: DEBATING_SEAM
+    description: >
+      Run Author/Skeptic debate on the seam to convergence. Use the
+      findings_runner or manual debate turns. Output: converged seam with
+      constraint set.
+    dispatch: findings_runner
+    idempotent: true
+
+  - name: PENDING_SPEC_DRAFT
+    description: >
+      Convert the converged seam into a formal spec. Draft the pre-registration
+      document, generate evidence, create project scaffold.
+    dispatch: agent
+    idempotent: true
+
+  - name: PENDING_LEAK_AUDIT
+    description: >
+      Run the pre-run leak audit checklist (docs/PRE_RUN_CHECKLIST.md).
+      Verify denylist, strip test, identifiability protocol, smoke gate,
+      charter fingerprint. Operator must sign off.
+    is_gate: true
+    gate_description: >
+      Leak audit gate. Operator verifies no GT leakage into mutator-visible
+      files. Run: grep denylist + strip test + identifiability + smoke gate.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: PENDING_SEAL
+    description: >
+      Seal the pre-registration. Compute and record artifact hashes.
+      Dry-run the sealed command. Pin all implicit defaults. Operator signs.
+    is_gate: true
+    gate_description: >
+      Pre-registration seal gate. Operator confirms hashes, dry-run results,
+      and all implicit defaults are pinned.
+    dispatch: operator_manual
+    idempotent: true
+    strict_gate_mode: true
+
+  - name: SEALED
+    description: >
+      Pre-registration is sealed. Ready to run. Transition to RUNNING
+      initiates the autoresearch_loop.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: RUNNING
+    description: >
+      Autoresearch loop is executing. Monitor progress. Do not modify sealed
+      artifacts. Transition when the loop completes or is operator-stopped.
+    dispatch: autoresearch
+    idempotent: false
+
+  - name: HARVESTING
+    description: >
+      Extract findings from completed run. Run Component B (negative_space_extractor),
+      structural_constraint_extractor, compile workspace artifacts. Log results
+      to phase2_ab_results.jsonl or equivalent.
+    dispatch: agent
+    idempotent: true
+
+  - name: PENDING_NEXT_QUESTION
+    description: >
+      Decide the next eigenquestion based on run results. Is another pair
+      needed? Is the substrate mis-calibrated? Should we close or continue?
+      Operator decides.
+    is_gate: true
+    gate_description: >
+      Eigenquestion gate. Operator reviews run results and decides next action:
+      continue (new pair), close (finding or null), or pivot (new substrate).
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: CLOSED
+    description: Goal closed with a finding. Log to EXPERIMENT_TRACK_RECORD.
+    dispatch: operator_manual
+    idempotent: true
+
+  - name: CLOSED_NULL
+    description: Goal closed with a null result. Log to EXPERIMENT_TRACK_RECORD.
+    dispatch: operator_manual
+    idempotent: true

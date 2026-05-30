@@ -1,0 +1,1 @@
+{"timestamp_utc": "2026-04-16T23:53:33.236155+00:00", "from_stage": "", "to_stage": "SCOPING", "action": "goal_created", "reason": "Goal 'gp075_rubric_for_unknowns' created with type 'exploratory'", "artifact_hashes": {}, "artifact_drift": false, "drifted_files": [], "metadata": {}}

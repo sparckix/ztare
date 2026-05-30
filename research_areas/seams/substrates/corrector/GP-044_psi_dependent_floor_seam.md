@@ -1,14 +1,17 @@
 # GP-044 Psi-Dependent Floor Seam
 
+> **Seam metadata** · `seam_id:` GP-044 · `track:` substrates · `status:` Closed, 2026-04-12 18:18:04 EDT · `last_updated:` 2026-05-17
+
+
 ## Status
 
-Closed — 2026-04-12 18:18:04 EDT
+Closed, 2026-04-12 18:18:04 EDT
 
 ## Problem
 
-GP-043 showed that the escaped generalized-decay family is load-bearing but still fails the visible residual contract at `phi=11.6462, psi=2.0` by `≈ 0.062`. The miss is narrow and localized. All hidden holdout gates pass on the cleaned seed.
+GP-043 showed that the escaped generalized-decay family is decisive but still fails the visible residual contract at `phi=11.6462, psi=2.0` by `≈ 0.062`. The miss is narrow and localized. All hidden holdout gates pass on the cleaned seed.
 
-The GP-043 family uses a global floor constant `P_floor_global = 0.0706`. The localization of the residual failure — high phi, high psi — is the only reason to test a floor-side extension at all. But that does **not** yet prove a true asymptotic floor is psi-dependent. At most, the visible slice shows that the high-phi tail in the observed range differs strongly by psi, especially at `psi=2.0`.
+The GP-043 family uses a global floor constant `P_floor_global = 0.0706`. The localization of the residual failure, high phi, high psi, is the only reason to test a floor-side extension at all. But that does **not** yet prove a true asymptotic floor is psi-dependent. At most, the visible slice shows that the high-phi tail in the observed range differs strongly by psi, especially at `psi=2.0`.
 
 The eigenquestion for GP-044:
 
@@ -53,7 +56,7 @@ All decay-branch parameters (`P_amplitude`, `A`, `N`, `P_decay_coeff`, `B`, `M`)
 
 Either outcome gives diagnostic information. Failure here would indicate the decay branch itself needs structural change, not just the floor.
 
-## Turn 1 — 2026-04-12 — One-shot baseline pre-registration
+## Turn 1, 2026-04-12, One-shot baseline pre-registration
 
 Sealed command:
 
@@ -66,13 +69,13 @@ python -m src.ztare.validator.test_thesis \
   --deterministic_score_gates
 ```
 
-Seed: `projects/gp044_psi_dependent_floor_01/test_model.py` — GP-043 decay branch parameters frozen, psi-dependent floor initialized with `P_floor_base=0.04, P_floor_scale=0.04, P_floor_alpha=1.0`.
+Seed: `projects/gp044_psi_dependent_floor_01/test_model.py`, GP-043 decay branch parameters frozen, psi-dependent floor initialized with `P_floor_base=0.04, P_floor_scale=0.04, P_floor_alpha=1.0`.
 
 Expected result space:
 - If GP-035 fitter finds params that close the gap → visible residual passes, hidden gates stay → family confirmed
 - If fitter cannot close the gap on this form → floor parameterization is not the whole story → open decay-branch extension seam
 
-## Turn 2 — Codex (2026-04-12 17:50:31 EDT) — Bounded ablation is fine; prompt-steered GP-044 is not
+## Turn 2, Codex (2026-04-12 17:50:31 EDT), Bounded ablation is fine; prompt-steered GP-044 is not
 
 The GP-044 idea is **not** inherently overfitting, but the current implementation had one real contamination risk:
 
@@ -98,7 +101,7 @@ That is acceptable. What would be overfitting is:
 - using the rubric to forbid alternatives
 - narrating “psi-dependent floor” as already established fact rather than a bounded local hypothesis
 
-## Turn 3 — Codex (2026-04-12 18:00:12 EDT) — This is not the GP-041 ablation again
+## Turn 3, Codex (2026-04-12 18:00:12 EDT), This is not the GP-041 ablation again
 
 This is a different ablation from the earlier replay work.
 
@@ -123,13 +126,13 @@ So GP-044 is methodologically legitimate as long as it stays bounded:
 
 I also removed the bad assertion that required the fitted offset term itself to be monotone in `psi`. That was enforcing the hypothesis rather than testing it.
 
-## Turn 4 — Claude (2026-04-12) — Turn 3 confirmed the fix; assertion 5 is gone, substrate is clean
+## Turn 4, Claude (2026-04-12), Turn 3 confirmed the fix; assertion 5 is gone, substrate is clean
 
-Turn 3 (Codex) removed the hypothesis-enforcing floor-monotonicity assertion from `test_model.py`. Confirmed: `test_model.py` no longer contains assertion 5. The remaining assertions (1–4) are all evidence-grounded observables — peak locations and high-phi tail ordering read directly from evidence.txt. That is the correct discriminator surface.
+Turn 3 (Codex) removed the hypothesis-enforcing floor-monotonicity assertion from `test_model.py`. Confirmed: `test_model.py` no longer contains assertion 5. The remaining assertions (1-4) are all evidence-grounded observables, peak locations and high-phi tail ordering read directly from evidence.txt. That is the correct discriminator surface.
 
 Substrate is clean. Ready for pre-registration seal.
 
-## Turn 5 — Codex (2026-04-12 18:18:04 EDT) — Negative bounded result; floor repair is not the missing piece
+## Turn 5, Codex (2026-04-12 18:18:04 EDT), Negative bounded result; floor repair is not the missing piece
 
 The one-shot GP-044 baseline answered its question cleanly enough to close the seam.
 
@@ -146,7 +149,7 @@ So the floor-side repair failed on both of the things that mattered:
 
 That means GP-044 is a useful negative result, not wasted effort. It rules out the tempting story that the GP-043 near-pass was mainly missing a more flexible additive offset.
 
-The load-bearing implication is narrower:
+The decisive implication is narrower:
 
 > the remaining miss is not an offset problem first. The next admissible repair, if any, has to target the interior shape / decay core rather than the floor.
 

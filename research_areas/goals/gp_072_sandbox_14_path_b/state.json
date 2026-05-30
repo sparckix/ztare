@@ -1,0 +1,13 @@
+{
+  "name": "GP-072 Sandbox 14 Path B",
+  "slug": "gp_072_sandbox_14_path_b",
+  "description": "Blind Path B: Division A/B protocol. Tests Component B on chirp substrate. Division B artifacts written by isolated agent.",
+  "target_type": "science_sandbox",
+  "current_stage": "RUNNING",
+  "status": "active",
+  "created_at": "2026-04-16T13:41:16.194402+00:00",
+  "owner": "Daniel Alami",
+  "schema_version": 1,
+  "gate_pending_reason": null,
+  "gate_escalation_hashes": {}
+}

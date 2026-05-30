@@ -1,10 +1,13 @@
-# GP-120 — Should ZTARE Add a Bridger Agent?
+# GP-120, Should ZTARE Add a Bridger Agent?
 
-**Status:** ANSWERED — Don't add. Enrich constraint ledger instead.
+> **Seam metadata** · `seam_id:` GP-120 · `track:` apparatus · `status:` ANSWERED, Don't add. Enrich constraint ledger instead. · `last_updated:` 2026-05-17
+
+
+**Status:** ANSWERED, Don't add. Enrich constraint ledger instead.
 **Opened:** 2026-04-22
 **Category:** Apparatus / Governance / Integration
 **Origin:** Emily Tedards (HBS) suggestion: "What if you also added agents
-that had 2+ specialist domains — bridgers at the intersection?"
+that had 2+ specialist domains, bridgers at the intersection?"
 
 *All panelist names are fictitious personas used as adversarial reasoning
 lenses, not real individuals or endorsements.*
@@ -12,14 +15,14 @@ lenses, not real individuals or endorsements.*
 ## Eigenquestion
 
 The M-Form has specialists (Mutator, Judge) and an auditor (Inverter).
-Should it also have a bridger — a T-shaped or Pi-shaped agent at the
+Should it also have a bridger, a T-shaped or Pi-shaped agent at the
 intersection of generation and evaluation that facilitates integration?
 
 ## Panel (Lawrence / Wenger / Tushman / Munger / Karpathy)
 
 ### Lawrence (Differentiation & Integration)
 
-The constraint ledger is a sophisticated "paper integrator" — a typed,
+The constraint ledger is a sophisticated "paper integrator", a typed,
 deduplicated, severity-graded, source-traced artifact with promotion
 and demotion protocols. It exceeds what most human organizations achieve
 for integration. The question is whether the system has hit the limits
@@ -29,13 +32,13 @@ The interpretation gap IS real: the mutator receives a constraint like
 "ESM permanence must be separated from automaticity" and must figure
 out for itself what that means. A bridger could specify the
 interpretation. But who audits the bridger's interpretation? (Munger's
-rebuttal — see below.)
+rebuttal, see below.)
 
 **Verdict: DON'T ADD.** Enrich the constraint ledger's expressiveness.
 
 ### Wenger (Communities of Practice)
 
-The constraint ledger is a well-designed BOUNDARY OBJECT — an artifact
+The constraint ledger is a well-designed BOUNDARY OBJECT, an artifact
 that sits at the intersection of practices, interpreted differently by
 each community but maintaining enough shared structure to enable
 coordination. The mutator reads it as "rules I must satisfy," the judge
@@ -43,7 +46,7 @@ reads it as "patterns I have confirmed." Same artifact, different
 frames, productive coordination.
 
 A BROKER (Wenger's term for the bridger) is necessary when boundary
-objects fail — when the practices have become so differentiated that
+objects fail, when the practices have become so differentiated that
 the shared artifact cannot carry the translation load. No evidence of
 that failure in the current system.
 
@@ -61,7 +64,7 @@ All four are covered. The bridger maps to interpretive spanning, which
 is real and valuable. But effective boundary spanners need EARNED
 CREDIBILITY in both practices through direct participation. An LLM
 agent prompted into both vocabularies has prompted participation,
-not earned participation — the McKinsey consultant failure mode.
+not earned participation, the McKinsey consultant failure mode.
 
 **Verdict: DEFER.** Real function, wrong mechanism. Wait for evidence
 of systematic miscommunication that artifact enrichment cannot fix.
@@ -78,8 +81,8 @@ Three failure modes of the bridger:
 
 2. **Narrative integration without testable claims.** The Inverter
    distinguishes Mode 1 (generate the doubt) from Mode 2 (convert to
-   test). The bridger would be all Mode 1 — "the mutator meant X, the
-   judge wanted Y, here is how to reconcile" — without any test for
+   test). The bridger would be all Mode 1, "the mutator meant X, the
+   judge wanted Y, here is how to reconcile", without any test for
    whether the reconciliation is substantive or cosmetic.
 
 3. **Unauditable interpretation layer.** The constraint ledger's
@@ -90,7 +93,7 @@ Three failure modes of the bridger:
 "You have replaced a gap you can observe with a gap you cannot observe."
 
 **Verdict: DON'T ADD.** The bridger collapses the generation-evaluation
-boundary that Paper 4 says is load-bearing. It directly contradicts
+boundary that Paper 4 says is decisive. It directly contradicts
 the paper's central claim.
 
 ### Karpathy (Practical ML)
@@ -124,7 +127,7 @@ Unanimous on the agent form; 4-to-1 on outright rejection (Tushman defers).
    compliant vs non-compliant response looks like.
 
 3. A probabilistic bridger inside the loop ERODES Paper 4's central claim.
-   The paper argues structural separation is load-bearing. A co-located
+   The paper argues structural separation is decisive. A co-located
    LLM that sees both proposals and evaluations is a U-Form seam in an
    M-Form architecture.
 
@@ -151,8 +154,8 @@ proposed:
 |-------|---------------------|
 | I-shaped specialists | Mutator (generation), Judge (evaluation) |
 | T-shaped (via artifacts) | Constraint ledger makes each specialist read the other's output |
-| Pi-shaped auditor | Inverter (GP-119) — deep in both + inversion |
-| Bridger | NOT a new agent — the constraint ledger IS the bridger |
+| Pi-shaped auditor | Inverter (GP-119), deep in both + inversion |
+| Bridger | NOT a new agent, the constraint ledger IS the bridger |
 
 The T-shaping happens through shared artifacts, not through agent
 capability. This is a structural solution: rather than requiring each
@@ -162,11 +165,11 @@ legible to the other through typed, deterministic channels.
 
 ## What to Implement
 
-1. **Extend GP-113 trigger scope** — fire on all gate failure types,
+1. **Extend GP-113 trigger scope**, fire on all gate failure types,
    not just PERSIST_GRAMMAR_EXHAUSTED. Medium priority.
    Location: `src/ztare/fit/diagnosis_feedback.py`
 
-2. **Add "constraint addressing" audit** — deterministic check: does
+2. **Add "constraint addressing" audit**, deterministic check: does
    the latest thesis mention each confirmed constraint's failure family?
    Surface un-addressed constraints prominently in the mutator prompt.
    Medium priority.
@@ -183,7 +186,7 @@ legible to the other through typed, deterministic channels.
 - [x] Alternative: three-step constraint ledger enrichment
 - [ ] Implement Step 1: extend GP-113 trigger scope
 - [ ] Implement Step 2: constraint addressing audit
-- [ ] Log in Paper 4 §7.3 (T-shaped/Pi-shaped framing — DONE)
+- [ ] Log in Paper 4 §7.3 (T-shaped/Pi-shaped framing, DONE)
 
 ---
 

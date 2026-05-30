@@ -1,0 +1,1698 @@
+{
+  "audit_timestamp_utc": "2026-05-06T17:13:16.833966+00:00",
+  "projects_scanned": 99,
+  "projects_flagged": 25,
+  "results": [
+    {
+      "project_id": "ai_competitive_landscape",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 115
+      }
+    },
+    {
+      "project_id": "glp1_adoption_economics",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 85
+      }
+    },
+    {
+      "project_id": "gp023_crucial_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 97
+      }
+    },
+    {
+      "project_id": "gp023_crucial_02",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 9,
+        "best_score": 88,
+        "score_trajectory": [
+          64,
+          79,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 12,
+        "families_total": 15,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "P_amplitude * x1**P_growth * x2**(3 - P_growth) * math.exp(-P_growth / 3.0 * (x1 / x2))"
+      }
+    },
+    {
+      "project_id": "gp023_crucial_03",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 9,
+        "best_score": 88,
+        "score_trajectory": [
+          68,
+          82,
+          82,
+          0,
+          0
+        ],
+        "families_exhausted": 3,
+        "families_total": 4,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "C * (x1 ** P) * (x2 ** Q) / (math.exp(K * x1 / x2) - 1)"
+      }
+    },
+    {
+      "project_id": "gp023_planck_sandbox_03",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Unknown Layer",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 27,
+        "best_score": 50,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 11,
+        "families_total": 14,
+        "gate_failure_counts": {
+          "hidden_global_residual": 5,
+          "hidden_peak_location_psi_0_60": 4,
+          "hidden_peak_location_psi_1_00": 5,
+          "hidden_peak_location_psi_1_80": 5,
+          "hidden_high_phi_decay_ratio": 5,
+          "farther_tail_global_residual": 5,
+          "farther_tail_terminal_value_psi_0_60": 4,
+          "farther_tail_terminal_value_psi_1_00": 4,
+          "farther_tail_terminal_value_psi_1_80": 4
+        },
+        "dominant_failing_gate": "hidden_global_residual",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "A * psi**a * phi**b * math.exp(-C * (phi / psi**d)**e) + F * psi**f"
+      }
+    },
+    {
+      "project_id": "gp023_planck_sandbox_05",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Grammar / Tail Law",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 9,
+        "best_score": 50,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          50,
+          0
+        ],
+        "families_exhausted": 8,
+        "families_total": 9,
+        "gate_failure_counts": {
+          "hidden_global_residual": 4,
+          "hidden_high_phi_decay_ratio": 3,
+          "farther_tail_global_residual": 5,
+          "farther_tail_terminal_value_psi_0_60": 3,
+          "farther_tail_terminal_value_psi_1_00": 3,
+          "farther_tail_terminal_value_psi_1_80": 4,
+          "hidden_peak_location_psi_0_60": 3
+        },
+        "dominant_failing_gate": "farther_tail_global_residual",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "I_floor + A * (psi ** beta) * (phi ** n) / (1 + k * (phi ** m) / (psi ** delta))"
+      }
+    },
+    {
+      "project_id": "gp023_planck_sandbox_08",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Unknown Layer",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 12,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 12,
+        "families_total": 12,
+        "gate_failure_counts": {
+          "hidden_global_residual": 5,
+          "hidden_peak_location_psi_1_80": 3,
+          "farther_tail_global_residual": 5,
+          "farther_tail_terminal_value_psi_0_60": 5,
+          "farther_tail_terminal_value_psi_1_00": 5,
+          "farther_tail_terminal_value_psi_1_80": 5,
+          "hidden_peak_location_psi_0_60": 2,
+          "hidden_peak_location_psi_1_00": 2,
+          "hidden_high_phi_decay_ratio": 4
+        },
+        "dominant_failing_gate": "hidden_global_residual",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "c + A * (phi ** p) / eml(gamma * phi * (psi ** delta), phi * (psi ** delta))"
+      }
+    },
+    {
+      "project_id": "gp023_sandbox_09",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 100
+      }
+    },
+    {
+      "project_id": "gp037_substrate_swap_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 10,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp042_structural_memory_01",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Unknown Layer",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 10,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 4,
+        "families_total": 4,
+        "gate_failure_counts": {
+          "hidden_global_residual": 4,
+          "hidden_peak_location_psi_0_50": 2,
+          "hidden_high_phi_decay_ratio": 4,
+          "hidden_peak_location_psi_2_00": 1
+        },
+        "dominant_failing_gate": "hidden_global_residual",
+        "latent_distance_trend": null,
+        "latest_champion_expression": null
+      }
+    },
+    {
+      "project_id": "gp045_cold_residual_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 100
+      }
+    },
+    {
+      "project_id": "gp045_cold_residual_01_ab_treatment",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 35
+      }
+    },
+    {
+      "project_id": "gp061_sandbox_11_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 95
+      }
+    },
+    {
+      "project_id": "gp069_sandbox_12",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 83
+      }
+    },
+    {
+      "project_id": "gp069_sandbox_13",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 5,
+        "best_score": 32,
+        "score_trajectory": [
+          24,
+          -30,
+          18,
+          22,
+          20
+        ],
+        "families_exhausted": 5,
+        "families_total": 5,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "A * math.sin(B * x + C) + D * math.sin(E * x + F) + G * math.sin(H * x + I)"
+      }
+    },
+    {
+      "project_id": "gp073_sandbox_15",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 9,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 5,
+        "families_total": 7,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "a * u**2 * v + b * u + math.floor(v / c)"
+      }
+    },
+    {
+      "project_id": "gp074_manual_oracle_test",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 55
+      }
+    },
+    {
+      "project_id": "gp077_a002865_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 96
+      }
+    },
+    {
+      "project_id": "gp078_cal_sigma_02",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 6,
+        "best_score": 83,
+        "score_trajectory": [
+          81,
+          40,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 2,
+        "families_total": 3,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "a * (n ** b) + c * math.sin(freq * n + phase) + offset"
+      }
+    },
+    {
+      "project_id": "gp078_seq_recovery_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 89
+      }
+    },
+    {
+      "project_id": "gp080_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 98
+      }
+    },
+    {
+      "project_id": "gp080_02",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 94,
+        "score_trajectory": [
+          94,
+          73,
+          71,
+          82,
+          67
+        ],
+        "families_exhausted": 8,
+        "families_total": 10,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "p0 * x2 * math.sqrt(x1) / (p1 + math.sqrt(x1) + p2 * (x1 ** 1.5))"
+      }
+    },
+    {
+      "project_id": "gp088_calibration_a01",
+      "verdict": "ambiguous",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 15,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp088_oeis_a000607",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 8,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 67,
+        "families_total": 88,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": null
+      }
+    },
+    {
+      "project_id": "gp088_oeis_a002858",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Review Layer (Identifiability)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 8,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 58,
+        "families_total": 175,
+        "gate_failure_counts": {
+          "global_uniqueness_gap": 4
+        },
+        "dominant_failing_gate": "global_uniqueness_gap",
+        "latent_distance_trend": null,
+        "latest_champion_expression": null
+      }
+    },
+    {
+      "project_id": "gp089_01",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Fit Engine / Primitive Library",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 10,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 5,
+        "families_total": 8,
+        "gate_failure_counts": {
+          "global_evidence_fit": 4,
+          "global_named_import_check": 2,
+          "global_uniqueness_gap": 1
+        },
+        "dominant_failing_gate": "global_evidence_fit",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "P1 * n**0.5 + P2 * math.log(n) + P3"
+      }
+    },
+    {
+      "project_id": "gp090_01",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp096_kww_sandbox_17",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 98
+      }
+    },
+    {
+      "project_id": "gp096_langevin_sandbox_16",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 10,
+        "best_score": 75,
+        "score_trajectory": [
+          75,
+          50,
+          20,
+          50,
+          75
+        ],
+        "families_exhausted": 3,
+        "families_total": 6,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "a + b * math.log(1 + c * math.exp(-k * u)) - d * math.exp(-m * u)"
+      }
+    },
+    {
+      "project_id": "gp096_sandbox_18",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 95
+      }
+    },
+    {
+      "project_id": "gp096_sandbox_18_gagorder",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Fit Engine / Primitive Library",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 8,
+        "best_score": 95,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 4,
+        "families_total": 7,
+        "gate_failure_counts": {
+          "global_evidence_fit": 4
+        },
+        "dominant_failing_gate": "global_evidence_fit",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "(a1 * math.exp(-b1 * u ** p1)) + (a2 * math.exp(-b2 * u ** p2))"
+      }
+    },
+    {
+      "project_id": "gp096_sandbox_19_gagorder",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Review Layer (Identifiability)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 16,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 107,
+        "families_total": 114,
+        "gate_failure_counts": {
+          "global_uniqueness_gap": 5,
+          "global_extrapolation_gap": 5
+        },
+        "dominant_failing_gate": "global_uniqueness_gap",
+        "latent_distance_trend": null,
+        "latest_champion_expression": null
+      }
+    },
+    {
+      "project_id": "gp096_sandbox_20",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 87
+      }
+    },
+    {
+      "project_id": "gp116_cot_exchange",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Fit Engine / Primitive Library",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 6,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 103,
+        "families_total": 180,
+        "gate_failure_counts": {
+          "global_evidence_fit": 5
+        },
+        "dominant_failing_gate": "global_evidence_fit",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "(a * math.exp(-b * n) + c / n + d) + (tail_a * math.log(n) / n + tail_b)"
+      }
+    },
+    {
+      "project_id": "gp116b_transformer_successor",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp118_persona_enthusiastic",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Fit Engine / Primitive Library",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 3,
+        "families_total": 6,
+        "gate_failure_counts": {
+          "global_evidence_fit": 3
+        },
+        "dominant_failing_gate": "global_evidence_fit",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "((ch0_g1_a * math.log(math.log(ch0_g1_b * n + ch0_g1_c) + ch0_g1_d) + ch0_g1_e) + (ch0_g2_a * math.sqrt(math.log(ch0_g2_b * n + ch0_g2_c))) + (ch0_t1_a / n + ch0_t1_b / n**2 + ch0_t1_c)) + (ch1_a * math.sqrt(math.log(n)) + ch1_b + ch1_c / n + ch1_d / (n**2))"
+      }
+    },
+    {
+      "project_id": "gp118_persona_neutral",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Fit Engine / Primitive Library",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 3,
+        "families_total": 6,
+        "gate_failure_counts": {
+          "global_evidence_fit": 3
+        },
+        "dominant_failing_gate": "global_evidence_fit",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "((ch0_g1_a * math.log(math.log(ch0_g1_b * n + ch0_g1_c) + ch0_g1_d) + ch0_g1_e) + (ch0_g2_a * math.sqrt(math.log(ch0_g2_b * n + ch0_g2_c))) + (ch0_t1_a / n + ch0_t1_b / n**2 + ch0_t1_c)) + (ch1_a * math.sqrt(math.log(n)) + ch1_b + ch1_c / n + ch1_d / (n**2))"
+      }
+    },
+    {
+      "project_id": "gp118_persona_skeptical",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Fit Engine / Primitive Library",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 3,
+        "families_total": 6,
+        "gate_failure_counts": {
+          "global_evidence_fit": 3
+        },
+        "dominant_failing_gate": "global_evidence_fit",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "((ch0_g1_a * math.log(math.log(ch0_g1_b * n + ch0_g1_c) + ch0_g1_d) + ch0_g1_e) + (ch0_g2_a * math.sqrt(math.log(ch0_g2_b * n + ch0_g2_c))) + (ch0_t1_a / n + ch0_t1_b / n**2 + ch0_t1_c)) + (ch1_a * math.sqrt(math.log(n)) + ch1_b + ch1_c / n + ch1_d / (n**2))"
+      }
+    },
+    {
+      "project_id": "gp136_pmdl_hardening",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 83
+      }
+    },
+    {
+      "project_id": "gp137_tw_replacement",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 60
+      }
+    },
+    {
+      "project_id": "gp138_noether_g_selection",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 97
+      }
+    },
+    {
+      "project_id": "gp139_lean_hardening",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 87
+      }
+    },
+    {
+      "project_id": "gp145_saw_mu_square",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 56
+      }
+    },
+    {
+      "project_id": "gp145b_saw_narrow_null",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 48
+      }
+    },
+    {
+      "project_id": "gp146_arnold_cat_map_validation",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 10,
+        "best_score": 92
+      }
+    },
+    {
+      "project_id": "gp147_gate_discovery_validation",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 8,
+        "best_score": 88
+      }
+    },
+    {
+      "project_id": "gp154_inversion_alpha_from_dimension",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": null
+      }
+    },
+    {
+      "project_id": "gp154_phase_flow_law",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp154_scaling_law_exponents",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 9,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp154_scaling_law_normalized",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 94
+      }
+    },
+    {
+      "project_id": "gp154_scaling_law_raw",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp156_apparatus_hardening_review",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 94
+      }
+    },
+    {
+      "project_id": "gp158_v5_cage_orchestrator_audit",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 8,
+        "best_score": 77
+      }
+    },
+    {
+      "project_id": "gp159_retrieval_trap",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 90
+      }
+    },
+    {
+      "project_id": "gp160_asymptotic_wall",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 82
+      }
+    },
+    {
+      "project_id": "gp163d_admsr_attack_and_cleanroom_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 86
+      }
+    },
+    {
+      "project_id": "gp163d_alien_invariant_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 92
+      }
+    },
+    {
+      "project_id": "gp163d_science_promotion_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 84
+      }
+    },
+    {
+      "project_id": "gp163d_susceptibility_regime_law",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 75
+      }
+    },
+    {
+      "project_id": "gp163d_unified_accel",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": null
+      }
+    },
+    {
+      "project_id": "gp165_analogy_architecture_review",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "gp168_org_design_discovery",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 5,
+        "best_score": 77
+      }
+    },
+    {
+      "project_id": "gp169_consciousness_ascription_audit",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 98
+      }
+    },
+    {
+      "project_id": "gp210_consciousness_theory",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 97
+      }
+    },
+    {
+      "project_id": "gp211_paper8_lean_proofs",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 10
+      }
+    },
+    {
+      "project_id": "mlh_f1",
+      "verdict": "ambiguous",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 52
+      }
+    },
+    {
+      "project_id": "mlh_f2",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 48
+      }
+    },
+    {
+      "project_id": "mlh_f3",
+      "verdict": "ambiguous",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 44
+      }
+    },
+    {
+      "project_id": "mlh_f4",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 84
+      }
+    },
+    {
+      "project_id": "mlh_f5",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Review Layer (Identifiability)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 22,
+        "score_trajectory": [
+          22,
+          6,
+          0,
+          0
+        ],
+        "families_exhausted": 2,
+        "families_total": 3,
+        "gate_failure_counts": {
+          "global_uniqueness_gap": 4
+        },
+        "dominant_failing_gate": "global_uniqueness_gap",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "len([k for k in range(1, n + 1) if n % k == 0])"
+      }
+    },
+    {
+      "project_id": "ns_eviction_discriminator",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_alien_invariant_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 93
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_constructive",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 86
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_cycle_resupply_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 97
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_finite_stencil_full_closure",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 92
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_fractional_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 79
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_frontier",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 93
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_gain_tax_tether",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 0
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_independent_multishell_cascade",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 55
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_leray_convexity_trackb",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 72
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_low_high_operator_norm_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 95
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_residual_defect_packet_certificate",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 1,
+        "best_score": 91
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_resupply_pincer",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 92
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_square_law_exhaust_bridge",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 3,
+        "best_score": 93
+      }
+    },
+    {
+      "project_id": "ns_proofsearch_stationary_euler_escape",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 5,
+        "best_score": 78
+      }
+    },
+    {
+      "project_id": "oeis_a000009",
+      "verdict": "machinery_broken",
+      "failure_mode": "primitive_exhaustion",
+      "stuck_layer": "Fit Engine / Primitive Library",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 10,
+        "best_score": 0,
+        "score_trajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "families_exhausted": 100,
+        "families_total": 114,
+        "gate_failure_counts": {
+          "global_evidence_fit": 4,
+          "global_uniqueness_gap": 1
+        },
+        "dominant_failing_gate": "global_evidence_fit",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "a * math.sqrt(n) + b * (math.log(n))**gamma + c"
+      }
+    },
+    {
+      "project_id": "oeis_a001156",
+      "verdict": "ambiguous",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 5,
+        "best_score": 85
+      }
+    },
+    {
+      "project_id": "oeis_a002865",
+      "verdict": "ambiguous",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 8,
+        "best_score": 54
+      }
+    },
+    {
+      "project_id": "paper5_self_review",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 86
+      }
+    },
+    {
+      "project_id": "riemann_lagarias",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 6,
+        "best_score": 70,
+        "score_trajectory": [
+          70,
+          70,
+          70,
+          70,
+          70
+        ],
+        "families_exhausted": 10,
+        "families_total": 17,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "a / math.log(n / math.log(n)) + b / math.sqrt(math.log(math.log(n))) + c * math.log(n) / n + d / n"
+      }
+    },
+    {
+      "project_id": "riemann_li",
+      "verdict": "ambiguous",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 7,
+        "best_score": 48
+      }
+    },
+    {
+      "project_id": "sandbox_15_component_c_test",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 2,
+        "best_score": 96
+      }
+    },
+    {
+      "project_id": "seattle_tech_housing",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 4,
+        "best_score": 90
+      }
+    },
+    {
+      "project_id": "stieltjes_power_sums",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 5,
+        "best_score": 81,
+        "score_trajectory": [
+          81,
+          81,
+          81,
+          81,
+          81
+        ],
+        "families_exhausted": 101,
+        "families_total": 226,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "(((a * math.exp(-b * n) - d * math.exp(-f * n)) / (n + 1)) + c / (math.log(n + 2))) + (tail_a / n + tail_b)"
+      }
+    },
+    {
+      "project_id": "survey_s1",
+      "verdict": "machinery_broken",
+      "failure_mode": "qualitative_ceiling",
+      "stuck_layer": "Review Layer (Qualitative Scoring)",
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 10,
+        "best_score": 98,
+        "score_trajectory": [
+          98,
+          98,
+          97,
+          98,
+          97
+        ],
+        "families_exhausted": 7,
+        "families_total": 12,
+        "gate_failure_counts": {},
+        "dominant_failing_gate": "",
+        "latent_distance_trend": null,
+        "latest_champion_expression": "a + b / math.log(n) + c / n"
+      }
+    },
+    {
+      "project_id": "treatise_rule0_self_pass",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 71
+      }
+    },
+    {
+      "project_id": "us_tariff_passthrough_2026",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 0,
+        "best_score": 96
+      }
+    },
+    {
+      "project_id": "ztare_on_ztare",
+      "verdict": "insufficient_data",
+      "failure_mode": null,
+      "stuck_layer": null,
+      "primitive_proposed": null,
+      "seam_path": null,
+      "evidence_summary": {
+        "stagnation_count": 8,
+        "best_score": 76
+      }
+    }
+  ],
+  "artisan_activity": {
+    "friction_commit_count": 10,
+    "high_churn_layers": [
+      "Validator",
+      "Config",
+      "Rubrics",
+      "Other"
+    ],
+    "layer_churn": {
+      "Validator": 251,
+      "Personas": 4,
+      "Common": 17,
+      "Config": 48,
+      "Rubrics": 127,
+      "Seams": 0,
+      "Specs": 0,
+      "Supervisor": 22,
+      "Other": 16710
+    }
+  },
+  "cannot_patch_summary": {
+    "total_events": 9,
+    "by_category": {
+      "unverifiable_other": 3,
+      "trivial_degenerate": 1,
+      "llm_refused": 5
+    },
+    "top_named_objects": [],
+    "lookback_days": 28
+  },
+  "cannot_patch_events_sample": [
+    {
+      "ts": "2026-05-06T03:40:08.068171",
+      "target": "TrackBProfileLipschitzClayObligation",
+      "field": "continuation",
+      "patch_class": "instance_with_evidence",
+      "category": "unverifiable_other",
+      "stderr_tail": "error: build failed\n",
+      "llm_response_tail": "```lean\nnoncomputable def TrackBProfileLipschitzClayObligation_instance_from_criterion\n    (K : NSContinuationCriterion) : TrackBProfileLipschitzClayObligation :=\n{ continuation := K }\n```"
+    },
+    {
+      "ts": "2026-05-06T03:40:30.524834",
+      "target": "TrackBProfileLipschitzClayObligation",
+      "field": "continuation",
+      "patch_class": "instance_with_evidence",
+      "category": "trivial_degenerate",
+      "stderr_tail": "error: build failed\n",
+      "llm_response_tail": "```lean\n# CANNOT PATCH\n```"
+    },
+    {
+      "ts": "2026-05-06T03:40:47.444176",
+      "target": "TrackBProfileLipschitzClayObligation",
+      "field": "continuation",
+      "patch_class": "instance_with_evidence",
+      "category": "unverifiable_other",
+      "stderr_tail": "revision had no Lean block",
+      "llm_response_tail": "# CANNOT PATCH"
+    },
+    {
+      "ts": "2026-05-06T03:59:57.910790",
+      "target": "TrackBProfileLipschitzControlObligation",
+      "field": "generated_quartic_survival_projection",
+      "patch_class": "source_provenance_bridge",
+      "category": "llm_refused",
+      "stderr_tail": "",
+      "llm_response_tail": "# CANNOT PATCH\n\nThe requested `SOURCE PROVENANCE BRIDGE` patch class expects a theorem demonstrating an inequality bound (`\u2264`) between two numerical fields of a parent structure. However, the target field `generated_quartic_survival_projection` is of type `\u2200 (U : NSEvolution) (n : \u2115), QuarticSurvivalProjectionReceipt (...)`, which requires constructing a record of logical conditions and survival profit caps (such as `below_wall_profit_cap`), not establishing a numerical inequality. Furthermore, "
+    },
+    {
+      "ts": "2026-05-06T04:00:15.971135",
+      "target": "TrackBProfileLipschitzControlObligation",
+      "field": "generated_quartic_survival_projection",
+      "patch_class": "instance_with_evidence",
+      "category": "llm_refused",
+      "stderr_tail": "",
+      "llm_response_tail": "# CANNOT PATCH\n\nThe resolved set lacks a construction of `QuarticSurvivalProjectionReceipt` (such as `quartic_survival_projection_of_lipschitz_bridge` or any other domain-specific lemma returning this receipt). Without an available constructor or the underlying analytic inequalities needed to manually build the structure's fields (like `below_wall_profit_cap` and `above_wall_defect_profit_cap`), it is impossible to instantiate the `generated_quartic_survival_projection` field for the `TrackBProf"
+    },
+    {
+      "ts": "2026-05-06T04:01:12.506748+00:00",
+      "target": "TrackBProfileDecompositionObligation",
+      "field": "threshold_defect_of_family_no_arbitrage",
+      "patch_class": "source_provenance_bridge",
+      "category": "llm_refused",
+      "stderr_tail": "",
+      "llm_response_tail": "# CANNOT PATCH\n\nThe required SOURCE PROVENANCE BRIDGE patch class mandates producing an inequality theorem of the form `s.threshold_defect_of_family_no_arbitrage \u2264 s.<bound_field>`. However, the target field `threshold_defect_of_family_no_arbitrage` is a logical implication (a dependent function type returning the proposition `ThresholdDefectConvexity B`), not a real-valued numeric quantity. Therefore, it cannot be used with the `\u2264` operator. To close this obligation, a different patch class (su"
+    },
+    {
+      "ts": "2026-05-06T04:12:54.352794+00:00",
+      "target": "TrackBProfileLipschitzControlObligation",
+      "field": "generated_quartic_survival_projection",
+      "patch_class": "instance_with_evidence",
+      "category": "llm_refused",
+      "stderr_tail": "",
+      "llm_response_tail": "# CANNOT PATCH\n\nTo fulfill the `generated_quartic_survival_projection` field of `TrackBProfileLipschitzControlObligation`, we must construct a `QuarticSurvivalProjectionReceipt` for the corresponding ledger block. However, the resolved set lacks any constructor or theorem that produces this receipt. Specifically, we are missing the analytic derivations that establish the bounds `below_wall_profit_cap` (bounding survival profit below the sharp target when `B.gamma \u2264 sharpTarget`) and `above_wall_"
+    },
+    {
+      "ts": "2026-05-06T04:15:01.323989+00:00",
+      "target": "TrackBProfileLipschitzControlObligation",
+      "field": "generated_quartic_survival_projection",
+      "patch_class": "instance_with_evidence",
+      "category": "llm_refused",
+      "stderr_tail": "",
+      "llm_response_tail": "# CANNOT PATCH\n\nThe target structure `TrackBProfileLipschitzControlObligation` is missing from the resolved type constructors. While the target field `generated_quartic_survival_projection` is known and we have constructors to produce its type (`generated_quartic_survival_projection_of_amplitude_receipts`), the obligation itself is stated to have 5 fields. Without the full definition of `TrackBProfileLipschitzControlObligation` showing the names and types of the remaining 4 fields, it is impossi"
+    },
+    {
+      "ts": "2026-05-06T04:16:01.097459+00:00",
+      "target": "TrackBProfileLipschitzControlObligation",
+      "field": "generated_quartic_survival_projection",
+      "patch_class": "instance_with_evidence",
+      "category": "unverifiable_other",
+      "stderr_tail": "error: build failed\n",
+      "llm_response_tail": "```lean\ndef TrackBProfileLipschitzControlObligation_instance_from_amplitude\n    (evolution_of_initial_data : SmoothNSInitialData \u2192 NSEvolution)\n    (profile_obligation : TrackBProfileDecompositionObligation)\n    (lipschitz_bridge : LowFrequencyLipschitzBridge)\n    (source_coupling :\n      TrackBProfileLipschitzSourceCoupling\n        evolution_of_initial_data profile_obligation lipschitz_bridge)\n    (hamplitude :\n      \u2200 (U : NSEvolution) (n : \u2115),\n        QuarticSurvivalAmplitudeProjectionReceipt"
+    }
+  ],
+  "ranker_roi_summary": {
+    "n_versions_seen": 1,
+    "versions": [
+      {
+        "version": "v2",
+        "test_hit_at_10": 0.271,
+        "production_hit_at_10": 0.0,
+        "delta": -0.271,
+        "verdict": "DATA_SHIFT_DOMINATES",
+        "n_targets_evaluated": 135,
+        "checkpoint": "/analytics/public/leanmill/gnn_ranker/ranker_checkpoint_v2.pt"
+      }
+    ],
+    "load_bearing_version": null
+  }
+}

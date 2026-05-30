@@ -1,6 +1,6 @@
 # Seams — Findings Track
 
-This folder is the **findings ledger**. It is a distinct track from V4 kernel hardening, and the distinction is load-bearing.
+This folder is the **findings ledger**. It is a distinct track from V4 kernel hardening, and the distinction is decisive.
 
 ## Two tracks, one repo
 
@@ -58,7 +58,7 @@ Examples:
 
 ## Visibility rule (public vs private)
 
-A seam can live in this folder (`research_areas/seams/`, public, tracked in git) **or** in `research_areas/private/seams/` (gitignored). The choice is mechanical:
+A seam can live in this folder (`research_areas/seams/`, public, tracked in git) **or** in `[internal-ref]` (gitignored). The choice is mechanical:
 
 A seam stays public only if **all three** hold:
 
@@ -66,11 +66,11 @@ A seam stays public only if **all three** hold:
 2. **No exploit content.** The seam does not name a concrete attack pattern, laundering exploit, judge-softening recipe, or reframing trick that an LLM could learn to execute by reading it.
 3. **No first-mover IP.** The seam does not describe a product surface, methodology primitive, observability metric, or detection technique whose value depends on being first to implement it. (Pure ergonomics with no IP value — e.g. a compile-cache lane — are public.)
 
-Failing **any one** of the three → the seam belongs in `research_areas/private/seams/`. The move is the visibility event: there is no frontmatter toggle, no symlink, no dual-location file. One seam, one place.
+Failing **any one** of the three → the seam belongs in `[internal-ref]`. The move is the visibility event: there is no frontmatter toggle, no symlink, no dual-location file. One seam, one place.
 
 When a private seam ships and crosses into `verify`/`closed`, do **two things at the same moment**:
 
-1. Move the seam file from `research_areas/private/seams/` to `research_areas/seams/`.
+1. Move the seam file from `[internal-ref]` to `research_areas/seams/`.
 2. Promote its row from the private board mirror (`research_areas/ZTARE_BOARD.md`) to the public board (`research_areas/ZTARE_BOARD.md`).
 
 The two boards are paired: the private mirror is the canonical full-detail view, the public board is a sanitized subset. New seams open in whichever location their visibility classification puts them, and their row goes on whichever board matches.

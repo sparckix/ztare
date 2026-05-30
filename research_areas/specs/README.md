@@ -14,9 +14,9 @@ When in doubt, default private.
 Layout:
 
 - `research_areas/specs/active/`
-- `research_areas/specs/archive/`
-- `research_areas/private/specs/active/`
-- `research_areas/private/specs/archive/`
+- `research_areas/specs/_archive/`
+- `research_areas/[redacted]`
+- `research_areas/[redacted]`
 
 Naming rule:
 
@@ -29,4 +29,20 @@ Examples:
 
 Formatting is governed by:
 
-- `research_areas/private/kernel/ztare_spec_format.md`
+- `research_areas/[redacted]`
+
+<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py, edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`active/`](active/), 57 file(s)
+- [`archive/`](archive/), 0 file(s)
+
+**Documents**
+
+- [paper4_drafting_paper_outline_prose_spec.json](paper4_drafting_paper_outline_prose_spec.json)
+
+<sub>2 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

@@ -1,4 +1,7 @@
-# GP-119 — The Missing Third Role: Mechanizing the Inverter
+# GP-119, The Missing Third Role: Mechanizing the Inverter
+
+> **Seam metadata** · `seam_id:` GP-119 · `track:` apparatus · `status:` OPEN · `last_updated:` 2026-05-17
+
 
 **Status:** OPEN
 **Opened:** 2026-04-22

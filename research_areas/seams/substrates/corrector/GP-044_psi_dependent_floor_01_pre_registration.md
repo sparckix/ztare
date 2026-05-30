@@ -1,4 +1,7 @@
-# GP-044 Psi-Dependent Floor Verifier 01 — Pre-Registration
+# GP-044 Psi-Dependent Floor Verifier 01, Pre-Registration
+
+> **Seam metadata** · `seam_id:` GP-044 · `track:` substrates · `status:` Sealed 2026-04-12 18:00:12 EDT. · `last_updated:` 2026-05-17
+
 
 ## Status
 

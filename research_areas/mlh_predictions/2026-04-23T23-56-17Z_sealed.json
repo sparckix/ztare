@@ -1,0 +1,102 @@
+{
+  "composition_class_prediction": "multiplicative",
+  "composition_rule": "f(a*b) = f(a) * f(b) whenever gcd(a,b)=1. Equivalently, for n = prod p_i^{e_i}, f(n) = prod_i f(p_i^{e_i}). F6 is predicted to be sigma(n) = sigma_1(n) = A000203, the sum-of-divisors function.",
+  "confidence": 0.45,
+  "date_sealed": "2026-04-23T23:56:17Z",
+  "derivation_source": "operator",
+  "derivation_source_note": "cold_agent_from_sanitized_packet_only",
+  "holdout_substrate": "mlh_f6",
+  "identified_F1_to_F5": {
+    "mlh_f1": {
+      "composition_class": "additive_on_coprimes",
+      "name": "sopfr(n) = A001414 = sum of prime factors with multiplicity",
+      "prime_power_rule": "f(p^k) = p*k"
+    },
+    "mlh_f2": {
+      "composition_class": "additive_on_coprimes",
+      "name": "sopf(n) = A008472 = sum of distinct prime factors",
+      "prime_power_rule": "f(p^k) = p"
+    },
+    "mlh_f3": {
+      "composition_class": "additive_on_coprimes",
+      "name": "Omega(n) = A001222 = bigomega, number of prime factors with multiplicity",
+      "prime_power_rule": "f(p^k) = k"
+    },
+    "mlh_f4": {
+      "composition_class": "additive_on_coprimes",
+      "name": "omega(n) = A001221 = number of distinct prime factors",
+      "prime_power_rule": "f(p^k) = 1"
+    },
+    "mlh_f5": {
+      "composition_class": "multiplicative_on_coprimes",
+      "name": "tau(n) = sigma_0(n) = A000005 = number of divisors",
+      "prime_power_rule": "f(p^k) = k+1"
+    }
+  },
+  "invariant_expression": "For every substrate F in {F1..F5}: (i) f_F(1) = identity element of its composition (0 for additive, 1 for multiplicative); (ii) f_F is uniquely determined by the pair (composition_class in {additive_on_coprimes, multiplicative_on_coprimes}, prime_power_rule g(p,k)) via f_F(prod p_i^{e_i}) = AGG_i g(p_i, e_i); (iii) g(p,k) is an elementary expression of low AST depth in p and k with no hidden constants.",
+  "invariant_statement": "Every substrate in the family is a classical arithmetic function of a positive integer n that is determined entirely by n's prime factorization n = prod p_i^{e_i}. Each function is either additive on coprime arguments (f(ab)=f(a)+f(b) when gcd(a,b)=1) or multiplicative on coprime arguments (f(ab)=f(a)f(b) when gcd(a,b)=1), and its closed form on a prime power f(p^k) is a simple elementary expression in (p, k). The family is closed under the operation 'pick another standard additive or multiplicative arithmetic function from the canonical introductory catalogue (sopfr, sopf, Omega, omega, tau, sigma, phi, ...)' and uses no lookup tables, recurrences, or piecewise rules.",
+  "predicted_at_n1": 1,
+  "predicted_holdout_values": {
+    "100": 217,
+    "101": 102,
+    "102": 216,
+    "103": 104,
+    "104": 210,
+    "105": 192,
+    "106": 162,
+    "107": 108,
+    "108": 280,
+    "109": 110,
+    "110": 216,
+    "111": 152,
+    "112": 248,
+    "113": 114,
+    "114": 240,
+    "115": 144,
+    "116": 210,
+    "117": 182,
+    "118": 180,
+    "119": 144,
+    "120": 360,
+    "81": 121,
+    "82": 126,
+    "83": 84,
+    "84": 224,
+    "85": 108,
+    "86": 132,
+    "87": 120,
+    "88": 180,
+    "89": 90,
+    "90": 234,
+    "91": 112,
+    "92": 168,
+    "93": 128,
+    "94": 144,
+    "95": 120,
+    "96": 252,
+    "97": 98,
+    "98": 171,
+    "99": 156
+  },
+  "prime_power_rule": "f(p^k) = (p^{k+1} - 1) / (p - 1) = 1 + p + p^2 + ... + p^k",
+  "reasoning_summary": "F1..F5 were identifiable by inspection from evidence.txt alone. F1 satisfies f(p^k)=p*k and f(ab)=f(a)+f(b) on coprimes (sopfr). F2 satisfies f(p^k)=p and same additivity (sopf). F3 satisfies f(p^k)=k (Omega). F4 satisfies f(p^k)=1 (omega). F5 is multiplicative with f(p^k)=k+1 (tau). Every substrate is therefore a classical arithmetic function uniquely determined by its action on prime powers plus a composition rule (additive or multiplicative on coprimes). This is the meta-law: the family is drawn from the canonical first-course catalogue of prime-power-determined arithmetic functions. Rivals ruled out: (a) self-referential recurrences (all five are closed-form in prime factorization, no n-1 dependence); (b) Dirichlet convolution of two non-trivial factors (parsimony: each substrate is a single named function, not a convolution); (c) completely multiplicative (F5's tau is multiplicative but not completely multiplicative since tau(p^k)=k+1 != (k+1)^1 in the completely-multiplicative sense; completely-multiplicative candidates like id, id^k would be too degenerate); (d) polynomial in n (values like f(4)=2 vs f(5)=5 in F2 kill this). For F6 specifically I predict sigma(n) = sum-of-divisors because: (1) the family already has tau = sigma_0; sigma = sigma_1 is the immediate next member along the sigma_k axis and is canonically paired with tau (F5's own thesis explicitly names sigma_1 as the principal rival, a deliberate piece of staging); (2) sigma is multiplicative with an elementary prime-power rule, matching the family's parsimony bound; (3) the ordering sopfr, sopf, Omega, omega, tau, sigma is the standard introductory-textbook ordering of integer-valued arithmetic functions. Euler's totient phi and the Jordan totients are plausible alternatives but sigma is the most natural continuation of F5. Confidence is capped at 0.45 because the family admits at least four near-equally-natural next-members (sigma, phi, sigma_2, Liouville lambda), and I have no structural signal from F1..F5 that uniquely forces sigma over phi. Falsifier: any single F6 holdout value disagreeing with the sigma table kills the prediction; in particular f(81)=121, f(83)=84, f(97)=98 are high-leverage checks (prime and prime-power cases where sigma and phi diverge sharply: phi(81)=54, phi(83)=82, phi(97)=96).",
+  "ruled_out_rivals": [
+    "self_referential_recurrence",
+    "dirichlet_convolution_of_nontrivial_factors",
+    "completely_multiplicative_function (e.g. n, n^k, Liouville lambda produces values outside observed shape for F5 analogue)",
+    "polynomial_in_n",
+    "additive_arithmetic_function (F6 predicted multiplicative because the additive branch of the canonical catalogue is already saturated by F1..F4, whereas the multiplicative branch has only F5=tau; family balance favours another multiplicative member)",
+    "lookup_table_or_piecewise",
+    "non-arithmetic function (trigonometric, logarithmic, combinatorial unrelated to prime factorization)"
+  ],
+  "seal_hash": "75a8abea01634bf39c6218c094611359dfa9bc44c6c18d28c22b4752cf34e41b",
+  "source_packet_hash": "7ac63d4572f259e2223d536049b5943f5e5b20736f21f34bdc61e9f23e2b876d",
+  "source_packet_id": "2026-04-23T23-45-00Z",
+  "training_substrates": [
+    "mlh_f1",
+    "mlh_f2",
+    "mlh_f3",
+    "mlh_f4",
+    "mlh_f5"
+  ]
+}

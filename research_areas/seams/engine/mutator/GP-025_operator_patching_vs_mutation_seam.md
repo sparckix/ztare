@@ -1,5 +1,8 @@
 # GP-025 Operator Patching vs. Mutation Discipline Seam
 
+> **Seam metadata** · `seam_id:` GP-025 · `track:` engine · `status:` Closed, 2026-04-14. Operator patching discipline rule is now · `last_updated:` 2026-05-17
+
+
 ## Problem Snapshot
 
 ZTARE is built to mutate and stress-test theses under adversarial pressure. But in live use, the operator and assisting models can also manually patch the thesis file after a score arrives.
@@ -30,7 +33,7 @@ Some of these are clearly compatible with ZTARE. Some are much closer to overrid
 
 ## Debate Log
 
-### Turn 1 — Operator position
+### Turn 1, Operator position
 
 The operator surfaced the core objection directly:
 
@@ -38,7 +41,7 @@ The operator surfaced the core objection directly:
 - if the operator keeps repairing the thesis after every score, the loop becomes partly artisanal again
 - that undermines what the engine is supposed to demonstrate
 
-### Turn 2 — Why this is not trivial
+### Turn 2, Why this is not trivial
 
 There is a real boundary problem here.
 
@@ -52,7 +55,7 @@ Not all manual edits are equal:
 
 So “never edit anything manually” is too broad, but “manual patching is always fine” is clearly wrong.
 
-### Turn 3 — The FIGS lesson
+### Turn 3, The FIGS lesson
 
 The FIGS rerun clarifies the line:
 
@@ -61,7 +64,7 @@ The FIGS rerun clarifies the line:
 
 That means the real seam is phase discipline, not a total ban.
 
-### Turn 4 — Candidate policy shapes
+### Turn 4, Candidate policy shapes
 
 Three plausible policies exist:
 
@@ -79,7 +82,7 @@ Three plausible policies exist:
      - or after an explicit phase reset / new regime declaration
    - once a project is in active scored iteration, improvements should come through the mutator, not artisanal rewriting
 
-### Turn 5 — Current conclusion
+### Turn 5, Current conclusion
 
 Option 3 is the right discipline.
 
@@ -100,4 +103,4 @@ That keeps ZTARE from becoming a hidden co-writing loop while preserving legitim
 
 ## Status
 
-Closed — 2026-04-14. Operator patching discipline rule is now in AGENTS.md §7 (do not artisanally patch a running loop; improvements come through the mutator). Standing rule covers the original problem. Stale-active status corrected on visibility audit.
+Closed, 2026-04-14. Operator patching discipline rule is now in AGENTS.md §7 (do not artisanally patch a running loop; improvements come through the mutator). Standing rule covers the original problem. Stale-active status corrected on visibility audit.

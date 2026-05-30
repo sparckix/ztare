@@ -41,7 +41,7 @@ Broad non-V4 projects may need strong basin-escape heuristics. Narrow kernel tra
 
 ## Options
 
-### Option A — Keep The Monolith
+### Option A, Keep The Monolith
 
 **Description**
 
@@ -62,7 +62,7 @@ Leave the old prompt as-is for non-V4 projects.
 
 Too blunt.
 
-### Option B — Retire The Pivot Entirely
+### Option B, Retire The Pivot Entirely
 
 **Description**
 
@@ -82,7 +82,7 @@ Remove the pivot path and rely only on narrow mutation discipline.
 
 Wrong.
 
-### Option C — Reusable Heuristic Profiles
+### Option C, Reusable Heuristic Profiles
 
 **Description**
 
@@ -133,18 +133,18 @@ Phase 1:
 
 Phase 1.5 (2026-04-10 optimization-overshoot correction):
 
-- `bounded_discriminator` expanded from 5 modules to 9 after GP-023 scoping surfaced that the first-slice trim had dropped three load-bearing heuristics and was missing the `interface_discipline` guardrail
+- `bounded_discriminator` expanded from 5 modules to 9 after GP-023 scoping surfaced that the first-slice trim had dropped three decisive heuristics and was missing the `interface_discipline` guardrail
 - new `bounded_discriminator` profile (canonical order):
-  - `state_incompatibility` (restored — basin-escape under hard constraint)
+  - `state_incompatibility` (restored, basin-escape under hard constraint)
   - `primary_degree_of_freedom`
   - `failure_topology`
-  - `entropy_stripping` (restored — aligned with bounded-disc goal)
-  - `dimensional_shift` (restored — orthogonal shock; GP-023 hinge)
+  - `entropy_stripping` (restored, aligned with bounded-disc goal)
+  - `dimensional_shift` (restored, orthogonal shock; GP-023 hinge)
   - `reciprocal_variable`
   - `success_liability`
   - `back_pressure`
   - `interface_discipline` (added as guardrail)
-- `adversarial_stress_test` and `coercive_leverage` stay out (correctly dropped — domain-specific)
+- `adversarial_stress_test` and `coercive_leverage` stay out (correctly dropped, domain-specific)
 - the genius pairing: `dimensional_shift` + `interface_discipline` together force paradigm-exploration without ontology drift
 - full reasoning in seam Debate Log Turn 6
 

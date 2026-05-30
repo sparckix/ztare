@@ -1,4 +1,7 @@
-# GP-124 — Process Compression: Measuring Dynamics, Not Products
+# GP-124, Process Compression: Measuring Dynamics, Not Products
+
+> **Seam metadata** · `seam_id:` GP-124 · `track:` apparatus · `status:` OPEN · `last_updated:` 2026-05-17
+
 
 **Status:** OPEN
 **Opened:** 2026-04-22
@@ -60,7 +63,7 @@ static observable. Process compression requires a second-order
 instrument: compress z(n, t) where t is a dynamics parameter
 (training step, or correlation order).
 
-The gap is 2D substrate support — ZTARE currently handles 1D
+The gap is 2D substrate support, ZTARE currently handles 1D
 substrates (n → z). Process compression needs 2D (n, t → z) or
 the ability to compress a FAMILY of 1D curves indexed by t.
 

@@ -1,0 +1,125 @@
+{
+  "generated_at": "2026-04-23T20:44:30Z",
+  "packet_id": "2026-04-23T20-44-30Z",
+  "packet_hash": "d25256832c8224358e0dc77fd4b7a29a7362f9dcdc0763dd5c5ed18027481958",
+  "packet_dir": "/tmp/2026-04-23T20-44-30Z_mlh_prediction_packet",
+  "open_substrates": [
+    "mlh_f1",
+    "mlh_f2",
+    "mlh_f3",
+    "mlh_f4",
+    "mlh_f5"
+  ],
+  "files": [
+    {
+      "relative_path": "README.md",
+      "sha256": "0be02dba6575475bfcd9a4528a9b81ed0ddc90667a0172dfa38b7c240927f27f",
+      "bytes": 510
+    },
+    {
+      "relative_path": "docs/mlh_family_protocol.md",
+      "sha256": "a89959944fe75f1160959b771a1f2e4ea881964125c1fc081752f6ec054eb4e5",
+      "bytes": 8171
+    },
+    {
+      "relative_path": "projects/mlh_f1/evidence.txt",
+      "sha256": "98b48e104bd14e055dcf91dc17f113e5763fe6578f050727f0525f71552aed67",
+      "bytes": 619
+    },
+    {
+      "relative_path": "projects/mlh_f1/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f1/thesis.md",
+      "sha256": "1f627cc2a49e6ae250121f1c71c3493cd49303fc2fefb245715af4e427f40f8b",
+      "bytes": 562
+    },
+    {
+      "relative_path": "projects/mlh_f2/evidence.txt",
+      "sha256": "173421a884d560f718327be22b570934e5b6da98472ed1c67b77efea6f3712f3",
+      "bytes": 604
+    },
+    {
+      "relative_path": "projects/mlh_f2/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f2/thesis.md",
+      "sha256": "1f627cc2a49e6ae250121f1c71c3493cd49303fc2fefb245715af4e427f40f8b",
+      "bytes": 562
+    },
+    {
+      "relative_path": "projects/mlh_f3/evidence.txt",
+      "sha256": "3c941607951b40ab2548ba16538fef06055cf6918e93d1be454fe778418e5af3",
+      "bytes": 557
+    },
+    {
+      "relative_path": "projects/mlh_f3/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f3/thesis.md",
+      "sha256": "1f627cc2a49e6ae250121f1c71c3493cd49303fc2fefb245715af4e427f40f8b",
+      "bytes": 562
+    },
+    {
+      "relative_path": "projects/mlh_f4/evidence.txt",
+      "sha256": "950e8d41423e2d452f530d75e42ec6dcc8c36b447ea88b768cab088e729c7fe1",
+      "bytes": 557
+    },
+    {
+      "relative_path": "projects/mlh_f4/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f4/thesis.md",
+      "sha256": "1f627cc2a49e6ae250121f1c71c3493cd49303fc2fefb245715af4e427f40f8b",
+      "bytes": 562
+    },
+    {
+      "relative_path": "projects/mlh_f5/evidence.txt",
+      "sha256": "07dd2ce147e651c099f5e54bcc073de6e6bbb4f6696b8d19e903976903122ca4",
+      "bytes": 561
+    },
+    {
+      "relative_path": "projects/mlh_f5/project_charter.md",
+      "sha256": "a2e2e9b3703b843a7ec133ce1d2f520a9c1ac0282d4f88e1bed9fe7beca44479",
+      "bytes": 1122
+    },
+    {
+      "relative_path": "projects/mlh_f5/thesis.md",
+      "sha256": "1f627cc2a49e6ae250121f1c71c3493cd49303fc2fefb245715af4e427f40f8b",
+      "bytes": 562
+    },
+    {
+      "relative_path": "rubrics/mlh_f1.json",
+      "sha256": "5c24722f62376665f7f15783aa4e91358224e540e5c8223fd2d6840e78ddda93",
+      "bytes": 6635
+    },
+    {
+      "relative_path": "rubrics/mlh_f2.json",
+      "sha256": "009712ffd87bed79313a7a2c32ebf8433bd24c2cb47a085da12cc9059ad3b374",
+      "bytes": 6635
+    },
+    {
+      "relative_path": "rubrics/mlh_f3.json",
+      "sha256": "c811b266a04c9589a43ae14968d6c0dfc2c36c5c75f84cfceadcc8cf0459aec3",
+      "bytes": 6635
+    },
+    {
+      "relative_path": "rubrics/mlh_f4.json",
+      "sha256": "2995152be6ad54131c860302b97165a82ed49b2cb6066fd0b9868abfc8a89061",
+      "bytes": 6635
+    },
+    {
+      "relative_path": "rubrics/mlh_f5.json",
+      "sha256": "862ca8cd1c544ae1d2b2e47aeb06932e09f32b393ad54d32c84d5189e82531d0",
+      "bytes": 6635
+    }
+  ]
+}

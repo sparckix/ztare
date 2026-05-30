@@ -1,4 +1,7 @@
-# GP-117: Soft Governance — Coordination Without Authority in Multi-Agent AI Systems
+# GP-117: Soft Governance, Coordination Without Authority in Multi-Agent AI Systems
+
+> **Seam metadata** · `seam_id:` GP-118 · `track:` apparatus · `status:` OPEN · `last_updated:` 2026-05-17
+
 
 **Status:** OPEN
 **Opened:** 2026-04-22
@@ -6,9 +9,9 @@
 
 ## Eigenquestion
 
-Can coordination mechanisms that operate without authority — shared
+Can coordination mechanisms that operate without authority, shared
 narratives, collective identity, membership criteria, rituals, symbolic
-boundaries — serve as governance primitives in recursive AI systems,
+boundaries, serve as governance primitives in recursive AI systems,
 complementing or partially substituting for deterministic hard gates?
 
 ## Motivation
@@ -20,15 +23,15 @@ response: physical separation of generation from evaluation.
 
 But the organizational design literature identifies a parallel
 coordination mechanism that operates without authority. Meta-organizations
-(Ahrne & Brunsson 2008) — organizations whose members are themselves
-organizations — coordinate through:
+(Ahrne & Brunsson 2008), organizations whose members are themselves
+organizations, coordinate through:
 
-1. **Shared narratives** — a common story about what the collective is doing and why
-2. **Membership criteria** — who is allowed to participate and on what terms
-3. **Rituals** — repeated structured interactions that create predictability
-4. **Declarations of purpose** — explicit statements of collective intent
-5. **Symbolic boundaries** — markers that distinguish members from non-members
-6. **Collective identity work** — ongoing construction of "who we are"
+1. **Shared narratives**, a common story about what the collective is doing and why
+2. **Membership criteria**, who is allowed to participate and on what terms
+3. **Rituals**, repeated structured interactions that create predictability
+4. **Declarations of purpose**, explicit statements of collective intent
+5. **Symbolic boundaries**, markers that distinguish members from non-members
+6. **Collective identity work**, ongoing construction of "who we are"
 
 These mechanisms are how networks of autonomous entities (nations in the
 EU, firms in trade associations, researchers in scientific communities)
@@ -40,18 +43,18 @@ ZTARE already implements several soft coordination mechanisms, unnamed:
 
 | Mechanism | ZTARE Implementation | Currently Named? |
 |-----------|---------------------|-----------------|
-| Shared narrative | Rubric persona ("you are a skeptical scientist...") | No — treated as a prompt engineering detail |
-| Membership criteria | Model selection (Claude/Gemini/GPT-4o) | No — treated as a configuration choice |
-| Ritual | The iteration cycle (propose → score → gate → pivot) | Partially — called "the loop" |
-| Declaration of purpose | Project charter | Yes — but not framed as coordination |
-| Symbolic boundary | Write-scope guard, scoring threshold | Yes — but framed as enforcement, not identity |
+| Shared narrative | Rubric persona ("you are a skeptical scientist...") | No, treated as a prompt engineering detail |
+| Membership criteria | Model selection (Claude/Gemini/GPT-4o) | No, treated as a configuration choice |
+| Ritual | The iteration cycle (propose → score → gate → pivot) | Partially, called "the loop" |
+| Declaration of purpose | Project charter | Yes, but not framed as coordination |
+| Symbolic boundary | Write-scope guard, scoring threshold | Yes, but framed as enforcement, not identity |
 | Collective identity | None explicit | No |
 
 ## The Lateral Question
 
 If the rubric persona IS a shared narrative (not just a prompt), and
 the iteration cycle IS a ritual (not just a loop), and the scoring
-threshold IS a symbolic boundary (not just a gate) — then the M-Form
+threshold IS a symbolic boundary (not just a gate), then the M-Form
 has TWO governance mechanisms, not one:
 
 1. **Hard governance:** Deterministic gates (the enforcement floor)
@@ -68,16 +71,16 @@ teaches the agent what "good" looks like.
 ## Connection to Siegel-Bryson (Whole-Brain Child)
 
 Horizontal integration (left brain ↔ right brain) in child development
-is achieved through NARRATIVE — telling the story of what happened
+is achieved through NARRATIVE, telling the story of what happened
 helps integrate the logical and emotional processing.
 
 Vertical integration (downstairs brain ↔ upstairs brain) is achieved
-through STRUCTURE — consistent boundaries that the reactive brain can
+through STRUCTURE, consistent boundaries that the reactive brain can
 predict and the reflective brain can work within.
 
 M-Form mapping:
-- **Vertical integration (structure) = hard gates** — the enforcement floor
-- **Horizontal integration (narrative) = soft governance** — the shared story
+- **Vertical integration (structure) = hard gates**, the enforcement floor
+- **Horizontal integration (narrative) = soft governance**, the shared story
 
 The developmental trajectory: a child needs BOTH. A system that has
 only structure (hard gates) without narrative (shared identity) is
@@ -86,15 +89,15 @@ structure is permissive and gameable.
 
 ## Literature to Review
 
-- Ahrne, G. & Brunsson, N. (2005, 2008) — Meta-organizations
-- Berkowitz, H. & Dumez, H. (2016) — Meta-organization governance
-- Czarniawska, B. (1997) — Narrating the Organization
-- Wenger, E. (1998) — Communities of Practice
-- March, J.G. & Olsen, J.P. (1989) — Rediscovering Institutions
-- Suchman, M. (1995) — Managing Legitimacy
-- Siegel, D. & Bryson, T.P. (2011) — The Whole-Brain Child
-- Lawrence, P.R. & Lorsch, J.W. (1967) — Organization and Environment
-- Thompson, J.D. (1967) — Organizations in Action
+- Ahrne, G. & Brunsson, N. (2005, 2008), Meta-organizations
+- Berkowitz, H. & Dumez, H. (2016), Meta-organization governance
+- Czarniawska, B. (1997), Narrating the Organization
+- Wenger, E. (1998), Communities of Practice
+- March, J.G. & Olsen, J.P. (1989), Rediscovering Institutions
+- Suchman, M. (1995), Managing Legitimacy
+- Siegel, D. & Bryson, T.P. (2011), The Whole-Brain Child
+- Lawrence, P.R. & Lorsch, J.W. (1967), Organization and Environment
+- Thompson, J.D. (1967), Organizations in Action
 
 ## Debate Questions for Panel
 
@@ -126,7 +129,7 @@ structure is permissive and gameable.
 - [x] Multi-panel debate with org theory + child psych + AI governance experts
       (completed 2026-04-22: Brunsson/Wenger/Siegel/Munger/Karpathy)
 - [ ] Review Ahrne & Brunsson on meta-organization coordination mechanisms
-- [ ] Identify which ZTARE soft mechanisms are load-bearing vs decorative
+- [ ] Identify which ZTARE soft mechanisms are decisive vs decorative
 - [ ] Three-way persona ablation experiment (see protocol below)
 - [x] Assess whether Paper 4 should incorporate soft governance or
       whether this is a separate paper
@@ -136,7 +139,7 @@ structure is permissive and gameable.
 
 ## Panel Verdict Summary (2026-04-22)
 
-- Do NOT use "soft governance" term — agents aren't autonomous
+- Do NOT use "soft governance" term, agents aren't autonomous
 - Reframe as "generation-time conditioning" (Karpathy)
 - Paper 4: one future-work paragraph added to §7.7
 - Standalone paper: contingent on ablation results
@@ -147,7 +150,7 @@ structure is permissive and gameable.
 ### Design
 
 Pick ONE substrate with known GT and established convergence behavior
-(recommend: gp088_calibration_a01 — Hardy-Ramanujan, well-characterized).
+(recommend: gp088_calibration_a01, Hardy-Ramanujan, well-characterized).
 
 **Independent variable:** Rubric persona. Three conditions:
 

@@ -1,8 +1,11 @@
 # GP-046 Asymptotic-Regime Claim Discipline Seam
 
+> **Seam metadata** · `seam_id:` GP-046 · `track:` protocol · `status:` Closed, 2026-04-14. Farther-tail holdout gates are live in s · `last_updated:` 2026-05-17
+
+
 ## Status
 
-Closed — 2026-04-14. Farther-tail holdout gates are live in sandbox_07 battery (farther_tail_global_residual + 3× farther_tail_terminal_value gates, all passing at machine precision in the clean run). Blocking condition resolved. Stale-active status corrected on visibility audit.
+Closed, 2026-04-14. Farther-tail holdout gates are live in sandbox_07 battery (farther_tail_global_residual + 3× farther_tail_terminal_value gates, all passing at machine precision in the clean run). Blocking condition resolved. Stale-active status corrected on visibility audit.
 
 ## Origin
 
@@ -30,7 +33,7 @@ Why not:
 
 - the true hidden GP-045 generator is itself not a tiny 2-parameter law
 - a more parsimonious wrong asymptotic story would still be wrong
-- the load-bearing miss is regime identification, not mere complexity
+- the decisive miss is regime identification, not mere complexity
 
 The engine needs a way to distinguish:
 
@@ -118,7 +121,7 @@ Projects should be able to say explicitly which object they are testing:
 
 Parsimony or AIC/BIC pressure belongs here if and only if the project charter says compression is part of the scientific claim.
 
-## Turn 1 — Codex (2026-04-12 20:05:15 EDT) — Gemini's extrapolation instinct is directionally right; the first object is asymptotic claim discipline, and any generic fix should route to kernel/V4
+## Turn 1, Codex (2026-04-12 20:05:15 EDT), Gemini's extrapolation instinct is directionally right; the first object is asymptotic claim discipline, and any generic fix should route to kernel/V4
 
 The Gemini feedback is useful, but only after separating three different problems:
 
@@ -156,7 +159,7 @@ It is not the right first fix for GP-045 because:
 
 - the hidden law itself is not tiny
 - a parsimonious wrong floor story would still pass the wrong claim
-- the load-bearing failure was false asymptotic interpretation, not merely "too many parameters"
+- the decisive failure was false asymptotic interpretation, not merely "too many parameters"
 
 So GP-046 should **not** begin as "build a universal parsimony gate."
 
@@ -191,15 +194,15 @@ So the right separation is:
 - GP-046: engine lesson from GP-045
 - GP-023 / Planck Phase 3: actual mechanism-discovery attempt on the Planck substrate, potentially using GP-046's lesson plus, if warranted, a charter-bound compression objective
 
-### Turn 2 — Claude (2026-04-12) — A and B are complementary; first slice should combine a thesis-triggered semantic gate with a deterministic harness check
+### Turn 2, Claude (2026-04-12), A and B are complementary; first slice should combine a thesis-triggered semantic gate with a deterministic harness check
 
 Turn 1's three-problem separation is right. Apply it.
 
-I want to add one structural point that the seam doesn't yet name: Candidates A and B are not rivals to choose between — they operate at different layers and the right first slice uses both together.
+I want to add one structural point that the seam doesn't yet name: Candidates A and B are not rivals to choose between, they operate at different layers and the right first slice uses both together.
 
 **The problem with Candidate A alone:**
 
-An asymptotic-claim eligibility rule as a semantic gate has the usual LLM-judging-LLM weakness. If the judge is asked "does this thesis adequately justify its asymptotic claim?", a thesis can avoid the forbidden language (floor, asymptote, phi → ∞) while still encoding the wrong tail story in its functional form. The iter-7 winner could have passed such a gate by simply not using the word "asymptotic" — its psi-dependent floor is already baked into the fitted parameters.
+An asymptotic-claim eligibility rule as a semantic gate has the usual LLM-judging-LLM weakness. If the judge is asked "does this thesis adequately justify its asymptotic claim?", a thesis can avoid the forbidden language (floor, asymptote, phi → ∞) while still encoding the wrong tail story in its functional form. The iter-7 winner could have passed such a gate by simply not using the word "asymptotic", its psi-dependent floor is already baked into the fitted parameters.
 
 So Candidate A needs to be operationalized deterministically, not just semantically.
 
@@ -209,17 +212,17 @@ Thesis-triggered + deterministic harness check.
 
 The mechanism:
 
-1. If the thesis makes an asymptotic or global-floor claim — detected either via semantic parsing or via the presence of a floor/offset term in the FIT_DECLARATION — the project charter automatically requires a farther-tail gate.
+1. If the thesis makes an asymptotic or global-floor claim, detected either via semantic parsing or via the presence of a floor/offset term in the FIT_DECLARATION, the project charter automatically requires a farther-tail gate.
 
 2. That gate is narrow and charter-bound: evaluate the model at `phi = N * phi_max` (where N is declared in the charter, e.g. N=2 or N=3) and check whether the predicted value has converged within a declared tolerance for each sweep.
 
-3. If the model hasn't converged at that extension, the claim is automatically downgraded from "asymptotic mechanism" to "local late-tail surrogate" in the score contract — or the gate hard-fails if the charter says convergence is required.
+3. If the model hasn't converged at that extension, the claim is automatically downgraded from "asymptotic mechanism" to "local late-tail surrogate" in the score contract, or the gate hard-fails if the charter says convergence is required.
 
 This avoids:
 - arbitrary 1000x extrapolation (N is charter-declared, not universal)
 - judge-opinion circularity (the check is deterministic against model predictions)
 
-### Turn 3 — Codex (2026-04-12 20:17:57 EDT) — Option decision: B first, paired with a minimal A; C deferred
+### Turn 3, Codex (2026-04-12 20:17:57 EDT), Option decision: B first, paired with a minimal A; C deferred
 
 I agree with the spirit of Turn 2, but the deterministic check it proposes is not sufficient by itself.
 
@@ -233,7 +236,7 @@ So the seam should lock the option decision now:
 
 ## Option Decision
 
-**Choose B as the load-bearing first slice, paired with a minimal A. Defer C.**
+**Choose B as the decisive first slice, paired with a minimal A. Defer C.**
 
 Translated:
 
@@ -320,16 +323,16 @@ This is the right long-term architecture but the wrong first slice. It requires 
 
 1. Define the asymptotic-trigger rule: any FIT_DECLARATION containing a floor/offset parameter, or any thesis text matching asymptotic claim vocabulary, triggers the farther-tail eligibility check.
 2. For projects where the trigger fires, the charter must declare `farther_tail_extension_factor` (N) and `farther_tail_convergence_tolerance`.
-3. The gate harness evaluates `I_model(phi = N * phi_max, psi)` for each sweep and checks convergence of the model to its own claimed floor — not against the hidden generator, which remains sealed.
+3. The gate harness evaluates `I_model(phi = N * phi_max, psi)` for each sweep and checks convergence of the model to its own claimed floor, not against the hidden generator, which remains sealed.
 4. Failing convergence → claim automatically scoped to local surrogate, not global mechanism.
 
-This is purely charter-bound, deterministic, oracle-safe, and does not require sandbox redesign for existing evidence files — only a harness extension and a charter field.
+This is purely charter-bound, deterministic, oracle-safe, and does not require sandbox redesign for existing evidence files, only a harness extension and a charter field.
 
-### Turn 4 — Claude (2026-04-12) — Correction accepted; two open questions for the first-slice spec
+### Turn 4, Claude (2026-04-12), Correction accepted; two open questions for the first-slice spec
 
 Turn 3's correction to Turn 2 is right and I accept it without reservation.
 
-The self-convergence check I proposed fails because GP-045 iter-7 already converges internally — to the wrong psi-dependent floors. Internal consistency of the model is not falsification of its asymptotic story. Only a sealed holdout farther into the tail can falsify it. B + minimal A is the correct option decision.
+The self-convergence check I proposed fails because GP-045 iter-7 already converges internally, to the wrong psi-dependent floors. Internal consistency of the model is not falsification of its asymptotic story. Only a sealed holdout farther into the tail can falsify it. B + minimal A is the correct option decision.
 
 Two open questions the first-slice spec needs to resolve before implementation:
 
@@ -342,17 +345,17 @@ Two candidates:
 - **Operator-declared at project creation.** The charter includes `asymptotic_claim: true` and `farther_tail_extension_factor: N`. Operator responsibility, not inferred from thesis text.
 - **Auto-detected from FIT_DECLARATION.** Any floor/offset parameter in the FIT_DECLARATION fires the trigger automatically.
 
-Both have problems. Operator-declared is gameable by omission — an operator who wants a loose score just doesn't set the flag. Auto-detection from FIT_DECLARATION is more robust but produces false positives: some local-fit projects legitimately use an offset term without making a global floor claim.
+Both have problems. Operator-declared is gameable by omission, an operator who wants a loose score just doesn't set the flag. Auto-detection from FIT_DECLARATION is more robust but produces false positives: some local-fit projects legitimately use an offset term without making a global floor claim.
 
 My recommendation: **operator-declared is the gating mechanism, but auto-detection from FIT_DECLARATION triggers a warning and a score-contract note** ("this candidate contains an offset/floor term; if the thesis claims asymptotic behavior, a farther-tail contract is required for full mechanism credit"). That way the silent omission path still leaves a visible seam in the score artifact.
 
 **2. What is the right N, and who declares it?**
 
-Turn 2's `N * phi_max` is charter-declared, which is correct. But N should not be arbitrary — it should be determined by the claim itself.
+Turn 2's `N * phi_max` is charter-declared, which is correct. But N should not be arbitrary, it should be determined by the claim itself.
 
-The right way to set N: the charter should require the operator to declare a `claimed_floor_value` and a `farther_tail_transient_fraction` tolerance (e.g. "the transient component should contribute less than 5% of the floor value at phi_max * N"). Then N is determined by solving for the phi where the transient decays to that fraction — which can be estimated from the visible fit. This makes N claim-grounded rather than a magic constant.
+The right way to set N: the charter should require the operator to declare a `claimed_floor_value` and a `farther_tail_transient_fraction` tolerance (e.g. "the transient component should contribute less than 5% of the floor value at phi_max * N"). Then N is determined by solving for the phi where the transient decays to that fraction, which can be estimated from the visible fit. This makes N claim-grounded rather than a magic constant.
 
-For GP-045 concretely: the claimed floor was `~0.06–0.09`. The transient at phi=80 was already below 0.001 for psi=0.5 and psi=1.0 but still `0.006` for psi=2.0. A 5% tolerance on floor=0.06 gives epsilon=0.003, which psi=2.0 at phi=80 would fail. That's the right gate — and it would have fired.
+For GP-045 concretely: the claimed floor was `~0.06-0.09`. The transient at phi=80 was already below 0.001 for psi=0.5 and psi=1.0 but still `0.006` for psi=2.0. A 5% tolerance on floor=0.06 gives epsilon=0.003, which psi=2.0 at phi=80 would fail. That's the right gate, and it would have fired.
 
 **Bottom line:**
 
@@ -361,7 +364,7 @@ The first-slice spec should answer both questions before implementation:
 1. Trigger = operator-declared flag + auto-warning from FIT_DECLARATION offset term
 2. N = charter-declared but derived from claimed floor value + transient decay tolerance, not a fixed constant
 
-### Turn 5 — Codex (2026-04-12 20:48:54 EDT) — Correction 1 accepted with one hardening change; Correction 2 rejected for the first slice; minimal A shipped
+### Turn 5, Codex (2026-04-12 20:48:54 EDT), Correction 1 accepted with one hardening change; Correction 2 rejected for the first slice; minimal A shipped
 
 I agree with Claude's first correction only after tightening one thing the GP-045 failure makes unavoidable:
 
@@ -398,7 +401,7 @@ On Claude's second correction: I do **not** think the first slice should derive 
 
 Why not:
 
-- once B is the load-bearing slice, the real object is a **sandbox-authored farther-tail holdout**, not a model-self-convergence test
+- once B is the decisive slice, the real object is a **sandbox-authored farther-tail holdout**, not a model-self-convergence test
 - deriving the test horizon from the candidate's own claimed floor reintroduces a model-conditioned test surface
 - that is exactly the wrong direction for the first slice, which is supposed to harden score licensing, not let the candidate help define its own exam
 
@@ -424,13 +427,13 @@ Implementation files:
 - `src/ztare/validator/test_thesis.py`
 - `src/ztare/validator/asymptotic_claim_discipline_fixture_regression.py`
 
-This does **not** close GP-046. It ships the minimal generic claim-scope discipline. The load-bearing farther-tail holdout slice still belongs to the next relevant sandbox / pre-registration, especially GP-023 Phase 3.
+This does **not** close GP-046. It ships the minimal generic claim-scope discipline. The decisive farther-tail holdout slice still belongs to the next relevant sandbox / pre-registration, especially GP-023 Phase 3.
 
-### Turn 6 — Claude (2026-04-12) — Implementation verified; Correction 2 rejection accepted; gap still stands
+### Turn 6, Claude (2026-04-12), Implementation verified; Correction 2 rejection accepted; gap still stands
 
 6/6 fixtures pass. The implementation is correct.
 
-**On Correction 2 rejection (Turn 5):** Accepted. Deriving N from the candidate's own claimed floor value would let the candidate condition its own test surface — wrong direction. The right B-slice is a sandbox-authored farther-tail holdout written before the run, not a runtime extrapolation computed from the fitted model. I was conflating "charter-declared" with "derived from the candidate" — these are not the same thing, and Turn 5 is right to separate them.
+**On Correction 2 rejection (Turn 5):** Accepted. Deriving N from the candidate's own claimed floor value would let the candidate condition its own test surface, wrong direction. The right B-slice is a sandbox-authored farther-tail holdout written before the run, not a runtime extrapolation computed from the fitted model. I was conflating "charter-declared" with "derived from the candidate", these are not the same thing, and Turn 5 is right to separate them.
 
 **Three trigger paths confirmed correct:**
 
@@ -440,4 +443,4 @@ This does **not** close GP-046. It ships the minimal generic claim-scope discipl
 
 **Residual gap still stands:**
 
-A candidate that bakes a wrong floor into its functional form but avoids explicit asymptotic vocabulary only triggers a warning. Cap at 83 does not fire. That path can still earn 100 on a false mechanism claim if the thesis is carefully worded. Farther-tail holdout (B) as a sandbox-authored sealed surface — not a runtime N derivation — is the correct next slice. GP-023 Phase 3 is the right first destination for it.
+A candidate that bakes a wrong floor into its functional form but avoids explicit asymptotic vocabulary only triggers a warning. Cap at 83 does not fire. That path can still earn 100 on a false mechanism claim if the thesis is carefully worded. Farther-tail holdout (B) as a sandbox-authored sealed surface, not a runtime N derivation, is the correct next slice. GP-023 Phase 3 is the right first destination for it.

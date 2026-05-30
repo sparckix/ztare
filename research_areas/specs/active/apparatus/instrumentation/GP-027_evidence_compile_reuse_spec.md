@@ -63,7 +63,7 @@ If fixed:
 
 ## Options
 
-### Option A — Document Workspace-Only Reuse
+### Option A, Document Workspace-Only Reuse
 
 **Description**
 
@@ -84,7 +84,7 @@ Tell operators to use `update_workspace` plus `compile_evidence --mode workspace
 
 Insufficient by itself.
 
-### Option B — Exact Raw Compile Cache
+### Option B, Exact Raw Compile Cache
 
 **Description**
 
@@ -105,7 +105,7 @@ Persist a cache record for raw compile inputs and outputs. On exact-key match, r
 
 Recommended.
 
-### Option C — Collapse Raw Mode Into Workspace Pipeline
+### Option C, Collapse Raw Mode Into Workspace Pipeline
 
 **Description**
 
@@ -184,28 +184,28 @@ On raw compile:
 
 ## Implementation Sketch
 
-### Step 1 — Add raw compile cache key helper
+### Step 1, Add raw compile cache key helper
 
 - new helper module or internal functions in `compile_evidence.py`
 - deterministic hash over effective inputs
 
-### Step 2 — Add workspace cache artifacts
+### Step 2, Add workspace cache artifacts
 
 - `workspace/compiled_evidence_cache_index.json`
 - `workspace/latest_compile_cache_hit.json`
 
-### Step 3 — Wire cache lookup into `compile_from_raw`
+### Step 3, Wire cache lookup into `compile_from_raw`
 
 - lookup before LLM call
 - on hit, skip `LLMClient.call()`
 - on miss, run existing path
 
-### Step 4 — Surface reuse in terminal and manifest
+### Step 4, Surface reuse in terminal and manifest
 
 - print whether compile was a cache hit
 - include cache metadata in manifest/provenance
 
-### Step 5 — Add regression coverage
+### Step 5, Add regression coverage
 
 - same inputs twice -> second run is cache hit
 - change one source -> cache miss

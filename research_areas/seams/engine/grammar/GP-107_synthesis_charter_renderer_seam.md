@@ -1,12 +1,15 @@
 # GP-107 Synthesis Charter-Renderer Seam
 
+> **Seam metadata** · `seam_id:` GP-107 · `track:` engine · `status:` First slice shipped (2026-04-21). Live verification pending: · `last_updated:` 2026-05-17
+
+
 ## Problem Snapshot
 
 Two bugs discovered in live qualitative policy project (seattle_tech_housing, ~40 iterations, champion score 90).
 
 ### Bug 1: Renderer sniff picks wrong renderer for qualitative policy projects
 
-`sniff_context` uses `heuristic_project_type` which keyword-matches the project name and the first 3000 chars of thesis artifacts. For policy projects, the mutator rewrites `current_iteration.md` into a discriminator/mechanism paper with sections like "RIVAL HYPOTHESIS" — triggering the `research_hypothesis` heuristic branch instead of `policy_scenario`. The LLM sniff then sees the mechanism-heavy prose and confirms `mechanism_brief`.
+`sniff_context` uses `heuristic_project_type` which keyword-matches the project name and the first 3000 chars of thesis artifacts. For policy projects, the mutator rewrites `current_iteration.md` into a discriminator/mechanism paper with sections like "RIVAL HYPOTHESIS", triggering the `research_hypothesis` heuristic branch instead of `policy_scenario`. The LLM sniff then sees the mechanism-heavy prose and confirms `mechanism_brief`.
 
 Result: `make synth` on a policy project with no explicit `RENDERER` argument silently produces the wrong output format.
 
@@ -23,9 +26,9 @@ if rubric_name:
         renderer_override = pinned
 ```
 
-### Bug 2: Charter not injected into renderer — LLM cannot fulfill charter requirements
+### Bug 2: Charter not injected into renderer, LLM cannot fulfill charter requirements
 
-`render_artifact` passes the insight ledger, planning brief, and history summary to the renderer LLM. The project charter is never included. The charter specifies required output structure (civic externality ledger, distributional breakdown, concrete policy mechanism with dollar scale, irreversibility carve-out) — without it, the renderer produces whatever the ledger distills, which is the discriminator protocol, not the ledger.
+`render_artifact` passes the insight ledger, planning brief, and history summary to the renderer LLM. The project charter is never included. The charter specifies required output structure (civic externality ledger, distributional breakdown, concrete policy mechanism with dollar scale, irreversibility carve-out), without it, the renderer produces whatever the ledger distills, which is the discriminator protocol, not the ledger.
 
 The charter is the contract. The renderer LLM cannot satisfy a contract it has never read.
 
@@ -37,7 +40,7 @@ if charter_path.exists():
     charter_text = charter_path.read_text(encoding="utf-8").strip()
     if charter_text:
         prompt_parts.append(
-            "Project charter (required output structure — your report MUST fulfill every section):\n"
+            "Project charter (required output structure, your report MUST fulfill every section):\n"
             + charter_text
         )
 ```
@@ -46,7 +49,7 @@ if charter_path.exists():
 
 ## Root Cause
 
-The synthesis pipeline was designed for science/math projects where the champion thesis IS the output. For qualitative policy projects, the champion thesis is the epistemic scaffolding — the actual output is a different artifact (the ledger + policy recommendation) that must be constructed from all accumulated evidence per the charter, not distilled from the thesis prose.
+The synthesis pipeline was designed for science/math projects where the champion thesis IS the output. For qualitative policy projects, the champion thesis is the epistemic scaffolding, the actual output is a different artifact (the ledger + policy recommendation) that must be constructed from all accumulated evidence per the charter, not distilled from the thesis prose.
 
 The inversion: for science projects, synthesize = compress best thesis. For policy projects, synthesize = construct required deliverable from all evidence, using best thesis as scaffolding.
 
@@ -54,10 +57,10 @@ The inversion: for science projects, synthesize = compress best thesis. For poli
 
 ## Files Changed
 
-- `src/ztare/synthesis/synthesize.py` — two changes:
+- `src/ztare/synthesis/synthesize.py`, two changes:
   1. `sniff_context`: reads `synthesis_renderer` from rubric JSON before heuristic/LLM sniff
   2. `render_artifact`: injects `project_charter.md` into renderer prompt when present
-- `rubrics/seattle_tech_housing.json` — added `"synthesis_renderer": "policy_essay"`
+- `rubrics/seattle_tech_housing.json`, added `"synthesis_renderer": "policy_essay"`
 
 ---
 
@@ -82,9 +85,9 @@ Charter also injected into the `extract_ledger` prompt so the LLM knows what con
 
 ## Files Changed
 
-- `src/ztare/synthesis/synthesize.py` — three changes:
+- `src/ztare/synthesis/synthesize.py`, three changes:
   1. `sniff_context`: reads `synthesis_renderer` from rubric JSON before heuristic/LLM sniff
   2. `render_artifact`: injects `project_charter.md` into renderer prompt when present
   3. `extract_ledger`: routes to `extract_ledger_{project_type}.md` if exists; injects charter
-- `rubrics/seattle_tech_housing.json` — added `"synthesis_renderer": "policy_essay"`
-- `config/prompts/extract_ledger_policy_scenario.md` — new policy-specific ledger schema
+- `rubrics/seattle_tech_housing.json`, added `"synthesis_renderer": "policy_essay"`
+- `config/prompts/extract_ledger_policy_scenario.md`, new policy-specific ledger schema

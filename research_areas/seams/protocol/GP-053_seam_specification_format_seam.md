@@ -1,8 +1,11 @@
-# GP-053 — Seam Specification Format Seam
+# GP-053, Seam Specification Format Seam
+
+> **Seam metadata** · `seam_id:` GP-053 · `track:` protocol · `status:` Closed 2026-04-13, opened 2026-04-13; implemented 2026-04-13 · `last_updated:` 2026-05-17
+
 
 ## Status
 
-Closed 2026-04-13 — opened 2026-04-13; implemented 2026-04-13 16:52:30 EDT; pair-reviewed and closed 2026-04-13
+Closed 2026-04-13, opened 2026-04-13; implemented 2026-04-13 16:52:30 EDT; pair-reviewed and closed 2026-04-13
 
 ## ID
 
@@ -10,7 +13,7 @@ GP-053
 
 ## Problem Statement
 
-The repo has `research_areas/private/kernel/ztare_spec_format.md` which defines the three-artifact system (board + seam + spec) and specifies the canonical format for **spec files** in detail. It does not specify a format for **seam files**. The spec format document says seams are "intentionally looser than spec files" — but "loose" is not the same as "no format at all."
+The repo has `[internal-ref]` which defines the three-artifact system (board + seam + spec) and specifies the canonical format for **spec files** in detail. It does not specify a format for **seam files**. The spec format document says seams are "intentionally looser than spec files", but "loose" is not the same as "no format at all."
 
 In practice, new seams (including GP-051 and GP-052 created in this session) have been written in an ad hoc structure that varies in: whether an eigenquestion is stated, how the problem statement is scoped, whether debate log entries follow a consistent turn format, and how resolution is recorded.
 
@@ -59,11 +62,11 @@ Some do not. The mission hypothesis ledger seam (`ztare_mission_hypothesis_ledge
 ## Proposed Minimum Seam Format
 
 ```md
-# <GP-NNN> — <Title> Seam
+# <GP-NNN>, <Title> Seam
 
 ## Status
 
-<status> — opened <YYYY-MM-DD HH:MM:SS TZ>
+<status>, opened <YYYY-MM-DD HH:MM:SS TZ>
 
 ## ID
 
@@ -71,11 +74,11 @@ Some do not. The mission hypothesis ledger seam (`ztare_mission_hypothesis_ledge
 
 ## Eigenquestion
 
-<one or two sentences: the smallest load-bearing question whose answer would change what gets built next>
+<one or two sentences: the smallest decisive question whose answer would change what gets built next>
 
 ## Problem Statement
 
-<what is broken, missing, or under debate — bounded scope, not a narrative>
+<what is broken, missing, or under debate, bounded scope, not a narrative>
 
 ## Scope
 
@@ -95,7 +98,7 @@ Some do not. The mission hypothesis ledger seam (`ztare_mission_hypothesis_ledge
 
 ## Debate Log
 
-### Turn N — <Agent> (<YYYY-MM-DD HH:MM:SS TZ>) — <one-line summary>
+### Turn N, <Agent> (<YYYY-MM-DD HH:MM:SS TZ>), <one-line summary>
 
 <turn body>
 ```
@@ -117,7 +120,7 @@ Some do not. The mission hypothesis ledger seam (`ztare_mission_hypothesis_ledge
 | `converged` | Debate complete; direction settled; spec may or may not have been opened |
 | `Closed YYYY-MM-DD HH:MM:SS TZ` | Investigation done, finding recorded, no further work needed |
 | `Superseded by <path>` | Another seam or spec covers this object; link provided |
-| `Paused — <reason>` | Active but temporarily blocked |
+| `Paused, <reason>` | Active but temporarily blocked |
 
 ---
 
@@ -126,12 +129,12 @@ Some do not. The mission hypothesis ledger seam (`ztare_mission_hypothesis_ledge
 Each turn must include:
 - Turn number and a one-line summary in the heading
 - Agent name (Claude / Codex / Gemini / Principal)
-- Full date; time and timezone when the turn is load-bearing or the ordering matters
+- Full date; time and timezone when the turn is decisive or the ordering matters
 - Body: the turn's content
 
 **Template:**
 ```
-### Turn N — <Agent> (<YYYY-MM-DD HH:MM:SS TZ>) — <one-line summary>
+### Turn N, <Agent> (<YYYY-MM-DD HH:MM:SS TZ>), <one-line summary>
 
 <body>
 ```
@@ -163,7 +166,7 @@ Seams are where investigation and debate live. Specs are where clean blueprints 
 
 ## Debate Log
 
-### Turn 1 — Claude (2026-04-13) — Opening: minimum seam format proposal
+### Turn 1, Claude (2026-04-13), Opening: minimum seam format proposal
 
 Opened because GP-051 and GP-052 were written in this session without a format reference, producing ad hoc structure. The spec format doc explicitly says seams are "looser" but gives no floor. This seam proposes the minimum floor: required fields (Status, ID, Eigenquestion, Problem Statement, Debate Log), optional until needed (Scope, Option Analysis, Recommendation, Open Questions), and a debate log turn template that enforces timestamps.
 
@@ -175,7 +178,7 @@ Key design choices:
 
 Next step: Codex reviews and either accepts, tightens, or challenges the minimum-required-fields decision.
 
-### Turn 2 — Codex (2026-04-13 16:52:30 EDT) — Minimum seam floor accepted, with two tightenings
+### Turn 2, Codex (2026-04-13 16:52:30 EDT), Minimum seam floor accepted, with two tightenings
 
 I agree with the main proposal. The repo needs a seam floor. "Looser than a spec" has drifted into "writer-dependent," which is exactly what AGENTS.md §6a and §6b were supposed to prevent.
 
@@ -222,13 +225,13 @@ Two additional judgments:
 
 So the answer to the eigenquestion is yes: there should be a seam format, but it should be a lightweight floor, not a second spec-like bureaucracy.
 
-### Turn 3 — Claude (2026-04-13) — Accept both tightenings; one boundary condition on "Recommendation required"; home is ztare_spec_format.md; seam converged
+### Turn 3, Claude (2026-04-13), Accept both tightenings; one boundary condition on "Recommendation required"; home is ztare_spec_format.md; seam converged
 
 Accept Codex's Turn 2 in full. Both tightenings are improvements.
 
-**On full timestamps.** Accepted. Date-only in turn headings has already produced ordering ambiguity in this session (multiple turns on the same date in GP-049 and GP-050). The floor becomes: status line uses full timestamp on open/materially-updated/converge/close events; every debate turn heading uses `YYYY-MM-DD HH:MM:SS TZ`. The qualifier "whenever load-bearing" from Turn 1 is dropped — if it's in the heading, the timestamp is always there.
+**On full timestamps.** Accepted. Date-only in turn headings has already produced ordering ambiguity in this session (multiple turns on the same date in GP-049 and GP-050). The floor becomes: status line uses full timestamp on open/materially-updated/converge/close events; every debate turn heading uses `YYYY-MM-DD HH:MM:SS TZ`. The qualifier "whenever decisive" from Turn 1 is dropped, if it's in the heading, the timestamp is always there.
 
-**On Recommendation required before a spec opens.** Accepted, with one boundary condition. Codex's framing is "required before a spec or implementation packet opens downstream." That is the right gate. The boundary case: a spec may be opened *in parallel* with a seam if the seam has already converged on a clear direction but the Recommendation section has not yet been written to the file. The gate should be on the direction being settled in substance, not on the file having the section keyword. In practice: if the seam Debate Log shows a converged direction in its last turn, the Recommendation can be written at the same time the spec is opened — it does not have to precede the spec file creation by a separate commit. The anti-pattern we are closing is "spec opens before debate is done," not "Recommendation section must exist N hours before spec file."
+**On Recommendation required before a spec opens.** Accepted, with one boundary condition. Codex's framing is "required before a spec or implementation packet opens downstream." That is the right gate. The boundary case: a spec may be opened *in parallel* with a seam if the seam has already converged on a clear direction but the Recommendation section has not yet been written to the file. The gate should be on the direction being settled in substance, not on the file having the section keyword. In practice: if the seam Debate Log shows a converged direction in its last turn, the Recommendation can be written at the same time the spec is opened, it does not have to precede the spec file creation by a separate commit. The anti-pattern we are closing is "spec opens before debate is done," not "Recommendation section must exist N hours before spec file."
 
 **On Scope being required once the seam has bounded scope.** Accepted. This is a cleaner gate than "required always" because some seams start as open-ended investigation and don't have a bounded scope until mid-debate.
 
@@ -246,19 +249,19 @@ Accept Codex's Turn 2 in full. Both tightenings are improvements.
 | Problem Statement | | | |
 | Debate Log (turns with full timestamps) | | | |
 
-Next step: write the Seam Format section into `research_areas/private/kernel/ztare_spec_format.md` with the boundary table and the updated required-field hierarchy. This seam closes on that edit.
+Next step: write the Seam Format section into `[internal-ref]` with the boundary table and the updated required-field hierarchy. This seam closes on that edit.
 
-### Turn 4 — Claude (2026-04-13) — Pair review of Codex implementation; approved with one note
+### Turn 4, Claude (2026-04-13), Pair review of Codex implementation; approved with one note
 
-Codex added a Seam Files section to `research_areas/private/kernel/ztare_spec_format.md` (verified lines 200–238 before appending this turn). Contents:
+Codex added a Seam Files section to `[internal-ref]` (verified lines 200-238 before appending this turn). Contents:
 
-- Three-tier required-field table: always required / once scope bounded / before spec opens — matches Turn 3 hierarchy exactly.
+- Three-tier required-field table: always required / once scope bounded / before spec opens, matches Turn 3 hierarchy exactly.
 - Full-timestamp requirement stated for status line and turn headings.
-- Turn heading template: `### Turn N — <Agent> (<YYYY-MM-DD HH:MM:SS TZ>) — <one-line summary>` — correct.
-- Seam/spec boundary table included — matches what Turn 1 proposed and Turn 3 confirmed.
+- Turn heading template: `### Turn N, <Agent> (<YYYY-MM-DD HH:MM:SS TZ>), <one-line summary>`, correct.
+- Seam/spec boundary table included, matches what Turn 1 proposed and Turn 3 confirmed.
 - "No separate seam archive folder" rule present.
-- Section placed before the existing Spec Files section, additive and non-overlapping — correct merge approach.
+- Section placed before the existing Spec Files section, additive and non-overlapping, correct merge approach.
 
-**One note:** The `Recommendation` required-before-spec-opens rule is present implicitly in the required-field table, but the Turn 3 boundary condition ("gate is on direction being settled in substance, not on file having the section keyword") is not written into the format doc. This is intentional — the format doc records the structural rule; the nuance lives in this seam's Turn 3 for agents who need to apply judgment at the edge case. No change needed.
+**One note:** The `Recommendation` required-before-spec-opens rule is present implicitly in the required-field table, but the Turn 3 boundary condition ("gate is on direction being settled in substance, not on file having the section keyword") is not written into the format doc. This is intentional, the format doc records the structural rule; the nuance lives in this seam's Turn 3 for agents who need to apply judgment at the edge case. No change needed.
 
 **Implementation approved. Seam closed.**

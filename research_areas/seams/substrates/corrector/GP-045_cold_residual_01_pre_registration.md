@@ -1,4 +1,7 @@
-# GP-045 Cold Residual Successor 01 — Pre-Registration
+# GP-045 Cold Residual Successor 01, Pre-Registration
+
+> **Seam metadata** · `seam_id:` GP-045 · `track:` substrates · `status:` Sealed 2026-04-12 19:24:26 EDT. · `last_updated:` 2026-05-17
+
 
 ## Status
 
@@ -30,9 +33,9 @@ This is not pre-registered as a clean deductive-discovery proof. It is a sealed 
 
 The run starts from seeded project-local artifacts:
 
-- `workspace/fit_result.json` — GP-042 iter-8 fitted base family and full residual map
-- `workspace/structural_memory.json` — GP-042 family trace
-- `latest_eval_results.json` — GP-043 clean-family gate surface
+- `workspace/fit_result.json`, GP-042 iter-8 fitted base family and full residual map
+- `workspace/structural_memory.json`, GP-042 family trace
+- `latest_eval_results.json`, GP-043 clean-family gate surface
 
 These are read-only starting artifacts. They do not authorize any named successor family.
 
@@ -78,8 +81,8 @@ Run executed to the sealed 10-iteration budget under:
 
 Champion / latest split:
 
-- **champion:** [1776036404_iter7_score_100_gp045_cold_residual_01.md](/Users/daalami/figs_activist_loop/projects/gp045_cold_residual_01/history/1776036404_iter7_score_100_gp045_cold_residual_01.md) with [champion_eval_results.json](/Users/daalami/figs_activist_loop/projects/gp045_cold_residual_01/champion_eval_results.json)
-- **latest final evaluated attempt:** `iter 10`, score `0`, preserved in [latest_eval_results.json](/Users/daalami/figs_activist_loop/projects/gp045_cold_residual_01/latest_eval_results.json)
+- **champion:** [1776036404_iter7_score_100_gp045_cold_residual_01.md](projects/gp045_cold_residual_01/history/1776036404_iter7_score_100_gp045_cold_residual_01.md) with [champion_eval_results.json](projects/gp045_cold_residual_01/champion_eval_results.json)
+- **latest final evaluated attempt:** `iter 10`, score `0`, preserved in [latest_eval_results.json](projects/gp045_cold_residual_01/latest_eval_results.json)
 
 What the run established:
 
@@ -100,17 +103,17 @@ Interpretation:
 
 - this pre-registration succeeded as an **exploratory cold residual successor verifier**
 - the honest claim is narrower than "deductive discovery proved"
-- the load-bearing next step is an admissibility / claim-scope audit of the iter-7 champion, not blind continuation of this same run
+- the decisive next step is an admissibility / claim-scope audit of the iter-7 champion, not blind continuation of this same run
 
 ## Pre-Seal Audit
 
 Verified locally before seal:
 
-- [project_charter.md](/Users/daalami/figs_activist_loop/projects/gp045_cold_residual_01/project_charter.md): no named successor repair family
-- [thesis.md](/Users/daalami/figs_activist_loop/projects/gp045_cold_residual_01/thesis.md): no named successor repair family
-- [current_iteration.md](/Users/daalami/figs_activist_loop/projects/gp045_cold_residual_01/current_iteration.md): no named successor repair family
-- [gp045_cold_residual_01.json](/Users/daalami/figs_activist_loop/rubrics/gp045_cold_residual_01.json): `cold_residual_successor_mode = true`
-- [test_model.py](/Users/daalami/figs_activist_loop/projects/gp045_cold_residual_01/test_model.py): current base family only; no preselected extension
+- [project_charter.md](projects/gp045_cold_residual_01/project_charter.md): no named successor repair family
+- [thesis.md](projects/gp045_cold_residual_01/thesis.md): no named successor repair family
+- [current_iteration.md](projects/gp045_cold_residual_01/current_iteration.md): no named successor repair family
+- [gp045_cold_residual_01.json](rubrics/gp045_cold_residual_01.json): `cold_residual_successor_mode = true`
+- [test_model.py](projects/gp045_cold_residual_01/test_model.py): current base family only; no preselected extension
 - `python -m py_compile projects/gp045_cold_residual_01/test_model.py projects/gp045_cold_residual_01/gate_harness.py` passed
 - `python projects/gp045_cold_residual_01/test_model.py` passed
 

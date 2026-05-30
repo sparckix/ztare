@@ -78,24 +78,24 @@ Wire this into `_prepare_mutation_candidate()` so the existing Runner R1 rejecti
 
 ## Implementation Sketch
 
-### Step 1 — Add pure suite guard helper
+### Step 1, Add pure suite guard helper
 
 - new module: `src/ztare/validator/mutation_suite_guard.py`
 - expose:
   - `NO_SUITE_SENTINEL`
   - `validate_python_suite_candidate(python_code)`
 
-### Step 2 — Call guard during mutation preparation
+### Step 2, Call guard during mutation preparation
 
 - in `_prepare_mutation_candidate()`
 - raise `ValueError` before candidate write/eval if suite is missing or sentinel
 
-### Step 3 — Remove sentinel fallback write
+### Step 3, Remove sentinel fallback write
 
 - delete the branch that writes sentinel `assert False` to `test_model.py`
 - rely on Runner R1 rejection instead
 
-### Step 4 — Add regression
+### Step 4, Add regression
 
 - new fixture regression:
   - `src/ztare/validator/runner_r1_suite_guard_fixture_regression.py`

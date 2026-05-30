@@ -1,5 +1,8 @@
 # GP-020 Supervising-Agent Closure Discipline Seam
 
+> **Seam metadata** · `seam_id:` GP-020 · `track:` apparatus · `status:` Closed, 2026-04-14. Supervisor loop closed Turn 55 with full · `last_updated:` 2026-05-17
+
+
 ## Problem Snapshot
 
 ZTARE's supervising-agent stop/close recommendations are still too narrative.
@@ -45,7 +48,7 @@ It is:
 
 ## Debate Log
 
-### Turn 1 — Historical failure pattern
+### Turn 1, Historical failure pattern
 
 The EU `0 -> 83` episode showed the original closure failure clearly:
 
@@ -57,7 +60,7 @@ This established the primary GP-020 rule:
 
 - narrative impossibility claims from the supervising agent are not enough
 
-### Turn 2 — Claude / operator reflection
+### Turn 2, Claude / operator reflection
 
 Claude framed the recent work as a two-mode system:
 
@@ -66,7 +69,7 @@ Claude framed the recent work as a two-mode system:
 
 This was directionally right, but too narrow.
 
-### Turn 3 — Operator correction
+### Turn 3, Operator correction
 
 The operator correctly pushed back:
 
@@ -75,7 +78,7 @@ The operator correctly pushed back:
 
 This corrected the scope boundary. The supervisor is not merely an execution layer. It is a project runner whose current project types are narrower than the architecture's intended scope.
 
-### Turn 4 — Independent synthesis
+### Turn 4, Independent synthesis
 
 My read is:
 
@@ -89,18 +92,18 @@ That means the artisanal thread has been doing two things at once:
 - generating paper-4-style evidence of recursive epistemic gain
 - generating labeled catches for GP-020 itself
 
-### Turn 5 — Concrete labeled failures from this phase
+### Turn 5, Concrete labeled failures from this phase
 
 This session produced at least four GP-020-relevant labeled failures:
 
 1. local failure mistaken for global exhaustion
 2. confident pessimism framed as humility
 3. profile-dependent architectural claim presented as unconditional
-4. optimization overshoot that removed load-bearing capability
+4. optimization overshoot that removed decisive capability
 
 These are not abstract lessons. They are training examples for the future self-review project type.
 
-### Turn 6 — Current conclusion
+### Turn 6, Current conclusion
 
 The artisanal work was not a detour from the supervisor architecture.
 
@@ -114,14 +117,14 @@ So GP-020 is the seam that connects:
 - supervisor project typing
 - eventual automation of operator-style catch patterns
 
-### Turn 7 — Phase 1 first slice landed
+### Turn 7, Phase 1 first slice landed
 
 Phase 1 of the spec calls for freezing the labeled failure families
 from recent artisanal threads before any typed closure surface can
 be designed. The first slice of that work is now on disk, kept
 separate from this seam so it can grow without churning the framing:
 
-- `research_areas/catch_grammar/corpus.md` — schema plus four labeled
+- `research_areas/catch_grammar/corpus.md`, schema plus four labeled
   entries drawn from the recent operator / Claude / Codex thread:
   - defining_yourself_into_victory (philosophical form)
   - confident_pessimism_as_humility
@@ -130,7 +133,7 @@ separate from this seam so it can grow without churning the framing:
   Each entry carries `failure_family`, `trigger_condition`,
   `evidence_shape`, `counter_move`, `verification_check`,
   `false_positive_mode`, and `provenance`.
-- `research_areas/catch_grammar/probes/probe_01_gp023_seam.md` —
+- `research_areas/catch_grammar/probes/probe_01_gp023_seam.md`, 
   first probe design. Runs the four `verification_check` rules by
   hand against the GP-023 seam, with operator-graded success
   criteria. GP-023 is the target because it already contains a
@@ -141,18 +144,18 @@ separate from this seam so it can grow without churning the framing:
 This first slice is deliberately not a frozen grammar. It is the
 seed dataset the spec's Phase 1 asks for. The closure-category /
 reason-class work still has to wait on the verifiers for GP-017,
-GP-021, and GP-022 to land — the corpus is only the labeled-catch
+GP-021, and GP-022 to land, the corpus is only the labeled-catch
 half of Phase 1.
 
-The operator framing question — "how to enact the first
-self-recursive improvement project, more upleveled than stage2" —
+The operator framing question, "how to enact the first
+self-recursive improvement project, more upleveled than stage2", 
 is answered by Phase A here: run the hand probe on an existing
 seam, use the operator as the grader, and let that result
 determine whether the grammar is specific enough to carry any
 supervisor weight in Phase B. No supervisor code changes are
 required for Phase A.
 
-### Turn 8 — Sequencing decision (2026-04-10)
+### Turn 8, Sequencing decision (2026-04-10)
 
 Discussion point: does GP-020 self-audit block Planck (GP-023)?
 
@@ -163,7 +166,7 @@ actual Planck prerequisite, and paper 4's current missing
 section is still backed by an existing stage2 supervised build
 run, not a self-audit. Operator sided with Codex on sequencing.
 
-Agreed sequence (load-bearing for paper 4 + Planck):
+Agreed sequence (decisive for paper 4 + Planck):
 
 1. Provider fallback / failover policy lands first (Codex owns).
    - why: a 503 at iteration 92 destroys starvation momentum and
@@ -213,7 +216,7 @@ Role clarification:
   future paper) is the GP-020 self-audit. It does not backfill
   Section 5.6.
 
-### Turn 9 — Provider fallback prerequisite landed
+### Turn 9, Provider fallback prerequisite landed
 
 The provider-fallback prerequisite from Turn 8 is now implemented in
 the shared runtime rather than as a one-off loop patch:
@@ -256,4 +259,4 @@ What this resolves:
 
 ## Status
 
-Closed — 2026-04-14. Supervisor loop closed Turn 55 with full M-form architecture (write-scope guard, backlog, proposal, manifest, usage ledger). Closure discipline rules are now operational. Stale-active status corrected on visibility audit.
+Closed, 2026-04-14. Supervisor loop closed Turn 55 with full M-form architecture (write-scope guard, backlog, proposal, manifest, usage ledger). Closure discipline rules are now operational. Stale-active status corrected on visibility audit.
