@@ -1,0 +1,11 @@
+import ZtareProofs.ns_gp216_bridge_composition_receipt
+
+namespace ZtareProofs.NS
+
+theorem gp216_branchSelfTaxThresholdCoordinateIdentities_source_of_threshold_coordinate_identity_only_counterexample :
+    BranchSelfTaxThresholdCoordinateIdentities
+      thresholdCoordinateIdentityOnlyCounterexampleBlock
+      thresholdCoordinateIdentityOnlyCounterexampleStream := by
+  exact thresholdCoordinateIdentityOnlyCounterexampleIdentities
+
+end ZtareProofs.NS

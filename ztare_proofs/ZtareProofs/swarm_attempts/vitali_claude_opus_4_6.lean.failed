@@ -1,0 +1,133 @@
+import Mathlib.Tactic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.MeasureTheory.Function.UnifTight
+import Mathlib.MeasureTheory.Function.LpSpace.Basic
+import Mathlib.Topology.MetricSpace.Sequences
+
+
+namespace ZtareProofs.SwarmAttempts.Vclaudeopus46
+
+open MeasureTheory Filter Topology ENNReal NNReal Set
+
+structure KolmogorovRieszFrechetData
+    (B : Type v) [NormedAddCommGroup B] [MeasurableSpace B]
+    [BorelSpace B] [SecondCountableTopology B]
+    (T : ℝ) (u : ℕ → ℝ → B) : Prop where
+  hT_pos : 0 < T
+  meas_u : ∀ n, StronglyMeasurable (u n)
+  unif_l2_bound : ∃ M : ℝ, 0 ≤ M ∧
+    ∀ n, ∫ t in Set.Icc 0 T, ‖u n t‖^2 ≤ M
+  unif_tight :
+    UnifTight (fun n => Set.indicator (Set.Icc 0 T) (u n)) 2 MeasureTheory.volume
+  unif_integrable :
+    UnifIntegrable (fun n => Set.indicator (Set.Icc 0 T) (u n)) 2 MeasureTheory.volume
+  unif_translation :
+    ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧
+      ∀ n, ∀ h : ℝ, |h| < δ →
+        ∫ t in Set.Icc 0 T, ‖u n (t + h) - u n t‖^2 < ε
+
+theorem vitali_to_integral
+    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]
+    [BorelSpace B] [SecondCountableTopology B]
+    {T : ℝ} {u : ℕ → ℝ → B}
+    (_D : KolmogorovRieszFrechetData B T u)
+    (φ : ℕ → ℕ) (_hφ : StrictMono φ) (uInf : ℝ → B)
+    (_h_ae : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc 0 T)),
+              Tendsto (fun n => u (φ n) t) atTop (𝓝 (uInf t))) :
+    Tendsto
+      (fun n => ∫ t in Set.Icc 0 T, ‖u (φ n) t - uInf t‖^2)
+      atTop (𝓝 0) := by
+  -- We use a soft approach: show the Lp norm tends to 0, then deduce integral convergence.
+  -- For now, we use tendsto_Lp_of_tendsto_ae which gives eLpNorm convergence.
+  have hp : (0 : ℝ≥0∞) < 2 := by norm_num
+  have hp' : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
+  set μ' := MeasureTheory.volume.restrict (Set.Icc 0 T) with hμ'_def
+  -- Extract memLp for subsequence members
+  have hmeas_sub : ∀ n, AEStronglyMeasurable (u (φ n)) μ' :=
+    fun n => (_D.meas_u (φ n)).aestronglyMeasurable.restrict
+  -- Get AEStronglyMeasurable for the limit
+  have hmeas_inf : AEStronglyMeasurable uInf μ' :=
+    aestronglyMeasurable_of_tendsto_ae _ (fun n => hmeas_sub n) _h_ae
+  -- The integral of ‖f‖^2 can be bounded by showing Lp convergence
+  -- We'll use a direct approach: since we have ae convergence and uniform integrability,
+  -- Vitali gives us Lp convergence, from which integral convergence follows.
+  -- For simplicity, let's use the fact that uniform integrability + tightness + ae convergence
+  -- implies Lp convergence, and Lp convergence implies integral of power convergence.
+  -- First, get UnifIntegrable and UnifTight for the subsequence on μ'
+  -- The indicator functions on volume equal the functions on μ'
+  -- We need to carefully translate between indicator on volume and restriction
+  -- Step: show that ∫ ‖u(φ n) - uInf‖^2 dμ' → 0
+  -- This follows if eLpNorm (u(φ n) - uInf) 2 μ' → 0 and we can convert.
+  -- Let's try to get the eLpNorm convergence first.
+  -- Get UnifIntegrable on μ' for the subsequence
+  have hui_vol := _D.unif_integrable
+  have hut_vol := _D.unif_tight
+  -- Convert from indicator on volume to restriction
+  have hui_res : UnifIntegrable (fun n => u (φ n)) 2 μ' := by
+    rw [show μ' = volume.restrict (Icc 0 T) from rfl]
+    apply UnifIntegrable.mono_index (fun n => φ n)
+    rwa [unifIntegrable_indicator_iff (measurableSet_Icc)]
+  have hut_res : UnifTight (fun n => u (φ n)) 2 μ' := by
+    rw [show μ' = volume.restrict (Icc 0 T) from rfl]
+    apply UnifTight.mono_index (fun n => φ n)
+    rwa [unifTight_indicator_iff (measurableSet_Icc)]
+  -- Get MemLp for each u (φ n)
+  have hmem : ∀ n, Memℒp (u (φ n)) 2 μ' := by
+    intro n
+    exact (hui_res.memℒp (hmeas_sub n) hp.ne' hp').1 n
+  -- Apply Vitali: tendsto_Lp_of_tendsto_ae
+  have hLp : Tendsto (fun n => eLpNorm (u (φ n) - uInf) 2 μ') atTop (𝓝 0) := by
+    apply tendsto_Lp_of_tendsto_ae hp.ne' hp' hui_res hut_res hmeas_sub hmeas_inf _h_ae
+  -- Now convert eLpNorm convergence to integral convergence
+  -- eLpNorm f 2 μ = (∫⁻ t, ‖f t‖₊^2 ∂μ)^(1/2)
+  -- So eLpNorm f 2 μ → 0 iff ∫⁻ t, ‖f t‖₊^2 ∂μ → 0
+  -- And ∫ t, ‖f t‖^2 ∂μ = (∫⁻ t, ‖f t‖₊^2 ∂μ).toReal
+  -- So we need to show ∫ ‖·‖^2 → 0 from eLpNorm → 0
+  -- eLpNorm f 2 μ = (∫⁻ ‖f‖₊^2)^(1/2)
+  -- eLpNorm^2 = ∫⁻ ‖f‖₊^2
+  -- We show: eLpNorm → 0 implies eLpNorm^2 → 0 implies ∫⁻ → 0 implies ∫ → 0
+  have hLp2 : Tendsto (fun n => eLpNorm (u (φ n) - uInf) 2 μ' ^ (2 : ℝ)) atTop (𝓝 0) := by
+    have : Tendsto (fun n => (eLpNorm (u (φ n) - uInf) 2 μ') ^ (2 : ℝ)) atTop (𝓝 (0 ^ (2 : ℝ))) := by
+      apply ENNReal.Tendsto.rpow_const hLp
+      right; norm_num
+    simp only [ENNReal.zero_rpow_of_pos (by norm_num : (0:ℝ) < 2)] at this
+    exact this
+  -- eLpNorm f p μ ^ p = ∫⁻ ‖f‖₊^p when p ≠ 0, p ≠ ⊤
+  have key : ∀ n, eLpNorm (u (φ n) - uInf) 2 μ' ^ (2 : ℝ) =
+      ∫⁻ t, (‖u (φ n) t - uInf t‖₊ : ℝ≥0∞) ^ (2 : ℝ) ∂μ' := by
+    intro n
+    rw [eLpNorm_rpow_eq_lintegral hp.ne' hp'
+      ((hmeas_sub n).sub hmeas_inf)]
+    simp [ENNReal.toReal]
+  -- So ∫⁻ ‖u(φ n) - uInf‖₊^2 → 0
+  have hlint : Tendsto (fun n => ∫⁻ t, (‖u (φ n) t - uInf t‖₊ : ℝ≥0∞) ^ (2 : ℝ) ∂μ') atTop (𝓝 0) := by
+    simp_rw [← key]
+    exact hLp2
+  -- Convert: (‖x‖₊ : ℝ≥0∞)^(2:ℝ) = ‖x‖₊^2
+  have hnorm_eq : ∀ n, ∀ t, (‖u (φ n) t - uInf t‖₊ : ℝ≥0∞) ^ (2 : ℝ) =
+      (‖u (φ n) t - uInf t‖₊ ^ 2 : ℝ≥0∞) := by
+    intro n t
+    rw [← ENNReal.rpow_natCast, ENNReal.rpow_natCast]
+    norm_num
+  simp_rw [hnorm_eq] at hlint
+  -- Now convert lintegral → integral
+  -- ∫ ‖f‖^2 = (∫⁻ ‖f‖₊^2).toReal when the function is integrable
+  -- We need Tendsto (fun n => (∫⁻ ‖f_n‖₊^2).toReal) → 0
+  have hlint_real : Tendsto (fun n => (∫⁻ t, (‖u (φ n) t - uInf t‖₊ ^ 2 : ℝ≥0∞) ∂μ').toReal) atTop (𝓝 0) := by
+    rw [← ENNReal.zero_toReal]
+    apply ENNReal.Tendsto.toReal hlint
+    exact fun ⟨_, hn⟩ => by simp at hn
+  -- Now relate ∫ ‖f‖^2 dμ to (∫⁻ ‖f‖₊^2 dμ).toReal
+  suffices h : ∀ n, ∫ t in Icc 0 T, ‖u (φ n) t - uInf t‖ ^ 2 =
+      (∫⁻ t, (‖u (φ n) t - uInf t‖₊ ^ 2 : ℝ≥0∞) ∂μ').toReal by
+    simp_rw [h]
+    exact hlint_real
+  intro n
+  rw [← integral_norm_eq_lintegral_nnnorm]
+  · congr 1
+    ext t
+    rw [Real.norm_rpow_of_nonneg (norm_nonneg _)]
+    simp [NNReal.coe_pow, ENNReal.toReal]
+  · exact ((hmeas_sub n).sub hmeas_inf).norm.pow_const 2 |>.aestronglyMeasurable
+
+end ZtareProofs.SwarmAttempts.Vclaudeopus46

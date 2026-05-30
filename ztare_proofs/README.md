@@ -1,11 +1,18 @@
-# ZTARE Proof Stubs
+# ZTARE Lean Gate Artifacts
 
-Lean 4 proof obligations generated from ZTARE gate harness results.
+Lean 4 gate artifacts generated from ZTARE harness results.
 
-Each file encodes the empirical verification of a discovered asymptotic law:
-gate passes become `#eval` checks on Float bounds (decidable, no `sorry`),
-gate failures become exclusion witnesses, and PSLQ identifications become
-named axiom conjectures with explicit `sorry` marking the epistemic boundary.
+Each file encodes bounded checks around a candidate form: gate passes become
+`#eval` checks on finite Float grids, gate failures become exclusion witnesses,
+and PSLQ identifications become named conjectural boundaries when present.
+These artifacts are not theorem discoveries by themselves; they are executable
+receipts for what the harness checked.
+
+For the Navier-Stokes campaign specifically, start with the public journey and
+current status checkpoint before reading the large Lean corpus:
+[`projects/ns_millennium_hunt/public/JOURNEY.md`](../projects/ns_millennium_hunt/public/JOURNEY.md).
+The current NS posture is an obstruction/residual atlas with many conditional
+and local Lean surfaces, not an unconditional Clay proof.
 
 ## Setup
 
@@ -50,8 +57,10 @@ def check_holdout_global_residual_pass : Bool :=
 #eval check_holdout_global_residual_pass  -- prints true
 ```
 
-The `#eval` line runs the computation in the Lean kernel. If it prints `true`,
-the gate bound holds on every point in the holdout grid. No `sorry` needed.
+The `#eval` line runs the finite computation through Lean. If it prints `true`,
+the gate bound holds on every listed point in the holdout grid under the encoded
+Float arithmetic. That is a bounded gate receipt, not a proof of the underlying
+scientific law.
 
 PSLQ conjecture (sorry-bearing, epistemic boundary explicit):
 ```lean
@@ -59,8 +68,8 @@ PSLQ conjecture (sorry-bearing, epistemic boundary explicit):
 ```
 
 The `sorry` marks where empirical measurement ends and mathematical conjecture
-begins. The sorry-free portion (gate checks) is certified. The sorry-bearing
-portion (exact constant identification) is a challenge to the community.
+begins. The sorry-free portion is the executable gate check. The sorry-bearing
+portion is not a claimed closure; it is a named unresolved boundary.
 
 ## Regenerating proof stubs
 
@@ -78,14 +87,14 @@ lake build
 
 ## Architecture
 
-Product A (Certified Empirical Bounds): `#eval` on Float arithmetic.
-The Lean kernel verifies that the model predictions match the holdout
-data within pre-registered tolerances. No theorem proving required.
+Product A (Executable Empirical Bounds): `#eval` on Float arithmetic.
+Lean checks that the encoded model predictions match the listed holdout data
+within pre-registered tolerances. No theorem proving is implied.
 
-Product B (Automated Conjectures): PSLQ maps fitted floats to exact
-constants. The conjecture is published with an explicit `sorry` that
-names the logical gap. The community can discharge it or refute it.
+Product B (Candidate Constant Identifications): PSLQ maps fitted floats to
+possible exact constants. Any such identification is published with an explicit
+boundary that names the logical gap.
 
-Product C (Deductive Proofs): Killed by design. Formalizing the circle
-method or Meinardus theory in Mathlib is a multi-year project outside
-the scope of this apparatus. See GP-081 seam for the panel debate.
+Product C (Full Deductive Theory Formalization): out of scope for this artifact
+class unless a separate project declares the theorem, assumptions, proof route,
+and verification gate. See GP-081 seam for the panel debate.

@@ -1,0 +1,142 @@
+import Mathlib.Tactic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.MeasureTheory.Function.UnifTight
+import Mathlib.MeasureTheory.Function.LpSpace.Basic
+import Mathlib.Topology.MetricSpace.Sequences
+
+
+namespace ZtareProofs.SwarmAttempts.Vgemini31pro
+
+open MeasureTheory Filter Topology Set
+
+structure KolmogorovRieszFrechetData
+    (B : Type v) [NormedAddCommGroup B] [MeasurableSpace B]
+    [BorelSpace B] [SecondCountableTopology B]
+    (T : ℝ) (u : ℕ → ℝ → B) : Prop where
+  hT_pos : 0 < T
+  meas_u : ∀ n, StronglyMeasurable (u n)
+  unif_l2_bound : ∃ M : ℝ, 0 ≤ M ∧
+    ∀ n, ∫ t in Set.Icc 0 T, ‖u n t‖^2 ≤ M
+  unif_tight :
+    MeasureTheory.UnifTight (fun n => Set.indicator (Set.Icc 0 T) (u n)) 2 MeasureTheory.volume
+  unif_integrable :
+    MeasureTheory.UnifIntegrable (fun n => Set.indicator (Set.Icc 0 T) (u n)) 2 MeasureTheory.volume
+  unif_translation :
+    ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧
+      ∀ n, ∀ h : ℝ, |h| < δ →
+        ∫ t in Set.Icc 0 T, ‖u n (t + h) - u n t‖^2 < ε
+
+theorem vitali_to_integral
+    {B : Type v} [NormedAddCommGroup B] [MeasurableSpace B]
+    [BorelSpace B] [SecondCountableTopology B]
+    {T : ℝ} {u : ℕ → ℝ → B}
+    (_D : KolmogorovRieszFrechetData B T u)
+    (φ : ℕ → ℕ) (_hφ : StrictMono φ) (uInf : ℝ → B)
+    (_h_ae : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc 0 T)),
+              Filter.Tendsto (fun n => u (φ n) t) Filter.atTop (𝓝 (uInf t))) :
+    Filter.Tendsto
+      (fun n => ∫ t in Set.Icc 0 T, ‖u (φ n) t - uInf t‖^2)
+      Filter.atTop (𝓝 0) := by
+  let F := fun n t => Set.indicator (Set.Icc 0 T) (u (φ n)) t
+  let g := fun t => Set.indicator (Set.Icc 0 T) uInf t
+
+  have h_meas_F : ∀ n, AEStronglyMeasurable (F n) MeasureTheory.volume := by
+    intro n
+    exact (StronglyMeasurable.indicator (_D.meas_u (φ n)) measurableSet_Icc).aestronglyMeasurable
+
+  have hae' : ∀ᵐ t ∂MeasureTheory.volume, Filter.Tendsto (fun n => F n t) Filter.atTop (𝓝 (g t)) := by
+    rw [MeasureTheory.ae_restrict_iff' measurableSet_Icc] at _h_ae
+    filter_upwards [_h_ae] with t ht
+    by_cases h : t ∈ Set.Icc 0 T
+    · have := ht h
+      simp only [F, g, h, Set.indicator_of_mem]
+      exact this
+    · simp only [F, g, h, Set.indicator_of_not_mem, not_false_iff]
+      exact tendsto_const_nhds
+
+  have h_meas_g : AEStronglyMeasurable g MeasureTheory.volume :=
+    MeasureTheory.aestronglyMeasurable_of_tendsto_ae h_meas_F hae'
+
+  have h_meas_sub : ∀ n, AEStronglyMeasurable (fun t => F n t - g t) MeasureTheory.volume := by
+    intro n
+    exact (h_meas_F n).sub h_meas_g
+
+  have hUI : MeasureTheory.UnifIntegrable F 2 MeasureTheory.volume := by
+    first
+    | exact _D.unif_integrable.comp φ
+    | exact fun ε hε => by
+        have h_eps := _D.unif_integrable ε hε
+        rcases h_eps with ⟨a, ha⟩
+        exact ⟨a, fun n => ha (φ n)⟩
+    | rcases _D.unif_integrable with ⟨h1, h2⟩
+      exact ⟨fun ε hε => by
+        have h_eps := h1 ε hε
+        rcases h_eps with ⟨a, ha⟩
+        exact ⟨a, fun n => ha (φ n)⟩, fun n => h2 (φ n)⟩
+
+  have hUT : MeasureTheory.UnifTight F 2 MeasureTheory.volume := by
+    first
+    | exact _D.unif_tight.comp φ
+    | exact fun ε hε => by
+        have h_eps := _D.unif_tight ε hε
+        rcases h_eps with ⟨s, hs, hμ, h⟩
+        exact ⟨s, hs, hμ, fun n => h (φ n)⟩
+    | rcases _D.unif_tight with ⟨h1, h2⟩
+      exact ⟨fun ε hε => by
+        have h_eps := h1 ε hε
+        rcases h_eps with ⟨s, hs, hμ, h⟩
+        exact ⟨s, hs, hμ, fun n => h (φ n)⟩, fun n => h2 (φ n)⟩
+
+  have h_tendsto_eLpNorm : Filter.Tendsto (fun n => MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume) Filter.atTop (𝓝 0) := by
+    first
+    | exact MeasureTheory.tendsto_Lp_of_tendsto_ae hae' hUI hUT h_meas_F
+    | exact MeasureTheory.tendsto_Lp_of_tendsto_ae (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num : (2 : ℝ≥0∞) ≠ ∞) hae' hUI hUT h_meas_F
+    | exact MeasureTheory.tendsto_Lp_of_tendsto_ae (by norm_num : (0 : ℝ≥0∞) < 2) (by norm_num : (2 : ℝ≥0∞) ≠ ∞) hae' hUI hUT h_meas_F
+
+  have h_tendsto_eLpNorm_toReal : Filter.Tendsto (fun n => (MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume).toReal) Filter.atTop (𝓝 0) := by
+    have h_zero : (0 : ℝ) = ENNReal.toReal 0 := rfl
+    rw [h_zero]
+    exact ENNReal.tendsto_toReal (by simp) h_tendsto_eLpNorm
+
+  have h_tendsto_pow : Filter.Tendsto (fun n => (MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume).toReal ^ 2) Filter.atTop (𝓝 0) := by
+    have h_zero : (0 : ℝ) = 0 ^ 2 := by norm_num
+    rw [h_zero]
+    exact Filter.Tendsto.pow h_tendsto_eLpNorm_toReal 2
+
+  have H_eq : ∀ n, ∫ t, ‖F n t - g t‖ ^ (2 : ℝ) ∂MeasureTheory.volume = (MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume).toReal ^ (2 : ℝ) := by
+    intro n
+    first
+    | exact MeasureTheory.integral_norm_rpow_eq_rpow_eLpNorm (by norm_num : 0 < (2 : ℝ≥0∞).toReal)
+    | exact MeasureTheory.integral_norm_rpow_eq_rpow_eLpNorm (by norm_num : 0 < (2 : ℝ≥0∞).toReal) (h_meas_sub n)
+
+  have H_eq2 : ∀ n, ∫ t, ‖F n t - g t‖ ^ 2 ∂MeasureTheory.volume = (MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume).toReal ^ 2 := by
+    intro n
+    have h1 := H_eq n
+    have hr1 : (fun t => ‖F n t - g t‖ ^ (2 : ℝ)) = (fun t => ‖F n t - g t‖ ^ 2) := by
+      ext t
+      exact Real.rpow_two _
+    have hr2 : (MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume).toReal ^ (2 : ℝ) = (MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume).toReal ^ 2 := by
+      exact Real.rpow_two _
+    rw [hr1, hr2] at h1
+    exact h1
+
+  have H_int_tendsto : Filter.Tendsto (fun n => ∫ t, ‖F n t - g t‖ ^ 2 ∂MeasureTheory.volume) Filter.atTop (𝓝 0) := by
+    have heq_fun : (fun n => ∫ t, ‖F n t - g t‖ ^ 2 ∂MeasureTheory.volume) = (fun n => (MeasureTheory.eLpNorm (fun t => F n t - g t) 2 MeasureTheory.volume).toReal ^ 2) := by
+      ext n
+      exact H_eq2 n
+    rw [heq_fun]
+    exact h_tendsto_pow
+
+  have H_final : (fun n => ∫ t in Set.Icc 0 T, ‖u (φ n) t - uInf t‖ ^ 2) = (fun n => ∫ t, ‖F n t - g t‖ ^ 2 ∂MeasureTheory.volume) := by
+    ext n
+    rw [← MeasureTheory.integral_indicator measurableSet_Icc]
+    congr 1
+    ext t
+    by_cases h : t ∈ Set.Icc 0 T
+    · simp [h, F, g]
+    · simp [h, F, g]
+
+  rw [H_final]
+  exact H_int_tendsto
+
+end ZtareProofs.SwarmAttempts.Vgemini31pro
