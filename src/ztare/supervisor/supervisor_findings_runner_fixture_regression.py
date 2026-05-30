@@ -236,7 +236,7 @@ def test_single_claude_mode_mixed_seam_defaults_to_author_on_tie() -> None:
 
 
 def test_validate_findings_write_scope_accepts_private_seam() -> None:
-    # Any file under research_areas/private/seams/ is allowed
+    # Any file under [internal-ref] is allowed
     from src.ztare.common.paths import REPO_ROOT
     seam = REPO_ROOT / "research_areas" / "private" / "seams" / "GP-036_findings_runner_supervisor_convergence_seam.md"
     validate_findings_write_scope(seam)  # should not raise
@@ -282,7 +282,7 @@ def test_build_findings_context_injects_related_seam() -> None:
     # A real seam from the repo referenced by path — the context builder
     # must emit a RELATED_SEAM_EXCERPT tier with the right provenance.
     from src.ztare.common.paths import REPO_ROOT
-    real_related = "research_areas/private/seams/GP-031_findings_birth_bridge_seam.md"
+    real_related = "GP-031 (internal seam)"
     if not (REPO_ROOT / real_related).exists():
         return  # skip if the referenced file moved
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -306,7 +306,7 @@ def test_build_findings_context_injects_related_spec() -> None:
     # "debate the spec inside the seam" work without the operator
     # pasting spec excerpts into turn bodies by hand.
     from src.ztare.common.paths import REPO_ROOT
-    real_spec = "research_areas/private/specs/active/GP-036_findings_runner_supervisor_convergence_spec.md"
+    real_spec = "GP-036 (internal seam)"
     if not (REPO_ROOT / real_spec).exists():
         return  # skip if the referenced spec moved
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -329,20 +329,20 @@ def test_format_context_tiers_includes_provenance_headers() -> None:
     tiers = [
         ContextTier(
             label="BOARD_ROW",
-            source_path="research_areas/private/ZTARE_BOARD.md",
+            source_path="[internal-ref]",
             content="| GP-036 | findings | ... |",
             token_estimate=10,
         )
     ]
     rendered = format_context_tiers(tiers)
-    assert "--- BOARD_ROW (source: research_areas/private/ZTARE_BOARD.md) ---" in rendered
+    assert "--- BOARD_ROW (source: [internal-ref]) ---" in rendered
     assert "GP-036" in rendered
 
 
 def test_build_turn_prompt_injects_context_when_seam_path_given() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         seam = Path(tmpdir) / "GP-036_dummy_seam.md"
-        seam_body = "Seam body referencing research_areas/private/seams/GP-031_findings_birth_bridge_seam.md"
+        seam_body = "Seam body referencing GP-031 (internal seam)"
         seam.write_text(seam_body)
         state = _state_with_turns(())
         prompt = build_turn_prompt(
@@ -352,7 +352,7 @@ def test_build_turn_prompt_injects_context_when_seam_path_given() -> None:
             seam_path=seam,
         )
         from src.ztare.common.paths import REPO_ROOT
-        if (REPO_ROOT / "research_areas/private/seams/GP-031_findings_birth_bridge_seam.md").exists():
+        if (REPO_ROOT / "GP-031 (internal seam)").exists():
             assert "--- BEGIN CONTEXT ---" in prompt
             assert "--- END CONTEXT ---" in prompt
         assert f"**{SINGLE_CLAUDE_AUTHOR}**" in prompt

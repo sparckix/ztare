@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Load org/ primitives (members, roles, assignments, delegation) into
 typed Python objects and expose a Registry for lookup.
 

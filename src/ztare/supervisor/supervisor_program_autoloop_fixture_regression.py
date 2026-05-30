@@ -50,7 +50,7 @@ def _status(
             else StatusReason.AWAITING_EVALUATION
         ),
         pipeline_type="research",
-        debate_file="research_areas/private/papers/paper4_manuscript.md",
+        debate_file="[internal-ref]",
         debate_last_turn=31,
         owner_mode="debate",
         seed_spec_path="research_areas/seeds/active/paper4_manuscript.md",

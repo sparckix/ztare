@@ -137,7 +137,7 @@ DEFAULT_SKEPTIC_PERSONA_PATH = (
     Path.home()
     / ".claude"
     / "projects"
-    / "-Users-daalami-figs-activist-loop"
+    / "-[repo]-"
     / "memory"
     / "feedback_automated_skeptic_persona.md"
 )
@@ -159,7 +159,7 @@ _GROUNDING_MUNGER_PATH = (
     Path.home()
     / ".claude"
     / "projects"
-    / "-Users-daalami-figs-activist-loop"
+    / "-[repo]-"
     / "memory"
     / "project_munger_philosophy.md"
 )
@@ -345,7 +345,7 @@ def build_single_claude_system_prompt(
 
 ALLOWED_FINDINGS_DIRS: tuple[str, ...] = (
     "research_areas/seams/",
-    "research_areas/private/seams/",
+    "[internal-ref]",
 )
 """Directories the runner is permitted to append turns into. Enforced
 by ``validate_findings_write_scope`` (GP-036 Deliverable 2). A path
@@ -866,7 +866,7 @@ SUPERVISOR_USAGE_LEDGER_DIR = (
 )
 """Home for the GP-036 runner's per-seam cost ledger.
 
-Keeps observation data out of ``research_areas/private/seams/`` where
+Keeps observation data out of ``[internal-ref]`` where
 the seams themselves live as hand-curated primary artifacts. The split
 mirrors the existing ``ztare_workspace/gates/pending/`` pattern:
 machine-emitted supervisor telemetry lives under

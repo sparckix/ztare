@@ -66,6 +66,14 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
             prompt_tokens_details=_Obj(cached_tokens=15),
         ),
     )
+    deepseek_response = _Obj(
+        model="deepseek-reasoner",
+        choices=[_Obj(message=_Obj(content="deepseek text"))],
+        usage=_Obj(
+            prompt_tokens=410,
+            completion_tokens=85,
+        ),
+    )
     claude_response = _Obj(
         model="claude-sonnet-4-6-20260401",
         content=[_Obj(text="claude text")],
@@ -79,6 +87,7 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
 
     gemini_result = runtime._response_to_text_result(gemini_response, "gemini-2.5-flash")  # noqa: SLF001
     openai_result = runtime._response_to_text_result(openai_response, "gpt-4o")  # noqa: SLF001
+    deepseek_result = runtime._response_to_text_result(deepseek_response, "deepseek-reasoner")  # noqa: SLF001
     claude_result = runtime._response_to_text_result(claude_response, "claude-sonnet-4-6")  # noqa: SLF001
     fallback_result = fallback_runtime.call_text(
         "fallback prompt",
@@ -95,6 +104,7 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
             "passed": (
                 resolve_model_id("gemini") == "gemini-2.5-flash"
                 and resolve_model_id("gemini-pro") == "gemini-3.1-pro-preview"
+                and resolve_model_id("deepseek-reasoner") == "deepseek-reasoner"
                 and resolve_director_model_id("gpt4o") == "o1"
             ),
         },
@@ -104,6 +114,7 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
                 pricing_model_name("models/gemini-2.5-flash") == "gemini-2.5-flash"
                 and pricing_model_name("claude-sonnet-4-6-20260401") == "claude-sonnet-4-6"
                 and pricing_model_name("gpt-4o-2026-04-01") == "gpt-4o"
+                and pricing_model_name("deepseek-reasoner-v1") == "deepseek-reasoner"
             ),
         },
         {
@@ -124,6 +135,15 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
                 and openai_result.usage.output_tokens == 45
                 and openai_result.usage.cache_read_input_tokens == 15
                 and openai_result.model_name == "gpt-4o-2026-04-01"
+            ),
+        },
+        {
+            "case_id": "deepseek_usage_is_extracted_from_openai_compatible_response",
+            "passed": (
+                deepseek_result.text == "deepseek text"
+                and deepseek_result.usage.input_tokens == 410
+                and deepseek_result.usage.output_tokens == 85
+                and deepseek_result.model_name == "deepseek-reasoner"
             ),
         },
         {

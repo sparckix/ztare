@@ -168,6 +168,22 @@ The project has failed if it drifts into any of the following:
 ## Forecast Type
 - {hints["forecast_type"]}
 
+## Pre-Registered Null-Shape
+
+Before any run starts, name what an honest null result would look like — what specific obstruction, structural reason, or impossibility would emerge if the project's positive claim fails. This section is a Munger-style anti-self-deception lock: stating the failure mode in advance prevents post-hoc rationalization of nulls as inconclusive. Applies to both quantitative and qualitative projects.
+
+Required (any project):
+- **Obstruction class** — the named structural reason the positive claim might fail. Examples by project type:
+  - *Quantitative*: "real-symmetric polynomial+arithmetic ansatz hits MSE-vs-CV Pareto"; "finite-prefix budget cannot inherit to infinite limit without a named LSC lemma"; "vocabulary narrows to <30% coverage on a held-out subfield"
+  - *Qualitative / strategic / business*: "the thesis depends on a load-bearing assumption that fails empirically (e.g., adoption rate < N)"; "the mechanism only fires under a regime our cohort doesn't represent"; "the proposed market segment behaves bimodally and median-reasoning misses the actual customer"
+- **What we would learn from the null** — the structural finding the obstruction itself would constitute, distinct from "the experiment didn't work" or "the thesis doesn't hold." A pre-stated null shape converts a no-result run into a finding about *which* part of the search/argument space is empty.
+
+Optional (quantitative / sweep-based projects only):
+- **Search-space cartography hook** — if the project runs a parameter sweep or scans a discrete option grid, declare which dimensions of the resulting (loss, signal) plane will be reported as phase-diagram structure (modes, gaps, basin counts) via `scripts/public/analytics_shared/search_space_cartography.py`, even on a null run. Sweep nulls without cartography are partial waste; sweep nulls with cartography are themselves findings.
+- *Qualitative projects*: cartography hook does not apply. Substitute "what surfaces of the argument space we will examine even if the central thesis fails" — e.g., which counterexamples, edge cases, or competitor strategies will be enumerated regardless.
+
+Origin: GP-218 audit-surfaced finding 2026-05-05 (GP-218 (internal seam), R3) — promoting GP-122b's pre-declared divisor-spike obstruction (riemann_lagarias) into a charter discipline applicable to all projects, generalized so qualitative / strategic / business charters get the same anti-self-deception lock without forcing a quantitative-sweep frame.
+
 ## Inheritance
 - none
 

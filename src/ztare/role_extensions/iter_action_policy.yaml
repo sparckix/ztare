@@ -1,0 +1,141 @@
+# RD-1.12 iter-to-action policy (2026-05-02)
+#
+# Maps "what just happened in the iter loop" → "what the Research Director
+# should do next". Loaded by src/ztare/role_extensions/iter_action_policy.py
+# at daemon-tick time. Policy is hot-reloadable: edit this file, the next
+# tick picks up changes.
+#
+# Each rule has:
+#   when:   pattern matched against the event the runner emitted
+#   do:     action_kind + params (queued via frontier_state.queue_action)
+#   reason: human-readable description of the structural rationale
+#   gated_by (optional): rubric/role-flag that must be true for the rule
+#                        to fire. Default = always-fire.
+#   cooldown_seconds (optional): minimum gap between this rule firing again
+#                                for the same project; default 0 (no cooldown)
+#
+# Action kinds the daemon knows about:
+#   fork_substrate
+#       params: { from_project, to_project, evidence_diff, charter_addendum }
+#   create_lean_cage
+#       params: { axiom_statement, project_dir, claim_label }
+#   demote_route_in_packet
+#       params: { route_id, new_rank }
+#   mutate_evidence
+#       params: { project_dir, additions: [...], removals: [...] }
+#   mutate_charter
+#       params: { project_dir, section, content }
+#   queue_cold_shot
+#       params: { model_id, prompt, project_dir }
+#   escalate_to_principal
+#       params: { title, body, severity }
+#
+# Every action is subject to the role's USD spend gate
+# (src/ztare/supervisor/spend_tracker.check_budget_allows) and agent-CLI
+# utilization gate (agent_utilization_tracker.check_utilization_allows)
+# at execution time. The policy file describes WHEN; the budget gates
+# decide IF.
+
+schema_version: 1
+last_updated: "2026-05-02"
+
+rules:
+  - id: obstruction_repeated_fork
+    when:
+      kind: obstruction_detected
+      route_id: "*"
+      consecutive_count: ">=2"
+    do:
+      action_kind: fork_substrate
+      params:
+        evidence_diff_strategy: "constructive_complement"
+        rationale: "primary route obstructed twice; fork to constructive complement"
+    reason: |
+      A route that produces the same obstruction twice in a row signals the
+      apparatus is in a basin the current substrate can't escape. Fork a
+      successor substrate with constructive-complement evidence (anchors
+      the obstructed route AS evidence, not as goal) so the next iter
+      attacks from a different direction.
+    cooldown_seconds: 1800
+
+  - id: verified_axiom_to_lean_cage
+    when:
+      kind: verified_axiom_emitted
+    do:
+      action_kind: create_lean_cage
+      params:
+        cage_dir: "ztare_proofs/cages/"
+    reason: |
+      A verified axiom (per gate_harness + judge approval) becomes a Lean
+      theorem cage so the claim is mechanized. RD-1.11 mandate authorizes
+      this. The cage is a separate artifact track from the project's
+      workspace; it lives under ztare_proofs/.
+
+  - id: native_route_collapse_demote
+    when:
+      kind: native_route_collapse
+    do:
+      action_kind: demote_route_in_packet
+      params:
+        new_rank: 99
+    reason: |
+      When a route's NATIVE claim (the form on its own data, not on
+      inherited surrogate targets) fails decisively, demote it in the
+      packet ranking so subsequent iters consider sibling routes first.
+      Per RD-1.11-NATIVE-CLAIM-FIRST-EVALUATION addition.
+
+  - id: champion_shift_update_meaning
+    when:
+      kind: champion_promoted
+    do:
+      action_kind: update_champion_meaning
+      params: {}
+    reason: |
+      When a new champion promotes, update the frontier_state's
+      champion_meaning label so dashboards + downstream rules use the
+      correct interpretive layer. Cheap; runs every champion shift.
+
+  - id: ambient_gate_repeated_cold_shot
+    when:
+      kind: gate_failed
+      gate_name: AMBIENT_CONTROL
+      consecutive_count: ">=3"
+    do:
+      action_kind: queue_cold_shot
+      params:
+        model_id: "gemini-3.1-pro-preview"
+        prompt_template: "ambient_gate_repeated_failure_v1"
+    reason: |
+      Three consecutive ambient-gate failures means the apparatus's
+      mutator is stuck in a basin that cannot satisfy the d→∞ axiom.
+      Cold-shot a different model family for a structurally orthogonal
+      candidate before burning more iters in the same basin.
+    cooldown_seconds: 3600
+
+  - id: budget_warn_escalate
+    when:
+      kind: budget_warn_threshold_tripped
+    do:
+      action_kind: escalate_to_principal
+      params:
+        severity: warn
+    reason: |
+      80% of daily USD or agent-CLI cap consumed → notify principal so
+      they can decide whether to (a) bump the cap, (b) demote the active
+      project, or (c) accept the slowdown.
+
+  - id: stagnation_propose_de_anchor
+    when:
+      kind: stagnation_detected
+      consecutive_zeros: ">=3"
+    do:
+      action_kind: queue_cold_shot
+      params:
+        model_id: "gpt-5.5"
+        prompt_template: "fractal_de_anchor_v1"
+    reason: |
+      Three consecutive iters at score 0 with no progress signals the
+      mutator is locked in. Per the fractal-de-anchoring memory: the
+      FRAME may be the suspect, not the form. Cold-shot a fresh model
+      with explicit de-anchoring discipline before continuing.
+    cooldown_seconds: 1800

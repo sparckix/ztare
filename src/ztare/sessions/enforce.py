@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Holes 2 + 3: session auto-open + multi-session conflict enforcement.
 
 Two helpers that the manager-agent (and any role that wants the same
@@ -71,6 +71,10 @@ def ensure_session(
         )
 
     if mandate_path is not None and session.directory is not None:
+        mandate_path = Path(mandate_path)
+        if not mandate_path.is_absolute():
+            from src.ztare.common.paths import REPO_ROOT
+            mandate_path = REPO_ROOT / mandate_path
         # Lazy import avoids circular dep (signals.autoemit is higher in
         # the dependency graph than sessions).
         from src.ztare.signals import autoemit

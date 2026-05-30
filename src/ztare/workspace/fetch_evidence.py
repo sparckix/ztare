@@ -6,8 +6,8 @@ for degrading gaps (or operator-specified severity), appends stamped provenance 
 to evidence.txt, saves raw fetch content to raw/, writes a machine-readable manifest,
 and optionally runs workspace-update + evidence-compile so the operator doesn't have to.
 
-Spec: research_areas/private/specs/active/GP-051_evidence_fetch_agent_spec.md
-Seam: research_areas/private/seams/GP-051_evidence_fetch_agent_seam.md
+Spec: GP-051 (internal seam)
+Seam: GP-051 (internal seam)
 """
 
 from __future__ import annotations

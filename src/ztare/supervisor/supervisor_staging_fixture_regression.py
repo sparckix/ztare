@@ -119,7 +119,7 @@ def run_supervisor_staging_fixture_regression() -> dict[str, object]:
             "active_program": "paper4_drafting",
             "active_target": "paper_outline",
             "pipeline_type": "research",
-            "debate_file": "research_areas/private/papers/paper4.md",
+            "debate_file": "[internal-ref]",
             "seed_spec_path": "research_areas/seeds/active/paper4_managerial_capitalism.md",
             "artifact_paths": ArtifactPaths(),
             "next_actor": Actor.CODEX,
@@ -135,7 +135,7 @@ def run_supervisor_staging_fixture_regression() -> dict[str, object]:
             "active_program": "paper4_drafting",
             "active_target": "paper_outline",
             "pipeline_type": "research",
-            "debate_file": "research_areas/private/papers/paper4.md",
+            "debate_file": "[internal-ref]",
             "next_actor": Actor.CLAUDE,
             "verification_command": None,
             "artifact_paths": ArtifactPaths(

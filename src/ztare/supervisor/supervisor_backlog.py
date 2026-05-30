@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import tempfile
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -283,7 +284,9 @@ def _print_result(result: BacklogLaunchResult) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Draft or execute a bounded backlog pass for a program manifest.")
     parser.add_argument("--program", required=True)
-    parser.add_argument("--output-dir", type=Path, default=Path("/tmp/backlog"))
+    parser.add_argument("--output-dir", type=Path,
+                        default=Path(tempfile.gettempdir()) / "ztare_supervisor_backlog",
+                        help="Output directory for backlog artifacts. Default uses the system tempdir, not /tmp.")
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
 

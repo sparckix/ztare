@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import tempfile
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -386,7 +387,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Draft a pre-registry proposal manifest from a research seed.")
     parser.add_argument("--seed-id", required=True)
     parser.add_argument("--program-id", required=True)
-    parser.add_argument("--output-dir", type=Path, default=Path("/tmp/proposal"))
+    parser.add_argument("--output-dir", type=Path,
+                        default=Path(tempfile.gettempdir()) / "ztare_supervisor_proposal",
+                        help="Output directory for proposal artifacts. Default uses the system tempdir, not /tmp.")
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
 

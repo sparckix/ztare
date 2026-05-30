@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Substrate handoff lock (GP-128 Hole 10 × GP-129 Margulis pull-forward).
 
 When two sessions could both act on the same task (e.g. a Claude
@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -89,6 +90,7 @@ def claim_task(
       sees it next cycle.
     """
     CLAIMS_DIR.mkdir(parents=True, exist_ok=True)
+    claim_path = _claim_path(task_id)
     existing = read_claim(task_id)
     if existing and existing.session_id != session_id and not existing.is_expired():
         damage.emit(
@@ -103,6 +105,11 @@ def claim_task(
             severity="warn",
         )
         return False, existing
+    if existing and existing.is_expired():
+        try:
+            claim_path.unlink()
+        except FileNotFoundError:
+            pass
 
     now = datetime.now(timezone.utc)
     claim = TaskClaim(
@@ -113,7 +120,29 @@ def claim_task(
         claimed_at_utc=now.isoformat(),
         expires_at_utc=(now + timedelta(seconds=ttl_seconds)).isoformat(),
     )
-    _claim_path(task_id).write_text(json.dumps(asdict(claim), indent=2), encoding="utf-8")
+    payload = json.dumps(asdict(claim), indent=2)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    try:
+        fd = os.open(claim_path, flags, 0o600)
+    except FileExistsError:
+        conflict = read_claim(task_id)
+        if conflict and conflict.session_id == session_id:
+            return True, conflict
+        if conflict:
+            damage.emit(
+                source=f"sessions.claims:{session_id}",
+                kind="handoff_conflict",
+                detail=(
+                    f"task_id={task_id} already claimed by session "
+                    f"{conflict.session_id} (role {conflict.role_id}); "
+                    f"expires {conflict.expires_at_utc}"
+                ),
+                session_id=session_id,
+                severity="warn",
+            )
+        return False, conflict
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(payload)
     return True, claim
 
 

@@ -1,0 +1,230 @@
+# ZTARE Architecture-Index Edge Graph
+#
+# The genuinely-novel meta-graph layer over the flat capability catalog at
+# `analytics/public/index/architecture_index.jsonl`. RAG-MCP / Voyager / Anthropic Skills
+# ship FLAT indexes (capability + triggers + description). This file adds the
+# typed edges that make a Director able to traverse from a capability to:
+#   - the seams it has discharged
+#   - the gateposts (GP-IDs) it operates on
+#   - the OKRs it advances (`org/key_results/*`)
+#   - the catch-ledger entries (`analytics/public/ledgers/catch/catch_ledger.jsonl`) it surfaced
+#   - other capabilities it composes-with
+#
+# Edge types:
+#   discharges_seam:   capability id -> seam path
+#   operates_on_gp:    capability id -> GP-ID (in `docs/internal/repo_audits/gp_index.tsv`)
+#   advances_okr:      capability id -> OKR path under `org/key_results/`
+#   surfaced_catch:    capability id -> catch_id in `analytics/public/ledgers/catch/catch_ledger.jsonl`
+#   composes_with:     capability id -> capability id (symmetric in spirit;
+#                      list one direction here, traversal is undirected)
+#
+# Coverage policy: edges are AUTHORITATIVE for impact-4 and impact-5
+# capabilities (the load-bearing tier). Lower tiers seed only obvious edges;
+# do not back-fill speculative composes_with for impact-1/0 entries.
+#
+# Maintenance: append-only by default. When a capability fires in a load-bearing
+# way and discharges a seam OR surfaces a catch, append an edge here AND bump
+# `impact_factor_expost` in `analytics/public/index/architecture_index.jsonl`. This is the
+# wiring that lets the discoverability test (Clay-closure 2026-05-08) prove
+# the index recommends capabilities BEFORE the operator prompts for them.
+
+version: 1
+last_updated: 2026-05-08
+
+edges:
+
+  # ---- impact-5 anti-pattern catalog (catch-ledger-backed) ----
+  - capability: ANTI-PATTERN-001-PATTERN-1-RABBIT-HOLE
+    surfaced_catch: [C-2026-05-08-05, C-2026-05-08-25]
+    composes_with: [PATTERN-001-FRICTION-DEBATE]
+
+  - capability: ANTI-PATTERN-002-CITATION-LAUNDERING
+    surfaced_catch: [C-2026-05-08-08, C-2026-05-08-27, C-2026-05-08-29, C-2026-05-08-35]
+    composes_with: [PATTERN-007-SMUGGLING-AUDIT]
+
+  - capability: ANTI-PATTERN-003-VOCABULARY-SMUGGLING
+    surfaced_catch: [C-2026-05-08-07, C-2026-05-08-10, C-2026-05-08-12, C-2026-05-08-13, C-2026-05-08-14, C-2026-05-08-23, C-2026-05-08-26]
+    composes_with: [PATTERN-004-VOCABULARY-QUARANTINE, PATTERN-007-SMUGGLING-AUDIT]
+
+  - capability: ANTI-PATTERN-004-SORRY-OBLIGATION-LAUNDERING
+    surfaced_catch: [C-2026-05-07-01, C-2026-05-07-02, C-2026-05-07-03, C-2026-05-08-06, C-2026-05-08-15]
+    composes_with: [PATTERN-009-INDEPENDENT-CAS-VERIFICATION]
+    operates_on_gp: [GP-NS-TRACKB]
+
+  - capability: ANTI-PATTERN-005-NARRATIVE-INFLATION
+    surfaced_catch: [C-2026-05-08-09, C-2026-05-08-11, C-2026-05-08-34]
+    composes_with: [PATTERN-003-REDUCER, PATTERN-006-TAUTOLOGY-TRAP]
+
+  # ---- impact-5 patterns (load-bearing tonight) ----
+  - capability: PATTERN-001-FRICTION-DEBATE
+    composes_with: [PATTERN-002-DARWIN-IDEA-KILLER, PATTERN-006-TAUTOLOGY-TRAP, PATTERN-003-REDUCER]
+    discharges_seam: [research_areas/private/philosophy/three_legs_of_ztare.md]
+
+  - capability: PATTERN-009-INDEPENDENT-CAS-VERIFICATION
+    composes_with: [CAS-W6-VERIFICATION, CAS-ATOM8-VERIFICATION, ANTI-PATTERN-004-SORRY-OBLIGATION-LAUNDERING]
+    surfaced_catch: [C-2026-05-08-06]
+
+  - capability: PATTERN-003-REDUCER
+    composes_with: [PATTERN-006-TAUTOLOGY-TRAP, PATTERN-005-FALSIFIABLE-ASYMMETRY, PATTERN-004-VOCABULARY-QUARANTINE, ANTI-PATTERN-005-NARRATIVE-INFLATION]
+
+  - capability: CAS-W6-VERIFICATION
+    discharges_seam: [projects/ns_millennium_hunt/workspace/research_notes/sympy_cas_verification_W6_atom8_2026_05_08.md]
+    composes_with: [PATTERN-009-INDEPENDENT-CAS-VERIFICATION, CAS-ATOM8-VERIFICATION]
+    operates_on_gp: [GP-NS-TRACKB-W6]
+
+  - capability: CAS-ATOM8-VERIFICATION
+    discharges_seam: [projects/ns_millennium_hunt/workspace/research_notes/sympy_cas_verification_W6_atom8_2026_05_08.md]
+    composes_with: [PATTERN-009-INDEPENDENT-CAS-VERIFICATION, CAS-W6-VERIFICATION, LAGRANGIAN-DERIVATION]
+    operates_on_gp: [GP-NS-TRACKB-ATOM8C]
+
+  - capability: NS-GRAPH-TICK-PRECHECK
+    surfaced_catch: [C-2026-05-09-112, C-2026-05-09-113, C-2026-05-09-114]
+    composes_with: [NS-L3A-CONCENTRATION-WORKMAP, PREDICTION-LOGGING-DISCRIMINATOR, PDE-INEQUALITY-DIMENSIONAL-GATE, LEAN-PROOF-GATE]
+    discharges_seam: [projects/ns_millennium_hunt/workspace/queries/ns_l3a_concentration_workmap.json, analytics/public/queries/rd/rd_tick_primitive_surface.json]
+    operates_on_gp: [GP-NS-TRACKB]
+
+  - capability: NS-L3A-CONCENTRATION-WORKMAP
+    surfaced_catch: [C-2026-05-09-112, C-2026-05-09-114]
+    composes_with: [NS-GRAPH-TICK-PRECHECK, LEAN-PROOF-GATE]
+    discharges_seam: [projects/ns_millennium_hunt/workspace/queries/ns_l3a_concentration_workmap.json]
+    operates_on_gp: [GP-NS-TRACKB]
+
+  - capability: PREDICTION-LOGGING-DISCRIMINATOR
+    surfaced_catch: [C-2026-05-09-113]
+    composes_with: [PATTERN-012-PREDICTION-LEDGER, NS-GRAPH-TICK-PRECHECK]
+    advances_okr: [org/key_results/rd_reflexive_audit_periodic.md]
+
+  - capability: PDE-INEQUALITY-DIMENSIONAL-GATE
+    composes_with: [PDE-ESTIMATE-CRAFT-OPS, LEAN-PROOF-GATE, NS-GRAPH-TICK-PRECHECK]
+    operates_on_gp: [GP-219, GP-NS-TRACKB]
+
+  - capability: LEAN-PROOF-GATE
+    composes_with: [PDE-INEQUALITY-DIMENSIONAL-GATE, NS-L3A-CONCENTRATION-WORKMAP, NS-GRAPH-TICK-PRECHECK]
+    operates_on_gp: [GP-NS-TRACKB]
+
+  # ---- impact-4 patterns ----
+  - capability: PATTERN-002-DARWIN-IDEA-KILLER
+    composes_with: [PATTERN-001-FRICTION-DEBATE, PATTERN-008-THREE-LEG-VERIFICATION]
+
+  - capability: PATTERN-010-BUSINESS-FRAMING
+    composes_with: [EIGENQUESTION-GENERATOR, PATTERN-001-FRICTION-DEBATE]
+
+  - capability: PATTERN-005-FALSIFIABLE-ASYMMETRY
+    composes_with: [PATTERN-003-REDUCER, PATTERN-004-VOCABULARY-QUARANTINE]
+    surfaced_catch: [C-2026-05-08-32]
+
+  - capability: PATTERN-007-SMUGGLING-AUDIT
+    composes_with: [ANTI-PATTERN-003-VOCABULARY-SMUGGLING, PATTERN-004-VOCABULARY-QUARANTINE]
+
+  - capability: PATTERN-006-TAUTOLOGY-TRAP
+    composes_with: [PATTERN-003-REDUCER, ANTI-PATTERN-005-NARRATIVE-INFLATION]
+    surfaced_catch: [C-2026-05-08-09]
+
+  - capability: PATTERN-008-THREE-LEG-VERIFICATION
+    composes_with: [PATTERN-002-DARWIN-IDEA-KILLER, PATTERN-009-INDEPENDENT-CAS-VERIFICATION]
+    discharges_seam: [research_areas/private/philosophy/three_legs_of_ztare.md]
+
+  - capability: PATTERN-004-VOCABULARY-QUARANTINE
+    composes_with: [ANTI-PATTERN-003-VOCABULARY-SMUGGLING, PATTERN-003-REDUCER, PATTERN-007-SMUGGLING-AUDIT]
+
+  # ---- GP-216 / GP-219 op vocabularies (impact-4) ----
+  - capability: UNIVERSAL-RESEARCH-OPS
+    operates_on_gp: [GP-216, GP-218]
+    composes_with: [PDE-ESTIMATE-CRAFT-OPS, PROBLEM-SOLVING-OPS, THEORY-BUILDING-OPS]
+    discharges_seam: [research_areas/private/seams/research_director/GP-216_universal_research_ops_seam.md]
+    advances_okr: [org/key_results/rd_apparatus_l2_review.md]
+
+  - capability: PDE-ESTIMATE-CRAFT-OPS
+    operates_on_gp: [GP-219]
+    composes_with: [UNIVERSAL-RESEARCH-OPS]
+    discharges_seam: [research_areas/private/seams/research_director/GP-219_pde_estimate_craft_seam.md]
+
+  - capability: PDE-CURRENCY-LEDGER
+    operates_on_gp: [GP-219]
+    composes_with: [PDE-ESTIMATE-CRAFT-OPS, PI-GROUP-FORCING-GATE, PDE-INEQUALITY-DIMENSIONAL-GATE, MOMENT-RATIO-SURPLUS-GATE, FINITE-PREFIX-SELECTION-GATE, BOUNDED-RATIO-SUPPORT-GATE]
+
+  - capability: MOMENT-RATIO-SURPLUS-GATE
+    operates_on_gp: [GP-219]
+    composes_with: [PDE-ESTIMATE-CRAFT-OPS, PDE-CURRENCY-LEDGER, BOUNDED-RATIO-SUPPORT-GATE]
+
+  - capability: FINITE-PREFIX-SELECTION-GATE
+    operates_on_gp: [GP-219]
+    composes_with: [PDE-ESTIMATE-CRAFT-OPS, PDE-CURRENCY-LEDGER, MOMENT-RATIO-SURPLUS-GATE]
+
+  - capability: BOUNDED-RATIO-SUPPORT-GATE
+    operates_on_gp: [GP-219]
+    composes_with: [PDE-ESTIMATE-CRAFT-OPS, PDE-CURRENCY-LEDGER, MOMENT-RATIO-SURPLUS-GATE]
+
+  - capability: THEORY-BUILDING-OPS
+    operates_on_gp: [GP-216]
+    composes_with: [UNIVERSAL-RESEARCH-OPS]
+
+  - capability: PROBLEM-SOLVING-OPS
+    operates_on_gp: [GP-218]
+    composes_with: [UNIVERSAL-RESEARCH-OPS]
+
+  # ---- key derivation/eigenquestion primitives (impact-3+) ----
+  - capability: LAGRANGIAN-DERIVATION
+    operates_on_gp: [GP-180, GP-181, GP-183]
+    composes_with: [G-LAGRANGIAN-NONTRIVIAL, BUCKINGHAM-PI, NOETHER-VARIANCE-LOSS, INVARIANT-SEARCH-RUBRIC-MODE, CAS-ATOM8-VERIFICATION]
+    discharges_seam: [research_areas/private/seams/engine/grammar/GP-180_lagrangian_primitive_seam.md]
+
+  - capability: G-LAGRANGIAN-NONTRIVIAL
+    operates_on_gp: [GP-183]
+    composes_with: [LAGRANGIAN-DERIVATION, CAS-ATOM8-VERIFICATION]
+
+  - capability: BUCKINGHAM-PI
+    operates_on_gp: [GP-180]
+    composes_with: [LAGRANGIAN-DERIVATION, NOETHER-VARIANCE-LOSS]
+
+  - capability: NOETHER-VARIANCE-LOSS
+    operates_on_gp: [GP-180]
+    composes_with: [LAGRANGIAN-DERIVATION, INVARIANT-SEARCH-RUBRIC-MODE]
+
+  - capability: INVARIANT-SEARCH-RUBRIC-MODE
+    operates_on_gp: [GP-180, GP-181]
+    composes_with: [LAGRANGIAN-DERIVATION, NOETHER-VARIANCE-LOSS]
+
+  - capability: EIGENQUESTION-GENERATOR
+    composes_with: [PATTERN-010-BUSINESS-FRAMING, PATTERN-001-FRICTION-DEBATE, FRACTAL-DEANCHORING]
+    discharges_seam: [research_areas/private/seams/research_director/eigenquestion_decomposition_seam.md]
+
+  - capability: FRACTAL-DEANCHORING
+    composes_with: [EIGENQUESTION-GENERATOR, PATTERN-010-BUSINESS-FRAMING]
+    surfaced_catch: [C-2026-04-28-DEANCHOR]
+
+  # ---- mining infrastructure (climb triggers, fingerprinting) ----
+  - capability: MINE-CLIMB-TRIGGERS
+    composes_with: [MINE-FINGERPRINTS, MINE-PIVOT-EFFECTIVENESS, MINE-WEAKEST-LINKS]
+    discharges_seam: [analytics/public/queries/trajectory/climb_triggers_2026-04-24.json]
+
+  - capability: MINE-FINGERPRINTS
+    composes_with: [MINE-CLIMB-TRIGGERS, GP-226-CHARTER-CRITIC]
+
+  - capability: MINE-PIVOT-EFFECTIVENESS
+    composes_with: [MINE-CLIMB-TRIGGERS]
+    discharges_seam: [analytics/public/queries/trajectory/pivot_effectiveness_2026-04-24.json]
+
+  - capability: MINE-WEAKEST-LINKS
+    composes_with: [MINE-CLIMB-TRIGGERS]
+    discharges_seam: [analytics/public/queries/classification/weakest_link_clusters_2026-04-24.json]
+
+  - capability: GP-226-CHARTER-CRITIC
+    operates_on_gp: [GP-226]
+    composes_with: [MINE-FINGERPRINTS]
+
+  # ---- gates (composes-with-substrate edges; impact-3 representatives) ----
+  - capability: G-LAGRANGIAN-NONTRIVIAL
+    composes_with: [LAGRANGIAN-DERIVATION, BUCKINGHAM-PI]
+
+  # ---- atom-8c-relevant fit primitive ----
+  - capability: FIT-PRIMITIVE
+    operates_on_gp: [GP-156, GP-158]
+    composes_with: [LAGRANGIAN-DERIVATION, INVARIANT-SEARCH-RUBRIC-MODE]
+    discharges_seam: [research_areas/seams/engine/grammar/GP-156_fit_primitive_seam.md]
+  - capability: ANTI-PATTERN-013-LEAN-CLOSURE-LAUNDERING
+    operates_on_gp: [GP-225, GP-211]
+    composes_with: [LEAN-PROOF-GATE, V33-PREFLIGHT-RISK-DETECTOR, V33-PARAPHRASE-GATE, V33-SINGLE-LEMMA-EXACT-GATE, V33-INDIRECT-LEAKAGE-GATE, V33-CURRENCY-MISMATCH-GATE]
+    # surfaced_catch: intentionally empty — this edge layer should be MINED
+    # from analytics/public/ledgers/catch/catch_ledger.jsonl, not hand-invented
+    # (see docs/concepts/closure_claim_governance.md §3 mechanization principle).

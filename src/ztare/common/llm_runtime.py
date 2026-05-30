@@ -4,11 +4,68 @@ import concurrent.futures
 import os
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Callable, Optional
 
-import anthropic
-from google import genai
-from openai import OpenAI
+try:
+    from openai import OpenAI
+except Exception:  # openai SDK not installed / import error
+    OpenAI = None  # type: ignore[assignment]
+
+# google-genai is an OPTIONAL provider (Gemini path only, used once at
+# the Gemini client construction below). A top-level hard import made
+# its absence poison EVERY module that transitively imports llm_runtime
+# (apparatus debt: it silently killed the deterministic PDE-estimate
+# preflight + anything else). Guard it so a missing optional SDK fails
+# LAZILY at actual Gemini use, not at import — the standard
+# optional-provider pattern. General-purpose: unblocks all transitive
+# importers in any env without google-genai. Fixed 2026-05-16.
+try:
+    from google import genai
+except Exception:  # google-genai not installed / import error
+    genai = None  # type: ignore[assignment]
+
+try:
+    import anthropic
+except Exception:  # anthropic SDK not installed / import error
+    anthropic = None  # type: ignore[assignment]
+
+
+def _bootstrap_dotenv_if_needed() -> None:
+    """Load .env from the project root when API keys are absent from os.environ.
+
+    Required because daemon-spawned subprocess chains (daemon → claude CLI →
+    make → python) propagate scrubbed env (no ANTHROPIC_API_KEY/OPENAI_API_KEY,
+    so claude CLI uses subscription instead of API key). The substrate runs
+    that python then triggers DO need API access. Without this bootstrap they
+    would silently fail with "no key set" at SDK construction.
+
+    No-op if all provider keys already present in env (the local developer flow where
+    keys are exported in shell). Reads .env quietly; no override of present env.
+    """
+    if all(os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY")):
+        return
+    try:
+        from dotenv import load_dotenv  # python-dotenv (already in requirements)
+    except ImportError:
+        return  # graceful: if dotenv missing, fall back to whatever os.environ has
+    # Walk up from CWD looking for .env (stops at filesystem root).
+    cwd = Path.cwd()
+    for d in [cwd] + list(cwd.parents):
+        candidate = d / ".env"
+        if candidate.is_file():
+            load_dotenv(candidate, override=False)  # don't clobber explicit env
+            return
+    # Last resort: try the canonical project root if importable
+    try:
+        candidate = Path(__file__).resolve().parents[3] / ".env"
+        if candidate.is_file():
+            load_dotenv(candidate, override=False)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+_bootstrap_dotenv_if_needed()
 
 
 MODEL_MAP = {
@@ -29,6 +86,14 @@ MODEL_MAP = {
     "o3-mini": "o3-mini",
     "o3-pro": "o3-pro",
     "o4-mini": "o4-mini",
+    # DeepSeek family (2026-05-26): added as cross-family verification option
+    # for adversarial review and committee panels per AGENTS.md §6n.3.
+    # OpenAI-API-compatible endpoint (base_url=api.deepseek.com/v1).
+    # `deepseek` = V3 chat (fast, ~1-2s). `deepseek-reasoner` = R1 (slow,
+    # ~30-90s, needs 8K+ output budget for internal reasoning tokens).
+    "deepseek": "deepseek-chat",
+    "deepseek-chat": "deepseek-chat",
+    "deepseek-reasoner": "deepseek-reasoner",
 }
 
 DIRECTOR_MODEL_MAP = {
@@ -48,12 +113,78 @@ DIRECTOR_MODEL_MAP = {
     "o4-mini": "o4-mini",
 }
 
-# Retry budget for production mutator/judge calls. Bumped from 12 to 25
-# on 2026-04-15 after a gemini 503 flap threatened phase-2 run integrity
-# under --no_model_fallback (where each retry is a primary-model attempt,
-# not a cross-provider fallback). Import this from caller sites instead of
-# hardcoding the number so both mutator and judge stay in lockstep.
-PRODUCTION_CALL_RETRIES = 25
+# Retry budget for production mutator/judge calls.
+# 2026-04-15: bumped 12 -> 25 after a gemini 503 flap.
+# 2026-04-27: dropped 25 -> 3 after audit found stealth billing on OpenAI
+# connection-error retries: each attempt re-sends the full prompt, OpenAI
+# bills input tokens once received (before stream death), and the SDK
+# does not return usage on exception. With 25 retries × 22k input tokens
+# at gpt-5.5 input pricing, a single connection-storm iter costs ~$0.69
+# while the apparatus reports $0. Three retries is plenty for transient
+# errors and caps the worst-case at ~$0.08/iter.
+PRODUCTION_CALL_RETRIES = 3
+
+# Module-level tracker for billed-but-unreported tokens from failed
+# retries (the 2026-04-27 audit fix). Each retry on a non-fatal exception
+# pushes a conservative input-token estimate here, KEYED BY MODEL so a
+# cross-provider fallback (gpt-5.5 retried 3× → gpt-4o retried 3×)
+# attributes the right pricing to each model rather than rolling them
+# all up to the last-attempted model. Callers drain in a finally-block
+# and accrue per-model so apparatus telemetry stays accurate.
+import threading
+
+_FAILED_RETRY_LOCK = threading.Lock()
+_FAILED_RETRY_TRACKER: dict = {
+    # model_name -> {"input_tokens": int, "attempts": int}
+}
+
+
+def drain_failed_retry_tracker() -> dict:
+    """Return-and-clear the per-model failed-retry tracker.
+
+    Returns a flat dict for backward compatibility with the v1 caller
+    (autoresearch_loop's safe_mutate), with the addition of a `per_model`
+    sub-dict for proper cross-provider attribution. Top-level keys are
+    summed across all models. Clears state on read.
+
+    Returned shape:
+        {
+            "attempts": int,           # sum across models
+            "input_tokens": int,       # sum across models
+            "model_name": str | None,  # most-recent model (first if tie)
+            "per_model": {model: {"input_tokens": int, "attempts": int}, ...},
+        }
+    """
+    with _FAILED_RETRY_LOCK:
+        per_model = {k: dict(v) for k, v in _FAILED_RETRY_TRACKER.items()}
+        _FAILED_RETRY_TRACKER.clear()
+    total_input = sum(m["input_tokens"] for m in per_model.values())
+    total_attempts = sum(m["attempts"] for m in per_model.values())
+    most_recent_model = next(iter(per_model.keys()), None)
+    return {
+        "attempts": total_attempts,
+        "input_tokens": total_input,
+        "model_name": most_recent_model,
+        "per_model": per_model,
+    }
+
+
+def _record_failed_retry(prompt: str, model_name: str) -> None:
+    """Record one failed retry attempt's billed-input estimate.
+
+    Token estimate uses len(prompt)//3 (conservative — catches Claude
+    and Gemini tokenizer densities; OpenAI is typically lower so this
+    over-counts slightly, which is the safe direction for a stealth-bill
+    estimate the user wants to see).
+    """
+    estimate = max(1, len(prompt) // 3)
+    with _FAILED_RETRY_LOCK:
+        bucket = _FAILED_RETRY_TRACKER.setdefault(
+            model_name or "unknown",
+            {"input_tokens": 0, "attempts": 0},
+        )
+        bucket["input_tokens"] += estimate
+        bucket["attempts"] += 1
 
 
 FALLBACK_MODEL_CHAINS = {
@@ -93,6 +224,10 @@ def is_claude_model(model_id: str) -> bool:
     return model_id.startswith("claude")
 
 
+def is_deepseek_model(model_id: str) -> bool:
+    return model_id.startswith("deepseek")
+
+
 def is_openai_model(model_id: str) -> bool:
     return model_id.startswith("gpt") or model_id.startswith("o1") or model_id.startswith("o3") or model_id.startswith("o4")
 
@@ -122,6 +257,200 @@ def get_model_family(model_id: str) -> str:
     if is_openai_model(model_id):
         return "openai"
     return "google"
+
+
+# ---------------------------------------------------------------------------
+# Out-of-loop script helper (2026-05-06)
+# ---------------------------------------------------------------------------
+
+# Out-of-loop scripts (negative-prompting wrapper, idea_feliz, falsifier
+# prompters) historically hardcoded a single provider. Operators with
+# only one set of API credentials silently broke. The function below
+# picks a configured model ID based on which API key is set, so those
+# scripts can call `LLMRuntime.call_text(prompt, model_id=pick_default_model_id_for_scripts())`
+# without provider hardcoding. The autoresearch_loop continues to use
+# its `--mutator-model` / `--judge-model` flags + MODEL_MAP — that
+# path is unchanged.
+
+# Default cheap-tier model per provider for out-of-loop scripts.
+_SCRIPT_DEFAULT_PER_PROVIDER = {
+    "anthropic": "claude-sonnet-4-6",
+    "openai": "gpt-4.1",
+    "google": "gemini-3.1-pro-preview",
+}
+
+
+def _read_principal_model_economy() -> dict | None:
+    """Walk cwd-up looking for org/preferences/principal.yaml; return its
+    `model_economy` block if set. Cached for process lifetime.
+
+    Schema: see principal.yaml example. Returned dict has keys 'tiers'
+    + 'escalation_rules' + 'what_NOT_to_escalate'.
+    """
+    if hasattr(_read_principal_model_economy, "_cached"):
+        return _read_principal_model_economy._cached  # type: ignore[attr-defined]
+    try:
+        import yaml
+    except ImportError:
+        _read_principal_model_economy._cached = None  # type: ignore[attr-defined]
+        return None
+    candidates = []
+    cwd = Path.cwd()
+    for d in [cwd] + list(cwd.parents):
+        candidates.append(d / "org" / "preferences" / "principal.yaml")
+    try:
+        candidates.append(Path(__file__).resolve().parents[3] / "org" / "preferences" / "principal.yaml")
+    except Exception:  # noqa: BLE001
+        pass
+    for path in candidates:
+        if not path.is_file():
+            continue
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            econ = data.get("model_economy")
+            if econ:
+                _read_principal_model_economy._cached = econ  # type: ignore[attr-defined]
+                return econ
+        except Exception:  # noqa: BLE001
+            continue
+    _read_principal_model_economy._cached = None  # type: ignore[attr-defined]
+    return None
+
+
+def pick_model_for_tier(tier: str = "cheap", *, prefer_provider: str | None = None) -> str | None:
+    """Return a model id for the requested tier (cheap | mid | pro), honoring
+    `model_economy` from principal.yaml + the API key the env actually has.
+
+    Resolution:
+      1. Read model_economy.tiers[<tier>].providers from principal.yaml
+      2. If `prefer_provider` is set and has API key → use that
+      3. Else use principal's preferred_llm_provider (if set + key present)
+      4. Else fall through providers in google/openai/anthropic order
+      5. If no model_economy in yaml, fall back to the legacy
+         pick_default_model_id_for_scripts() → cheap-tier-equivalent.
+
+    Returns None if no provider available. Caller decides on error.
+    """
+    if tier not in ("cheap", "mid", "pro"):
+        raise ValueError(f"unknown tier: {tier!r}; expected cheap|mid|pro")
+
+    econ = _read_principal_model_economy()
+    if not econ:
+        # Fallback: no yaml policy — use the existing default for cheap;
+        # for mid/pro, return None so caller knows to handle (likely uses
+        # default = mid-tier model since pick_default_model_id_for_scripts
+        # already returns sonnet/gpt-4.1/gemini-pro).
+        if tier == "cheap":
+            return pick_default_model_id_for_scripts()
+        return pick_default_model_id_for_scripts()  # graceful degradation
+
+    tier_block = (econ.get("tiers") or {}).get(tier) or {}
+    providers = tier_block.get("providers") or {}
+
+    # Try in order: explicit prefer, principal's preferred, then alphabetical
+    candidate_order = []
+    if prefer_provider and prefer_provider in providers:
+        candidate_order.append(prefer_provider)
+    principal_pref = _read_principal_preferred_provider()
+    if principal_pref and principal_pref in providers and principal_pref not in candidate_order:
+        candidate_order.append(principal_pref)
+    for p in ("google", "openai", "anthropic"):
+        if p in providers and p not in candidate_order:
+            candidate_order.append(p)
+
+    env_keys = {
+        "anthropic": "ANTHROPIC_API_KEY",
+        "openai": "OPENAI_API_KEY",
+        "google": "GEMINI_API_KEY",
+    }
+    for provider in candidate_order:
+        if os.environ.get(env_keys.get(provider, "")):
+            return providers[provider]
+    return None
+
+
+def _read_principal_preferred_provider() -> str | None:
+    """Walk cwd-up looking for org/preferences/principal.yaml; return its
+    `preferences.preferred_llm_provider` if set. Returns one of
+    'anthropic' | 'openai' | 'google' | None.
+
+    Single point of truth for provider preference. Cheap (one file read,
+    cached for process lifetime). Walks up the tree the same way
+    _bootstrap_dotenv_if_needed does.
+    """
+    if hasattr(_read_principal_preferred_provider, "_cached"):
+        return _read_principal_preferred_provider._cached  # type: ignore[attr-defined]
+    try:
+        import yaml  # PyYAML is in requirements
+    except ImportError:
+        _read_principal_preferred_provider._cached = None  # type: ignore[attr-defined]
+        return None
+    candidates = []
+    cwd = Path.cwd()
+    for d in [cwd] + list(cwd.parents):
+        candidates.append(d / "org" / "preferences" / "principal.yaml")
+    try:
+        candidates.append(Path(__file__).resolve().parents[3] / "org" / "preferences" / "principal.yaml")
+    except Exception:  # noqa: BLE001
+        pass
+    for path in candidates:
+        if not path.is_file():
+            continue
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            prefs = data.get("preferences") or {}
+            provider = prefs.get("preferred_llm_provider")
+            if provider in ("anthropic", "openai", "google"):
+                _read_principal_preferred_provider._cached = provider  # type: ignore[attr-defined]
+                return provider
+        except Exception:  # noqa: BLE001
+            continue
+    _read_principal_preferred_provider._cached = None  # type: ignore[attr-defined]
+    return None
+
+
+def pick_default_model_id_for_scripts(
+    *,
+    preference_order: tuple[str, ...] = ("anthropic", "openai", "google"),
+) -> str | None:
+    """Return a configured model ID based on which API keys are set.
+
+    Resolution priority (highest wins):
+      1. ``LLM_DISPATCH_PREF`` env var (comma-separated, e.g. "google,openai")
+      2. ``preferences.preferred_llm_provider`` in principal.yaml
+      3. ``preference_order`` argument (default: anthropic, openai, google)
+
+    Within whichever order wins, returns the default cheap-tier model for
+    the first provider whose env key is set. Returns None if none configured.
+    """
+    env_pref = os.environ.get("LLM_DISPATCH_PREF", "")
+    if env_pref:
+        # Map external names ("claude" / "gpt" / "gemini") onto canonical
+        # family names used here.
+        alias_map = {"claude": "anthropic", "gpt": "openai", "gemini": "google"}
+        order = []
+        for raw in env_pref.split(","):
+            name = raw.strip().lower()
+            family = alias_map.get(name, name)
+            if family in _SCRIPT_DEFAULT_PER_PROVIDER:
+                order.append(family)
+        preference_order = tuple(order) if order else preference_order
+    else:
+        # Honor principal.yaml preference if no env override
+        principal_pref = _read_principal_preferred_provider()
+        if principal_pref:
+            # Move principal's preferred provider to the front, keep others
+            others = [p for p in preference_order if p != principal_pref]
+            preference_order = (principal_pref,) + tuple(others)
+
+    for family in preference_order:
+        if family == "anthropic" and os.environ.get("ANTHROPIC_API_KEY"):
+            return _SCRIPT_DEFAULT_PER_PROVIDER["anthropic"]
+        if family == "openai" and os.environ.get("OPENAI_API_KEY"):
+            return _SCRIPT_DEFAULT_PER_PROVIDER["openai"]
+        if family == "google" and os.environ.get("GEMINI_API_KEY"):
+            return _SCRIPT_DEFAULT_PER_PROVIDER["google"]
+    return None
 
 
 def pricing_model_name(model_name: str | None) -> str | None:
@@ -170,6 +499,14 @@ def pricing_model_name(model_name: str | None) -> str | None:
         return "o4-mini"
     if lowered.startswith("o4"):
         return "o4"
+    # DeepSeek family (2026-05-26): added per AGENTS.md §6n.3 cross-family
+    # model integration. Match deepseek-reasoner before deepseek-chat so
+    # reasoner IDs like "deepseek-reasoner-v1" route to the reasoner pricing
+    # row (higher cost), not the chat row.
+    if lowered.startswith("deepseek-reasoner"):
+        return "deepseek-reasoner"
+    if lowered.startswith("deepseek"):
+        return "deepseek-chat"
     return normalized
 
 
@@ -215,21 +552,50 @@ class LLMRuntime:
         self._gemini_client = None
         self._anthropic_client = None
         self._openai_client = None
+        self._deepseek_client = None
 
     def gemini_client(self):
         if self._gemini_client is None and os.environ.get("GEMINI_API_KEY"):
+            if genai is None:
+                raise RuntimeError(
+                    "Gemini provider requested but google-genai is not "
+                    "installed (optional dependency). Install google-genai "
+                    "or use the anthropic/openai providers.")
             self._gemini_client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
         return self._gemini_client
 
     def anthropic_client(self):
         if self._anthropic_client is None and os.environ.get("ANTHROPIC_API_KEY"):
+            if anthropic is None:
+                raise RuntimeError(
+                    "Anthropic provider requested but anthropic is not "
+                    "installed (optional dependency). Install anthropic "
+                    "or use the google/openai providers.")
             self._anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         return self._anthropic_client
 
     def openai_client(self):
         if self._openai_client is None and os.environ.get("OPENAI_API_KEY"):
+            if OpenAI is None:
+                raise RuntimeError(
+                    "OpenAI provider requested but openai is not installed "
+                    "(optional dependency). Install openai or use the "
+                    "anthropic/google providers.")
             self._openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         return self._openai_client
+
+    def deepseek_client(self):
+        if self._deepseek_client is None and os.environ.get("DEEPSEEK_API_KEY"):
+            if OpenAI is None:
+                raise RuntimeError(
+                    "DeepSeek provider requested but openai is not installed "
+                    "(DeepSeek uses the OpenAI-compatible SDK path)."
+                )
+            self._deepseek_client = OpenAI(
+                api_key=os.environ.get("DEEPSEEK_API_KEY"),
+                base_url="https://api.deepseek.com/v1",
+            )
+        return self._deepseek_client
 
     def require_gemini_client(self):
         client = self.gemini_client()
@@ -239,9 +605,11 @@ class LLMRuntime:
 
     def model_is_configured(self, model_id: str) -> bool:
         if is_claude_model(model_id):
-            return bool(os.environ.get("ANTHROPIC_API_KEY"))
+            return bool(os.environ.get("ANTHROPIC_API_KEY")) and anthropic is not None
+        if is_deepseek_model(model_id):
+            return bool(os.environ.get("DEEPSEEK_API_KEY")) and OpenAI is not None
         if is_openai_model(model_id):
-            return bool(os.environ.get("OPENAI_API_KEY"))
+            return bool(os.environ.get("OPENAI_API_KEY")) and OpenAI is not None
         return bool(os.environ.get("GEMINI_API_KEY"))
 
     def default_fallback_model_ids(self, model_id: str) -> tuple[str, ...]:
@@ -302,6 +670,21 @@ class LLMRuntime:
                 messages=[{"role": "user", "content": prompt}],
             )
 
+        if is_deepseek_model(model_id):
+            client = self.deepseek_client()
+            if client is None:
+                raise RuntimeError("DEEPSEEK_API_KEY is not set.")
+            kwargs = {
+                "model": model_id,
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": max(max_tokens, 8192) if model_id == "deepseek-reasoner" else max_tokens,
+            }
+            if isinstance(config, dict):
+                for key in ("response_format", "temperature"):
+                    if key in config and config[key] is not None:
+                        kwargs[key] = config[key]
+            return client.chat.completions.create(**kwargs)
+
         if is_openai_model(model_id):
             client = self.openai_client()
             if client is None:
@@ -314,6 +697,10 @@ class LLMRuntime:
                 kwargs["max_completion_tokens"] = max_tokens
             else:
                 kwargs["max_tokens"] = max_tokens
+            if isinstance(config, dict):
+                for key in ("reasoning_effort", "verbosity", "response_format", "temperature"):
+                    if key in config and config[key] is not None:
+                        kwargs[key] = config[key]
             return client.chat.completions.create(**kwargs)
 
         client = self.gemini_client()
@@ -361,7 +748,7 @@ class LLMRuntime:
                 fallback_from_model_id=fallback_from_model_id,
             )
 
-        if is_openai_model(requested_model_id):
+        if is_openai_model(requested_model_id) or is_deepseek_model(requested_model_id):
             usage = getattr(response, "usage", None)
             input_tokens = 0
             output_tokens = 0
@@ -381,6 +768,17 @@ class LLMRuntime:
                 )
             model_name = getattr(response, "model", None) or requested_model_id
             text = response.choices[0].message.content if getattr(response, "choices", None) else ""
+            if not (text or "").strip() and getattr(response, "choices", None):
+                choice = response.choices[0]
+                finish_reason = getattr(choice, "finish_reason", None)
+                message = getattr(choice, "message", None)
+                refusal = getattr(message, "refusal", None) if message is not None else None
+                annotations = getattr(message, "annotations", None) if message is not None else None
+                raise RuntimeError(
+                    "OpenAI-compatible response contained empty message content "
+                    f"(model={model_name}, finish_reason={finish_reason}, "
+                    f"refusal={refusal!r}, annotations={annotations!r})."
+                )
             return LLMTextResponse(
                 text=text or "",
                 model_name=model_name,
@@ -429,7 +827,7 @@ class LLMRuntime:
         fallback_model_ids: tuple[str, ...] | None = None,
         config: Any = None,
         max_tokens: int = 16000,
-        retries: int = 4,
+        retries: int = PRODUCTION_CALL_RETRIES,
         timeout_seconds: int = 300,
         request_label: str = "request",
         progress_printer: Callable[[str], None] | None = None,
@@ -493,6 +891,7 @@ class LLMRuntime:
                     )
                 except concurrent.futures.TimeoutError as exc:
                     last_error = exc
+                    _record_failed_retry(prompt, active_model_id)
                     wait_time = min(180, timeout_wait_seconds * attempt)
                     if progress_printer is not None:
                         progress_printer(
@@ -515,6 +914,7 @@ class LLMRuntime:
                             status_code=status_code,
                         ) from exc
                     if self.is_transient_error(exc):
+                        _record_failed_retry(prompt, active_model_id)
                         wait_time = self.retry_delay_seconds(
                             attempt,
                             exc,
@@ -528,6 +928,7 @@ class LLMRuntime:
                             break
                         time.sleep(wait_time)
                     else:
+                        _record_failed_retry(prompt, active_model_id)
                         if progress_printer is not None:
                             progress_printer(f"❌ Unhandled Exception: {error_str}")
                         raise LLMRuntimeError(

@@ -70,7 +70,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
                 "active_program": "paper4_drafting",
                 "active_target": "paper_outline",
                 "pipeline_type": "research",
-                "debate_file": "research_areas/private/papers/paper4.md",
+                "debate_file": "[internal-ref]",
                 "seed_spec_path": "research_areas/seeds/active/paper4_managerial_capitalism.md",
                 "status_reason": StatusReason.AWAITING_DRAFT,
                 "next_actor": Actor.CODEX,
@@ -146,7 +146,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
                 "active_target": "paper_outline",
                 "pipeline_type": "research",
                 "next_actor": Actor.CLAUDE,
-                "debate_file": "research_areas/private/papers/paper4.md",
+                "debate_file": "[internal-ref]",
                 "seed_spec_path": "research_areas/seeds/active/paper4_managerial_capitalism.md",
                 "verification_command": None,
                 "artifact_paths": ArtifactPaths(
@@ -309,7 +309,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
                                 (
                                     "from pathlib import Path; import json; "
                                     "print(json.dumps({"
-                                    "'allowed': Path('research_areas/private/papers/paper4.md').exists(), "
+                                    "'allowed': Path('[internal-ref]').exists(), "
                                     "'blocked': Path('src/ztare/validator/supervisor_wrappers.py').exists()"
                                     "}))"
                                 ),
@@ -334,7 +334,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
         case_read_allowlist_passed = (
             read_allowlist_result.exit_code == 0
             and read_allowlist_result.sandbox_root is not None
-            and "research_areas/private/papers/paper4.md" in read_allowlist_result.read_allowlist_paths
+            and "[internal-ref]" in read_allowlist_result.read_allowlist_paths
             and read_allowlist_payload["allowed"] is True
             and read_allowlist_payload["blocked"] is False
         )
@@ -397,7 +397,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
                 "active_program": "paper4_manuscript",
                 "active_target": "manuscript_theory_foundations",
                 "pipeline_type": "research",
-                "debate_file": "research_areas/private/papers/paper4_manuscript.md",
+                "debate_file": "[internal-ref]",
                 "seed_spec_path": "research_areas/seeds/active/paper4_manuscript.md",
                 "next_actor": Actor.CLAUDE,
             }
@@ -487,7 +487,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
             },
             artifacts=(
                 (
-                    "research_areas/private/papers/paper4_manuscript.md",
+                    "[internal-ref]",
                     "## Turn 15 — Architect (A1)\n\nPacket-scoped revision.\n",
                     "append",
                 ),
@@ -503,7 +503,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
             ),
             raw_response_text='{"ok":true}',
         )
-        debate_path = Path("research_areas/private/papers/paper4_manuscript.md")
+        debate_path = Path("[internal-ref]")
         debate_original = debate_path.read_text() if debate_path.exists() else None
         try:
             write_staging_files(research_a1_status, staging_dir)
@@ -621,7 +621,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
             },
             artifacts=(
                 (
-                    "research_areas/private/papers/paper4_manuscript.md",
+                    "[internal-ref]",
                     "## Turn 15 — Architect (A1)\n\nPacket-scoped revision.\n",
                     "replace",
                 ),
@@ -637,7 +637,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
             ),
             raw_response_text='{"ok":true}',
         )
-        debate_path = Path("research_areas/private/papers/paper4_manuscript.md")
+        debate_path = Path("[internal-ref]")
         debate_original = debate_path.read_text() if debate_path.exists() else None
         try:
             write_staging_files(research_a1_status, staging_dir)
@@ -651,7 +651,7 @@ def run_supervisor_wrapper_fixture_regression() -> dict[str, object]:
             current_debate = debate_path.read_text() if debate_path.exists() else ""
             case_research_a1_rejects_invalid_operation_passed = (
                 invalid_op_result.exit_code == 0
-                and "research_areas/private/papers/paper4_manuscript.md"
+                and "[internal-ref]"
                 in invalid_op_result.unauthorized_repo_paths
                 and invalid_op_payload["write_scope_ok"] is False
                 and current_debate == (debate_original or "")

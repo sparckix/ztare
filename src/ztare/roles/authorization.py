@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Authorization hook: enforce role write-scope structurally, not advisorily.
 
 Loads the active role's authorized_paths / forbidden_paths (from the

@@ -19,7 +19,7 @@ Live overview of all tracked goals. Each goal shows:
 
 Natural language goal creation. Describe what you want to accomplish and the
 system maps it to the right goal type (`science_sandbox`, `synthetic_test`, or
-any YAML config in `research_areas/private/goal_types/`). Shows the matched
+any YAML config in `[internal-ref]`). Shows the matched
 type's stage map before you commit.
 
 ### Inbox
@@ -58,11 +58,11 @@ All dashboard actions are available via CLI:
 
 ## Architecture
 
-- `inbox_state.py` — pure logic for gate resolution (no Streamlit dependency)
-- `inbox_streamlit.py` — Streamlit wrapper, forensic visual register (D4 brief §7)
+- `inbox_state.py`, pure logic for gate resolution (no Streamlit dependency)
+- `inbox_streamlit.py`, Streamlit wrapper, forensic visual register (D4 brief §7)
 - GP-070 orchestration core lives in `src/ztare/orchestration/`
-- Goal type configs live in `research_areas/private/goal_types/*.yaml`
-- Goal state lives in `research_areas/private/goals/<slug>/`
+- Goal type configs live in `[internal-ref]*.yaml`
+- Goal state lives in `[internal-ref]<slug>/`
 
 ## Fixture regression
 
@@ -74,6 +74,6 @@ All dashboard actions are available via CLI:
 - Streamlit's widget system fights the forensic register (monospace, stroke-only
   buttons). CSS overrides get 70% there. A Flask + static HTML rewrite would
   match D4 brief §7 fully.
-- Gate resolution in Inbox does not auto-resume the goal — operator must switch
+- Gate resolution in Inbox does not auto-resume the goal, operator must switch
   to Goals view and click Resume. Slice B will wire agent-driven gate resolution
   so the agent can run checklists and resume without operator context-switching.

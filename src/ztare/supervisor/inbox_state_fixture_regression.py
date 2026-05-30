@@ -26,7 +26,7 @@ from src.ztare.supervisor.inbox_state import (
 def _write_gate(pending_dir: Path, stem: str, cost: float, ts: str = "2026-04-15T18:00:00+00:00") -> Path:
     pending_dir.mkdir(parents=True, exist_ok=True)
     payload = {
-        "seam_path": f"research_areas/private/seams/{stem}.md",
+        "seam_path": f"[internal-ref]{stem}.md",
         "escalation_reason": "COST_BUDGET",
         "equivalent_gate_reason": "SPEC_REFINEMENT_BUDGET_REACHED",
         "cycle_count": 9,

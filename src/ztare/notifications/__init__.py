@@ -1,8 +1,7 @@
-"""Notification primitives for GP-128 / GP-128b manager-agent seam.
+"""Notification primitives for the org runtime.
 
-Bidirectional Telegram channel as of 2026-04-25 (ntfy.sh retired).
-``push_notification`` is the legacy outbound API (now Telegram-backed);
-``poll_inbound`` and ``reply`` are the bidirectional Telegram primitives.
+The filesystem gate/channel tree is authoritative. Notification transports are
+optional projections supplied by a deployment or tenant overlay.
 """
 
 from .push import push_notification, push_gate_escalation, NTFY_TOPIC

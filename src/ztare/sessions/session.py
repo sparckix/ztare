@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Per-(member, role, substrate, time) session artifact.
 
 A session is opened when a member starts acting in a role and closed

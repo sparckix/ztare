@@ -59,7 +59,7 @@ def emit_preamble(project: str, strict: bool = False) -> str:
       - The preamble documents the axiom allowlist the gate enforces
         post-compile: only {propext, Classical.choice, Quot.sound} are
         permitted; any user-declared axiom or `Classical.skipThe`
-        fails the gate (enforced by scripts/verify_lean_stub.py).
+        fails the gate (enforced by scripts/public/lean/verify_lean_stub.py).
       - Schema-pinned theorem headers: the compiler writes the
         `theorem NAME : STATEMENT := by …` header; candidate-supplied
         content can only live inside the `by …` block. This prevents
@@ -75,7 +75,7 @@ def emit_preamble(project: str, strict: bool = False) -> str:
     )
     strict_banner = (
         "\n  STRICT MODE (P4 gate): warningAsError is on; unclosed `sorry`\n"
-        "  goals compile-fail. Post-compile, `scripts/verify_lean_stub.py`\n"
+        "  goals compile-fail. Post-compile, `scripts/public/lean/verify_lean_stub.py`\n"
         "  enforces the axiom allowlist {propext, Classical.choice, Quot.sound}\n"
         "  and the schema-pinned theorem headers.\n"
         if strict else ""
@@ -346,7 +346,7 @@ def compile_project(project_dir: Path, strict: bool = False) -> str:
 
     GP-135: `strict=True` enables the P4 gate preamble (warningAsError,
     axiom allowlist banner). Post-compile verification lives in
-    `scripts/verify_lean_stub.py`.
+    `scripts/public/lean/verify_lean_stub.py`.
     """
     project_name = project_dir.name
     output_parts: list[str] = [emit_preamble(project_name, strict=strict)]
@@ -514,7 +514,7 @@ def main() -> int:
         help=(
             "GP-135 P4-gate hardening: emit stubs with warningAsError so "
             "unclosed `sorry` is a compile error. Use with "
-            "`scripts/verify_lean_stub.py` for axiom allowlist enforcement."
+            "`scripts/public/lean/verify_lean_stub.py` for axiom allowlist enforcement."
         ),
     )
     args = parser.parse_args()

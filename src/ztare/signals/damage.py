@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Damage-signal stub (GP-129 pull-forward — Matzinger danger model).
 
 Identity-based authorization (src.ztare.roles.authorization) answers
@@ -43,7 +43,7 @@ SIGNALS_DIR = REPO_ROOT / "org" / "signals" / "damage"
 class DamageSignal:
     timestamp_utc: str
     source: str          # e.g. "spend_tracker", "session.member_id", "tool:Bash"
-    kind: str            # free-form; conventions: cost_spike | contradiction | handoff_conflict | output_regression | integrity
+    kind: str            # free-form; canonical catalog at org/signals/SIGNAL_KINDS.md
     detail: str
     session_id: Optional[str] = None
     severity: str = "warn"   # info | warn | critical

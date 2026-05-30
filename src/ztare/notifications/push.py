@@ -1,13 +1,9 @@
-"""Push notification layer for GP-128 persistent-manager-agent escalations.
-
-As of 2026-04-25 (GP-128b unification), this module is a thin compat
-shim over ``telegram.py``. The original ntfy.sh transport was retired
-because Telegram is bidirectional (the principal can also send commands
-to the manager via the same bot — see GP-128b seam).
+"""Push notification compatibility layer for org-runtime escalations.
 
 All existing call sites (``push_notification``, ``push_gate_escalation``,
-``push_from_gate_json``) keep working without code changes; only the
-underlying transport changed.
+``push_from_gate_json``) keep working without code changes. The public checkout
+does not require a notification transport; deployments can provide one through
+the optional tenant overlay.
 
 Usage (unchanged):
 
@@ -20,10 +16,6 @@ Usage (unchanged):
         tags=["patent", "decision"],
     )
 
-Setup:
-    python scripts/telegram_setup.py        # one-time creds capture
-    python scripts/poll_telegram.py --consume   # ad-hoc inbound poll
-
 Deprecation notes:
     * ``ZTARE_NTFY_TOPIC`` env var is ignored (kept here for grep
       discoverability — the topic file ``org/mandates/.ntfy_topic`` is
@@ -33,8 +25,10 @@ Deprecation notes:
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 import json
 import logging
+import os
 from pathlib import Path
 from typing import Iterable, Optional
 
@@ -52,6 +46,41 @@ NTFY_URL: Optional[str] = None     # always None after retirement
 
 
 log = logging.getLogger(__name__)
+DEFAULT_PROVIDER = "filesystem"
+FILESYSTEM_OUTBOX = Path(
+    os.environ.get(
+        "ZTARE_NOTIFICATION_OUTBOX",
+        "org/channels/principal/inbox/notifications.jsonl",
+    )
+)
+
+
+def _provider() -> str:
+    return os.environ.get("ZTARE_NOTIFICATION_PROVIDER", DEFAULT_PROVIDER).strip().lower()
+
+
+def _write_filesystem_notification(
+    *,
+    title: str,
+    message: str,
+    priority: str,
+    tags: Optional[Iterable[str]],
+    click_url: Optional[str],
+) -> bool:
+    payload = {
+        "schema_version": 1,
+        "provider": "filesystem",
+        "created_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "title": title,
+        "message": message,
+        "priority": priority,
+        "tags": list(tags or []),
+        "click_url": click_url,
+    }
+    FILESYSTEM_OUTBOX.parent.mkdir(parents=True, exist_ok=True)
+    with FILESYSTEM_OUTBOX.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(payload, sort_keys=True) + "\n")
+    return True
 
 
 def push_notification(
@@ -64,19 +93,37 @@ def push_notification(
 ) -> bool:
     """Send a push notification to the principal.
 
-    API-compatible with the historical ntfy.sh implementation. The
-    transport is now Telegram (GP-128b). See ``telegram.py`` for
-    priority-prefix conventions. All failures are logged, never
-    raised — the filesystem inbox remains the authoritative channel.
+    API-compatible with the historical push implementation. Public ZTARE
+    defaults to a filesystem outbox; tenant deployments may opt into Telegram
+    with ``ZTARE_NOTIFICATION_PROVIDER=telegram``. Failures are logged, never
+    raised; gate and channel files remain authoritative.
     """
-    return _telegram_push_notification(
-        title=title,
-        message=message,
-        priority=priority,
-        tags=tags,
-        click_url=click_url,
-        timeout_seconds=timeout_seconds,
-    )
+    try:
+        provider = _provider()
+        if provider in {"", "none", "off", "disabled"}:
+            return False
+        if provider == "telegram":
+            return _telegram_push_notification(
+                title=title,
+                message=message,
+                priority=priority,
+                tags=tags,
+                click_url=click_url,
+                timeout_seconds=timeout_seconds,
+            )
+        if provider == "filesystem":
+            return _write_filesystem_notification(
+                title=title,
+                message=message,
+                priority=priority,
+                tags=tags,
+                click_url=click_url,
+            )
+        log.warning("unknown notification provider %r; notification skipped", provider)
+        return False
+    except Exception as exc:  # noqa: BLE001
+        log.debug("notification push failed: %s", exc)
+        return False
 
 
 def push_gate_escalation(

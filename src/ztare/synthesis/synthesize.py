@@ -1377,7 +1377,7 @@ def run_multi_project_field_manual(project_names: List[str], args: argparse.Name
     payload with a provenance table, then runs render_artifact + qa_artifact
     once with the aggregated payload attached to the context.
 
-    Output is written to research_areas/private/distribution/field_manual_auto.md
+    Output is written to [internal-ref]
     so the v0 hand-crafted artifact remains as the comparison baseline.
     """
     project_dirs = [resolve_project_dir(name) for name in project_names]
