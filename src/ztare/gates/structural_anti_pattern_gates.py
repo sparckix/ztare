@@ -185,6 +185,76 @@ _TRIVIAL_MATH_CONSTANTS = (
 # Tiny safety floors that show up in `max(x, 1e-9)` style guards.
 _TRIVIAL_SAFETY_FLOORS = (1e-3, 1e-6, 1e-9, 1e-12)
 
+# 2026-04-27: Published physical constants whitelist. Forms that derive
+# their structure from physics (path-b) need to use {G, c, ℏ, M_sun, ...}
+# without those numerical values being flagged as "load-bearing magnitude
+# literals" by R20/R21. Without this whitelist the cage falsely caps
+# every legitimate Lagrangian-derivation form, defeating path-b.
+#
+# Whitelist criterion: a constant is "published" if it appears in CODATA
+# or other authoritative reference tables and the mutator could justify
+# its use by citing physics (NOT by fitting to substrate data).
+# IMPORTANT: a_0 (MOND) is deliberately EXCLUDED — it's the canonical
+# answer this apparatus is supposed to derive, not an input. The .denylist
+# enforces this on the prose side; the cage enforces it on the form side.
+#
+# Tolerance: 1e-3 relative (looser than _TRIVIAL_MATH_CONSTANTS at 1e-4)
+# because the mutator may quote constants to fewer digits (e.g. 6.674e-11
+# vs 6.67430e-11). The 1e-3 tolerance covers 4 sig figs.
+_PUBLISHED_PHYSICAL_CONSTANTS = (
+    # SI fundamental constants
+    6.67430e-11,        # G (Newton)
+    2.99792458e8,       # c (speed of light, exact)
+    1.054571817e-34,    # ℏ (reduced Planck)
+    6.62607015e-34,     # h (Planck, exact since 2019 SI)
+    1.602176634e-19,    # e (elementary charge, exact)
+    1.380649e-23,       # k_B (Boltzmann, exact)
+    8.8541878128e-12,   # ε₀ (vacuum permittivity)
+    1.25663706212e-6,   # μ₀ (vacuum permeability)
+    9.1093837015e-31,   # m_e (electron mass)
+    1.67262192369e-27,  # m_p (proton mass)
+    1.6749274980e-27,   # m_n (neutron mass)
+    # Cosmology / astronomy
+    1.98847e30,         # M_sun (solar mass)
+    1.989e30,           # M_sun (looser quote)
+    1.989e+30,          # M_sun (e+ quote)
+    5.972e24,           # M_earth
+    6.371e6,            # R_earth (m)
+    6.957e8,            # R_sun (m)
+    3.0856775814913673e19,  # kpc → m (full precision)
+    3.0857e19,          # kpc → m (5-digit quote)
+    3.086e19,           # kpc → m (4-digit quote)
+    3.0857e16,          # pc → m
+    3.0857e22,          # Mpc → m
+    1.495978707e11,     # AU → m
+    9.4607e15,          # ly → m
+    3.1557e7,           # year → s
+    # Planck units
+    2.176434e-8,        # M_Planck (kg)
+    2.176e-8,           # M_Planck (loose)
+    1.220910e19,        # M_Planck (GeV/c²)
+    1.616255e-35,       # ℓ_Planck (m)
+    5.391247e-44,       # t_Planck (s)
+)
+
+
+def _is_published_physical_constant(c: float, *, tol_rel: float = 1e-3) -> bool:
+    """Return True if `c` matches a published physical constant within
+    `tol_rel` (default 1e-3 = 4 sig figs). Sign-agnostic — both +M_sun
+    and -M_sun (rare but possible in coupling expressions) match."""
+    if not isinstance(c, (int, float)) or isinstance(c, bool):
+        return False
+    if math.isnan(c) or math.isinf(c):
+        return False
+    abs_c = abs(c)
+    if abs_c < 1e-300:
+        return False
+    for k in _PUBLISHED_PHYSICAL_CONSTANTS:
+        denom = max(abs(k), 1e-15)
+        if abs(abs_c - abs(k)) / denom < tol_rel:
+            return True
+    return False
+
 
 def _is_trivial_constant(c: float, *, tol_rel: float = 1e-4) -> bool:
     """Return True if `c` is a structural / mathematical constant the
@@ -228,6 +298,14 @@ def _is_trivial_constant(c: float, *, tol_rel: float = 1e-4) -> bool:
     for f in _TRIVIAL_SAFETY_FLOORS:
         if abs(c - f) / max(abs(f), 1e-12) < 1e-2:
             return True
+    # 2026-04-27: Published physical constants (G, c, ℏ, M_sun, etc.) are
+    # not "load-bearing magnitude literals" the mutator chose to absorb
+    # substrate noise — they're inputs to the form derived from physics.
+    # Without this whitelist, R20/R21 cap legitimate Lagrangian-derived
+    # forms along with parameter-laundering bridge variants. See
+    # _PUBLISHED_PHYSICAL_CONSTANTS for the full list.
+    if _is_published_physical_constant(c):
+        return True
     return False
 
 
@@ -610,6 +688,26 @@ _RH_PATTERNS = [
 ]
 
 
+_RH17_BRANCH_RE = re.compile(
+    r"(?P<then>[^()\n?:]+?)\s+if\s+features\[['\"](?P<feature>\w+)['\"]\]\s*==\s*['\"](?P<value>\w+)['\"]\s*else\s+(?P<else>-?(?:\d+(?:\.\d*)?|\.\d+))"
+)
+
+
+def _rh17_is_literal_lookup(match_text: str) -> bool:
+    """Return true only for literal categorical lookup branches.
+
+    RH-17 is meant to catch forms like ``1.23 if features['study'] == 'x'
+    else 0.98``: the category itself returns a memorized numeric answer.
+    It should not catch a declared, optimizer-visible offset such as
+    ``params['pC'] if features['fit_convention'] == 'x' else 0.0``. The
+    latter is still a categorical branch, but its complexity is counted by
+    R21/R24 and its admissibility belongs to the substrate/rubric contract.
+    """
+    if "params[" in match_text or "params.get" in match_text:
+        return False
+    return True
+
+
 @dataclass
 class MetaRunnerVerdict:
     flagged: bool = False
@@ -757,6 +855,18 @@ def run_apparatus_meta_match(
     # 2. Regex-only catalog (orthogonal patterns)
     haystack = form_str + ("\n" + (thesis_text or ""))
     for pat in _RH_PATTERNS:
+        if pat["code"] == "RH-17":
+            for m in _RH17_BRANCH_RE.finditer(haystack):
+                evidence = m.group(0)[:200]
+                if not _rh17_is_literal_lookup(evidence):
+                    continue
+                verdict.matches.append({
+                    "code": pat["code"], "name": pat["name"],
+                    "description": pat["description"],
+                    "evidence_excerpt": evidence,
+                })
+                verdict.flagged = True
+            continue
         m = pat["regex"].search(haystack)
         if m:
             verdict.matches.append({

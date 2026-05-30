@@ -57,6 +57,21 @@ def _engages_universally() -> Callable[[Any, Any], tuple[bool, str]]:
     return can_handle
 
 
+def _engages_universally_when_flag(flag_key: str) -> Callable[[Any, Any], tuple[bool, str]]:
+    def can_handle(substrate: Any, _candidate: Any) -> tuple[bool, str]:
+        rubric = getattr(substrate, "rubric_flags", None)
+        if not isinstance(rubric, dict):
+            rubric = getattr(substrate, "rubric_data", None)
+        if not isinstance(rubric, dict):
+            rubric = getattr(substrate, "rubric", None)
+        if not isinstance(rubric, dict):
+            return False, f"gate requires rubric flag {flag_key!r}; no rubric on substrate"
+        if not rubric.get(flag_key, False):
+            return False, f"rubric flag {flag_key!r} is not true"
+        return True, f"engaged with rubric {flag_key}=True"
+    return can_handle
+
+
 def _g_circ_structural_can_handle(substrate: Any, candidate: Any) -> tuple[bool, str]:
     """Engagement predicate for the upgraded structural G-CIRC gate.
 
@@ -225,6 +240,15 @@ def _build_gates() -> list[Gate]:
             run=_make_run_callback("src.ztare.gates.deterministic_charter_gates", "evaluate_deterministic_charter_gates"),
             dependencies=[],
         ),
+        Gate(
+            name="linear_observable_coercivity",
+            phase="POST_FIT",
+            can_handle=_engages_universally_when_flag(
+                "enable_linear_observable_coercivity_gate"
+            ),
+            run=_make_run_callback("src.ztare.gates.linear_observable_coercivity_gate", "run_gate"),
+            dependencies=[],
+        ),
 
         # ── nd_features modified-gravity gates (Solar-System PPN) ──
         # G-CASSINI-PPN + G-MERCURY-PRECESSION engage only when the
@@ -369,4 +393,5 @@ __all__ = [
     "get_default_cage",
     "_engages_on",
     "_engages_universally",
+    "_engages_universally_when_flag",
 ]

@@ -1,6 +1,6 @@
 # ZTARE Gates — registry and reading order
 
-This directory holds the deterministic gate stack that runs around every iter of the autoresearch loop. The user-facing description of the design lives in `research_areas/private/specs/active/GP-157_cage_v5_implementation_spec.md`. This README is the navigation map for the code itself.
+This directory holds the deterministic gate stack that runs around every iter of the autoresearch loop. The user-facing description of the design lives in `GP-157 (internal seam)`. This README is the navigation map for the code itself.
 
 ## How a gate runs
 
@@ -86,10 +86,11 @@ SUBSTRATE_VALIDATE   →  PRE_FIT     →  FIT     →  POST_FIT   →  PRE_JUDG
 | negative space extractor | `negative_space_extractor.py` | POST_JUDGE | Extracts what the form CAN NOT distinguish for next-iter discrimination. |
 | semantic gate stabilization | `semantic_gate_stabilization.py` | POST_JUDGE | Cross-iteration consistency check for gate verdicts. |
 | deterministic charter gates | `deterministic_charter_gates.py` | PRE_JUDGE | Per-charter custom gates (e.g. asymptote checks for specific physics substrates). |
+| linear observable coercivity | `linear_observable_coercivity_gate.py` | POST_FIT | Checks that a declared linear observable has enough rank or a receipted quotient/coercivity argument for the claimed target structure. |
 
 ## How gates inform the briefing
 
-Yes — gates feed the next iter's mutator briefing. This is the load-bearing apparatus loop, not a side channel. The flow:
+Yes — gates feed the next iter's mutator briefing. This is the central apparatus loop, not a side channel. The flow:
 
 ```
    gate runs (per iter)
@@ -117,7 +118,7 @@ Yes — gates feed the next iter's mutator briefing. This is the load-bearing ap
 | `asymptote_deviation.py` | global_gates.py output | declared-vs-fitted asymptote deltas |
 | `contamination_defense.py` | denylist scan history | terms the mutator must avoid |
 
-When a new gate ships, EITHER its output JSON gets a new briefing provider, OR an existing provider extends to read the new file. Otherwise the gate runs but the mutator never sees its findings — the apparatus learns nothing across iters. **R10's flag injection into briefing is the load-bearing wire-in for the kernel-camouflage detection to actually change mutator behavior.**
+When a new gate ships, EITHER its output JSON gets a new briefing provider, OR an existing provider extends to read the new file. Otherwise the gate runs but the mutator never sees its findings — the apparatus learns nothing across iters. **R10's flag injection into briefing is the central wire-in for the kernel-camouflage detection to actually change mutator behavior.**
 
 ## How to add a new gate
 

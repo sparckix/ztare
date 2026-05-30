@@ -172,30 +172,73 @@ def _evaluator_from_context(
     if not isinstance(extra_features, dict):
         extra_features = {}
 
+    # Gate-time primitive prelude — kept in sync with GP-157
+    # `_SAFE_NS_BASE` and the gate harness namespace. v3.5 update
+    # (2026-04-27 night): tanh / sinh / cosh / atan2 / log1p / expm1 /
+    # log2 added so PPN gates do not crash on hyperbolic-saturation forms
+    # the K=3 blitz personas naturally propose.
     safe_globals = {
         "__builtins__": {},
         "math": math,
         "exp": math.exp,
         "log": math.log,
         "log10": math.log10,
+        "log2": math.log2,
+        "log1p": math.log1p,
+        "expm1": math.expm1,
         "sqrt": math.sqrt,
         "sin": math.sin,
         "cos": math.cos,
         "tan": math.tan,
+        "tanh": math.tanh,
+        "sinh": math.sinh,
+        "cosh": math.cosh,
         "atan": math.atan,
+        "atan2": math.atan2,
+        "asinh": math.asinh,
+        "acosh": math.acosh,
+        "atanh": math.atanh,
+        "asin": math.asin,
+        "acos": math.acos,
+        "abs": abs,
+        "min": min,
+        "max": max,
         "pi": math.pi,
         "e": math.e,
         "sigmoid": lambda z, k=1.0, b=0.0: 1.0 / (1.0 + math.exp(-(k * (z - b)))),
     }
 
     def _evaluate(g_bar: float, mass_log10: float, radius_log10: float) -> float:
-        features = dict(extra_features)
-        features.update({
+        # Patch (2026-04-28): Solar System probe defaults for v3.5 substrate
+        # features. Forms that use rho_local_log10 / gas_fraction / sigma /
+        # M_gas_log10 (per Evidence Set L) crash here with KeyError otherwise
+        # because the PPN gate doesn't pass through substrate columns.
+        # Solar System lives in Galactic ISM ≈ 1e8 M_sun/kpc³ → log10 ≈ 8.0
+        # (matches the v3.5 substrate's class-S rows). gas_fraction → 0
+        # (no gas at planet orbits). sigma → small relative noise.
+        features = {
             "x": g_bar,
             "g_bar": g_bar,
             "mass_log10": mass_log10,
             "radius_log10": radius_log10,
-        })
+            "rho_local_log10": 8.0,            # Solar neighborhood Galactic ISM
+            "rho_local_source": "ppn_solar_neighborhood",
+            "gas_fraction": 0.0,               # planet orbit, no ICM
+            "gas_source": "ppn_solar_default",
+            "M_gas_log10": float("nan"),       # not applicable
+            "M_gas_source": "ppn_solar_default",
+            "SBdisk_log10": float("nan"),
+            "sb_source": "ppn_solar_default",
+            "M_500c_uncertainty_dex": 0.0,     # Solar System has no cluster mass uncertainty
+            "sigma": 1e-10 * abs(g_bar),       # 1e-10 relative — Cassini bound
+            "sigma_source": "ppn_solar_default",
+            "system_class": "S",
+            "system_id": "ppn_anchor",
+            "id": -1000,
+            "mass_source": "ppn_solar_default",
+            "radius_source": "ppn_solar_default",
+        }
+        features.update(extra_features)        # operator override wins
         local_ns = {
             "features": features,
             "params": dict(params or {}),

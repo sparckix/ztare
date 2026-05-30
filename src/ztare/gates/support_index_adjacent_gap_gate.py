@@ -1,0 +1,216 @@
+"""G-SUPPORT-INDEX-ADJACENT-GAP - adjacent-gap source for fixed-step support order.
+
+Validates that a support-index stream pays the same-owner adjacent-gap data
+needed to derive a fixed successor step. This is deliberately smaller than the
+fixed-step source: it asks for an adjacent gap map, a constant-gap law on the
+prefix, and a derivation of the successor step from those facts, while blocking
+strict-order, cardinality, packing, and selected-event labels as substitutes.
+"""
+from __future__ import annotations
+
+from typing import Any
+
+
+GATE_ID = "G-SUPPORT-INDEX-ADJACENT-GAP"
+
+REQUIRED_FIELDS = (
+    "support_index_map",
+    "adjacent_pair_domain",
+    "owner_or_carrier_binding",
+    "base_at_zero",
+    "adjacent_gap_map",
+    "gap_stride",
+    "positive_stride",
+    "support_index_succ_eq_add_gap",
+    "adjacent_gap_eq_stride_on_prefix",
+    "successor_step_derivation",
+    "same_owner_adjacent_step_receipt",
+    "fixed_before_payoff",
+    "not_target_defined",
+    "no_post_payoff_pair_selection",
+    "no_strict_order_label_as_gap",
+    "no_cardinality_label_as_gap",
+    "no_packing_label_as_gap",
+    "no_selected_event_as_gap",
+)
+
+WEAK_SUBSTITUTES = (
+    "affine_formula_label",
+    "fixed_step_law_label",
+    "successor_step_law",
+    "strict_order_label",
+    "injectivity_label",
+    "cardinality_label",
+    "packing_label",
+    "carleson_label",
+    "selected_event_witness",
+    "same_name",
+)
+
+
+def _present(value: Any) -> bool:
+    if isinstance(value, str):
+        text = value.strip()
+        lowered = text.lower()
+        if not text:
+            return False
+        false_exact_matches = {
+            "missing",
+            "absent",
+            "unknown",
+            "todo",
+            "owed",
+            "unpaid",
+            "not supplied",
+            "not provided",
+            "no",
+            "none",
+            "null",
+            "false",
+            "0",
+        }
+        return lowered not in false_exact_matches
+    return value not in (None, "", [], {}, False)
+
+
+def run_support_index_adjacent_gap_gate(
+    receipt: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    receipt = receipt or {}
+    if not isinstance(receipt, dict):
+        return {
+            "gate_id": GATE_ID,
+            "passed": False,
+            "complete": False,
+            "violations": [{
+                "type": "support_index_adjacent_gap_receipt_malformed",
+                "reason": "receipt must be a JSON object",
+            }],
+            "missing_fields": list(REQUIRED_FIELDS),
+            "required_fields": list(REQUIRED_FIELDS),
+            "weak_substitutes_present": [],
+        }
+
+    violations: list[dict[str, Any]] = []
+    missing = [field for field in REQUIRED_FIELDS if not _present(receipt.get(field))]
+    weak_present = [field for field in WEAK_SUBSTITUTES if _present(receipt.get(field))]
+    if missing:
+        violations.append({
+            "type": "support_index_adjacent_gap_receipt_incomplete",
+            "missing_fields": missing,
+            "reason": (
+                "adjacent-gap support order needs a support-index map, "
+                "same-owner adjacent-pair domain, base at zero, gap map, "
+                "positive constant stride, local add-gap law, constant-gap "
+                "law, derivation of the fixed successor step, timing, and "
+                "anti-laundering receipts"
+            ),
+        })
+    if weak_present:
+        violations.append({
+            "type": "support_index_adjacent_gap_replaced_by_weak_substitutes",
+            "weak_substitutes": weak_present,
+            "reason": (
+                "affine/fixed-step/order/injectivity/cardinality/packing/"
+                "selected-event labels do not substitute for same-owner "
+                "adjacent-gap evidence"
+            ),
+        })
+    if _present(receipt.get("post_payoff_adjacent_pair_selection")):
+        violations.append({
+            "type": "post_payoff_adjacent_pair_selection",
+            "reason": "same-owner adjacent pairs must be fixed before payoff",
+        })
+    if _present(receipt.get("target_defined_adjacent_gap")):
+        violations.append({
+            "type": "target_defined_adjacent_gap",
+            "reason": "adjacent gap cannot be defined from the target deficit",
+        })
+
+    return {
+        "gate_id": GATE_ID,
+        "label": receipt.get("label", "support_index_adjacent_gap"),
+        "passed": not violations,
+        "complete": not missing,
+        "violations": violations,
+        "missing_fields": missing,
+        "weak_substitutes_present": weak_present,
+        "required_fields": list(REQUIRED_FIELDS),
+        "summary": (
+            "support-index adjacent-gap receipt"
+            if not violations else
+            f"support-index adjacent-gap rejected with {len(violations)} violation(s)"
+        ),
+    }
+
+
+def _read_json(path: str) -> dict[str, Any]:
+    import json
+    import sys
+
+    if path == "-":
+        return json.loads(sys.stdin.read())
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _self_test() -> None:
+    weak = run_support_index_adjacent_gap_gate({
+        "support_index_map": "supportIndex",
+        "strict_order_label": "i < j -> supportIndex i < supportIndex j",
+        "fixed_step_law_label": "supportIndex (k+1) = supportIndex k + stride",
+    })
+    assert weak["passed"] is False
+    assert weak["complete"] is False
+
+    strong = run_support_index_adjacent_gap_gate({
+        "support_index_map": "supportIndex",
+        "adjacent_pair_domain": "k + 1 < supportLength",
+        "owner_or_carrier_binding": "same boundary-paid owner for adjacent atoms",
+        "base_at_zero": "supportIndex 0 = baseIndex for nonempty prefix",
+        "adjacent_gap_map": "adjacentGap",
+        "gap_stride": "stride",
+        "positive_stride": "0 < stride",
+        "support_index_succ_eq_add_gap": (
+            "supportIndex (k + 1) = supportIndex k + adjacentGap k"
+        ),
+        "adjacent_gap_eq_stride_on_prefix": "adjacentGap k = stride on prefix",
+        "successor_step_derivation": (
+            "rewrite the add-gap law by adjacentGap_eq_stride_on_prefix"
+        ),
+        "same_owner_adjacent_step_receipt": "adjacent pair bound to same owner",
+        "fixed_before_payoff": "adjacent gap map and stride fixed before payoff",
+        "not_target_defined": "not target-deficit defined",
+        "no_post_payoff_pair_selection": "adjacent pairs not selected after payoff",
+        "no_strict_order_label_as_gap": "strict order allows uneven gaps",
+        "no_cardinality_label_as_gap": "same cardinality does not fix gaps",
+        "no_packing_label_as_gap": "packing is not adjacent spacing",
+        "no_selected_event_as_gap": "selected event is not a gap map",
+    })
+    assert strong["complete"] is True
+    assert strong["passed"] is True
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(
+        description="Validate a support-index adjacent-gap receipt."
+    )
+    parser.add_argument("receipt_json", nargs="?", help="Path to receipt JSON, or - for stdin")
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args(argv)
+    if args.self_test:
+        _self_test()
+        print("support_index_adjacent_gap_gate self-test PASS")
+        return 0
+    if not args.receipt_json:
+        raise SystemExit("receipt_json is required unless --self-test is set")
+    result = run_support_index_adjacent_gap_gate(_read_json(args.receipt_json))
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0 if result["passed"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

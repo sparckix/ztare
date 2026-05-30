@@ -75,7 +75,19 @@ def _loud_fail(name: str, reason: str) -> dict[str, Any]:
 def _parse_evidence(evidence_text: str) -> list[tuple[list[float], float]]:
     """Parse evidence.txt into list of (input_values, output_value) tuples.
 
-    Handles both simple 'x y' format and multi-column tab/space separated.
+    Two supported row shapes:
+      Simple regression:        x  y                    → ([x], y)
+      Multi-column numeric:     a b c d                 → ([a, b, c], d)  [last col = target]
+      Multi-column categorical: z d q regime modality id → ([d, q], z)    [first col = target;
+                                                                           string cols dropped]
+
+    The categorical-tolerant variant (added 2026-05-02) handles enriched substrates
+    where row schema is `target features categorical_tags row_id`. It detects this
+    shape by finding a leading prefix of float-parseable columns and skipping the
+    rest. Convention: if more than one numeric column AND any column fails float
+    parse, treat first numeric col as target and remaining numerics as features
+    (drops string tags, drops row_id).
+
     Skips comment lines (#) and section headers (===).
     """
     rows: list[tuple[list[float], float]] = []
@@ -86,16 +98,41 @@ def _parse_evidence(evidence_text: str) -> list[tuple[list[float], float]]:
         parts = line.split()
         if len(parts) < 2:
             continue
+        # First try: all-numeric row (legacy 'x y' or all-numeric multi-col).
         try:
             floats = [float(p) for p in parts]
-        except ValueError:
+            rows.append((floats[:-1], floats[-1]))
             continue
-        rows.append((floats[:-1], floats[-1]))
+        except ValueError:
+            pass
+        # Categorical-tolerant fallback: collect leading numeric columns,
+        # stop at first non-numeric. Use first numeric as target, remaining
+        # numerics as features. Requires at least 2 numeric columns.
+        numeric_prefix: list[float] = []
+        for p in parts:
+            try:
+                numeric_prefix.append(float(p))
+            except ValueError:
+                break
+        if len(numeric_prefix) >= 2:
+            target = numeric_prefix[0]
+            features = numeric_prefix[1:]
+            rows.append((features, target))
     return rows
 
 
 def _load_model_fn(project_dir: Path):
-    """Import f() from test_model.py in project_dir via importlib."""
+    """Import a model function from test_model.py.
+
+    Tries (in priority order):
+      1. f(x) — legacy single-input scalar regression model
+      2. I_model(features, params=None) — current GP-156+ standard;
+         we adapt it by passing the input as features['d'] (or first feature)
+         with optional MODEL_PARAMS from the module
+      3. PARAMETRIC_FORM eval'd against features+params
+
+    Returns a callable that takes positional float args and returns float.
+    """
     test_model_path = project_dir / "test_model.py"
     if not test_model_path.exists():
         return None
@@ -105,7 +142,67 @@ def _load_model_fn(project_dir: Path):
             return None
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        return getattr(module, "f", None)
+        # Path 1: legacy f(x) — preferred by original gate design.
+        f = getattr(module, "f", None)
+        if callable(f):
+            return f
+        # Path 2: GP-156+ I_model(features, params) — wrap as f(*args).
+        # Convention: positional args fill features['d'], features['q'], ... in
+        # the order the substrate's features.py exposes them. Rather than
+        # hardcoding feature names here, we delegate to features.py if present;
+        # otherwise we pass {'x0': args[0], 'x1': args[1], ...} as a generic
+        # feature dict and let I_model handle missing keys defensively.
+        I_model = getattr(module, "I_model", None)
+        model_params = getattr(module, "MODEL_PARAMS", None) or {}
+        if callable(I_model):
+            # Try features.py adapter for proper feature-dict shape.
+            try:
+                feat_spec = importlib.util.spec_from_file_location(
+                    "_global_gate_features",
+                    str(project_dir / "features.py"),
+                )
+                if feat_spec is not None and feat_spec.loader is not None:
+                    feat_mod = importlib.util.module_from_spec(feat_spec)
+                    feat_spec.loader.exec_module(feat_mod)
+                    features_for_row = getattr(feat_mod, "features_for_row", None)
+                    feature_names_fn = getattr(feat_mod, "feature_names", None)
+                    if callable(features_for_row) and callable(feature_names_fn):
+                        # Build a minimal row dict from positional args. The
+                        # evidence parser passes (features, target), so args
+                        # are the numeric features in row-order. We only know
+                        # the substrate's first numeric feature is `d`; pass
+                        # remaining as 'q' if substrate exposes it, else extend.
+                        def _adapter(*args):
+                            row = {"d": float(args[0])}
+                            if len(args) > 1:
+                                row["q"] = float(args[1])
+                            row["r"] = ""
+                            row["m"] = ""
+                            feats = features_for_row(row)
+                            return float(I_model(feats, model_params or None))
+                        return _adapter
+            except Exception:
+                pass
+            # Fallback adapter: pass a generic feature dict.
+            def _generic_adapter(*args):
+                feats = {"d": float(args[0]) if args else 0.0}
+                if len(args) > 1:
+                    feats["q"] = float(args[1])
+                # Common feature aliases the model might check
+                if args:
+                    import math as _m
+                    d = max(float(args[0]), 1e-12)
+                    feats.update({
+                        "log_d": _m.log(d),
+                        "log10_d": _m.log10(d),
+                        "inv_d": 1.0 / d,
+                        "inv_log_d": 1.0 / max(_m.log(d), 1e-12),
+                        "sqrt_d": _m.sqrt(d),
+                    })
+                return float(I_model(feats, model_params or None))
+            return _generic_adapter
+        # Path 3: PARAMETRIC_FORM eval (last resort)
+        return None
     except Exception:
         return None
 

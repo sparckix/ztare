@@ -1,6 +1,6 @@
 """GP-170 — Symbolic Logic Cage Phase 1 tests.
 
-Test cases derived directly from the seam (research_areas/private/seams/
+Test cases derived directly from the seam ([internal-ref]
 engine/GP-170_symbolic_logic_cage_seam.md):
 
   - Python ternary `(A if cond else B)` → REJECT (regex catches if/else)

@@ -68,7 +68,7 @@ def validate_substrate_meta(meta: Any) -> tuple[bool, list[str]]:
     """Per spec §3, every substrate must declare the canonical meta
     fields. Returns (is_valid, missing_or_invalid_diagnostics).
 
-    Used by `scripts/generate_substrate.py` schema validator (§8.3) and
+    Used by `scripts/public/generate_substrate.py` schema validator (§8.3) and
     by Cage.dispatch when refusing engagement on unmigrated substrates.
     """
     diagnostics: list[str] = []
