@@ -17,8 +17,21 @@ last_prompt_debug.txt
 eval_results.json
 FOR_MARIA.md
 
+# 4b. Root public summaries stay tracked
+!/public/
+!/public/**
+
 # 5. Hide ALL Projects...
 projects/*
+# ...except: re-include each project directory's `public/` slice so per-project
+# claim summaries (the public surface cited by the claim register) are tracked
+# even when the project's working area is private. Mirrors the existing
+# eu_union_stability whitelisting pattern.
+!projects/*/
+projects/*/*
+!projects/*/public/
+!projects/*/public/**
+
 
 # 6. ...EXCEPT the ones you want to showcase (updated to _gemini_gemini naming)
 !projects/ai_inference_collapse_gemini_gemini/
@@ -45,6 +58,24 @@ projects/eu_union_stability/hypotheses/*
 projects/eu_union_stability/hypotheses/*/*
 !projects/eu_union_stability/hypotheses/*/thesis.md
 !projects/eu_union_stability/hypotheses/*/notes.md
+# eu_union_stability public digest
+!projects/eu_union_stability/public/
+!projects/eu_union_stability/public/**
+
+# 6e. Per-project PUBLIC digest subfolder (iter-loop work stays ignored).
+# Same explicit-block style as 6c; only projects/<X>/public/ publishes.
+!projects/x_algo_goodhart_audit/
+projects/x_algo_goodhart_audit/*
+!projects/x_algo_goodhart_audit/public/
+!projects/x_algo_goodhart_audit/public/**
+!projects/riemann_operator_search/
+projects/riemann_operator_search/*
+!projects/riemann_operator_search/public/
+!projects/riemann_operator_search/public/**
+!projects/gp169_consciousness_ascription_audit/
+projects/gp169_consciousness_ascription_audit/*
+!projects/gp169_consciousness_ascription_audit/public/
+!projects/gp169_consciousness_ascription_audit/public/**
 !projects/eu_union_stability/hypotheses/*/test_model.py
 
 !projects/eu_union_load_bearing_pillars/
@@ -105,7 +136,7 @@ projects/eu_union_failure_probability_2035/raw/*
 !projects/glp1_adoption_economics/
 
 # Note: central_station and all _bench_* runs remain private under the projects/* rule above.
-# Note: research_areas/private/seams/interfaces/D3*, D4* (user forms) stay private.
+# Note: [internal-ref]*, D4* (user forms) stay private.
 
 # 7. Local paper workspaces and compiled artifacts
 # Public paper bundles live under `papers/<name>/`. Working dirs at the
@@ -120,17 +151,10 @@ projects/eu_union_failure_probability_2035/raw/*
 /epistemic-verification-companion/
 /architectural-invariance/
 /adversarial-substrate-prober/
-/paper8/
+/conciousness/
+
 # legacy paths retained for back-compat with stale checkouts
-/paper1/
-/paper2/
-/paper3/
-/paper4/
-/paper5/
-/paper6/
-/paper7/
 /*.pdf
-paper/*.pdf
 *.aux
 *.bbl
 *.blg
@@ -166,9 +190,7 @@ supervisor/active_runs/*
 !supervisor/active_runs/README.md
 
 # Private principal-facing research notes
-research_areas/private/
 research_areas/catch_grammar
-research_areas/HARDENING_BOARD.md
 
 # --- org/ structural primitives (GP-128 AI-native M-form) ---
 # Public: role definitions, delegation graph, schema/readme docs, templates
@@ -240,7 +262,6 @@ rubrics/treatise_rule0_self_pass.json
 research_areas/seeds/deferred/systems_to_algorithms.md
 
 # Paper 5 private notes (not the paper itself)
-research_areas/private/papers/paper5.md
 
 # Paper 8 is intentionally not public yet; it may be merged into paper 7.
 papers/paper8*/
@@ -261,17 +282,14 @@ ztare_workspace/transitions.jsonl
 ztare_workspace/gates/pending/*.json
 ztare_workspace/gates/pending/*.handled
 ztare_workspace/gates/resolved/*.json
+/workspace/
 
-# One-off local review artifacts
-workspace/*_panel_*.json
-workspace/*_panel_*.raw.txt
-workspace/run_*_panel.py
 
-# ── Tenant overlay (GP-191 Stage 2 — see seam in research_areas/private) ────
+# ── Tenant overlay (GP-191 Stage 2 — see seam in [internal-ref]) ────
 # org/ is a substrate-agnostic kernel primitive (publishable as standalone).
 # ZTARE Research Co's instantiation lives in the sibling private repo
-# `ztare-research-co/tenants/ztare/` and is symlinked into the conventional
-# org/ paths by `ztare-research-co/scripts/setup_tenant.sh`.
+# `[tenant]` and is symlinked into the conventional
+# org/ paths by `[tenant]`.
 # These rules prevent the symlinks (and any future tenant content) from
 # entering public history. Fresh public clone has no tenant overlay
 # → kernel runs in kernel-only mode (GP-191 Stage 3 verification).
@@ -288,3 +306,168 @@ org/preferences/principal.yaml
 tenants/*/
 !tenants/.gitkeep
 !tenants/README.md
+
+# Dashboard build artifact (regenerated from source; carries inlined data — keep out of git history; Vercel/local builds from src/)
+analytics/public/dashboard/dist/
+
+# Transient prover/verifier probe scratch written into pinned Mathlib
+# sandboxes by bundle_verify/grounded runs (cleaned on success; ignore so
+# an interrupted run never pollutes git). Working corpora live in /tmp
+# (already external to the repo).
+analytics/public/leanmill/external_benchmarks/sandboxes/**/_*.lean
+analytics/public/leanmill/external_benchmarks/sandboxes/**/tmp*.lean
+
+# ── Repo hygiene consolidation (2026-05-17) ───────────────────────────
+# Vendored deps: orbit/ is a real app; its node_modules must never track.
+orbit/node_modules/
+node_modules/
+# Scratch / temp proof + benchmark output (regenerable, never publish)
+ztare_proofs/.tmp_*
+**/.tmp_*
+projects/_bench_*/
+# Pre-audit snapshots (point-in-time, superseded)
+*.pre_audit_*
+# Archived one-shot analyses (kept on disk, out of publish surface)
+_archive/
+*.err
+
+# docs/internal/ is working-internal (agent self-models, point-in-time
+# audits, private marketing drafts, paper ledgers). Obsidian-navigable
+# locally; never part of the public docs surface.
+docs/internal/
+
+# analytics heavy/generated (fixed patterns — match contained files)
+analytics/public/gnn/
+analytics/public/index/mathlib_graph/
+analytics/public/forecast_pool/aggregates/
+analytics/public/**/.lake/
+
+# research_areas/private is the private research tree (seams/evidence/
+# philosophy + local nav READMEs). NEVER publishable. 0 tracked; this
+# rule prevents a blanket `git add` from staging it (latent #7 hole).
+research_areas/private/
+
+# research_areas/specs/private — pre-implementation / competitive specs.
+# Specs are public only when shipped+closed; in-progress specs stay here.
+research_areas/specs/private/
+
+# SR / experiment run outputs (regenerable checkpoints + hall-of-fame CSVs).
+outputs/
+# root runtime state + ephemeral runtime directives
+/.gp154_monitor_state.json
+org/directives/*.json
+
+# Non-canonical root files (reference PDFs, stale docs) — not ZTARE
+# source; recoverable from git history. Keep the root pristine.
+/*.pdf
+/MIRROR.md
+
+# Operator-internal tooling (publish-safety masker, doc/prose gates,
+# index generator + their tests). Forcing functions run LOCALLY
+# (make gates / pre-push hook); not part of the public surface.
+scripts/private/
+reviews/
+
+# analytics/private — operator-internal analytics tree. Never publishable;
+# prevents a blanket `git add analytics/` from staging it.
+analytics/private/
+
+# deploy/ operational infra — NOT secrets (scanned: no IP/key/identity
+# leak; vps_update.sh is leak-free-by-design), but it exposes
+# deployment TOPOLOGY (the ztare service user, /home/ztare + /srv
+# paths, systemd hardening, daemon pubkey, sync manifest) and is
+# operator-internal. Keep it out of the public repo. The two
+# intentionally-public files (deploy/README.md, deploy/agent-daemon.service)
+# are already tracked and are NOT ignored.
+deploy/Dockerfile.operator
+deploy/vps_update.sh
+deploy/vps_sync_files.txt
+deploy/install_local_verifier.sh
+deploy/ztare_membrane_deploy.sh
+deploy/orbit-sync.service
+deploy/ztare-membrane-daemon.service
+deploy/gen_daemon_key.py
+deploy/gen_legacy_manifest.py
+deploy/gp241_daemon_pubkey.hex
+deploy/gp241_legacy_manifest.frozen.txt
+deploy/gp241_legacy_manifest.frozen.sha256
+
+# Obsidian vault: track the stable navigation config (app.json,
+# core-plugins.json) so "open the repo as a vault" works out of the
+# box; ignore per-user/session churn so it never creates commit noise.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace
+.obsidian/cache
+.obsidian/plugins/
+.obsidian/themes/
+.obsidian/snippets/
+.obsidian/graph.json
+.obsidian/hotkeys.json
+
+# ── GP-241 reverse-sync (deploy/vps_pull.sh): keep the RECORD, ignore churn ──
+# Pre-pull local rollback backups: pure safety, unbounded; never the record.
+.vps_pull_backup/
+# Per-tick derived machine scratch (regenerated every tick; not the record).
+analytics/public/pretick/
+analytics/public/posttick/
+analytics/public/queries/scientific_amnesia/
+# forecast_pool: the ACTUAL forecast record (contracts/forecasts/outcomes/
+# scores) stays TRACKED. Ignore ONLY the bulky/high-churn machine scratch.
+analytics/public/forecast_pool/consumer_state/
+analytics/public/forecast_pool/wake_events/
+analytics/public/forecast_pool/warm_state/
+analytics/public/forecast_pool/status/
+analytics/public/forecast_pool/forecast_updates/
+analytics/public/forecast_pool/_quarantine/
+analytics/public/forecast_pool/market_events.jsonl
+# Daemon-owned authoritative chain snapshot IS the record — ensure tracked.
+!analytics/public/official_store_snapshot/
+!analytics/public/official_store_snapshot/**
+# NS-millennium tree stays broadly ignored (line ~234 projects/ns_millennium_hunt/*)
+# EXCEPT operator-public artifacts. Track JUST the substrate research memory
+# (amnesia firewall). Re-include the dir chain first (git cannot re-include a
+# file whose parent dir is excluded), then the single file.
+!projects/ns_millennium_hunt/
+!projects/ns_millennium_hunt/workspace/
+projects/ns_millennium_hunt/workspace/*
+!projects/ns_millennium_hunt/workspace/ns_residual_manifest.md
+# Operator-public NS-millennium artifacts: the entire public/ folder
+# (JOURNEY.md etc.) is intentionally public — track it (the rest of the
+# ns_millennium_hunt tree stays ignored).
+!projects/ns_millennium_hunt/public/
+!projects/ns_millennium_hunt/public/**
+# Public NS atlas generator: keep the consumption artifact reproducible while
+# leaving the rest of the NS scripts tree ignored.
+!projects/ns_millennium_hunt/scripts/
+projects/ns_millennium_hunt/scripts/*
+!projects/ns_millennium_hunt/scripts/ns_formalization_atlas.py
+!projects/ns_millennium_hunt/scripts/build_ns_atlas_embeddings.py
+
+# ── Generated / external / build artifacts — not source. (Detailed rationale +
+#    accounting kept in internal notes, not in this public file.) ──
+analytics/public/leanmill/external_benchmarks/
+analytics/public/leanmill/dashboard_data/
+analytics/public/leanmill/results/
+analytics/public/leanmill/gnn_ranker/*.npy
+analytics/public/leanmill/gnn_ranker/*.pt
+analytics/public/leanmill/gnn_ranker/*.meta.json
+analytics/public/leanmill/gnn_ranker/mathlib_pairs.jsonl
+analytics/public/leanmill/gnn_ranker/gpu_*/
+analytics/public/queries/lean/mathlib_atlas_embeddings.json
+analytics/public/leanmill/**/*.sqlite
+vendor/lean_repl/
+**/.lake/
+projects/neural_hunt/**/*.csv
+projects/neural_hunt/**/*.parquet
+projects/neural_hunt/**/*.tgz
+projects/neural_hunt/**/hf_cache/
+projects/**/ckpts*/
+*.dylib
+/tmp/
+
+# repo-root scratch
+scratch/
+
+# consciousness/ working-paper dir (29MB submission + experiment data; the /conciousness/ rule above is a typo)
+/consciousness/
