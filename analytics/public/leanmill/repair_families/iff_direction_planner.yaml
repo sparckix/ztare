@@ -1,0 +1,494 @@
+family: iff_direction_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_000_convolution_mono_right_of_nonneg
+    - MCB_003_convolution_mono_right_of_nonneg
+    - MCB_023_geom_mean_le_arith_mean_weighted
+    - MCB_039_inner_le_Lp_mul_Lq_of_nonneg
+    - MCB_015_inner_eq_norm_mul_iff_div
+    - MCB_053_eq_adjoint_iff_basis_right
+    - MCB_063_ext_inner_right_basis
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_113_exists_mem_frontier_isMaxOn_norm
+    - MCB_018_summable_condensed_iff
+    - MCB_019_summable_condensed_iff_of_nonneg
+    - MCB_025_geom_mean_eq_arith_mean_weighted
+    - MCB_026_geom_mean_eq_arith_mean_weighted
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - MCB_159_isBigOWith_iff_exists_eq_mul
+  lanes:
+    - weighted_mean_direction
+  residual_classes:
+    - source_action_mismatch
+    - tactic_failed
+    - type_mismatch
+  head_patterns:
+    - geom_mean
+    - arith_mean
+    - weighted
+    - iff
+    - mp
+    - mpr
+    - direction_split
+    - equality_case
+    - whole_iff_apply
+    - geom_mean_eq_arith_mean_weighted_iff'
+    - geom_mean_eq_arith_mean_weighted_iff
+    - geom_mean_eq_arith_mean_weighted_of_constant
+    - arith_mean_weighted_of_constant
+    - geom_mean_le_arith_mean_weighted
+    - geom_mean_le_arith_mean2_weighted
+    - condensed
+    - summable_condensed
+    - Summable
+    - SuccDiffBounded
+    - pow_succ
+    - mul_two
+    - two_mul
+    - constructor
+    - exists
+    - mem
+    - frontier
+    - isMaxOn
+    - norm
+    - bounded
+    - nonempty
+    - closure
+    - diffcont
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: iff_direction_planner
+  mode: heldout_replay
+  expected_outcome: hold
+  row_ids:
+    - MCB_025_geom_mean_eq_arith_mean_weighted
+    - MCB_026_geom_mean_eq_arith_mean_weighted
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+  target_row_ids:
+    - MCB_025_geom_mean_eq_arith_mean_weighted
+    - MCB_026_geom_mean_eq_arith_mean_weighted
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+  probe_type: sibling_or_heldout_replay
+  blocked_edge: A new sibling would require reopening source-bound probing, and that lane is currently held because recent source-bound work produced no governed value.
+  acceptance: one target-side success plus one matched negative-control failure per row, with no source-bound probe and no registry/log edits; MCB_145_norm_deriv_le_of_forall_mem_sphe must preserve the sphere-bound bridge and the matched negative control must fail when the sphere-bound witness is omitted
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the constructor-first equality-case split and keep the inequality lemma as supporting shape only; retire the lane if no additional current row appears.
+  paired_negative_controls:
+    - geom_mean_eq_arith_mean_weighted_iff_prime_missing_inequality_direction_negative_v1
+    - geom_mean_eq_arith_mean_weighted_iff_negative_whole_iff_apply_without_constructor_v1
+    - convolution_mono_right_of_nonneg_MCB003_missing_right_nonneg_negative_v1
+    - mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    - exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+    - norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+  negative_control_ideas:
+    - wrong iff direction / missing inequality direction
+    - wrong iff direction / whole-iff apply without constructor
+    - missing existential witness bridge for the adjoint-domain membership route
+    - missing differentiability bridge for the frontier max-on route
+    - missing sphere-bound bridge for the derivative norm route
+  candidate_checks:
+    - row_id: MCB_025_geom_mean_eq_arith_mean_weighted
+      kind: heldout_constructor_split
+      candidate_names:
+        - geom_mean_eq_arith_mean_weighted_iff_prime_positive_v1
+        - geom_mean_eq_arith_mean_weighted_iff_prime_missing_inequality_direction_negative_v1
+      negative_control: wrong iff direction / missing inequality direction
+      check: Keep the equality-case iff_prime split explicit. Convert from the constructor-first positive side, and ensure the negative control fails if the inequality-direction bridge is omitted.
+    - row_id: MCB_026_geom_mean_eq_arith_mean_weighted
+      kind: heldout_constructor_split
+      candidate_names:
+        - geom_mean_eq_arith_mean_weighted_iff_positive_v1
+        - geom_mean_eq_arith_mean_weighted_iff_negative_whole_iff_apply_without_constructor_v1
+      negative_control: wrong iff direction / whole-iff apply without constructor
+      check: Keep the constructor split explicit and separate the forward and reverse rewrite directions. Treat the inequality lemma as supporting shape only; it should not substitute for the equality-case iff direction.
+    - row_id: MCB_064_mem_adjoint_domain_of_exists
+      kind: heldout_constructor_split
+      candidate_names:
+        - mem_adjoint_domain_of_exists_positive_v1
+        - mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+      negative_control: missing existential witness bridge for the adjoint-domain membership route
+      check: Keep the existential witness explicit and preserve the adjoint-domain transport; do not collapse the route into the raw domain-characterization theorem alone.
+    - row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+      kind: heldout_frontier_maxon_split
+      candidate_names:
+        - exists_mem_frontier_isMaxOn_norm_positive_v1
+        - exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+      negative_control: missing differentiability bridge for the frontier max-on route
+      check: Keep the frontier, nonempty, and differentiability witnesses explicit; preserve the max-on bridge and do not collapse the route into a generic compactness replay.
+    - row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+      kind: heldout_sphere_bound_split
+      candidate_names:
+        - norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+        - norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+      negative_control: missing sphere-bound bridge for the derivative norm route
+      check: Keep the ball-domain differentiability, sphere-bound, and derivative norm witnesses explicit; preserve the exact Liouville norm-derivative bound theorem application and do not collapse the route into a generic continuity estimate.
+  required_artifacts:
+    - positive target replay for MCB_025_geom_mean_eq_arith_mean_weighted
+    - matched negative-control failure for MCB_025_geom_mean_eq_arith_mean_weighted
+    - positive target replay for MCB_026_geom_mean_eq_arith_mean_weighted
+    - matched negative-control failure for MCB_026_geom_mean_eq_arith_mean_weighted
+    - positive target replay for MCB_003_convolution_mono_right_of_nonneg
+    - matched negative-control failure for MCB_003_convolution_mono_right_of_nonneg
+    - positive target replay for MCB_064_mem_adjoint_domain_of_exists
+    - matched negative-control failure for MCB_064_mem_adjoint_domain_of_exists
+    - positive target replay for MCB_113_exists_mem_frontier_isMaxOn_norm
+    - matched negative-control failure for MCB_113_exists_mem_frontier_isMaxOn_norm
+    - positive target replay for MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - matched negative-control failure for MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - row-local evidence only
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: geom_mean_le_arith_mean_weighted_positive_v1
+    row_id: MCB_023_geom_mean_le_arith_mean_weighted
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      by_cases! A : ∃ i ∈ s, z i = 0 ∧ w i ≠ 0
+      · rcases A with ⟨i, his, hzi, hwi⟩
+        rw [prod_eq_zero his]
+        · exact sum_nonneg fun j hj => mul_nonneg (hw j hj) (hz j hj)
+        · rw [hzi]
+          exact zero_rpow hwi
+      · have := convexOn_exp.map_sum_le hw hw' fun i _ => Set.mem_univ <| log (z i)
+        simp only [exp_sum, smul_eq_mul, mul_comm (w _) (log _)] at this
+        convert this using 1 <;> [apply prod_congr rfl; apply sum_congr rfl] <;> intro i hi
+        · rcases eq_or_lt_of_le (hz i hi) with hz | hz
+          · simp [A i hi hz.symm]
+          · exact rpow_def_of_pos hz _
+        · rcases eq_or_lt_of_le (hz i hi) with hz | hz
+          · simp [A i hi hz.symm]
+          · rw [exp_log hz]
+  - id: geom_mean_le_arith_mean_weighted_missing_convert_negative_v1
+    row_id: MCB_023_geom_mean_le_arith_mean_weighted
+    test_kind: negative_control
+    expected_outcome: must_fail_without_jensen_congruence_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      by_cases! A : ∃ i ∈ s, z i = 0 ∧ w i ≠ 0
+      · rcases A with ⟨i, his, hzi, hwi⟩
+        rw [prod_eq_zero his]
+        · exact sum_nonneg fun j hj => mul_nonneg (hw j hj) (hz j hj)
+        · rw [hzi]
+          exact zero_rpow hwi
+      · have := convexOn_exp.map_sum_le hw hw' fun i _ => Set.mem_univ <| log (z i)
+        simp only [exp_sum, smul_eq_mul, mul_comm (w _) (log _)] at this
+        exact this
+  - id: geom_mean_eq_arith_mean_weighted_iff_prime_positive_v1
+    row_id: MCB_025_geom_mean_eq_arith_mean_weighted
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 220
+    body: |
+      constructor
+      · intro h
+        by_cases hzero : ∃ i ∈ s, z i = 0
+        · rcases hzero with ⟨i, hi, hzi⟩
+          have hprod : ∏ i ∈ s, z i ^ w i = 0 := by
+            rw [prod_eq_zero hi]
+            rw [hzi]
+            exact zero_rpow (ne_of_gt (hw i hi))
+          have hsum : ∑ i ∈ s, w i * z i = 0 := by
+            rw [hprod] at h
+            exact h.symm
+          have hzero' : ∀ j ∈ s, z j = 0 := by
+            have hmul :
+                ∀ j ∈ s, w j * z j = 0 :=
+              (sum_eq_zero_iff_of_nonneg fun j hj =>
+                mul_nonneg (le_of_lt (hw j hj)) (hz j hj)).mp hsum
+            intro j hj
+            exact (mul_eq_zero.mp (hmul j hj)).resolve_left (ne_of_gt (hw j hj))
+          intro j hj
+          rw [hzero' j hj, hsum]
+        · have hzpos : ∀ i ∈ s, 0 < z i := by
+            intro i hi
+            exact lt_of_le_of_ne (hz i hi) fun hzi => hzero ⟨i, hi, hzi.symm⟩
+          by_cases hne : ∃ j ∈ s, ∃ k ∈ s, z j ≠ z k
+          · rcases hne with ⟨j, hj, k, hk, hjk⟩
+            have hlog : ∃ j ∈ s, ∃ k ∈ s, log (z j) ≠ log (z k) := by
+              exact ⟨j, hj, k, hk, by
+                intro hlog
+                apply hjk
+                calc
+                  z j = exp (log (z j)) := (exp_log (hzpos j hj)).symm
+                  _ = exp (log (z k)) := by rw [hlog]
+                  _ = z k := exp_log (hzpos k hk)⟩
+            have hlt :=
+              strictConvexOn_exp.map_sum_lt hw hw' (fun i _ => Set.mem_univ <| log (z i)) hlog
+            simp only [exp_sum, smul_eq_mul, mul_comm (w _) (log _)] at hlt
+            have hlt' : ∏ i ∈ s, z i ^ w i < ∑ i ∈ s, w i * z i := by
+              convert hlt using 1 <;> [apply prod_congr rfl; apply sum_congr rfl] <;> intro i hi
+              · exact rpow_def_of_pos (hzpos i hi) _
+              · rw [exp_log (hzpos i hi)]
+            rw [h] at hlt'
+            exact (lt_irrefl _ hlt').elim
+          · intro j hj
+            rw [arith_mean_weighted_of_constant s w z (z j) hw'
+              fun i hi _ => by
+                by_contra hij
+                exact hne ⟨i, hi, j, hj, hij⟩]
+      · intro h
+        exact geom_mean_eq_arith_mean_weighted_of_constant s w z (∑ i ∈ s, w i * z i)
+          (fun i hi => le_of_lt (hw i hi)) hw' hz fun i hi _ => h i hi
+  - id: geom_mean_eq_arith_mean_weighted_iff_prime_missing_inequality_direction_negative_v1
+    row_id: MCB_025_geom_mean_eq_arith_mean_weighted
+    test_kind: negative_control
+    expected_outcome: must_fail_without_iff_direction_split
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact Real.geom_mean_le_arith_mean_weighted s w z (fun i hi => le_of_lt (hw i hi)) hw' hz
+  - id: geom_mean_eq_arith_mean_weighted_iff_wrong_iff_direction_negative_v1
+    row_id: MCB_025_geom_mean_eq_arith_mean_weighted
+    test_kind: negative_control
+    expected_outcome: must_fail_when_reversing_iff_direction
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact (Real.geom_mean_le_arith_mean_weighted s w z (fun i hi => le_of_lt (hw i hi)) hw' hz).symm
+  - id: geom_mean_eq_arith_mean_weighted_iff_positive_v1
+    row_id: MCB_026_geom_mean_eq_arith_mean_weighted
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 180
+    body: |
+      have h (i) (_ : i ∈ s) : w i * z i ≠ 0 → w i ≠ 0 := by apply left_ne_zero_of_mul
+      have h' (i) (_ : i ∈ s) : z i ^ w i ≠ 1 → w i ≠ 0 := by
+        by_contra! ⟨h1, h2⟩
+        simp only [h2, rpow_zero, ne_self_iff_false] at h1
+      rw [← sum_filter_of_ne h, ← prod_filter_of_ne h', geom_mean_eq_arith_mean_weighted_iff']
+      · simp
+      · simp +contextual [(hw _ _).lt_iff_ne']
+      · rwa [sum_filter_ne_zero]
+      · simp_all only [ne_eq, mul_eq_zero, not_or, not_false_eq_true, implies_true, mem_filter]
+  - id: geom_mean_eq_arith_mean_weighted_iff_negative_whole_iff_apply_without_constructor_v1
+    row_id: MCB_026_geom_mean_eq_arith_mean_weighted
+    test_kind: negative_control
+    expected_outcome: must_fail_without_constructor_split
+    backend: repl_file
+    timeout: 100
+    body: |
+      exact Real.geom_mean_le_arith_mean2_weighted _ _ _ _ (by positivity)
+  - id: summable_condensed_iff_positive_v1
+    row_id: MCB_018_summable_condensed_iff
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff hf (pow_pos zero_lt_two) (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: summable_condensed_iff_missing_condensation_bridge_negative_v1
+    row_id: MCB_018_summable_condensed_iff
+    test_kind: negative_control
+    expected_outcome: must_fail_without_condensation_normalization_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      exact summable_schlomilch_iff hf (pow_pos zero_lt_two) (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero h_succ_diff
+  - id: inner_eq_norm_mul_iff_div_positive_v1
+    row_id: MCB_015_inner_eq_norm_mul_iff_div
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (inner_eq_norm_mul_iff_div (x := x) (y := y) hx₀)
+  - id: inner_eq_norm_mul_iff_div_missing_iff_direction_negative_v1
+    row_id: MCB_015_inner_eq_norm_mul_iff_div
+    test_kind: negative_control
+    expected_outcome: must_fail_without_iff_direction_split
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact (inner_eq_norm_mul_iff_div (x := x) (y := y) hx₀).symm
+  - id: eq_adjoint_iff_basis_right_positive_v1
+    row_id: MCB_053_eq_adjoint_iff_basis_right
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (eq_adjoint_iff_basis_right (b := b) (A := A) (B := B))
+  - id: eq_adjoint_iff_basis_right_missing_basis_split_negative_v1
+    row_id: MCB_053_eq_adjoint_iff_basis_right
+    test_kind: negative_control
+    expected_outcome: must_fail_without_basis_right_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact (eq_adjoint_iff_basis_right (b := b) (A := A) (B := B)).1
+  - id: ext_inner_right_basis_positive_v1
+    row_id: MCB_063_ext_inner_right_basis
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (ext_inner_right_basis (b := b) h)
+  - id: ext_inner_right_basis_wrong_direction_negative_v1
+    row_id: MCB_063_ext_inner_right_basis
+    test_kind: negative_control
+    expected_outcome: must_fail_when_reversing_equality_direction
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact (ext_inner_right_basis (b := b) h).symm
+  - id: mem_adjoint_domain_of_exists_positive_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact mem_adjoint_domain_of_exists T y h
+  - id: mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: negative_control
+    expected_outcome: must_fail_without_exists_witness_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (T.mem_adjoint_domain_iff (y := y))
+  - id: exists_mem_frontier_isMaxOn_norm_positive_v1
+    row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exists_mem_frontier_isMaxOn_norm hb hne hd)
+  - id: exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+    row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_differentiability_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (exists_mem_frontier_isMaxOn_norm hb hne)
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using
+        (norm_deriv_le_of_forall_mem_sphere_norm_le
+          (c := c) (R := R) (C := C) (f := f) hR hd hC)
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: negative_control
+    expected_outcome: must_fail_without_sphere_bound_hypothesis
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (norm_deriv_le_of_forall_mem_sphere_norm_le
+          (c := c) (R := R) (C := C) (f := f) hR hd)
+  - id: isBigOWith_iff_exists_eq_mul_positive_v1
+    row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isBigOWith_iff_exists_eq_mul (hc := hc) (l := l) (u := u) (v := v))
+  - id: isBigOWith_iff_exists_eq_mul_missing_nonneg_negative_v1
+    row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonnegative_constant_transport
+    backend: repl_file
+    timeout: 90
+    body: |
+      simpa using (isBigOWith_iff_exists_eq_mul (l := l) (u := u) (v := v)).mp h
+  - id: summable_condensed_iff_of_nonneg_positive_v1
+    row_id: MCB_019_summable_condensed_iff_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff_of_nonneg h_nonneg h_mono (pow_pos zero_lt_two)
+        (pow_right_strictMono₀ one_lt_two) two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: summable_condensed_iff_of_nonneg_missing_nonneg_negative_v1
+    row_id: MCB_019_summable_condensed_iff_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonnegativity_lift_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff_of_nonneg h_mono (pow_pos zero_lt_two)
+        (pow_right_strictMono₀ one_lt_two) two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: inner_le_Lp_mul_Lq_of_nonneg_positive_v1
+    row_id: MCB_039_inner_le_Lp_mul_Lq_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (inner_le_Lp_mul_Lq_of_nonneg (s := s) (f := f) (g := g) hpq hf hg)
+  - id: inner_le_Lp_mul_Lq_of_nonneg_missing_nonneg_bridge_negative_v1
+    row_id: MCB_039_inner_le_Lp_mul_Lq_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonnegativity_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (inner_le_Lp_mul_Lq_of_nonneg (s := s) (f := f) (g := g) hpq hf)
+  - id: convolution_mono_right_of_nonneg_positive_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg'
+  - id: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_side_nonnegativity_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg
+  - id: convolution_mono_right_of_nonneg_MCB003_positive_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg'
+  - id: convolution_mono_right_of_nonneg_MCB003_missing_right_nonneg_negative_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_side_nonnegativity_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg

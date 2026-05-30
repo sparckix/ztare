@@ -1,0 +1,1267 @@
+family: interval_alignment_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+  - MCB_010_spectralRadius_eq_nnnorm
+  - MCB_009_kerFun_dense
+  - MCB_042_ContinuousLinearMap
+  - MCB_044_range_eq_top
+  - MCB_033_Submodule
+  - MCB_000_convolution_mono_right_of_nonneg
+  - MCB_003_convolution_mono_right_of_nonneg
+  - MCB_022_sum_Ioo_inv_sq_le
+  - MCB_004_sum_Ioo_inv_sq_le
+  - MCB_017_le_tsum_condensed
+  - MCB_017_real_inner_div_norm_mul_norm_eq_
+  - MCB_035_inner_mul_inner_self_le
+  - MCB_067_isSymmetric_iff_inner_map_self_r
+  - MCB_061_top_orthogonal_eq_bot
+  - MCB_073_orthogonalComplement_iSup_eigens
+  - MCB_075_Commute
+  - MCB_053_eq_adjoint_iff_basis_right
+  - MCB_063_ext_inner_right_basis
+  - MCB_080_IsIdempotentElem
+  - MCB_057_isIdempotentElem_rankOne_self_if
+  - MCB_028_inner_gramSchmidtOrthonormalBasi
+  - MCB_018_summable_condensed_iff
+  - MCB_019_summable_condensed_iff_of_nonneg
+  - MCB_003_le_tsum_schlomilch
+  - MCB_012_isBigO_rpow_top_log_smul
+  - MCB_013_isBigO_rpow_zero_log_smul
+  - MCB_167_isEquivalent_iff_tendsto_one
+  - MCB_039_Orthonormal
+  - MCB_181_orthonormal_mFourier
+  - MCB_182_hasSum_mFourier_series_of_summab
+  - MCB_192_hasSum_fourier_series_of_summabl
+  - MCB_185_span_fourierLp_closure_eq_top
+  - MCB_136_analyticAt_iff_eventually_differ
+  - MCB_099_AnalyticOnNhd
+  - MCB_124_sameRay_iff_arg_div_eq_zero
+  - MCB_142_eventually_differentiableAt_cusp
+  - MCB_112_eventually_eq_or_eq_zero_of_isLo
+  - MCB_113_exists_mem_frontier_isMaxOn_norm
+  - MCB_119_sum_le_exp_of_nonneg
+  - MCB_153_circleAverage_of_differentiable_
+  - MCB_201_tendsto_integral_exp_smul_cocomp
+  - MCB_200_tendsto_integral_exp_smul_cocomp
+  - MCB_197_isBigO_norm_restrict_cocompact
+  - MCB_218_lineDerivOp
+  - MCB_134_norm_exp_I_mul_ofReal_sub_one
+  - MCB_102_norm_canonicalFactor_eval_circle
+  - MCB_137_isAddQuotientCoveringMap_exp
+  - MCB_145_norm_deriv_le_of_forall_mem_sphe
+  - MCB_154_norm_dslope_le_div_of_mapsTo_bal
+  - MCB_020_injective_iff_forall_lt_finrank_
+  - MCB_094_exists_norm_eq_restrict_eq
+  - MCB_064_mem_adjoint_domain_of_exists
+  - MCB_160_isLittleO_iff_exists_eq_mul
+  - MCB_176_isLittleO_insert
+  - MCB_205_tendsto_iff_forall
+  lanes:
+  - interval_alignment
+  - interval_inv_sq_sum
+  - interval_condensed_summability
+  - fourier_orthonormality
+  residual_classes:
+  - source_action_mismatch
+  - type_mismatch
+  - lean_error
+  head_patterns:
+  - Ioo
+  - Ioc
+  - convolution
+  - mono
+  - right
+  - adjoint
+  - basis
+  - injective
+  - range
+  - inner
+  - norm
+  - eigenspace
+  - orthogonalComplement
+  - Submodule
+  - orthogonalProjection
+  - symmetric
+  - positive
+  - rankOne
+  - nonneg
+  - interval
+  - endpoint
+  - max
+  - sum_Ioc_inv_sq_le_sub
+  - add_sq_le
+  - denominator
+  - condensed
+  - finrank
+  - singularValues
+  - summable_condensed
+  - summable_schlomilch_iff
+  - summable_schlomilch_iff_of_nonneg
+  - le_tsum_schlomilch
+  - strictMono
+  - tendsto_atTop
+  - nonneg
+  - SuccDiffBounded
+  - pow_succ
+  - mul_two
+  - two_ne_zero
+  - pow_right_strictMono₀
+  - orthonormal
+  - mFourier
+  - Fourier
+  - addCircle
+  - integral
+  - exp
+  - quotient
+  - coveringMap
+  - commute
+  - smul
+  - cocompact
+  - ennreal
+  - nnreal
+  - two
+  - mul
+  - span
+  - closure
+  - topologicalClosure
+  - fourierLp
+  - attop
+  - pow
+  - sum
+  - map
+  - add
+  - one
+  - top
+  - tsum
+  - stolzSet
+  - powerSeries
+  - nhdsWithin
+  - AbelLimit
+  - tendsto
+  - eventually
+  - differentiableAt
+  - analyticAt
+  - analyticOnNhd
+  - differentiableOn
+  - diff
+  - iff
+  - isEquivalent
+  - equivalent
+  - open
+  - set
+  - compl
+  - isLocalMin
+  - nhds
+  - zero
+  - cuspFunction
+  - qParam
+  - invQParam
+  - Periodic
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+templates:
+- id: spectral_radius_eq_nnnorm_positive_v1
+  row_id: MCB_010_spectralRadius_eq_nnnorm
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (T.spectralRadius_eq_nnnorm hT)
+
+    '
+- id: spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+  row_id: MCB_010_spectralRadius_eq_nnnorm
+  test_kind: negative_control
+  expected_outcome: must_fail_without_self_adjoint_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (T.spectralRadius_eq_nnnorm)
+
+    '
+- id: convolution_mono_right_of_nonneg_positive_v1
+  row_id: MCB_000_convolution_mono_right_of_nonneg
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'exact MeasureTheory.convolution_mono_right_of_nonneg hfg'' hf hg hg''
+
+    '
+- id: convolution_mono_right_of_nonneg_missing_rhs_nonneg_negative_v1
+  row_id: MCB_000_convolution_mono_right_of_nonneg
+  test_kind: negative_control
+  expected_outcome: must_fail_without_right_side_nonnegativity_witness
+  backend: repl_file
+  timeout: 80
+  body: 'exact MeasureTheory.convolution_mono_right_of_nonneg hfg'' hf hg
+
+    '
+- id: isSymmetric_iff_inner_map_self_real_positive_v1
+  row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (isSymmetric_iff_inner_map_self_real (T := T))
+
+    '
+- id: isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+  row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+  test_kind: negative_control
+  expected_outcome: must_fail_without_real_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (isSymmetric_iff_inner_map_self_real (T := T)).1
+
+    '
+- id: orthogonalComplement_iSup_eigenspaces_positive_v1
+  row_id: MCB_073_orthogonalComplement_iSup_eigens
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (orthogonalComplement_iSup_eigenspaces (hT := hT) (μ := μ))
+
+    '
+- id: orthogonalComplement_iSup_eigenspaces_missing_compactness_bridge_negative_v1
+  row_id: MCB_073_orthogonalComplement_iSup_eigens
+  test_kind: negative_control
+  expected_outcome: must_fail_without_compactness_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (orthogonalComplement_iSup_eigenspaces_eq_bot (hT'' := hT))
+
+    '
+- id: top_orthogonal_eq_bot_positive_v1
+  row_id: MCB_061_top_orthogonal_eq_bot
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using top_orthogonal_eq_bot
+
+    '
+- id: top_orthogonal_eq_bot_missing_orthogonal_direction_negative_v1
+  row_id: MCB_061_top_orthogonal_eq_bot
+  test_kind: negative_control
+  expected_outcome: must_fail_without_orthogonal_direction_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using bot_orthogonal_eq_top
+
+    '
+- id: directSum_isInternal_of_commute_positive_v1
+  row_id: MCB_030_directSum_isInternal_of_commute
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "simpa using\n  (directSum_isInternal_of_commute (A := A) (B := B) hA hB hAB)\n"
+- id: directSum_isInternal_of_commute_missing_commute_witness_negative_v1
+  row_id: MCB_030_directSum_isInternal_of_commute
+  test_kind: negative_control
+  expected_outcome: must_fail_without_commute_witness
+  backend: repl_file
+  timeout: 80
+  body: "simpa using\n  (directSum_isInternal_of_commute (A := A) (B := B) hA hB)\n"
+- id: exp_mem_unitary_of_mem_skewAdjoint_positive_v1
+  row_id: MCB_075_Commute
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (exp_mem_unitary_of_mem_skewAdjoint (x := x) hx)
+
+    '
+- id: exp_mem_unitary_of_mem_skewAdjoint_missing_skewAdjoint_witness_negative_v1
+  row_id: MCB_075_Commute
+  test_kind: negative_control
+  expected_outcome: must_fail_without_skewAdjoint_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (exp_mem_unitary_of_mem_skewAdjoint (x := x))
+
+    '
+- id: kerFun_dense_positive_v1
+  row_id: MCB_009_kerFun_dense
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using kerFun_dense
+
+    '
+- id: kerFun_dense_missing_inner_bridge_negative_v1
+  row_id: MCB_009_kerFun_dense
+  test_kind: negative_control
+  expected_outcome: must_fail_without_inner_product_density_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (show topologicalClosure (span ℂ {kerFun H x v | (x) (v)}) =
+    (⊥ : Submodule ℂ (E → ℂ)) from kerFun_dense)
+
+    '
+- id: convolution_mono_right_of_nonneg_MCB003_positive_v1
+  row_id: MCB_003_convolution_mono_right_of_nonneg
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'exact MeasureTheory.convolution_mono_right_of_nonneg hfg'' hf hg hg''
+
+    '
+- id: convolution_mono_right_of_nonneg_MCB003_missing_rhs_nonneg_negative_v1
+  row_id: MCB_003_convolution_mono_right_of_nonneg
+  test_kind: negative_control
+  expected_outcome: must_fail_without_right_side_nonnegativity_witness
+  backend: repl_file
+  timeout: 80
+  body: 'exact MeasureTheory.convolution_mono_right_of_nonneg hfg'' hf hg
+
+    '
+- id: isBigO_rpow_top_log_smul_positive_v1
+  row_id: MCB_012_isBigO_rpow_top_log_smul
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (isBigO_rpow_top_log_smul (E := E) (a := a) (b := b) (f := f)
+    hab hf)
+
+    '
+- id: isBigO_rpow_top_log_smul_missing_endpoint_bridge_negative_v1
+  row_id: MCB_012_isBigO_rpow_top_log_smul
+  test_kind: negative_control
+  expected_outcome: must_fail_without_endpoint_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (isBigO_rpow_zero_log_smul (E := E) (a := a) (b := b) (f := f)
+    hab hf)
+
+    '
+- id: isBigO_rpow_zero_log_smul_positive_v1
+  row_id: MCB_013_isBigO_rpow_zero_log_smul
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (isBigO_rpow_zero_log_smul (E := E) (a := a) (b := b) (f := f)
+    hab hf)
+
+    '
+- id: isBigO_rpow_zero_log_smul_missing_endpoint_bridge_negative_v1
+  row_id: MCB_013_isBigO_rpow_zero_log_smul
+  test_kind: negative_control
+  expected_outcome: must_fail_without_endpoint_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (isBigO_rpow_top_log_smul (E := E) (a := a) (b := b) (f := f)
+    hab hf)
+
+    '
+- id: sum_ioo_inv_sq_interval_alignment_positive_v1
+  row_id: MCB_022_sum_Ioo_inv_sq_le
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (sum_Ioo_inv_sq_le k n)
+
+    '
+- id: sum_ioo_inv_sq_wrong_endpoint_negative_v1
+  row_id: MCB_022_sum_Ioo_inv_sq_le
+  test_kind: negative_control
+  expected_outcome: must_fail_without_max_endpoint_widening
+  backend: repl_file
+  timeout: 80
+  body: "have hk0 : k ≠ 0 := by\n  intro hk\n  subst hk\n  simp at *\nexact sum_Ioc_inv_sq_le_sub\
+    \ hk0 (le_max_left k (n := n))\n"
+- id: sum_ioo_inv_sq_post_shift_denominator_mismatch_negative_v1
+  row_id: MCB_022_sum_Ioo_inv_sq_le
+  test_kind: negative_control
+  expected_outcome: must_fail_without_post_shift_denominator_normalization
+  backend: repl_file
+  timeout: 80
+  body: "have hk0 : k ≠ 0 := by\n  intro hk\n  subst hk\n  simp at *\nhave hk1 : k\
+    \ ≤ max (k + 1) n := le_trans (Nat.le_succ _ ) (le_max_left _ _)\nexact (sum_Ioc_inv_sq_le_sub\
+    \ hk0 hk1).trans (by\n  simp only [Nat.cast_succ, sub_le_self_iff, inv_nonneg,\
+    \ Nat.cast_nonneg]\n  gcongr\n  have A : (1 : α) ≤ k + 1 := by simp only [le_add_iff_nonneg_left,\
+    \ Nat.cast_nonneg]\n  simpa using pow_right_mono₀ A one_le_two)\n"
+- id: ennreal_le_tsum_condensed_interval_alignment_positive_v1
+  row_id: MCB_017_le_tsum_condensed
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]\n\
+    refine iSup_le fun n => by\n  exact (Finset.le_sum_condensed hf n).trans <| by\n\
+    \    simp only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two]\n"
+- id: ennreal_le_tsum_condensed_interval_alignment_missing_tsum_bridge_negative_v1
+  row_id: MCB_017_le_tsum_condensed
+  test_kind: negative_control
+  expected_outcome: must_fail_without_finite_sum_to_tsum_bridge
+  backend: repl_file
+  timeout: 80
+  body: "rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]\n\
+    refine iSup_le fun n => by\n  simpa only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two]\
+    \ using Finset.le_sum_condensed hf n\n"
+- id: nnreal_summable_condensed_positive_v1
+  row_id: MCB_018_summable_condensed_iff
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by\n  intro n\n  simp [pow_succ,\
+    \ mul_two, two_mul]\nconvert summable_schlomilch_iff hf (pow_pos zero_lt_two)\
+    \ (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero h_succ_diff\nsimp [pow_succ,\
+    \ mul_two]\n"
+- id: nnreal_summable_condensed_missing_diff_normalization_negative_v1
+  row_id: MCB_018_summable_condensed_iff
+  test_kind: negative_control
+  expected_outcome: must_fail_without_power_succ_difference_normalization
+  backend: repl_file
+  timeout: 80
+  body: "have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by\n  intro n\n  simp [pow_succ,\
+    \ mul_two, two_mul]\nexact summable_schlomilch_iff hf (pow_pos zero_lt_two) (pow_right_strictMono₀\
+    \ _root_.one_lt_two) two_ne_zero h_succ_diff\n"
+- id: real_summable_condensed_nonneg_positive_v1
+  row_id: MCB_019_summable_condensed_iff_of_nonneg
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by\n  intro n\n  simp [pow_succ,\
+    \ mul_two, two_mul]\nconvert summable_schlomilch_iff_of_nonneg h_nonneg h_mono\
+    \ (pow_pos zero_lt_two)\n  (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero\
+    \ h_succ_diff\nsimp [pow_succ, mul_two]\n"
+- id: real_summable_condensed_nonneg_missing_diff_normalization_negative_v1
+  row_id: MCB_019_summable_condensed_iff_of_nonneg
+  test_kind: negative_control
+  expected_outcome: must_fail_without_power_succ_difference_normalization
+  backend: repl_file
+  timeout: 80
+  body: "have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by\n  intro n\n  simp [pow_succ,\
+    \ mul_two, two_mul]\nexact summable_schlomilch_iff_of_nonneg h_nonneg h_mono (pow_pos\
+    \ zero_lt_two)\n  (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero h_succ_diff\n"
+- id: real_inner_div_norm_mul_norm_eq_one_iff_positive_v1
+  row_id: MCB_017_real_inner_div_norm_mul_norm_eq_
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (real_inner_div_norm_mul_norm_eq_one_iff (x := x) (y := y))
+
+    '
+- id: real_inner_div_norm_mul_norm_eq_one_iff_missing_signed_real_bridge_negative_v1
+  row_id: MCB_017_real_inner_div_norm_mul_norm_eq_
+  test_kind: negative_control
+  expected_outcome: must_fail_without_signed_real_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (abs_real_inner_div_norm_mul_norm_eq_one_iff (x := x) (y := y))
+
+    '
+- id: inner_mul_inner_self_le_positive_v1
+  row_id: MCB_035_inner_mul_inner_self_le
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (inner_mul_inner_self_le (x := x) (y := y))
+
+    '
+- id: inner_mul_inner_self_le_missing_real_inner_bridge_negative_v1
+  row_id: MCB_035_inner_mul_inner_self_le
+  test_kind: negative_control
+  expected_outcome: must_fail_without_real_inner_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (real_inner_mul_inner_self_le (x := x) (y := y))
+
+    '
+- id: injective_iff_forall_lt_finrank_singularValues_pos_positive_v1
+  row_id: MCB_020_injective_iff_forall_lt_finrank_
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (LinearMap.injective_iff_forall_lt_finrank_singularValues_pos
+    (T := T))
+
+    '
+- id: injective_iff_forall_lt_finrank_singularValues_pos_missing_range_bridge_negative_v1
+  row_id: MCB_020_injective_iff_forall_lt_finrank_
+  test_kind: negative_control
+  expected_outcome: must_fail_without_range_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (LinearMap.singularValues_pos_iff_lt_finrank_range (T := T))
+
+    '
+- id: eq_adjoint_iff_basis_right_positive_v1
+  row_id: MCB_053_eq_adjoint_iff_basis_right
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (eq_adjoint_iff_basis_right (b := b) (A := A) (B := B))
+
+    '
+- id: eq_adjoint_iff_basis_right_missing_basis_bridge_negative_v1
+  row_id: MCB_053_eq_adjoint_iff_basis_right
+  test_kind: negative_control
+  expected_outcome: must_fail_without_basis_right_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (eq_adjoint_iff (A := A) (B := B))
+
+    '
+- id: ext_inner_right_basis_positive_v1
+  row_id: MCB_063_ext_inner_right_basis
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (ext_inner_right_basis (b := b) h)
+
+    '
+- id: ext_inner_right_basis_missing_inner_witness_negative_v1
+  row_id: MCB_063_ext_inner_right_basis
+  test_kind: negative_control
+  expected_outcome: must_fail_without_inner_product_witness
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (ext_inner_right_basis (b := b))
+
+    '
+- id: is_idempotentElem_rankOne_self_iff_positive_v1
+  row_id: MCB_057_isIdempotentElem_rankOne_self_if
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (isIdempotentElem_rankOne_self_iff (𝕜 := 𝕜) (x := x) hx)
+
+    '
+- id: is_idempotentElem_rankOne_self_iff_missing_iff_bridge_negative_v1
+  row_id: MCB_057_isIdempotentElem_rankOne_self_if
+  test_kind: negative_control
+  expected_outcome: must_fail_without_iff_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (isIdempotentElem_rankOne_self (𝕜 := 𝕜) (x := x) hx)
+
+    '
+- id: le_tsum_schlomilch_interval_alignment_positive_v1
+  row_id: MCB_003_le_tsum_schlomilch
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "rw [ENNReal.tsum_eq_iSup_nat' hu.tendsto_atTop]\nrefine iSup_le fun n =>\
+    \ by\n  simpa using Finset.le_sum_schlomilch hf h_pos hu n\n"
+- id: le_tsum_schlomilch_interval_alignment_missing_condensed_bridge_negative_v1
+  row_id: MCB_003_le_tsum_schlomilch
+  test_kind: negative_control
+  expected_outcome: must_fail_without_schlomilch_bridge
+  backend: repl_file
+  timeout: 80
+  body: "rw [ENNReal.tsum_eq_iSup_nat' hu.tendsto_atTop]\nrefine iSup_le fun n =>\
+    \ by\n  simpa using Finset.le_sum_condensed hf n\n"
+- id: orthonormal_mFourier_positive_v1
+  row_id: MCB_181_orthonormal_mFourier
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using orthonormal_mFourier
+
+    '
+- id: orthonormal_mFourier_missing_normalization_bridge_negative_v1
+  row_id: MCB_181_orthonormal_mFourier
+  test_kind: negative_control
+  expected_outcome: must_fail_without_fourier_normalization_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using mFourier_norm
+
+    '
+- id: hasSum_mFourier_series_of_summable_positive_v1
+  row_id: MCB_182_hasSum_mFourier_series_of_summab
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (hasSum_mFourier_series_of_summable (f := f) h)
+
+    '
+- id: hasSum_mFourier_series_of_summable_missing_summability_negative_v1
+  row_id: MCB_182_hasSum_mFourier_series_of_summab
+  test_kind: negative_control
+  expected_outcome: must_fail_without_summability_witness
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (hasSum_mFourier_series_of_summable (f := f))
+
+    '
+- id: hasSum_fourier_series_of_summable_uniform_positive_v1
+  row_id: MCB_192_hasSum_fourier_series_of_summabl
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (hasSum_fourier_series_of_summable (f := f) h)
+
+    '
+- id: hasSum_fourier_series_of_summable_uniform_missing_summability_negative_v1
+  row_id: MCB_192_hasSum_fourier_series_of_summabl
+  test_kind: negative_control
+  expected_outcome: must_fail_without_summability_witness
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (hasSum_fourier_series_of_summable (f := f))
+
+    '
+- id: orthonormal_basis_orthonormal_positive_v1
+  row_id: MCB_039_Orthonormal
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (OrthonormalBasis.orthonormal b)
+
+    '
+- id: orthonormal_basis_orthonormal_missing_pairwise_orthogonality_bridge_negative_v1
+  row_id: MCB_039_Orthonormal
+  test_kind: negative_control
+  expected_outcome: must_fail_without_pairwise_orthogonality_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (OrthonormalBasis.norm_eq_one b)
+
+    '
+- id: inner_gramSchmidtOrthonormalBasis_eq_zero_positive_v1
+  row_id: MCB_028_inner_gramSchmidtOrthonormalBasi
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "simpa using\n  (inner_gramSchmidtOrthonormalBasis_eq_zero (b := b) (i :=\
+    \ i) (j := j) hij)\n"
+- id: inner_gramSchmidtOrthonormalBasis_eq_zero_missing_orthogonality_witness_negative_v1
+  row_id: MCB_028_inner_gramSchmidtOrthonormalBasi
+  test_kind: negative_control
+  expected_outcome: must_fail_without_orthogonality_witness
+  backend: repl_file
+  timeout: 80
+  body: "simpa using\n  (inner_gramSchmidtOrthonormalBasis_eq_zero (b := b) (i :=\
+    \ i) (j := j))\n"
+- id: span_fourierLp_closure_eq_top_positive_v1
+  row_id: MCB_185_span_fourierLp_closure_eq_top
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (span_fourierLp_closure_eq_top hp)
+
+    '
+- id: span_fourierLp_closure_eq_top_missing_fourierLp_bridge_negative_v1
+  row_id: MCB_185_span_fourierLp_closure_eq_top
+  test_kind: negative_control
+  expected_outcome: must_fail_without_fourierLp_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using span_fourier_closure_eq_top
+
+    '
+- id: integrable_fourier_smul_bdd_smul_positive_v1
+  row_id: MCB_187_MeasureTheory
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "apply hf.bdd_smul 1\n· exact (map_continuous (fourier n)).aestronglyMeasurable\n\
+    · apply ae_of_all; intro t\n  rw [fourier_apply, Circle.norm_coe]\n"
+- id: integrable_fourier_smul_missing_norm_one_bridge_negative_v1
+  row_id: MCB_187_MeasureTheory
+  test_kind: negative_control
+  expected_outcome: must_fail_without_fourier_norm_one_bridge
+  backend: repl_file
+  timeout: 80
+  body: "apply hf.bdd_smul 0\n· exact (map_continuous (fourier n)).aestronglyMeasurable\n\
+    · apply ae_of_all; intro t\n  rw [fourier_apply, Circle.norm_coe]\n"
+- id: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_positive_v1
+  row_id: MCB_151_tendsto_tsum_powerSeries_nhdsWit
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using tendsto_tsum_powerSeries_nhdsWithin_stolzSet h
+
+    '
+- id: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_missing_h_negative_v1
+  row_id: MCB_151_tendsto_tsum_powerSeries_nhdsWit
+  test_kind: negative_control
+  expected_outcome: must_fail_without_tendsto_witness
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using tendsto_tsum_powerSeries_nhdsWithin_stolzSet
+
+    '
+- id: superpolynomialDecay_iff_zpow_tendsto_zero_positive_v1
+  row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (superpolynomialDecay_iff_zpow_tendsto_zero (l := l) (k := k)
+    (f := f) hk)
+
+    '
+- id: superpolynomialDecay_iff_zpow_tendsto_zero_missing_zpow_bridge_negative_v1
+  row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+  test_kind: negative_control
+  expected_outcome: must_fail_without_zpow_tendsto_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (superpolynomialDecay_iff_norm_tendsto_zero (l := l) (k := k)
+    (f := f))
+
+    '
+- id: eventually_differentiableAt_cuspFunction_nhds_ne_zero_positive_v1
+  row_id: MCB_142_eventually_differentiableAt_cusp
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: "refine ((invQParam_tendsto hh).eventually h_hol).mp <|\n  eventually_nhdsWithin_of_forall\
+    \ (fun q hq h_diff => by\n    rw [← qParam_right_inv hh.ne' hq]\n    exact differentiableAt_cuspFunction\
+    \ hh.ne' hf h_diff)\n"
+- id: eventually_differentiableAt_cuspFunction_nhds_ne_zero_missing_open_set_bridge_negative_v1
+  row_id: MCB_142_eventually_differentiableAt_cusp
+  test_kind: negative_control
+  expected_outcome: must_fail_without_qparam_right_inverse_bridge
+  backend: repl_file
+  timeout: 80
+  body: "refine ((invQParam_tendsto hh).eventually h_hol).mp <|\n  eventually_nhdsWithin_of_forall\
+    \ (fun q hq h_diff => by\n    exact differentiableAt_cuspFunction hh.ne' hf h_diff)\n"
+- id: analyticAt_iff_eventually_differentiableAt_positive_v1
+  row_id: MCB_136_analyticAt_iff_eventually_differ
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: "constructor\n· intro h\n  filter_upwards [h.eventually_analyticAt]\n  exact\
+    \ AnalyticAt.differentiableAt\n· intro h\n  rcases _root_.eventually_nhds_iff.mp\
+    \ h with ⟨ε, hε, hball⟩\n  have hdiff_on : DifferentiableOn ℂ f (ball c ε) :=\
+    \ fun z hz => hball (by simpa [Metric.mem_ball] using hz)\n  have han : AnalyticOnNhd\
+    \ ℂ f (ball c ε) := (analyticOnNhd_iff_differentiableOn isOpen_ball).2 hdiff_on\n\
+    \  exact han c (by simpa using mem_ball_self hε)\n"
+- id: analyticAt_iff_eventually_differentiableAt_missing_nhds_to_point_bridge_negative_v1
+  row_id: MCB_136_analyticAt_iff_eventually_differ
+  test_kind: negative_control
+  expected_outcome: must_fail_without_nhds_to_point_bridge
+  backend: repl_file
+  timeout: 80
+  body: "constructor\n· intro h\n  filter_upwards [h.eventually_analyticAt]\n  exact\
+    \ AnalyticAt.differentiableAt\n· intro h\n  rcases _root_.eventually_nhds_iff.mp\
+    \ h with ⟨ε, hε, hball⟩\n  have hdiff_on : DifferentiableOn ℂ f (ball c ε) :=\
+    \ fun z hz => hball (by simpa [Metric.mem_ball] using hz)\n  exact (analyticOnNhd_iff_differentiableOn\
+    \ isOpen_ball).2 hdiff_on\n"
+- id: analyticOnNhd_iff_differentiableOn_positive_v1
+  row_id: MCB_099_AnalyticOnNhd
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (analyticOnNhd_iff_differentiableOn isOpen_ball).2 hdiff_on
+
+    '
+- id: analyticOnNhd_iff_differentiableOn_missing_differentiableOn_bridge_negative_v1
+  row_id: MCB_099_AnalyticOnNhd
+  test_kind: negative_control
+  expected_outcome: must_fail_without_differentiableOn_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (analyticOnNhd_iff_differentiableOn isOpen_ball).2
+
+    '
+- id: sameRay_iff_arg_div_eq_zero_positive_v1
+  row_id: MCB_124_sameRay_iff_arg_div_eq_zero
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (sameRay_iff_arg_div_eq_zero (x := x) (y := y))
+
+    '
+- id: sameRay_iff_arg_div_eq_zero_missing_arg_div_bridge_negative_v1
+  row_id: MCB_124_sameRay_iff_arg_div_eq_zero
+  test_kind: negative_control
+  expected_outcome: must_fail_without_arg_div_zero_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (sameRay_iff (x := x) (y := y))
+
+    '
+- id: differentiableOn_compl_singleton_and_continuousAt_iff_positive_v1
+  row_id: MCB_108_differentiableOn_compl_singleton
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (differentiableOn_compl_singleton_and_continuousAt_iff (f :=
+    f) (s := s) (c := c) hs)
+
+    '
+- id: differentiableOn_compl_singleton_and_continuousAt_iff_missing_forward_direction_negative_v1
+  row_id: MCB_108_differentiableOn_compl_singleton
+  test_kind: negative_control
+  expected_outcome: must_fail_without_forward_direction_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (differentiableOn_compl_singleton_and_continuousAt_iff (f :=
+    f) (s := s) (c := c) hs).2
+
+    '
+- id: exists_norm_eq_restrict_eq_positive_v1
+  row_id: MCB_094_exists_norm_eq_restrict_eq
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (exists_norm_eq_restrict_eq (f := f))
+
+    '
+- id: exists_norm_eq_restrict_eq_missing_existence_projection_negative_v1
+  row_id: MCB_094_exists_norm_eq_restrict_eq
+  test_kind: negative_control
+  expected_outcome: must_fail_without_witness_projection
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (exists_norm_eq_restrict_eq (f := f)).2
+
+    '
+- id: mem_adjoint_domain_of_exists_positive_v1
+  row_id: MCB_064_mem_adjoint_domain_of_exists
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (mem_adjoint_domain_of_exists (T := T) y h)
+
+    '
+- id: mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+  row_id: MCB_064_mem_adjoint_domain_of_exists
+  test_kind: negative_control
+  expected_outcome: must_fail_without_exists_witness_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (mem_adjoint_domain_of_exists (T := T) y)
+
+    '
+- id: isLittleO_iff_exists_eq_mul_positive_v1
+  row_id: MCB_160_isLittleO_iff_exists_eq_mul
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (isLittleO_iff_exists_eq_mul (l := l) (u := u) (v := v))
+
+    '
+- id: isLittleO_iff_exists_eq_mul_missing_littleo_tendsto_zero_bridge_negative_v1
+  row_id: MCB_160_isLittleO_iff_exists_eq_mul
+  test_kind: negative_control
+  expected_outcome: must_fail_without_tendsto_zero_bridge
+  backend: repl_file
+  timeout: 90
+  body: 'simpa using (isBigO_iff_exists_eq_mul (l := l) (u := u) (v := v))
+
+    '
+- id: isLittleO_insert_positive_v1
+  row_id: MCB_176_isLittleO_insert
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (isLittleO_insert (x := x) (s := s) (g := g) (g'' := g'') h)
+
+    '
+- id: isLittleO_insert_missing_zero_bridge_negative_v1
+  row_id: MCB_176_isLittleO_insert
+  test_kind: negative_control
+  expected_outcome: must_fail_without_zero_hypothesis_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (isLittleO_insert (x := x) (s := s) (g := g) (g'' := g''))
+
+    '
+- id: isEquivalent_iff_tendsto_one_positive_v1
+  row_id: MCB_167_isEquivalent_iff_tendsto_one
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: "simpa using\n  (Asymptotics.isEquivalent_iff_tendsto_one (u := u) (v := v)\
+    \ hz)\n"
+- id: isEquivalent_iff_tendsto_one_missing_tendsto_one_bridge_negative_v1
+  row_id: MCB_167_isEquivalent_iff_tendsto_one
+  test_kind: negative_control
+  expected_outcome: must_fail_without_tendsto_one_bridge
+  backend: repl_file
+  timeout: 80
+  body: "simpa using\n  (Asymptotics.isEquivalent_iff_tendsto_one (u := u) (v := v))\n"
+- id: norm_canonicalFactor_eval_circle_positive_v1
+  row_id: MCB_102_norm_canonicalFactor_eval_circle
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: "simpa using\n  (norm_canonicalFactor_eval_circle_eq_one (R := R) (w := w)\
+    \ (z := z) hw hz)\n"
+- id: norm_canonicalFactor_eval_circle_missing_sphere_hypothesis_negative_v1
+  row_id: MCB_102_norm_canonicalFactor_eval_circle
+  test_kind: negative_control
+  expected_outcome: must_fail_without_sphere_hypothesis
+  backend: repl_file
+  timeout: 80
+  body: "simpa using\n  (norm_canonicalFactor_eval_circle_eq_one (R := R) (w := w)\
+    \ (z := z) hw)\n"
+- id: eventually_eq_or_eq_zero_of_isLocalMin_norm_positive_v1
+  row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: "refine or_iff_not_imp_right.mpr fun hzero => by\n  have h1 : ∀ᶠ z in \U0001D4DD\
+    \ c, f z ≠ 0 := hf.self_of_nhds.continuousAt.eventually_ne hzero\n  have h2 :\
+    \ IsLocalMax (norm ∘ f)⁻¹ c := hc.inv (h1.mono fun z hz => norm_pos_iff.mpr hz)\n\
+    \  have h3 : IsLocalMax (norm ∘ f⁻¹) c := by\n    refine h2.congr (Eventually.of_forall\
+    \ (fun z => by simp))\n  have h4 : ∀ᶠ z in \U0001D4DD c, DifferentiableAt ℂ f⁻¹\
+    \ z := by\n    filter_upwards [hf, h1] with z hz hdiff using hdiff.inv\n  filter_upwards\
+    \ [eventually_eq_of_isLocalMax_norm h4 h3] with z using inv_inj.mp\n"
+- id: eventually_eq_or_eq_zero_of_isLocalMin_norm_missing_inverse_max_transport_negative_v1
+  row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+  test_kind: negative_control
+  expected_outcome: must_fail_without_inverse_max_transport_bridge
+  backend: repl_file
+  timeout: 90
+  body: "refine or_iff_not_imp_right.mpr fun hzero => by\n  have h1 : ∀ᶠ z in \U0001D4DD\
+    \ c, f z ≠ 0 := hf.self_of_nhds.continuousAt.eventually_ne hzero\n  have h2 :\
+    \ IsLocalMax (norm ∘ f)⁻¹ c := hc.inv (h1.mono fun z hz => norm_pos_iff.mpr hz)\n\
+    \  have h4 : ∀ᶠ z in \U0001D4DD c, DifferentiableAt ℂ f⁻¹ z := by\n    filter_upwards\
+    \ [hf, h1] with z hz hdiff using hdiff.inv\n  filter_upwards [eventually_eq_of_isLocalMax_norm\
+    \ h4 h2] with z using inv_inj.mp\n"
+- id: sum_le_exp_of_nonneg_interval_alignment_positive_v1
+  row_id: MCB_119_sum_le_exp_of_nonneg
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using sum_le_exp_of_nonneg hx n
+
+    '
+- id: sum_le_exp_of_nonneg_interval_alignment_missing_nonneg_negative_v1
+  row_id: MCB_119_sum_le_exp_of_nonneg
+  test_kind: negative_control
+  expected_outcome: must_fail_without_nonnegativity_hypothesis
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using sum_le_exp_of_nonneg (by positivity) n
+
+    '
+- id: circleAverage_of_differentiable_on_off_countable_positive_v1
+  row_id: MCB_153_circleAverage_of_differentiable_
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: "simpa using\n  (Complex.circleAverage_of_differentiable_on_off_countable\n\
+    \    (f := f) (c := c) (R := R) hs h₁f h₂f)\n"
+- id: circleAverage_of_differentiable_on_off_countable_missing_countability_bridge_negative_v1
+  row_id: MCB_153_circleAverage_of_differentiable_
+  test_kind: negative_control
+  expected_outcome: must_fail_without_countability_bridge
+  backend: repl_file
+  timeout: 80
+  body: "simpa using\n  (Complex.circleAverage_of_differentiable_on_off_countable\n\
+    \    (f := f) (c := c) (R := R) h₁f h₂f)\n"
+- id: tendsto_integral_exp_smul_cocompact_positive_v1
+  row_id: MCB_201_tendsto_integral_exp_smul_cocomp
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (tendsto_integral_exp_smul_cocompact (μ := μ))
+
+    '
+- id: tendsto_integral_exp_smul_cocompact_missing_euclidean_bridge_negative_v1
+  row_id: MCB_201_tendsto_integral_exp_smul_cocomp
+  test_kind: negative_control
+  expected_outcome: must_fail_without_euclidean_reduction_bridge
+  backend: repl_file
+  timeout: 90
+  body: 'let V'' := EuclideanSpace ℝ (Fin (finrank ℝ V))
+
+    have A : V ≃L[ℝ] V'' := toEuclidean
+
+    simpa using (tendsto_integral_exp_smul_cocompact_of_inner_product (μ := μ))
+
+    '
+- id: tendsto_integral_exp_smul_cocompact_of_inner_product_positive_v1
+  row_id: MCB_200_tendsto_integral_exp_smul_cocomp
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (tendsto_integral_exp_smul_cocompact_of_inner_product (μ := μ))
+
+    '
+- id: tendsto_integral_exp_smul_cocompact_of_inner_product_missing_measure_bridge_negative_v1
+  row_id: MCB_200_tendsto_integral_exp_smul_cocomp
+  test_kind: negative_control
+  expected_outcome: must_fail_without_measure_bridge
+  backend: repl_file
+  timeout: 90
+  body: 'simpa using (tendsto_integral_exp_smul_cocompact_of_inner_product)
+
+    '
+- id: isBigO_norm_restrict_cocompact_positive_v1
+  row_id: MCB_197_isBigO_norm_restrict_cocompact
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (isBigO_norm_restrict_cocompact (f := f) (b := b) hb hf K)
+
+    '
+- id: isBigO_norm_restrict_cocompact_missing_compact_set_negative_v1
+  row_id: MCB_197_isBigO_norm_restrict_cocompact
+  test_kind: negative_control
+  expected_outcome: must_fail_without_compact_set_transport
+  backend: repl_file
+  timeout: 90
+  body: 'simpa using (isBigO_norm_restrict_cocompact (f := f) (b := b) hb hf)
+
+    '
+- id: lineDerivOp_positive_v1
+  row_id: MCB_218_lineDerivOp
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'exact LineDeriv.lineDerivOp (hf := hf) (m := m)
+
+    '
+- id: lineDerivOp_missing_support_witness_negative_v1
+  row_id: MCB_218_lineDerivOp
+  test_kind: negative_control
+  expected_outcome: must_fail_without_support_witness
+  backend: repl_file
+  timeout: 80
+  body: 'exact LineDeriv.lineDerivOp (hf := hf)
+
+    '
+- id: exists_mem_frontier_isMaxOn_norm_positive_v1
+  row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 140
+  body: 'simpa using (exists_mem_frontier_isMaxOn_norm hb hne hd)
+
+    '
+- id: exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+  row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+  test_kind: negative_control
+  expected_outcome: must_fail_without_differentiability_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (exists_mem_frontier_isMaxOn_norm hb hne)
+
+    '
+- id: eLpNorm_le_eLpNorm_fderiv_one_positive_v1
+  row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u hp)
+
+    '
+- id: eLpNorm_le_eLpNorm_fderiv_one_missing_holder_conjugate_negative_v1
+  row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+  test_kind: negative_control
+  expected_outcome: must_fail_without_holder_conjugate_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u)
+
+    '
+- id: norm_exp_I_mul_ofReal_sub_one_positive_v1
+  row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (Complex.norm_exp_I_mul_ofReal_sub_one (x := x))
+
+    '
+- id: norm_exp_I_mul_ofReal_sub_one_missing_two_sin_bridge_negative_v1
+  row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+  test_kind: negative_control
+  expected_outcome: must_fail_without_two_sin_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (Real.norm_exp_I_mul_ofReal_sub_one_le (x := x))
+
+    '
+- id: isAddQuotientCoveringMap_exp_positive_v1
+  row_id: MCB_137_isAddQuotientCoveringMap_exp
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (Complex.isAddQuotientCoveringMap_exp)
+
+    '
+- id: isAddQuotientCoveringMap_exp_missing_quotient_bridge_negative_v1
+  row_id: MCB_137_isAddQuotientCoveringMap_exp
+  test_kind: negative_control
+  expected_outcome: must_fail_without_quotient_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (Complex.isCoveringMap_exp)
+
+    '
+- id: norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+  row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: "simpa using\n  (norm_deriv_le_of_forall_mem_sphere_norm_le\n    (c := c)\
+    \ (R := R) (C := C) (f := f) hR hd hC)\n"
+- id: norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+  row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+  test_kind: negative_control
+  expected_outcome: must_fail_without_sphere_boundary_witness
+  backend: repl_file
+  timeout: 80
+  body: "simpa using\n  (norm_deriv_le_of_forall_mem_sphere_norm_le\n    (c := c)\
+    \ (R := R) (C := C) (f := f) hR hd)\n"
+- id: norm_dslope_le_div_of_mapsTo_ball_positive_v1
+  row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (Complex.norm_dslope_le_div_of_mapsTo_ball (f := f) (c := c)
+    (R₁ := R₁) (R₂ := R₂) (z := z) hd h_maps hz)
+
+    '
+- id: norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_witness_negative_v1
+  row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+  test_kind: negative_control
+  expected_outcome: must_fail_without_mapsTo_ball_witness
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (Complex.norm_dslope_le_div_of_mapsTo_ball (f := f) (c := c)
+    (R₁ := R₁) (R₂ := R₂) (z := z) hd hz)
+
+    '
+- id: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+  row_id: MCB_080_IsIdempotentElem
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p
+    := p) hp)
+
+    '
+- id: isIdempotentElem_missing_idempotent_bridge_negative_v1
+  row_id: MCB_080_IsIdempotentElem
+  test_kind: negative_control
+  expected_outcome: must_fail_without_isIdempotentElem_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p
+    := p))
+
+    '
+- id: continuous_linear_map_isPositive_adjoint_comp_self_positive_v1
+  row_id: MCB_042_ContinuousLinearMap
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (ContinuousLinearMap.isPositive_adjoint_comp_self (S := A))
+
+    '
+- id: continuous_linear_map_isPositive_adjoint_comp_self_missing_orientation_bridge_negative_v1
+  row_id: MCB_042_ContinuousLinearMap
+  test_kind: negative_control
+  expected_outcome: must_fail_without_adjoint_orientation_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (ContinuousLinearMap.isPositive_self_comp_adjoint (S := A))
+
+    '
+- id: range_eq_top_positive_v1
+  row_id: MCB_044_range_eq_top
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (range_eq_top (B := B) coercive)
+
+    '
+- id: range_eq_top_missing_coercive_negative_v1
+  row_id: MCB_044_range_eq_top
+  test_kind: negative_control
+  expected_outcome: must_fail_without_coercive_witness
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (range_eq_top (B := B))
+
+    '
+- id: hasSum_orthogonalProjection_positive_v1
+  row_id: MCB_033_Submodule
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 160
+  body: 'simpa using (Submodule.hasSum_orthogonalProjection (b := b) (x := x))
+
+    '
+- id: hasSum_orthogonalProjection_missing_point_negative_v1
+  row_id: MCB_033_Submodule
+  test_kind: negative_control
+  expected_outcome: must_fail_without_projection_point
+  backend: repl_file
+  timeout: 80
+  body: 'simpa using (Submodule.hasSum_orthogonalProjection (b := b) (x := 0))
+
+    '
+- id: tendsto_iff_forall_positive_v1
+  row_id: MCB_205_tendsto_iff_forall
+  test_kind: positive
+  expected_outcome: governed_repair_canary_closure
+  backend: repl_file
+  timeout: 120
+  body: 'simpa using (Hyperreal.tendsto_iff_forall (x := x) (r := r))
+
+    '
+- id: tendsto_iff_forall_missing_one_direction_negative_v1
+  row_id: MCB_205_tendsto_iff_forall
+  test_kind: negative_control
+  expected_outcome: must_fail_without_iff_direction_bridge
+  backend: repl_file
+  timeout: 80
+  body: 'exact (Hyperreal.tendsto_iff_forall (x := x) (r := r)).1
+
+    '

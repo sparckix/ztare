@@ -1,0 +1,164 @@
+family: source_action_shape_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_003_convolution_mono_right_of_nonneg
+    - MCB_017_le_tsum_condensed
+  lanes:
+    - source_shape
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - MeasureTheory.Measure.conv_smul_right
+    - ENNReal.coe_tsum
+    - ENNReal.le_tsum
+    - conv_smul_right
+    - coe_tsum
+    - le_tsum
+    - shape_adapter
+    - right_action_transport
+    - right_action
+    - coercion_bridge
+    - ENNReal.NNReal
+    - simpa
+    - compare_kernels
+    - wrong_conclusion_head
+    - direct_apply
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  expected_outcome: hold
+  row_ids:
+    - MCB_003_convolution_mono_right_of_nonneg
+    - MCB_017_le_tsum_condensed
+  probe_type: sibling_or_heldout_replay
+  mode: heldout_replay
+  probe_name: source_action_shape_row_local_sibling_or_heldout_v1
+  kind: reuse_existing_canary_spec
+  acceptance: The replay is valid only if row 003 needs a shape adapter before exact/apply/rw and row 017 closes only after coercion-shape normalization; the paired wrong-head negative controls must fail on the same rows.
+  blocked_edge: The source-bound lane is held, so only target-side sibling or heldout replay is safe; the current packet already drains to these two rows, so there is no safe new sibling row to source.
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Keep the current target-side exact/apply/rw probe isolated and matched to its negative controls; do not spend a new row until a genuinely independent current target row appears.
+  stop_rule: If either row only closes after a new source request, or if the wrong-head negative does not fail on the same row, keep the lane held.
+  checks:
+    - Row 003: the convolution transport path must still fail when the shape adapter is removed, the direct apply is attempted too early, or the goal is swapped to an unrelated measure expression.
+    - Row 017: the condensed tsum coercion path must still fail when the summability or nonnegativity bridge is removed, `ENNReal.coe_tsum` is used on an inequality goal, or the goal is changed away from a condensed tsum comparison.
+  preconditions:
+    - Do not open a new source request.
+    - Reuse the existing sibling/heldout canary spec for the same two rows.
+    - Preserve the row-specific negative controls.
+  sibling_or_heldout_constraints:
+    - Use only MCB_003_convolution_mono_right_of_nonneg and MCB_017_le_tsum_condensed.
+    - For MCB_003, construct a shape adapter before retrying exact/apply/rw.
+    - For MCB_017, align the ENNReal/NNReal carrier before retrying exact/apply/rw.
+    - Do not use `ENNReal.coe_tsum` on an inequality goal.
+    - Do not reopen source-bound probing while source binding is held.
+  paired_negative_controls:
+    - convolution_mono_right_wrong_conclusion_head_direct_apply_negative_v1
+    - le_tsum_condensed_wrong_conclusion_head_direct_apply_negative_v1
+  negative_control_ideas:
+    - Direct apply of a resolvable source with wrong conclusion head.
+    - Use `ENNReal.coe_tsum` on an inequality goal.
+    - Drop the nonnegativity bridge.
+    - Try the convolution row without the shape adapter.
+    - Swap the row 003 goal to an unrelated measure expression.
+    - Switch row 017 away from condensed tsum comparison.
+  planned_tests:
+    - candidate_name: convolution_mono_right_nonneg_split_v1
+      action_profile: probe candidate with exact/apply/rw and score kernel goal delta
+      row_id: MCB_003_convolution_mono_right_of_nonneg
+      test_kind: positive
+    - candidate_name: convolution_mono_right_wrong_conclusion_head_direct_apply_negative_v1
+      action_profile: direct apply of a resolvable source with wrong conclusion head
+      row_id: MCB_003_convolution_mono_right_of_nonneg
+      test_kind: negative_control
+    - candidate_name: ennreal_le_tsum_condensed_v1
+      action_profile: align the ENNReal/NNReal carrier before retrying exact/apply/rw
+      row_id: MCB_017_le_tsum_condensed
+      test_kind: positive
+    - candidate_name: le_tsum_condensed_wrong_conclusion_head_direct_apply_negative_v1
+      action_profile: direct apply of a resolvable source with wrong conclusion head
+      row_id: MCB_017_le_tsum_condensed
+      test_kind: negative_control
+  positive_artifacts:
+    - candidate_name: MeasureTheory.Measure.conv_smul_right
+      check: Construct a shape adapter, then retry exact/apply/rw and score the kernel goal delta.
+      row_id: MCB_003_convolution_mono_right_of_nonneg
+    - candidate_name: ENNReal.le_tsum
+      check: |
+        Follow the exact `le_tsum_condensed` spine: rewrite with
+        `ENNReal.tsum_eq_iSup_nat'`, pass through `Finset.le_sum_condensed`,
+        and finish by pushing the finite-sum bound to the tsum; do not use
+        `ENNReal.coe_tsum` on the inequality goal.
+      row_id: MCB_017_le_tsum_condensed
+  rows:
+    - row_id: MCB_003_convolution_mono_right_of_nonneg
+      negative_control: direct apply with wrong conclusion head
+      required_check: construct a shape adapter before retrying direct apply
+      positive_candidate: convolution_mono_right_nonneg_split_v1
+      negative_candidate: convolution_mono_right_wrong_conclusion_head_direct_apply_negative_v1
+      candidate_names:
+        - convolution_mono_right_nonneg_split_v1
+        - convolution_mono_right_wrong_conclusion_head_direct_apply_negative_v1
+    - row_id: MCB_017_le_tsum_condensed
+      negative_control: direct apply with wrong conclusion head
+      required_check: align the ENNReal/NNReal carrier before retrying direct apply
+      positive_candidate: ennreal_le_tsum_condensed_v1
+      negative_candidate: le_tsum_condensed_wrong_conclusion_head_direct_apply_negative_v1
+      candidate_names:
+        - ennreal_le_tsum_condensed_v1
+        - le_tsum_condensed_wrong_conclusion_head_direct_apply_negative_v1
+  required_artifacts:
+    - positive target replay for MCB_003_convolution_mono_right_of_nonneg after shape normalization
+    - positive target replay for MCB_017_le_tsum_condensed after coercion normalization
+    - matched negative-control failure for wrong conclusion head on each row
+    - row-local evidence only
+  target_row_ids:
+    - MCB_003_convolution_mono_right_of_nonneg
+    - MCB_017_le_tsum_condensed
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: convolution_mono_right_shape_positive_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      -- shape adapter for right-action transport
+      -- the direct theorem should only work after the goal is put into the right conclusion shape
+      simpa using (MeasureTheory.Measure.conv_smul_right)
+  - id: convolution_mono_right_wrong_conclusion_head_direct_apply_negative_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_when_direct_applying_with_wrong_conclusion_head
+    backend: repl_file
+    timeout: 80
+    body: |
+      -- direct apply with the wrong conclusion head should not normalize the goal
+      exact MeasureTheory.Measure.conv_smul_right
+  - id: le_tsum_condensed_wrong_conclusion_head_direct_apply_negative_v1
+    row_id: MCB_017_le_tsum_condensed
+    test_kind: negative_control
+    expected_outcome: must_fail_when_direct_applying_with_wrong_conclusion_head
+    backend: repl_file
+    timeout: 80
+    body: |
+      -- direct apply with the wrong conclusion head should fail on the condensed tsum shape
+      exact ENNReal.coe_tsum
+quarantined_templates:
+  - id: le_tsum_condensed_shape_positive_v1
+    row_id: MCB_017_le_tsum_condensed
+    reason: unresolved_placeholder_hole_removed_from_executable_templates
+    next_action: repair as a full positive template before re-enabling; do not execute a `?_` placeholder.
+    body_tail: |
+      rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]
+      refine iSup_le fun n => (Finset.le_sum_condensed hf n).trans ?_
+      simp only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two]
+      grw [ENNReal.sum_le_tsum]

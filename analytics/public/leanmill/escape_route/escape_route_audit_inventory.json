@@ -1,0 +1,172 @@
+{
+  "aggregate": "/Users/daalami/figs_activist_loop/analytics/public/leanmill/escape_route/escape_route_run_results.json",
+  "aggregate_ref": {
+    "exists": true,
+    "path": "analytics/public/leanmill/escape_route/escape_route_run_results.json",
+    "sha256": "2e1e9d6393add6adcc88e58edd6f850af3d1bd4deb728e933e35507dd442f87a",
+    "size_bytes": 2014
+  },
+  "artifact_boundary": {
+    "canonical_truth": "Route C aggregate/per-row artifacts; no proof credit without governance receipts",
+    "write_mode": "atomic_replace"
+  },
+  "credit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+  "dispatch_refs": [],
+  "interpretation": "Existing escape-route output is audit inventory and missing-lemma supply, not proof credit. A stronger-backbone rerun should preserve this baseline.",
+  "n_closed_raw": 0,
+  "n_rows": 5,
+  "natural_control": "v32_route_c_replay_results.json (0/10 closed)",
+  "rows": [
+    {
+      "audit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+      "candidate_pathways": [],
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "dispatch_artifact": null,
+      "gap_report": {},
+      "genuine_attempt": true,
+      "missing_lemma_hints": [
+        "integral_exp_neg_mul_induction",
+        "integral_exp_neg_mul_by_parts",
+        "integral_exp_neg_mul_by_parts"
+      ],
+      "next_lever": "prove_missing_lemma",
+      "next_target_statement": "Prove missing lemma `integral_exp_neg_mul_induction`",
+      "residual_class": "theorem_or_pde_gap",
+      "row_id": "ER_SIE1_intervalIntegral_pow_exp",
+      "typed_exit_kind": "gap_report"
+    },
+    {
+      "audit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+      "candidate_pathways": [],
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "dispatch_artifact": null,
+      "gap_report": {},
+      "genuine_attempt": true,
+      "missing_lemma_hints": [
+        "sum_ico_pow_exp_induction",
+        "sum_ico_pow_exp_induction",
+        "sum_ico_pow_exp_induction"
+      ],
+      "next_lever": "prove_missing_lemma",
+      "next_target_statement": "Prove missing lemma `sum_ico_pow_exp_induction`",
+      "residual_class": "theorem_or_pde_gap",
+      "row_id": "ER_SIE2_sum_Ico_pow_exp",
+      "typed_exit_kind": "gap_report"
+    },
+    {
+      "audit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+      "candidate_pathways": [],
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "dispatch_artifact": null,
+      "gap_report": {},
+      "genuine_attempt": true,
+      "missing_lemma_hints": [
+        "sum_pow_exp_induction_upper_bound",
+        "sum_pow_exp_induction_upper_bound",
+        "sum_pow_exp_induction_upper_bound"
+      ],
+      "next_lever": "prove_missing_lemma",
+      "next_target_statement": "Prove missing lemma `sum_pow_exp_induction_upper_bound`",
+      "residual_class": "theorem_or_pde_gap",
+      "row_id": "ER_SIE3_sum_Iic_pow_exp",
+      "typed_exit_kind": "gap_report"
+    },
+    {
+      "audit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+      "candidate_pathways": [],
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "dispatch_artifact": null,
+      "gap_report": {},
+      "genuine_attempt": true,
+      "missing_lemma_hints": [
+        "sum_pow_mul_exp_negc_induction_bound",
+        "sum_pow_mul_exp_negc_induction_bound",
+        "sum_pow_mul_exp_negc_induction_bound"
+      ],
+      "next_lever": "prove_missing_lemma",
+      "next_target_statement": "Prove missing lemma `sum_pow_mul_exp_negc_induction_bound`",
+      "residual_class": "theorem_or_pde_gap",
+      "row_id": "ER_SIE4_sum_Iic_pow_twopow",
+      "typed_exit_kind": "gap_report"
+    },
+    {
+      "audit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+      "candidate_pathways": [],
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "dispatch_artifact": null,
+      "gap_report": {},
+      "genuine_attempt": true,
+      "missing_lemma_hints": [
+        "int_normalization_exists",
+        "int_normalization_exists",
+        "int_normalization_exists"
+      ],
+      "next_lever": "prove_missing_lemma",
+      "next_target_statement": "Prove missing lemma `int_normalization_exists`",
+      "residual_class": "theorem_or_pde_gap",
+      "row_id": "ER_PENT_strictMonoOn",
+      "typed_exit_kind": "gap_report"
+    }
+  ],
+  "schema": "leanmill-escape-route-audit-inventory-v1",
+  "summary": {
+    "apparatus_or_source_mismatch_count": 0,
+    "closure_candidate_count": 0,
+    "credit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
+    "exit_count": 5,
+    "gap_report_count": 5,
+    "proof_compiler_contract": {
+      "contract_status_counts": {
+        "accepted_for_shadow_execution": 5
+      },
+      "instrumentation_boundary": "reasoning-compiler shadow contract only; no enforcement or proof credit",
+      "invariant_failure_counts": {},
+      "required_next_action_counts": {
+        "promote_missing_lemma_obligation": 5
+      },
+      "schema": "leanmill-proof-compiler-contract-v1"
+    },
+    "proof_credit": "none_summary_is_advisory",
+    "residual_class_counts": {
+      "theorem_or_pde_gap": 5
+    },
+    "schema": "leanmill-typed-proof-exit-summary-v1",
+    "source_kind_counts": {
+      "route_c_layer_2c": 5
+    },
+    "top_candidate_lemmas": [
+      {
+        "count": 3,
+        "lemma": "sum_ico_pow_exp_induction"
+      },
+      {
+        "count": 3,
+        "lemma": "sum_pow_exp_induction_upper_bound"
+      },
+      {
+        "count": 3,
+        "lemma": "sum_pow_mul_exp_negc_induction_bound"
+      },
+      {
+        "count": 3,
+        "lemma": "int_normalization_exists"
+      },
+      {
+        "count": 2,
+        "lemma": "integral_exp_neg_mul_by_parts"
+      },
+      {
+        "count": 1,
+        "lemma": "integral_exp_neg_mul_induction"
+      }
+    ],
+    "typed_exit_kind_counts": {
+      "gap_report": 5
+    }
+  }
+}

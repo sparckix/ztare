@@ -1,0 +1,153 @@
+family: ennreal_tsum_condensation_planner
+version: 1
+status: candidate_family
+residual_match:
+  lanes:
+    - ennreal_tsum
+    - summability_transport
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - condensed
+    - summable_condensed
+    - ENNReal
+    - ENNReal.tsum_eq_iSup_nat'
+    - Finset.le_sum_condensed
+    - sum_le_tsum
+    - SuccDiffBounded
+    - summable_schlomilch_iff
+    - summable_schlomilch_iff_of_nonneg
+    - finite_sum_to_tsum
+    - power_succ
+    - difference_normalization
+    - nonneg_lift
+    - coe_tsum
+    - le_tsum
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  row_ids:
+    - MCB_017_le_tsum_condensed
+    - MCB_018_summable_condensed_iff
+    - MCB_019_summable_condensed_iff_of_nonneg
+  probe_type: heldout_replay
+  acceptance: one target-side success plus one matched negative-control failure per row, with no source-bound probe and no registry/log edits
+  paired_negative_controls:
+    - ennreal_tsum_wrong_head_direct_apply_negative_v1
+    - ennreal_tsum_missing_nonneg_bridge_negative_v1
+  required_artifacts:
+    - positive target replay for MCB_017_le_tsum_condensed
+    - positive target replay for MCB_018_summable_condensed_iff
+    - positive target replay for MCB_019_summable_condensed_iff_of_nonneg
+    - matched negative-control failure for wrong conclusion head
+    - matched negative-control failure for nonnegativity bridge
+    - row-local evidence only
+templates:
+  - id: ennreal_le_tsum_condensed_positive_v1
+    row_id: MCB_017_le_tsum_condensed
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]
+      refine iSup_le fun n => (Finset.le_sum_condensed hf n).trans <| by
+        simp only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two]
+        grw [ENNReal.sum_le_tsum]
+  - id: ennreal_le_tsum_condensed_missing_tsum_bridge_negative_v1
+    row_id: MCB_017_le_tsum_condensed
+    test_kind: negative_control
+    expected_outcome: must_fail_without_finite_sum_to_tsum_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]
+      refine iSup_le fun n => by
+        simpa only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two] using Finset.le_sum_condensed hf n
+  - id: ennreal_le_tsum_condensed_wrong_shape_coe_tsum_negative_v1
+    row_id: MCB_017_le_tsum_condensed
+    test_kind: negative_control
+    expected_outcome: must_fail_when_direct_applying_with_wrong_conclusion_head
+    backend: repl_file
+    timeout: 80
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]
+      refine iSup_le fun n => by
+        simpa only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two] using (ENNReal.coe_tsum : (∑' i, (0 : ℝ≥0∞)) = 0)
+  - id: nnreal_summable_condensed_positive_v1
+    row_id: MCB_018_summable_condensed_iff
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff hf (pow_pos zero_lt_two) (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: nnreal_summable_condensed_missing_diff_normalization_negative_v1
+    row_id: MCB_018_summable_condensed_iff
+    test_kind: negative_control
+    expected_outcome: must_fail_without_power_succ_difference_normalization
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      exact summable_schlomilch_iff hf (pow_pos zero_lt_two) (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero h_succ_diff
+  - id: real_summable_condensed_nonneg_positive_v1
+    row_id: MCB_019_summable_condensed_iff_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff_of_nonneg h_nonneg h_mono (pow_pos zero_lt_two) (pow_right_strictMono₀ _root_.one_lt_two) two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: real_summable_condensed_missing_nonneg_lift_negative_v1
+    row_id: MCB_019_summable_condensed_iff_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_real_to_nnreal_nonnegative_lift
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      exact_mod_cast NNReal.summable_condensed_iff h_mono
+  - id: le_tsum_schlomilch_positive_v1
+    row_id: MCB_003_le_tsum_schlomilch
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' hu.tendsto_atTop]
+      refine iSup_le fun n => by
+        grw [Finset.le_sum_schlomilch hf h_pos hu.monotone n]
+        gcongr
+        have (k : ℕ) : (u (k + 1) - u k : ℝ≥0∞) = (u (k + 1) - (u k : ℕ) : ℕ) := by simp
+        simp only [nsmul_eq_mul, this]
+        apply ENNReal.sum_le_tsum
+  - id: le_tsum_schlomilch_missing_nonnegativity_negative_v1
+    row_id: MCB_003_le_tsum_schlomilch
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonnegativity_hypothesis
+    backend: repl_file
+    timeout: 80
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' hu.tendsto_atTop]
+      refine iSup_le fun n => by
+        grw [Finset.le_sum_schlomilch hf hu.monotone n]
+        gcongr
+        have (k : ℕ) : (u (k + 1) - u k : ℝ≥0∞) = (u (k + 1) - (u k : ℕ) : ℕ) := by simp
+        simp only [nsmul_eq_mul, this]
+        apply ENNReal.sum_le_tsum

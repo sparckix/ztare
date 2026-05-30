@@ -1,0 +1,632 @@
+family: spectral_rayleigh_singular_values_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_019_singularValues_antitone
+    - MCB_010_spectralRadius_eq_nnnorm
+    - MCB_000_convolution_mono_right_of_nonneg
+    - MCB_042_ContinuousLinearMap
+    - MCB_083_IsSelfAdjoint
+    - MCB_080_IsIdempotentElem
+    - MCB_057_isIdempotentElem_rankOne_self_if
+    - MCB_049_conj_adjoint
+    - MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - MCB_075_Commute
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_073_orthogonalComplement_iSup_eigens
+    - MCB_102_norm_canonicalFactor_eval_circle
+    - MCB_108_differentiableOn_compl_singleton
+    - MCB_144_differentiableAt_cuspFunction_ze
+    - MCB_135_circleIntegral_eq_zero_of_differ
+    - MCB_153_circleAverage_of_differentiable_
+    - MCB_113_exists_mem_frontier_isMaxOn_norm
+    - MCB_115_isCauSeq_norm_exp
+    - MCB_134_norm_exp_I_mul_ofReal_sub_one
+    - MCB_137_isAddQuotientCoveringMap_exp
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    - MCB_218_lineDerivOp
+    - MCB_094_exists_norm_eq_restrict_eq
+    - MCB_014_norm_inner_div_norm_mul_norm_eq_
+    - MCB_199_tendsto_integral_exp_inner_smul_
+    - MCB_197_isBigO_norm_restrict_cocompact
+  lanes:
+    - spectral_rayleigh_transport
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - singularValues
+    - eigenvalues_antitone
+    - isPositive_adjoint_comp_self
+    - adjoint_comp_self
+    - inner
+    - spectralRadius
+    - rayleighQuotient
+    - spectrum
+    - IsSelfAdjoint
+    - spectralRadius_eq_nnnorm
+    - adjoint
+    - comp
+    - self
+    - IsIdempotentElem
+    - rankOne
+    - map
+    - one
+    - positive
+    - conjugation
+    - canonicalFactor
+    - unitary
+    - exp
+    - commute
+    - mem
+    - domain
+    - exists
+    - adjoint_domain
+    - frontier
+    - isMaxOn
+    - bounded
+    - nonempty
+    - DiffContOnCl
+    - closure
+    - sphere
+    - diffcont
+    - diffcontoncl
+    - forall
+    - norm
+    - support
+    - deriv
+    - mono
+    - sub
+    - circleIntegral
+    - countable
+    - continuous
+    - differentiable
+    - set
+    - sin
+    - singular
+    - off_countable
+    - integral
+    - zero
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+templates:
+  - id: singular_values_antitone_positive_v1
+    row_id: MCB_019_singularValues_antitone
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      intro i j hij
+      by_cases hj : finrank 𝕜 E ≤ j
+      · simpa [T.singularValues_of_finrank_le hj] using T.singularValues_nonneg i
+      have hj' : j < finrank 𝕜 E := lt_of_not_ge hj
+      have hi : i < finrank 𝕜 E := hij.trans_lt hj'
+      have hsq : (T.singularValues j : ℝ) ^ 2 ≤ (T.singularValues i : ℝ) ^ 2 := by
+        rw [T.sq_singularValues_fin rfl ⟨j, hj'⟩, T.sq_singularValues_fin rfl ⟨i, hi⟩]
+        exact T.isSymmetric_adjoint_comp_self.eigenvalues_antitone rfl hij
+      exact le_of_sq_le_sq hsq (T.singularValues_nonneg i)
+  - id: singular_values_antitone_missing_bridge_negative_v1
+    row_id: MCB_019_singularValues_antitone
+    test_kind: negative_control
+    expected_outcome: must_fail_without_eigenvalue_antitone_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      intro i j hij
+      by_cases hj : finrank 𝕜 E ≤ j
+      · simpa [T.singularValues_of_finrank_le hj] using T.singularValues_nonneg i
+      have hj' : j < finrank 𝕜 E := lt_of_not_ge hj
+      have hi : i < finrank 𝕜 E := hij.trans_lt hj'
+      have hsq : (T.singularValues j : ℝ) ^ 2 ≤ (T.singularValues i : ℝ) ^ 2 := by
+        rw [T.sq_singularValues_fin rfl ⟨j, hj'⟩, T.sq_singularValues_fin rfl ⟨i, hi⟩]
+        exact T.isPositive_adjoint_comp_self.nonneg_eigenvalues rfl ⟨j, hj'⟩
+      exact le_of_sq_le_sq hsq (T.singularValues_nonneg i)
+  - id: spectral_radius_rayleigh_spectrum_positive_v1
+    row_id: MCB_010_spectralRadius_eq_nnnorm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      nontriviality E
+      apply le_antisymm (spectrum.spectralRadius_le_nnnorm T)
+      suffices h : algebraMap ℝ 𝕜 ‖T‖ ∈ spectrum 𝕜 T ∨ algebraMap ℝ 𝕜 (-‖T‖) ∈ spectrum 𝕜 T by
+        rcases h with h | h <;> exact le_trans (by simp) (le_biSup _ h)
+      simp_rw [spectrum, Set.mem_compl_iff, map_neg]
+      by_contra! h
+      obtain ⟨c, hc0, hc⟩ := T.abs_rayleighQuotient_le_of_norm_mem_resolventSet h.1 h.2
+      grind [ciSup_le hc, norm_eq_iSup_rayleighQuotient T hT.isSymmetric]
+  - id: spectral_radius_one_sided_resolvent_negative_v1
+    row_id: MCB_010_spectralRadius_eq_nnnorm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_negative_spectral_endpoint
+    backend: repl_file
+    timeout: 80
+    body: |
+      nontriviality E
+      apply le_antisymm (spectrum.spectralRadius_le_nnnorm T)
+      suffices h : algebraMap ℝ 𝕜 ‖T‖ ∈ spectrum 𝕜 T by
+        exact le_trans (by simp) (le_biSup _ h)
+      simp_rw [spectrum, Set.mem_compl_iff]
+      by_contra! h
+      obtain ⟨c, hc0, hc⟩ := T.rayleighQuotient_le_of_norm_mem_resolventSet h
+      grind [ciSup_le hc, norm_eq_iSup_rayleighQuotient T hT.isSymmetric]
+  - id: differentiableOn_compl_singleton_and_continuousAt_iff_positive_v1
+    row_id: MCB_108_differentiableOn_compl_singleton
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (differentiableOn_compl_singleton_and_continuousAt_iff
+          (f := f) (s := s) (c := c) hs)
+  - id: differentiableOn_compl_singleton_and_continuousAt_iff_missing_continuousAt_negative_v1
+    row_id: MCB_108_differentiableOn_compl_singleton
+    test_kind: negative_control
+    expected_outcome: must_fail_without_continuousAt_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (differentiableOn_compl_singleton_and_continuousAt_iff
+          (f := f) (s := s) (c := c))
+  - id: is_self_adjoint_spectral_radius_eq_nnnorm_positive_v1
+    row_id: MCB_083_IsSelfAdjoint
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (IsSelfAdjoint.spectralRadius_eq_nnnorm (T := T) hT)
+  - id: is_self_adjoint_missing_spectral_radius_bridge_negative_v1
+    row_id: MCB_083_IsSelfAdjoint
+    test_kind: negative_control
+    expected_outcome: must_fail_without_spectral_radius_equality_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (spectrum.spectralRadius_le_nnnorm T)
+  - id: continuous_linear_map_isPositive_adjoint_comp_self_positive_v1
+    row_id: MCB_042_ContinuousLinearMap
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (ContinuousLinearMap.isPositive_adjoint_comp_self (S := A))
+  - id: continuous_linear_map_isPositive_adjoint_comp_self_missing_orientation_bridge_negative_v1
+    row_id: MCB_042_ContinuousLinearMap
+    test_kind: negative_control
+    expected_outcome: must_fail_without_adjoint_orientation_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (ContinuousLinearMap.isPositive_self_comp_adjoint (S := A))
+  - id: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p) hp)
+  - id: isIdempotentElem_missing_idempotent_bridge_negative_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: negative_control
+    expected_outcome: must_fail_without_idempotent_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p))
+  - id: isIdempotentElem_rankOne_self_iff_positive_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isIdempotentElem_rankOne_self_iff (𝕜 := 𝕜) (x := x) hx)
+  - id: isIdempotentElem_rankOne_self_iff_missing_iff_bridge_negative_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: negative_control
+    expected_outcome: must_fail_without_iff_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isIdempotentElem_rankOne_self (𝕜 := 𝕜) (x := x) hx)
+  - id: conj_adjoint_positive_v1
+    row_id: MCB_049_conj_adjoint
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (ContinuousLinearMap.conj_adjoint (hT := hT) (S := S))
+  - id: conj_adjoint_missing_self_adjoint_bridge_negative_v1
+    row_id: MCB_049_conj_adjoint
+    test_kind: negative_control
+    expected_outcome: must_fail_without_self_adjoint_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (LinearMap.IsSymmetric.id.conj_adjoint (T := T))
+  - id: exp_mem_unitary_positive_v1
+    row_id: MCB_075_Commute
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exp_mem_unitary_of_mem_skewAdjoint (x := x) hx)
+  - id: exp_mem_unitary_missing_commute_bridge_negative_v1
+    row_id: MCB_075_Commute
+    test_kind: negative_control
+    expected_outcome: must_fail_without_commute_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (exp_add_of_commute (Commute.refl x))
+  - id: mem_adjoint_domain_of_exists_positive_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (mem_adjoint_domain_of_exists (T := T) y h)
+  - id: mem_adjoint_domain_of_exists_missing_exists_bridge_negative_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: negative_control
+    expected_outcome: must_fail_without_exists_witness_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (mem_adjoint_domain_of_exists (T := T) y)
+  - id: orthogonalComplement_iSup_eigenspaces_positive_v1
+    row_id: MCB_073_orthogonalComplement_iSup_eigens
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (orthogonalComplement_iSup_eigenspaces (T := T) hT (μ := μ))
+  - id: orthogonalComplement_iSup_eigenspaces_missing_mu_bridge_negative_v1
+    row_id: MCB_073_orthogonalComplement_iSup_eigens
+    test_kind: negative_control
+    expected_outcome: must_fail_without_mu_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (hT.orthogonalComplement_iSup_eigenspaces)
+  - id: exists_mem_frontier_isMaxOn_norm_positive_v1
+    row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exists_mem_frontier_isMaxOn_norm hb hne hd)
+  - id: exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+    row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_diffcont_on_closure_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (exists_mem_frontier_isMaxOn_norm hb hne)
+  - id: norm_exp_I_mul_ofReal_sub_one_positive_v1
+    row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (Complex.norm_exp_I_mul_ofReal_sub_one (x := x))
+  - id: norm_exp_I_mul_ofReal_sub_one_missing_two_sin_bridge_negative_v1
+    row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+    test_kind: negative_control
+    expected_outcome: must_fail_without_two_sin_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (Real.norm_exp_I_mul_ofReal_sub_one_le (x := x))
+  - id: isAddQuotientCoveringMap_exp_positive_v1
+    row_id: MCB_137_isAddQuotientCoveringMap_exp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (Complex.isAddQuotientCoveringMap_exp)
+  - id: isAddQuotientCoveringMap_exp_missing_quotient_bridge_negative_v1
+    row_id: MCB_137_isAddQuotientCoveringMap_exp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_quotient_covering_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (Complex.isCoveringMap_exp)
+  - id: isCauSeq_norm_exp_positive_v1
+    row_id: MCB_115_isCauSeq_norm_exp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (Complex.isCauSeq_norm_exp z)
+  - id: isCauSeq_norm_exp_missing_norm_bridge_negative_v1
+    row_id: MCB_115_isCauSeq_norm_exp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_norm_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (Complex.isCauSeq_exp z)
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using (Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (c := c) (R := R) (C := C)
+        (f := f) hR hd hC)
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: negative_control
+    expected_outcome: must_fail_without_sphere_bound_hypothesis
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (c := c) (R := R) (C := C)
+        (f := f) hR hd)
+  - id: norm_dslope_le_div_of_mapsTo_ball_positive_v1
+    row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using
+        (Complex.norm_dslope_le_div_of_mapsTo_ball (f := f) (c := c) (R₁ := R₁) (R₂ := R₂)
+          (z := z) hd h_maps hz)
+  - id: norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_negative_v1
+    row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    test_kind: negative_control
+    expected_outcome: must_fail_without_mapsTo_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (Complex.norm_dslope_le_div_of_mapsTo_ball (f := f) (c := c) (R₁ := R₁) (R₂ := R₂)
+          (z := z) hd hz)
+  - id: exists_norm_eq_restrict_eq_positive_v1
+    row_id: MCB_094_exists_norm_eq_restrict_eq
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exists_norm_eq_restrict_eq (f := f))
+  - id: exists_norm_eq_restrict_eq_missing_restrict_bridge_negative_v1
+    row_id: MCB_094_exists_norm_eq_restrict_eq
+    test_kind: negative_control
+    expected_outcome: must_fail_without_restrict_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      rcases exists_norm_eq_restrict_eq (f := f) with ⟨g, hg, hres⟩
+      exact ⟨g, hg⟩
+  - id: norm_canonicalFactor_eval_circle_positive_v1
+    row_id: MCB_102_norm_canonicalFactor_eval_circle
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (norm_canonicalFactor_eval_circle_eq_one (R := R) (w := w) (z := z) hw hz)
+  - id: norm_canonicalFactor_eval_circle_missing_circle_hypothesis_negative_v1
+    row_id: MCB_102_norm_canonicalFactor_eval_circle
+    test_kind: negative_control
+    expected_outcome: must_fail_without_circle_hypothesis
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (norm_canonicalFactor_eval_circle_eq_one (R := R) (w := w) (z := z) hw)
+  - id: eLpNorm_le_eLpNorm_fderiv_one_positive_v1
+    row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u hp)
+  - id: eLpNorm_le_eLpNorm_fderiv_one_missing_holder_conjugate_negative_v1
+    row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    test_kind: negative_control
+    expected_outcome: must_fail_without_holder_conjugate_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u)
+  - id: norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul_positive_v1
+    row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul (x := x) (r := r) hx hr)
+  - id: norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul_missing_scalar_nonzero_negative_v1
+    row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_scalar_nonzero_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul (x := x) (r := r) hx)
+  - id: isSymmetric_iff_inner_map_self_real_positive_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isSymmetric_iff_inner_map_self_real (T := T))
+  - id: isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: negative_control
+    expected_outcome: must_fail_without_real_part_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isSymmetric_iff_isSelfAdjoint (A := T))
+  - id: tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support
+          (f := f) hf1 hf2)
+  - id: tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_support_negative_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_compact_support_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support
+          (f := f) hf1)
+  - id: isBigO_norm_restrict_cocompact_positive_v1
+    row_id: MCB_197_isBigO_norm_restrict_cocompact
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isBigO_norm_restrict_cocompact (f := f) (b := b) hb hf K)
+  - id: isBigO_norm_restrict_cocompact_missing_K_negative_v1
+    row_id: MCB_197_isBigO_norm_restrict_cocompact
+    test_kind: negative_control
+    expected_outcome: must_fail_without_K_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isBigO_norm_restrict_cocompact (f := f) (b := b) hb hf)
+  - id: convolution_mono_right_of_nonneg_positive_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg')
+  - id: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_side_nonnegativity_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg)
+  - id: lineDerivOp_positive_v1
+    row_id: MCB_218_lineDerivOp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (lineDerivOp (f := f) (s := s) hf m)
+  - id: lineDerivOp_missing_vanishing_on_negative_v1
+    row_id: MCB_218_lineDerivOp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_vanishing_on_hypothesis
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (lineDerivOp (f := f) (s := s) m)
+  - id: circleIntegral_eq_zero_of_differentiable_on_off_countable_positive_v1
+    row_id: MCB_135_circleIntegral_eq_zero_of_differ
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (Complex.circleIntegral_eq_zero_of_differentiable_on_off_countable
+          (h0 := h0) (f := f) (c := c) (s := s) hs hc hd)
+  - id: circleIntegral_eq_zero_of_differentiable_on_off_countable_missing_countable_set_negative_v1
+    row_id: MCB_135_circleIntegral_eq_zero_of_differ
+    test_kind: negative_control
+    expected_outcome: must_fail_without_countability_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (Complex.circleIntegral_eq_zero_of_differentiable_on_off_countable
+          (h0 := h0) (f := f) (c := c) (s := s) hc hd)
+  - id: circleAverage_of_differentiable_on_off_countable_positive_v1
+    row_id: MCB_153_circleAverage_of_differentiable_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using
+        (Complex.circleAverage_of_differentiable_on_off_countable
+          (f := f) (c := c) (R := R) (s := s) hs h₁f h₂f)
+  - id: circleAverage_of_differentiable_on_off_countable_missing_countable_bridge_negative_v1
+    row_id: MCB_153_circleAverage_of_differentiable_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_countability_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (Complex.circleAverage_of_differentiable_on_off_countable
+          (f := f) (c := c) (R := R) (s := s) h₁f h₂f)
+  - id: cusp_function_zero_removable_positive_v1
+    row_id: MCB_144_differentiableAt_cuspFunction_ze
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 220
+    body: |
+      obtain ⟨c, t⟩ := (boundedAtFilter_cuspFunction hh h_bd).bound
+      replace t := (eventually_differentiableAt_cuspFunction_nhds_ne_zero hh hf h_hol).and t
+      simp only [norm_one, Pi.one_apply, mul_one] at t
+      obtain ⟨S, hS1, hS2, hS3⟩ := eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp t)
+      have h_diff : DifferentiableOn ℂ (cuspFunction h f) (S \ {0}) :=
+        fun x hx ↦ (hS1 x hx.1 hx.2).1.differentiableWithinAt
+      have hF_bd : BddAbove (norm ∘ cuspFunction h f '' (S \ {0})) := by
+        use c
+        simp only [mem_upperBounds, Set.mem_image, Set.mem_diff, forall_exists_index, and_imp]
+        intro y q hq hq2 hy
+        simpa only [← hy, norm_one, mul_one] using (hS1 q hq hq2).2
+      have := differentiableOn_update_limUnder_of_bddAbove (IsOpen.mem_nhds hS2 hS3) h_diff hF_bd
+      rw [← cuspFunction_zero_eq_limUnder_nhds_ne, update_eq_self] at this
+      exact this.differentiableAt (IsOpen.mem_nhds hS2 hS3)
+  - id: cusp_function_zero_missing_bounded_extension_negative_v1
+    row_id: MCB_144_differentiableAt_cuspFunction_ze
+    test_kind: negative_control
+    expected_outcome: must_fail_without_bounded_removable_singularity_bridge
+    backend: repl_file
+    timeout: 100
+    body: |
+      obtain ⟨c, t⟩ := (boundedAtFilter_cuspFunction hh h_bd).bound
+      replace t := (eventually_differentiableAt_cuspFunction_nhds_ne_zero hh hf h_hol).and t
+      simp only [norm_one, Pi.one_apply, mul_one] at t
+      obtain ⟨S, hS1, hS2, hS3⟩ := eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp t)
+      have h_diff : DifferentiableOn ℂ (cuspFunction h f) (S \ {0}) :=
+        fun x hx ↦ (hS1 x hx.1 hx.2).1.differentiableWithinAt
+      exact h_diff.differentiableAt (IsOpen.mem_nhds hS2 hS3)

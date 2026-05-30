@@ -1,0 +1,180 @@
+{
+  "n_total": 5,
+  "n_automatic": 3,
+  "n_manual": 2,
+  "n_not_applicable": 0,
+  "pass_gate_threshold": "≥3 of 5 AUTOMATIC",
+  "pass_gate_verdict": "PASS",
+  "per_seam_results": [
+    {
+      "id": "GP-233_§7",
+      "expected_verdict": "FIRES",
+      "rationale": "Demoted in same session; named Layer 2a/2b/2c/2d with 'first pass is crude' / 'research thread' markers; killed by Meta-Darwin.",
+      "is_architecture_artifact": true,
+      "n_layers_identified": 7,
+      "n_layers_firing_026": 6,
+      "applicability": "AUTOMATIC",
+      "overall_verdict": "FIRES",
+      "layer_details": [
+        {
+          "title": "7.1 The misread to reject",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "7.2 The structural diagnosis",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "7.3 The 5-layer Route C architecture",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "7.4 The Layer 2 problem — neither negative-dictionary nor pure forward-generative works",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "7.5 Pass-gate for v31 ablation row selection",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "7.6 Open questions for v31",
+          "has_artifact_citation": true,
+          "has_pass_gate": true,
+          "has_measurement": true,
+          "laundering_markers_present": [],
+          "fires_026": false
+        },
+        {
+          "title": "7.7 What this seam now claims (after §7 addition)",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        }
+      ]
+    },
+    {
+      "id": "GP-225_gnn_lemma_relevance_ranker",
+      "expected_verdict": "UNKNOWN",
+      "rationale": "Multi-route seam (Routes A/B/C). Tests whether routes count as 'layers' under PATTERN-026.",
+      "is_architecture_artifact": true,
+      "n_layers_identified": 0,
+      "n_layers_firing_026": 0,
+      "applicability": "MANUAL",
+      "overall_verdict": "CLEAN",
+      "layer_details": []
+    },
+    {
+      "id": "GP-216_theory_building",
+      "expected_verdict": "UNKNOWN",
+      "rationale": "12-op registry. Tests whether ops count as layers.",
+      "is_architecture_artifact": true,
+      "n_layers_identified": 0,
+      "n_layers_firing_026": 0,
+      "applicability": "MANUAL",
+      "overall_verdict": "CLEAN",
+      "layer_details": []
+    },
+    {
+      "id": "GP-168_org_design_unfalsifiability",
+      "expected_verdict": "UNKNOWN",
+      "rationale": "Closure-impossibility theorem. Tests how pattern handles seam that names a negative result vs an architecture.",
+      "is_architecture_artifact": true,
+      "n_layers_identified": 1,
+      "n_layers_firing_026": 1,
+      "applicability": "AUTOMATIC",
+      "overall_verdict": "FIRES",
+      "layer_details": [
+        {
+          "title": "Migration plan (each step independent and reversible)",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        }
+      ]
+    },
+    {
+      "id": "GP-191_org_kernel_policy_boundary",
+      "expected_verdict": "UNKNOWN",
+      "rationale": "Tenant-overlay 2-repo split. Tests whether file-system architecture counts as layered.",
+      "is_architecture_artifact": true,
+      "n_layers_identified": 6,
+      "n_layers_firing_026": 6,
+      "applicability": "AUTOMATIC",
+      "overall_verdict": "FIRES",
+      "layer_details": [
+        {
+          "title": "Stage 1 — Mark the boundary (today)",
+          "has_artifact_citation": true,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "Stage 2 — Introduce policyadapters/ (next quarter, or when needed)",
+          "has_artifact_citation": true,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "Stage 3 — Validate kernel-only deployment (proof)",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "Stage 2 / 3 partial closure (2026-05-07)",
+          "has_artifact_citation": false,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "What's deferred (Stage 2 remainder)",
+          "has_artifact_citation": true,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        },
+        {
+          "title": "How Stage 3 was verified (2026-05-07)",
+          "has_artifact_citation": true,
+          "has_pass_gate": false,
+          "has_measurement": false,
+          "laundering_markers_present": [],
+          "fires_026": true
+        }
+      ]
+    }
+  ]
+}

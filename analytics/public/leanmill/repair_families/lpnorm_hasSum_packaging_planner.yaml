@@ -1,0 +1,128 @@
+family: lpnorm_hasSum_packaging_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_005_Lp_add_le_hasSum
+  lanes:
+    - lpnorm_hasSum_packaging
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - Lp_add
+    - HasSum
+    - NNReal
+    - Lp_add_le_tsum
+    - rpow_mul
+    - inv_mul_cancel0
+    - summability
+    - beta_reduce
+    - norm_cast
+    - lift
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: lpnorm_hasSum_packaging_planner
+  mode: heldout_replay
+  probe_type: sibling_or_heldout_replay
+  expected_outcome: hold
+  probe_name: lpnorm_hasSum_packaging_row_local_exact_gap_v1
+  blocked_edge: The family is a single-row inventory and broader source-bound search is currently held because prior source-bound probes produced no governed value.
+  acceptance: one target-side success plus one matched negative-control failure, with no source-bound probe and no registry/log edits
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the current target-side evidence and its negative controls; retire the lane if no additional current row appears.
+  stop_rule: If the row-local replay needs a new source-bound probe, or the matched negative control does not fail on the same row, keep the lane held.
+  preconditions:
+    - Do not open a new source request.
+    - Reuse the existing sibling/heldout canary spec for MCB_005_Lp_add_le_hasSum.
+    - Preserve the hf/hg separation and the explicit normalization bridge.
+  paired_negative_controls:
+    - lpnorm_missing_hg_negative_v3
+  negative_control_ideas:
+    - reuse hf for g
+    - hg omitted
+    - same witness fed into both summability slots
+    - drop the normalization bridge
+  positive_artifact: lpnorm_hasSum_packaging_v3
+  planned_tests:
+    - candidate_name: lpnorm_hasSum_packaging_v3
+      row_id: MCB_005_Lp_add_le_hasSum
+      test_kind: positive
+    - candidate_name: lpnorm_missing_hg_negative_v3
+      row_id: MCB_005_Lp_add_le_hasSum
+      test_kind: negative_control
+  candidate_checks:
+    - row_id: MCB_005_Lp_add_le_hasSum
+      negative_control: reuse hf for g or feed the same witness into both summability slots
+      positive_route: Keep hf and hg separate, preserve the root-normalization bridge around `NNReal.Lp_add_le_hasSum`, and keep the normalization bridge explicit.
+  positive_artifacts:
+    - NNReal.Lp_add_le_tsum
+    - NNReal.Lp_add_le_tsum'
+  rows:
+    - row_id: MCB_005_Lp_add_le_hasSum
+      negative_control: reuse hf for g or feed the same witness into both summability slots
+      required_check: Keep hg separate and preserve the normalization bridge; do not reuse hf for g.
+      positive_candidate: lpnorm_hasSum_packaging_v3
+      negative_candidate: lpnorm_missing_hg_negative_v3
+      candidate_names:
+        - lpnorm_hasSum_packaging_v3
+        - lpnorm_missing_hg_negative_v3
+  required_artifacts:
+    - positive target replay for MCB_005_Lp_add_le_hasSum
+    - matched negative-control failure for MCB_005_Lp_add_le_hasSum
+    - row-local evidence only
+  target_row_ids:
+    - MCB_005_Lp_add_le_hasSum
+  sibling_or_heldout_constraints:
+    - Keep hf and hg separate; do not reuse hf for g.
+    - Preserve the root-normalization step around `NNReal.Lp_add_le_hasSum`.
+    - Keep the normalization bridge explicit; do not drop it when replaying the row.
+    - Treat the candidate as row-local evidence only; do not expand into a source-bound probe.
+    - Do not edit scoreboards, registries, governance reports, research logs, or governance receipts.
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: lpnorm_hasSum_packaging_positive_v1
+    row_id: MCB_005_Lp_add_le_hasSum
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      lift f to ι → ℝ≥0 using hf
+      lift g to ι → ℝ≥0 using hg
+      lift A to ℝ≥0 using hA
+      lift B to ℝ≥0 using hB
+      -- After https://github.com/leanprover/lean4/pull/2734, `norm_cast` needs help with beta reduction.
+      beta_reduce at hfA hgB
+      norm_cast at hfA hgB
+      obtain ⟨C, hC₁, hC₂⟩ := NNReal.Lp_add_le_hasSum hp hfA hgB
+      use C
+      -- After https://github.com/leanprover/lean4/pull/2734, `norm_cast` needs help with beta reduction.
+      beta_reduce
+      norm_cast
+      exact ⟨zero_le _, hC₁, hC₂⟩
+  - id: lpnorm_missing_hg_negative_v3
+    row_id: MCB_005_Lp_add_le_hasSum
+    test_kind: negative_control
+    expected_outcome: must_fail_when_reusing_hf_for_g
+    backend: repl_file
+    timeout: 120
+    body: |
+      lift f to ι → ℝ≥0 using hf
+      lift g to ι → ℝ≥0 using hg
+      lift A to ℝ≥0 using hA
+      lift B to ℝ≥0 using hB
+      -- After https://github.com/leanprover/lean4/pull/2734, `norm_cast` needs help with beta reduction.
+      beta_reduce at hfA hgB
+      norm_cast at hfA hgB
+      obtain ⟨C, hC₁, hC₂⟩ := NNReal.Lp_add_le_hasSum hp hfA hfA
+      use C
+      -- After https://github.com/leanprover/lean4/pull/2734, `norm_cast` needs help with beta reduction.
+      beta_reduce
+      norm_cast
+      exact ⟨zero_le _, hC₁, hC₂⟩

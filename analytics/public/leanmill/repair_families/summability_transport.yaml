@@ -1,0 +1,126 @@
+family: summability_transport
+version: 1
+status: seed_only
+residual_match:
+  lanes:
+    - summability_transport
+  row_ids:
+    - MCB_000_convolution_mono_right_of_nonneg
+    - MCB_003_convolution_mono_right_of_nonneg
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - convolution
+    - mono
+    - nonneg
+    - summable
+    - transport
+    - right
+    - action
+    - inequality
+    - monotonicity
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: summability_transport
+  mode: heldout_replay
+  probe_type: heldout_replay
+  probe_name: summability_transport_row_local_replay_v1
+  expected_outcome: hold
+  blocked_edge: The family is scoped to heldout convolution rows, so opening a fresh source-bound sibling would add no independent value while the source-bound lane remains held.
+  acceptance: One target-side success plus one matched negative-control failure for each heldout row, with no source-bound probe and no registry, scoreboard, or research-log edits.
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the row-local convolution transport evidence and its matched negative controls; retire the lane only if no additional current row appears.
+  stop_rule: If the heldout replay closes only after changing the conclusion head, dropping the right-side nonnegativity witness, or switching to a source-backed route, keep the lane held.
+  preconditions:
+    - Reuse the row-local canary spec for MCB_003 and MCB_000.
+    - Preserve the row-specific negative controls.
+    - Do not open a new source request.
+  checks:
+    - The positive replay for each row must keep the right-side nonnegativity witness explicit and apply the convolution monotonicity theorem directly.
+    - The negative control for each row must fail once the final right-side nonnegativity witness is removed.
+  paired_negative_controls:
+    - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+  negative_control_ideas:
+    - missing right-side nonnegativity should fail
+    - drop the monotonicity bridge and confirm the theorem no longer closes
+    - use the same theorem call without the final witness argument
+  planned_tests:
+    - candidate_name: convolution_mono_right_of_nonneg_positive_v1
+      row_id: MCB_000_convolution_mono_right_of_nonneg
+      test_kind: positive
+    - candidate_name: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+      row_id: MCB_000_convolution_mono_right_of_nonneg
+      test_kind: negative_control
+    - candidate_name: convolution_mono_right_of_nonneg_positive_mcb003_v1
+      row_id: MCB_003_convolution_mono_right_of_nonneg
+      test_kind: positive
+    - candidate_name: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+      row_id: MCB_003_convolution_mono_right_of_nonneg
+      test_kind: negative_control
+  rows:
+    - row_id: MCB_000_convolution_mono_right_of_nonneg
+      negative_control: missing right-side nonnegativity should fail
+      required_check: Keep the right-side nonnegativity witness explicit; do not drop the monotonicity bridge.
+      positive_candidate: convolution_mono_right_of_nonneg_positive_v1
+      negative_candidate: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+      candidate_names:
+        - convolution_mono_right_of_nonneg_positive_v1
+        - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    - row_id: MCB_003_convolution_mono_right_of_nonneg
+      negative_control: missing right-side nonnegativity should fail
+      required_check: Keep the right-side nonnegativity witness explicit; do not drop the monotonicity bridge.
+      positive_candidate: convolution_mono_right_of_nonneg_positive_mcb003_v1
+      negative_candidate: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+      candidate_names:
+        - convolution_mono_right_of_nonneg_positive_mcb003_v1
+        - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+  required_artifacts:
+    - positive target replay for MCB_000_convolution_mono_right_of_nonneg
+    - matched negative-control failure for MCB_000_convolution_mono_right_of_nonneg
+    - positive target replay for MCB_003_convolution_mono_right_of_nonneg
+    - matched negative-control failure for MCB_003_convolution_mono_right_of_nonneg
+    - row-local evidence only
+  target_row_ids:
+    - MCB_000_convolution_mono_right_of_nonneg
+    - MCB_003_convolution_mono_right_of_nonneg
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: convolution_mono_right_of_nonneg_positive_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg'
+  - id: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_side_nonnegativity
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg
+  - id: convolution_mono_right_of_nonneg_positive_mcb003_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg'
+  - id: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_side_nonnegativity
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg

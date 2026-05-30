@@ -1,0 +1,931 @@
+{
+  "candidate_count": 43,
+  "corpus": "/tmp/rung1/mcb_corpus_v2.json",
+  "row_context_ready_total": 31,
+  "row_count": 14,
+  "rows": [
+    {
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "check_line": 31,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_000_hofer.lean:31:7: error(lean.unknownIdentifier): Unknown identifier `GromovHausdorff.toGHSpace_continuous`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "GromovHausdorff.toGHSpace_continuous",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 33,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_000_hofer.lean:33:7: error(lean.unknownIdentifier): Unknown identifier `HolderWith.continuous`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "HolderWith.continuous",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 35,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_000_hofer.lean:35:7: error(lean.unknownIdentifier): Unknown identifier `Metric.continuous_infDist_pt`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Metric.continuous_infDist_pt",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        }
+      ],
+      "returncode": 1,
+      "row_context_ready_candidates": [],
+      "row_context_resolved_count": 0,
+      "row_id": "MCB_000_hofer",
+      "seconds": 2.683,
+      "source_file": "/tmp/rung1/mcb_files/mcb_0_hofer.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "/tmp/leansearch_row_context_emf8zy8m/MCB_000_hofer.lean:31:7: error(lean.unknownIdentifier): Unknown identifier `GromovHausdorff.toGHSpace_continuous`\n/tmp/leansearch_row_context_emf8zy8m/MCB_000_hofer.lean:33:7: error(lean.unknownIdentifier): Unknown identifier `HolderWith.continuous`\n/tmp/leansearch_row_context_emf8zy8m/MCB_000_hofer.lean:35:7: error(lean.unknownIdentifier): Unknown identifier `Metric.continuous_infDist_pt`\n/tmp/leansearch_row_context_emf8zy8m/MCB_000_hofer.lean:37:8: warning: declaration uses `sorry`\n",
+      "target_line": 29,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 1,
+      "candidates": [
+        {
+          "check_line": 483,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.Measure.conv_smul_right",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 0,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 483,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.Measure.conv_smul_right",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 1,
+      "row_id": "MCB_003_convolution_mono_right_of_nonneg",
+      "seconds": 19.428,
+      "source_file": "/tmp/rung1/mcb_files/mcb_3_convolution_mono_right_of_nonn.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "MeasureTheory.Measure.conv_smul_right.{u_2} {M : Type u_2} [AddMonoid M] [MeasurableSpace M] (\u03bc \u03bd : Measure M)\n  [SFinite \u03bd] (s : ENNReal) : \u03bc \u2217 (s \u2022 \u03bd) = s \u2022 \u03bc \u2217 \u03bd\n/tmp/leansearch_row_context_emf8zy8m/MCB_003_convolution_mono_right_of_nonneg.lean:485:8: warning: declaration uses `sorry`\n",
+      "target_line": 481,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "check_line": 494,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.mconv_withDensity_eq_mlconvolution",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 496,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.convolution_def",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 0,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 494,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.mconv_withDensity_eq_mlconvolution",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 496,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.convolution_def",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 2,
+      "row_id": "MCB_004_convolution_congr",
+      "seconds": 19.599,
+      "source_file": "/tmp/rung1/mcb_files/mcb_4_convolution_congr.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "MeasureTheory.mconv_withDensity_eq_mlconvolution.{u_3} {G : Type u_3} [Group G] {mG : MeasurableSpace G}\n  [MeasurableMul\u2082 G] [MeasurableInv G] {\u03bc : Measure G} [SFinite \u03bc] [\u03bc.IsMulLeftInvariant] {f g : G \u2192 ENNReal}\n  (hf : Measurable f) (hg : Measurable g) : \u03bc.withDensity f \u2217\u2098 \u03bc.withDensity g = \u03bc.withDensity (f \u22c6\u2098\u2097[\u03bc] g)\nMeasureTheory.convolution_def.{u\ud835\udd5c, uG, uE, uE', uF} {\ud835\udd5c : Type u\ud835\udd5c} {G : Type uG} {E : Type uE} {E' : Type uE'}\n  {F : Type uF} [NormedAddCommGroup E] [NormedAddCommGroup E'] [NormedAddCommGroup F] {f : G \u2192 E} {g : G \u2192 E'} {x : G}\n  [NontriviallyNormedField \ud835\udd5c] [NormedSpace \ud835\udd5c E] [NormedSpace \ud835\udd5c E'] [NormedSpace \ud835\udd5c F] (L : E \u2192L[\ud835\udd5c] E' \u2192L[\ud835\udd5c] F)\n  [MeasurableSpace G] {\u03bc : Measure G} [NormedSpace \u211d F] [Sub G] : (f \u22c6[L, \u03bc] g) x = \u222b (t : G), (L (f t)) (g (x - t)) \u2202\u03bc\n/tmp/leansearch_row_context_emf8zy8m/MCB_004_convolution_congr.lean:498:8: warning: declaration uses `sorry`\n",
+      "target_line": 492,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "check_line": 842,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_006_integral_convolution.lean:842:7: error(lean.unknownIdentifier): Unknown identifier `MeasureTheory.integral_mconv`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.integral_mconv",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 844,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_006_integral_convolution.lean:844:7: error(lean.unknownIdentifier): Unknown identifier `MeasureTheory.integral_conv`\nMeasureTheory.Measure.lintegral_conv_eq_lintegral_sum.{u_1} {M : Type u_1} [AddMonoid M] [MeasurableSpace M]\n  [MeasurableAdd\u2082 M] {\u03bc \u03bd : Measure M} {f : M \u2192 ENNReal} (hf : Measurable f) :\n  \u222b\u207b (z : M), f z \u2202\u03bc \u2217 \u03bd = \u222b\u207b (z : M \u00d7 M), f (z.1 + z.2) \u2202\u03bc.prod \u03bd",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.integral_conv",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 846,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.Measure.lintegral_conv_eq_lintegral_sum",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 1,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 846,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.Measure.lintegral_conv_eq_lintegral_sum",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 1,
+      "row_id": "MCB_006_integral_convolution",
+      "seconds": 20.125,
+      "source_file": "/tmp/rung1/mcb_files/mcb_6_integral_convolution.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "/tmp/leansearch_row_context_emf8zy8m/MCB_006_integral_convolution.lean:842:7: error(lean.unknownIdentifier): Unknown identifier `MeasureTheory.integral_mconv`\n/tmp/leansearch_row_context_emf8zy8m/MCB_006_integral_convolution.lean:844:7: error(lean.unknownIdentifier): Unknown identifier `MeasureTheory.integral_conv`\nMeasureTheory.Measure.lintegral_conv_eq_lintegral_sum.{u_1} {M : Type u_1} [AddMonoid M] [MeasurableSpace M]\n  [MeasurableAdd\u2082 M] {\u03bc \u03bd : Measure M} {f : M \u2192 ENNReal} (hf : Measurable f) :\n  \u222b\u207b (z : M), f z \u2202\u03bc \u2217 \u03bd = \u222b\u207b (z : M \u00d7 M), f (z.1 + z.2) \u2202\u03bc.prod \u03bd\n/tmp/leansearch_row_context_emf8zy8m/MCB_006_integral_convolution.lean:848:8: warning: declaration uses `sorry`\n",
+      "target_line": 840,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "check_line": 296,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.isLittleO_log_id_atTop",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 298,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "isLittleO_log_rpow_rpow_atTop",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 300,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.isLittleO_pow_log_id_atTop",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 0,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 296,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.isLittleO_log_id_atTop",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 298,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "isLittleO_log_rpow_rpow_atTop",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 300,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.isLittleO_pow_log_id_atTop",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 3,
+      "row_id": "MCB_012_isBigO_rpow_top_log_smul",
+      "seconds": 5.897,
+      "source_file": "/tmp/rung1/mcb_files/mcb_12_isBigO_rpow_top_log_smul.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "Real.isLittleO_log_id_atTop : log =o[atTop] id\nisLittleO_log_rpow_rpow_atTop {s : \u211d} (r : \u211d) (hs : 0 < s) : (fun x => log x ^ r) =o[atTop] fun x => x ^ s\nReal.isLittleO_pow_log_id_atTop {n : \u2115} : (fun x => log x ^ n) =o[atTop] id\n/tmp/leansearch_row_context_emf8zy8m/MCB_012_isBigO_rpow_top_log_smul.lean:303:8: warning: declaration uses `sorry`\n",
+      "target_line": 295,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "check_line": 307,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "tendsto_log_mul_rpow_nhdsGT_zero",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 309,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Asymptotics.IsBigO.rpow_rpow_nhdsGE_zero_of_le_of_imp",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 311,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "isLittleO_abs_log_rpow_rpow_nhdsGT_zero",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 0,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 307,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "tendsto_log_mul_rpow_nhdsGT_zero",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 309,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Asymptotics.IsBigO.rpow_rpow_nhdsGE_zero_of_le_of_imp",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 311,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "isLittleO_abs_log_rpow_rpow_nhdsGT_zero",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 3,
+      "row_id": "MCB_013_isBigO_rpow_zero_log_smul",
+      "seconds": 5.76,
+      "source_file": "/tmp/rung1/mcb_files/mcb_13_isBigO_rpow_zero_log_smul.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "tendsto_log_mul_rpow_nhdsGT_zero {r : \u211d} (hr : 0 < r) : Tendsto (fun x => log x * x ^ r) (\ud835\udcdd[>] 0) (\ud835\udcdd 0)\nAsymptotics.IsBigO.rpow_rpow_nhdsGE_zero_of_le_of_imp {a b : \u211d} (h : a \u2264 b) (himp : b = 0 \u2192 a = 0) :\n  (fun x => x ^ b) =O[\ud835\udcdd[\u2265] 0] fun x => x ^ a\nisLittleO_abs_log_rpow_rpow_nhdsGT_zero {s : \u211d} (r : \u211d) (hs : s < 0) : (fun x => |log x| ^ r) =o[\ud835\udcdd[>] 0] fun x => x ^ s\n/tmp/leansearch_row_context_emf8zy8m/MCB_013_isBigO_rpow_zero_log_smul.lean:314:8: warning: declaration uses `sorry`\n",
+      "target_line": 306,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "check_line": 155,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.coe_tsum",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 157,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.le_tsum",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 159,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.tsum_toReal_eq",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 161,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.lt_top_of_tsum_ne_top",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 0,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 155,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.coe_tsum",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 157,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.le_tsum",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 159,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.tsum_toReal_eq",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 161,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.lt_top_of_tsum_ne_top",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 4,
+      "row_id": "MCB_017_le_tsum_condensed",
+      "seconds": 5.129,
+      "source_file": "/tmp/rung1/mcb_files/mcb_17_le_tsum_condensed.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "ENNReal.coe_tsum.{u_1} {\u03b1 : Type u_1} {f : \u03b1 \u2192 NNReal} : Summable f \u2192 \u2191(tsum f) = \u2211' (a : \u03b1), \u2191(f a)\nENNReal.le_tsum.{u_1} {\u03b1 : Type u_1} {f : \u03b1 \u2192 \u211d\u22650\u221e} (a : \u03b1) : f a \u2264 \u2211' (a : \u03b1), f a\nENNReal.tsum_toReal_eq.{u_1} {\u03b1 : Type u_1} {f : \u03b1 \u2192 \u211d\u22650\u221e} (hf : \u2200 (a : \u03b1), f a \u2260 \u221e) :\n  (\u2211' (a : \u03b1), f a).toReal = \u2211' (a : \u03b1), (f a).toReal\nENNReal.lt_top_of_tsum_ne_top.{u_1} {\u03b1 : Type u_1} {a : \u03b1 \u2192 \u211d\u22650\u221e} (tsum_ne_top : \u2211' (i : \u03b1), a i \u2260 \u221e) (j : \u03b1) : a j < \u221e\n/tmp/leansearch_row_context_emf8zy8m/MCB_017_le_tsum_condensed.lean:163:8: warning: declaration uses `sorry`\n",
+      "target_line": 153,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "check_line": 204,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_mk",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 206,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 208,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.tsum_coe_ne_top_iff_summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 210,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Summable.toNNReal",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 0,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 204,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_mk",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 206,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 208,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.tsum_coe_ne_top_iff_summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 210,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Summable.toNNReal",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 4,
+      "row_id": "MCB_018_summable_condensed_iff",
+      "seconds": 4.903,
+      "source_file": "/tmp/rung1/mcb_files/mcb_18_summable_condensed_iff.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "NNReal.summable_mk.{u_2} {\u03b1 : Type u_2} {L : SummationFilter \u03b1} {f : \u03b1 \u2192 \u211d} (hf : \u2200 (n : \u03b1), 0 \u2264 f n) :\n  Summable (fun n => \u27e8f n, \u22ef\u27e9) L \u2194 Summable f L\nNNReal.summable_coe.{u_2} {\u03b1 : Type u_2} {L : SummationFilter \u03b1} {f : \u03b1 \u2192 \u211d\u22650} :\n  Summable (fun a => \u2191(f a)) L \u2194 Summable f L\nENNReal.tsum_coe_ne_top_iff_summable_coe.{u_1} {\u03b1 : Type u_1} {f : \u03b1 \u2192 \u211d\u22650} :\n  \u2211' (a : \u03b1), \u2191(f a) \u2260 \u22a4 \u2194 Summable fun a => \u2191(f a)\nSummable.toNNReal.{u_1} {\u03b1 : Type u_1} {f : \u03b1 \u2192 \u211d} (hf : Summable f) : Summable fun n => (f n).toNNReal\n/tmp/leansearch_row_context_emf8zy8m/MCB_018_summable_condensed_iff.lean:212:8: warning: declaration uses `sorry`\n",
+      "target_line": 202,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "check_line": 229,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_condensed_iff",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 231,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.tsum_coe_ne_top_iff_summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 233,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_mk",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 235,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 0,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 229,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_condensed_iff",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 231,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.tsum_coe_ne_top_iff_summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 233,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_mk",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 235,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.summable_coe",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 4,
+      "row_id": "MCB_019_summable_condensed_iff_of_nonneg",
+      "seconds": 5.095,
+      "source_file": "/tmp/rung1/mcb_files/mcb_19_summable_condensed_iff_of_nonn.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "NNReal.summable_condensed_iff {f : \u2115 \u2192 NNReal} (hf : \u2200 \u2983m n : \u2115\u2984, 0 < m \u2192 m \u2264 n \u2192 f n \u2264 f m) :\n  (Summable fun k => 2 ^ k * f (2 ^ k)) \u2194 Summable f\nENNReal.tsum_coe_ne_top_iff_summable_coe.{u_1} {\u03b1 : Type u_1} {f : \u03b1 \u2192 NNReal} :\n  \u2211' (a : \u03b1), \u2191(f a) \u2260 \u22a4 \u2194 Summable fun a => \u2191(f a)\nNNReal.summable_mk.{u_2} {\u03b1 : Type u_2} {L : SummationFilter \u03b1} {f : \u03b1 \u2192 \u211d} (hf : \u2200 (n : \u03b1), 0 \u2264 f n) :\n  Summable (fun n => \u27e8f n, \u22ef\u27e9) L \u2194 Summable f L\nNNReal.summable_coe.{u_2} {\u03b1 : Type u_2} {L : SummationFilter \u03b1} {f : \u03b1 \u2192 NNReal} :\n  Summable (fun a => \u2191(f a)) L \u2194 Summable f L\n/tmp/leansearch_row_context_emf8zy8m/MCB_019_summable_condensed_iff_of_nonneg.lean:238:8: warning: declaration uses `sorry`\n",
+      "target_line": 228,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "check_line": 402,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "sum_Ioc_inv_sq_le_sub",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 404,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "add_sq_le",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 406,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_022_sum_Ioo_inv_sq_le.lean:406:7: error(lean.unknownIdentifier): Unknown identifier `geom_sum_Ico_le_of_lt_one`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "geom_sum_Ico_le_of_lt_one",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 408,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_022_sum_Ioo_inv_sq_le.lean:408:7: error(lean.unknownIdentifier): Unknown identifier `hasSum_zeta_two`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "hasSum_zeta_two",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        }
+      ],
+      "returncode": 1,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 402,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "sum_Ioc_inv_sq_le_sub",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 404,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "add_sq_le",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 2,
+      "row_id": "MCB_022_sum_Ioo_inv_sq_le",
+      "seconds": 4.67,
+      "source_file": "/tmp/rung1/mcb_files/mcb_22_sum_Ioo_inv_sq_le.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "sum_Ioc_inv_sq_le_sub.{u_1} {\u03b1 : Type u_1} [Field \u03b1] [LinearOrder \u03b1] [IsStrictOrderedRing \u03b1] {k n : \u2115} (hk : k \u2260 0)\n  (h : k \u2264 n) : \u2211 i \u2208 Ioc k n, (\u2191i ^ 2)\u207b\u00b9 \u2264 (\u2191k)\u207b\u00b9 - (\u2191n)\u207b\u00b9\nadd_sq_le.{u_3} {R : Type u_3} [Semiring R] [LinearOrder R] [IsStrictOrderedRing R] {a b : R} [ExistsAddOfLE R] :\n  (a + b) ^ 2 \u2264 2 * (a ^ 2 + b ^ 2)\n/tmp/leansearch_row_context_emf8zy8m/MCB_022_sum_Ioo_inv_sq_le.lean:406:7: error(lean.unknownIdentifier): Unknown identifier `geom_sum_Ico_le_of_lt_one`\n/tmp/leansearch_row_context_emf8zy8m/MCB_022_sum_Ioo_inv_sq_le.lean:408:7: error(lean.unknownIdentifier): Unknown identifier `hasSum_zeta_two`\n/tmp/leansearch_row_context_emf8zy8m/MCB_022_sum_Ioo_inv_sq_le.lean:410:8: warning: declaration uses `sorry`\n",
+      "target_line": 400,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "returncode": 0,
+      "row_context_ready_candidates": [],
+      "row_context_resolved_count": 0,
+      "row_id": "MCB_023_geom_mean_le_arith_mean_weighted",
+      "seconds": 6.633,
+      "source_file": "/tmp/rung1/mcb_files/mcb_23_geom_mean_le_arith_mean_weight.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "/tmp/leansearch_row_context_emf8zy8m/MCB_023_geom_mean_le_arith_mean_weighted.lean:132:8: warning: declaration uses `sorry`\n",
+      "target_line": 130,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "check_line": 200,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_eq_arith_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 202,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 204,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_025_geom_mean_eq_arith_mean_weighted.lean:204:7: error(lean.unknownIdentifier): Unknown constant `NNReal.geom_mean_le_arith_mean_weighted`\nReal.geom_mean_le_arith_mean_weighted.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (hw : \u2200 i \u2208 s, 0 \u2264 w i)\n  (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) : \u220f i \u2208 s, z i ^ w i \u2264 \u2211 i \u2208 s, w i * z i",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.geom_mean_le_arith_mean_weighted",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 206,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_le_arith_mean_weighted",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 1,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 200,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_eq_arith_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 202,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 206,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_le_arith_mean_weighted",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 3,
+      "row_id": "MCB_025_geom_mean_eq_arith_mean_weighted",
+      "seconds": 6.717,
+      "source_file": "/tmp/rung1/mcb_files/mcb_25_geom_mean_eq_arith_mean_weight.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "Real.geom_mean_eq_arith_mean_weighted_of_constant.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (x : \u211d)\n  (hw : \u2200 i \u2208 s, 0 \u2264 w i) (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) (hx : \u2200 i \u2208 s, w i \u2260 0 \u2192 z i = x) :\n  \u220f i \u2208 s, z i ^ w i = \u2211 i \u2208 s, w i * z i\nReal.geom_mean_weighted_of_constant.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (x : \u211d) (hw : \u2200 i \u2208 s, 0 \u2264 w i)\n  (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) (hx : \u2200 i \u2208 s, w i \u2260 0 \u2192 z i = x) : \u220f i \u2208 s, z i ^ w i = x\n/tmp/leansearch_row_context_emf8zy8m/MCB_025_geom_mean_eq_arith_mean_weighted.lean:204:7: error(lean.unknownIdentifier): Unknown constant `NNReal.geom_mean_le_arith_mean_weighted`\nReal.geom_mean_le_arith_mean_weighted.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (hw : \u2200 i \u2208 s, 0 \u2264 w i)\n  (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) : \u220f i \u2208 s, z i ^ w i \u2264 \u2211 i \u2208 s, w i * z i\n/tmp/leansearch_row_context_emf8zy8m/MCB_025_geom_mean_eq_arith_mean_weighted.lean:210:8: warning: declaration uses `sorry`\n",
+      "target_line": 200,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "check_line": 200,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_eq_arith_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 202,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 204,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_026_geom_mean_eq_arith_mean_weighted.lean:204:7: error(lean.unknownIdentifier): Unknown constant `NNReal.geom_mean_le_arith_mean_weighted`\nReal.geom_mean_le_arith_mean_weighted.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (hw : \u2200 i \u2208 s, 0 \u2264 w i)\n  (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) : \u220f i \u2208 s, z i ^ w i \u2264 \u2211 i \u2208 s, w i * z i",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.geom_mean_le_arith_mean_weighted",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 206,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_le_arith_mean_weighted",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "returncode": 1,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 200,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_eq_arith_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 202,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_weighted_of_constant",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 206,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "Real.geom_mean_le_arith_mean_weighted",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 3,
+      "row_id": "MCB_026_geom_mean_eq_arith_mean_weighted",
+      "seconds": 6.616,
+      "source_file": "/tmp/rung1/mcb_files/mcb_26_geom_mean_eq_arith_mean_weight.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "Real.geom_mean_eq_arith_mean_weighted_of_constant.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (x : \u211d)\n  (hw : \u2200 i \u2208 s, 0 \u2264 w i) (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) (hx : \u2200 i \u2208 s, w i \u2260 0 \u2192 z i = x) :\n  \u220f i \u2208 s, z i ^ w i = \u2211 i \u2208 s, w i * z i\nReal.geom_mean_weighted_of_constant.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (x : \u211d) (hw : \u2200 i \u2208 s, 0 \u2264 w i)\n  (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) (hx : \u2200 i \u2208 s, w i \u2260 0 \u2192 z i = x) : \u220f i \u2208 s, z i ^ w i = x\n/tmp/leansearch_row_context_emf8zy8m/MCB_026_geom_mean_eq_arith_mean_weighted.lean:204:7: error(lean.unknownIdentifier): Unknown constant `NNReal.geom_mean_le_arith_mean_weighted`\nReal.geom_mean_le_arith_mean_weighted.{u} {\u03b9 : Type u} (s : Finset \u03b9) (w z : \u03b9 \u2192 \u211d) (hw : \u2200 i \u2208 s, 0 \u2264 w i)\n  (hw' : \u2211 i \u2208 s, w i = 1) (hz : \u2200 i \u2208 s, 0 \u2264 z i) : \u220f i \u2208 s, z i ^ w i \u2264 \u2211 i \u2208 s, w i * z i\n/tmp/leansearch_row_context_emf8zy8m/MCB_026_geom_mean_eq_arith_mean_weighted.lean:210:8: warning: declaration uses `sorry`\n",
+      "target_line": 200,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    },
+    {
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "check_line": 786,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.inner_le_Lp_mul_Lq",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        },
+        {
+          "check_line": 788,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_039_inner_le_Lp_mul_Lq_of_nonneg.lean:788:7: error(lean.unknownIdentifier): Unknown constant `ENNReal.inner_le_Lp_mul_Lq`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "ENNReal.inner_le_Lp_mul_Lq",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 790,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_039_inner_le_Lp_mul_Lq_of_nonneg.lean:790:7: error(lean.unknownIdentifier): Unknown identifier `MeasureTheory.integral_mul_le_Lp_mul_Lq_of_nonneg`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "MeasureTheory.integral_mul_le_Lp_mul_Lq_of_nonneg",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        },
+        {
+          "check_line": 792,
+          "error_sample": "/tmp/leansearch_row_context_emf8zy8m/MCB_039_inner_le_Lp_mul_Lq_of_nonneg.lean:792:7: error(lean.unknownIdentifier): Unknown constant `NNReal.lintegral_mul_le_Lp_mul_Lq`",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.lintegral_mul_le_Lp_mul_Lq",
+          "row_context_resolves": false,
+          "target_context_resolves": false
+        }
+      ],
+      "returncode": 1,
+      "row_context_ready_candidates": [
+        {
+          "check_line": 786,
+          "error_sample": "",
+          "global_name_resolves": true,
+          "kind": "theorem",
+          "name": "NNReal.inner_le_Lp_mul_Lq",
+          "row_context_resolves": true,
+          "target_context_resolves": true
+        }
+      ],
+      "row_context_resolved_count": 1,
+      "row_id": "MCB_039_inner_le_Lp_mul_Lq_of_nonneg",
+      "seconds": 6.74,
+      "source_file": "/tmp/rung1/mcb_files/mcb_39_inner_le_Lp_mul_Lq_of_nonneg.lean",
+      "status": "checked",
+      "stderr_tail": "",
+      "stdout_tail": "NNReal.inner_le_Lp_mul_Lq.{u} {\u03b9 : Type u} (s : Finset \u03b9) (f g : \u03b9 \u2192 \u211d\u22650) {p q : \u211d} (hpq : p.HolderConjugate q) :\n  \u2211 i \u2208 s, f i * g i \u2264 (\u2211 i \u2208 s, f i ^ p) ^ (1 / p) * (\u2211 i \u2208 s, g i ^ q) ^ (1 / q)\n/tmp/leansearch_row_context_emf8zy8m/MCB_039_inner_le_Lp_mul_Lq_of_nonneg.lean:788:7: error(lean.unknownIdentifier): Unknown constant `ENNReal.inner_le_Lp_mul_Lq`\n/tmp/leansearch_row_context_emf8zy8m/MCB_039_inner_le_Lp_mul_Lq_of_nonneg.lean:790:7: error(lean.unknownIdentifier): Unknown identifier `MeasureTheory.integral_mul_le_Lp_mul_Lq_of_nonneg`\n/tmp/leansearch_row_context_emf8zy8m/MCB_039_inner_le_Lp_mul_Lq_of_nonneg.lean:792:7: error(lean.unknownIdentifier): Unknown constant `NNReal.lintegral_mul_le_Lp_mul_Lq`\n/tmp/leansearch_row_context_emf8zy8m/MCB_039_inner_le_Lp_mul_Lq_of_nonneg.lean:797:8: warning: declaration uses `sorry`\n",
+      "target_line": 787,
+      "timed_out": false,
+      "unmapped_error_lines": []
+    }
+  ],
+  "schema": "leansearch-row-context-filter-v1",
+  "source_policy": {
+    "no_replay_or_training": true,
+    "path_b_required_before_any_closure_credit": true,
+    "row_import_context_checked": true,
+    "target_site_context_checked": true
+  },
+  "static_filter": "analytics/public/leanmill/leansearch/LEANSEARCH_MCB_REMAINING_STATIC_FILTER.json"
+}

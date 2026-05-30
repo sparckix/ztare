@@ -1,0 +1,26 @@
+{
+  "v1_transductive_mrr": 0.875,
+  "v1_inductive_mrr": 0.0476,
+  "v2_inductive_gnn": {
+    "hit@1": 0.06818181818181818,
+    "hit@5": 0.09090909090909091,
+    "hit@10": 0.09090909090909091,
+    "mrr": 0.12283549783549814
+  },
+  "v2_inductive_aa": {
+    "hit@1": 0.0,
+    "hit@5": 0.0,
+    "hit@10": 0.0,
+    "mrr": 0.04761904761904748
+  },
+  "n_novel_test_edges": 308,
+  "config": {
+    "holdout_frac": 0.2,
+    "seed": 42,
+    "epochs": 80,
+    "hidden": 128,
+    "n_snapshots": 200,
+    "lr": 0.001,
+    "device": "cpu"
+  }
+}

@@ -1,0 +1,230 @@
+family: complex_limit_causeq_planner
+version: 1
+status: candidate_family
+residual_match:
+  lanes:
+    - complex_limit_transport
+  residual_classes:
+    - source_action_mismatch
+    - tactic_failed
+    - type_mismatch
+  head_patterns:
+    - isCauSeq
+    - norm_exp
+    - Complex
+    - exp
+    - series_ratio_test
+    - ratio_bridge
+    - exists_nat_gt
+    - hn0
+    - norm_exp_ofReal_mul_I
+    - unit_norm
+    - trig
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  expected_outcome: hold
+  family: complex_limit_causeq_planner
+  mode: heldout_replay
+  row_ids:
+    - MCB_105_equiv_limAux
+    - MCB_106_lim_eq_lim_im_add_lim_re
+    - MCB_107_lim_conj
+  probe_type: heldout_replay
+  probe_name: complex_limit_causeq_row_local_replay_v1
+  blocked_edge: no independent sibling or heldout row is available for a safe source-to-canary bind; the three complex-limit rows are already drained_canary rows and source binding is currently held
+  acceptance: one target-side success plus one matched negative-control failure per row, with no source-bound probe and no registry/log edits
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the matched target-side evidence and its negative controls; retire the lane if no additional current row appears.
+  stop_rule: If any row only closes after introducing a new source request, keep the lane held.
+  preconditions:
+    - Do not open a new source request.
+    - Reuse the existing sibling/heldout canary spec for the same rows.
+    - Preserve the row-specific negative controls.
+  checks:
+    - The MCB_105 route should fail if the equivalence witness is removed.
+    - The MCB_106 route should fail if the equivalence bridge is removed.
+    - The MCB_107 route should fail if the imaginary-part transport is removed.
+  paired_negative_controls:
+    - limit_tendsto_transport:MCB_105_equiv_limAux:no_positive_source_action:complex_equiv_limAux_missing_im_negative_v1
+    - limit_tendsto_transport:MCB_106_lim_eq_lim_im_add_lim_re:source_action_mismatch:complex_lim_eq_re_im_missing_equiv_negative_v1
+    - limit_tendsto_transport:MCB_107_lim_conj:no_positive_source_action:complex_lim_conj_missing_im_transport_negative_v1
+  negative_control_ideas:
+    - drop the equivalence witness
+    - remove the real/imag decomposition bridge
+    - drop the conjugation carrier
+    - replace the target with a different complex-limit statement
+    - remove the explicit limit-carrier alignment and the route should stop closing
+  planned_tests:
+    - candidate_name: complex_equiv_limAux_v1
+      row_id: MCB_105_equiv_limAux
+      test_kind: positive
+    - candidate_name: complex_equiv_limAux_missing_im_negative_v1
+      row_id: MCB_105_equiv_limAux
+      test_kind: negative_control
+    - candidate_name: complex_lim_eq_re_im_v1
+      row_id: MCB_106_lim_eq_lim_im_add_lim_re
+      test_kind: positive
+    - candidate_name: complex_lim_eq_re_im_missing_equiv_negative_v1
+      row_id: MCB_106_lim_eq_lim_im_add_lim_re
+      test_kind: negative_control
+    - candidate_name: complex_lim_conj_v1
+      row_id: MCB_107_lim_conj
+      test_kind: positive
+    - candidate_name: complex_lim_conj_missing_im_transport_negative_v1
+      row_id: MCB_107_lim_conj
+      test_kind: negative_control
+  candidate_checks:
+    - row_id: MCB_105_equiv_limAux
+      negative_control: drop the equivalence witness
+      positive_route: keep the equivalence-to-constant carrier explicit in the CauSeq.equiv_lim split
+    - row_id: MCB_106_lim_eq_lim_im_add_lim_re
+      negative_control: remove the real/imag decomposition bridge
+      positive_route: keep the real/imag decomposition bridge explicit in lim_eq_of_equiv_const
+    - row_id: MCB_107_lim_conj
+      negative_control: drop the conjugation carrier
+      positive_route: keep the conjugation carrier and starRingEnd target explicit
+  required_artifacts:
+    - positive target replay for MCB_105_equiv_limAux
+    - matched negative-control failure for MCB_105_equiv_limAux
+    - positive target replay for MCB_106_lim_eq_lim_im_add_lim_re
+    - matched negative-control failure for MCB_106_lim_eq_lim_im_add_lim_re
+    - positive target replay for MCB_107_lim_conj
+    - matched negative-control failure for MCB_107_lim_conj
+    - row-local evidence only
+  rows:
+    - row_id: MCB_105_equiv_limAux
+      negative_control: drop the equivalence witness
+      required_check: keep the equivalence-to-constant carrier explicit
+      positive_candidate: complex_equiv_limAux_v1
+      negative_candidate: complex_equiv_limAux_missing_im_negative_v1
+      candidate_names:
+        - complex_equiv_limAux_v1
+        - complex_equiv_limAux_missing_im_negative_v1
+    - row_id: MCB_106_lim_eq_lim_im_add_lim_re
+      negative_control: remove the real/imag decomposition bridge
+      required_check: keep the real/imag decomposition bridge explicit
+      positive_candidate: complex_lim_eq_re_im_v1
+      negative_candidate: complex_lim_eq_re_im_missing_equiv_negative_v1
+      candidate_names:
+        - complex_lim_eq_re_im_v1
+        - complex_lim_eq_re_im_missing_equiv_negative_v1
+    - row_id: MCB_107_lim_conj
+      negative_control: drop the conjugation carrier
+      required_check: keep the conjugation carrier and `starRingEnd` target explicit
+      positive_candidate: complex_lim_conj_v1
+      negative_candidate: complex_lim_conj_missing_im_transport_negative_v1
+      candidate_names:
+        - complex_lim_conj_v1
+        - complex_lim_conj_missing_im_transport_negative_v1
+  sibling_or_heldout_constraints:
+    - Use only the three listed rows.
+    - Keep the equivalence-to-constant carrier explicit for `MCB_105_equiv_limAux`.
+    - Keep the real/imag decomposition bridge explicit for `MCB_106_lim_eq_lim_im_add_lim_re`.
+    - Keep the conjugation carrier and starRingEnd target explicit for `MCB_107_lim_conj`.
+    - Keep the explicit limit-carrier alignment visible across the three-row replay.
+    - Treat 105 and 106 as blocked evidence and 107 as the replayable canary pair.
+    - Do not collapse these into a generic complex-limit claim or reopen source-bound probing while the allocator hold is active.
+  target_row_ids:
+    - MCB_105_equiv_limAux
+    - MCB_106_lim_eq_lim_im_add_lim_re
+    - MCB_107_lim_conj
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: complex_isCauSeq_norm_exp_positive_v1
+    row_id: MCB_115_isCauSeq_norm_exp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      let ⟨n, hn⟩ := exists_nat_gt ‖z‖
+      have hn0 : (0 : ℝ) < n := lt_of_le_of_lt (norm_nonneg _) hn
+      exact IsCauSeq.series_ratio_test n (‖z‖ / n)
+        (div_nonneg (norm_nonneg _) (le_of_lt hn0))
+        (by rwa [div_lt_iff₀, one_mul])
+  - id: complex_isCauSeq_norm_exp_missing_ratio_bridge_negative_v1
+    row_id: MCB_115_isCauSeq_norm_exp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_ratio_test_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      let ⟨n, hn⟩ := exists_nat_gt ‖z‖
+      have hn0 : (0 : ℝ) < n := lt_of_le_of_lt (norm_nonneg _) hn
+      exact IsCauSeq.series_ratio_test n (‖z‖ / n)
+        (div_nonneg (norm_nonneg _) (le_of_lt hn0))
+        (by simpa using hn)
+  - id: complex_norm_exp_I_mul_ofReal_sub_one_positive_v1
+    row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      rw [show ‖2 * Real.sin (x / 2)‖ = ‖2 * sin (x / 2)‖ by norm_cast, two_sin]
+      nth_rw 2 [← one_mul (_ - _), ← exp_zero]
+      rw [← neg_add_cancel (x / 2 * I), exp_add, mul_assoc _ _ (_ - _), mul_sub, ← exp_add, ← exp_add,
+        ← add_mul, ← add_mul]; norm_cast
+      rw [add_neg_cancel, ofReal_zero, zero_mul, exp_zero, add_halves, ← neg_mul, Complex.norm_mul,
+        norm_I, mul_one, Complex.norm_mul,
+        show -(ofReal (x / 2)) = ofReal (-x / 2) by norm_cast; exact neg_div' 2 x,
+        norm_exp_ofReal_mul_I, one_mul, ← norm_neg, neg_sub, mul_comm]
+  - id: complex_norm_exp_I_mul_ofReal_sub_one_missing_exp_unit_norm_negative_v1
+    row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+    test_kind: negative_control
+    expected_outcome: must_fail_without_exponential_unit_norm_bridge
+    backend: repl_file
+    timeout: 90
+    body: |
+      rw [show ‖2 * Real.sin (x / 2)‖ = ‖2 * sin (x / 2)‖ by norm_cast, two_sin]
+      nth_rw 2 [← one_mul (_ - _), ← exp_zero]
+      rw [← neg_add_cancel (x / 2 * I), exp_add, mul_assoc _ _ (_ - _), mul_sub, ← exp_add, ← exp_add,
+        ← add_mul, ← add_mul]; norm_cast
+      rw [add_neg_cancel, ofReal_zero, zero_mul, exp_zero, add_halves, ← neg_mul, Complex.norm_mul,
+        norm_I, mul_one, Complex.norm_mul,
+        show -(ofReal (x / 2)) = ofReal (-x / 2) by norm_cast; exact neg_div' 2 x,
+        one_mul, ← norm_neg, neg_sub, mul_comm]
+  - id: norm_inner_div_norm_mul_norm_eq_one_positive_v1
+    row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul hx hr
+  - id: norm_inner_div_norm_mul_norm_eq_one_missing_rhs_nonzero_negative_v1
+    row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_second_nonzero_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul hx
+  - id: orthonormal_basis_orthonormal_positive_v1
+    row_id: MCB_039_Orthonormal
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      classical
+      rw [orthonormal_iff_ite]
+      intro i j
+      rw [← b.repr.inner_map_map (b i) (b j), b.repr_self i, b.repr_self j,
+        EuclideanSpace.inner_single_left, PiLp.single_apply, map_one, one_mul]
+  - id: orthonormal_basis_orthonormal_missing_map_one_negative_v1
+    row_id: MCB_039_Orthonormal
+    test_kind: negative_control
+    expected_outcome: must_fail_without_map_one_normalization_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      classical
+      rw [orthonormal_iff_ite]
+      intro i j
+      rw [← b.repr.inner_map_map (b i) (b j), b.repr_self i, b.repr_self j,
+        EuclideanSpace.inner_single_left, PiLp.single_apply, one_mul]

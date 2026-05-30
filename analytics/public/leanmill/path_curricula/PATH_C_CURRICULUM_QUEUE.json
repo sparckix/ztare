@@ -1,0 +1,307 @@
+{
+  "canary_compile_ready_rows": [],
+  "canary_ratified_rows": [
+    "current_scale_0092",
+    "current_scale_0126",
+    "current_scale_0132",
+    "current_scale_0225",
+    "current_scale_0319"
+  ],
+  "excluded_consumed_count": 2,
+  "excluded_consumed_rows": [
+    "current_scale_0008",
+    "current_scale_0017",
+    "current_scale_0021",
+    "current_scale_0025",
+    "current_scale_0036",
+    "current_scale_0075",
+    "current_scale_0076",
+    "current_scale_0121",
+    "current_scale_0126",
+    "current_scale_0137",
+    "current_scale_0157",
+    "current_scale_0162",
+    "current_scale_0163",
+    "current_scale_0180",
+    "current_scale_0182",
+    "current_scale_0242",
+    "current_scale_0279",
+    "current_scale_0295",
+    "current_scale_0329"
+  ],
+  "generated_by": "scripts/public/control/path_c_curriculum_queue.py",
+  "inputs": {
+    "canary_results": [
+      "/tmp/rung1/path_c_canary_current_scale_0092_governed.json",
+      "/tmp/rung1/path_c_canary_current_scale_0132_governed.json",
+      "/tmp/rung1/path_c_canary_current_scale_0225_governed.json",
+      "/tmp/rung1/path_c_canary_current_scale_0319_governed.json",
+      "/tmp/rung1/path_c_canary_current_scale_0126.json"
+    ],
+    "consumption_manifest": "analytics/public/leanmill/_archive/LATEST_META_SOLVER_CONSUMPTION_MANIFEST.json",
+    "context_discovery": "analytics/public/leanmill/results/v2019_context_theorem_source_discovery.json",
+    "replay_gate": "analytics/public/leanmill/results/v2063_public_union_source_candidate_replay_market_gate.json",
+    "residual_ledger": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl",
+    "source_queue": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json",
+    "typed_label": "analytics/public/leanmill/results/v2108_typed_label_readiness_with_witness_equality_and_hard_negatives.json",
+    "typed_label_result": "analytics/public/leanmill/results/v2109_typed_label_cpu_logistic_diagnostic.json"
+  },
+  "kind_counts": {
+    "historical_contract_cleanup": 6,
+    "path_c_ratified_candidate": 5,
+    "source_safe_candidate_generation": 1,
+    "typed_label_diagnostic_completed": 1
+  },
+  "n_rows": 13,
+  "rows": [
+    {
+      "action_family": "construct affine-combination witness then convert coordinate sum equality",
+      "available_source_names": [
+        "linear_eq_sumCoords",
+        "coord_apply_eq",
+        "coord_apply_combination_of_notMem",
+        "coord_apply_combination_of_mem",
+        "coord_apply",
+        "coord_apply_ne"
+      ],
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "guardrails": [],
+      "kind": "source_safe_candidate_generation",
+      "next_lever": "bounded_replay_smoke_of_static_passed_candidate",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 107,
+      "queue_rank": 1,
+      "reason": "explicit affine-combination witness lane; source contract exists but binder hydration likely needed",
+      "replay_blockers": [],
+      "replay_ready": true,
+      "row_id": "current_scale_0080",
+      "source_artifact": "analytics/public/leanmill/results/v2061_public_union_next_source_discovery_queue.json",
+      "source_file": "Mathlib/LinearAlgebra/AffineSpace/Basis.lean",
+      "source_hinge": "eq_affineCombination_of_mem_affineSpan_of_fintype plus coord_apply_combination_of_mem"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "closed_candidates": [
+        "ext_induction_linearMap_ext",
+        "ext_change_comp_apply",
+        "ext_direct_induction_lambda"
+      ],
+      "failed_error_classes": [
+        "type_mismatch"
+      ],
+      "kind": "path_c_ratified_candidate",
+      "next_lever": "retire_or_export_to_consumption_manifest",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 20,
+      "queue_rank": 2,
+      "ratified_candidates": [
+        "ext_induction_linearMap_ext",
+        "ext_change_comp_apply",
+        "ext_direct_induction_lambda"
+      ],
+      "reason": "canary replay produced official governance closure",
+      "row_id": "current_scale_0092",
+      "source_artifact": "canary_result"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "closed_candidates": [
+        "leansearch_hinge_then_finite_bound_simp",
+        "leansearch_hinge_then_finite_bound_simpa",
+        "apply_lt_of_le_hinge"
+      ],
+      "failed_error_classes": [
+        "lean_error"
+      ],
+      "kind": "path_c_ratified_candidate",
+      "next_lever": "retire_or_export_to_consumption_manifest",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 20,
+      "queue_rank": 3,
+      "ratified_candidates": [
+        "leansearch_hinge_then_finite_bound_simp",
+        "leansearch_hinge_then_finite_bound_simpa",
+        "apply_lt_of_le_hinge"
+      ],
+      "reason": "canary replay produced official governance closure",
+      "row_id": "current_scale_0126",
+      "source_artifact": "canary_result"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "closed_candidates": [
+        "source_shape_apply",
+        "le_antisymm_source_shape",
+        "exact_eq_of_le_of_ge"
+      ],
+      "failed_error_classes": [
+        "unsolved_goals"
+      ],
+      "kind": "path_c_ratified_candidate",
+      "next_lever": "retire_or_export_to_consumption_manifest",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 20,
+      "queue_rank": 4,
+      "ratified_candidates": [
+        "source_shape_apply",
+        "le_antisymm_source_shape",
+        "exact_eq_of_le_of_ge"
+      ],
+      "reason": "canary replay produced official governance closure",
+      "row_id": "current_scale_0132",
+      "source_artifact": "canary_result"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "closed_candidates": [
+        "unfold_funext_simp_smul",
+        "unfold_exact_funext_smul_smul",
+        "ext_simp_ofScalars_smul"
+      ],
+      "failed_error_classes": [
+        "unsolved_goals"
+      ],
+      "kind": "path_c_ratified_candidate",
+      "next_lever": "retire_or_export_to_consumption_manifest",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 20,
+      "queue_rank": 5,
+      "ratified_candidates": [
+        "unfold_funext_simp_smul",
+        "unfold_exact_funext_smul_smul",
+        "ext_simp_ofScalars_smul"
+      ],
+      "reason": "canary replay produced official governance closure",
+      "row_id": "current_scale_0225",
+      "source_artifact": "canary_result"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "closed_candidates": [
+        "source_simp_only_units",
+        "source_simpa_only_units"
+      ],
+      "failed_error_classes": [
+        "lean_error",
+        "unsolved_goals"
+      ],
+      "kind": "path_c_ratified_candidate",
+      "next_lever": "retire_or_export_to_consumption_manifest",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 20,
+      "queue_rank": 6,
+      "ratified_candidates": [
+        "source_simp_only_units",
+        "source_simpa_only_units"
+      ],
+      "reason": "canary replay produced official governance closure",
+      "row_id": "current_scale_0319",
+      "source_artifact": "canary_result"
+    },
+    {
+      "allow_gpu_or_full_gnn_training_now": false,
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "claim_model_delta_now": false,
+      "kind": "typed_label_diagnostic_completed",
+      "next_lever": "acquire_rank1_negative_or_larger_typed_label_eval_before_any_model_claim",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 18,
+      "queue_rank": 7,
+      "reason": "typed-label diagnostic is small and tiebreak-sensitive; it does not beat the positive-first rank baseline and cannot support a model-delta claim",
+      "row_id": "typed_label_next",
+      "source_artifact": "analytics/public/leanmill/results/v2109_typed_label_cpu_logistic_diagnostic.json"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "certified_proof_exists": true,
+      "class_frequency": 6,
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "next_target": "Restate as the honest target_kind (consequence/gap/route) or retire; do NOT record as proof_closure.",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 15,
+      "queue_rank": 8,
+      "residual_class": "gate_contract_not_crisp",
+      "row_id": "T2P_42",
+      "scoreboard": "SHARED KERNEL \u2014 not a closure; CLOSED routes to governance a",
+      "source_artifact": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "certified_proof_exists": true,
+      "class_frequency": 6,
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "next_target": "Restate as the honest target_kind (consequence/gap/route) or retire; do NOT record as proof_closure.",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 15,
+      "queue_rank": 9,
+      "residual_class": "gate_contract_not_crisp",
+      "row_id": "T2P_51",
+      "scoreboard": "SHARED KERNEL \u2014 not a closure; CLOSED routes to governance a",
+      "source_artifact": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "certified_proof_exists": true,
+      "class_frequency": 6,
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "next_target": "Restate as the honest target_kind (consequence/gap/route) or retire; do NOT record as proof_closure.",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 15,
+      "queue_rank": 10,
+      "residual_class": "gate_contract_not_crisp",
+      "row_id": "T2P_57",
+      "scoreboard": "SHARED KERNEL \u2014 not a closure; CLOSED routes to governance a",
+      "source_artifact": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "certified_proof_exists": true,
+      "class_frequency": 6,
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "next_target": "Restate as the honest target_kind (consequence/gap/route) or retire; do NOT record as proof_closure.",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 15,
+      "queue_rank": 11,
+      "residual_class": "gate_contract_not_crisp",
+      "row_id": "T2P_80",
+      "scoreboard": "SHARED KERNEL \u2014 not a closure; CLOSED routes to governance a",
+      "source_artifact": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "certified_proof_exists": true,
+      "class_frequency": 6,
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "next_target": "Restate as the honest target_kind (consequence/gap/route) or retire; do NOT record as proof_closure.",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 15,
+      "queue_rank": 12,
+      "residual_class": "gate_contract_not_crisp",
+      "row_id": "T2P_81",
+      "scoreboard": "SHARED KERNEL \u2014 not a closure; CLOSED routes to governance a",
+      "source_artifact": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl"
+    },
+    {
+      "budget_gate": "static_check_or_one_row_smoke_before_batch",
+      "certified_proof_exists": true,
+      "class_frequency": 6,
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "next_target": "Restate as the honest target_kind (consequence/gap/route) or retire; do NOT record as proof_closure.",
+      "path_b_gate": "ratified_only_no_manual_edits_false_ratify_zero",
+      "priority": 15,
+      "queue_rank": 13,
+      "residual_class": "gate_contract_not_crisp",
+      "row_id": "T2P_93",
+      "scoreboard": "SHARED KERNEL \u2014 not a closure; CLOSED routes to governance a",
+      "source_artifact": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl"
+    }
+  ],
+  "schema": "path-c-curriculum-queue-v1",
+  "suppressed_canary_duplicate_count": 4
+}

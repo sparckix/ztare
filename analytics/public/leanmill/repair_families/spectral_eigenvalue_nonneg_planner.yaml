@@ -1,0 +1,1290 @@
+family: spectral_eigenvalue_nonneg_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_010_spectralRadius_eq_nnnorm
+    - MCB_074_eigenvalue_nonneg_of_nonneg
+    - MCB_092_ofReal_mul_pos_iff
+    - MCB_135_circleIntegral_eq_zero_of_differ
+    - MCB_014_norm_inner_div_norm_mul_norm_eq_
+    - MCB_035_inner_mul_inner_self_le
+    - MCB_028_inner_gramSchmidtOrthonormalBasi
+    - MCB_027_gramSchmidtNormed_linearIndepend
+    - MCB_080_IsIdempotentElem
+    - MCB_040_orthonormalBasis_one_dim
+    - MCB_042_ContinuousLinearMap
+    - MCB_075_Commute
+    - MCB_044_range_eq_top
+    - MCB_063_ext_inner_right_basis
+    - MCB_048_norm_adjoint_comp_self
+    - MCB_000_convolution_mono_right_of_nonneg
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - MCB_197_isBigO_norm_restrict_cocompact
+    - MCB_218_lineDerivOp
+    - MCB_134_norm_exp_I_mul_ofReal_sub_one
+    - MCB_135_circleIntegral_eq_zero_of_differ
+    - MCB_113_exists_mem_frontier_isMaxOn_norm
+    - MCB_094_exists_norm_eq_restrict_eq
+    - MCB_159_isBigOWith_iff_exists_eq_mul
+    - MCB_134_norm_exp_I_mul_ofReal_sub_one
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    - MCB_135_circleIntegral_eq_zero_of_differ
+    - MCB_153_circleAverage_of_differentiable_
+    - MCB_144_differentiableAt_cuspFunction_ze
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_057_isIdempotentElem_rankOne_self_if
+    - MCB_020_injective_iff_forall_lt_finrank_
+    - MCB_218_lineDerivOp
+  lanes:
+    - spectral_eigenvalue_nonneg
+    - inner_norm_transport
+    - positive_operator_self_adjoint
+    - convolution_mono_right_nonneg
+    - inner_symmetry_real_part
+    - spectral_rayleigh_transport
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - eigenvalue
+    - nonneg
+    - eigenvector
+    - inner_product
+    - exists_hasEigenvector
+    - inner_product_apply_eigenvector
+    - gramSchmidt
+    - gramSchmidtNormed
+    - gramSchmidtOrthonormalBasis
+    - orthonormal
+    - linearIndependent
+    - basis
+    - zero
+    - sq_pos_iff
+    - norm_ne_zero_iff
+    - RCLike.re
+    - mem_genEigenspace_one
+    - positive_norm_square_witness
+    - nonnegativity
+    - idempotent
+    - rankOne
+    - inner
+    - norm
+    - div
+    - mul
+    - one
+    - ne_zero
+    - positive
+    - self_adjoint
+    - adjoint
+    - product
+    - mem
+    - domain
+    - exists
+    - linear
+    - map
+    - comp
+    - iff
+    - real
+    - rclike
+    - continuousLinearMap
+    - convolution
+    - mono
+    - right
+    - injective
+    - finrank
+    - singularValues
+    - pos
+    - lt
+    - frontier
+    - isMaxOn
+    - bounded
+    - nonempty
+    - DiffContOnCl
+    - closure
+    - continuous
+    - dim
+    - restrict
+    - sphere
+    - diffcont
+    - diffcontoncl
+    - forall
+    - mem_sphere
+    - support
+    - deriv
+    - top
+    - tsupport
+    - lineDerivOp
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: spectral_eigenvalue_nonneg_planner
+  row_id: MCB_074_eigenvalue_nonneg_of_nonneg
+  target_row_id: MCB_074_eigenvalue_nonneg_of_nonneg
+  row_ids:
+    - MCB_010_spectralRadius_eq_nnnorm
+    - MCB_074_eigenvalue_nonneg_of_nonneg
+    - MCB_092_ofReal_mul_pos_iff
+    - MCB_048_norm_adjoint_comp_self
+    - MCB_035_inner_mul_inner_self_le
+    - MCB_028_inner_gramSchmidtOrthonormalBasi
+    - MCB_027_gramSchmidtNormed_linearIndepend
+    - MCB_080_IsIdempotentElem
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - MCB_113_exists_mem_frontier_isMaxOn_norm
+    - MCB_094_exists_norm_eq_restrict_eq
+    - MCB_159_isBigOWith_iff_exists_eq_mul
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    - MCB_135_circleIntegral_eq_zero_of_differ
+    - MCB_153_circleAverage_of_differentiable_
+    - MCB_144_differentiableAt_cuspFunction_ze
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_057_isIdempotentElem_rankOne_self_if
+    - MCB_218_lineDerivOp
+    - MCB_044_range_eq_top
+    - MCB_063_ext_inner_right_basis
+  probe_type: heldout_replay
+  mode: heldout_replay
+  expected_outcome: hold
+  probe_name: spectral_eigenvalue_row_local_replay_v1
+  blocked_edge: The family is seed_only with source_order_safe=false, so the replay must stay row-local and use matched negative controls on the current target-side lanes; the source-order candidates are not same-module witnesses.
+  acceptance: one target-side success plus one matched negative-control failure, with no source-bound probe and no registry/log edits; MCB_010_spectralRadius_eq_nnnorm must preserve the self-adjoint spectral-radius equality bridge and the matched negative control must fail when the explicit `hT` witness is omitted, MCB_044_range_eq_top must preserve the coercive range-to-top bridge and the matched negative control must fail when the coercive witness is omitted, MCB_092_ofReal_mul_pos_iff must preserve the real-to-RCLike positivity bridge and the matched negative control must fail when the z argument is omitted, MCB_094_exists_norm_eq_restrict_eq must preserve the bounded continuous norm-preserving restriction extension bridge, MCB_159_isBigOWith_iff_exists_eq_mul must preserve the nonnegative-constant transport factorization bridge and the matched negative control must fail when the nonnegative constant witness is omitted, MCB_086_eLpNorm_le_eLpNorm_fderiv_one must preserve the HolderConjugate bridge, MCB_080_IsIdempotentElem must preserve the idempotent witness into the selfAdjoint/starNormal bridge, MCB_218_lineDerivOp must preserve the `tsupport_fderiv_apply_subset` transport bridge, MCB_135_circleIntegral_eq_zero_of_differ must preserve the countable-exception Cauchy integral bridge, MCB_153_circleAverage_of_differentiable_ must preserve the off-countable differentiability bridge, MCB_144_differentiableAt_cuspFunction_ze must preserve the bounded removable-singularity bridge and the zero-point carrier, MCB_063_ext_inner_right_basis must preserve the right-basis inner-product bridge and the matched negative control must fail when the inner-product witness is omitted, and the matched negative controls must fail when their bridge is omitted
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Keep the current target-side evidence isolated and matched to its negative control; retire the lane only if the row-local replay stalls.
+  paired_negative_controls:
+    - spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+    - range_eq_top_missing_coercive_negative_v1
+    - ext_inner_right_basis_missing_right_basis_inner_bridge_negative_v1
+    - eigenvalue_nonneg_missing_eigenvector_equation_negative_v1
+    - ofReal_mul_pos_iff_missing_z_argument_negative_v1
+    - circleIntegral_eq_zero_of_differentiable_on_off_countable_missing_countable_bridge_negative_v1
+    - circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+    - cusp_function_zero_missing_bounded_extension_negative_v1
+    - norm_inner_div_norm_mul_norm_eq_one_missing_rhs_nonzero_negative_v1
+    - exp_mem_unitary_missing_skewAdjoint_bridge_negative_v1
+    - inner_mul_inner_self_le_missing_cauchy_schwarz_bridge_negative_v1
+    - inner_gramSchmidtOrthonormalBasis_eq_zero_missing_zero_bridge_negative_v1
+    - gramSchmidtNormed_linearIndependent_missing_normalized_orthogonality_negative_v1
+    - continuous_linear_map_positive_missing_self_adjoint_bridge_negative_v1
+    - norm_adjoint_comp_self_missing_theorem_application_negative_v1
+    - isIdempotentElem_missing_idempotent_bridge_negative_v1
+    - mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    - eLpNorm_le_eLpNorm_fderiv_one_missing_holder_conjugate_negative_v1
+    - exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+    - exists_norm_eq_restrict_eq_missing_restrict_bridge_negative_v1
+    - isBigOWith_iff_exists_eq_mul_missing_nonneg_negative_v1
+    - norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+    - norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_negative_v1
+    - isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+    - isIdempotentElem_rankOne_self_iff_missing_iff_bridge_negative_v1
+    - lineDerivOp_missing_support_transport_negative_v1
+    - norm_exp_I_mul_ofReal_sub_one_missing_equality_bridge_negative_v1
+  planned_tests:
+    - candidate_name: spectral_radius_eq_nnnorm_positive_v1
+      row_id: MCB_010_spectralRadius_eq_nnnorm
+      test_kind: positive
+    - candidate_name: spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+      row_id: MCB_010_spectralRadius_eq_nnnorm
+      test_kind: negative_control
+    - candidate_name: range_eq_top_positive_v1
+      row_id: MCB_044_range_eq_top
+      test_kind: positive
+    - candidate_name: range_eq_top_missing_coercive_negative_v1
+      row_id: MCB_044_range_eq_top
+      test_kind: negative_control
+    - candidate_name: ext_inner_right_basis_positive_v1
+      row_id: MCB_063_ext_inner_right_basis
+      test_kind: positive
+    - candidate_name: ext_inner_right_basis_missing_right_basis_inner_bridge_negative_v1
+      row_id: MCB_063_ext_inner_right_basis
+      test_kind: negative_control
+    - candidate_name: eigenvalue_nonneg_via_eigenvector_inner_v1
+      row_id: MCB_074_eigenvalue_nonneg_of_nonneg
+      test_kind: positive
+    - candidate_name: eigenvalue_nonneg_missing_eigenvector_equation_negative_v1
+      row_id: MCB_074_eigenvalue_nonneg_of_nonneg
+      test_kind: negative_control
+    - candidate_name: ofReal_mul_pos_iff_positive_v1
+      row_id: MCB_092_ofReal_mul_pos_iff
+      test_kind: positive
+    - candidate_name: ofReal_mul_pos_iff_missing_z_argument_negative_v1
+      row_id: MCB_092_ofReal_mul_pos_iff
+      test_kind: negative_control
+    - candidate_name: circleIntegral_eq_zero_of_differentiable_on_off_countable_positive_v1
+      row_id: MCB_135_circleIntegral_eq_zero_of_differ
+      test_kind: positive
+    - candidate_name: circleIntegral_eq_zero_of_differentiable_on_off_countable_missing_countable_bridge_negative_v1
+      row_id: MCB_135_circleIntegral_eq_zero_of_differ
+      test_kind: negative_control
+    - candidate_name: circleAverage_of_differentiable_on_off_countable_positive_v1
+      row_id: MCB_153_circleAverage_of_differentiable_
+      test_kind: positive
+    - candidate_name: circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+      row_id: MCB_153_circleAverage_of_differentiable_
+      test_kind: negative_control
+    - candidate_name: cusp_function_zero_removable_positive_v1
+      row_id: MCB_144_differentiableAt_cuspFunction_ze
+      test_kind: positive
+    - candidate_name: cusp_function_zero_missing_bounded_extension_negative_v1
+      row_id: MCB_144_differentiableAt_cuspFunction_ze
+      test_kind: negative_control
+    - candidate_name: norm_inner_div_norm_mul_norm_eq_one_positive_v1
+      row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+      test_kind: positive
+    - candidate_name: norm_inner_div_norm_mul_norm_eq_one_missing_rhs_nonzero_negative_v1
+      row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+      test_kind: negative_control
+    - candidate_name: exp_mem_unitary_positive_v1
+      row_id: MCB_075_Commute
+      test_kind: positive
+    - candidate_name: exp_mem_unitary_missing_skewAdjoint_bridge_negative_v1
+      row_id: MCB_075_Commute
+      test_kind: negative_control
+    - candidate_name: inner_mul_inner_self_le_positive_v1
+      row_id: MCB_035_inner_mul_inner_self_le
+      test_kind: positive
+    - candidate_name: inner_mul_inner_self_le_missing_cauchy_schwarz_bridge_negative_v1
+      row_id: MCB_035_inner_mul_inner_self_le
+      test_kind: negative_control
+    - candidate_name: inner_gramSchmidtOrthonormalBasis_eq_zero_positive_v1
+      row_id: MCB_028_inner_gramSchmidtOrthonormalBasi
+      test_kind: positive
+    - candidate_name: inner_gramSchmidtOrthonormalBasis_eq_zero_missing_zero_bridge_negative_v1
+      row_id: MCB_028_inner_gramSchmidtOrthonormalBasi
+      test_kind: negative_control
+    - candidate_name: gramSchmidtNormed_linearIndependent_via_orthonormal_positive_v1
+      row_id: MCB_027_gramSchmidtNormed_linearIndepend
+      test_kind: positive
+    - candidate_name: gramSchmidtNormed_linearIndependent_missing_normalized_orthogonality_negative_v1
+      row_id: MCB_027_gramSchmidtNormed_linearIndepend
+      test_kind: negative_control
+    - candidate_name: continuous_linear_map_positive_self_adjoint_v1
+      row_id: MCB_042_ContinuousLinearMap
+      test_kind: positive
+    - candidate_name: continuous_linear_map_positive_missing_self_adjoint_bridge_negative_v1
+      row_id: MCB_042_ContinuousLinearMap
+      test_kind: negative_control
+    - candidate_name: norm_adjoint_comp_self_positive_v1
+      row_id: MCB_048_norm_adjoint_comp_self
+      test_kind: positive
+    - candidate_name: norm_adjoint_comp_self_missing_theorem_application_negative_v1
+      row_id: MCB_048_norm_adjoint_comp_self
+      test_kind: negative_control
+    - candidate_name: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+      row_id: MCB_080_IsIdempotentElem
+      test_kind: positive
+    - candidate_name: isIdempotentElem_missing_idempotent_bridge_negative_v1
+      row_id: MCB_080_IsIdempotentElem
+      test_kind: negative_control
+    - candidate_name: mem_adjoint_domain_of_exists_positive_v1
+      row_id: MCB_064_mem_adjoint_domain_of_exists
+      test_kind: positive
+    - candidate_name: mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+      row_id: MCB_064_mem_adjoint_domain_of_exists
+      test_kind: negative_control
+    - candidate_name: eLpNorm_le_eLpNorm_fderiv_one_positive_v1
+      row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+      test_kind: positive
+    - candidate_name: eLpNorm_le_eLpNorm_fderiv_one_missing_holder_conjugate_negative_v1
+      row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+      test_kind: negative_control
+    - candidate_name: exists_mem_frontier_isMaxOn_norm_positive_v1
+      row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+      test_kind: positive
+    - candidate_name: exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+      row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+      test_kind: negative_control
+    - candidate_name: lineDerivOp_positive_v1
+      row_id: MCB_218_lineDerivOp
+      test_kind: positive
+    - candidate_name: lineDerivOp_missing_support_transport_negative_v1
+      row_id: MCB_218_lineDerivOp
+      test_kind: negative_control
+    - candidate_name: norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+      row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+      test_kind: positive
+    - candidate_name: norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+      row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+      test_kind: negative_control
+    - candidate_name: norm_dslope_le_div_of_mapsTo_ball_positive_v1
+      row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+      test_kind: positive
+    - candidate_name: norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_negative_v1
+      row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+      test_kind: negative_control
+    - candidate_name: isSymmetric_iff_inner_map_self_real_positive_v1
+      row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      test_kind: positive
+    - candidate_name: isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+      row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      test_kind: negative_control
+    - candidate_name: isIdempotentElem_rankOne_self_iff_positive_v1
+      row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      test_kind: positive
+    - candidate_name: isIdempotentElem_rankOne_self_iff_missing_iff_bridge_negative_v1
+      row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      test_kind: negative_control
+    - candidate_name: exists_norm_eq_restrict_eq_positive_v1
+      row_id: MCB_094_exists_norm_eq_restrict_eq
+      test_kind: positive
+    - candidate_name: exists_norm_eq_restrict_eq_missing_restrict_bridge_negative_v1
+      row_id: MCB_094_exists_norm_eq_restrict_eq
+      test_kind: negative_control
+    - candidate_name: isBigOWith_iff_exists_eq_mul_positive_v1
+      row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+      test_kind: positive
+    - candidate_name: isBigOWith_iff_exists_eq_mul_missing_nonneg_negative_v1
+      row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+      test_kind: negative_control
+    - candidate_name: norm_exp_I_mul_ofReal_sub_one_positive_v1
+      row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+      test_kind: positive
+    - candidate_name: norm_exp_I_mul_ofReal_sub_one_missing_equality_bridge_negative_v1
+      row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+      test_kind: negative_control
+    - candidate_name: lineDerivOp_positive_v1
+      row_id: MCB_218_lineDerivOp
+      test_kind: positive
+    - candidate_name: lineDerivOp_missing_support_transport_negative_v1
+      row_id: MCB_218_lineDerivOp
+      test_kind: negative_control
+  positive_artifacts:
+    - spectral_radius_eq_nnnorm_positive_v1
+    - range_eq_top_positive_v1
+    - ext_inner_right_basis_positive_v1
+    - eigenvalue_nonneg_via_eigenvector_inner_v1
+    - ofReal_mul_pos_iff_positive_v1
+    - /tmp/rung1/mcb_refill_dedup_after_expand100/local_spectral_smoke2_20260520Tlocal/rows/drivers/MCB_074_eigenvalue_nonneg_of_nonneg_manual_extra_eigenvalue_nonneg_via_eigenvector_inner_v1.lean
+    - norm_inner_div_norm_mul_norm_eq_one_positive_v1
+    - inner_mul_inner_self_le_positive_v1
+    - inner_gramSchmidtOrthonormalBasis_eq_zero_positive_v1
+    - gramSchmidtNormed_linearIndependent_via_orthonormal_positive_v1
+    - continuous_linear_map_positive_self_adjoint_v1
+    - norm_adjoint_comp_self_positive_v1
+    - isIdempotentElem_selfAdjoint_starNormal_positive_v1
+    - mem_adjoint_domain_of_exists_positive_v1
+    - eLpNorm_le_eLpNorm_fderiv_one_positive_v1
+    - norm_exp_I_mul_ofReal_sub_one_positive_v1
+    - circleIntegral_eq_zero_of_differentiable_on_off_countable_positive_v1
+    - exists_mem_frontier_isMaxOn_norm_positive_v1
+    - cusp_function_zero_removable_positive_v1
+    - norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+    - isSymmetric_iff_inner_map_self_real_positive_v1
+    - isIdempotentElem_rankOne_self_iff_positive_v1
+    - exists_norm_eq_restrict_eq_positive_v1
+    - isBigOWith_iff_exists_eq_mul_positive_v1
+    - lineDerivOp_positive_v1
+  negative_control_ideas:
+    - missing self-adjoint bridge for the spectral-radius equality route
+    - missing coercive bridge for the range-to-top route
+    - missing right-basis inner-product witness
+    - missing eigenvector equation
+    - missing inner-product bridge
+    - drop the witness extraction step
+    - missing Cauchy-Schwarz bridge for the inner-product product route
+    - replace the route with a generic positivity lemma
+    - missing second nonzero bridge
+    - missing zero hypothesis bridge for the Gram-Schmidt orthonormal-basis inner-product route
+    - missing normalized orthogonality bridge for the Gram-Schmidt normed linear-independence route
+    - missing self-adjoint bridge
+    - missing theorem application for the adjoint norm identity
+    - missing idempotent bridge
+    - missing z argument in the real-to-RCLike positivity bridge
+    - missing countable witness bridge for the Cauchy integral zero route
+    - missing existential witness bridge for the adjoint-domain membership route
+    - missing differentiability bridge for the frontier max-on route
+    - missing bounded removable-singularity bridge
+    - missing equality bridge in the norm-exp route
+    - missing nonnegative-constant transport bridge for the IsBigOWith factorization route
+    - missing sphere-bound hypothesis for the derivative estimate route
+    - missing real-part bridge for the symmetry characterization
+    - missing iff bridge in the rankOne idempotent route
+    - missing restrict bridge for the bounded continuous norm-preserving extension route
+    - missing tsupport transport bridge in the lineDerivOp route
+  sibling_or_heldout_constraints:
+    - Use only MCB_010_spectralRadius_eq_nnnorm for the self-adjoint spectral-radius equality lane.
+    - Keep the self-adjoint witness explicit and do not collapse the route into the bare theorem name alone.
+    - Use only MCB_044_range_eq_top for the range-to-top lane.
+    - Keep the coercive witness explicit; do not collapse the route into the bare theorem name alone.
+    - Use only MCB_063_ext_inner_right_basis for the right-basis inner-product lane.
+    - Keep the right-basis witness explicit; do not collapse the route into the left-basis lemma or extensionality alone.
+    - Use only the single current row MCB_074_eigenvalue_nonneg_of_nonneg.
+    - Keep the eigenvector witness and inner-product bridge explicit.
+    - Do not replace the route with a bare positivity lemma or a generic spectral argument.
+    - Treat external source-order candidates as non-witnesses for this lane.
+    - Do not reopen source-bound probing while source binding is held.
+    - Use only MCB_014_norm_inner_div_norm_mul_norm_eq_ for the norm/product bridge lane.
+    - Keep both nonzero hypotheses explicit for the norm/product bridge lane.
+    - Do not collapse the norm/product bridge into a one-sided replay.
+    - Use only MCB_035_inner_mul_inner_self_le for the Cauchy-Schwarz inner-product product lane.
+    - Keep the `inner_mul_inner_self_le` inequality explicit; do not replace it with the symmetric norm identity.
+    - Use only MCB_028_inner_gramSchmidtOrthonormalBasi for the Gram-Schmidt orthonormal-basis lane.
+    - Keep the zero hypothesis explicit; do not collapse the route into the nonzero basis-application theorem.
+    - Use only MCB_027_gramSchmidtNormed_linearIndepend for the Gram-Schmidt normed linear-independence lane.
+    - Keep the normalized orthonormal bridge explicit; do not collapse the route into the target theorem or unnormalized Gram-Schmidt orthogonality alone.
+    - Use only MCB_042_ContinuousLinearMap for the positive-operator lane.
+    - Keep the self-adjoint bridge explicit; do not collapse the route into a bare positivity statement.
+    - Use only MCB_048_norm_adjoint_comp_self for the adjoint norm lane.
+    - Keep the theorem application explicit; do not collapse the route into a generic norm identity.
+    - Use only MCB_080_IsIdempotentElem for the idempotent projection bridge lane.
+    - Keep the idempotent witness explicit; do not drop the `IsIdempotentElem` bridge.
+    - Use only MCB_064_mem_adjoint_domain_of_exists for the adjoint-domain membership lane.
+    - Keep the existential witness explicit; do not collapse the route into the raw continuity characterization alone.
+    - Use only MCB_113_exists_mem_frontier_isMaxOn_norm for the frontier max-on lane.
+    - Keep the frontier, nonempty, and differentiability witnesses explicit; do not collapse the route into a generic compactness replay.
+    - Use only MCB_145_norm_deriv_le_of_forall_mem_sphe for the derivative bound lane.
+    - Keep the sphere-bound hypothesis explicit; do not collapse the route into a generic global bound.
+    - Use only MCB_144_differentiableAt_cuspFunction_ze for the cusp-function zero lane.
+    - Keep the bounded removable-singularity bridge explicit and do not drop the zero-point carrier.
+    - Use only MCB_067_isSymmetric_iff_inner_map_self_r for the symmetry lane.
+    - Keep the real-part characterization explicit; do not collapse the route into the bare self-adjoint equivalence.
+    - Use only MCB_057_isIdempotentElem_rankOne_self_if for the rankOne idempotent lane.
+    - Keep the nonzero hypothesis explicit; do not collapse the route to the bare idempotent lemma.
+    - Use only MCB_094_exists_norm_eq_restrict_eq for the bounded continuous extension lane.
+    - Keep the restriction bridge explicit; do not collapse the route into a generic extension theorem.
+    - Use only MCB_159_isBigOWith_iff_exists_eq_mul for the `IsBigOWith` factorization lane.
+    - Keep the nonnegative-constant transport explicit and preserve the exact `isBigOWith_iff_exists_eq_mul` theorem application; do not collapse the route into the unbounded `isBigO` factorization lemma.
+    - Use only MCB_134_norm_exp_I_mul_ofReal_sub_one for the norm-exp equality lane.
+    - Keep the exact `norm_exp_I_mul_ofReal_sub_one` equality explicit; do not collapse the route into the inequality-only theorem.
+    - Use only MCB_218_lineDerivOp for the lineDerivOp transport lane.
+    - Keep the `tsupport_fderiv_apply_subset` transport bridge explicit; dropping it should fail the matched negative control.
+  rows:
+    - row_id: MCB_010_spectralRadius_eq_nnnorm
+      negative_control: missing self-adjoint bridge
+      required_check: Keep the self-adjoint witness explicit; preserve the spectral-radius equality bridge and do not collapse the route into the bare theorem name.
+      positive_candidate: spectral_radius_eq_nnnorm_positive_v1
+      negative_candidate: spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+      candidate_names:
+        - spectral_radius_eq_nnnorm_positive_v1
+        - spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+    - row_id: MCB_044_range_eq_top
+      negative_control: missing coercive bridge
+      required_check: Keep the coercive witness explicit; preserve the exact `range_eq_top` theorem application and do not collapse the route into the bare theorem name.
+      positive_candidate: range_eq_top_positive_v1
+      negative_candidate: range_eq_top_missing_coercive_negative_v1
+      candidate_names:
+        - range_eq_top_positive_v1
+        - range_eq_top_missing_coercive_negative_v1
+    - row_id: MCB_074_eigenvalue_nonneg_of_nonneg
+      negative_control: missing eigenvector equation
+      required_check: Route through `exists_hasEigenvector`, extract the positive norm-square witness, reduce `mem_genEigenspace_one`, then use the inner-product identity before the final nonnegativity step.
+      positive_candidate: eigenvalue_nonneg_via_eigenvector_inner_v1
+      negative_candidate: eigenvalue_nonneg_missing_eigenvector_equation_negative_v1
+      candidate_names:
+        - eigenvalue_nonneg_via_eigenvector_inner_v1
+        - eigenvalue_nonneg_missing_eigenvector_equation_negative_v1
+    - row_id: MCB_092_ofReal_mul_pos_iff
+      negative_control: missing z argument in the real-to-RCLike positivity bridge
+      required_check: Keep the explicit `z` argument in the positivity split; do not collapse the route into the x-only partial application.
+      positive_candidate: ofReal_mul_pos_iff_positive_v1
+      negative_candidate: ofReal_mul_pos_iff_missing_z_argument_negative_v1
+      candidate_names:
+        - ofReal_mul_pos_iff_positive_v1
+        - ofReal_mul_pos_iff_missing_z_argument_negative_v1
+    - row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+      negative_control: missing second nonzero bridge
+      required_check: Keep both nonzero hypotheses explicit; the normalization route should still require the product-form conclusion and the right-hand nonzero bridge.
+      positive_candidate: norm_inner_div_norm_mul_norm_eq_one_positive_v1
+      negative_candidate: norm_inner_div_norm_mul_norm_eq_one_missing_rhs_nonzero_negative_v1
+      candidate_names:
+        - norm_inner_div_norm_mul_norm_eq_one_positive_v1
+        - norm_inner_div_norm_mul_norm_eq_one_missing_rhs_nonzero_negative_v1
+    - row_id: MCB_035_inner_mul_inner_self_le
+      negative_control: missing Cauchy-Schwarz bridge
+      required_check: Keep the `inner_mul_inner_self_le` inequality explicit; do not replace it with the symmetric norm identity or a generic norm-only inequality.
+      positive_candidate: inner_mul_inner_self_le_positive_v1
+      negative_candidate: inner_mul_inner_self_le_missing_cauchy_schwarz_bridge_negative_v1
+      candidate_names:
+        - inner_mul_inner_self_le_positive_v1
+        - inner_mul_inner_self_le_missing_cauchy_schwarz_bridge_negative_v1
+    - row_id: MCB_027_gramSchmidtNormed_linearIndepend
+      negative_control: missing normalized orthogonality bridge
+      required_check: Route through the proven `gramSchmidtNormed_orthonormal` helper and its linear-independence consequence; do not call `gramSchmidtNormed_linearIndependent`, and do not use unnormalized `gramSchmidt_orthogonal` as if it applied to `gramSchmidtNormed`.
+      positive_candidate: gramSchmidtNormed_linearIndependent_via_orthonormal_positive_v1
+      negative_candidate: gramSchmidtNormed_linearIndependent_missing_normalized_orthogonality_negative_v1
+      candidate_names:
+        - gramSchmidtNormed_linearIndependent_via_orthonormal_positive_v1
+        - gramSchmidtNormed_linearIndependent_missing_normalized_orthogonality_negative_v1
+    - row_id: MCB_042_ContinuousLinearMap
+      negative_control: missing self-adjoint bridge
+      required_check: Keep the positivity hypothesis explicit and preserve the self-adjoint bridge; do not collapse the route into a generic positivity statement.
+      positive_candidate: continuous_linear_map_positive_self_adjoint_v1
+      negative_candidate: continuous_linear_map_positive_missing_self_adjoint_bridge_negative_v1
+      candidate_names:
+        - continuous_linear_map_positive_self_adjoint_v1
+        - continuous_linear_map_positive_missing_self_adjoint_bridge_negative_v1
+    - row_id: MCB_075_Commute
+      negative_control: missing skewAdjoint bridge in the exponential unitary route
+      required_check: Keep the skewAdjoint witness explicit and preserve the exp-to-unitary bridge; do not treat the exponential unitary theorem as standalone without the commute/skewAdjoint step.
+      positive_candidate: exp_mem_unitary_positive_v1
+      negative_candidate: exp_mem_unitary_missing_skewAdjoint_bridge_negative_v1
+      candidate_names:
+        - exp_mem_unitary_positive_v1
+        - exp_mem_unitary_missing_skewAdjoint_bridge_negative_v1
+    - row_id: MCB_048_norm_adjoint_comp_self
+      negative_control: missing theorem application for the adjoint norm identity
+      required_check: Keep the application to the specific continuous linear map explicit; do not collapse the route into a theorem-only replay.
+      positive_candidate: norm_adjoint_comp_self_positive_v1
+      negative_candidate: norm_adjoint_comp_self_missing_theorem_application_negative_v1
+      candidate_names:
+        - norm_adjoint_comp_self_positive_v1
+        - norm_adjoint_comp_self_missing_theorem_application_negative_v1
+    - row_id: MCB_080_IsIdempotentElem
+      negative_control: missing idempotent bridge
+      required_check: keep the idempotent witness explicit and preserve the selfAdjoint/starNormal bridge
+      positive_candidate: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+      negative_candidate: isIdempotentElem_missing_idempotent_bridge_negative_v1
+      candidate_names:
+        - isIdempotentElem_selfAdjoint_starNormal_positive_v1
+        - isIdempotentElem_missing_idempotent_bridge_negative_v1
+    - row_id: MCB_063_ext_inner_right_basis
+      negative_control: missing right-basis inner-product witness
+      required_check: Keep the right-basis inner-product equalities explicit; preserve the `ext_inner_right_basis` bridge and do not collapse the route into the left-basis lemma or extensionality alone.
+      positive_candidate: ext_inner_right_basis_positive_v1
+      negative_candidate: ext_inner_right_basis_missing_right_basis_inner_bridge_negative_v1
+      candidate_names:
+        - ext_inner_right_basis_positive_v1
+        - ext_inner_right_basis_missing_right_basis_inner_bridge_negative_v1
+    - row_id: MCB_064_mem_adjoint_domain_of_exists
+      negative_control: missing existential witness bridge for the adjoint-domain membership route
+      required_check: Keep the existential witness explicit; preserve the adjoint-domain membership transport and do not collapse the route into the raw continuity characterization alone.
+      positive_candidate: mem_adjoint_domain_of_exists_positive_v1
+      negative_candidate: mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+      candidate_names:
+        - mem_adjoint_domain_of_exists_positive_v1
+        - mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    - row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+      negative_control: missing differentiability bridge for the frontier max-on route
+      required_check: Keep the frontier, nonempty, and differentiability witnesses explicit; preserve the max-on bridge and do not collapse the route into a generic compactness replay.
+      positive_candidate: exists_mem_frontier_isMaxOn_norm_positive_v1
+      negative_candidate: exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+      candidate_names:
+        - exists_mem_frontier_isMaxOn_norm_positive_v1
+        - exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+    - row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+      negative_control: missing sphere-bound hypothesis
+      required_check: Keep the sphere-bound hypothesis explicit and preserve the derivative estimate on the closed sphere; do not collapse the route into a global bound.
+      positive_candidate: norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+      negative_candidate: norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+      candidate_names:
+        - norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+        - norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+    - row_id: MCB_153_circleAverage_of_differentiable_
+      negative_control: missing off-countable differentiability bridge
+      required_check: Keep the off-countable differentiability bridge explicit; preserve the circle-average result and do not collapse the route into the bare theorem name.
+      positive_candidate: circleAverage_of_differentiable_on_off_countable_positive_v1
+      negative_candidate: circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+      candidate_names:
+        - circleAverage_of_differentiable_on_off_countable_positive_v1
+        - circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+    - row_id: MCB_144_differentiableAt_cuspFunction_ze
+      negative_control: missing bounded removable-singularity bridge
+      required_check: Keep the bounded-at-filter removable-singularity bridge explicit; preserve the zero-point carrier and do not collapse the route into pointwise differentiability or a generic compactness replay.
+      positive_candidate: cusp_function_zero_removable_positive_v1
+      negative_candidate: cusp_function_zero_missing_bounded_extension_negative_v1
+      candidate_names:
+        - cusp_function_zero_removable_positive_v1
+        - cusp_function_zero_missing_bounded_extension_negative_v1
+    - row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      negative_control: missing real-part bridge for the symmetry characterization
+      required_check: Keep the real-part characterization explicit; preserve the inner-map route and do not collapse the proof to the bare self-adjoint equivalence.
+      positive_candidate: isSymmetric_iff_inner_map_self_real_positive_v1
+      negative_candidate: isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+      candidate_names:
+        - isSymmetric_iff_inner_map_self_real_positive_v1
+        - isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+    - row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      negative_control: missing iff bridge in the rankOne idempotent route
+      required_check: Keep the nonzero hypothesis explicit and preserve the rankOne idempotent iff bridge; do not collapse the route to the one-way idempotent lemma.
+      positive_candidate: isIdempotentElem_rankOne_self_iff_positive_v1
+      negative_candidate: isIdempotentElem_rankOne_self_iff_missing_iff_bridge_negative_v1
+      candidate_names:
+        - isIdempotentElem_rankOne_self_iff_positive_v1
+        - isIdempotentElem_rankOne_self_iff_missing_iff_bridge_negative_v1
+    - row_id: MCB_094_exists_norm_eq_restrict_eq
+      negative_control: missing restrict bridge in the bounded continuous norm-preserving extension route
+      required_check: Keep the bounded continuous restriction bridge explicit and preserve the norm-preserving extension; do not collapse the route into a generic extension theorem
+      positive_candidate: exists_norm_eq_restrict_eq_positive_v1
+      negative_candidate: exists_norm_eq_restrict_eq_missing_restrict_bridge_negative_v1
+      candidate_names:
+        - exists_norm_eq_restrict_eq_positive_v1
+        - exists_norm_eq_restrict_eq_missing_restrict_bridge_negative_v1
+    - row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+      negative_control: missing nonnegative constant transport for the `IsBigOWith` factorization route
+      required_check: Keep the nonnegative-constant transport explicit and separate the reverse witness direction; do not collapse the route into the unbounded `isBigO` factorization lemma.
+      positive_candidate: isBigOWith_iff_exists_eq_mul_positive_v1
+      negative_candidate: isBigOWith_iff_exists_eq_mul_missing_nonneg_negative_v1
+      candidate_names:
+        - isBigOWith_iff_exists_eq_mul_positive_v1
+        - isBigOWith_iff_exists_eq_mul_missing_nonneg_negative_v1
+    - row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+      negative_control: missing equality bridge in the norm-exp route
+      required_check: Keep the exact `norm_exp_I_mul_ofReal_sub_one` equality explicit; do not collapse the route into the inequality-only theorem.
+      positive_candidate: norm_exp_I_mul_ofReal_sub_one_positive_v1
+      negative_candidate: norm_exp_I_mul_ofReal_sub_one_missing_equality_bridge_negative_v1
+      candidate_names:
+        - norm_exp_I_mul_ofReal_sub_one_positive_v1
+        - norm_exp_I_mul_ofReal_sub_one_missing_equality_bridge_negative_v1
+    - row_id: MCB_218_lineDerivOp
+      negative_control: missing tsupport transport bridge in the lineDerivOp route
+      required_check: Keep the `tsupport_fderiv_apply_subset` transport bridge explicit and preserve the lineDerivOp vanishing-on-support conclusion; do not collapse the route into the bare theorem name.
+      positive_candidate: lineDerivOp_positive_v1
+      negative_candidate: lineDerivOp_missing_support_transport_negative_v1
+      candidate_names:
+        - lineDerivOp_positive_v1
+        - lineDerivOp_missing_support_transport_negative_v1
+  required_artifacts:
+    - positive target replay for MCB_010_spectralRadius_eq_nnnorm
+    - matched negative-control failure for MCB_010_spectralRadius_eq_nnnorm
+    - positive target replay for MCB_044_range_eq_top
+    - matched negative-control failure for MCB_044_range_eq_top
+    - positive target replay for MCB_063_ext_inner_right_basis
+    - matched negative-control failure for MCB_063_ext_inner_right_basis
+    - positive target replay for MCB_074_eigenvalue_nonneg_of_nonneg
+    - matched negative-control failure for MCB_074_eigenvalue_nonneg_of_nonneg
+    - positive target replay for MCB_092_ofReal_mul_pos_iff
+    - matched negative-control failure for MCB_092_ofReal_mul_pos_iff
+    - positive target replay for MCB_014_norm_inner_div_norm_mul_norm_eq_
+    - matched negative-control failure for MCB_014_norm_inner_div_norm_mul_norm_eq_
+    - positive target replay for MCB_035_inner_mul_inner_self_le
+    - matched negative-control failure for MCB_035_inner_mul_inner_self_le
+    - positive target replay for MCB_027_gramSchmidtNormed_linearIndepend
+    - matched negative-control failure for MCB_027_gramSchmidtNormed_linearIndepend
+    - positive target replay for MCB_042_ContinuousLinearMap
+    - matched negative-control failure for MCB_042_ContinuousLinearMap
+    - positive target replay for MCB_075_Commute
+    - matched negative-control failure for MCB_075_Commute
+    - positive target replay for MCB_048_norm_adjoint_comp_self
+    - matched negative-control failure for MCB_048_norm_adjoint_comp_self
+    - positive target replay for MCB_080_IsIdempotentElem
+    - matched negative-control failure for MCB_080_IsIdempotentElem
+    - positive target replay for MCB_064_mem_adjoint_domain_of_exists
+    - matched negative-control failure for MCB_064_mem_adjoint_domain_of_exists
+    - positive target replay for MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - matched negative-control failure for MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - positive target replay for MCB_134_norm_exp_I_mul_ofReal_sub_one
+    - matched negative-control failure for MCB_134_norm_exp_I_mul_ofReal_sub_one
+    - positive target replay for MCB_135_circleIntegral_eq_zero_of_differ
+    - matched negative-control failure for MCB_135_circleIntegral_eq_zero_of_differ
+    - positive target replay for MCB_153_circleAverage_of_differentiable_
+    - matched negative-control failure for MCB_153_circleAverage_of_differentiable_
+    - positive target replay for MCB_144_differentiableAt_cuspFunction_ze
+    - matched negative-control failure for MCB_144_differentiableAt_cuspFunction_ze
+    - positive target replay for MCB_113_exists_mem_frontier_isMaxOn_norm
+    - matched negative-control failure for MCB_113_exists_mem_frontier_isMaxOn_norm
+    - positive target replay for MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - matched negative-control failure for MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - positive target replay for MCB_067_isSymmetric_iff_inner_map_self_r
+    - matched negative-control failure for MCB_067_isSymmetric_iff_inner_map_self_r
+    - positive target replay for MCB_057_isIdempotentElem_rankOne_self_if
+    - matched negative-control failure for MCB_057_isIdempotentElem_rankOne_self_if
+    - positive target replay for MCB_094_exists_norm_eq_restrict_eq
+    - matched negative-control failure for MCB_094_exists_norm_eq_restrict_eq
+    - positive target replay for MCB_159_isBigOWith_iff_exists_eq_mul
+    - matched negative-control failure for MCB_159_isBigOWith_iff_exists_eq_mul
+    - positive target replay for MCB_218_lineDerivOp
+    - matched negative-control failure for MCB_218_lineDerivOp
+    - row-local evidence only
+  target_row_ids:
+    - MCB_010_spectralRadius_eq_nnnorm
+    - MCB_044_range_eq_top
+    - MCB_063_ext_inner_right_basis
+    - MCB_074_eigenvalue_nonneg_of_nonneg
+    - MCB_092_ofReal_mul_pos_iff
+    - MCB_014_norm_inner_div_norm_mul_norm_eq_
+    - MCB_035_inner_mul_inner_self_le
+    - MCB_028_inner_gramSchmidtOrthonormalBasi
+    - MCB_027_gramSchmidtNormed_linearIndepend
+    - MCB_042_ContinuousLinearMap
+    - MCB_075_Commute
+    - MCB_048_norm_adjoint_comp_self
+    - MCB_080_IsIdempotentElem
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - MCB_134_norm_exp_I_mul_ofReal_sub_one
+    - MCB_135_circleIntegral_eq_zero_of_differ
+    - MCB_153_circleAverage_of_differentiable_
+    - MCB_144_differentiableAt_cuspFunction_ze
+    - MCB_113_exists_mem_frontier_isMaxOn_norm
+    - MCB_094_exists_norm_eq_restrict_eq
+    - MCB_159_isBigOWith_iff_exists_eq_mul
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_057_isIdempotentElem_rankOne_self_if
+    - MCB_218_lineDerivOp
+schema: leanmill-target-probe-contract-v1
+templates:
+  - id: convolution_mono_right_of_nonneg_positive_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg'
+  - id: convolution_mono_right_of_nonneg_missing_nonneg_bridge_negative_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonnegativity_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg
+  - id: eigenvalue_nonneg_via_eigenvector_inner_positive_v1
+    row_id: MCB_074_eigenvalue_nonneg_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      obtain ⟨v, hv₁, hv₂⟩ := hμ.exists_hasEigenvector
+      have hpos : (0 : ℝ) < ‖v‖ ^ 2 := by
+        simpa only [sq_pos_iff, norm_ne_zero_iff] using hv₂
+      simp only [mem_genEigenspace_one] at hv₁
+      have : RCLike.re ⟪v, T v⟫ = μ * ‖v‖ ^ 2 :=
+        mod_cast congr_arg RCLike.re (inner_product_apply_eigenvector hv₁)
+      exact (mul_nonneg_iff_of_pos_right hpos).mp (this ▸ hnn v)
+  - id: eigenvalue_nonneg_missing_eigenvector_equation_negative_v1
+    row_id: MCB_074_eigenvalue_nonneg_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_eigenvector_inner_identity
+    backend: repl_file
+    timeout: 80
+    body: |
+      obtain ⟨v, hv₁, hv₂⟩ := hμ.exists_hasEigenvector
+      have hpos : (0 : ℝ) < ‖v‖ ^ 2 := by
+        simpa only [sq_pos_iff, norm_ne_zero_iff] using hv₂
+      have : RCLike.re ⟪v, T v⟫ = μ * ‖v‖ ^ 2 :=
+        mod_cast congr_arg RCLike.re (inner_product_apply_eigenvector hv₁)
+  - id: ofReal_mul_pos_iff_positive_v1
+    row_id: MCB_092_ofReal_mul_pos_iff
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (ofReal_mul_pos_iff (x := x) (z := z))
+  - id: ofReal_mul_pos_iff_missing_z_argument_negative_v1
+    row_id: MCB_092_ofReal_mul_pos_iff
+    test_kind: negative_control
+    expected_outcome: must_fail_without_z_argument
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (ofReal_mul_pos_iff (x := x))
+  - id: spectral_radius_eq_nnnorm_positive_v1
+    row_id: MCB_010_spectralRadius_eq_nnnorm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using (IsSelfAdjoint.spectralRadius_eq_nnnorm (T := T) hT)
+  - id: spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+    row_id: MCB_010_spectralRadius_eq_nnnorm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_self_adjoint_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (IsSelfAdjoint.spectralRadius_eq_nnnorm (T := T))
+  - id: norm_inner_div_norm_mul_norm_eq_one_positive_v1
+    row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul hx hr
+  - id: norm_inner_div_norm_mul_norm_eq_one_missing_rhs_nonzero_negative_v1
+    row_id: MCB_014_norm_inner_div_norm_mul_norm_eq_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_second_nonzero_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using norm_inner_div_norm_mul_norm_eq_one_of_ne_zero_of_ne_zero_mul hx
+  - id: inner_mul_inner_self_le_positive_v1
+    row_id: MCB_035_inner_mul_inner_self_le
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (inner_mul_inner_self_le (x := x) (y := y))
+  - id: inner_mul_inner_self_le_missing_cauchy_schwarz_bridge_negative_v1
+    row_id: MCB_035_inner_mul_inner_self_le
+    test_kind: negative_control
+    expected_outcome: must_fail_without_cauchy_schwarz_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (inner_mul_symm_re_eq_norm (x := x) (y := y))
+  - id: inner_gramSchmidtOrthonormalBasis_eq_zero_positive_v1
+    row_id: MCB_028_inner_gramSchmidtOrthonormalBasi
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (inner_gramSchmidtOrthonormalBasis_eq_zero (h := h) (f := f) (i := i) hi j)
+  - id: inner_gramSchmidtOrthonormalBasis_eq_zero_missing_zero_bridge_negative_v1
+    row_id: MCB_028_inner_gramSchmidtOrthonormalBasi
+    test_kind: negative_control
+    expected_outcome: must_fail_without_zero_hypothesis_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (inner_gramSchmidtOrthonormalBasis_eq_zero (h := h) (f := f) (i := i) j)
+  - id: gramSchmidtNormed_linearIndependent_via_orthonormal_positive_v1
+    row_id: MCB_027_gramSchmidtNormed_linearIndepend
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      exact (gramSchmidtNormed_orthonormal (𝕜 := 𝕜) h₀).linearIndependent
+  - id: gramSchmidtNormed_linearIndependent_missing_normalized_orthogonality_negative_v1
+    row_id: MCB_027_gramSchmidtNormed_linearIndepend
+    test_kind: negative_control
+    expected_outcome: must_fail_without_normalized_orthogonality_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact linearIndependent_of_ne_zero_of_inner_eq_zero
+        (fun i => by
+          have hi : ‖gramSchmidtNormed 𝕜 f i‖ = 1 := gramSchmidtNormed_unit_length i h₀
+          exact norm_ne_zero_iff.mp (by
+            rw [hi]
+            norm_num))
+        (fun i j hij => gramSchmidt_orthogonal 𝕜 f hij)
+  - id: orthonormalBasis_one_dim_positive_v1
+    row_id: MCB_040_orthonormalBasis_one_dim
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (orthonormalBasis_one_dim (ι := ι) b)
+  - id: orthonormalBasis_one_dim_missing_sign_case_negative_v1
+    row_id: MCB_040_orthonormalBasis_one_dim
+    test_kind: negative_control
+    expected_outcome: must_fail_without_sign_case_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h : b default = (1 : ℝ) := by
+        have hnorm : ‖b default‖ = 1 := b.orthonormal.1 _
+        rwa [Real.norm_eq_abs, abs_eq (zero_le_one)] at hnorm
+      simpa using h
+  - id: continuous_linear_map_positive_self_adjoint_v1
+    row_id: MCB_042_ContinuousLinearMap
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact ContinuousLinearMap.is_positive.is_self_adjoint hT
+  - id: continuous_linear_map_positive_missing_self_adjoint_bridge_negative_v1
+    row_id: MCB_042_ContinuousLinearMap
+    test_kind: negative_control
+    expected_outcome: must_fail_without_self_adjoint_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact ContinuousLinearMap.is_positive.is_self_adjoint
+  - id: exp_mem_unitary_positive_v1
+    row_id: MCB_075_Commute
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exp_mem_unitary_of_mem_skewAdjoint (x := x) hx)
+  - id: exp_mem_unitary_missing_skewAdjoint_bridge_negative_v1
+    row_id: MCB_075_Commute
+    test_kind: negative_control
+    expected_outcome: must_fail_without_skewAdjoint_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (exp_mem_unitary_of_mem_skewAdjoint (x := x))
+  - id: range_eq_top_positive_v1
+    row_id: MCB_044_range_eq_top
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (range_eq_top (B := B) coercive)
+  - id: range_eq_top_missing_coercive_negative_v1
+    row_id: MCB_044_range_eq_top
+    test_kind: negative_control
+    expected_outcome: must_fail_without_coercive_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (range_eq_top (B := B))
+  - id: norm_adjoint_comp_self_positive_v1
+    row_id: MCB_048_norm_adjoint_comp_self
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using ContinuousLinearMap.norm_adjoint_comp_self A
+  - id: norm_adjoint_comp_self_missing_theorem_application_negative_v1
+    row_id: MCB_048_norm_adjoint_comp_self
+    test_kind: negative_control
+    expected_outcome: must_fail_without_explicit_application
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using ContinuousLinearMap.norm_adjoint_comp_self
+  - id: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p) hp)
+  - id: isIdempotentElem_missing_idempotent_bridge_negative_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: negative_control
+    expected_outcome: must_fail_without_idempotent_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p))
+  - id: mem_adjoint_domain_of_exists_positive_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact mem_adjoint_domain_of_exists T y h
+  - id: mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: negative_control
+    expected_outcome: must_fail_without_exists_witness_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (T.mem_adjoint_domain_iff (y := y))
+  - id: exists_mem_frontier_isMaxOn_norm_positive_v1
+    row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exists_mem_frontier_isMaxOn_norm hb hne hd)
+  - id: exists_mem_frontier_isMaxOn_norm_missing_diffcont_negative_v1
+    row_id: MCB_113_exists_mem_frontier_isMaxOn_norm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_differentiability_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (exists_mem_frontier_isMaxOn_norm hb hne)
+  - id: isSymmetric_iff_inner_map_self_real_positive_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isSymmetric_iff_inner_map_self_real (T := T))
+  - id: isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: negative_control
+    expected_outcome: must_fail_without_real_part_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isSymmetric_iff_isSelfAdjoint (A := T))
+  - id: isIdempotentElem_rankOne_self_iff_positive_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isIdempotentElem_rankOne_self_iff (𝕜 := 𝕜) (x := x) hx)
+  - id: isIdempotentElem_rankOne_self_iff_missing_iff_bridge_negative_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: negative_control
+    expected_outcome: must_fail_without_iff_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isIdempotentElem_rankOne_self (𝕜 := 𝕜) (x := x) hx)
+  - id: ext_inner_right_basis_positive_v1
+    row_id: MCB_063_ext_inner_right_basis
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (ext_inner_right_basis (b := b) h)
+  - id: ext_inner_right_basis_missing_right_basis_inner_bridge_negative_v1
+    row_id: MCB_063_ext_inner_right_basis
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_basis_inner_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (ext_inner_right_basis (b := b))
+  - id: injective_iff_forall_lt_finrank_singularValues_pos_positive_v1
+    row_id: MCB_020_injective_iff_forall_lt_finrank_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (T.injective_iff_forall_lt_finrank_singularValues_pos)
+  - id: injective_iff_forall_lt_finrank_singularValues_pos_missing_bridge_negative_v1
+    row_id: MCB_020_injective_iff_forall_lt_finrank_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_injective_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (T.singularValues_pos_iff_lt_finrank_range)
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using norm_deriv_le_of_forall_mem_sphere_norm_le hR hd hC
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: negative_control
+    expected_outcome: must_fail_without_sphere_bound_hypothesis
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using norm_deriv_le_of_forall_mem_sphere_norm_le hR hd
+  - id: norm_dslope_le_div_of_mapsTo_ball_positive_v1
+    row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (norm_dslope_le_div_of_mapsTo_ball (c := c) (R₁ := R₁) (R₂ := R₂) (f := f) hd h_maps hz)
+  - id: norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_negative_v1
+    row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    test_kind: negative_control
+    expected_outcome: must_fail_without_mapsTo_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (norm_dslope_le_div_of_mapsTo_ball (c := c) (R₁ := R₁) (R₂ := R₂) (f := f) hd hz)
+  - id: exists_norm_eq_restrict_eq_positive_v1
+    row_id: MCB_094_exists_norm_eq_restrict_eq
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exists_norm_eq_restrict_eq (f := f))
+  - id: exists_norm_eq_restrict_eq_missing_restrict_bridge_negative_v1
+    row_id: MCB_094_exists_norm_eq_restrict_eq
+    test_kind: negative_control
+    expected_outcome: must_fail_without_restrict_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact ⟨0, by simp, by
+        ext x
+        simp⟩
+  - id: isBigOWith_iff_exists_eq_mul_positive_v1
+    row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isBigOWith_iff_exists_eq_mul (hc := hc) (l := l) (u := u) (v := v))
+  - id: isBigOWith_iff_exists_eq_mul_missing_nonneg_negative_v1
+    row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonnegative_constant_transport
+    backend: repl_file
+    timeout: 90
+    body: |
+      simpa using (isBigOWith_iff_exists_eq_mul (l := l) (u := u) (v := v))
+  - id: eLpNorm_le_eLpNorm_fderiv_one_positive_v1
+    row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u hp)
+  - id: eLpNorm_le_eLpNorm_fderiv_one_missing_holder_conjugate_negative_v1
+    row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    test_kind: negative_control
+    expected_outcome: must_fail_without_holder_conjugate_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u)
+  - id: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support (hf1 := hf1)
+          (hf2 := hf2))
+  - id: isBigO_norm_restrict_cocompact_positive_v1
+    row_id: MCB_197_isBigO_norm_restrict_cocompact
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isBigO_norm_restrict_cocompact (f := f) hb hf K)
+  - id: isBigO_norm_restrict_cocompact_missing_cocompact_transport_negative_v1
+    row_id: MCB_197_isBigO_norm_restrict_cocompact
+    test_kind: negative_control
+    expected_outcome: must_fail_without_cocompact_transport
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isBigO_norm_restrict_cocompact (f := f) hb hf)
+  - id: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_reduction_negative_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_compact_support_restriction_to_A
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (tendsto_const_nhds : Tendsto (fun _ : V => (0 : ℂ)) (cocompact V) (𝓝 (0 : ℂ)))
+  - id: lineDerivOp_positive_v1
+    row_id: MCB_218_lineDerivOp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      by
+        intro u hu
+        simp only [lineDerivOp_apply_apply, map_neg, neg_eq_zero]
+        exact hf (∂_{m} u) <| (tsupport_fderiv_apply_subset ℝ m).trans hu
+  - id: lineDerivOp_missing_support_transport_negative_v1
+    row_id: MCB_218_lineDerivOp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_support_transport_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      by
+        intro u hu
+        simp only [lineDerivOp_apply_apply, map_neg, neg_eq_zero]
+        exact hf (∂_{m} u) hu
+  - id: norm_exp_I_mul_ofReal_sub_one_positive_v1
+    row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (Complex.norm_exp_I_mul_ofReal_sub_one (x := x))
+  - id: norm_exp_I_mul_ofReal_sub_one_missing_equality_bridge_negative_v1
+    row_id: MCB_134_norm_exp_I_mul_ofReal_sub_one
+    test_kind: negative_control
+    expected_outcome: must_fail_without_exact_equality_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (Complex.norm_exp_I_mul_ofReal_sub_one_le (x := x))
+  - id: circleIntegral_eq_zero_of_differentiable_on_off_countable_positive_v1
+    row_id: MCB_135_circleIntegral_eq_zero_of_differ
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 180
+    body: |
+      simpa using
+        (Complex.circleIntegral_eq_zero_of_differentiable_on_off_countable
+          (E := E) (R := R) (f := f) (c := c) h0 hs hc hd)
+  - id: circleIntegral_eq_zero_of_differentiable_on_off_countable_missing_countable_bridge_negative_v1
+    row_id: MCB_135_circleIntegral_eq_zero_of_differ
+    test_kind: negative_control
+    expected_outcome: must_fail_without_countable_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (Complex.circleIntegral_eq_zero_of_differentiable_on_off_countable
+          (E := E) (R := R) (f := f) (c := c) h0 hc hd)
+  - id: circleAverage_of_differentiable_on_off_countable_positive_v1
+    row_id: MCB_153_circleAverage_of_differentiable_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using (circleAverage_of_differentiable_on_off_countable (f := f) (c := c) (R := R) hs h₁f h₂f)
+  - id: circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+    row_id: MCB_153_circleAverage_of_differentiable_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_off_countable_differentiability_bridge
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using
+        (circleAverage_of_differentiable_on_off_countable (f := f) (c := c) (R := R) hs h₁f)
+  - id: cusp_function_zero_removable_positive_v1
+    row_id: MCB_144_differentiableAt_cuspFunction_ze
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 180
+    body: |
+      obtain ⟨c, t⟩ := (boundedAtFilter_cuspFunction hh h_bd).bound
+      replace t := (eventually_differentiableAt_cuspFunction_nhds_ne_zero hh hf h_hol).and t
+      simp only [norm_one, Pi.one_apply, mul_one] at t
+      obtain ⟨S, hS1, hS2, hS3⟩ := eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp t)
+      have h_diff : DifferentiableOn ℂ (cuspFunction h f) (S \ {0}) :=
+        fun x hx ↦ (hS1 x hx.1 hx.2).1.differentiableWithinAt
+      have hF_bd : BddAbove (norm ∘ cuspFunction h f '' (S \ {0})) := by
+        use c
+        simp only [mem_upperBounds, Set.mem_image, Set.mem_diff, forall_exists_index, and_imp]
+        intro y q hq hq2 hy
+        simpa only [← hy, norm_one, mul_one] using (hS1 q hq hq2).2
+      have := differentiableOn_update_limUnder_of_bddAbove (IsOpen.mem_nhds hS2 hS3) h_diff hF_bd
+      rw [← cuspFunction_zero_eq_limUnder_nhds_ne, update_eq_self] at this
+      exact this.differentiableAt (IsOpen.mem_nhds hS2 hS3)
+  - id: cusp_function_zero_missing_bounded_extension_negative_v1
+    row_id: MCB_144_differentiableAt_cuspFunction_ze
+    test_kind: negative_control
+    expected_outcome: must_fail_without_bounded_removable_singularity_bridge
+    backend: repl_file
+    timeout: 120
+    body: |
+      obtain ⟨c, t⟩ := (boundedAtFilter_cuspFunction hh h_bd).bound
+      replace t := (eventually_differentiableAt_cuspFunction_nhds_ne_zero hh hf h_hol).and t
+      simp only [norm_one, Pi.one_apply, mul_one] at t
+      obtain ⟨S, hS1, hS2, hS3⟩ := eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp t)
+      have h_diff : DifferentiableOn ℂ (cuspFunction h f) (S \ {0}) :=
+        fun x hx ↦ (hS1 x hx.1 hx.2).1.differentiableWithinAt
+      exact h_diff.differentiableAt (IsOpen.mem_nhds hS2 hS3)

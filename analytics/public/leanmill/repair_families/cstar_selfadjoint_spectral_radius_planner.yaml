@@ -1,0 +1,221 @@
+family: cstar_selfadjoint_spectral_radius_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_010_spectralRadius_eq_nnnorm
+    - MCB_083_IsSelfAdjoint
+    - MCB_084_IsSelfAdjoint
+    - MCB_080_IsIdempotentElem
+    - MCB_057_isIdempotentElem_rankOne_self_if
+  lanes:
+    - cstar_selfadjoint_spectral_radius_transport
+    - cstar_selfadjoint_bridge_transport
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - spectralRadius
+    - spectral_radius
+    - IsSelfAdjoint
+    - selfadjoint
+    - IsIdempotentElem
+    - idempotent
+    - starNormal
+    - rankOne
+    - spectrum
+    - nnnorm
+    - adjoint
+    - isSymmetric
+    - radius
+    - cstar
+    - norm
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: cstar_selfadjoint_spectral_radius_planner
+  mode: heldout_replay
+  expected_outcome: hold
+  row_ids:
+    - MCB_010_spectralRadius_eq_nnnorm
+  target_row_ids:
+    - MCB_010_spectralRadius_eq_nnnorm
+  probe_type: sibling_or_heldout_replay
+  probe_name: cstar_selfadjoint_spectral_radius_row_local_replay_v1
+  blocked_edge: A new source-backed sibling would reopen the source-bound lane, and that lane is currently held; keep this replay row-local and restricted to the heldout target.
+  acceptance: One target-side success plus one matched negative-control failure for MCB_010_spectralRadius_eq_nnnorm, with no source-bound probe and no registry, scoreboard, or research-log edits; preserve the self-adjoint spectral-radius equality bridge and fail when the explicit `hT` witness is omitted. MCB_080_IsIdempotentElem must preserve the idempotent witness into the selfAdjoint/starNormal bridge and fail when the idempotent witness is omitted. MCB_057_isIdempotentElem_rankOne_self_if must preserve the explicit nonzero witness into the rankOne idempotent iff bridge and fail when the nonzero witness is omitted.
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the self-adjoint spectral-radius equality bridge for the heldout row and keep the matched negative control distinct from the positive route.
+  paired_negative_controls:
+    - spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+    - isSymmetric_iff_isSelfAdjoint_missing_symmetry_bridge_negative_v1
+    - isIdempotentElem_missing_idempotent_bridge_negative_v1
+    - isIdempotentElem_rankOne_self_missing_nonzero_witness_negative_v1
+  negative_control_ideas:
+    - missing self-adjoint bridge should fail
+    - omitting the explicit `hT` witness should fail
+    - missing symmetry bridge should fail
+    - missing idempotent bridge should fail
+    - missing nonzero witness should fail
+  planned_tests:
+    - candidate_name: spectral_radius_eq_nnnorm_positive_v1
+      row_id: MCB_010_spectralRadius_eq_nnnorm
+      test_kind: positive
+    - candidate_name: spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+      row_id: MCB_010_spectralRadius_eq_nnnorm
+      test_kind: negative_control
+    - candidate_name: isSymmetric_iff_isSelfAdjoint_positive_v1
+      row_id: MCB_083_IsSelfAdjoint
+      test_kind: positive
+    - candidate_name: isSymmetric_iff_isSelfAdjoint_missing_symmetry_bridge_negative_v1
+      row_id: MCB_083_IsSelfAdjoint
+      test_kind: negative_control
+    - candidate_name: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+      row_id: MCB_080_IsIdempotentElem
+      test_kind: positive
+    - candidate_name: isIdempotentElem_missing_idempotent_bridge_negative_v1
+      row_id: MCB_080_IsIdempotentElem
+      test_kind: negative_control
+    - candidate_name: isIdempotentElem_rankOne_self_positive_v1
+      row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      test_kind: positive
+    - candidate_name: isIdempotentElem_rankOne_self_missing_nonzero_witness_negative_v1
+      row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      test_kind: negative_control
+  candidate_checks:
+    - row_id: MCB_010_spectralRadius_eq_nnnorm
+      negative_control: missing self-adjoint bridge should fail
+      positive_route: keep the explicit self-adjoint witness and preserve the spectral-radius equality bridge
+    - row_id: MCB_083_IsSelfAdjoint
+      negative_control: missing symmetry bridge should fail
+      positive_route: keep the symmetry-to-self-adjoint bridge explicit
+    - row_id: MCB_080_IsIdempotentElem
+      negative_control: missing idempotent bridge should fail
+      positive_route: keep the explicit idempotent witness and preserve the selfAdjoint/starNormal bridge
+    - row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      negative_control: missing nonzero witness should fail
+      positive_route: keep the explicit nonzero witness and preserve the rankOne idempotent iff bridge
+  required_artifacts:
+    - positive target replay for MCB_010_spectralRadius_eq_nnnorm
+    - matched negative-control failure for MCB_010_spectralRadius_eq_nnnorm
+    - positive target replay for MCB_083_IsSelfAdjoint
+    - matched negative-control failure for MCB_083_IsSelfAdjoint
+    - positive target replay for MCB_080_IsIdempotentElem
+    - matched negative-control failure for MCB_080_IsIdempotentElem
+    - positive target replay for MCB_057_isIdempotentElem_rankOne_self_if
+    - matched negative-control failure for MCB_057_isIdempotentElem_rankOne_self_if
+    - row-local evidence only
+  sibling_or_heldout_constraints:
+    - Use only MCB_010_spectralRadius_eq_nnnorm as the active heldout target.
+    - Keep MCB_083_IsSelfAdjoint and MCB_084_IsSelfAdjoint as design-side context only.
+    - Preserve the self-adjoint spectral-radius equality bridge explicitly.
+    - Do not collapse the route into a generic spectral-radius claim.
+    - Do not open source-bound probing while the source lane is held.
+    - Keep the symmetry bridge reusable as a sibling row rather than a source-bound probe.
+    - Use only MCB_080_IsIdempotentElem for the idempotent lane.
+    - Keep the idempotent witness explicit; do not drop the `IsIdempotentElem` bridge.
+    - Use only MCB_057_isIdempotentElem_rankOne_self_if for the rank-one idempotent iff lane.
+    - Keep the nonzero witness explicit; do not drop the rankOne bridge.
+  rows:
+    - row_id: MCB_010_spectralRadius_eq_nnnorm
+      negative_control: missing self-adjoint bridge should fail
+      required_check: keep the explicit self-adjoint witness and the spectral-radius equality bridge
+      positive_candidate: spectral_radius_eq_nnnorm_positive_v1
+      negative_candidate: spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+      candidate_names:
+        - spectral_radius_eq_nnnorm_positive_v1
+        - spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+    - row_id: MCB_083_IsSelfAdjoint
+      negative_control: missing symmetry bridge should fail
+      required_check: keep the symmetry-to-self-adjoint bridge explicit
+      positive_candidate: isSymmetric_iff_isSelfAdjoint_positive_v1
+      negative_candidate: isSymmetric_iff_isSelfAdjoint_missing_symmetry_bridge_negative_v1
+      candidate_names:
+        - isSymmetric_iff_isSelfAdjoint_positive_v1
+        - isSymmetric_iff_isSelfAdjoint_missing_symmetry_bridge_negative_v1
+    - row_id: MCB_080_IsIdempotentElem
+      negative_control: missing idempotent bridge should fail
+      required_check: keep the explicit idempotent witness and the selfAdjoint/starNormal bridge
+      positive_candidate: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+      negative_candidate: isIdempotentElem_missing_idempotent_bridge_negative_v1
+      candidate_names:
+        - isIdempotentElem_selfAdjoint_starNormal_positive_v1
+        - isIdempotentElem_missing_idempotent_bridge_negative_v1
+    - row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      negative_control: missing nonzero witness should fail
+      required_check: keep the explicit nonzero witness and the rankOne idempotent iff bridge
+      positive_candidate: isIdempotentElem_rankOne_self_positive_v1
+      negative_candidate: isIdempotentElem_rankOne_self_missing_nonzero_witness_negative_v1
+      candidate_names:
+        - isIdempotentElem_rankOne_self_positive_v1
+        - isIdempotentElem_rankOne_self_missing_nonzero_witness_negative_v1
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: spectral_radius_eq_nnnorm_positive_v1
+    row_id: MCB_010_spectralRadius_eq_nnnorm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using (IsSelfAdjoint.spectralRadius_eq_nnnorm (T := T) hT)
+  - id: spectral_radius_eq_nnnorm_missing_self_adjoint_bridge_negative_v1
+    row_id: MCB_010_spectralRadius_eq_nnnorm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_self_adjoint_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (IsSelfAdjoint.spectralRadius_eq_nnnorm (T := T))
+  - id: isSymmetric_iff_isSelfAdjoint_positive_v1
+    row_id: MCB_083_IsSelfAdjoint
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isSymmetric_iff_isSelfAdjoint (A := A))
+  - id: isSymmetric_iff_isSelfAdjoint_missing_symmetry_bridge_negative_v1
+    row_id: MCB_083_IsSelfAdjoint
+    test_kind: negative_control
+    expected_outcome: must_fail_without_symmetry_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isSymmetric_iff_isSelfAdjoint (A := A)).2
+  - id: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p) hp)
+  - id: isIdempotentElem_missing_idempotent_bridge_negative_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: negative_control
+    expected_outcome: must_fail_without_idempotent_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p))
+  - id: isIdempotentElem_rankOne_self_positive_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (InnerProductSpace.isIdempotentElem_rankOne_self_iff (𝕜 := 𝕜) (F := F) (x := x) hx)
+  - id: isIdempotentElem_rankOne_self_missing_nonzero_witness_negative_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonzero_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (InnerProductSpace.isIdempotentElem_rankOne_self_iff (𝕜 := 𝕜) (F := F) (x := x))

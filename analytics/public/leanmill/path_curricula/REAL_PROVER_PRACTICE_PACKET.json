@@ -1,0 +1,1867 @@
+{
+  "data_dir": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data",
+  "datasets": [
+    "fate_m",
+    "minif2f_valid",
+    "minif2f_test",
+    "proofnet_valid",
+    "proofnet_test"
+  ],
+  "generated_at": "2026-05-20T13:45:22Z",
+  "practice_only": true,
+  "row_count": 50,
+  "rows": [
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1597",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nvariable {R : Type*} [Ring R] (e : R)\n\n-- Assume e is idempotent\nexample (h : e * e = e) : \u2200 x : R, (x * e - e * x * e) ^ 2 = 0 := sorry\n",
+      "formal_statement_sha256": "acccd92d4227d824f3d6fee4d08287058feca4dc80173036b5273356ff53cd4b",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "4. If $R$ is a ring and $e \\in R$ is such that $e^{2}=e$, show that $(x e-e x e)^{2}=0$ for every $x \\in R$.",
+      "row_id": "realprover_fate_m_1597",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "5a21a3f9e56b6e13939f6736e764af80100fddd94628f46557233e58eac7a6a4",
+      "target_name": "example_1597"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1082",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nvariable {\u03b1 : Type*} [Fintype \u03b1] [DecidableEq \u03b1]\nvariable (r : \u2115)\n\nexample {\u03c3 : Equiv.Perm \u03b1} (h1 : \u03c3.IsCycle) (h2 : \u03c3.support.card = r) : Equiv.Perm.sign \u03c3 = 1 \u2194 Odd (r) := sorry\n",
+      "formal_statement_sha256": "e7aa1cab9fd3ad475963c0d31c14b13efd8633ac61b33849cce8afe9374de645",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "2.23 Show that an $r$-cycle is an even permutation if and only if $r$ is odd.",
+      "row_id": "realprover_fate_m_1082",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "eb678f30f87c24c0e2beafe16bdb1cdaab1d05fcef0959e0eb163fa8f0ad0484",
+      "target_name": "example_1082"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "2180",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-\n1.7.1. \u8bbe $G$ \u4f5c\u7528\u5728\u96c6\u5408 $S$ \u4e0a, \u5bf9\u4efb\u610f $a, b \\in S$, \u82e5\u5b58\u5728 $g \\in G$ \u4f7f\u5f97 $g a=b$,\u5219 $G_{a}=g^{-1} G_{b} g$. \u6362\u53e5\u8bdd\u8bf4, \u540c\u4e00\u8f68\u9053\u4e2d\u5143\u7684\u56fa\u5b9a\u5b50\u7fa4\u5f7c\u6b64\u5171\u8f6d.\n-/\nexample (G : Type*) [Group G] (S : Type*) [MulAction G S] (a b : S) (g : G) (h : g \u2022 a = b) : (MulAction.stabilizer G a) = Subgroup.map (MulAut.conj (G := G) g\u207b\u00b9) (MulAction.stabilizer G b) := by sorry\n",
+      "formal_statement_sha256": "2c27c2242692c692ec5584c14b1c6bc5f35b27433bbb28e66739973e177d2e73",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "1.7.1. \u8bbe $G$ \u4f5c\u7528\u5728\u96c6\u5408 $S$ \u4e0a, \u5bf9\u4efb\u610f $a, b \\in S$, \u82e5\u5b58\u5728 $g \\in G$ \u4f7f\u5f97 $g a=b$,\u5219 $G_{a}=g^{-1} G_{b} g$. \u6362\u53e5\u8bdd\u8bf4, \u540c\u4e00\u8f68\u9053\u4e2d\u5143\u7684\u56fa\u5b9a\u5b50\u7fa4\u5f7c\u6b64\u5171\u8f6d.",
+      "row_id": "realprover_fate_m_2180",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "fa7c582007baf2cc405f27b5e10bc0d52a85967a12956a2a9a8fe973ade36210",
+      "target_name": "example_2180"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "326",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-\nLet $F$ be a finite and algebraic closed field, show that it will lead to contradiction.\n-/\nexample  {F : Type*} [Field F] [Fintype F] [IsAlgClosed F] : False := sorry\n",
+      "formal_statement_sha256": "895a911ee83664a8fbac76822b7cd39c78602727231252d0f011710278523f81",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "3.3.9. \u6c42\u8bc1: \u4ee3\u6570\u5c01\u95ed\u57df\u5fc5\u662f\u65e0\u9650\u57df.",
+      "row_id": "realprover_fate_m_326",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "70aab6ba5b6ab1530a0d4e44e929f56a7e15edae8eb5c0906fe2f52ab1d5b795",
+      "target_name": "example_326"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1755",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nexample {G : Type*} [Group G] {A B : Subgroup G} : (\u2203 C : Subgroup G , C.carrier = (A.carrier \u222a B.carrier)) \u2194 A \u2264 B \u2228 B \u2264 A := sorry\n",
+      "formal_statement_sha256": "bf403ab88a7f1209cf0ac860ca0eff830365cf62209d9dc51028952f3a64a8b6",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "10.  If $H$ and $K$ are subgroups of a group $G$, then $H \\cup K$ cannot be a subgroup unless $H \\subseteq K$ or $K \\subseteq H$.",
+      "row_id": "realprover_fate_m_1755",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "f798cd79ad2b8e3570cd08b4d9ae02e9b2eb36645c274d9d1f2420e3f82701d0",
+      "target_name": "example_1755"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "2179",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nvariable (G\u2081 G\u2082 : Type*) [Group G\u2081] [Group G\u2082] (H : Subgroup (G\u2081 \u00d7 G\u2082)) (H_Normal : H.Normal) (h\u2081 : H \u2293 (Subgroup.prod \u22a4 \u22a5) = \u22a5) (h\u2082 : H \u2293 (Subgroup.prod \u22a5 \u22a4) = \u22a5)\n\nexample : H \u2264 Subgroup.center (G\u2081 \u00d7 G\u2082) := sorry\n",
+      "formal_statement_sha256": "9e209dbf95b790313f09fcf4645556d93d9c8467433efb01a40d064cf6744c25",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "1.9.4. \u8bbe $G=G_{1} \\times G_{2}, H \\triangleleft G$ \u4e14 $H \\cap G_{i}=\\{1\\}, i=1,2$. \u8bd5\u8bc1 $H \\leqslant Z(G)$.",
+      "row_id": "realprover_fate_m_2179",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "97bef899176e6da06a5f00696ffd6342827b83bb918f5d77c0936d98dd36e35b",
+      "target_name": "example_2179"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "2250",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\n--\u5bf9\u5e7a\u534a\u7fa4G\u4e2d\u5143\u7d20a b\uff0cb = a\u207b\u00b9 \u2194 (a * b * a = a \u2227 a * b * b * a = 1)\nexample (G : Type*) [Monoid G] (a b : G) : (b * a = 1 \u2227 a * b = 1) \u2194 (a * b * a = a \u2227 a * b ^ 2 * a = 1) := sorry\n",
+      "formal_statement_sha256": "59374ab5733eabdf576342d40b40fda60caefae61164e5e131a21d727cc4f619",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "$1.2 .17^{*} . b$ \u662f\u542b\u4e48\u534a\u7fa4 $G$ \u4e2d\u7684\u5143 $a$ \u7684\u9006\u5143\u5f53\u4e14\u4ec5\u5f53\u6210\u7acb $a b a=a, a b^{2} a=1$.",
+      "row_id": "realprover_fate_m_2250",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "86aed111e37d75ce8526ad8d9d45e5218bff0e272011731f313e5f633a421141",
+      "target_name": "example_2250"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1539",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nexample (G : Type*) [Group G] {H :Subgroup G} [H.Normal] (a : G) (h : 0 < orderOf a) : (orderOf <| QuotientGroup.mk (s := H) a) \u2223 orderOf a := by sorry\n",
+      "formal_statement_sha256": "20f6fb0f6a0afae1888c2263bd848facbc7d1dae5600ef3a9025fea5c1c7acbe",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "*6. If $G$ is a group and $N \\triangleleft G$, show that if $a \\in G$ has finite order $o(a)$, then $N a$ in $G / N$ has finite order $m$, where $m \\mid o(a)$. (Prove this by using the homomorphism of $G$ onto $G / N$.)",
+      "row_id": "realprover_fate_m_1539",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "db3da8c368db3b4700e3a819227d3996945ac4044b8409bd123d3173c2374f5c",
+      "target_name": "example_1539"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "367",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nopen Polynomial\n\nexample {D : Type*} [CommRing D] [IsDomain D] (not_field : \u00ac IsField D) : \u00ac (IsPrincipalIdealRing D[X]) := sorry\n",
+      "formal_statement_sha256": "3cae1cb3ddfa89417d0db5996d65bc6858f076a7f62bb06f546dbc274afea3f4",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "2.4.8. \u5982\u679c $D$ \u4e3a\u6574\u73af\u4f46\u4e0d\u662f\u57df, \u5219 $D[x]$ \u4e0d\u662f\u4e3b\u7406\u60f3\u6574\u73af. \u7279\u522b\u5730, $\\mathbb{Z}[x]$ \u4e0d\u662f PID.",
+      "row_id": "realprover_fate_m_367",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "8d5c5a8415a3a06bbc3d070b50515b216e1dc3f6a6afa634ba6ff4264d5cc56c",
+      "target_name": "example_367"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1581",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nexample {\u03b1 : Type*} [Fintype \u03b1] [DecidableEq \u03b1] (f : Equiv.Perm \u03b1 ) (g : Equiv.Perm \u03b1 )\n(hg : Equiv.Perm.IsSwap g): Equiv.Perm.IsSwap (f * g * f\u207b\u00b9) := sorry",
+      "formal_statement_sha256": "afc22520652505a76b189b04d75104c320107e265cc94f8b32854033e5cf807b",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "14. Prove that for any permutation $\\sigma, \\sigma \\tau \\sigma^{-1}$ is a transposition if $\\tau$ is a trans. position.",
+      "row_id": "realprover_fate_m_1581",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "107d171e1c4003329b69af724e3693b34b5f68bb54e5a27cb8896150497f02d0",
+      "target_name": "example_1581"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1094",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\n\nexample {G : Type*} [Group G] (a : G) (x : G) (k : \u2115) [Fact p.Prime] (h\u2080 : k \u2265 1) (h :orderOf a = p * k) (hp: x ^ p = a ):\n orderOf x = (p ^ 2) * k := sorry",
+      "formal_statement_sha256": "eb84c3be84d89effcaba60859c2d77368228beef2c0dc58d00693c7de9167319",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "*2.35 Let $G$ be a group and let $a \\in G$ have order $p k$ for some prime $p$, where $k \\geq 1$. Prove that if there is $x \\in G$ with $x^{p}=a$, then the order of $x$ is $p^{2} k$, and hence $x$ has larger order than $a$.",
+      "row_id": "realprover_fate_m_1094",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "40c56d9700582dd4ca9b2b827197707b81758bcfeb6e95c311fe33ff1377c5f9",
+      "target_name": "example_1094"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "824",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G : Type*} [Group G] (a b : G)\n  (h : (a * b) ^ 2 = a ^ 2 * b ^ 2) : a * b = b * a := sorry\n",
+      "formal_statement_sha256": "8cd7f4f1f7b108caac820c84cb8a3ddbd77f038534f4de997579b13adfba4564",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "37. Show that if $(a * b)^{2}=a^{2} * b^{2}$ for $a$ and $b$ in a group $G$, then $a * b=b * a$.",
+      "row_id": "realprover_fate_m_824",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "3566159319672eedfdebacf06c23f0c31e6c80b4169b2408696092f7274b7c93",
+      "target_name": "example_824"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "977",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G : Type*} [Group G] [l: IsCyclic G] [Fintype G] (hG_card : Fintype.card G > 2) : \u2203 a b : G, a \u2260 b \u2227 orderOf a = Fintype.card G \u2227 orderOf b = Fintype.card G := sorry",
+      "formal_statement_sha256": "c29be774928577821d3a6c8ae12ad7be463b938b7c22d4eb5556bb3c655e4497",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "9. Prove that if $G$ is a finite cyclic group with more than two elements, then $G$ has more than one element whose order equals to $|G|$.",
+      "row_id": "realprover_fate_m_977",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "0a4e97ec908c709dcea8972e7eddfbc57956c23a16c71a4f6437ae5ac08719ff",
+      "target_name": "example_977"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "424",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-\nProve that $C_{G}(A)=\\left\\{g \\in G \\mid g^{-1} a g=a\\right.$ for all $\\left.a \\in A\\right\\}$.\n-/\nexample {G : Type*} {A : Set G} [Group G] : Subgroup.centralizer A = {g : G | \u2200 a \u2208 A, g\u207b\u00b9 * a * g = a} := sorry",
+      "formal_statement_sha256": "7cc474f50cea5c9b041d21bc7cd4b291f3cb4ac299ca89ad5a1e9b46f0d0e767",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "1. Prove that $C_{G}(A)=\\left\\{g \\in G \\mid g^{-1} a g=a\\right.$ for all $\\left.a \\in A\\right\\}$.",
+      "row_id": "realprover_fate_m_424",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "3c03b1cbf79d1203bf4594145ed88373249b52d49937acf7158eb72487e7f301",
+      "target_name": "example_424"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "7438",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nopen Classical\n\nvariable {G : Type} [Group G] [Fintype G]\n\nexample [Group G] [Fintype G] (p : \u2115) (H K : Subgroup G)  [Fact p.Prime]\n  (hH : Fintype.card H = p) (hK : Fintype.card K = p) (h : H \u2260 K): H \u2293 K = (\u22a5: Subgroup G) := sorry\n",
+      "formal_statement_sha256": "4542f651ddc1cafdd62abd24e1ed143a30dedd14ce6cbe00ac69eabc7f043562",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Let $G$ be a finite group, and let $H$ and $K$ be subgroups of $G$. Prove the following: Suppose $H$ and $K$ are not equal, and both have order the same prime number $p$. Then $H \\cap K=\\{e\\}$.",
+      "row_id": "realprover_fate_m_7438",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "1a7c1b628e51f57a39c71edf084d24d0c736f91af7541df759cd5b24ecfaf3cf",
+      "target_name": "example_7438"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1962",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\n-- Define an example to prove that a relation R on a set A is transitive if and only if its inverse is transitive.\nexample {A : Type} (R : A \u2192 A \u2192 Prop) :\n  (Transitive R) \u2194 (Transitive (fun x y => R y x)) := sorry\n",
+      "formal_statement_sha256": "8dbfb44b094bd1cc4ceec065979ccacbcd0ee5ebad49ffab1f1c09f29399e242",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "   $R$ is a relation on set $A$, $R^{-1} := \\{ (x,y) ~|~ (y,x) \\in R\\}$, prove that $R$ is transitive if and only if $R^{-1}$ is transitive.  ",
+      "row_id": "realprover_fate_m_1962",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "48d6da60b5c6c7f96c322d7e611590169d2d281f1ba50f3429e4ef15b0e0d8f0",
+      "target_name": "example_1962"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1124",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G H : Type*} [Group G] [Group H] (f : G \u2192* H) [Fintype G] [Fintype H] (h : (Fintype.card G).Coprime (Fintype.card H)) : \u2200 x : G, f x = 1 := sorry\n",
+      "formal_statement_sha256": "daf46a427bda7c30e458c25ebef6b76d1b5ef8e2576c539b41bb7053d45ce108",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "2.66 If $f: G \\rightarrow H$ is a homomorphism and if $(|G|,|H|)=1$, prove that $f(x)=1$ for all $x \\in G$",
+      "row_id": "realprover_fate_m_1124",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "0ac78b4791a758053c4a540e53c79263761a0464b72e77d354f7e5fe0c00b420",
+      "target_name": "example_1124"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "280",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample (n : \u2115) : IsField (ZMod n) \u2194 Nat.Prime n := sorry\n",
+      "formal_statement_sha256": "a0481172b90864c28b64a8eb88aa97e4cd030a3a7606d9562ee56e0f75f8eebd",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "For positive integer $n\\ge 2$, \n\nshow that the ring $\\mathbb Z/n\\mathbb Z$ is a field if and only if $n$ is a prime number.",
+      "row_id": "realprover_fate_m_280",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "c7d5594ece4817453156dfda765e41026f7128fc6dfb8968debcf72d40553bae",
+      "target_name": "example_280"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "941",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample : Nat.card (RingAut \u211a) = 1 := sorry",
+      "formal_statement_sha256": "8600b94ef90b4b99f3c979b2fd0c8cf96c1079bf10d2bfbab9e53f6aeb9ef108",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "12. Show that $\\operatorname{Aut}(\\mathbb{Q})$ is a group with only a single element.",
+      "row_id": "realprover_fate_m_941",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "b08596d2da3e54d707a7e22ea1dc99edce47ffb016c4b47aa0a9eec4e793572d",
+      "target_name": "example_941"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "2067",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nvariable {G : Type*} [Group G] [Finite G] (A B : Set G) [ha : Nonempty A] [hb : Nonempty B]\n\nexample (h : A.ncard + B.ncard > (\u22a4 : Set G).ncard) : (\u22a4 : Set G) = {g | \u2203 a \u2208 A, \u2203 b \u2208 B, g = a * b} := sorry",
+      "formal_statement_sha256": "4818f3ae3e14c3850f1c29cb354e2454e42a5d635810a02f99dae1ad763217ef",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "1.3.8. \u8bbe $A$ \u548c $B$ \u662f\u6709\u9650\u7fa4 $G$ \u7684\u4e24\u4e2a\u975e\u7a7a\u5b50\u96c6. \u82e5 $|A|+|B|>|G|$, \u5219 $G=A B \\text {. }$",
+      "row_id": "realprover_fate_m_2067",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "3c8356430e7b819926e40b4329d402ddc511bb92efb1214328863188ef454b0a",
+      "target_name": "example_2067"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "384",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nopen Classical\n\nvariable {\u03b1 : Type*} [Fintype \u03b1] [DecidableEq \u03b1]\n\nexample (\u03c3 : Equiv.Perm \u03b1) : \u03c3.cycleType.lcm = orderOf \u03c3 := sorry\n",
+      "formal_statement_sha256": "20a70e6ac69b0c98bbabe1a48e6049ee352c5bab39db4b9aec39370716e90583",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "1.6.3. \u4e00\u4e2a\u7f6e\u6362\u7684\u9636\u7b49\u4e8e\u5b83\u7684\u8f6e\u6362\u8868\u793a\u4e2d\u5404\u4e2a\u8f6e\u6362\u56e0\u5b50\u7684\u957f\u5ea6\u7684\u6700\u5c0f\u516c\u500d\u6570.",
+      "row_id": "realprover_fate_m_384",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "907860812ff779394a7e904f6a9a689a80c23f764490af0d119db5ff605a2c1e",
+      "target_name": "example_384"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "691",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {R : Type*} [Ring  R] (a : R) (h : IsNilpotent a): (\u2203 r : R, (1 + a) * r = 1) \u2227 (\u2203 s : R, (1 - a) * s = 1) := sorry\n",
+      "formal_statement_sha256": "1a4442f9b5b94fcd992441164d8670984d6bf17a431f94e59d53e9dc819ea246",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "1. In a ring with unity, prove that if $a$ is nilpotent, then $a+1$ and $a-1$ are both invertible. [HinT: Use the factorization\n\n$$\n\n1-a^{n}=(1-a)\\left(1+a+a^{2}+\\cdots+a^{n-1}\\right)\n\n$$\n\nfor $1-a$, and a similar formula for $1+a$.]\n\n2. In a commutative ring, prove that any product $x a$ of a nilpotent element $a$ by any element $x$ is nilpotent.\n\n3.\nIn a commutative ring, prove that the sum of two nilpotent elements is nilpotent. (HinT: You must use the binomial formula; see Exercise L.)\n\nAn element $a$ of a ring is **unipotent** iff $1-a$ is nilpotent.\n\n4. In a commutative ring, prove that the product of two unipotent elements $a$ and $b$ is unipotent. [HinT: Use the binomial formula to expand $1-a b=(1-a)+a(1-b)$ to power $n+m$.]\n\n5. In a ring with unity, prove that every unipotent element is invertible. (Hint: Use Part 1.)",
+      "row_id": "realprover_fate_m_691",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "b21d3740c7f3b06640aaaf349e36236a7e150a311863013641b106d09e692155",
+      "target_name": "example_691"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "193",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G G' : Type*} [Group G] [Group G'] (f : G \u2192* G') {a b : G} :\n    (a * b \u2208 f.ker)  \u2194 (b * a \u2208 f.ker) := sorry\n",
+      "formal_statement_sha256": "6b63cf471775478bf3e94e945b63f4e6e662fe18978de8263ba7704f31e1c415",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Let $\\phi: G \\rightarrow G^{\\prime}$ be a group homomorphism. Show that $ab\\in \\operatorname{Ker}\\phi$ if and only if $ba\\in \\operatorname{Ker}\\phi$.",
+      "row_id": "realprover_fate_m_193",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "3c1545ef960beb4dda52cb5a1e4dd982defdfee95bb039664d14475daa5f59c6",
+      "target_name": "example_193"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "982",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nexample {G : Type*} [Group G] (H\u2081 H\u2082 : Subgroup G) (p\u2081 : H\u2081 \u2260 \u22a4) (p\u2082 : H\u2082 \u2260 \u22a4): \u00ac (H\u2081.carrier \u222a H\u2082.carrier = \u22a4) := sorry",
+      "formal_statement_sha256": "4985c132d5f4eef001403c2f38110432f2c94419c561bf9b9f7affbd1d85ac61",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "20. (a) Show that if $G$ is a group and $H_{1}, H_{2}$ are proper subgroups, then it is impossible that $G=H_{1} \\cup H_{2}$.",
+      "row_id": "realprover_fate_m_982",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "318b3f83fb90655d7338bc653bc754c9b477285b5c97ddbfe9c373885ba43068",
+      "target_name": "example_982"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "347",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {R : Type} [CommRing R] (A : Ideal R) (m : \u2115)\n    (P : Fin (m + 1) \u2192 Ideal R)\n    (pp : \u2200 i : Fin (m + 1), (P i).IsPrime)\n    (hA : A.carrier \u2286 \u22c3 (i : Fin (m + 1)), P i)\n      : \u2203 i : Fin (m + 1), A.carrier \u2286 P i := sorry\n",
+      "formal_statement_sha256": "d294bf26165fc781a995fc87812e74c872bb7a0ab262ddff1b09b0d6f088ec5d",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "2.3.9*. \u8bbe $R$ \u662f\u542b\u5e7a\u4ea4\u6362\u73af, $P_{1}, \\cdots, P_{m}$ \u4e3a $R$ \u7684\u7d20\u7406\u60f3\u800c $A$ \u4e3a $R$ \u7684\u7406\u60f3.\u5982\u679c $A \\subseteq P_{1} \\cup \\cdots \\cup P_{m}$, \u5219\u5fc5\u5b58\u5728\u67d0\u4e2a $i(1 \\leqslant i \\leqslant m)$, \u4f7f\u5f97 $A \\subseteq P_{i}$.",
+      "row_id": "realprover_fate_m_347",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "9a2c380a89506b5d3076b371885ec92070ab5be3a076b50d7154fa093010dc42",
+      "target_name": "example_347"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1108",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nopen Classical\nexample {G : Type u} [Group G] [Fintype G] (H : Subgroup G) (K : Subgroup G) (h : Nat.Coprime (Fintype.card H) (Fintype.card K)) : H \u2293 K = \u22a5 := sorry\n",
+      "formal_statement_sha256": "08dc8311cb3651b360cc1c878232728740886d8848d928f853905f0c8d4fa3f5",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "2.49 If $H$ and $K$ are subgroups of a group $G$ and if $|H|$ and $|K|$ are relatively prime, prove that $H \\cap K=\\{1\\}$.",
+      "row_id": "realprover_fate_m_1108",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "39c3f9cb84d95bb1d10b47a59d2b6f8634d619fa7627f62c79f4bdd39b13c2c8",
+      "target_name": "example_1108"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1276",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nopen Polynomial\n--(2) Let $R$ be a commutative ring, and let $p(x), f(x)$, and $g(x)$ be polynomials in $R[x]$. Prove that if $p(x)$ divides both $f(x)$ and $g(x)$ in $R[x]$, then for any polynomials $u(x)$ and $v(x)$ in $R[x]$, $p(x)$ divides $f(x) u(x)+g(x) v(x)$.\nexample {R : Type*} [CommRing R] (p f g : R[X]) (pdvd : p \u2223 f \u2227 p \u2223 g) : \u2200 u v : R[X], p \u2223 f * u + g * v := sorry\n",
+      "formal_statement_sha256": "2e981a5be082671631e2996418c480833eb9b47134d015ec6466ec6b36ca07b4",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "(2) Let $R$ be a commutative ring, and let $p(x), f(x)$, and $g(x)$ be polynomials in $R[x]$. Prove that if $p(x)$ divides both $f(x)$ and $g(x)$ in $R[x]$, then for any polynomials $u(x)$ and $v(x)$ in $R[x]$, $p(x)$ divides $f(x) u(x)+g(x) v(x)$.",
+      "row_id": "realprover_fate_m_1276",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "11cae4a61464385b454969607beffa052054cbeb389fb9c93b1d3935e4b863f0",
+      "target_name": "example_1276"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "4649",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nexample {G : Type*} [Group G] (f : G \u00d7 G \u2192* G) (h : \u2200 x : (G \u00d7 G), f x = x.1 * x.2) : CommGroup G := sorry\n",
+      "formal_statement_sha256": "92a9d9ec8f6bb7fda919bb802e768a941374904e15c05fa631f29db612603a74",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "2.96 Let $G$ be a group and regard $G \\times G$ as the direct product of $G$ with itself. If the multiplication $\\mu: G \\times G \\rightarrow G$ is a group homomorphism, prove that $G$ must be abelian.",
+      "row_id": "realprover_fate_m_4649",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "5000e0474c4fae1b78a636866f9533d076ee29ceca0a1dff34b9d73719e2f883",
+      "target_name": "example_4649"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1559",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/- If $P \\triangleleft G, P$ a $p$-Sylow subgroup of $G$, prove that $\\varphi(P)=P$ for every automorphism $\\varphi$ of $G$.-/\n/- If $P \\triangleleft G, P$ a $p$-Sylow subgroup of $G$, prove that $\\varphi(P)=P$ for every automorphism $\\varphi$ of $G$.-/\nexample {G : Type*} {p : \u2115} [Group G] [Fintype G] [Fact p.Prime] (P : Sylow p G) [pn : P.Normal] (\u03c6 : G \u2243* G) : \u03c6 '' P = P := by sorry\n",
+      "formal_statement_sha256": "96869a35aaa2b925c64ab0df7f6428b8375c79c169ed12d19cb838106fa8b88f",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "7. If $P \\triangleleft G, P$ a $p$-Sylow subgroup of $G$, prove that $\\varphi(P)=P$ for every automorphism $\\varphi$ of $G$.",
+      "row_id": "realprover_fate_m_1559",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "d0f5ef9bd1a4cfd6aa80f89bde22441d6996946851f2e0ed0701a0115c6a49e7",
+      "target_name": "example_1559"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "782",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\n-- Define K as a field and U, V as finite-dimensional vector spaces over K\nvariable {K : Type} [Field K]\nvariable {U V : Type} [AddCommGroup U] [Module K U]\nvariable [AddCommGroup V] [Module K V]\nvariable [FiniteDimensional K U] [FiniteDimensional K V]\n\nexample [FiniteDimensional K U]\n    [FiniteDimensional K V] (h : Module.finrank K U = Module.finrank K V) {f : U \u2192\u2097[K] V} :\n    Function.Injective f \u2194 Function.Surjective f := sorry\n",
+      "formal_statement_sha256": "89c7c8358a98003b89e5b376dd52d1bc3e6e3c888e032077cccf426f0193dd21",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Let $U$ and $V$ have the same dimension $n$. Prove that $h$ is injective iff $h$ is surjective.",
+      "row_id": "realprover_fate_m_782",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "97a0f689e654f77845e2ccfa5740fb7949a8da3a46e2c4e61f4ab28188e66930",
+      "target_name": "example_782"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "628",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-\n-/\n/-\nLet $G$ and $H$ be groups. Suppose $g=(a, b) \\in G \\times H$, where $a$ has order $m$ and $b$ has order $n$. Prove that $\\operatorname{ord}(g)=\\operatorname{LCM}(m,n)$.\n-/\nexample {G H : Type*} [Group G] [Group H] {a : G} {b : H} : orderOf (a, b) = Nat.lcm (orderOf a) (orderOf b) := sorry\n",
+      "formal_statement_sha256": "0afa31bed2efb5cc2e454f801aa7f7f4862147814a331a8d6ff4737a1fb6a042",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Suppose $g=(a, b) \\in G \\times H$, where $a$ has order $m$ and $b$ has order $n$. Prove that $\\operatorname{ord}(g)=\\operatorname{LCM}(m,n)$.",
+      "row_id": "realprover_fate_m_628",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "033e80ca2908935c375bb70769bbe79ce8b14b8faea10cd6437fc50ecd837330",
+      "target_name": "example_628"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "917",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nexample {G : Type*} [Group G] (M : Subgroup G) [hM : M.Normal] (N : Subgroup G) [hN: N.Normal] :\n(M \u2293 N).Normal := sorry\n",
+      "formal_statement_sha256": "89d575c1e5b5e8f14a8ebfcb8689f1667018a4084aef4c12265ec5d829c0339e",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "33. Show that an intersection of normal subgroups of a group $G$ is again a normal subgroup of $G$.",
+      "row_id": "realprover_fate_m_917",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "f8f5ad7daf2234f4bc35c610300b96902b81071cd2fd66ad0d6ff2738267f292",
+      "target_name": "example_917"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "901",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nopen scoped Pointwise\n\nopen MulOpposite\n\nexample {G : Type*} [Group G] (H: Subgroup G) (prop: \u2200 (h : H), \u2200 (g : G), g * h * g\u207b\u00b9 \u2208 H) : \u2200 (g : G),  g \u2022 (H : Set G) = op g \u2022 (H : Set G) := sorry\n",
+      "formal_statement_sha256": "640e7765a60d0c38c580b6f5ba7e44a256b3d010423024363c8479f8fe09948c",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "30. Let $H$ be a subgroup of a group $G$ such that $g^{-1} h g \\in H$ for all $g \\in G$ and all $h \\in H$. Show that every left coset $g H$ is the same as the right coset $\\mathrm{Hg}$.",
+      "row_id": "realprover_fate_m_901",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "ecd587d636dfb033bf4f1ccf2798b9a8ac8ffb1a00ee1e63f1cacf5d5779d0f5",
+      "target_name": "example_901"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1144",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G : Type} [Group G] :IsCyclic (G \u29f8 (Subgroup.center G)) \u2192 CommGroup G := sorry\n",
+      "formal_statement_sha256": "74fc8e8472f9f00e8dcc148b36334dbf7d3dad636af9d4fa8d22143824b615b8",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "*2.87 If $G$ is a group and $G / Z(G)$ is cyclic, where $Z(G)$ denotes the center of $G$, prove that $G$ is abelian; that is, $G=Z(G)$.",
+      "row_id": "realprover_fate_m_1144",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "ba3e99669ef3fe8b05195ea4568e8e6df7719f9566dafc10d2e889ec39b08e63",
+      "target_name": "example_1144"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "389",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-\nShow that $G L_{n}(F)$ is non-abelian for any $n \\geq 2$ and any $F$.\n-/\nexample {F : Type*} [Field F] {n : \u2115} (h : n \u2265 2) : \u2203 a b : (GL (Fin n) F) , a * b \u2260 b * a := sorry\n",
+      "formal_statement_sha256": "d848bc784b7f4f22ed76ca975ea4b606813f33064307485cf4e56afffcbfacdd",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "8. Show that $G L_{n}(F)$ is non-abelian for any $n \\geq 2$ and any $F$.",
+      "row_id": "realprover_fate_m_389",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "6c830fb538ad688608979f6ca34f0dc1a20108d86d669320b1391910da6f8c20",
+      "target_name": "example_389"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "7415",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G : Type} [Group G] (a:G) (h:a^3=1) :\u2203 x:G,x^2=a := sorry",
+      "formal_statement_sha256": "8a5e09c5d08e55f66628285ccf78f9dff31982e4803fe9da5b633e7a2fa1dd01",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Let $G$ be a group, and $a, b \\in G$. For any positive integer $n$ we define $a$ has an $n$th root in $G$ if $a=z^{n}$ for some $z \\in G$. Prove the following: If $a^{3}=e$, then $a$ has a square root.\n",
+      "row_id": "realprover_fate_m_7415",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "4eef1763ad8e27bc86440f032d91f5853e1a8dbf2dff500b60113f0d001e63cc",
+      "target_name": "example_7415"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "262",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\nvariable {R : Type*} [CommRing R] [IsDomain R]\n\nexample (r\u2081 r\u2082 : R) : Ideal.span {r\u2081} = Ideal.span {r\u2082} \u2194 \u2203 u : R, IsUnit u \u2227 r\u2081 = u * r\u2082 := sorry",
+      "formal_statement_sha256": "555a377f0cf736df83e72e41e244090efedfe7778358a6a93b4b65213dea6d68",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Suppose $R$ is an integral domain, show that for two element $r_1,r_2\\in R$, the principal ideals $r_1R=r_2R$ iff there exists $u\\in R^\\times$ s.t. $r_1=ur_2$.",
+      "row_id": "realprover_fate_m_262",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "e7cf61e0c16028095fb8b415638bc09281b68f567661971cdd90764725e0d03a",
+      "target_name": "example_262"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "1129",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample{G : Type u} [Fintype G] [Group G] (hg : Odd (Fintype.card G)) : \u2200 (x : G), \u2203! (y : G), y ^ 2 = x := sorry",
+      "formal_statement_sha256": "0ad7a23eba26a90d75a2eb0acaebbaa270ea05ea6e11f8dd67c3120a75324cec",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "*2.72 Let $G$ be a fi nite group written multiplicatively. Prove that if $|G|$ is odd, then every $x \\in G$ has a unique square root; that is, there exists exactly one $g \\in G$ with $g^{2}=x$.",
+      "row_id": "realprover_fate_m_1129",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "f62ab11e89557b45ba5de39f9093fe4d6b9c70f6631816428e0f4e2c65ea6e40",
+      "target_name": "example_1129"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "402",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G : Type*} [Group G] [Fintype G] (\u03c3 : MulAut G) (h : \u2200 g, \u03c3 g = g \u2194 g = 1) (ids : \u03c3 \u2218 \u03c3 = id) : CommGroup G := sorry\n",
+      "formal_statement_sha256": "4fe079743465a428a3e68d29d8f2925cf13aa00a6be3d498bd8fd9970f2f7a78",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "23. Let $G$ be a finite group which possesses an automorphism $\\sigma$ (cf. Exercise 20) such that $\\sigma(g)=g$ if and only if $g=1$. If $\\sigma^{2}$ is the identity map from $G$ to $G$, prove that $G$ is abelian (such an automorphism $\\sigma$ is called fixed point free of order 2). [Show that every element of $G$ can be written in the form $x^{-1} \\sigma(x)$ and apply $\\sigma$ to such an expression.]",
+      "row_id": "realprover_fate_m_402",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "6d771ac307152470ab8d38eac925d566649117b70d750385a4f9635b02ead5de",
+      "target_name": "example_402"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "951",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G : Type*} [Group G] (a b c : G) : \u2203! x : G, a * x * b = c := sorry",
+      "formal_statement_sha256": "cc66f358453285578e6249386f31925967f87bfa6087723d8845ff182c8f6948",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "7. Let $G$ be a group, and $a, b, c \\in G$. Prove that the equation $a x c=b$ has a unique solution in $G$.",
+      "row_id": "realprover_fate_m_951",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "60a97bd70d66648f96a4807994153ffbdd184bf02f8516792d0287865b12f99d",
+      "target_name": "example_951"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "269",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-\nSuppose that $R$ is a commutative ring with identity. For a subset $S$ of $R$, let $\\operatorname{Span}(S)$ be the minimal ideal containing elements in $S$. Prove that\n\n$\\operatorname{Span}(S)=\\left\\{\\sum_{s\\in S'}r_ss|S'\\text{ is a finite subset of }S,r_s\\in R\\ \\forall s\\in S'\\right\\}.$\n\nIn other words, prove that the latter one is an ideal and any ideal containing $S$ also contains the right-hand-side.\n-/\nexample {R : Type*} [CommRing R] (S : Set R) : (Ideal.span S) = {x : R | \u2203 T : Multiset (R \u00d7 S), x = Multiset.sum (Multiset.map (fun (x : R \u00d7 S) \u21a6 (x.1 : R) * (x.2 : R)) T)} := sorry",
+      "formal_statement_sha256": "4cd184fbc0db5d1b0c1bbbe3d269cedb8104a9ded517b652016d045991a947bb",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "[Hard]\n\nSuppose that $R$ is a commutative ring with identity. For a subset $S$ of $R$, let $\\operatorname{Span}(S)$ be the minimal ideal containing elements in $S$. Prove that\n\n$\\operatorname{Span}(S)=\\left\\{\\sum_{s\\in S'}r_ss|S'\\text{ is a finite subset of }S,r_s\\in R\\ \\forall s\\in S'\\right\\}.$\n\nIn other words, prove that the latter one is an ideal and any ideal containing $S$ also contains the right-hand-side.",
+      "row_id": "realprover_fate_m_269",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "a9b35142b0b5ece728f7fdca191ab1bbb3798c0df0cd6ec9970e85bbe02bed09",
+      "target_name": "example_269"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "947",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n-- We prove that in a group, every element has exactly one inverse.\nexample {G : Type*} [Group G] {g : G} : \u2203! (h : G), g * h = 1 \u2227 h * g = 1 := sorry",
+      "formal_statement_sha256": "2c275b5fd53d9af7c370eb43f592e6e3277891f238d2775aee35d55356338b49",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "3. Prove Theorem 20.1d. That is, prove that in a group, every element has exactly one inverse.",
+      "row_id": "realprover_fate_m_947",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "ba13c4fde65d9579bcfea26026ec7990b2b380683721716c85fa57f39ebdb329",
+      "target_name": "example_947"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "195",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {G G' : Type*} [Group G] [Group G'] (\u03c6 : G \u2192* G') : (\u2203 \u03c6\u2081 : G' \u2192 G, Function.LeftInverse \u03c6\u2081 \u03c6 \u2227 Function.RightInverse \u03c6\u2081 \u03c6) \u2194 (Function.Injective \u03c6 \u2227 Function.Surjective \u03c6) := sorry\n",
+      "formal_statement_sha256": "c5e0ac322e74786c3f59b3bcd70c7153e92c6d49b34b6d0d9cf1f8638351d7bd",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Prove that a homomorphism $\\phi: G \\rightarrow G^{\\prime}$ is an isomorphism(There exists a two-sided inverse map $\\phi^{-1}:G'\\to G$) if and only if it is injective and surjective.",
+      "row_id": "realprover_fate_m_195",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "7e3caf655e546722f21ff6d15d69b010bc818a61e65020389c719b7a1e2a4628",
+      "target_name": "example_195"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "253",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n--Let $R$ be a ring with identity $1$ and $x$ be an element not equal to zero. If there exists $y \\in R$ s.t. $xy = 1$ and $z \\in R$ s.t. $zx = 1$, then $y=z$.\nexample {R : Type*} [Ring R] {x : R} (hx : x \u2260 0) : \u2203 y, x * y = 1 \u2192 \u2203 z, z * x = 1 \u2192 y = z := sorry\n",
+      "formal_statement_sha256": "d89350a301733adc2175f1c6971e9131a5e7ade1749a4d549944aba9ae70d0d8",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Let $R$ be a ring with identity $1$ and $x$ be an element not equal to zero. If there exists $y \\in R$ s.t. $xy = 1$ and $z \\in R$ s.t. $zx = 1$, then $y=z$.",
+      "row_id": "realprover_fate_m_253",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "a21fae679c3f2e47b99f66d81a4959537ae87640fe8450397808171cebba0f9b",
+      "target_name": "example_253"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "992",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-$H$ is a $p$-group because the order of $f(g)$ in $H$ divides the order of $g$ in G. So every element has order a power $p^{n}$ of the same prime $p$.-/\nexample {G H : Type*} {p : \u2115} [Group G] [Group H] [Fact p.Prime] (gp : IsPGroup p G) (f : G \u2192* H) (sf : Function.Surjective f) : IsPGroup p H := sorry\n",
+      "formal_statement_sha256": "07ea26d3c18c1ad36e536f0c8c93d3da959a0d6301a25565c42d004efb262182",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "8. Suppose that $G$ is a group for which every element has order a power $p^{n}$ of a fixed prime $p$. (We call such a group a $p$-group; we will discover much more about them in Section 28.1). Let $\\varphi: G \\rightarrow H$ be a surjective homomorphism. Prove that $H$ is a $p$-group too.",
+      "row_id": "realprover_fate_m_992",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "9d5983489674c3458a52a3ae5de065ff673be6e346d48358d3018b48c7fc1a4f",
+      "target_name": "example_992"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "496",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nopen Pointwise\nvariable {G : Type*} [Group G] (H : Subgroup G) {g : G}\n\nexample (h : \u2203 g' : G, MulOpposite.op g \u2022 H = g' \u2022 H.carrier) :\n  MulOpposite.op g \u2022 H = g \u2022 H.carrier \u2227 g \u2208 Subgroup.normalizer H := sorry\n",
+      "formal_statement_sha256": "6203bae25bb0f7ba21549365d606e4480293875995284ebc491ff790f12c18a0",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "6. Let $H \\leq G$ and let $g \\in G$. Prove that if the right coset $H g$ equals some left coset of $H$ in $G$ then it equals the left coset $g H$ and $g$ must be in $N_{G}(H)$.",
+      "row_id": "realprover_fate_m_496",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "dc0520013667a19095223beeb6060d459b9964597d69ca1ff311896849a5c6ab",
+      "target_name": "example_496"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "245",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-\nLet $R$ be a ring with unit. Then there is a unique homomorphism $f:\\mathbb Z\\to R$ such that $1\\mapsto 1_R$.\n-/\nexample (R : Type*) [Ring R] : \u2203! f : \u2124 \u2192+* R, True := sorry\n",
+      "formal_statement_sha256": "92e0fd9d46ed3bb28dd4d6709c90d0642f12c60fd5ed23536640deae56d2357c",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Let $R$ be a ring with unit. Then there is a unique homomorphism $f:\\mathbb Z\\to R$ such that $1\\mapsto 1_R$.",
+      "row_id": "realprover_fate_m_245",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "f45a93d02bb7643f17c27dab5dcfaa31ec3ee6d0b5e45ac1135646b8c41a604c",
+      "target_name": "example_245"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "273",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n\n\nexample {R : Type*} [CommRing R] (I : Ideal R) (J : Ideal R) (K : Ideal R) (h\u2081 : I \u2264 K) (h\u2082 : J \u2264 K) : I + J \u2264 K := sorry\n",
+      "formal_statement_sha256": "4b7155c1ff2ac840480a1d149238a274e25e9b508a8ccee748a26d3f385c8eea",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "Let $R$ be a commutative ring with identity and $I_1$ and $I_2$ be two ideals of $R$. Assume that $I$ is an ideal containing $I_1$ and $I_2$, prove that $I$ contains $I_1+I_2$.",
+      "row_id": "realprover_fate_m_273",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "950d68d853be0df7d741c55f8be54ceeeabc0d83c6aecfeec5bbfadf86f09e76",
+      "target_name": "example_273"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "336",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\nexample {R : Type*} [CommRing R] [IsDomain R] {p : R} (hp : p \u2260 0) : Ideal.IsPrime (Ideal.span {p}) \u2194 Prime p:= sorry\n",
+      "formal_statement_sha256": "b647cb0efe9d17ab9c50b7c44845ddc9250bbd6c47dd2e78d891dc15ed170609",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "2.4.2. \u8bbe $R$ \u4e3a\u6574\u73af, \u5219 $p$ \u4e3a\u7d20\u5143\u5f53\u4e14\u4ec5\u5f53 $\\langle p\\rangle$ \u662f $R$ \u7684\u975e\u96f6\u7d20\u7406\u60f3.",
+      "row_id": "realprover_fate_m_336",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "025be7049255d06f955ecabaf9351819f6882390096be07cdb5ab9c945fe61d3",
+      "target_name": "example_336"
+    },
+    {
+      "allowed_uses": [
+        "factory_canary",
+        "negative_control",
+        "template_debugging",
+        "practice_repair_trajectory"
+      ],
+      "clean_heldout_eligible": false,
+      "dataset": "fate_m",
+      "exclusion_reason": "public_external_benchmark_practice_only_until_source_order_target_context_and_no_prior_exposure_gates_pass",
+      "external_id": "822",
+      "forbidden_uses": [
+        "clean_heldout_solver_claim",
+        "training_label_without_separate_split",
+        "closure_credit_without_path_b_governance"
+      ],
+      "formal_proof_consumed": false,
+      "formal_proof_present": false,
+      "formal_statement": "import Mathlib\n\n/-Suppose that $G$ is a group and $a$ and $b$ are elements of $G$ that satisfy $a * b=b * a^{3}$. Rewrite the element $(a * b)^{2}$ in the form $b^{k} a^{r}$. (See Exercise 33 for power notation.)-/\n\nexample [Group G] (a b : G) (h : a * b = b * (a ^ 3)) : \u2203 k r : \u2115, (a * b) ^ 2 = b ^ k * a ^ r := sorry\n",
+      "formal_statement_sha256": "e2380464b617e19c26a4a31f07a09a179ca357c630d8579d736ef32a6d1796ba",
+      "gates_before_any_value_credit": [
+        "compile_target_context",
+        "proof_body_excluded",
+        "exact_target_not_used_as_candidate",
+        "path_b_authoritative_governance"
+      ],
+      "has_sorry": true,
+      "imports": [
+        "Mathlib"
+      ],
+      "informal_statement": "35. Suppose that $G$ is a group and $a$ and $b$ are elements of $G$ that satisfy $a * b=b * a^{3}$. Then the element $(a * b)^{2}$ can be written in the form $b^{k} a^{r}$.",
+      "row_id": "realprover_fate_m_822",
+      "row_split": "practice_external_problem",
+      "source_path": "analytics/public/leanmill/external_benchmarks/repos/REAL-Prover/Realprover/data/fate_m.jsonl",
+      "source_sha256": "719b948cab7b1121690d4cf251fa43f5e2cc4fb878ea2fda23cabec5f482b9f8",
+      "target_name": "example_822"
+    }
+  ],
+  "schema": "real-prover-practice-packet-v1",
+  "science_boundary": "Rows are external practice/control inventory. They do not support clean heldout or solver-lift claims without later pinned target-context and Path-B governance gates."
+}

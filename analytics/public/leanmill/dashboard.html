@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LeanMill Operations Dashboard</title>
+  <script src="factory_dashboard_data/embedded_live_state.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --panel: #ffffff;
+      --ink: #15171a;
+      --muted: #65707d;
+      --line: #d8dde5;
+      --soft: #eef2f6;
+      --green: #0f7b5c;
+      --blue: #2563a8;
+      --amber: #a76600;
+      --red: #b42318;
+      --violet: #6b5aa8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.35;
+    }
+
+    main {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 34px; line-height: 1.05; letter-spacing: 0; }
+    h2 { font-size: 16px; margin-bottom: 12px; }
+    h3 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+    .stamp {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .subhead {
+      color: var(--muted);
+      margin-top: 8px;
+      max-width: 900px;
+      font-size: 14px;
+    }
+
+    .grid { display: grid; gap: 14px; margin-top: 16px; }
+    .kpis { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .two { grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 15px;
+      min-width: 0;
+    }
+
+    .metric {
+      min-height: 116px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 750;
+    }
+
+    .value {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .small { color: var(--muted); font-size: 12px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 12px; }
+    .good { color: var(--green); }
+    .warn { color: var(--amber); }
+    .bad { color: var(--red); }
+
+    .banner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px;
+      border: 1px solid #e7cf9f;
+      background: #fff8e8;
+      color: #503900;
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .banner strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--soft);
+      padding: 5px 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .flow-step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 10px;
+      min-height: 86px;
+      position: relative;
+    }
+
+    .flow-step::before {
+      content: "";
+      display: block;
+      height: 3px;
+      border-radius: 8px 8px 0 0;
+      background: var(--blue);
+      position: absolute;
+      inset: 0 0 auto 0;
+      opacity: .65;
+    }
+
+    .flow-step.blocked::before { background: var(--red); }
+    .flow-step.ready::before, .flow-step.active::before { background: var(--green); }
+    .flow-step.idle { opacity: .75; }
+
+    .flow-count {
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 780;
+      margin-top: 10px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 8px 7px; vertical-align: top; }
+    th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .list { display: grid; gap: 9px; }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 10px;
+      min-width: 0;
+    }
+
+    .item-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 740;
+    }
+
+    .item-body { margin-top: 6px; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(160px, .55fr) minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      margin-top: 9px;
+      font-size: 12px;
+    }
+
+    .bar-track {
+      height: 9px;
+      background: #e7ebf0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      display: block;
+      height: 100%;
+      width: var(--w, 0%);
+      background: var(--blue);
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: minmax(150px, 1.2fr) repeat(5, minmax(60px, .5fr));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .matrix div {
+      padding: 8px;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .matrix div:nth-child(6n) { border-right: 0; }
+    .matrix .head { background: var(--soft); color: var(--muted); font-weight: 750; }
+    .matrix .kind { font-weight: 700; overflow-wrap: anywhere; }
+
+    .empty {
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfd;
+    }
+
+    @media (max-width: 1120px) {
+      .kpis, .three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      main { padding: 14px; }
+      header { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+      .kpis, .three { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr 1fr; }
+      .banner { grid-template-columns: 1fr; }
+      .bar-row { grid-template-columns: 1fr; }
+      .matrix { grid-template-columns: minmax(150px, 1fr) repeat(5, minmax(48px, .45fr)); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>LeanMill Operations</h1>
+        <p class="subhead">File-backed control-plane dashboard for queue state, proof value, station timing, worker health, and current blockers.</p>
+      </div>
+      <div class="stamp" id="refresh-stamp">loading data...</div>
+    </header>
+
+    <section class="grid">
+      <div class="banner">
+        <div>
+          <div class="label">What is blocked now</div>
+          <strong id="blocked-now">loading...</strong>
+        </div>
+        <div>
+          <div class="label">Next action</div>
+          <strong id="next-action">loading...</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid kpis" aria-label="Live status and proof-value counters">
+      <div class="card metric"><div class="label">Open work</div><div class="value" id="open-total">-</div><div class="small" id="open-detail">queued/running</div></div>
+      <div class="card metric"><div class="label">Dead letters</div><div class="value bad" id="dead-letter-total">-</div><div class="small">requires triage before retry</div></div>
+      <div class="card metric"><div class="label">Verified value rows</div><div class="value good" id="verified-value">-</div><div class="small" id="processed-rows">from completed batch</div></div>
+      <div class="card metric"><div class="label">Ratified closures</div><div class="value good" id="ratified-closures">-</div><div class="small" id="governance-detail">governance gate</div></div>
+      <div class="card metric"><div class="label">Recent probes</div><div class="value" id="probe-done">-</div><div class="small" id="probe-detail">last observability window</div></div>
+      <div class="card metric"><div class="label">Source binding loss</div><div class="value warn" id="binding-rejects">-</div><div class="small" id="binding-bridges">rejected / bridged</div></div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <h2>Station Flow</h2>
+        <div class="flow" id="station-flow"></div>
+      </div>
+      <div class="card">
+        <h2>Active Workers / Daemon Health</h2>
+        <div class="pillrow" id="daemon-pills"></div>
+        <div class="list" id="active-workers"></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <h2>Queue By Lane / Status</h2>
+        <div class="matrix" id="queue-matrix"></div>
+      </div>
+      <div class="card">
+        <h2>Top Next Actions</h2>
+        <div class="list" id="next-actions"></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <h2>Station Lead / Cycle Times</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Station</th><th>Open</th><th>Lead p95</th><th>Cycle p95</th><th>Recent / hr</th><th>SLA</th></tr></thead>
+            <tbody id="station-times"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Source-Binding Loss Classes</h2>
+        <div id="loss-bars"></div>
+      </div>
+    </section>
+
+    <section class="grid three">
+      <div class="card">
+        <h2>Recent Probe Outcomes</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Artifact</th><th>Done</th><th>Ratified</th><th>Controls</th><th>State</th></tr></thead>
+            <tbody id="probe-table"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Source Qualification</h2>
+        <div id="source-flows" class="list"></div>
+      </div>
+      <div class="card">
+        <h2>Recent Terminal Failures</h2>
+        <div class="list" id="terminal-failures"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const DATA_DIR = "factory_dashboard_data/";
+    const DATA_FILES = {
+      live: "factory_live_state.json",
+      health: "station_health_dashboard.json",
+      observability: "leanmill_observability.json",
+      intelligence: "leanmill_factory_intelligence.json"
+    };
+    const STATUS_COLUMNS = ["queued", "claimed", "running", "failed", "dead_letter"];
+    const UNAVAILABLE = "unavailable";
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function setText(id, value) {
+      const el = byId(id);
+      if (el) el.textContent = display(value);
+    }
+
+    function display(value) {
+      if (value === null || value === undefined || value === "") return UNAVAILABLE;
+      if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.?0+$/, "");
+      if (typeof value === "string") return sanitize(value);
+      return sanitize(JSON.stringify(value));
+    }
+
+    function sanitize(value) {
+      let out = String(value);
+      out = out.replace(/\/Users\/[^/\s"')]+\/[^\s"')]+/g, pathBase);
+      out = out.replace(/\/home\/[^/\s"')]+\/[^\s"')]+/g, pathBase);
+      out = out.replace(/\/tmp\/[^\s"')]+/g, pathBase);
+      return out;
+    }
+
+    function pathBase(path) {
+      const parts = String(path).split("/").filter(Boolean);
+      return parts.length ? parts[parts.length - 1] : "artifact";
+    }
+
+    function humanize(value) {
+      return display(value).replace(/_/g, " ");
+    }
+
+    function sec(value) {
+      if (value === null || value === undefined || value === "") return UNAVAILABLE;
+      const n = Number(value);
+      if (!Number.isFinite(n)) return display(value);
+      if (n < 90) return `${Math.round(n)}s`;
+      if (n < 7200) return `${(n / 60).toFixed(1).replace(/\.0$/, "")}m`;
+      return `${(n / 3600).toFixed(1).replace(/\.0$/, "")}h`;
+    }
+
+    function pctWidth(value, max) {
+      const n = Number(value || 0);
+      const m = Math.max(1, Number(max || 1));
+      return Math.max(2, Math.min(100, Math.round((n / m) * 100)));
+    }
+
+    function timeStamp(epoch) {
+      if (!epoch) return UNAVAILABLE;
+      const d = new Date(Number(epoch) * 1000);
+      if (Number.isNaN(d.getTime())) return UNAVAILABLE;
+      return d.toLocaleString();
+    }
+
+    function embedded(path) {
+      const store = window.LEANMILL_EMBEDDED_DATA || {};
+      return store[path] || store[path.replace(/^factory_dashboard_data\//, "")] || null;
+    }
+
+    async function readJson(name) {
+      const path = DATA_DIR + name;
+      if (window.location.protocol !== "file:") {
+        try {
+          const res = await fetch(`${path}?t=${Date.now()}`);
+          if (res.ok) return await res.json();
+        } catch (err) {}
+      }
+      const fallback = embedded(path);
+      return fallback ? JSON.parse(JSON.stringify(fallback)) : {};
+    }
+
+    function clear(el) {
+      if (!el) return;
+      while (el.firstChild) el.removeChild(el.firstChild);
+    }
+
+    function div(className, text) {
+      const el = document.createElement("div");
+      if (className) el.className = className;
+      if (text !== undefined) el.textContent = display(text);
+      return el;
+    }
+
+    function renderPills(id, rows) {
+      const root = byId(id);
+      clear(root);
+      rows.forEach(row => root.appendChild(div("pill", row)));
+    }
+
+    function renderFlow(rows) {
+      const root = byId("station-flow");
+      clear(root);
+      const items = Array.isArray(rows) && rows.length ? rows : [{label: "No station data", count: "-", state: "idle"}];
+      items.forEach(item => {
+        const card = div(`flow-step ${sanitize(item.state || "idle")}`);
+        card.appendChild(div("label", item.label || "station"));
+        card.appendChild(div("flow-count", item.count ?? "-"));
+        card.appendChild(div("small", humanize(item.state || "unknown")));
+        root.appendChild(card);
+      });
+    }
+
+    function renderWorkers(live, obs) {
+      const runner = obs.runner || {};
+      renderPills("daemon-pills", [
+        `24x7 receipt: ${runner.available ? "available" : "missing"}`,
+        `commands: ${runner.command_count ?? 0}`,
+        `command failures: ${runner.command_failure_count ?? 0}`,
+        `worker exits: ${runner.worker_negative_exit_count ?? 0}`
+      ]);
+      const root = byId("active-workers");
+      clear(root);
+      const rows = Array.isArray(live.active_work) ? live.active_work : [];
+      if (!rows.length) {
+        root.appendChild(div("empty", "No active worker rows in factory_live_state.json."));
+        return;
+      }
+      rows.forEach(row => {
+        const item = div("item");
+        const head = div("item-head");
+        head.appendChild(div("", row.name || "worker"));
+        head.appendChild(div("small", humanize(row.state || "unknown")));
+        item.appendChild(head);
+        item.appendChild(div("item-body", `${row.machine || "machine"} / ${row.phase || "phase"} / ${row.progress || ""}`));
+        item.appendChild(div("item-body", `handoff: ${row.next_handoff || UNAVAILABLE}`));
+        if (row.root) item.appendChild(div("item-body mono", `artifact: ${pathBase(row.root)}`));
+        root.appendChild(item);
+      });
+    }
+
+    function renderQueueMatrix(queue) {
+      const root = byId("queue-matrix");
+      clear(root);
+      ["Lane", ...STATUS_COLUMNS].forEach(h => root.appendChild(div("head", h)));
+      const kinds = queue.kind_status_counts || {};
+      const rows = Object.entries(kinds).sort((a, b) => {
+        const ao = STATUS_COLUMNS.reduce((sum, s) => sum + Number((a[1] || {})[s] || 0), 0);
+        const bo = STATUS_COLUMNS.reduce((sum, s) => sum + Number((b[1] || {})[s] || 0), 0);
+        return bo - ao || a[0].localeCompare(b[0]);
+      });
+      if (!rows.length) {
+        ["No queue read model", "-", "-", "-", "-", "-"].forEach((v, i) => root.appendChild(div(i === 0 ? "kind" : "num", v)));
+        return;
+      }
+      rows.slice(0, 16).forEach(([kind, counts]) => {
+        root.appendChild(div("kind", kind));
+        STATUS_COLUMNS.forEach(status => root.appendChild(div("num", counts[status] || 0)));
+      });
+    }
+
+    function renderActions(intel, live, health) {
+      const root = byId("next-actions");
+      clear(root);
+      const rows = Array.isArray(intel.recommendations) ? intel.recommendations.slice(0, 7) : [];
+      if (live.recommended_next_action) {
+        rows.unshift({class: "live_bottleneck", priority: 100, next_action: live.recommended_next_action, why: live.current_bottleneck});
+      } else if (health.recommended_next_action) {
+        rows.unshift({class: "station_contract", priority: 90, next_action: health.recommended_next_action, why: health.current_bottleneck});
+      }
+      if (!rows.length) {
+        root.appendChild(div("empty", "No recommendations in current read models."));
+        return;
+      }
+      rows.slice(0, 6).forEach(row => {
+        const item = div("item");
+        const head = div("item-head");
+        head.appendChild(div("", humanize(row.class || "action")));
+        head.appendChild(div("small", `priority ${row.priority ?? "-"}`));
+        item.appendChild(head);
+        item.appendChild(div("item-body", row.next_action || "No action text"));
+        if (row.why) item.appendChild(div("item-body", `why: ${display(row.why)}`));
+        root.appendChild(item);
+      });
+    }
+
+    function renderStationTimes(intel, health) {
+      const root = byId("station-times");
+      clear(root);
+      const byStation = ((intel.subprocess_metrics || {}).by_station) || {};
+      const stationFallback = {};
+      (health.stations || []).forEach(row => { stationFallback[row.station] = row; });
+      const names = Array.from(new Set([...Object.keys(byStation), ...Object.keys(stationFallback)])).sort();
+      if (!names.length) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 6;
+        td.textContent = "No station timing read model available.";
+        tr.appendChild(td);
+        root.appendChild(tr);
+        return;
+      }
+      names.forEach(name => {
+        const m = byStation[name] || {};
+        const f = stationFallback[name] || {};
+        const tr = document.createElement("tr");
+        [
+          humanize(name),
+          m.open_count ?? f.backlog ?? 0,
+          sec((m.lead_time_to_terminal_s || {}).p95 ?? f.p95_time_to_terminal_s),
+          sec((m.active_cycle_time_s || {}).p95 ?? f.p95_time_to_terminal_s),
+          m.terminal_recent_per_hour ?? "-",
+          m.sla_breached ? "breached" : (f.sla_blocker || "ok")
+        ].forEach((value, idx) => {
+          const td = document.createElement("td");
+          td.textContent = display(value);
+          if (idx > 0 && idx < 5) td.className = "num";
+          if (idx === 5 && String(value).includes("breach")) td.className = "bad";
+          tr.appendChild(td);
+        });
+        root.appendChild(tr);
+      });
+    }
+
+    function renderLossBars(obs, intel) {
+      const root = byId("loss-bars");
+      clear(root);
+      const losses = ((obs.source_binding || {}).failure_classes) ||
+        ((((intel.observability || {}).source_binding) || {}).failure_classes) || {};
+      const rows = Object.entries(losses).sort((a, b) => Number(b[1]) - Number(a[1]));
+      if (!rows.length) {
+        root.appendChild(div("empty", "No source-binding failure classes reported."));
+        return;
+      }
+      const max = Math.max(...rows.map(([, n]) => Number(n || 0)));
+      rows.slice(0, 12).forEach(([klass, count]) => {
+        const row = div("bar-row");
+        row.appendChild(div("", humanize(klass)));
+        const track = div("bar-track");
+        const fill = document.createElement("span");
+        fill.className = "bar-fill";
+        fill.style.setProperty("--w", `${pctWidth(count, max)}%`);
+        if (String(klass).includes("mismatch") || String(klass).includes("unreadable")) fill.style.background = "var(--red)";
+        track.appendChild(fill);
+        row.appendChild(track);
+        row.appendChild(div("num", count));
+        root.appendChild(row);
+      });
+    }
+
+    function renderProbes(live) {
+      const root = byId("probe-table");
+      clear(root);
+      const rows = Array.isArray(live.recent_repair_canaries) ? live.recent_repair_canaries : [];
+      if (!rows.length) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 5;
+        td.textContent = "No recent repair-canary scoreboards found.";
+        tr.appendChild(td);
+        root.appendChild(tr);
+        return;
+      }
+      rows.slice(0, 8).forEach(row => {
+        const tr = document.createElement("tr");
+        const controls = `${row.negative_control_fail_count || 0} expected fail / ${row.negative_control_unexpected_pass_count || 0} unexpected pass`;
+        [pathBase(row.root || row.packet || "probe"), `${row.completed || 0}/${row.tests_total || 0}`, row.ratified_closure_count || 0, controls, humanize(row.state || "unknown")].forEach((value, idx) => {
+          const td = document.createElement("td");
+          td.textContent = display(value);
+          if (idx === 0) td.className = "mono";
+          tr.appendChild(td);
+        });
+        root.appendChild(tr);
+      });
+    }
+
+    function renderSourceFlows(live) {
+      const root = byId("source-flows");
+      clear(root);
+      const flows = Array.isArray(live.source_flows) ? live.source_flows : [];
+      if (!flows.length) {
+        root.appendChild(div("empty", "No source qualification flow data."));
+        return;
+      }
+      flows.forEach(flow => {
+        const item = div("item");
+        const head = div("item-head");
+        head.appendChild(div("", flow.name || "source flow"));
+        head.appendChild(div("small", `${display(flow.canary_ready_per_100_raw)} / 100 raw`));
+        item.appendChild(head);
+        item.appendChild(div("item-body", `bottleneck: ${humanize(flow.bottleneck || "unknown")}`));
+        const stages = (flow.stages || []).map(s => `${s.label}:${s.count ?? "-"}`).join("  ");
+        item.appendChild(div("item-body mono", stages));
+        root.appendChild(item);
+      });
+    }
+
+    function renderFailures(obs) {
+      const root = byId("terminal-failures");
+      clear(root);
+      const rows = Array.isArray(obs.recent_terminal_failures) ? obs.recent_terminal_failures : [];
+      if (!rows.length) {
+        root.appendChild(div("empty", "No recent terminal failures reported."));
+        return;
+      }
+      rows.slice(0, 8).forEach(row => {
+        const item = div("item");
+        const head = div("item-head");
+        head.appendChild(div("", row.family || row.kind || "failure"));
+        head.appendChild(div("small bad", row.status || "failed"));
+        item.appendChild(head);
+        item.appendChild(div("item-body mono", row.work_id || ""));
+        item.appendChild(div("item-body", (row.reasons || []).map(display).join(" | ")));
+        root.appendChild(item);
+      });
+    }
+
+    function renderBlockedPanel(obs, intel, live, health) {
+      const bottlenecks = Array.isArray(obs.bottlenecks) ? obs.bottlenecks : [];
+      const high = bottlenecks.find(b => b.severity === "high") || bottlenecks[0] || {};
+      const blocked = high.class || intel.current_bottleneck || live.current_bottleneck || health.current_bottleneck || "no current blocker reported";
+      const action = high.next_action || intel.contract_recommended_next_action || live.recommended_next_action || health.recommended_next_action || "inspect latest read models";
+      setText("blocked-now", humanize(blocked));
+      setText("next-action", action);
+    }
+
+    function renderKpis(live, health, obs, intel) {
+      const queue = obs.queue || health.queue || {};
+      const status = queue.status_counts || queue.by_status || {};
+      const openTotal = queue.open_total ?? ((health.open_queue || {}).total) ?? 0;
+      const headline = live.headline || {};
+      const learning = intel.learning_unit_flow || {};
+      const scoreboard = learning.scoreboard_tail_counts || {};
+      setText("open-total", openTotal);
+      setText("open-detail", `${status.queued || 0} queued / ${status.running || 0} running / ${status.claimed || 0} claimed`);
+      setText("dead-letter-total", status.dead_letter || 0);
+      setText("verified-value", headline.verified_value_rows ?? scoreboard.ratified_closure_count);
+      setText("processed-rows", `${headline.rows_processed ?? "-"} rows processed`);
+      setText("ratified-closures", scoreboard.ratified_closure_count ?? headline.verified_value_rows ?? 0);
+      setText("governance-detail", `${headline.pending_governance ?? 0} pending governance`);
+      setText("probe-done", learning.probe_worker_done ?? scoreboard.probe_worker_done ?? "-");
+      setText("probe-detail", `${scoreboard.negative_control_unexpected_pass_count ?? 0} unexpected control passes`);
+      const binding = obs.source_binding || {};
+      setText("binding-rejects", binding.rejected_count ?? "-");
+      setText("binding-bridges", `${binding.rejected_count ?? 0} rejected / ${binding.probe_bridge_count ?? 0} probe bridges`);
+    }
+
+    async function boot() {
+      const [live, health, obs, intel] = await Promise.all([
+        readJson(DATA_FILES.live),
+        readJson(DATA_FILES.health),
+        readJson(DATA_FILES.observability),
+        readJson(DATA_FILES.intelligence)
+      ]);
+      renderBlockedPanel(obs, intel, live, health);
+      renderKpis(live, health, obs, intel);
+      renderFlow(live.station_flow || []);
+      renderWorkers(live, obs);
+      renderQueueMatrix(obs.queue || health.queue || {});
+      renderActions(intel, live, health);
+      renderStationTimes(intel, health);
+      renderLossBars(obs, intel);
+      renderProbes(live);
+      renderSourceFlows(live);
+      renderFailures(obs);
+      const times = [live.generated_at_epoch, health.generated_at_epoch, obs.generated_at_epoch, intel.generated_at_epoch].filter(Boolean);
+      const newest = times.length ? Math.max(...times.map(Number)) : null;
+      const mode = window.location.protocol === "file:" ? "embedded fallback" : "JSON read models";
+      setText("refresh-stamp", `data: ${timeStamp(newest)} / mode: ${mode}`);
+    }
+
+    boot().catch(err => {
+      setText("blocked-now", "dashboard data unavailable");
+      setText("next-action", "serve this directory over HTTP and refresh the JSON read models");
+      setText("refresh-stamp", `failed to load dashboard data: ${sanitize(err && err.message ? err.message : err)}`);
+    });
+  </script>
+</body>
+</html>

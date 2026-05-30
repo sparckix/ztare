@@ -1,0 +1,522 @@
+family: gram_posdef_linear_independent_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_027_gramSchmidtNormed_linearIndepend
+    - MCB_060_posDef_gram_of_linearIndependent
+    - MCB_042_ContinuousLinearMap
+    - MCB_057_isIdempotentElem_rankOne_self_if
+    - MCB_080_IsIdempotentElem
+    - MCB_020_injective_iff_forall_lt_finrank_
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_044_range_eq_top
+    - MCB_052_finrank_range_adjoint
+    - MCB_065_toPMap_adjoint_eq_adjoint_toPMap
+    - MCB_009_kerFun_dense
+    - MCB_185_span_fourierLp_closure_eq_top
+    - MCB_181_orthonormal_mFourier
+    - MCB_114_norm_le_of_forall_mem_frontier_n
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - MCB_102_norm_canonicalFactor_eval_circle
+    - MCB_017_real_inner_div_norm_mul_norm_eq_
+    - MCB_199_tendsto_integral_exp_inner_smul_
+  lanes:
+    - gram_posdef
+    - linear_independence
+    - lax_milgram_range
+    - adjoint_range_finrank
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - gram
+    - linearIndependent
+    - PosDef
+    - range
+    - finrank
+    - adjoint
+    - top
+    - IsIdempotentElem
+    - idempotent
+    - selfAdjoint
+    - starNormal
+    - dense
+    - closure
+    - toPMap
+    - coercive
+    - span
+    - range
+    - topologicalClosure
+    - Fourier
+    - addCircle
+    - fourierLp
+    - frontier
+    - closure
+    - forall
+    - iff
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: gram_posdef_linear_independent_planner
+  mode: heldout_replay
+  probe_type: heldout_replay
+  expected_outcome: hold
+  blocked_edge: A fresh source-bound probe is blocked because source binding is held and the source-order candidates are not same-module witnesses; the family is drained to row-local exact-gap replays, so the only safe next step is a target-side success paired with a matched negative control.
+  acceptance: one target-side success plus one matched negative-control failure, with no source-bound probe and no registry, scoreboard, or research-log edits; MCB_086_eLpNorm_le_eLpNorm_fderiv_one must preserve the HolderConjugate bridge, MCB_102_norm_canonicalFactor_eval_circle must preserve the sphere-bound norm-equality bridge, MCB_017_real_inner_div_norm_mul_norm_eq_ must preserve the signed real-equality bridge, MCB_067_isSymmetric_iff_inner_map_self_r must preserve the real-part inner-map symmetry bridge, MCB_057_isIdempotentElem_rankOne_self_if must preserve the rankOne idempotent iff bridge, MCB_080_IsIdempotentElem must preserve the idempotent witness into the selfAdjoint/starNormal bridge, MCB_042_ContinuousLinearMap must preserve the adjoint-before-self positivity bridge, MCB_199_tendsto_integral_exp_inner_smul_ must preserve the continuous compact-support Fourier-transport bridge, and the matched negative control must fail when the HolderConjugate witness, the sphere witness, the signed real bridge, the real-part inner-map symmetry bridge, the rankOne nonzero witness, the idempotent witness, the adjoint-before-self orientation bridge, or the compact-support witness is omitted
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the current drained-canary evidence and its matched negative controls; retire the lane if no additional current row appears.
+  paired_negative_controls:
+    - missing inner-product space bridge
+    - wrong direction of Gram/PosDef implication
+    - missing dense adjoint bridge
+    - wrong direction of dense closure equality
+    - missing Fourier-Lp bridge
+    - missing frontier-bound bridge
+    - missing sphere-bound bridge
+    - missing HolderConjugate bridge
+    - missing sphere-bound norm-equality bridge
+    - missing signed real-equality bridge
+    - missing rankOne idempotent bridge
+    - missing idempotent bridge
+    - missing real-part inner-map symmetry bridge
+    - missing rankOne idempotent bridge
+    - missing adjoint-before-self positivity bridge
+    - missing continuous compact-support Fourier-transport bridge
+  negative_control_ideas:
+    - missing inner-product space bridge
+    - wrong direction of Gram/PosDef implication
+    - reverse-direction bridge on the same target
+    - source-action mismatch with no candidate after filter
+    - missing dense bridge for the linear PMap adjoint transport
+    - reverse the dense closure equality and confirm the proof no longer matches the target direction
+    - missing Fourier-Lp bridge for the span-closure-to-top route
+    - missing frontier-bound bridge for the frontier norm bound route
+    - missing continuous compact-support Fourier-transport bridge for the cocompact Fourier transport route
+    - missing idempotent bridge for the selfAdjoint/starNormal route
+  rows:
+    - row_id: MCB_060_posDef_gram_of_linearIndependent
+      negative_control: wrong direction of Gram/PosDef implication
+      required_check: Keep the Gram positive-definite direction explicit, do not reverse the implication, and do not drop the Gram witness or the linear-independence witness.
+    - row_id: MCB_020_injective_iff_forall_lt_finrank_
+      negative_control: missing range bridge in the injective_iff_forall_lt_finrank_singularValues_pos route
+      required_check: Keep the injectivity-to-singularValues positivity bridge explicit and stay on the exact finrank-quantified target.
+    - row_id: MCB_065_toPMap_adjoint_eq_adjoint_toPMap
+      negative_control: missing dense adjoint bridge
+      required_check: Keep the dense-domain bridge explicit, do not drop the density hypothesis, and do not collapse the transport into a generic adjoint identity.
+    - row_id: MCB_009_kerFun_dense
+      negative_control: wrong direction of dense closure equality
+      required_check: Keep the closure-to-top equality explicit and preserve the orthogonal-closure bridge; do not reverse the equality or collapse it into a mere density slogan.
+    - row_id: MCB_185_span_fourierLp_closure_eq_top
+      negative_control: missing Fourier-Lp bridge
+      required_check: Keep the Fourier-Lp bridge explicit; preserve the span and topological-closure witnesses, and do not collapse the route into the raw span_fourier_closure_eq_top theorem.
+    - row_id: MCB_114_norm_le_of_forall_mem_frontier_n
+      negative_control: missing frontier-bound bridge
+      required_check: Keep the boundedness, DiffContOnCl, frontier-bound, and closure witnesses explicit; preserve the exact norm bound theorem application and do not collapse the route into a generic closure estimate.
+    - row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+      negative_control: missing sphere-bound bridge
+      required_check: Keep the ball-domain differentiability, sphere-bound, and derivative norm witnesses explicit; preserve the exact Liouville norm-derivative bound theorem application and do not collapse the route into a generic continuity estimate.
+    - row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+      negative_control: missing HolderConjugate bridge
+      required_check: Keep the HolderConjugate witness explicit and preserve the exact `eLpNorm_le_eLpNorm_fderiv_one` theorem application; do not collapse the route into a generic Sobolev specialization.
+    - row_id: MCB_102_norm_canonicalFactor_eval_circle
+      negative_control: missing sphere-bound norm-equality bridge
+      required_check: Keep the ball witness and sphere witness explicit, preserve the exact `norm_canonicalFactor_eval_circle_eq_one` theorem application, and do not collapse the route into a generic canonical-factor norm bound.
+    - row_id: MCB_017_real_inner_div_norm_mul_norm_eq_
+      negative_control: missing signed real-equality bridge
+      required_check: Keep the explicit `real_inner_div_norm_mul_norm_eq_one_iff` theorem application; preserve the inner-product and norm equality bridge and do not swap in the absolute-value variant.
+    - row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      negative_control: missing real-part inner-map symmetry bridge
+      required_check: Keep the explicit `isSymmetric_iff_inner_map_self_real` theorem application; preserve the real-part inner-map symmetry bridge and do not collapse the route into the self-adjoint variant.
+    - row_id: MCB_057_isIdempotentElem_rankOne_self_if
+      negative_control: missing nonzero witness for the rank-one idempotent iff route
+      required_check: Keep the explicit `isIdempotentElem_rankOne_self_iff` theorem application; preserve the rank-one idempotent iff bridge and do not collapse the route into the bare norm-one statement.
+      positive_candidate: isIdempotentElem_rankOne_self_iff_positive_v1
+      negative_candidate: isIdempotentElem_rankOne_self_iff_missing_nonzero_negative_v1
+      candidate_names:
+        - isIdempotentElem_rankOne_self_iff_positive_v1
+        - isIdempotentElem_rankOne_self_iff_missing_nonzero_negative_v1
+    - row_id: MCB_080_IsIdempotentElem
+      negative_control: missing idempotent bridge for the selfAdjoint/starNormal route
+      required_check: Keep the idempotent witness explicit; preserve the selfAdjoint/starNormal bridge and do not drop the `IsIdempotentElem` witness.
+      positive_candidate: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+      negative_candidate: isIdempotentElem_missing_idempotent_bridge_negative_v1
+      candidate_names:
+        - isIdempotentElem_selfAdjoint_starNormal_positive_v1
+        - isIdempotentElem_missing_idempotent_bridge_negative_v1
+    - row_id: MCB_042_ContinuousLinearMap
+      negative_control: missing adjoint-before-self positivity bridge
+      required_check: Keep the explicit `ContinuousLinearMap.isPositive_adjoint_comp_self` theorem application; preserve the adjoint-before-self positivity bridge and do not collapse the route into the self-comp-adjoint variant.
+      positive_candidate: continuous_linear_map_isPositive_adjoint_comp_self_positive_v1
+      negative_candidate: continuous_linear_map_isPositive_adjoint_comp_self_missing_orientation_bridge_negative_v1
+      candidate_names:
+        - continuous_linear_map_isPositive_adjoint_comp_self_positive_v1
+        - continuous_linear_map_isPositive_adjoint_comp_self_missing_orientation_bridge_negative_v1
+    - row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      negative_control: missing real-part inner-map symmetry bridge
+      required_check: Keep the explicit `isSymmetric_iff_inner_map_self_real` theorem application; preserve the real-part inner-map symmetry bridge and do not collapse the route into the self-adjoint variant.
+    - row_id: MCB_199_tendsto_integral_exp_inner_smul_
+      negative_control: missing compact-support witness for the Fourier transport route
+      required_check: Keep the explicit `tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support` theorem application; preserve the continuous and compact-support witnesses and do not collapse the route into a bare continuity claim.
+      positive_candidate: tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+      negative_candidate: tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_support_negative_v1
+      candidate_names:
+        - tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+        - tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_support_negative_v1
+  required_artifacts:
+    - positive target replay for MCB_060_posDef_gram_of_linearIndependent
+    - matched negative-control failure for MCB_060_posDef_gram_of_linearIndependent
+    - positive target replay for MCB_020_injective_iff_forall_lt_finrank_
+    - matched negative-control failure for MCB_020_injective_iff_forall_lt_finrank_
+    - positive target replay for MCB_065_toPMap_adjoint_eq_adjoint_toPMap
+    - matched negative-control failure for MCB_065_toPMap_adjoint_eq_adjoint_toPMap
+    - positive target replay for MCB_009_kerFun_dense
+    - matched negative-control failure for MCB_009_kerFun_dense
+    - positive target replay for MCB_185_span_fourierLp_closure_eq_top
+    - matched negative-control failure for MCB_185_span_fourierLp_closure_eq_top
+    - positive target replay for MCB_114_norm_le_of_forall_mem_frontier_n
+    - matched negative-control failure for MCB_114_norm_le_of_forall_mem_frontier_n
+    - positive target replay for MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - matched negative-control failure for MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - positive target replay for MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - matched negative-control failure for MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - positive target replay for MCB_102_norm_canonicalFactor_eval_circle
+    - matched negative-control failure for MCB_102_norm_canonicalFactor_eval_circle
+    - positive target replay for MCB_017_real_inner_div_norm_mul_norm_eq_
+    - matched negative-control failure for MCB_017_real_inner_div_norm_mul_norm_eq_
+    - positive target replay for MCB_057_isIdempotentElem_rankOne_self_if
+    - matched negative-control failure for MCB_057_isIdempotentElem_rankOne_self_if
+    - positive target replay for MCB_080_IsIdempotentElem
+    - matched negative-control failure for MCB_080_IsIdempotentElem
+    - positive target replay for MCB_042_ContinuousLinearMap
+    - matched negative-control failure for MCB_042_ContinuousLinearMap
+    - positive target replay for MCB_067_isSymmetric_iff_inner_map_self_r
+    - matched negative-control failure for MCB_067_isSymmetric_iff_inner_map_self_r
+    - positive target replay for MCB_199_tendsto_integral_exp_inner_smul_
+    - matched negative-control failure for MCB_199_tendsto_integral_exp_inner_smul_
+    - row-local evidence only
+  target_row_ids:
+    - MCB_060_posDef_gram_of_linearIndependent
+    - MCB_020_injective_iff_forall_lt_finrank_
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_065_toPMap_adjoint_eq_adjoint_toPMap
+    - MCB_009_kerFun_dense
+    - MCB_185_span_fourierLp_closure_eq_top
+    - MCB_114_norm_le_of_forall_mem_frontier_n
+    - MCB_145_norm_deriv_le_of_forall_mem_sphe
+    - MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    - MCB_102_norm_canonicalFactor_eval_circle
+    - MCB_017_real_inner_div_norm_mul_norm_eq_
+    - MCB_057_isIdempotentElem_rankOne_self_if
+    - MCB_080_IsIdempotentElem
+    - MCB_042_ContinuousLinearMap
+    - MCB_199_tendsto_integral_exp_inner_smul_
+  sibling_or_heldout_constraints:
+    - Keep the Gram positive-definite direction explicit for MCB_060; do not reverse the implication or drop the Gram witness.
+    - Keep the injectivity-to-singularValues positivity bridge explicit for MCB_020; do not drop the range bridge or collapse the route into a generic finrank slogan.
+    - Keep the linear-independence witness explicit and do not treat external theorem candidates as same-module evidence.
+    - Do not collapse the row into a generic Gram theorem or reopen source-bound probing.
+    - Pair each positive replay with a matched negative-control failure.
+    - Keep the real-part inner-map symmetry bridge explicit for MCB_067; do not collapse the route into the self-adjoint variant.
+    - Keep the `Dense (p : Set E)` bridge explicit for MCB_065; do not drop the density hypothesis or collapse the transport into a generic adjoint identity.
+    - Keep the closure-to-top equality explicit for MCB_009; do not reverse the equality or collapse the route into a slogan about density alone.
+    - Use only MCB_185_span_fourierLp_closure_eq_top for the Fourier-Lp span-closure lane.
+    - Keep the Fourier-Lp bridge explicit; do not collapse the route into the base Fourier span-closure theorem alone.
+    - Keep the frontier-bound witness explicit for MCB_114; do not collapse the route into a generic closure estimate.
+    - Keep the sphere-bound witness explicit for MCB_145; do not collapse the route into a generic derivative bound estimate.
+    - Keep the HolderConjugate bridge explicit for MCB_086; do not collapse the route into a generic Sobolev specialization.
+    - Keep the sphere-bound norm-equality bridge explicit for MCB_102; do not collapse the route into a generic canonical-factor norm bound.
+    - Use only MCB_057_isIdempotentElem_rankOne_self_if for the rank-one idempotent iff lane.
+    - Keep the nonzero witness explicit; do not collapse the route into the bare norm-one characterization.
+    - Use only MCB_080_IsIdempotentElem for the idempotent lane.
+    - Keep the idempotent witness explicit; do not collapse the route into the bare selfAdjoint/starNormal bridge.
+    - Keep the adjoint-before-self positivity bridge explicit for MCB_042; do not collapse the route into the self-comp-adjoint variant.
+    - Keep the continuous and compact-support witnesses explicit for MCB_199; do not collapse the route into a bare continuity claim or drop the compact-support bridge.
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: range_eq_top_laxmilgram_positive_v1
+    row_id: MCB_044_range_eq_top
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using range_eq_top coercive
+  - id: range_eq_top_missing_coercive_negative_v1
+    row_id: MCB_044_range_eq_top
+    test_kind: negative_control
+    expected_outcome: must_fail_without_coercive_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using range_eq_top
+  - id: injective_iff_forall_lt_finrank_singularValues_pos_positive_v1
+    row_id: MCB_020_injective_iff_forall_lt_finrank_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (LinearMap.injective_iff_forall_lt_finrank_singularValues_pos (T := T))
+  - id: injective_iff_forall_lt_finrank_singularValues_pos_missing_range_bridge_negative_v1
+    row_id: MCB_020_injective_iff_forall_lt_finrank_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_range_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (LinearMap.singularValues_pos_iff_lt_finrank_range (T := T))
+  - id: finrank_range_adjoint_positive_v1
+    row_id: MCB_052_finrank_range_adjoint
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using finrank_range_adjoint T
+  - id: finrank_range_adjoint_missing_adjoint_bridge_negative_v1
+    row_id: MCB_052_finrank_range_adjoint
+    test_kind: negative_control
+    expected_outcome: must_fail_without_adjoint_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using finrank_range T
+  - id: toPMap_adjoint_eq_adjoint_toPMap_positive_v1
+    row_id: MCB_065_toPMap_adjoint_eq_adjoint_toPMap
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using (toPMap_adjoint_eq_adjoint_toPMap_of_dense (A := A) (p := p) hp)
+  - id: toPMap_adjoint_eq_adjoint_toPMap_missing_dense_negative_v1
+    row_id: MCB_065_toPMap_adjoint_eq_adjoint_toPMap
+    test_kind: negative_control
+    expected_outcome: must_fail_without_dense_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h := toPMap_adjoint_eq_adjoint_toPMap_of_dense (A := A) (p := p)
+      simpa using h
+  - id: real_inner_div_norm_mul_norm_eq_one_iff_positive_v1
+    row_id: MCB_017_real_inner_div_norm_mul_norm_eq_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (real_inner_div_norm_mul_norm_eq_one_iff (x := x) (y := y))
+  - id: real_inner_div_norm_mul_norm_eq_one_iff_missing_signed_real_bridge_negative_v1
+    row_id: MCB_017_real_inner_div_norm_mul_norm_eq_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_signed_real_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (abs_real_inner_div_norm_mul_norm_eq_one_iff (x := x) (y := y))
+  - id: isIdempotentElem_rankOne_self_iff_positive_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isIdempotentElem_rankOne_self_iff (x := x) hx)
+  - id: isIdempotentElem_rankOne_self_iff_missing_nonzero_negative_v1
+    row_id: MCB_057_isIdempotentElem_rankOne_self_if
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonzero_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isIdempotentElem_rankOne_self_iff (x := x))
+  - id: isIdempotentElem_selfAdjoint_starNormal_positive_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p) hp)
+  - id: isIdempotentElem_missing_idempotent_bridge_negative_v1
+    row_id: MCB_080_IsIdempotentElem
+    test_kind: negative_control
+    expected_outcome: must_fail_without_idempotent_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (IsIdempotentElem.isSelfAdjoint_iff_isStarNormal (A := A) (p := p))
+  - id: continuous_linear_map_isPositive_adjoint_comp_self_positive_v1
+    row_id: MCB_042_ContinuousLinearMap
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (ContinuousLinearMap.isPositive_adjoint_comp_self (S := A))
+  - id: continuous_linear_map_isPositive_adjoint_comp_self_missing_orientation_bridge_negative_v1
+    row_id: MCB_042_ContinuousLinearMap
+    test_kind: negative_control
+    expected_outcome: must_fail_without_adjoint_orientation_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (ContinuousLinearMap.isPositive_self_comp_adjoint (S := A))
+  - id: isSymmetric_iff_inner_map_self_real_positive_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isSymmetric_iff_inner_map_self_real (T := T))
+  - id: isSymmetric_iff_inner_map_self_real_missing_real_bridge_negative_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: negative_control
+    expected_outcome: must_fail_without_real_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isSymmetric_iff_inner_map_self_real (T := T)).2
+  - id: kerFun_dense_positive_v1
+    row_id: MCB_009_kerFun_dense
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using kerFun_dense
+  - id: kerFun_dense_missing_equality_direction_negative_v1
+    row_id: MCB_009_kerFun_dense
+    test_kind: negative_control
+    expected_outcome: must_fail_without_dense_closure_equality_direction
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using kerFun_dense.symm
+  - id: span_fourierLp_closure_eq_top_positive_v1
+    row_id: MCB_185_span_fourierLp_closure_eq_top
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (span_fourierLp_closure_eq_top hp)
+  - id: span_fourierLp_closure_eq_top_missing_fourierLp_bridge_negative_v1
+    row_id: MCB_185_span_fourierLp_closure_eq_top
+    test_kind: negative_control
+    expected_outcome: must_fail_without_fourierLp_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using span_fourier_closure_eq_top
+  - id: orthonormal_mFourier_positive_v1
+    row_id: MCB_181_orthonormal_mFourier
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using orthonormal_mFourier
+  - id: orthonormal_mFourier_missing_normalization_bridge_negative_v1
+    row_id: MCB_181_orthonormal_mFourier
+    test_kind: negative_control
+    expected_outcome: must_fail_without_fourier_normalization_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using mFourier_norm
+  - id: norm_le_of_forall_mem_frontier_norm_le_positive_v1
+    row_id: MCB_114_norm_le_of_forall_mem_frontier_n
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (norm_le_of_forall_mem_frontier_norm_le hU hd hC hz)
+  - id: norm_le_of_forall_mem_frontier_norm_le_missing_frontier_bound_negative_v1
+    row_id: MCB_114_norm_le_of_forall_mem_frontier_n
+    test_kind: negative_control
+    expected_outcome: must_fail_without_frontier_bound_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (norm_le_of_forall_mem_frontier_norm_le hU hC hz)
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_positive_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (c := c) (R := R) (C := C)
+          (f := f) hR hd hC)
+  - id: norm_deriv_le_of_forall_mem_sphere_norm_le_missing_sphere_bound_negative_v1
+    row_id: MCB_145_norm_deriv_le_of_forall_mem_sphe
+    test_kind: negative_control
+    expected_outcome: must_fail_without_sphere_bound_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (c := c) (R := R) (C := C)
+          (f := f) hR hd)
+  - id: eLpNorm_le_eLpNorm_fderiv_one_positive_v1
+    row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (MeasureTheory.eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u hp)
+  - id: eLpNorm_le_eLpNorm_fderiv_one_missing_holder_conjugate_negative_v1
+    row_id: MCB_086_eLpNorm_le_eLpNorm_fderiv_one
+    test_kind: negative_control
+    expected_outcome: must_fail_without_holder_conjugate_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (MeasureTheory.eLpNorm_le_eLpNorm_fderiv_one (μ := μ) (u := u) hu h2u)
+  - id: norm_canonicalFactor_eval_circle_eq_one_positive_v1
+    row_id: MCB_102_norm_canonicalFactor_eval_circle
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (norm_canonicalFactor_eval_circle_eq_one (R := R) (w := w) (z := z) hw hz)
+  - id: norm_canonicalFactor_eval_circle_eq_one_missing_sphere_negative_v1
+    row_id: MCB_102_norm_canonicalFactor_eval_circle
+    test_kind: negative_control
+    expected_outcome: must_fail_without_sphere_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (norm_canonicalFactor_eval_circle_eq_one (R := R) (w := w) (z := z) hw)
+  - id: tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support
+          (hf1 := hf1) (hf2 := hf2))
+  - id: tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_support_negative_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_compact_support_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support
+          (hf1 := hf1))

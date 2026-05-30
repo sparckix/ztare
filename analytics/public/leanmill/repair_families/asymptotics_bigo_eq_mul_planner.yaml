@@ -1,0 +1,370 @@
+family: asymptotics_bigo_eq_mul_planner
+version: 1
+status: seed_only
+residual_match:
+  lanes:
+    - bigo_specialization
+    - eq_mul_transport
+    - superpolynomial_decay_bridge
+  row_ids:
+    - MCB_012_isBigO_rpow_top_log_smul
+    - MCB_003_convolution_mono_right_of_nonneg
+    - MCB_000_convolution_mono_right_of_nonneg
+    - MCB_158_isBigOWith_of_eq_mul
+    - MCB_159_isBigOWith_iff_exists_eq_mul
+    - MCB_174_isLittleO_iff_nat_mul_le_aux
+    - MCB_177_superpolynomialDecay_iff_zpow_te
+    - MCB_178_superpolynomialDecay_iff_isBigO
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - IsBigOWith
+    - IsBigO
+    - IsLittleO
+    - rpow
+    - log
+    - top
+    - smul
+    - convolution
+    - mono
+    - nonneg
+    - right
+    - superpolynomialDecay
+    - tendsto
+    - zpow
+    - div
+    - inv
+    - pow
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: asymptotics_bigo_eq_mul_planner
+  mode: heldout_replay
+  probe_type: heldout_replay
+  probe_name: bigo_eq_mul_row_local_replay_v1
+  expected_outcome: hold
+  blocked_edge: A new source-backed sibling would require reopening the source-bound lane, and that lane is currently held; only row-local heldout replay is safe.
+  acceptance: One target-side success plus one matched negative-control failure per row, with no source-bound probe and no registry, scoreboard, or research-log edits.
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the row-local convolution evidence, eq-mul evidence, and the heldout Nat-multiplier evidence; retire the lane if no additional current row appears.
+  sibling_or_heldout_constraints:
+    - Use MCB_012_isBigO_rpow_top_log_smul as the heldout row-local asymptotic bridge.
+    - Use MCB_000_convolution_mono_right_of_nonneg as the heldout row-local convolution bridge.
+    - Use MCB_003_convolution_mono_right_of_nonneg as the heldout row-local convolution bridge.
+    - Use only MCB_158_isBigOWith_of_eq_mul and MCB_159_isBigOWith_iff_exists_eq_mul.
+    - Use MCB_174_isLittleO_iff_nat_mul_le_aux as the heldout row-local asymptotics bridge.
+    - Use MCB_177_superpolynomialDecay_iff_zpow_te as the heldout decay bridge.
+    - Keep `convolution_def` explicit and preserve the argument-order transport.
+    - For MCB_000, keep the right-side nonnegativity witness explicit before the monotonicity step.
+    - For MCB_158, keep the equality-transport step explicit before the big-O witness transport.
+    - For MCB_159, keep the nonnegative-constant transport explicit and separate the reverse witness direction.
+    - For MCB_174, keep the Nat-multiplier transport explicit before the little-o bound conversion.
+    - For MCB_177, keep the zpow-to-tendsto bridge explicit before the superpolynomial decay transport.
+    - For MCB_012, keep the top/log growth bridge explicit before the `mul` transport.
+    - Do not swap either goal into a generic equality or pointwise-function goal.
+    - Do not reopen source-bound probing while source binding is held.
+  paired_negative_controls:
+    - isBigO_rpow_top_log_smul_missing_log_bridge_negative_v1
+    - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+    - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    - bigo_with_missing_eq_mul_negative_v1
+    - bigo_with_exists_missing_nonneg_negative_v1
+    - isLittleO_iff_nat_mul_le_aux_missing_nat_mul_bridge_negative_v1
+    - superpolynomialDecay_iff_zpow_tendsto_zero_missing_decay_bridge_negative_v1
+  negative_control_ideas:
+    - missing top/log bridge should fail
+    - missing right-side nonnegativity should fail
+    - missing equality transport should fail
+    - missing nonnegative constant transport should fail
+    - one-sided inequality should not recover the iff witness
+    - try the whole iff without the constructor/witness split
+    - missing Nat-multiplier transport should fail
+    - missing zpow-to-tendsto bridge should fail
+  planned_tests:
+    - candidate_name: isBigO_rpow_top_log_smul_positive_v1
+      row_id: MCB_012_isBigO_rpow_top_log_smul
+      test_kind: positive
+    - candidate_name: isBigO_rpow_top_log_smul_missing_log_bridge_negative_v1
+      row_id: MCB_012_isBigO_rpow_top_log_smul
+      test_kind: negative_control
+    - candidate_name: convolution_mono_right_of_nonneg_positive_mcb003_v1
+      row_id: MCB_003_convolution_mono_right_of_nonneg
+      test_kind: positive
+    - candidate_name: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+      row_id: MCB_003_convolution_mono_right_of_nonneg
+      test_kind: negative_control
+    - candidate_name: convolution_mono_right_of_nonneg_positive_v1
+      row_id: MCB_000_convolution_mono_right_of_nonneg
+      test_kind: positive
+    - candidate_name: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+      row_id: MCB_000_convolution_mono_right_of_nonneg
+      test_kind: negative_control
+    - candidate_name: bigo_with_eq_mul_positive_v1
+      row_id: MCB_158_isBigOWith_of_eq_mul
+      test_kind: positive
+    - candidate_name: bigo_with_missing_eq_mul_negative_v1
+      row_id: MCB_158_isBigOWith_of_eq_mul
+      test_kind: negative_control
+    - candidate_name: bigo_with_exists_eq_mul_v1
+      row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+      test_kind: positive
+    - candidate_name: bigo_with_exists_missing_nonneg_negative_v1
+      row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+      test_kind: negative_control
+    - candidate_name: isLittleO_iff_nat_mul_le_aux_positive_v1
+      row_id: MCB_174_isLittleO_iff_nat_mul_le_aux
+      test_kind: positive
+    - candidate_name: isLittleO_iff_nat_mul_le_aux_missing_nat_mul_bridge_negative_v1
+      row_id: MCB_174_isLittleO_iff_nat_mul_le_aux
+      test_kind: negative_control
+    - candidate_name: superpolynomialDecay_iff_zpow_tendsto_zero_positive_v1
+      row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+      test_kind: positive
+    - candidate_name: superpolynomialDecay_iff_zpow_tendsto_zero_missing_decay_bridge_negative_v1
+      row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+      test_kind: negative_control
+  candidate_checks:
+    - row_id: MCB_012_isBigO_rpow_top_log_smul
+      negative_control: missing top/log bridge should fail
+      positive_route: keep the top/log growth bridge explicit before the `mul` transport
+    - row_id: MCB_003_convolution_mono_right_of_nonneg
+      negative_control: missing right-side nonnegativity should fail
+      positive_route: keep the right-side nonnegativity witness explicit before the monotonicity step
+    - row_id: MCB_000_convolution_mono_right_of_nonneg
+      negative_control: missing right-side nonnegativity should fail
+      positive_route: keep the right-side nonnegativity witness explicit before the monotonicity step
+    - row_id: MCB_158_isBigOWith_of_eq_mul
+      negative_control: missing equality transport should fail
+      positive_route: keep the equality-transport step explicit before the big-O witness transport
+    - row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+      negative_control: missing nonnegative constant transport should fail
+      positive_route: keep the nonnegative-constant transport explicit before the iff witness split
+    - row_id: MCB_174_isLittleO_iff_nat_mul_le_aux
+      negative_control: missing Nat-multiplier transport should fail
+      positive_route: keep the Nat-multiplier transport explicit before the little-o bound conversion
+    - row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+      negative_control: missing zpow-to-tendsto bridge should fail
+      positive_route: keep the zpow-to-tendsto bridge explicit before the superpolynomial decay transport
+  required_artifacts:
+    - positive target replay for MCB_012_isBigO_rpow_top_log_smul
+    - matched negative-control failure for MCB_012_isBigO_rpow_top_log_smul
+    - positive target replay for MCB_003_convolution_mono_right_of_nonneg
+    - matched negative-control failure for MCB_003_convolution_mono_right_of_nonneg
+    - positive target replay for MCB_000_convolution_mono_right_of_nonneg
+    - matched negative-control failure for MCB_000_convolution_mono_right_of_nonneg
+    - positive target replay for MCB_158_isBigOWith_of_eq_mul
+    - matched negative-control failure for MCB_158_isBigOWith_of_eq_mul
+    - positive target replay for MCB_159_isBigOWith_iff_exists_eq_mul
+    - matched negative-control failure for MCB_159_isBigOWith_iff_exists_eq_mul
+    - positive target replay for MCB_174_isLittleO_iff_nat_mul_le_aux
+    - matched negative-control failure for MCB_174_isLittleO_iff_nat_mul_le_aux
+    - positive target replay for MCB_177_superpolynomialDecay_iff_zpow_te
+    - matched negative-control failure for MCB_177_superpolynomialDecay_iff_zpow_te
+    - row-local evidence only
+  rows:
+    - row_id: MCB_012_isBigO_rpow_top_log_smul
+      negative_control: missing top/log bridge should fail
+      required_check: keep the top/log growth bridge explicit; do not drop the `mul` transport
+      positive_candidate: isBigO_rpow_top_log_smul_positive_v1
+      negative_candidate: isBigO_rpow_top_log_smul_missing_log_bridge_negative_v1
+      candidate_names:
+        - isBigO_rpow_top_log_smul_positive_v1
+        - isBigO_rpow_top_log_smul_missing_log_bridge_negative_v1
+    - row_id: MCB_003_convolution_mono_right_of_nonneg
+      negative_control: missing right-side nonnegativity should fail
+      required_check: keep the right-side nonnegativity witness explicit; do not drop the monotonicity bridge
+      positive_candidate: convolution_mono_right_of_nonneg_positive_mcb003_v1
+      negative_candidate: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+      candidate_names:
+        - convolution_mono_right_of_nonneg_positive_mcb003_v1
+        - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+    - row_id: MCB_000_convolution_mono_right_of_nonneg
+      negative_control: missing right-side nonnegativity should fail
+      required_check: keep the right-side nonnegativity witness explicit; do not drop the monotonicity bridge
+      positive_candidate: convolution_mono_right_of_nonneg_positive_v1
+      negative_candidate: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+      candidate_names:
+        - convolution_mono_right_of_nonneg_positive_v1
+        - convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    - row_id: MCB_158_isBigOWith_of_eq_mul
+      negative_control: missing equality transport should fail
+      required_check: keep the equality-transport step explicit; do not drop the eventual eq-mul bridge
+      positive_candidate: bigo_with_eq_mul_positive_v1
+      negative_candidate: bigo_with_missing_eq_mul_negative_v1
+      candidate_names:
+        - bigo_with_eq_mul_positive_v1
+        - bigo_with_missing_eq_mul_negative_v1
+    - row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+      negative_control: missing nonnegative constant transport should fail
+      required_check: keep the nonnegative-constant transport explicit and separate the reverse witness direction
+      positive_candidate: bigo_with_exists_eq_mul_v1
+      negative_candidate: bigo_with_exists_missing_nonneg_negative_v1
+      candidate_names:
+        - bigo_with_exists_eq_mul_v1
+        - bigo_with_exists_missing_nonneg_negative_v1
+    - row_id: MCB_174_isLittleO_iff_nat_mul_le_aux
+      negative_control: missing Nat-multiplier transport should fail
+      required_check: keep the Nat-multiplier transport explicit; do not drop the inverse-to-multiplier bridge
+      positive_candidate: isLittleO_iff_nat_mul_le_aux_positive_v1
+      negative_candidate: isLittleO_iff_nat_mul_le_aux_missing_nat_mul_bridge_negative_v1
+      candidate_names:
+        - isLittleO_iff_nat_mul_le_aux_positive_v1
+        - isLittleO_iff_nat_mul_le_aux_missing_nat_mul_bridge_negative_v1
+    - row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+      negative_control: missing zpow-to-tendsto bridge should fail
+      required_check: keep the zpow-to-tendsto bridge explicit; do not drop the superpolynomial decay transport
+      positive_candidate: superpolynomialDecay_iff_zpow_tendsto_zero_positive_v1
+      negative_candidate: superpolynomialDecay_iff_zpow_tendsto_zero_missing_decay_bridge_negative_v1
+      candidate_names:
+        - superpolynomialDecay_iff_zpow_tendsto_zero_positive_v1
+        - superpolynomialDecay_iff_zpow_tendsto_zero_missing_decay_bridge_negative_v1
+  target_row_ids:
+    - MCB_012_isBigO_rpow_top_log_smul
+    - MCB_003_convolution_mono_right_of_nonneg
+    - MCB_000_convolution_mono_right_of_nonneg
+    - MCB_158_isBigOWith_of_eq_mul
+    - MCB_159_isBigOWith_iff_exists_eq_mul
+    - MCB_174_isLittleO_iff_nat_mul_le_aux
+    - MCB_177_superpolynomialDecay_iff_zpow_te
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: isBigO_rpow_top_log_smul_positive_v1
+    row_id: MCB_012_isBigO_rpow_top_log_smul
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact ((isLittleO_log_rpow_atTop (sub_pos.mpr hab)).isBigO.smul hf).congr'
+        (Eventually.of_forall fun t => by
+          simp [mul_comm, mul_left_comm, mul_assoc])
+  - id: isBigO_rpow_top_log_smul_missing_log_bridge_negative_v1
+    row_id: MCB_012_isBigO_rpow_top_log_smul
+    test_kind: negative_control
+    expected_outcome: must_fail_without_top_log_growth_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      have hlog : ∀ᶠ x in Filter.atTop, 0 < Real.log x := by
+        filter_upwards [Filter.eventually_gt_atTop (2 : ℝ)] with x hx
+        have hx1 : 1 < x := by linarith
+        exact Real.log_pos hx1
+      exact isBigO_refl (fun x : ℝ => x ^ (1 : ℝ)) Filter.atTop
+  - id: convolution_mono_right_of_nonneg_positive_mcb003_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg'
+  - id: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_mcb003_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_side_nonnegativity
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg
+  - id: convolution_mono_right_of_nonneg_positive_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg hg'
+  - id: convolution_mono_right_of_nonneg_missing_right_nonneg_negative_v1
+    row_id: MCB_000_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_right_side_nonnegativity
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact MeasureTheory.convolution_mono_right_of_nonneg hfg' hf hg
+  - id: bigo_with_eq_mul_positive_v1
+    row_id: MCB_158_isBigOWith_of_eq_mul
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isBigOWith_of_eq_mul φ hφ h)
+  - id: bigo_with_missing_eq_mul_negative_v1
+    row_id: MCB_158_isBigOWith_of_eq_mul
+    test_kind: negative_control
+    expected_outcome: must_fail_without_eventual_eq_mul_transport
+    backend: repl_file
+    timeout: 70
+    body: |
+      simp only [IsBigOWith_def]
+      exact hφ
+  - id: bigo_with_exists_eq_mul_positive_v1
+    row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isBigOWith_iff_exists_eq_mul (hc := hc) (l := l) (u := u) (v := v))
+  - id: bigo_with_exists_missing_nonneg_negative_v1
+    row_id: MCB_159_isBigOWith_iff_exists_eq_mul
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nonnegative_constant_transport
+    backend: repl_file
+    timeout: 90
+    body: |
+      simpa using (isBigOWith_iff_exists_eq_mul (l := l) (u := u) (v := v)).mp h
+  - id: isLittleO_iff_nat_mul_le_aux_positive_v1
+    row_id: MCB_174_isLittleO_iff_nat_mul_le_aux
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (isLittleO_iff_nat_mul_le_aux h₀)
+  - id: isLittleO_iff_nat_mul_le_aux_missing_nat_mul_bridge_negative_v1
+    row_id: MCB_174_isLittleO_iff_nat_mul_le_aux
+    test_kind: negative_control
+    expected_outcome: must_fail_without_nat_multiplier_transport
+    backend: repl_file
+    timeout: 90
+    body: |
+      simpa using (isLittleO_iff_nat_mul_le_aux h₀).symm
+  - id: superpolynomialDecay_iff_zpow_tendsto_zero_positive_v1
+    row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using (superpolynomialDecay_iff_zpow_tendsto_zero (f := f) (k := k) hk)
+  - id: superpolynomialDecay_iff_zpow_tendsto_zero_missing_decay_bridge_negative_v1
+    row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+    test_kind: negative_control
+    expected_outcome: must_fail_without_zpow_tendsto_zero_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (superpolynomialDecay_iff_zpow_tendsto_zero (f := f) (k := k) hk).symm
+  - id: bigo_decay_iff_isBigO_positive_v1
+    row_id: MCB_178_superpolynomialDecay_iff_isBigO
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (superpolynomialDecay_iff_isBigO (f := f) (k := k) (l := l) hk)
+  - id: bigo_decay_iff_isBigO_missing_inverse_power_bridge_negative_v1
+    row_id: MCB_178_superpolynomialDecay_iff_isBigO
+    test_kind: negative_control
+    expected_outcome: must_fail_without_inverse_power_bigO_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (superpolynomialDecay_iff_isBigO (f := f) (k := k) (l := l) hk).symm

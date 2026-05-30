@@ -1,0 +1,420 @@
+family: mellin_convergent_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_008_mellin_comp_mul_left
+    - MCB_008_mellin_comp_rpow
+    - MCB_009_mellin_convergent_iff_norm
+    - MCB_009_mellin_convergent_of_isBigO_sc
+    - MCB_009_mellin_convergent_top_of_isBig
+    - MCB_009_mellin_convergent_zero_of_isBi
+    - MCB_011_hasMellin_one_Ioc
+    - MCB_011_mellin_hasDerivAt_of_isBigO_rp
+  lanes:
+    - mellin_kernel_transport
+    - mellin_convergence_planning
+    - mellin_bigO_interval_split
+  residual_classes:
+    - no_positive_source_action
+    - source_action_mismatch
+    - type_mismatch
+    - tactic_failed
+  head_patterns:
+    - MellinConvergent
+    - HasMellin
+    - mellin
+    - IntegrableOn
+    - IsBigO
+    - cpow
+    - rpow
+    - Ioi
+    - Ioc
+    - indicator
+    - hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    - mellinConvergent_of_isBigO_rpow
+  signature: explicit Mellin-kernel normalization plus endpoint convergence planning; positive routes keep the change-of-variable/domain/BigO bridge visible, and negative controls remove or reverse that bridge.
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  expected_outcome: hold
+  family: mellin_convergent_planner
+  mode: heldout_or_sibling_before_benchmark_credit
+  probe_type: sibling_or_heldout_replay
+  probe_name: mellin_convergent_planner_row_local_pairs_v1
+  acceptance: one row-local positive replay plus one matched negative-control failure per included row; no proof credit, source credit, scoreboard edit, registry edit, or benchmark credit until a governed sibling or heldout probe ratifies reuse.
+  blocked_edge: static public tools produced tested_no_positive_signal, so this spec records only candidate memory and canary-shaped pairs.
+  preconditions:
+    - Keep every replay row-local to the listed source declaration.
+    - Do not call the theorem being converted in its own positive template.
+    - Preserve the matched negative controls that remove or reverse the family ingredient.
+    - Treat the family as candidate memory only.
+  checks:
+    - Change-of-variable rows must fail when the Mellin scaling factor or nonzero/positive source ingredient is reversed or removed.
+    - Convergence rows must fail when the norm bridge, endpoint split, local interval bridge, or Big-O bound source is removed.
+    - HasMellin and derivative rows must fail when the indicator support or dominated-derivative log-bound ingredient is removed.
+  paired_negative_controls:
+    - mellin_comp_mul_left_reversed_scale_negative_v1
+    - mellin_comp_rpow_missing_abs_jacobian_negative_v1
+    - mellin_convergent_iff_norm_missing_positive_domain_negative_v1
+    - mellin_convergent_of_isBigO_scalar_missing_zero_bridge_negative_v1
+    - mellin_convergent_top_of_isBigO_missing_positive_cutoff_negative_v1
+    - mellin_convergent_zero_of_isBigO_wrong_filter_negative_v1
+    - hasMellin_one_Ioc_missing_indicator_support_negative_v1
+    - mellin_hasDerivAt_of_isBigO_rpow_missing_log_bound_negative_v1
+  required_artifacts:
+    - positive target replay for MCB_008_mellin_comp_mul_left
+    - matched negative-control failure for MCB_008_mellin_comp_mul_left
+    - positive target replay for MCB_008_mellin_comp_rpow
+    - matched negative-control failure for MCB_008_mellin_comp_rpow
+    - positive target replay for MCB_009_mellin_convergent_iff_norm
+    - matched negative-control failure for MCB_009_mellin_convergent_iff_norm
+    - positive target replay for MCB_009_mellin_convergent_of_isBigO_sc
+    - matched negative-control failure for MCB_009_mellin_convergent_of_isBigO_sc
+    - positive target replay for MCB_009_mellin_convergent_top_of_isBig
+    - matched negative-control failure for MCB_009_mellin_convergent_top_of_isBig
+    - positive target replay for MCB_009_mellin_convergent_zero_of_isBi
+    - matched negative-control failure for MCB_009_mellin_convergent_zero_of_isBi
+    - positive target replay for MCB_011_hasMellin_one_Ioc
+    - matched negative-control failure for MCB_011_hasMellin_one_Ioc
+    - positive target replay for MCB_011_mellin_hasDerivAt_of_isBigO_rp
+    - matched negative-control failure for MCB_011_mellin_hasDerivAt_of_isBigO_rp
+    - row-local evidence only
+  rows:
+    - row_id: MCB_008_mellin_comp_mul_left
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_8_mellin_comp_mul_left.lean
+      source_declaration: mellin_comp_mul_left
+      required_check: keep the positive multiplier and Mellin scaling factor orientation explicit before applying the interval change of variables
+      negative_control: reverse the Mellin scaling factor orientation after the same change of variables
+      positive_candidate: mellin_comp_mul_left_scale_transport_v1
+      negative_candidate: mellin_comp_mul_left_reversed_scale_negative_v1
+      candidate_names:
+        - mellin_comp_mul_left_scale_transport_v1
+        - mellin_comp_mul_left_reversed_scale_negative_v1
+    - row_id: MCB_008_mellin_comp_rpow
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_8_mellin_comp_rpow.lean
+      source_declaration: mellin_comp_rpow
+      required_check: keep the nonzero exponent and absolute-value Jacobian normalization visible through the rpow substitution
+      negative_control: remove the absolute-value Jacobian normalization while keeping the same rpow substitution route
+      positive_candidate: mellin_comp_rpow_abs_jacobian_v1
+      negative_candidate: mellin_comp_rpow_missing_abs_jacobian_negative_v1
+      candidate_names:
+        - mellin_comp_rpow_abs_jacobian_v1
+        - mellin_comp_rpow_missing_abs_jacobian_negative_v1
+    - row_id: MCB_009_mellin_convergent_iff_norm
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_9_mellin_convergent_iff_norm.lean
+      source_declaration: mellin_convergent_iff_norm
+      required_check: reduce vector-valued Mellin convergence to the real norm integrand using the positive-domain cpow norm bridge
+      negative_control: use the norm reduction without deriving positivity of the domain point from T subset Ioi 0
+      positive_candidate: mellin_convergent_iff_norm_positive_domain_v1
+      negative_candidate: mellin_convergent_iff_norm_missing_positive_domain_negative_v1
+      candidate_names:
+        - mellin_convergent_iff_norm_positive_domain_v1
+        - mellin_convergent_iff_norm_missing_positive_domain_negative_v1
+    - row_id: MCB_009_mellin_convergent_of_isBigO_sc
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_9_mellin_convergent_of_isBigO_sc.lean
+      source_declaration: mellin_convergent_of_isBigO_scalar
+      required_check: split Ioi 0 into a zero-side Ioc witness and a top-side Ioi witness before assembling IntegrableOn
+      negative_control: assemble from the top-side witness alone and omit the zero-side interval bridge
+      positive_candidate: mellin_convergent_of_isBigO_scalar_two_endpoint_split_v1
+      negative_candidate: mellin_convergent_of_isBigO_scalar_missing_zero_bridge_negative_v1
+      candidate_names:
+        - mellin_convergent_of_isBigO_scalar_two_endpoint_split_v1
+        - mellin_convergent_of_isBigO_scalar_missing_zero_bridge_negative_v1
+    - row_id: MCB_009_mellin_convergent_top_of_isBig
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_9_mellin_convergent_top_of_isBig.lean
+      source_declaration: mellin_convergent_top_of_isBigO
+      required_check: extract the atTop IsBigO witness and raise the lower cutoff to max e 1 before applying rpow integrability at infinity
+      negative_control: keep the IsBigO witness but do not raise the cutoff above zero
+      positive_candidate: mellin_convergent_top_of_isBigO_positive_cutoff_v1
+      negative_candidate: mellin_convergent_top_of_isBigO_missing_positive_cutoff_negative_v1
+      candidate_names:
+        - mellin_convergent_top_of_isBigO_positive_cutoff_v1
+        - mellin_convergent_top_of_isBigO_missing_positive_cutoff_negative_v1
+    - row_id: MCB_009_mellin_convergent_zero_of_isBi
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_9_mellin_convergent_zero_of_isBi.lean
+      source_declaration: mellin_convergent_zero_of_isBigO
+      required_check: convert the nhdsWithin zero Big-O witness into an Ioc/Ioo local integrability bound
+      negative_control: use the same Big-O witness on the wrong top-side interval/filter
+      positive_candidate: mellin_convergent_zero_of_isBigO_nhdsWithin_Ioc_v1
+      negative_candidate: mellin_convergent_zero_of_isBigO_wrong_filter_negative_v1
+      candidate_names:
+        - mellin_convergent_zero_of_isBigO_nhdsWithin_Ioc_v1
+        - mellin_convergent_zero_of_isBigO_wrong_filter_negative_v1
+    - row_id: MCB_011_hasMellin_one_Ioc
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_11_hasMellin_one_Ioc.lean
+      source_declaration: hasMellin_one_Ioc
+      required_check: expose HasMellin as convergence plus value, then keep the indicator support restriction to Ioc 0 1 through the Mellin integral
+      negative_control: drop the indicator support restriction and integrate the constant function over Ioi 0
+      positive_candidate: hasMellin_one_Ioc_indicator_support_v1
+      negative_candidate: hasMellin_one_Ioc_missing_indicator_support_negative_v1
+      candidate_names:
+        - hasMellin_one_Ioc_indicator_support_v1
+        - hasMellin_one_Ioc_missing_indicator_support_negative_v1
+    - row_id: MCB_011_mellin_hasDerivAt_of_isBigO_rp
+      source_file: /tmp/rung1/mcb_expand100/files/mcb_11_mellin_hasDerivAt_of_isBigO_rp.lean
+      source_declaration: mellin_hasDerivAt_of_isBigO_rpow
+      required_check: first prove Mellin convergence for log-smul f using the strengthened log Big-O bounds, then feed that domination into differentiation under the integral
+      negative_control: try the dominated derivative route without the log-smul Big-O strengthening
+      positive_candidate: mellin_hasDerivAt_of_isBigO_rpow_log_dominated_v1
+      negative_candidate: mellin_hasDerivAt_of_isBigO_rpow_missing_log_bound_negative_v1
+      candidate_names:
+        - mellin_hasDerivAt_of_isBigO_rpow_log_dominated_v1
+        - mellin_hasDerivAt_of_isBigO_rpow_missing_log_bound_negative_v1
+  target_row_ids:
+    - MCB_008_mellin_comp_mul_left
+    - MCB_008_mellin_comp_rpow
+    - MCB_009_mellin_convergent_iff_norm
+    - MCB_009_mellin_convergent_of_isBigO_sc
+    - MCB_009_mellin_convergent_top_of_isBig
+    - MCB_009_mellin_convergent_zero_of_isBi
+    - MCB_011_hasMellin_one_Ioc
+    - MCB_011_mellin_hasDerivAt_of_isBigO_rp
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: mellin_comp_mul_left_scale_transport_v1
+    row_id: MCB_008_mellin_comp_mul_left
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simp_rw [mellin]
+      conv_rhs => rw [<- integral_comp_mul_left_Ioi _ ha, <- integral_smul]
+      refine setIntegral_congr_fun measurableSet_Ioi fun t ht => by
+        dsimp only
+        rw [<- mul_smul, <- mul_assoc, <- smul_assoc, real_smul]
+        rw [ofReal_mul, mul_cpow_ofReal_nonneg ha.le (le_of_lt ht), ofReal_cpow (le_of_lt ht)]
+        rw [<- cpow_add _ _ (ofReal_ne_zero.mpr (ne_of_gt ht))]
+        ring_nf
+  - id: mellin_comp_mul_left_reversed_scale_negative_v1
+    row_id: MCB_008_mellin_comp_mul_left
+    test_kind: negative_control
+    expected_outcome: must_fail_when_mellin_scale_orientation_is_reversed
+    backend: repl_file
+    timeout: 80
+    body: |
+      simp_rw [mellin]
+      conv_rhs => rw [<- integral_comp_mul_left_Ioi _ ha, <- integral_smul]
+      refine setIntegral_congr_fun measurableSet_Ioi fun t ht => by
+        dsimp only
+        rw [ofReal_mul, mul_cpow_ofReal_nonneg ha.le (le_of_lt ht)]
+        -- reversed scaling uses (a : C) ^ (s - 1) where the goal needs the inverse Mellin power
+        rw [<- cpow_add _ _ (ofReal_ne_zero.mpr (ne_of_gt ht))]
+        ring_nf
+  - id: mellin_comp_rpow_abs_jacobian_v1
+    row_id: MCB_008_mellin_comp_rpow
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      rcases eq_or_ne a 0 with rfl | ha
+      · by_cases hE : CompleteSpace E
+        · simp [integral_smul_const, mellin, setIntegral_Ioi_zero_cpow]
+        · simp [integral, mellin, hE]
+      simp_rw [mellin]
+      conv_rhs => rw [<- integral_comp_rpow_Ioi _ ha, <- integral_smul]
+      refine setIntegral_congr_fun measurableSet_Ioi fun t ht => by
+        simp only [Pi.smul_apply]
+        rw [<- mul_smul, <- mul_assoc, inv_mul_cancel₀ (mt abs_eq_zero.1 ha), one_mul, <- smul_assoc,
+          real_smul]
+        rw [ofReal_cpow (le_of_lt ht), <- cpow_mul_ofReal_nonneg (le_of_lt ht), <- cpow_add _ _
+          (ofReal_ne_zero.mpr <| ne_of_gt ht), ofReal_sub, ofReal_one, mul_sub,
+          mul_div_cancel₀ _ (ofReal_ne_zero.mpr ha), add_comm, <- add_sub_assoc, mul_one,
+          sub_add_cancel]
+  - id: mellin_comp_rpow_missing_abs_jacobian_negative_v1
+    row_id: MCB_008_mellin_comp_rpow
+    test_kind: negative_control
+    expected_outcome: must_fail_without_abs_jacobian_normalization
+    backend: repl_file
+    timeout: 80
+    body: |
+      rcases eq_or_ne a 0 with rfl | ha
+      · by_cases hE : CompleteSpace E
+        · simp [integral_smul_const, mellin, setIntegral_Ioi_zero_cpow]
+        · simp [integral, mellin, hE]
+      simp_rw [mellin]
+      conv_rhs => rw [<- integral_comp_rpow_Ioi _ ha]
+      refine setIntegral_congr_fun measurableSet_Ioi fun t ht => by
+        simp only [Pi.smul_apply]
+        rw [ofReal_cpow (le_of_lt ht), <- cpow_mul_ofReal_nonneg (le_of_lt ht)]
+        rw [<- cpow_add _ _ (ofReal_ne_zero.mpr (ne_of_gt ht))]
+        rw [ofReal_sub, ofReal_one, mul_sub, mul_div_cancel₀ _ (ofReal_ne_zero.mpr ha)]
+        abel
+  - id: mellin_convergent_iff_norm_positive_domain_v1
+    row_id: MCB_009_mellin_convergent_iff_norm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      rw [IntegrableOn, <- integrable_norm_iff]
+      · rw [<- IntegrableOn]
+        refine integrableOn_congr_fun (fun t ht => by
+          simp_rw [norm_smul, norm_cpow_eq_rpow_re_of_pos (hT ht), sub_re, one_re]) hT'
+      · aesop
+  - id: mellin_convergent_iff_norm_missing_positive_domain_negative_v1
+    row_id: MCB_009_mellin_convergent_iff_norm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_positive_domain_for_cpow_norm
+    backend: repl_file
+    timeout: 80
+    body: |
+      rw [IntegrableOn, <- integrable_norm_iff]
+      · rw [<- IntegrableOn]
+        refine integrableOn_congr_fun (fun t ht => by
+          -- the family ingredient is the positivity proof hT ht; using nonnegativity alone should not justify this rewrite
+          simp_rw [norm_smul, norm_cpow_eq_rpow_re_of_pos (le_of_lt ht), sub_re, one_re]) hT'
+      · exact hfc.mono_set hT
+  - id: mellin_convergent_of_isBigO_scalar_two_endpoint_split_v1
+    row_id: MCB_009_mellin_convergent_of_isBigO_sc
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 180
+    body: |
+      obtain ⟨c_top, hc_top_pos, htop_meas, htop_int⟩ :=
+        mellin_convergent_top_of_isBigO hfc.aestronglyMeasurable hf_top hs_top
+      obtain ⟨c_zero, hc_zero_pos, hzero_int⟩ :=
+        mellin_convergent_zero_of_isBigO hfc.aestronglyMeasurable hf_bot hs_bot
+      exact integrableOn_Ioi_of_integrableOn_Ioc_and_Ioi hc_zero_pos hc_top_pos
+        hfc.integrableOn_Icc hzero_int htop_int
+  - id: mellin_convergent_of_isBigO_scalar_missing_zero_bridge_negative_v1
+    row_id: MCB_009_mellin_convergent_of_isBigO_sc
+    test_kind: negative_control
+    expected_outcome: must_fail_without_zero_endpoint_integrability_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      obtain ⟨c_top, hc_top_pos, htop_meas, htop_int⟩ :=
+        mellin_convergent_top_of_isBigO hfc.aestronglyMeasurable hf_top hs_top
+      -- top-side convergence alone leaves the zero endpoint uncovered
+      exact htop_int.mono_set (Ioi_subset_Ioi hc_top_pos.le)
+  - id: mellin_convergent_top_of_isBigO_positive_cutoff_v1
+    row_id: MCB_009_mellin_convergent_top_of_isBig
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      obtain ⟨d, hd'⟩ := hf.isBigOWith
+      simp_rw [IsBigOWith, eventually_atTop] at hd'
+      obtain ⟨e, he⟩ := hd'
+      have he' : 0 < max e 1 := zero_lt_one.trans_le (le_max_right _ _)
+      refine ⟨max e 1, he', by
+        refine AEStronglyMeasurable.mul (by aesop) (hfc.mono_set (Ioi_subset_Ioi he'.le))
+        exact (continuousOn_of_forall_continuousAt fun t ht =>
+          continuousAt_rpow_const _ _ (Or.inl ((he'.trans ht).ne'))).aestronglyMeasurable measurableSet_Ioi, by
+        · have hbound : ∀ᵐ t : ℝ ∂volume.restrict (Ioi (max e 1)),
+            ‖t ^ (s - 1) * f t‖ ≤ t ^ (s - 1 + -a) * d := by
+          refine (ae_restrict_mem measurableSet_Ioi).mono fun t ht => by
+            have ht' : 0 < t := he'.trans ht
+            rw [norm_mul, rpow_add ht', <- norm_of_nonneg (rpow_nonneg ht'.le (-a))]
+            gcongr
+          exact (HasFiniteIntegral.mul_const
+            (integrableOn_Ioi_rpow_of_lt (by linarith) he').hasFiniteIntegral _).mono' hbound⟩
+  - id: mellin_convergent_top_of_isBigO_missing_positive_cutoff_negative_v1
+    row_id: MCB_009_mellin_convergent_top_of_isBig
+    test_kind: negative_control
+    expected_outcome: must_fail_without_positive_cutoff_for_rpow_integrability
+    backend: repl_file
+    timeout: 80
+    body: |
+      obtain ⟨d, hd'⟩ := hf.isBigOWith
+      simp_rw [IsBigOWith, eventually_atTop] at hd'
+      obtain ⟨e, he⟩ := hd'
+      -- using e directly removes the positive lower-bound ingredient needed by rpow integrability
+      have hcut : 0 < e := by linarith
+      refine ⟨e, hcut, hfc.mono_set (Ioi_subset_Ioi hcut.le), by
+        exact (integrableOn_Ioi_rpow_of_lt (by linarith) hcut).hasFiniteIntegral⟩
+  - id: mellin_convergent_zero_of_isBigO_nhdsWithin_Ioc_v1
+    row_id: MCB_009_mellin_convergent_zero_of_isBi
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      obtain ⟨d, _, hd'⟩ := hf.exists_pos
+      simp_rw [IsBigOWith, eventually_nhdsWithin_iff, Metric.eventually_nhds_iff, gt_iff_lt] at hd'
+      obtain ⟨ε, hε, hε'⟩ := hd'
+      refine ⟨ε, hε, Iff.mpr integrableOn_Ioc_iff_integrableOn_Ioo ⟨by
+        refine AEStronglyMeasurable.mul (by aesop) (hfc.mono_set Ioo_subset_Ioi_self)
+        exact (continuousOn_of_forall_continuousAt fun t ht =>
+          continuousAt_rpow_const _ _ (Or.inl ht.1.ne')).aestronglyMeasurable measurableSet_Ioo, by
+        apply HasFiniteIntegral.mono'
+        · change HasFiniteIntegral (fun t => d * t ^ (s - b - 1)) _
+          aesop
+        · refine (ae_restrict_iff' measurableSet_Ioo).mpr (Eventually.of_forall fun t ht => by
+            specialize hε' _ ht.1
+            · rw [dist_eq_norm, sub_zero, norm_of_nonneg (le_of_lt ht.1)]
+              exact ht.2
+            · rw [mul_comm, norm_mul]
+              gcongr)⟩⟩
+  - id: mellin_convergent_zero_of_isBigO_wrong_filter_negative_v1
+    row_id: MCB_009_mellin_convergent_zero_of_isBi
+    test_kind: negative_control
+    expected_outcome: must_fail_when_zero_side_bound_is_used_on_wrong_filter
+    backend: repl_file
+    timeout: 80
+    body: |
+      obtain ⟨d, _, hd'⟩ := hf.exists_pos
+      simp_rw [IsBigOWith, eventually_nhdsWithin_iff, Metric.eventually_nhds_iff, gt_iff_lt] at hd'
+      obtain ⟨ε, hε, hε'⟩ := hd'
+      -- the zero-side nhdsWithin witness is not a top-side Ioi witness
+      refine ⟨ε, hε, by
+        exact Iff.mpr integrableOn_Ioi_iff_integrableOn_Ioo
+          ⟨hfc.mono_set Ioo_subset_Ioi_self, by aesop⟩⟩
+  - id: hasMellin_one_Ioc_indicator_support_v1
+    row_id: MCB_011_hasMellin_one_Ioc
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simp_rw [HasMellin, mellin, MellinConvergent, <- indicator_smul, IntegrableOn]
+      constructor
+      · exact integrableOn_Ioc_cpow_of_re_gt_neg_one (by simpa [sub_re, one_re] using hs)
+      · rw [integral_indicator measurableSet_Ioc]
+        simpa [one_div] using integral_Ioc_cpow_sub_one hs
+  - id: hasMellin_one_Ioc_missing_indicator_support_negative_v1
+    row_id: MCB_011_hasMellin_one_Ioc
+    test_kind: negative_control
+    expected_outcome: must_fail_without_indicator_support_restriction_to_Ioc
+    backend: repl_file
+    timeout: 80
+    body: |
+      simp_rw [HasMellin, mellin, MellinConvergent]
+      constructor
+      · exact integrableOn_Ioi_cpow_of_re_gt_neg_one (by simpa [sub_re, one_re] using hs)
+      · simpa [one_div] using integral_Ioi_cpow_sub_one hs
+  - id: mellin_hasDerivAt_of_isBigO_rpow_log_dominated_v1
+    row_id: MCB_011_mellin_hasDerivAt_of_isBigO_rp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 220
+    body: |
+      have hlog_top :
+          (fun t : ℝ => log t • f t) =O[atTop] (fun t : ℝ => t ^ (-(a - 1))) :=
+        isBigO_rpow_top_log_smul (by linarith) hf_top
+      have hlog_bot :
+          (fun t : ℝ => log t • f t) =O[𝓝[>] 0] (fun t : ℝ => t ^ (-(b + 1))) :=
+        isBigO_rpow_zero_log_smul (by linarith) hf_bot
+      constructor
+      · exact mellinConvergent_of_isBigO_rpow hfc hlog_top (by linarith) hlog_bot (by linarith)
+      · exact hasDerivAt_integral_of_dominated_loc_of_deriv_le
+          (by aesop) (by aesop) (by aesop) (by aesop) (by aesop) (by aesop)
+  - id: mellin_hasDerivAt_of_isBigO_rpow_missing_log_bound_negative_v1
+    row_id: MCB_011_mellin_hasDerivAt_of_isBigO_rp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_log_smul_bigO_domination
+    backend: repl_file
+    timeout: 80
+    body: |
+      constructor
+      · exact mellinConvergent_of_isBigO_rpow hfc hf_top hs_top hf_bot hs_bot
+      · -- the dominated derivative route lacks the log-smul top/zero Big-O bounds
+        exact hasDerivAt_integral_of_dominated_loc_of_deriv_le
+          (by aesop) (by aesop) (by aesop) (by aesop) (by aesop) (by aesop)

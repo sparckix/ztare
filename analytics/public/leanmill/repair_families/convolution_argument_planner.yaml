@@ -1,0 +1,409 @@
+family: convolution_argument_planner
+version: 1
+status: candidate_family
+residual_match:
+  lanes:
+    - summability_transport
+    - condensation_argument
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - condensed
+    - summable_condensed
+    - nonneg
+    - mono
+    - convolution_def
+    - integral_congr_ae
+    - integral_integral_swap
+    - quasiMeasurePreserving_sub_left_of_right_invariant
+    - integral_sub_left_eq_self
+    - flip_apply
+    - AE
+    - second_AE
+    - translation_direction
+    - swap_integrals
+    - translated_integrand
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  expected_outcome: hold
+  family: convolution_argument_planner
+  mode: heldout_replay
+  row_ids:
+    - MCB_004_convolution_congr
+    - MCB_006_integral_convolution
+  probe_type: sibling_or_heldout_replay
+  probe_name: convolution_argument_row_local_sibling_or_heldout_v1
+  blocked_edge: Source-bound probing is held and the family has only the current pair of target rows, so there is no safe new independent sibling or heldout row to source from without reopening the forbidden source-bound lane.
+  acceptance: one target-side success plus one matched negative-control failure per row, with no source-bound probe and no registry/log edits
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the current target-side evidence and its negative controls; retire the lane only if no additional current row appears.
+  stop_rule: If row 004 closes without the second a.e. witness, row 006 closes on a pointwise-goal miscast, or either wrong-side negative control fails to fail on the same row, keep the lane held.
+  preconditions:
+    - Reuse the existing row-local canary spec for the same two rows.
+    - Preserve the row-specific negative controls.
+    - Do not open a new source request.
+  checks:
+    - Row 004 should still require the second a.e. witness and the correct convolution side.
+    - Row 004 should still fail on a wrong-side direct apply that skips the transport bridge.
+    - Row 006 should still require the translation/order bridge and should fail on a pointwise-goal miscast.
+    - Row 006 should still fail if the measure carrier is changed before the invariance hypotheses are in place.
+  paired_negative_controls:
+    - convolution_argument_missing_wrong_side_negative_v1
+    - convolution_argument_missing_pointwise_goal_negative_v1
+  negative_control_ideas:
+    - wrong convolution side
+    - measure-convolution applied to pointwise function goal
+    - skip `convolution_def` and try to close by direct apply
+    - change the measure carrier before the invariance hypotheses are in place
+  planned_tests:
+    - candidate_name: MeasureTheory.mconv_withDensity_eq_mlconvolution
+      action_profile: unfold `convolution_def`, match argument order, instantiate measure/invariance hypotheses
+      row_id: MCB_004_convolution_congr
+      test_kind: positive
+    - candidate_name: MeasureTheory.mconv_withDensity_eq_mlconvolution
+      action_profile: direct apply of a resolvable source with wrong conclusion head
+      row_id: MCB_004_convolution_congr
+      test_kind: negative_control
+    - candidate_name: MeasureTheory.Measure.lintegral_conv_eq_lintegral_sum
+      action_profile: unfold `convolution_def`, match argument order, instantiate measure/invariance hypotheses
+      row_id: MCB_006_integral_convolution
+      test_kind: positive
+    - candidate_name: MeasureTheory.Measure.lintegral_conv_eq_lintegral_sum
+      action_profile: measure-convolution applied to pointwise function goal
+      row_id: MCB_006_integral_convolution
+      test_kind: negative_control
+  rows:
+    - row_id: MCB_004_convolution_congr
+      negative_control: wrong convolution side
+      required_check: unfold `convolution_def`, match argument order, keep the second a.e. witness explicit, then instantiate invariance hypotheses
+      positive_candidate: MeasureTheory.mconv_withDensity_eq_mlconvolution
+      negative_candidate: convolution_argument_missing_wrong_side_negative_v1
+      candidate_names:
+        - MeasureTheory.mconv_withDensity_eq_mlconvolution
+        - convolution_argument_missing_wrong_side_negative_v1
+    - row_id: MCB_006_integral_convolution
+      negative_control: measure-convolution applied to pointwise function goal
+      required_check: unfold `convolution_def`, match integrand order, preserve the translation/order bridge, then transport through `lintegral`
+      positive_candidate: MeasureTheory.Measure.lintegral_conv_eq_lintegral_sum
+      negative_candidate: convolution_argument_missing_pointwise_goal_negative_v1
+      candidate_names:
+        - MeasureTheory.Measure.lintegral_conv_eq_lintegral_sum
+        - convolution_argument_missing_pointwise_goal_negative_v1
+  sibling_or_heldout_constraints:
+    - Use only `MCB_004_convolution_congr` and `MCB_006_integral_convolution`.
+    - Keep `convolution_def` explicit and preserve the argument-order / integrand-order transport.
+    - Do not swap the convolution-side goal into a generic equality or pointwise-function goal.
+    - For `MCB_004`, keep the right-action transport and invariance hypotheses visible.
+    - For `MCB_006`, keep the `lintegral` bridge visible.
+    - For `MCB_004`, keep the right-action transport explicit before reapplying the invariance hypotheses.
+    - For `MCB_006`, keep the `lintegral` bridge explicit before the sum/transport step.
+    - For `MCB_004`, keep the second a.e. witness explicit before reapplying the invariance hypotheses.
+    - For `MCB_006`, keep the translation/order bridge explicit before the `lintegral` step.
+    - Do not reopen source-bound probing while source binding is held.
+  target_row_ids:
+    - MCB_004_convolution_congr
+    - MCB_006_integral_convolution
+  required_artifacts:
+    - positive target replay for MCB_004_convolution_congr
+    - positive target replay for MCB_006_integral_convolution
+    - matched negative-control failure for wrong convolution side on MCB_004_convolution_congr
+    - matched negative-control failure for measure-convolution applied to pointwise goal on MCB_006_integral_convolution
+    - row-local evidence only
+  schema: leanmill-probe-exit-contract-v1
+templates:
+  - id: convolution_mono_right_shape_positive_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      -- shape adapter for right-action transport
+      -- the direct theorem should only work after the goal is put into the right conclusion shape
+      simpa using (MeasureTheory.Measure.conv_smul_right)
+  - id: convolution_mono_right_wrong_conclusion_head_direct_apply_negative_v1
+    row_id: MCB_003_convolution_mono_right_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_on_wrong_conclusion_head
+    backend: repl_file
+    timeout: 80
+    body: |
+      -- direct apply with the wrong conclusion head should not normalize the goal
+      exact MeasureTheory.Measure.conv_smul_right
+  - id: ennreal_le_tsum_condensed_positive_v1
+    row_id: MCB_017_le_tsum_condensed
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]
+      refine iSup_le fun n => (Finset.le_sum_condensed hf n).trans <| by
+        simp only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two]
+        grw [ENNReal.sum_le_tsum]
+  - id: ennreal_le_tsum_condensed_missing_tsum_bridge_negative_v1
+    row_id: MCB_017_le_tsum_condensed
+    test_kind: negative_control
+    expected_outcome: must_fail_without_finite_sum_to_tsum_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]
+      refine iSup_le fun n => by
+        simpa only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two] using Finset.le_sum_condensed hf n
+  - id: ennreal_le_tsum_condensed_wrong_shape_coe_tsum_negative_v1
+    row_id: MCB_017_le_tsum_condensed
+    test_kind: negative_control
+    expected_outcome: must_fail_because_coe_tsum_only_matches_coercion_equalities
+    backend: repl_file
+    timeout: 80
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' (tendsto_pow_atTop_atTop_of_one_lt _root_.one_lt_two)]
+      refine iSup_le fun n => by
+        simpa only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_two] using (ENNReal.coe_tsum)
+  - id: nnreal_summable_condensed_positive_v1
+    row_id: MCB_018_summable_condensed_iff
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff hf (pow_pos zero_lt_two) (pow_right_strictMono₀ _root_.one_lt_two)
+        two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: nnreal_summable_condensed_missing_simp_negative_v1
+    row_id: MCB_018_summable_condensed_iff
+    test_kind: negative_control
+    expected_outcome: must_fail_without_power_succ_normalization
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff hf (pow_pos zero_lt_two) (pow_right_strictMono₀ _root_.one_lt_two)
+        two_ne_zero h_succ_diff
+  - id: real_summable_condensed_nonneg_positive_v1
+    row_id: MCB_019_summable_condensed_iff_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff_of_nonneg h_nonneg h_mono (pow_pos zero_lt_two)
+        (pow_right_strictMono₀ one_lt_two) two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: real_summable_condensed_missing_nonneg_lift_negative_v1
+    row_id: MCB_019_summable_condensed_iff_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_real_to_nnreal_nonnegative_lift
+    backend: repl_file
+    timeout: 80
+    body: |
+      have h_succ_diff : SuccDiffBounded 2 (2 ^ ·) := by
+        intro n
+        simp [pow_succ, mul_two, two_mul]
+      convert summable_schlomilch_iff_of_nonneg h_mono (pow_pos zero_lt_two)
+        (pow_right_strictMono₀ one_lt_two) two_ne_zero h_succ_diff
+      simp [pow_succ, mul_two]
+  - id: ennreal_le_tsum_schlomilch_positive_v1
+    row_id: MCB_003_le_tsum_schlomilch
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (le_tsum_schlomilch (f := f) (u := u) hf h_pos hu)
+  - id: ennreal_le_tsum_schlomilch_missing_sum_bridge_negative_v1
+    row_id: MCB_003_le_tsum_schlomilch
+    test_kind: negative_control
+    expected_outcome: must_fail_without_ennreal_sum_to_tsum_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      rw [ENNReal.tsum_eq_iSup_nat' hu.tendsto_atTop]
+      refine iSup_le fun n => by
+        grw [Finset.le_sum_schlomilch hf h_pos hu.monotone n]
+        gcongr
+        have (k : ℕ) : (u (k + 1) - u k : ℝ≥0∞) = (u (k + 1) - (u k : ℕ) : ℕ) := by simp
+        simp only [nsmul_eq_mul, this]
+  - id: real_sum_le_exp_of_nonneg_positive_v1
+    row_id: MCB_119_sum_le_exp_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using sum_le_exp_of_nonneg hx n
+  - id: real_sum_le_exp_of_nonneg_missing_positivity_negative_v1
+    row_id: MCB_119_sum_le_exp_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_termwise_nonnegativity_witness
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using sum_le_exp_of_nonneg (by positivity) n
+  - id: real_summable_ofDigitsTerm_positive_v1
+    row_id: MCB_211_summable_ofDigitsTerm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (summable_ofDigitsTerm (digits := digits))
+  - id: real_summable_ofDigitsTerm_missing_geometric_bridge_negative_v1
+    row_id: MCB_211_summable_ofDigitsTerm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_geometric_series_summability_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (summable_ofDigitsTerm (digits := fun n => digits (n + 1)))
+  - id: real_sum_Ioo_inv_sq_le_positive_v1
+    row_id: MCB_022_sum_Ioo_inv_sq_le
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (sum_Ioo_inv_sq_le k n)
+  - id: real_sum_Ioo_inv_sq_le_missing_tail_bridge_negative_v1
+    row_id: MCB_022_sum_Ioo_inv_sq_le
+    test_kind: negative_control
+    expected_outcome: must_fail_without_tail_inverse_square_bound
+    backend: repl_file
+    timeout: 80
+    body: |
+      calc
+        (∑ i ∈ Ioo k n, ((i : α) ^ 2)⁻¹) ≤ ∑ i ∈ Ioc k (max (k + 1) n), ((i : α) ^ 2)⁻¹ := by
+          apply sum_le_sum_of_subset_of_nonneg
+          · intro x hx
+            simp only [mem_Ioo] at hx
+            simp only [hx, hx.2.le, mem_Ioc, le_max_iff, or_true, and_self_iff]
+          · intro i _hi _hident
+            positivity
+        _ ≤ ((k + 1 : α) ^ 2)⁻¹ + ∑ i ∈ Ioc k.succ (max (k + 1) n), ((i : α) ^ 2)⁻¹ := by
+          rw [← Icc_add_one_left_eq_Ioc, ← Ico_add_one_right_eq_Icc, sum_eq_sum_Ico_succ_bot]
+          swap; · exact Nat.succ_lt_succ ((Nat.lt_succ_self k).trans_le (le_max_left _ _))
+          rw [Ico_add_one_right_eq_Icc, Icc_add_one_left_eq_Ioc]
+          norm_cast
+        _ ≤ 1 / (k + 1) + 1 / (k + 1) := by
+          have A : (1 : α) ≤ k + 1 := by simp only [le_add_iff_nonneg_left, Nat.cast_nonneg]
+          simp_rw [← one_div]
+          gcongr
+          simpa using pow_right_mono₀ A one_le_two
+        _ = 2 / (k + 1) := by ring
+  - id: real_inner_le_Lp_mul_Lq_of_nonneg_positive_v1
+    row_id: MCB_039_inner_le_Lp_mul_Lq_of_nonneg
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      convert inner_le_Lp_mul_Lq s f g hpq using 3 <;> apply sum_congr rfl <;> intro i hi <;>
+        simp only [abs_of_nonneg, hf i hi, hg i hi]
+  - id: real_inner_le_Lp_mul_Lq_of_nonneg_missing_second_nonneg_negative_v1
+    row_id: MCB_039_inner_le_Lp_mul_Lq_of_nonneg
+    test_kind: negative_control
+    expected_outcome: must_fail_without_second_nonnegativity_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      convert inner_le_Lp_mul_Lq s f g hpq using 3 <;> apply sum_congr rfl <;> intro i hi <;>
+        simp only [abs_of_nonneg, hf i hi]
+  - id: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support
+          (hf1 := hf1) (hf2 := hf2))
+  - id: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_reduction_negative_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_compact_support_restriction_to_A
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (tendsto_const_nhds : Tendsto (fun _ : V => (0 : ℂ)) (cocompact V) (𝓝 (0 : ℂ)))
+  - id: real_real_inner_div_norm_mul_norm_eq_one_iff_positive_v1
+    row_id: MCB_017_real_inner_div_norm_mul_norm_eq_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using (real_inner_div_norm_mul_norm_eq_one_iff x y)
+  - id: real_real_inner_div_norm_mul_norm_eq_one_iff_missing_pos_mul_bridge_negative_v1
+    row_id: MCB_017_real_inner_div_norm_mul_norm_eq_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_positive_mul_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (real_inner_div_norm_mul_norm_eq_one_iff x y).symm
+  - id: convolution_congr_positive_v1
+    row_id: MCB_004_convolution_congr
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      ext x
+      simp only [convolution_def]
+      apply integral_congr_ae
+      filter_upwards [h1, (quasiMeasurePreserving_sub_left_of_right_invariant μ x).ae h2] with y hy1 hy2
+      rw [hy1, hy2]
+  - id: convolution_congr_missing_second_ae_negative_v1
+    row_id: MCB_004_convolution_congr
+    test_kind: negative_control
+    expected_outcome: must_fail_without_second_ae_branch
+    backend: repl_file
+    timeout: 80
+    body: |
+      ext x
+      simp only [convolution_def]
+      apply integral_congr_ae
+      filter_upwards [h1] with y hy1
+      rw [hy1]
+  - id: integral_convolution_positive_v1
+    row_id: MCB_006_integral_convolution
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      rw [convolution_def]
+      rw [integral_integral_swap]
+      · simp_rw [← integral_mul_left]
+        congr
+        ext y
+        rw [integral_sub_left_eq_self]
+      · exact hf.integrable_mul_right hg
+      · exact hf.integrable_mul_left hg
+  - id: integral_convolution_pointwise_goal_negative_v1
+    row_id: MCB_006_integral_convolution
+    test_kind: negative_control
+    expected_outcome: must_fail_without_integral_level_transport
+    backend: repl_file
+    timeout: 90
+    body: |
+      simpa using
+        (MeasureTheory.Measure.lintegral_conv_eq_lintegral_sum (μ := μ) (ν := ν)
+          (f := fun z : M => (0 : ℝ≥0∞)))

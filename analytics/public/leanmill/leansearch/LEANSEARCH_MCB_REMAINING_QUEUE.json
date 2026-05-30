@@ -1,0 +1,338 @@
+{
+  "corpus": "/tmp/rung1/mcb_corpus_v2.json",
+  "corpus_rows": 40,
+  "exclude": "/tmp/rung1/four_arm_frozen_corpus.json",
+  "excluded_rows": 26,
+  "generated_at": "2026-05-20T00:14:52Z",
+  "schema": "leansearch-mcb-source-queue-v1",
+  "source_discovery_queue": [
+    {
+      "available_source_names": [
+        "hofer"
+      ],
+      "metadata_theorem": "hofer",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 1,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_000_hofer",
+      "source_file": "Mathlib/Analysis/Hofer.lean",
+      "source_hinge": "hofer Type u_1 MetricSpace CompleteSpace \u03b5_pos cont Continuous nonneg dist",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "hofer"
+    },
+    {
+      "available_source_names": [
+        "convolution_mono_right_of_nonneg"
+      ],
+      "metadata_theorem": "convolution_mono_right_of_nonneg",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 2,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_003_convolution_mono_right_of_nonneg",
+      "source_file": "Mathlib/Analysis/Convolution.lean",
+      "source_hinge": "convolution_mono_right_of_nonneg Type MeasurableSpace Measure AddGroup hfg' @MeasureTheory.ConvolutionExistsAt Real.normedAddCommGroup DenselyNormedField.toNontriviallyNormedField RCLike.toInnerProductSpaceReal.toNormedSpace lsmul hg' @MeasureTheory.convolution Real.norm",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "convolution_mono_right_of_nonneg"
+    },
+    {
+      "available_source_names": [
+        "convolution_congr"
+      ],
+      "metadata_theorem": "convolution_congr",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 3,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_004_convolution_congr",
+      "source_file": "Mathlib/Analysis/Convolution.lean",
+      "source_hinge": "convolution_congr Type uE' NormedAddCommGroup NontriviallyNormedField NormedSpace \u2192L[\ud835\udd5c MeasurableSpace Measure AddGroup MeasurableAdd\u2082 MeasurableNeg SFinite \u03bc.IsAddRightInvariant =\u1da0[ae @MeasureTheory.convolution",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "convolution_congr"
+    },
+    {
+      "available_source_names": [
+        "integral_convolution"
+      ],
+      "metadata_theorem": "integral_convolution",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 4,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_006_integral_convolution",
+      "source_file": "Mathlib/Analysis/Convolution.lean",
+      "source_hinge": "integral_convolution Type uE' NormedAddCommGroup RCLike NormedSpace MeasurableSpace Measure \u2192L[\ud835\udd5c CompleteSpace AddGroup SFinite \u03bc.IsAddRightInvariant MeasurableAdd\u2082 MeasurableNeg Comple",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "integral_convolution"
+    },
+    {
+      "available_source_names": [
+        "isBigO_rpow_top_log_smul"
+      ],
+      "metadata_theorem": "isBigO_rpow_top_log_smul",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 5,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_012_isBigO_rpow_top_log_smul",
+      "source_file": "Mathlib/Analysis/MellinTransform.lean",
+      "source_hinge": "isBigO_rpow_top_log_smul Type u_1 NormedAddCommGroup NormedSpace hab =O[atTop fun log",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "isBigO_rpow_top_log_smul"
+    },
+    {
+      "available_source_names": [
+        "isBigO_rpow_zero_log_smul"
+      ],
+      "metadata_theorem": "isBigO_rpow_zero_log_smul",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 6,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_013_isBigO_rpow_zero_log_smul",
+      "source_file": "Mathlib/Analysis/MellinTransform.lean",
+      "source_hinge": "isBigO_rpow_zero_log_smul Type u_1 NormedAddCommGroup NormedSpace hab =O[nhdsWithin Ioi fun log",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "isBigO_rpow_zero_log_smul"
+    },
+    {
+      "available_source_names": [
+        "le_tsum_condensed"
+      ],
+      "metadata_theorem": "le_tsum_condensed",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 7,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_017_le_tsum_condensed",
+      "source_file": "Mathlib/Analysis/PSeries.lean",
+      "source_hinge": "le_tsum_condensed ENNReal",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "le_tsum_condensed"
+    },
+    {
+      "available_source_names": [
+        "summable_condensed_iff"
+      ],
+      "metadata_theorem": "summable_condensed_iff",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 8,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_018_summable_condensed_iff",
+      "source_file": "Mathlib/Analysis/PSeries.lean",
+      "source_hinge": "summable_condensed_iff NNReal Summable fun",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "summable_condensed_iff"
+    },
+    {
+      "available_source_names": [
+        "summable_condensed_iff_of_nonneg"
+      ],
+      "metadata_theorem": "summable_condensed_iff_of_nonneg",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 9,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_019_summable_condensed_iff_of_nonneg",
+      "source_file": "Mathlib/Analysis/PSeries.lean",
+      "source_hinge": "summable_condensed_iff_of_nonneg h_nonneg h_mono Summable fun",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "summable_condensed_iff_of_nonneg"
+    },
+    {
+      "available_source_names": [
+        "sum_Ioo_inv_sq_le"
+      ],
+      "metadata_theorem": "sum_Ioo_inv_sq_le",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 10,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_022_sum_Ioo_inv_sq_le",
+      "source_file": "Mathlib/Analysis/PSeries.lean",
+      "source_hinge": "sum_Ioo_inv_sq_le Type u_1 Field LinearOrder IsStrictOrderedRing Ioo 2)\u207b\u00b9",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "sum_Ioo_inv_sq_le"
+    },
+    {
+      "available_source_names": [
+        "geom_mean_le_arith_mean_weighted"
+      ],
+      "metadata_theorem": "geom_mean_le_arith_mean_weighted",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 11,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_023_geom_mean_le_arith_mean_weighted",
+      "source_file": "Mathlib/Analysis/MeanInequalities.lean",
+      "source_hinge": "geom_mean_le_arith_mean_weighted Type Finset hw'",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "geom_mean_le_arith_mean_weighted"
+    },
+    {
+      "available_source_names": [
+        "geom_mean_eq_arith_mean_weighted_iff'"
+      ],
+      "metadata_theorem": "geom_mean_eq_arith_mean_weighted_iff",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 12,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_025_geom_mean_eq_arith_mean_weighted",
+      "source_file": "Mathlib/Analysis/MeanInequalities.lean",
+      "source_hinge": "geom_mean_eq_arith_mean_weighted_iff' Type Finset hw'",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "geom_mean_eq_arith_mean_weighted_iff'"
+    },
+    {
+      "available_source_names": [
+        "geom_mean_eq_arith_mean_weighted_iff'"
+      ],
+      "metadata_theorem": "geom_mean_eq_arith_mean_weighted_iff",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 13,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_026_geom_mean_eq_arith_mean_weighted",
+      "source_file": "Mathlib/Analysis/MeanInequalities.lean",
+      "source_hinge": "geom_mean_eq_arith_mean_weighted_iff' Type Finset hw'",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "geom_mean_eq_arith_mean_weighted_iff'"
+    },
+    {
+      "available_source_names": [
+        "inner_le_Lp_mul_Lq_of_nonneg"
+      ],
+      "metadata_theorem": "inner_le_Lp_mul_Lq_of_nonneg",
+      "non_timeout_candidate_family": "LeanSearch external source acquisition from frozen MCB residual",
+      "priority": 14,
+      "priority_reason": "frozen remaining MCB row not in the completed four-arm band",
+      "replay_gate": [
+        "bounded one-row canary only after static filter",
+        "Path-B authoritative governance required for any closure credit"
+      ],
+      "row_id": "MCB_039_inner_le_Lp_mul_Lq_of_nonneg",
+      "source_file": "Mathlib/Analysis/MeanInequalities.lean",
+      "source_hinge": "inner_le_Lp_mul_Lq_of_nonneg Type Finset hpq p.HolderConjugate",
+      "static_gate": [
+        "LeanSearch proof bodies forbidden",
+        "exact target declarations excluded",
+        "post-target same-file declarations excluded",
+        "static name-resolution before replay"
+      ],
+      "theorem": "inner_le_Lp_mul_Lq_of_nonneg"
+    }
+  ],
+  "source_discovery_queue_count": 14,
+  "source_policy": {
+    "candidate_queue_only_no_external_call": true,
+    "no_replay_or_training": true,
+    "path_b_required_before_any_closure_credit": true
+  }
+}

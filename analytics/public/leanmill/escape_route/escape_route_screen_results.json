@@ -1,0 +1,40 @@
+{
+  "sandbox_mathlib": "v4.29.0",
+  "n_candidates": 5,
+  "n_clean_escape_route": 5,
+  "clean_rows": [
+    "ER_SIE1_intervalIntegral_pow_exp",
+    "ER_SIE2_sum_Ico_pow_exp",
+    "ER_SIE3_sum_Iic_pow_exp",
+    "ER_SIE4_sum_Iic_pow_twopow",
+    "ER_PENT_strictMonoOn"
+  ],
+  "detail": {
+    "ER_SIE1_intervalIntegral_pow_exp": {
+      "typecheck": true,
+      "automation_closed_by": null,
+      "clean_escape_route": true
+    },
+    "ER_SIE2_sum_Ico_pow_exp": {
+      "typecheck": true,
+      "automation_closed_by": null,
+      "clean_escape_route": true
+    },
+    "ER_SIE3_sum_Iic_pow_exp": {
+      "typecheck": true,
+      "automation_closed_by": null,
+      "clean_escape_route": true
+    },
+    "ER_SIE4_sum_Iic_pow_twopow": {
+      "typecheck": true,
+      "automation_closed_by": null,
+      "clean_escape_route": true
+    },
+    "ER_PENT_strictMonoOn": {
+      "typecheck": true,
+      "automation_closed_by": null,
+      "clean_escape_route": true
+    }
+  },
+  "generated_at": "2026-05-16T03:03:33Z"
+}

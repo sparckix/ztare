@@ -1,0 +1,270 @@
+family: cusp_function_qparam_periodic_planner
+version: 1
+status: candidate_family
+residual_match:
+  lanes:
+    - mellin_fourier_transport
+  residual_classes:
+    - source_action_mismatch
+    - tactic_failed
+    - type_mismatch
+  head_patterns:
+    - cuspFunction
+    - qParam
+    - invQParam
+    - Periodic
+    - qParam_identity
+    - qParam_left_inv_mod_period
+    - qParam_right_inv
+    - invQParam_tendsto
+    - periodicity
+    - right_inverse
+    - boundedAtFilter_cuspFunction
+    - punctured_neighborhood
+    - removable_singularity
+    - cuspFunction_zero_eq_limUnder_nhds_ne
+    - differentiableAt_cuspFunction
+    - differentiableOn_update_limUnder_of_bddAbove
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  expected_outcome: hold
+  family: cusp_function_qparam_periodic_planner
+  mode: heldout_replay
+  probe_type: heldout_replay
+  probe_name: cusp_function_qparam_periodic_planner_mixed_target_v2
+  acceptance: one target-side success plus one matched negative-control failure per row, with no source-bound probe and no registry/log edits
+  blocked_edge: Source binding is currently held and recent source-bound work produced no governed value, so opening a fresh source-bound probe is blocked.
+  do_not_use:
+    - source_request
+    - source_bound_probe
+  downstream_goal: Preserve the current target-side evidence and its negative controls; retire the lane if no additional current row appears.
+  stop_rule: If the row-144 replay closes only after dropping the boundedAtFilter_cuspFunction estimate or the removable-singularity bridge, keep the lane held.
+  preconditions:
+    - Do not open a new source request.
+    - Reuse the existing row-local heldout canary spec for MCB_144.
+    - Preserve the row-specific negative control.
+    - Keep MCB_141_eq_cuspFunction and MCB_142_eventually_differentiableAt_cusp out of the replay scope.
+  checks:
+    - The positive replay must retain the boundedAtFilter_cuspFunction estimate.
+    - The negative control must fail once the bounded extension bridge is removed.
+  sibling_or_heldout_constraints:
+    - Use only MCB_142_eventually_differentiableAt_cusp and MCB_144_differentiableAt_cuspFunction_ze.
+    - Keep the periodicity transport from inverse qParam explicit before the eventual-differentiability step for MCB_142.
+    - Keep the punctured-neighborhood and `qParam_right_inv` bridge explicit for MCB_142.
+    - Keep the bounded removable-singularity bridge explicit and preserve the zero-point carrier for MCB_144.
+    - Do not collapse eventual differentiability into pointwise differentiability.
+    - Do not reopen source-bound probing while source requests are held.
+    - Do not edit scoreboards, registries, governance reports, research logs, or governance receipts.
+  paired_negative_controls:
+    - cusp_function_eventual_diff_missing_right_inverse_negative_v1
+    - cusp_function_zero_missing_bounded_extension_negative_v1
+  planned_tests:
+    - candidate_name: cusp_function_eventual_diff_positive_v1
+      row_id: MCB_142_eventually_differentiableAt_cusp
+      test_kind: positive
+    - candidate_name: cusp_function_eventual_diff_missing_right_inverse_negative_v1
+      row_id: MCB_142_eventually_differentiableAt_cusp
+      test_kind: negative_control
+    - candidate_name: cusp_function_zero_removable_positive_v1
+      row_id: MCB_144_differentiableAt_cuspFunction_ze
+      test_kind: positive
+    - candidate_name: cusp_function_zero_missing_bounded_extension_negative_v1
+      row_id: MCB_144_differentiableAt_cuspFunction_ze
+      test_kind: negative_control
+  negative_control_ideas:
+    - missing periodicity transport from inverse qParam
+    - missing qParam right inverse bridge
+    - missing bounded removable-singularity bridge
+    - collapse eventual differentiability into pointwise differentiability
+    - drop the zero-point carrier and try to close by local differentiability alone
+    - use `Function.Periodic.zsmul_eq` without the explicit qParam/cusp adapter
+  positive_artifacts:
+    - /tmp/rung1/ratified_proofs/eq_cuspFunction_20260521T162504.lean
+    - /tmp/rung1/ratified_proofs/eventually_differentiableAt_cuspFunction_nhds_ne_20260523T062718.lean
+    - /tmp/rung1/ratified_proofs/differentiableAt_cuspFunction_zero_20260522T214217.lean
+  required_artifacts:
+    - positive target replay for MCB_142_eventually_differentiableAt_cusp
+    - matched negative-control failure for MCB_142_eventually_differentiableAt_cusp
+    - positive target replay for MCB_144_differentiableAt_cuspFunction_ze
+    - matched negative-control failure for MCB_144_differentiableAt_cuspFunction_ze
+    - row-local evidence only
+  target_row_ids:
+    - MCB_142_eventually_differentiableAt_cusp
+    - MCB_144_differentiableAt_cuspFunction_ze
+  rows:
+    - row_id: MCB_142_eventually_differentiableAt_cusp
+      negative_control: missing qParam right-inverse bridge
+      required_check: keep the periodicity transport from inverse qParam and the punctured-neighborhood/qParam_right_inv bridge explicit; do not replace the route with a generic `Function.Periodic.zsmul_eq` step or treat pointwise differentiability as enough
+      positive_candidate: cusp_function_eventual_diff_positive_v1
+      negative_candidate: cusp_function_eventual_diff_missing_right_inverse_negative_v1
+      candidate_names:
+        - cusp_function_eventual_diff_positive_v1
+        - cusp_function_eventual_diff_missing_right_inverse_negative_v1
+    - row_id: MCB_144_differentiableAt_cuspFunction_ze
+      negative_control: missing bounded removable-singularity bridge
+      required_check: keep the bounded-at-filter removable-singularity bridge explicit; do not drop the zero-point carrier
+      positive_candidate: cusp_function_zero_removable_positive_v1
+      negative_candidate: cusp_function_zero_missing_bounded_extension_negative_v1
+      candidate_names:
+        - cusp_function_zero_removable_positive_v1
+        - cusp_function_zero_missing_bounded_extension_negative_v1
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: cusp_function_qparam_left_inverse_positive_v1
+    row_id: MCB_141_eq_cuspFunction
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      have : (cuspFunction h f) (𝕢 h z) = f (invQParam h (𝕢 h z)) := by
+        rw [cuspFunction, update_of_ne, comp_apply]
+        exact exp_ne_zero _
+      obtain ⟨m, hm⟩ := qParam_left_inv_mod_period hh z
+      simpa only [this, hm] using hf.int_mul m z
+  - id: cusp_function_missing_periodicity_negative_v1
+    row_id: MCB_141_eq_cuspFunction
+    test_kind: negative_control
+    expected_outcome: must_fail_without_periodicity_transport_from_inverse_qparam
+    backend: repl_file
+    timeout: 70
+    body: |
+      have : (cuspFunction h f) (𝕢 h z) = f (invQParam h (𝕢 h z)) := by
+        rw [cuspFunction, update_of_ne, comp_apply]
+        exact exp_ne_zero _
+      obtain ⟨m, hm⟩ := qParam_left_inv_mod_period hh z
+      simpa only [this, hm]
+  - id: cusp_function_eventual_diff_positive_v1
+    row_id: MCB_142_eventually_differentiableAt_cusp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      refine ((invQParam_tendsto hh).eventually h_hol).mp <|
+        eventually_nhdsWithin_of_forall (fun q hq h_diff => by
+          rw [← qParam_right_inv hh.ne' hq]
+          exact differentiableAt_cuspFunction hh.ne' hf h_diff)
+  - id: cusp_function_eventual_diff_missing_right_inverse_negative_v1
+    row_id: MCB_142_eventually_differentiableAt_cusp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_qparam_right_inverse_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      refine ((invQParam_tendsto hh).eventually h_hol).mp <|
+        eventually_nhdsWithin_of_forall (fun q hq h_diff => by
+          exact differentiableAt_cuspFunction hh.ne' hf h_diff)
+  - id: cusp_function_zero_removable_positive_v1
+    row_id: MCB_144_differentiableAt_cuspFunction_ze
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 220
+    body: |
+      obtain ⟨c, t⟩ := (boundedAtFilter_cuspFunction hh h_bd).bound
+      replace t := (eventually_differentiableAt_cuspFunction_nhds_ne_zero hh hf h_hol).and t
+      simp only [norm_one, Pi.one_apply, mul_one] at t
+      obtain ⟨S, hS1, hS2, hS3⟩ := eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp t)
+      have h_diff : DifferentiableOn ℂ (cuspFunction h f) (S \ {0}) :=
+        fun x hx ↦ (hS1 x hx.1 hx.2).1.differentiableWithinAt
+      have hF_bd : BddAbove (norm ∘ cuspFunction h f '' (S \ {0})) := by
+        use c
+        simp only [mem_upperBounds, Set.mem_image, Set.mem_diff, forall_exists_index, and_imp]
+        intro y q hq hq2 hy
+        simpa only [← hy, norm_one, mul_one] using (hS1 q hq hq2).2
+      have := differentiableOn_update_limUnder_of_bddAbove (IsOpen.mem_nhds hS2 hS3) h_diff hF_bd
+      rw [← cuspFunction_zero_eq_limUnder_nhds_ne, update_eq_self] at this
+      exact this.differentiableAt (IsOpen.mem_nhds hS2 hS3)
+  - id: cusp_function_zero_missing_bounded_extension_negative_v1
+    row_id: MCB_144_differentiableAt_cuspFunction_ze
+    test_kind: negative_control
+    expected_outcome: must_fail_without_bounded_removable_singularity_bridge
+    backend: repl_file
+    timeout: 100
+    body: |
+      obtain ⟨c, t⟩ := (boundedAtFilter_cuspFunction hh h_bd).bound
+      replace t := (eventually_differentiableAt_cuspFunction_nhds_ne_zero hh hf h_hol).and t
+      simp only [norm_one, Pi.one_apply, mul_one] at t
+      obtain ⟨S, hS1, hS2, hS3⟩ := eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp t)
+      have h_diff : DifferentiableOn ℂ (cuspFunction h f) (S \ {0}) :=
+        fun x hx ↦ (hS1 x hx.1 hx.2).1.differentiableWithinAt
+      exact h_diff.differentiableAt (IsOpen.mem_nhds hS2 hS3)
+  - id: eventually_eq_or_eq_zero_of_isLocalMin_norm_positive_v1
+    row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      refine or_iff_not_imp_right.mpr fun hzero => by
+        have h1 : ∀ᶠ z in 𝓝 c, f z ≠ 0 := hf.self_of_nhds.continuousAt.eventually_ne hzero
+        have h2 : IsLocalMax (norm ∘ f)⁻¹ c := hc.inv (h1.mono fun z hz => norm_pos_iff.mpr hz)
+        have h3 : IsLocalMax (norm ∘ f⁻¹) c := by
+          refine h2.congr (Eventually.of_forall (fun z => by simp))
+        have h4 : ∀ᶠ z in 𝓝 c, DifferentiableAt ℂ f⁻¹ z := by
+          filter_upwards [hf, h1] with z hz hdiff using hdiff.inv
+        filter_upwards [eventually_eq_of_isLocalMax_norm h4 h3] with z using inv_inj.mp
+  - id: eventually_eq_or_eq_zero_of_isLocalMin_norm_missing_reciprocal_bridge_negative_v1
+    row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+    test_kind: negative_control
+    expected_outcome: must_fail_without_reciprocal_nonzero_bridge
+    backend: repl_file
+    timeout: 90
+    body: |
+      refine or_iff_not_imp_right.mpr fun hzero => by
+        have h1 : ∀ᶠ z in 𝓝 c, f z ≠ 0 := hf.self_of_nhds.continuousAt.eventually_ne hzero
+        have h2 : IsLocalMax (norm ∘ f)⁻¹ c := hc.inv (h1.mono fun z hz => norm_pos_iff.mpr hz)
+        have h4 : ∀ᶠ z in 𝓝 c, DifferentiableAt ℂ f⁻¹ z := by
+          filter_upwards [hf, h1] with z hz hdiff using hdiff.inv
+        filter_upwards [eventually_eq_of_isLocalMax_norm h4 h2] with z using inv_inj.mp
+  - id: analyticAt_iff_eventually_differentiableAt_positive_v1
+    row_id: MCB_136_analyticAt_iff_eventually_differ
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      constructor
+      · intro ha
+        filter_upwards [ha.eventually_analyticAt]
+        exact AnalyticAt.differentiableAt
+      · intro hd
+        rcases _root_.eventually_nhds_iff.mp hd with ⟨s, hs, o, m⟩
+        exact (DifferentiableOn.analyticOnNhd (fun z hz => (hs z hz).differentiableWithinAt) o) _ m
+  - id: analyticAt_iff_eventually_differentiableAt_missing_open_set_bridge_negative_v1
+    row_id: MCB_136_analyticAt_iff_eventually_differ
+    test_kind: negative_control
+    expected_outcome: must_fail_without_eventual_to_nhds_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      constructor
+      · intro ha
+        filter_upwards [ha.eventually_analyticAt]
+        exact AnalyticAt.differentiableAt
+      · intro hd
+        exact (DifferentiableOn.analyticOnNhd (fun z hz => (hd z hz).differentiableWithinAt)
+          (by
+            rcases _root_.eventually_nhds_iff.mp hd with ⟨s, hs, o, m⟩
+            exact o)) _ (by
+          rcases _root_.eventually_nhds_iff.mp hd with ⟨s, hs, o, m⟩
+          exact o)
+  - id: differentiableOn_compl_singleton_and_continuousAt_positive_v1
+    row_id: MCB_108_differentiableOn_compl_singleton
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 180
+    body: |
+      simpa using (differentiableOn_compl_singleton_and_continuousAt_iff (f := f) (s := s) (c := c) hs)
+  - id: differentiableOn_compl_singleton_and_continuousAt_missing_punctured_bridge_negative_v1
+    row_id: MCB_108_differentiableOn_compl_singleton
+    test_kind: negative_control
+    expected_outcome: must_fail_without_punctured_differentiability_bridge
+    backend: repl_file
+    timeout: 100
+    body: |
+      simpa using (differentiableOn_compl_singleton_and_continuousAt_iff (f := f) (s := s) (c := c) hs).symm

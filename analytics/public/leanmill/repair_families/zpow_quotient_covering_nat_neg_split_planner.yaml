@@ -1,0 +1,1018 @@
+family: zpow_quotient_covering_nat_neg_split_planner
+version: 1
+status: seed_only
+residual_match:
+  row_ids:
+    - MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    - MCB_151_tendsto_tsum_powerSeries_nhdsWit
+    - MCB_173_Filter
+    - MCB_044_range_eq_top
+    - MCB_097_AnalyticAt
+    - MCB_115_isCauSeq_norm_exp
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_073_orthogonalComplement_iSup_eigens
+    - MCB_046_adjointAux_norm
+    - MCB_094_exists_norm_eq_restrict_eq
+    - MCB_153_circleAverage_of_differentiable_
+    - MCB_108_differentiableOn_compl_singleton
+    - MCB_162_isBigOWith_of_div_tendsto_nhds
+    - MCB_146_liouville_theorem_aux
+    - MCB_142_eventually_differentiableAt_cusp
+    - MCB_138_isCoveringMapOn_zpow
+    - MCB_139_isQuotientCoveringMap_zpow
+    - MCB_177_superpolynomialDecay_iff_zpow_te
+    - MCB_136_analyticAt_iff_eventually_differ
+    - MCB_124_sameRay_iff_arg_div_eq_zero
+    - MCB_112_eventually_eq_or_eq_zero_of_isLo
+    - MCB_197_isBigO_norm_restrict_cocompact
+    - MCB_199_tendsto_integral_exp_inner_smul_
+  lanes:
+    - zpow_covering_transport
+    - asymptotics_zpow_decay
+  residual_classes:
+    - source_action_mismatch
+    - type_mismatch
+    - lean_error
+  head_patterns:
+    - zpow
+    - quotient
+    - covering
+    - ball
+    - closedBall
+    - Tietze
+    - TietzeExtension
+    - mapsTo
+    - dslope
+    - set
+    - restrict
+    - extension
+    - bound
+    - bounded
+    - isBounded
+    - adjoint
+    - adjointAux
+    - inner
+    - compl
+    - orthogonalComplement
+    - eigenspace
+    - iSup
+    - restrict
+    - symmetric
+    - real
+    - circleAverage
+    - countable
+    - off_countable
+    - continuousOn
+    - superpolynomialDecay
+    - superpolynomialDecay_iff_zpow_tendsto_zero
+    - analyticAt
+    - differentiable
+    - differentiableAt
+    - differentiableOn
+    - continuousAt
+    - punctured_nhds
+    - singleton
+    - compl
+    - eventually_analyticAt
+    - eventually_differentiableAt
+    - isBigOWith
+    - powerSeries
+    - tsum
+    - stolzSet
+    - stolzCone
+    - range
+    - atTop
+    - atBot
+    - pow
+    - eventuallyEq
+    - OrderTopology
+    - nhdsWithin
+    - cuspFunction
+    - periodic
+    - sameRay
+    - sameRay_iff_arg_div_eq_zero
+    - eventually_eq_or_eq_zero_of_isLocalMin_norm
+    - isLocalMin
+    - eventually
+    - localMin
+    - arg_div_eq_zero
+    - arg
+    - div
+    - comp
+    - iff
+    - zero
+    - tendsto
+    - nhds
+    - norm
+    - tendsto_zero
+    - zpow_eq_zero_iff
+    - eq_nat_or_neg
+    - homeomorph_comp
+    - isCoveringMap_zpow
+    - isQuotientCoveringMap_npow
+    - inv_involutive
+    - negative_exponent
+    - setCongr
+    - restrictPreimage
+    - zpow_to_tendsto_zero
+    - zero_locus
+    - powMonoidHom
+    - zpowGroupHom
+    - liouville
+    - cocompact
+    - Compacts
+    - ContinuousMap.addRight
+    - ContinuousLinearMap
+credit:
+  source_credit_eligible: false
+  clean_solver_credit_eligible: false
+next_probe_contract:
+  family: zpow_quotient_covering_nat_neg_split_planner
+  mode: heldout_replay
+  expected_outcome: hold
+  anchor_row_id: MCB_138_isCoveringMapOn_zpow
+  target_row_id: MCB_139_isQuotientCoveringMap_zpow
+  row_ids:
+    - MCB_046_adjointAux_norm
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_073_orthogonalComplement_iSup_eigens
+    - MCB_139_isQuotientCoveringMap_zpow
+    - MCB_173_Filter
+    - MCB_097_AnalyticAt
+    - MCB_115_isCauSeq_norm_exp
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_197_isBigO_norm_restrict_cocompact
+  probe_type: exact_gap
+  probe_name: zpow_quotient_covering_row_local_exact_gap_v1
+  blocked_edge: MCB_138_isCoveringMapOn_zpow remains source-bound inventory only, and source binding is held, so there is no second independent sibling or heldout route to open.
+  acceptance: Close only if the negative branch stays explicit and the matched negative control fails when the branch transport is removed.
+  downstream_goal: Preserve the current target-side evidence and its negative controls; retire the lane only if the row-local target replay fails.
+  paired_negative_controls:
+    - norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_bridge_negative_v1
+    - tendsto_tsum_powerSeries_nhdsWithin_stolzSet_missing_stolzSet_bridge_negative_v1
+    - tendsto_pow_div_pow_atTop_zero_missing_zero_limit_bridge_negative_v1
+    - analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt_missing_punctured_bridge_negative_v1
+    - isCauSeq_norm_exp_missing_of_abv_bridge_negative_v1
+    - mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    - adjointAux_norm_missing_compact_set_bridge_negative_v1
+    - isSymmetric_iff_inner_map_self_real_missing_polarization_bridge_negative_v1
+    - range_eq_top_missing_orthogonal_transport_negative_v1
+    - orthogonalComplement_iSup_eigenspaces_missing_invariant_bridge_negative_v1
+    - exists_norm_eq_restrict_eq_missing_tietze_extension_bridge_negative_v1
+    - circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+    - differentiableOn_compl_singleton_and_continuousAt_missing_punctured_bridge_negative_v1
+    - isBigOWith_of_div_tendsto_nhds_missing_lower_bound_bridge_negative_v1
+    - eventually_differentiableAt_cuspFunction_nhds_ne_zero_missing_open_set_bridge_negative_v1
+    - zpow_quotient_covering_missing_negative_branch_transport_v1
+    - analyticAt_iff_eventually_differentiableAt_missing_open_set_bridge_negative_v1
+    - isBigO_norm_restrict_cocompact_missing_cocompact_transport_negative_v1
+    - real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_reduction_negative_v1
+  negative_control_ideas:
+    - Remove the `MapsTo` bridge and confirm the dslope bound no longer closes from differentiability alone.
+    - Remove the Tietze extension bridge and confirm the norm-preserving restriction route no longer closes.
+    - Remove the off-countable differentiability bridge and confirm the circle-average route no longer closes.
+    - Remove the punctured-differentiability bridge and confirm the removable-singularity route no longer closes.
+    - Remove the lower-bound bridge `C⁻¹ < ‖a‖` and confirm the `IsBigOWith` transport no longer closes.
+    - Remove the Stolz-set bridge and confirm the Abel-limit transport no longer closes.
+    - Remove the zero-limit bridge and confirm the `atTop → 𝓝 0` transport no longer closes.
+    - Remove the punctured-neighborhood bridge and confirm the analytic-at transport no longer closes.
+    - Remove the `of_abv` bridge and confirm the norm-exp Cauchy-sequence transport no longer closes.
+    - Remove the existential witness bridge and confirm the adjoint-domain membership route no longer closes.
+    - Remove the compact-set witness and confirm the translated adjoint norm route no longer closes.
+    - Remove the polarization bridge and confirm the symmetry/inner-map route no longer closes.
+    - Remove the orthogonal transport and confirm the Lax-Milgram range argument no longer closes.
+    - Remove the invariant bridge and confirm the orthogonal-complement eigenspace restriction route no longer closes.
+    - Remove the bounded-range bridge and confirm the Liouville argument no longer closes.
+    - Remove the eventual-open-set bridge and confirm the cusp-function route cannot recover from pointwise differentiability alone.
+    - Remove the negative-branch transport bridge and confirm the quotient-covering route no longer closes.
+    - Replace the zpow-specific branch with a generic subtype lemma and confirm normalization stalls.
+    - Drop the negative exponent identities (`zpow_neg`, `Int.negOnePow_neg`) and confirm the candidate cannot reconstruct the quotient side.
+    - Drop the `eq_nat_or_neg` split and confirm the negative branch cannot be reconstructed.
+    - Use a plain zpow identity without quotient-covering transport and confirm the route fails.
+    - Drop the eventual-open-set bridge and confirm the analytic iff route cannot recover from pointwise differentiability alone.
+    - Remove the compact-set witness and confirm the translated restriction Big-O route cannot close.
+    - Remove the compact-support reduction to the bounded set `A` and confirm the Fourier integral estimate stalls.
+  positive_artifact: negative-branch transport using `zpow_neg` together with the quotient-covering normalization chain
+  planned_tests:
+    - candidate_name: norm_dslope_le_div_of_mapsTo_ball_positive_v1
+      row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+      test_kind: positive
+    - candidate_name: norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_bridge_negative_v1
+      row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+      test_kind: negative_control
+    - candidate_name: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_positive_v1
+      row_id: MCB_151_tendsto_tsum_powerSeries_nhdsWit
+      test_kind: positive
+    - candidate_name: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_missing_stolzSet_bridge_negative_v1
+      row_id: MCB_151_tendsto_tsum_powerSeries_nhdsWit
+      test_kind: negative_control
+    - candidate_name: exists_norm_eq_restrict_eq_positive_v1
+      row_id: MCB_094_exists_norm_eq_restrict_eq
+      test_kind: positive
+    - candidate_name: exists_norm_eq_restrict_eq_missing_tietze_extension_bridge_negative_v1
+      row_id: MCB_094_exists_norm_eq_restrict_eq
+      test_kind: negative_control
+    - candidate_name: adjointAux_norm_positive_v1
+      row_id: MCB_046_adjointAux_norm
+      test_kind: positive
+    - candidate_name: adjointAux_norm_missing_compact_set_bridge_negative_v1
+      row_id: MCB_046_adjointAux_norm
+      test_kind: negative_control
+    - candidate_name: isSymmetric_iff_inner_map_self_real_positive_v1
+      row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      test_kind: positive
+    - candidate_name: isSymmetric_iff_inner_map_self_real_missing_polarization_bridge_negative_v1
+      row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      test_kind: negative_control
+    - candidate_name: range_eq_top_positive_v1
+      row_id: MCB_044_range_eq_top
+      test_kind: positive
+    - candidate_name: range_eq_top_missing_orthogonal_transport_negative_v1
+      row_id: MCB_044_range_eq_top
+      test_kind: negative_control
+    - candidate_name: orthogonalComplement_iSup_eigenspaces_positive_v1
+      row_id: MCB_073_orthogonalComplement_iSup_eigens
+      test_kind: positive
+    - candidate_name: orthogonalComplement_iSup_eigenspaces_missing_invariant_bridge_negative_v1
+      row_id: MCB_073_orthogonalComplement_iSup_eigens
+      test_kind: negative_control
+    - candidate_name: circleAverage_of_differentiable_on_off_countable_positive_v1
+      row_id: MCB_153_circleAverage_of_differentiable_
+      test_kind: positive
+    - candidate_name: circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+      row_id: MCB_153_circleAverage_of_differentiable_
+      test_kind: negative_control
+    - candidate_name: differentiableOn_compl_singleton_and_continuousAt_positive_v1
+      row_id: MCB_108_differentiableOn_compl_singleton
+      test_kind: positive
+    - candidate_name: differentiableOn_compl_singleton_and_continuousAt_missing_punctured_bridge_negative_v1
+      row_id: MCB_108_differentiableOn_compl_singleton
+      test_kind: negative_control
+    - candidate_name: isBigOWith_of_div_tendsto_nhds_positive_v1
+      row_id: MCB_162_isBigOWith_of_div_tendsto_nhds
+      test_kind: positive
+    - candidate_name: isBigOWith_of_div_tendsto_nhds_missing_lower_bound_bridge_negative_v1
+      row_id: MCB_162_isBigOWith_of_div_tendsto_nhds
+      test_kind: negative_control
+    - candidate_name: liouville_theorem_aux_positive_v1
+      row_id: MCB_146_liouville_theorem_aux
+      test_kind: positive
+    - candidate_name: liouville_theorem_aux_missing_bounded_range_bridge_negative_v1
+      row_id: MCB_146_liouville_theorem_aux
+      test_kind: negative_control
+    - candidate_name: eventually_differentiableAt_cuspFunction_nhds_ne_zero_positive_v1
+      row_id: MCB_142_eventually_differentiableAt_cusp
+      test_kind: positive
+    - candidate_name: eventually_differentiableAt_cuspFunction_nhds_ne_zero_missing_open_set_bridge_negative_v1
+      row_id: MCB_142_eventually_differentiableAt_cusp
+      test_kind: negative_control
+    - candidate_name: zpow_quotient_covering_nat_neg_split_positive_v1
+      row_id: MCB_139_isQuotientCoveringMap_zpow
+      test_kind: positive
+    - candidate_name: zpow_quotient_covering_missing_negative_branch_transport_v1
+      row_id: MCB_139_isQuotientCoveringMap_zpow
+      test_kind: negative_control
+    - candidate_name: analyticAt_iff_eventually_differentiableAt_positive_v1
+      row_id: MCB_136_analyticAt_iff_eventually_differ
+      test_kind: positive
+    - candidate_name: analyticAt_iff_eventually_differentiableAt_missing_open_set_bridge_negative_v1
+      row_id: MCB_136_analyticAt_iff_eventually_differ
+      test_kind: negative_control
+    - candidate_name: eventually_eq_or_eq_zero_of_isLocalMin_norm_positive_v1
+      row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+      test_kind: positive
+    - candidate_name: eventually_eq_or_eq_zero_of_isLocalMin_norm_missing_reciprocal_bridge_negative_v1
+      row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+      test_kind: negative_control
+    - candidate_name: isBigO_norm_restrict_cocompact_positive_v1
+      row_id: MCB_197_isBigO_norm_restrict_cocompact
+      test_kind: positive
+    - candidate_name: isBigO_norm_restrict_cocompact_missing_cocompact_transport_negative_v1
+      row_id: MCB_197_isBigO_norm_restrict_cocompact
+      test_kind: negative_control
+    - candidate_name: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+      row_id: MCB_199_tendsto_integral_exp_inner_smul_
+      test_kind: positive
+    - candidate_name: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_reduction_negative_v1
+      row_id: MCB_199_tendsto_integral_exp_inner_smul_
+      test_kind: negative_control
+  required_artifacts:
+    - positive target replay for MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    - matched negative-control failure for MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    - positive target replay for MCB_151_tendsto_tsum_powerSeries_nhdsWit
+    - matched negative-control failure for MCB_151_tendsto_tsum_powerSeries_nhdsWit
+    - positive target replay for MCB_173_Filter
+    - matched negative-control failure for MCB_173_Filter
+    - positive target replay for MCB_044_range_eq_top
+    - matched negative-control failure for MCB_044_range_eq_top
+    - positive target replay for MCB_097_AnalyticAt
+    - matched negative-control failure for MCB_097_AnalyticAt
+    - positive target replay for MCB_115_isCauSeq_norm_exp
+    - matched negative-control failure for MCB_115_isCauSeq_norm_exp
+    - positive target replay for MCB_064_mem_adjoint_domain_of_exists
+    - matched negative-control failure for MCB_064_mem_adjoint_domain_of_exists
+    - positive target replay for MCB_046_adjointAux_norm
+    - matched negative-control failure for MCB_046_adjointAux_norm
+    - positive target replay for MCB_067_isSymmetric_iff_inner_map_self_r
+    - matched negative-control failure for MCB_067_isSymmetric_iff_inner_map_self_r
+    - positive target replay for MCB_094_exists_norm_eq_restrict_eq
+    - matched negative-control failure for MCB_094_exists_norm_eq_restrict_eq
+    - positive target replay for MCB_153_circleAverage_of_differentiable_
+    - matched negative-control failure for MCB_153_circleAverage_of_differentiable_
+    - positive target replay for MCB_108_differentiableOn_compl_singleton
+    - matched negative-control failure for MCB_108_differentiableOn_compl_singleton
+    - positive target replay for MCB_162_isBigOWith_of_div_tendsto_nhds
+    - matched negative-control failure for MCB_162_isBigOWith_of_div_tendsto_nhds
+    - positive target replay for MCB_146_liouville_theorem_aux
+    - matched negative-control failure for MCB_146_liouville_theorem_aux
+    - positive target replay for MCB_142_eventually_differentiableAt_cusp
+    - matched negative-control failure for MCB_142_eventually_differentiableAt_cusp
+    - positive target replay for MCB_139_isQuotientCoveringMap_zpow
+    - matched negative-control failure for MCB_139_isQuotientCoveringMap_zpow
+    - positive target replay for MCB_136_analyticAt_iff_eventually_differ
+    - matched negative-control failure for MCB_136_analyticAt_iff_eventually_differ
+    - positive target replay for MCB_112_eventually_eq_or_eq_zero_of_isLo
+    - matched negative-control failure for MCB_112_eventually_eq_or_eq_zero_of_isLo
+    - positive target replay for MCB_197_isBigO_norm_restrict_cocompact
+    - matched negative-control failure for MCB_197_isBigO_norm_restrict_cocompact
+    - positive target replay for MCB_199_tendsto_integral_exp_inner_smul_
+    - matched negative-control failure for MCB_199_tendsto_integral_exp_inner_smul_
+    - row-local evidence only
+  sibling_or_heldout_constraints:
+    - Use `MCB_154_norm_dslope_le_div_of_mapsTo_bal` for the dslope-bound candidate.
+    - Keep the `MapsTo` bridge explicit for MCB_154; do not collapse the route into a generic differentiability or norm bound.
+    - Use `MCB_151_tendsto_tsum_powerSeries_nhdsWit` for the Stolz-set power-series candidate.
+    - Keep the `stolzSet` / `nhdsWithin` bridge explicit for MCB_151; do not collapse the route into the `< 1` variant or cone-only transport.
+    - Use `MCB_097_AnalyticAt` for the punctured analytic bridge candidate.
+    - Keep the punctured-neighborhood / open-set bridge explicit for MCB_097; do not collapse analytic-at transport into a bare continuity step.
+    - Use `MCB_115_isCauSeq_norm_exp` for the norm-exp Cauchy-sequence candidate.
+    - Keep the `of_abv` bridge explicit for MCB_115; do not collapse the route into the raw normed-series theorem.
+    - Use `MCB_064_mem_adjoint_domain_of_exists` for the adjoint-domain membership candidate.
+    - Keep the existential witness bridge explicit for MCB_064; do not collapse the route into the continuity characterization alone.
+    - Use `MCB_046_adjointAux_norm` for the adjoint norm candidate.
+    - Keep the compact-set witness and translated `restrict` explicit for MCB_046; do not collapse the route into a generic cocompact asymptotic bound.
+    - Use `MCB_067_isSymmetric_iff_inner_map_self_r` for the symmetry/inner-map candidate.
+    - Keep the polarization bridge explicit for MCB_067; do not collapse the route into a bare symmetry or pointwise inner equality.
+    - Use `MCB_044_range_eq_top` for the Lax-Milgram range candidate.
+    - Keep the coercive bridge and orthogonal transport explicit for MCB_044; do not collapse the route into a generic surjectivity or range claim.
+    - Use `MCB_094_exists_norm_eq_restrict_eq` for the Tietze extension candidate.
+    - Keep the Tietze extension bridge explicit for MCB_094; do not collapse the route into a generic bounded-extension or restriction claim.
+    - Use `MCB_153_circleAverage_of_differentiable_` for the circle-average candidate.
+    - Keep the `ContinuousOn` and off-countable differentiability bridges explicit for MCB_153; do not collapse the route into a generic circle-average or pointwise differentiability step.
+    - Use `MCB_108_differentiableOn_compl_singleton` for the removable-singularity candidate.
+    - Keep the punctured-neighborhood differentiability bridge explicit for MCB_108; do not collapse the route into local differentiability alone.
+    - Use `MCB_162_isBigOWith_of_div_tendsto_nhds` for the asymptotic div/tendsto candidate.
+    - Keep the lower-bound bridge `C⁻¹ < ‖a‖` explicit for MCB_162; do not collapse it into a generic boundedness step.
+    - Use `MCB_146_liouville_theorem_aux` for the Liouville candidate.
+    - Keep the bounded-range bridge explicit for MCB_146; do not collapse the route into a generic differentiability claim.
+    - Use `MCB_142_eventually_differentiableAt_cusp` for the cusp-function eventual-differentiability candidate.
+    - Use only `MCB_139_isQuotientCoveringMap_zpow` for the actual candidate.
+    - Use `MCB_136_analyticAt_iff_eventually_differ` for the analytic iff candidate.
+    - Keep the eq_nat_or_neg split explicit.
+    - Keep the eventual-open-set bridge explicit for MCB_142; do not collapse eventual differentiability into pointwise differentiability.
+    - Keep the negative branch transport explicit for MCB_139; do not collapse it into a generic quotient or subtype lemma.
+    - Keep the zpow-neg identities explicit; the route depends on negative exponent normalization, not on a positive-only rewrite.
+    - Keep the eventual-open-set bridge explicit for MCB_136; do not collapse analyticAt into pointwise differentiability.
+    - Do not replace the nat/negative split with a generic zpow identity or a direct apply.
+    - Do not reopen source-bound replay because `source_order_safe` is false.
+    - Use `MCB_197_isBigO_norm_restrict_cocompact` for the translated cocompact restriction candidate.
+    - Keep the compact-set witness and translated `restrict` explicit for MCB_197; do not collapse the route into a generic cocompact norm bound.
+    - Use `MCB_199_tendsto_integral_exp_inner_smul_` for the Fourier integral decay candidate.
+    - Keep the compact-support reduction to the bounded set `A` explicit; do not collapse the route into a generic dominated-convergence or Fourier decay claim.
+  rows:
+    - row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+      negative_control: missing mapsTo bridge
+      required_check: Keep the `MapsTo f (ball c R₁) (closedBall (f c) R₂)` bridge explicit; preserve the dslope transport and do not collapse the route into a generic differentiability or norm bound.
+      positive_candidate: norm_dslope_le_div_of_mapsTo_ball_positive_v1
+      negative_candidate: norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_bridge_negative_v1
+      candidate_names:
+        - norm_dslope_le_div_of_mapsTo_ball_positive_v1
+        - norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_bridge_negative_v1
+    - row_id: MCB_151_tendsto_tsum_powerSeries_nhdsWit
+      negative_control: missing StolzSet bridge
+      required_check: Keep the `stolzSet` and `nhdsWithin` bridge explicit; preserve the Abel-limit transport and do not collapse the route into the `< 1` variant or the cone-only monotonicity step.
+      positive_candidate: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_positive_v1
+      negative_candidate: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_missing_stolzSet_bridge_negative_v1
+      candidate_names:
+        - tendsto_tsum_powerSeries_nhdsWithin_stolzSet_positive_v1
+        - tendsto_tsum_powerSeries_nhdsWithin_stolzSet_missing_stolzSet_bridge_negative_v1
+    - row_id: MCB_173_Filter
+      negative_control: missing zero-limit bridge
+      required_check: Keep the `𝓝 0` target explicit; preserve the `p < q` asymptotic transport and do not collapse the route into the `atTop` growth case.
+      positive_candidate: tendsto_pow_div_pow_atTop_zero_positive_v1
+      negative_candidate: tendsto_pow_div_pow_atTop_zero_missing_zero_limit_bridge_negative_v1
+      candidate_names:
+        - tendsto_pow_div_pow_atTop_zero_positive_v1
+        - tendsto_pow_div_pow_atTop_zero_missing_zero_limit_bridge_negative_v1
+    - row_id: MCB_097_AnalyticAt
+      negative_control: missing punctured analytic bridge
+      required_check: Keep the punctured-neighborhood bridge explicit; preserve analytic-at transport through the complement/open neighborhood and do not collapse the route into a bare continuity or open-set claim.
+      positive_candidate: analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt_positive_v1
+      negative_candidate: analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt_missing_punctured_bridge_negative_v1
+      candidate_names:
+        - analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt_positive_v1
+        - analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt_missing_punctured_bridge_negative_v1
+    - row_id: MCB_115_isCauSeq_norm_exp
+      negative_control: missing of_abv bridge
+      required_check: Keep the `of_abv` bridge explicit; preserve the norm-exp Cauchy-sequence transport and do not collapse the route into the raw normed-series theorem.
+      positive_candidate: isCauSeq_norm_exp_positive_v1
+      negative_candidate: isCauSeq_norm_exp_missing_of_abv_bridge_negative_v1
+      candidate_names:
+        - isCauSeq_norm_exp_positive_v1
+        - isCauSeq_norm_exp_missing_of_abv_bridge_negative_v1
+    - row_id: MCB_064_mem_adjoint_domain_of_exists
+      negative_control: missing existential witness bridge
+      required_check: Keep the existential witness explicit; preserve the adjoint-domain membership transport and do not collapse the route into the raw continuity characterization alone.
+      positive_candidate: mem_adjoint_domain_of_exists_positive_v1
+      negative_candidate: mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+      candidate_names:
+        - mem_adjoint_domain_of_exists_positive_v1
+        - mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    - row_id: MCB_046_adjointAux_norm
+      negative_control: missing compact-set witness bridge
+      required_check: Keep `K.isCompact.isBounded.subset_closed` explicit and preserve the translated `restrict` norm carrier; do not collapse the route into a generic cocompact asymptotic bound.
+      positive_candidate: adjointAux_norm_positive_v1
+      negative_candidate: adjointAux_norm_missing_compact_set_bridge_negative_v1
+      candidate_names:
+        - adjointAux_norm_positive_v1
+        - adjointAux_norm_missing_compact_set_bridge_negative_v1
+    - row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+      negative_control: missing polarization bridge
+      required_check: Keep `inner_map_polarization` explicit and preserve the `conj ⟪T v, v⟫ = ⟪T v, v⟫` carrier; do not collapse the route into a bare symmetry implication.
+      positive_candidate: isSymmetric_iff_inner_map_self_real_positive_v1
+      negative_candidate: isSymmetric_iff_inner_map_self_real_missing_polarization_bridge_negative_v1
+      candidate_names:
+        - isSymmetric_iff_inner_map_self_real_positive_v1
+        - isSymmetric_iff_inner_map_self_real_missing_polarization_bridge_negative_v1
+    - row_id: MCB_044_range_eq_top
+      negative_control: missing orthogonal transport
+      required_check: "Keep `coercive : IsCoercive B` explicit and preserve the `B♯.range.orthogonal_orthogonal` / `Submodule.eq_top_iff'` transport; do not collapse the route into a generic surjectivity or range claim."
+      positive_candidate: range_eq_top_positive_v1
+      negative_candidate: range_eq_top_missing_orthogonal_transport_negative_v1
+      candidate_names:
+        - range_eq_top_positive_v1
+        - range_eq_top_missing_orthogonal_transport_negative_v1
+    - row_id: MCB_073_orthogonalComplement_iSup_eigens
+      negative_control: missing invariant bridge
+      required_check: Keep `hT.orthogonalComplement_iSup_eigenspaces_invariant` explicit and preserve the restriction to `T.restrict`; do not collapse the route into a bare symmetry or eigenspace statement.
+      positive_candidate: orthogonalComplement_iSup_eigenspaces_positive_v1
+      negative_candidate: orthogonalComplement_iSup_eigenspaces_missing_invariant_bridge_negative_v1
+      candidate_names:
+        - orthogonalComplement_iSup_eigenspaces_positive_v1
+        - orthogonalComplement_iSup_eigenspaces_missing_invariant_bridge_negative_v1
+    - row_id: MCB_094_exists_norm_eq_restrict_eq
+      negative_control: missing Tietze extension bridge
+      required_check: Keep the Tietze extension bridge explicit; preserve the norm-preserving extension and do not collapse the route into a generic bounded-extension or restriction statement.
+      positive_candidate: exists_norm_eq_restrict_eq_positive_v1
+      negative_candidate: exists_norm_eq_restrict_eq_missing_tietze_extension_bridge_negative_v1
+      candidate_names:
+        - exists_norm_eq_restrict_eq_positive_v1
+        - exists_norm_eq_restrict_eq_missing_tietze_extension_bridge_negative_v1
+    - row_id: MCB_153_circleAverage_of_differentiable_
+      negative_control: missing off-countable differentiability bridge
+      required_check: Keep the `ContinuousOn f (closedBall c |R|)` and `∀ z ∈ ball c |R| \ s, DifferentiableAt ℂ f z` bridges explicit; preserve the circle-average transport and do not collapse the route into a generic mean-value or pointwise differentiability step.
+      positive_candidate: circleAverage_of_differentiable_on_off_countable_positive_v1
+      negative_candidate: circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+      candidate_names:
+        - circleAverage_of_differentiable_on_off_countable_positive_v1
+        - circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+    - row_id: MCB_108_differentiableOn_compl_singleton
+      negative_control: missing punctured differentiability bridge
+      required_check: Keep the punctured-neighborhood bridge explicit; preserve the removable-singularity transport and do not collapse the route into local differentiability alone.
+      positive_candidate: differentiableOn_compl_singleton_and_continuousAt_positive_v1
+      negative_candidate: differentiableOn_compl_singleton_and_continuousAt_missing_punctured_bridge_negative_v1
+      candidate_names:
+        - differentiableOn_compl_singleton_and_continuousAt_positive_v1
+        - differentiableOn_compl_singleton_and_continuousAt_missing_punctured_bridge_negative_v1
+    - row_id: MCB_162_isBigOWith_of_div_tendsto_nhds
+      negative_control: missing lower-bound bridge
+      required_check: Keep the lower-bound bridge `C⁻¹ < ‖a‖` explicit; preserve the division-to-norm transport and do not collapse the route into a generic boundedness step.
+      positive_candidate: isBigOWith_of_div_tendsto_nhds_positive_v1
+      negative_candidate: isBigOWith_of_div_tendsto_nhds_missing_lower_bound_bridge_negative_v1
+      candidate_names:
+        - isBigOWith_of_div_tendsto_nhds_positive_v1
+        - isBigOWith_of_div_tendsto_nhds_missing_lower_bound_bridge_negative_v1
+    - row_id: MCB_146_liouville_theorem_aux
+      negative_control: missing bounded-range bridge
+      required_check: Keep the bounded-range bridge explicit; preserve the `IsBounded (range f)` to uniform norm bound transport and do not collapse Liouville into a generic differentiability claim.
+      positive_candidate: liouville_theorem_aux_positive_v1
+      negative_candidate: liouville_theorem_aux_missing_bounded_range_bridge_negative_v1
+      candidate_names:
+        - liouville_theorem_aux_positive_v1
+        - liouville_theorem_aux_missing_bounded_range_bridge_negative_v1
+    - row_id: MCB_142_eventually_differentiableAt_cusp
+      negative_control: missing eventual open-set bridge
+      required_check: Keep the eventual-differentiability bridge explicit; preserve the punctured-neighborhood transport and do not collapse the route into pointwise differentiability alone.
+      positive_candidate: eventually_differentiableAt_cuspFunction_nhds_ne_zero_positive_v1
+      negative_candidate: eventually_differentiableAt_cuspFunction_nhds_ne_zero_missing_open_set_bridge_negative_v1
+      candidate_names:
+        - eventually_differentiableAt_cuspFunction_nhds_ne_zero_positive_v1
+        - eventually_differentiableAt_cuspFunction_nhds_ne_zero_missing_open_set_bridge_negative_v1
+    - row_id: MCB_139_isQuotientCoveringMap_zpow
+      negative_control: missing negative-exponent transport
+      required_check: Keep the negative-exponent/homeomorph transport explicit for the quotient row; keep the `eq_nat_or_neg` split and the `zpow_neg` identities explicit.
+      positive_candidate: zpow_quotient_covering_nat_neg_split_positive_v1
+      negative_candidate: zpow_quotient_covering_missing_negative_branch_transport_v1
+      candidate_names:
+        - zpow_quotient_covering_nat_neg_split_positive_v1
+        - zpow_quotient_covering_missing_negative_branch_transport_v1
+    - row_id: MCB_136_analyticAt_iff_eventually_differ
+      negative_control: missing eventual open-set bridge
+      required_check: Keep the eventual-differentiability bridge explicit; do not drop the open-set transport from `eventually_nhds_iff` / `eventually_analyticAt`.
+      positive_candidate: analyticAt_iff_eventually_differentiableAt_positive_v1
+      negative_candidate: analyticAt_iff_eventually_differentiableAt_missing_open_set_bridge_negative_v1
+      candidate_names:
+        - analyticAt_iff_eventually_differentiableAt_positive_v1
+        - analyticAt_iff_eventually_differentiableAt_missing_open_set_bridge_negative_v1
+    - row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+      negative_control: missing reciprocal bridge
+      required_check: Keep the reciprocal transport from the local-minimum witness explicit; preserve the local-max bridge for `norm ∘ f⁻¹` before applying `eventually_eq_of_isLocalMax_norm`.
+      positive_candidate: eventually_eq_or_eq_zero_of_isLocalMin_norm_positive_v1
+      negative_candidate: eventually_eq_or_eq_zero_of_isLocalMin_norm_missing_reciprocal_bridge_negative_v1
+      candidate_names:
+        - eventually_eq_or_eq_zero_of_isLocalMin_norm_positive_v1
+        - eventually_eq_or_eq_zero_of_isLocalMin_norm_missing_reciprocal_bridge_negative_v1
+    - row_id: MCB_197_isBigO_norm_restrict_cocompact
+      negative_control: missing cocompact transport
+      required_check: Keep the compact-set witness `K.isCompact.isBounded.subset_closed` and the translated `restrict` explicit; preserve the cocompact `=O` transport and do not collapse the route into a generic asymptotic bound.
+      positive_candidate: isBigO_norm_restrict_cocompact_positive_v1
+      negative_candidate: isBigO_norm_restrict_cocompact_missing_cocompact_transport_negative_v1
+      candidate_names:
+        - isBigO_norm_restrict_cocompact_positive_v1
+        - isBigO_norm_restrict_cocompact_missing_cocompact_transport_negative_v1
+    - row_id: MCB_199_tendsto_integral_exp_inner_smul_
+      negative_control: missing compact-support reduction
+      required_check: Keep the compact-support reduction to the bounded set `A` explicit; preserve the support cutoff and the uniform continuity estimate, and do not collapse the route into a generic Fourier-integral or dominated-convergence step.
+      positive_candidate: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+      negative_candidate: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_reduction_negative_v1
+      candidate_names:
+        - real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+        - real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_reduction_negative_v1
+  target_row_ids:
+    - MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    - MCB_151_tendsto_tsum_powerSeries_nhdsWit
+    - MCB_173_Filter
+    - MCB_044_range_eq_top
+    - MCB_097_AnalyticAt
+    - MCB_115_isCauSeq_norm_exp
+    - MCB_064_mem_adjoint_domain_of_exists
+    - MCB_046_adjointAux_norm
+    - MCB_067_isSymmetric_iff_inner_map_self_r
+    - MCB_094_exists_norm_eq_restrict_eq
+    - MCB_153_circleAverage_of_differentiable_
+    - MCB_108_differentiableOn_compl_singleton
+    - MCB_162_isBigOWith_of_div_tendsto_nhds
+    - MCB_146_liouville_theorem_aux
+    - MCB_142_eventually_differentiableAt_cusp
+    - MCB_139_isQuotientCoveringMap_zpow
+    - MCB_136_analyticAt_iff_eventually_differ
+    - MCB_112_eventually_eq_or_eq_zero_of_isLo
+    - MCB_197_isBigO_norm_restrict_cocompact
+    - MCB_199_tendsto_integral_exp_inner_smul_
+  schema: leanmill-target-probe-contract-v1
+templates:
+  - id: superpolynomialDecay_iff_zpow_tendsto_zero_positive_v1
+    row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      refine (superpolynomialDecay_iff_zpow_tendsto_zero f hk).2 (by
+        intro n hn
+        simpa using hpow n hn)
+  - id: superpolynomialDecay_iff_zpow_tendsto_zero_missing_decay_bridge_negative_v1
+    row_id: MCB_177_superpolynomialDecay_iff_zpow_te
+    test_kind: negative_control
+    expected_outcome: must_fail_without_zpow_tendsto_zero_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      refine (superpolynomialDecay_iff_zpow_tendsto_zero f hk).1 (by
+        intro n hn
+        exact hpow n hn)
+  - id: zpow_covering_on_from_subtype_positive_v1
+    row_id: MCB_138_isCoveringMapOn_zpow
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      have (x : 𝕜) : x ^ n = 0 ↔ x = 0 := zpow_eq_zero_iff (by aesop)
+      refine .of_isCoveringMap_restrictPreimage _ (by simp)
+        (by
+          convert isClosed_singleton (x := (0 : 𝕜)).isOpen_compl using 1
+          ext; simp [this])
+        (by
+          convert (isCoveringMap_zpow n hn).comp_homeomorph (.setCongr _) using 1
+          ext; simpa using (this _).not)
+  - id: zpow_covering_missing_zero_locus_negative_v1
+    row_id: MCB_138_isCoveringMapOn_zpow
+    test_kind: negative_control
+    expected_outcome: must_fail_without_zpow_zero_locus_transport
+    backend: repl_file
+    timeout: 120
+    body: |
+      refine .of_isCoveringMap_restrictPreimage _ (by simp)
+        (by exact isClosed_singleton (x := (0 : 𝕜)).isOpen_compl)
+        (by
+          convert (isCoveringMap_zpow n hn).comp_homeomorph (.setCongr _) using 1
+          ext; simp)
+  - id: zpow_quotient_covering_nat_neg_split_positive_v1
+    row_id: MCB_139_isQuotientCoveringMap_zpow
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      obtain ⟨n, rfl | rfl⟩ := n.eq_nat_or_neg
+      · exact isQuotientCoveringMap_npow n (by aesop) (by simpa using surj)
+      rw [show (zpowGroupHom (α := 𝕜ˣ) (-n)).ker = (powMonoidHom n).ker by ext; simp]
+      convert (isQuotientCoveringMap_npow n (by aesop) _).homeomorph_comp (.inv 𝕜ˣ) using 1
+      · ext; simp
+      convert inv_involutive.surjective.comp surj; simp
+  - id: zpow_quotient_covering_missing_negative_branch_transport_v1
+    row_id: MCB_139_isQuotientCoveringMap_zpow
+    test_kind: negative_control
+    expected_outcome: must_fail_without_negative_exponent_homeomorph_transport
+    backend: repl_file
+    timeout: 120
+    body: |
+      obtain ⟨n, rfl | rfl⟩ := n.eq_nat_or_neg
+      · exact isQuotientCoveringMap_npow n (by aesop) (by simpa using surj)
+      · exact isQuotientCoveringMap_npow n (by aesop) (by simpa using surj)
+  - id: isBigOWith_of_div_tendsto_nhds_positive_v1
+    row_id: MCB_162_isBigOWith_of_div_tendsto_nhds
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isBigOWith_of_div_tendsto_nhds (C := C) (a := a) (f := f) (g := g) (l := l) h hC ha)
+  - id: isBigOWith_of_div_tendsto_nhds_missing_lower_bound_bridge_negative_v1
+    row_id: MCB_162_isBigOWith_of_div_tendsto_nhds
+    test_kind: negative_control
+    expected_outcome: must_fail_without_lower_bound_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isBigOWith_of_div_tendsto_nhds (C := C) (a := a) (f := f) (g := g) (l := l) h hC
+        (show Tendsto g l (𝓝 (a + 1)) from ha))
+  - id: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_positive_v1
+    row_id: MCB_151_tendsto_tsum_powerSeries_nhdsWit
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 180
+    body: |
+      simpa using (tendsto_tsum_powerSeries_nhdsWithin_stolzSet (f := f) h)
+  - id: tendsto_tsum_powerSeries_nhdsWithin_stolzSet_missing_stolzSet_bridge_negative_v1
+    row_id: MCB_151_tendsto_tsum_powerSeries_nhdsWit
+    test_kind: negative_control
+    expected_outcome: must_fail_without_stolzSet_bridge
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (tendsto_tsum_powerSeries_nhdsWithin_lt (f := f) h)
+  - id: tendsto_pow_div_pow_atTop_zero_positive_v1
+    row_id: MCB_173_Filter
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact tendsto_pow_div_pow_atTop_zero (p := p) (q := q) hpq
+  - id: tendsto_pow_div_pow_atTop_zero_missing_zero_limit_bridge_negative_v1
+    row_id: MCB_173_Filter
+    test_kind: negative_control
+    expected_outcome: must_fail_without_zero_limit_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact tendsto_pow_div_pow_atTop_atTop (p := p) (q := q) hpq
+  - id: exists_norm_eq_restrict_eq_positive_v1
+    row_id: MCB_094_exists_norm_eq_restrict_eq
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (exists_norm_eq_restrict_eq (s := s) (f := f))
+  - id: exists_norm_eq_restrict_eq_missing_tietze_extension_bridge_negative_v1
+    row_id: MCB_094_exists_norm_eq_restrict_eq
+    test_kind: negative_control
+    expected_outcome: must_fail_without_tietze_extension_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      rcases exists_norm_eq_restrict_eq (f := f) with ⟨g, hg, hres⟩
+      exact ⟨g, hg⟩
+  - id: liouville_theorem_aux_positive_v1
+    row_id: MCB_146_liouville_theorem_aux
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 200
+    body: |
+      simpa using (liouville_theorem_aux (f := f) hf hb z w)
+  - id: liouville_theorem_aux_missing_bounded_range_bridge_negative_v1
+    row_id: MCB_146_liouville_theorem_aux
+    test_kind: negative_control
+    expected_outcome: must_fail_without_bounded_range_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (liouville_theorem_aux (f := f) hf z w)
+  - id: differentiableOn_compl_singleton_and_continuousAt_positive_v1
+    row_id: MCB_108_differentiableOn_compl_singleton
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 180
+    body: |
+      simpa using (differentiableOn_compl_singleton_and_continuousAt_iff (f := f) (s := s) (c := c) hs)
+  - id: differentiableOn_compl_singleton_and_continuousAt_missing_punctured_bridge_negative_v1
+    row_id: MCB_108_differentiableOn_compl_singleton
+    test_kind: negative_control
+    expected_outcome: must_fail_without_punctured_differentiability_bridge
+    backend: repl_file
+    timeout: 100
+    body: |
+      simpa using (differentiableOn_compl_singleton_and_continuousAt_iff (f := f) (s := s) (c := c) hs).symm
+  - id: norm_dslope_le_div_of_mapsTo_ball_positive_v1
+    row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact Complex.norm_dslope_le_div_of_mapsTo_ball hd h_maps hz
+  - id: norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_bridge_negative_v1
+    row_id: MCB_154_norm_dslope_le_div_of_mapsTo_bal
+    test_kind: negative_control
+    expected_outcome: must_fail_without_mapsTo_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact Complex.norm_dslope_le_div_of_mapsTo_ball hd
+        (show MapsTo f (ball c 0) (closedBall (f c) 0) from h_maps) hz
+  - id: circleAverage_of_differentiable_on_off_countable_positive_v1
+    row_id: MCB_153_circleAverage_of_differentiable_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 160
+    body: |
+      simpa using (circleAverage_of_differentiable_on_off_countable (s := s) hs h₁f h₂f)
+  - id: circleAverage_of_differentiable_on_off_countable_missing_off_countable_bridge_negative_v1
+    row_id: MCB_153_circleAverage_of_differentiable_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_off_countable_differentiability_bridge
+    backend: repl_file
+    timeout: 100
+    body: |
+      simpa using
+        (circleAverage_of_differentiable_on_off_countable (f := f) (c := c) (R := R) hs h₁f
+          (fun z hz => (h₂f z hz).continuousAt))
+  - id: analyticAt_iff_eventually_differentiableAt_positive_v1
+    row_id: MCB_136_analyticAt_iff_eventually_differ
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      constructor
+      · intro ha
+        filter_upwards [ha.eventually_analyticAt]
+        exact AnalyticAt.differentiableAt
+      · intro hd
+        rcases _root_.eventually_nhds_iff.mp hd with ⟨s, hs, o, m⟩
+        exact (DifferentiableOn.analyticOnNhd (fun z hz => (hs z hz).differentiableWithinAt) o) _ m
+  - id: analyticAt_iff_eventually_differentiableAt_missing_open_set_bridge_negative_v1
+    row_id: MCB_136_analyticAt_iff_eventually_differ
+    test_kind: negative_control
+    expected_outcome: must_fail_without_eventual_to_nhds_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      constructor
+      · intro ha
+        filter_upwards [ha.eventually_analyticAt]
+        exact AnalyticAt.differentiableAt
+      · intro hd
+        rcases _root_.eventually_nhds_iff.mp hd with ⟨s, hs, o, m⟩
+        exact (DifferentiableOn.analyticOnNhd (fun z hz => (hs z hz).continuousAt) o) _ m
+  - id: analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt_positive_v1
+    row_id: MCB_097_AnalyticAt
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt hd hc
+  - id: analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt_missing_punctured_bridge_negative_v1
+    row_id: MCB_097_AnalyticAt
+    test_kind: negative_control
+    expected_outcome: must_fail_without_punctured_analytic_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt
+        (fun z hz => (hd z hz).continuousAt) hc
+  - id: isCauSeq_norm_exp_positive_v1
+    row_id: MCB_115_isCauSeq_norm_exp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact isCauSeq_norm_exp z
+  - id: isCauSeq_norm_exp_missing_of_abv_bridge_negative_v1
+    row_id: MCB_115_isCauSeq_norm_exp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_of_abv_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      exact isCauSeq_exp z
+  - id: mem_adjoint_domain_of_exists_positive_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      exact mem_adjoint_domain_of_exists T y h
+  - id: mem_adjoint_domain_of_exists_missing_exists_witness_bridge_negative_v1
+    row_id: MCB_064_mem_adjoint_domain_of_exists
+    test_kind: negative_control
+    expected_outcome: must_fail_without_exists_witness_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (T.mem_adjoint_domain_iff (y := y))
+  - id: adjointAux_norm_positive_v1
+    row_id: MCB_046_adjointAux_norm
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isBigO_norm_restrict_cocompact (f := f) hb hf K)
+  - id: adjointAux_norm_missing_compact_set_bridge_negative_v1
+    row_id: MCB_046_adjointAux_norm
+    test_kind: negative_control
+    expected_outcome: must_fail_without_compact_set_witness_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using ContinuousLinearMap.norm_adjoint_comp_self
+  - id: isSymmetric_iff_inner_map_self_real_positive_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isSymmetric_iff_inner_map_self_real (T := T))
+  - id: isSymmetric_iff_inner_map_self_real_missing_polarization_bridge_negative_v1
+    row_id: MCB_067_isSymmetric_iff_inner_map_self_r
+    test_kind: negative_control
+    expected_outcome: must_fail_without_polarization_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isSymmetric_iff_isSelfAdjoint (A := T))
+  - id: range_eq_top_positive_v1
+    row_id: MCB_044_range_eq_top
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (range_eq_top (B := B) coercive)
+  - id: range_eq_top_missing_orthogonal_transport_negative_v1
+    row_id: MCB_044_range_eq_top
+    test_kind: negative_control
+    expected_outcome: must_fail_without_orthogonal_transport
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (range_eq_top (B := B))
+  - id: orthogonalComplement_iSup_eigenspaces_positive_v1
+    row_id: MCB_073_orthogonalComplement_iSup_eigens
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (orthogonalComplement_iSup_eigenspaces (T := T) hT μ)
+  - id: orthogonalComplement_iSup_eigenspaces_missing_invariant_bridge_negative_v1
+    row_id: MCB_073_orthogonalComplement_iSup_eigens
+    test_kind: negative_control
+    expected_outcome: must_fail_without_invariant_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (hT.orthogonalComplement_iSup_eigenspaces)
+  - id: eventually_differentiableAt_cuspFunction_nhds_ne_zero_positive_v1
+    row_id: MCB_142_eventually_differentiableAt_cusp
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      refine ((invQParam_tendsto hh).eventually h_hol).mp <|
+        eventually_nhdsWithin_of_forall (fun q hq h_diff => by
+          rw [← qParam_right_inv hh.ne' hq]
+          exact differentiableAt_cuspFunction hh.ne' hf h_diff)
+  - id: eventually_differentiableAt_cuspFunction_nhds_ne_zero_missing_open_set_bridge_negative_v1
+    row_id: MCB_142_eventually_differentiableAt_cusp
+    test_kind: negative_control
+    expected_outcome: must_fail_without_eventual_to_nhds_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      refine ((invQParam_tendsto hh).eventually h_hol).mp <|
+        eventually_nhdsWithin_of_forall (fun q hq h_diff => by
+          exact differentiableAt_cuspFunction hh.ne' hf h_diff)
+  - id: sameRay_iff_arg_div_eq_zero_positive_v1
+    row_id: MCB_124_sameRay_iff_arg_div_eq_zero
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (Complex.sameRay_iff_arg_div_eq_zero (x := x) (y := y))
+  - id: sameRay_iff_arg_div_eq_zero_missing_arg_div_eq_zero_bridge_negative_v1
+    row_id: MCB_124_sameRay_iff_arg_div_eq_zero
+    test_kind: negative_control
+    expected_outcome: must_fail_without_arg_div_eq_zero_bridge
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (Complex.sameRay_iff (x := x) (y := y))
+  - id: eventually_eq_or_eq_zero_of_isLocalMin_norm_positive_v1
+    row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      refine or_iff_not_imp_right.mpr fun hzero => by
+        have h1 : ∀ᶠ z in 𝓝 c, f z ≠ 0 := hf.self_of_nhds.continuousAt.eventually_ne hzero
+        have h2 : IsLocalMax (norm ∘ f)⁻¹ c := hc.inv (h1.mono fun z hz => norm_pos_iff.mpr hz)
+        have h3 : IsLocalMax (norm ∘ f⁻¹) c := by
+          refine h2.congr (Eventually.of_forall (fun z => by simp))
+        have h4 : ∀ᶠ z in 𝓝 c, DifferentiableAt ℂ f⁻¹ z := by
+          filter_upwards [hf, h1] with z hz hdiff using hdiff.inv
+        filter_upwards [eventually_eq_of_isLocalMax_norm h4 h3] with z using inv_inj.mp
+  - id: eventually_eq_or_eq_zero_of_isLocalMin_norm_missing_reciprocal_bridge_negative_v1
+    row_id: MCB_112_eventually_eq_or_eq_zero_of_isLo
+    test_kind: negative_control
+    expected_outcome: must_fail_without_reciprocal_nonzero_bridge
+    backend: repl_file
+    timeout: 90
+    body: |
+      refine or_iff_not_imp_right.mpr fun hzero => by
+        have h1 : ∀ᶠ z in 𝓝 c, f z ≠ 0 := hf.self_of_nhds.continuousAt.eventually_ne hzero
+        have h2 : IsLocalMax (norm ∘ f)⁻¹ c := hc.inv (h1.mono fun z hz => norm_pos_iff.mpr hz)
+        have h4 : ∀ᶠ z in 𝓝 c, DifferentiableAt ℂ f⁻¹ z := by
+          filter_upwards [hf, h1] with z hz hdiff using hdiff.inv
+        filter_upwards [eventually_eq_of_isLocalMax_norm h4 h2] with z using inv_inj.mp
+  - id: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_positive_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 140
+    body: |
+      simpa using
+        (tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support
+          (hf1 := hf1) (hf2 := hf2))
+  - id: real_tendsto_integral_exp_inner_smul_cocompact_of_continuous_compact_support_missing_compact_reduction_negative_v1
+    row_id: MCB_199_tendsto_integral_exp_inner_smul_
+    test_kind: negative_control
+    expected_outcome: must_fail_without_compact_support_restriction_to_A
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using
+        (tendsto_const_nhds : Tendsto (fun _ : V => (0 : ℂ)) (cocompact V) (𝓝 (0 : ℂ)))
+  - id: isBigO_norm_restrict_cocompact_positive_v1
+    row_id: MCB_197_isBigO_norm_restrict_cocompact
+    test_kind: positive
+    expected_outcome: governed_repair_canary_closure
+    backend: repl_file
+    timeout: 120
+    body: |
+      simpa using (isBigO_norm_restrict_cocompact (f := f) hb hf K)
+  - id: isBigO_norm_restrict_cocompact_missing_cocompact_transport_negative_v1
+    row_id: MCB_197_isBigO_norm_restrict_cocompact
+    test_kind: negative_control
+    expected_outcome: must_fail_without_cocompact_transport
+    backend: repl_file
+    timeout: 80
+    body: |
+      simpa using (isBigO_norm_restrict_cocompact (f := f) hb hf)

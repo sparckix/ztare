@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeanMill — Audit-Disciplined Proof Apparatus</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --fg: #e6e8eb;
+    --muted: #9aa0a6;
+    --accent: #5ec07d;
+    --danger: #e06c75;
+    --warn: #d19a66;
+    --card: #161a20;
+    --border: #232830;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  header { padding: 56px 0 32px; border-bottom: 1px solid var(--border); }
+  h1 { font-size: 32px; margin: 0 0 6px; font-weight: 600; letter-spacing: -0.5px; }
+  .tagline { color: var(--muted); font-size: 15px; margin: 0 0 24px; }
+  .links { display: flex; gap: 16px; flex-wrap: wrap; }
+  .links a {
+    color: var(--accent); text-decoration: none;
+    border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px;
+    font-size: 13px; transition: background 0.1s;
+  }
+  .links a:hover { background: var(--card); }
+  section { padding: 32px 0; border-bottom: 1px solid var(--border); }
+  section h2 { font-size: 18px; margin: 0 0 16px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .stat {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px;
+  }
+  .stat .value { font-size: 32px; font-weight: 600; font-family: var(--mono); }
+  .stat .label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .stat.good .value { color: var(--accent); }
+  .stat.warn .value { color: var(--warn); }
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 12px;
+    font-size: 13px; font-family: var(--mono);
+  }
+  th, td {
+    text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--muted); font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px;
+    background: var(--border);
+  }
+  .badge.good { background: rgba(94, 192, 125, 0.15); color: var(--accent); }
+  .badge.warn { background: rgba(209, 154, 102, 0.15); color: var(--warn); }
+  .badge.bad  { background: rgba(224, 108, 117, 0.15); color: var(--danger); }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px; margin-top: 12px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 14px; }
+  .card p { margin: 0; color: var(--muted); font-size: 13px; }
+  footer { color: var(--muted); font-size: 12px; padding: 24px 0 56px; text-align: center; }
+  footer code { background: var(--card); padding: 2px 6px; border-radius: 3px; }
+  .loading { color: var(--muted); text-align: center; padding: 60px; font-style: italic; }
+  .error { color: var(--danger); padding: 20px; background: var(--card); border-radius: 6px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+  .mono { font-family: var(--mono); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>LeanMill</h1>
+    <p class="tagline">Audit-disciplined proof apparatus — solver lane, external proof audit, typed-action-contract dispatch. Receipts are the only currency.</p>
+    <div class="links">
+      <a href="../queries/leanmill_ui_state.json" target="_blank">state JSON</a>
+      <a href="../queries/lane_b_apn_audit_receipts.json" target="_blank">audit receipts</a>
+      <a href="../../../docs/internal/architectural_maps/leanmill_architectural_map.md" target="_blank">architecture map</a>
+      <a href="../queries/solver_lane_carrier_receipt_use_ledger.jsonl" target="_blank">carrier ledger</a>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <section>
+    <h2>Live receipts</h2>
+    <div id="stats" class="stats">
+      <div class="loading">loading…</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>External proof audit (Lane B)</h2>
+    <div id="lane-b"><div class="loading">loading…</div></div>
+  </section>
+
+  <section>
+    <h2>Solver lane attempts</h2>
+    <div id="solver"><div class="loading">loading…</div></div>
+  </section>
+
+  <section>
+    <h2>Active corpus mandates</h2>
+    <div id="mandates"><div class="loading">loading…</div></div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    Built with Lean 4 + Mathlib + Python + typed-action-contract discipline.<br>
+    State file: <code>analytics/public/queries/leanmill_ui_state.json</code> · refresh via <code>ztare leanmill ui-state</code>
+  </div>
+</footer>
+
+<script>
+async function load() {
+  let data;
+  try {
+    const r = await fetch("../queries/leanmill_ui_state.json", { cache: "no-store" });
+    if (!r.ok) throw new Error("state JSON missing — run `ztare leanmill ui-state` to generate");
+    data = await r.json();
+  } catch (e) {
+    document.querySelectorAll(".loading").forEach(el => {
+      el.innerHTML = `<div class="error">Could not load state: ${e.message}</div>`;
+    });
+    return;
+  }
+  renderStats(data);
+  renderLaneB(data.lane_b);
+  renderSolver(data);
+  renderMandates(data.corpus_mandates);
+}
+
+function el(tag, props = {}, ...children) {
+  const e = document.createElement(tag);
+  for (const k in props) {
+    if (k === "class") e.className = props[k];
+    else if (k === "html") e.innerHTML = props[k];
+    else e.setAttribute(k, props[k]);
+  }
+  children.flat().forEach(c => e.append(c instanceof Node ? c : document.createTextNode(c)));
+  return e;
+}
+
+function renderStats(data) {
+  const c = document.getElementById("stats");
+  c.innerHTML = "";
+  const lb = data.lane_b || {};
+  const sa = data.solver_attempts || {};
+  const cm = (data.corpus_mandates || {}).mandates || [];
+  const items = [
+    { value: (lb.audit_clean || 0) + " / " + (lb.n_targets || 0), label: "audit-clean top-level theorems", cls: lb.audit_clean ? "good" : "" },
+    { value: sa.total_attempts || 0, label: "solver attempts logged", cls: "" },
+    { value: sa.distinct_rows || 0, label: "distinct rows attempted", cls: "" },
+    { value: sa.closures || 0, label: "kernel-verified closures", cls: sa.closures ? "good" : "warn" },
+    { value: cm.length, label: "active corpus mandates", cls: "" },
+    { value: (data.carrier_receipt_ledger_recent || []).length, label: "carrier-receipt entries (recent)", cls: "" },
+  ];
+  for (const it of items) {
+    c.append(el("div", { class: "stat " + it.cls },
+      el("div", { class: "value" }, String(it.value)),
+      el("div", { class: "label" }, it.label),
+    ));
+  }
+}
+
+function statusBadge(status) {
+  if (!status) return el("span", { class: "badge" }, "—");
+  if (/(advisory_review|helper_blockers_only|passes_at_native_toolchain|passes_at_pinned_toolchain_only)/.test(status)) {
+    return el("span", { class: "badge good" }, status);
+  }
+  if (/^compile_pass/.test(status)) return el("span", { class: "badge good" }, status);
+  if (/(blocker|disallowed|defect)/.test(status)) return el("span", { class: "badge bad" }, status);
+  if (/(failed|drift|harness)/.test(status)) return el("span", { class: "badge warn" }, status);
+  return el("span", { class: "badge" }, status);
+}
+
+function renderLaneB(lb) {
+  const c = document.getElementById("lane-b");
+  c.innerHTML = "";
+  if (!lb || !lb.available) {
+    c.append(el("p", { class: "card" }, "No Lane B receipts yet. Run an audit."));
+    return;
+  }
+  c.append(el("p", { class: "mono" },
+    `Generated at ${lb.generated_at || "?"} · ${lb.n_targets} targets · ${lb.audit_clean} audit-clean`
+  ));
+  const tbl = el("table",
+    {},
+    el("thead", {}, el("tr", {},
+      el("th", {}, "target"),
+      el("th", {}, "status"),
+      el("th", {}, "compile"),
+      el("th", {}, "axiom_ok"),
+      el("th", {}, "drift"),
+      el("th", {}, "sidecar"),
+      el("th", {}, "combined"),
+    )),
+  );
+  const tb = el("tbody");
+  for (const r of lb.rows) {
+    tb.append(el("tr", {},
+      el("td", {}, r.target || "?"),
+      el("td", {}, statusBadge(r.status)),
+      el("td", {}, r.compile_ok === true ? "✓" : r.compile_ok === false ? "✗" : "—"),
+      el("td", {}, r.axiom_allowlist_ok === true ? "✓" : r.axiom_allowlist_ok === false ? "✗" : "—"),
+      el("td", {}, r.drift === true ? "drift" : r.drift === false ? "—" : "—"),
+      el("td", {}, statusBadge(r.sidecar_status)),
+      el("td", {}, statusBadge(r.combined_verdict)),
+    ));
+  }
+  tbl.append(tb);
+  c.append(tbl);
+}
+
+function renderSolver(data) {
+  const c = document.getElementById("solver");
+  c.innerHTML = "";
+  const sa = data.solver_attempts || {};
+  if (sa.total_attempts === 0) {
+    c.append(el("p", { class: "card" }, "No solver attempts logged yet."));
+    return;
+  }
+  const summary = el("p", { class: "mono" },
+    `${sa.total_attempts} attempts · ${sa.distinct_rows} distinct rows · ${sa.closures} closures`
+  );
+  c.append(summary);
+  // by-provider table
+  const bp = el("table", {},
+    el("thead", {}, el("tr", {},
+      el("th", {}, "provider"),
+      el("th", {}, "outcome"),
+      el("th", {}, "count"),
+    )),
+  );
+  const tb1 = el("tbody");
+  for (const r of sa.by_provider) {
+    tb1.append(el("tr", {},
+      el("td", {}, r.provider || "?"),
+      el("td", {}, statusBadge(r.outcome)),
+      el("td", {}, String(r.count)),
+    ));
+  }
+  bp.append(tb1);
+  c.append(bp);
+  // recent attempts
+  if (sa.recent && sa.recent.length) {
+    c.append(el("h3", { class: "mono", style: "margin-top: 20px; color: var(--muted); font-weight: 500;" }, "recent"));
+    const rt = el("table", {},
+      el("thead", {}, el("tr", {},
+        el("th", {}, "time"),
+        el("th", {}, "row_id"),
+        el("th", {}, "provider"),
+        el("th", {}, "outcome"),
+      )),
+    );
+    const tb2 = el("tbody");
+    for (const r of sa.recent) {
+      tb2.append(el("tr", {},
+        el("td", {}, (r.attempt_at || "").slice(0, 19)),
+        el("td", {}, (r.row_id || "").slice(0, 36)),
+        el("td", {}, r.provider || "?"),
+        el("td", {}, statusBadge(r.outcome)),
+      ));
+    }
+    rt.append(tb2);
+    c.append(rt);
+  }
+}
+
+function renderMandates(cm) {
+  const c = document.getElementById("mandates");
+  c.innerHTML = "";
+  if (!cm || !cm.available || !cm.mandates || !cm.mandates.length) {
+    c.append(el("p", { class: "card" }, "No active corpus mandates."));
+    return;
+  }
+  const grid = el("div", { class: "grid2" });
+  for (const m of cm.mandates) {
+    const card = el("div", { class: "card" },
+      el("h3", {}, m.mandate_id + " ", statusBadge(m.status)),
+      el("p", {}, m.purpose || ""),
+      el("p", { class: "mono", style: "margin-top: 8px; font-size: 11px;" },
+        `${m.row_count || 0} rows · lanes: ${(m.lane_eligibility || []).join(", ")} · credit: ${(m.credit_lanes_allowed || []).join(", ")}`),
+    );
+    grid.append(card);
+  }
+  c.append(grid);
+}
+
+load();
+</script>
+</body>
+</html>

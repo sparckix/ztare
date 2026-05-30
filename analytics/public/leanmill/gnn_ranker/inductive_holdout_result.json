@@ -1,0 +1,25 @@
+{
+  "bootstrap_mrr": 0.875,
+  "inductive_gnn": {
+    "hit@1": 0.0,
+    "hit@5": 0.0,
+    "hit@10": 0.0,
+    "mrr": 0.0
+  },
+  "inductive_aa": {
+    "hit@1": 0.0,
+    "hit@5": 0.0,
+    "hit@10": 0.0,
+    "mrr": 0.0
+  },
+  "n_in_vocab_test": 0,
+  "n_oov_test": 314,
+  "config": {
+    "holdout_frac": 0.2,
+    "seed": 42,
+    "epochs": 80,
+    "hidden": 64,
+    "n_snapshots": 200,
+    "device": "cpu"
+  }
+}

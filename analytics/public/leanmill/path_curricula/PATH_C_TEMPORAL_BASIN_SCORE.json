@@ -1,0 +1,166 @@
+{
+  "candidate_count": 7,
+  "decision": {
+    "accelerate_without_confounders": true,
+    "method": "use temporal/local advisory for triage only; proof/gap claims still require Path-B governance",
+    "next_highest_yield": "new source-safe canary acquisition for GP225; NS budget only for proposals that pass the anti-rehash escape-mechanism gate"
+  },
+  "event_count": 120,
+  "inputs": {
+    "ns_manifest": "projects/ns_millennium_hunt/workspace/ns_residual_manifest.md",
+    "pattern_ledger": "analytics/public/ledgers/pattern_deployment/pattern_deployment_ledger.jsonl",
+    "queue": "analytics/public/leanmill/path_curricula/PATH_C_CURRICULUM_QUEUE.json",
+    "residual_ledger": "analytics/public/ledgers/residual_to_lever/RUNG1_RESIDUAL_LEDGER.jsonl"
+  },
+  "ns_basin_summary": {
+    "advisory": "NS basin graph should gate budget: C5-alias-like proposals require a named escape mechanism before any solver/model spend.",
+    "alias_count": 28,
+    "alias_count_by_node": {
+      "C5": 24,
+      "unknown": 4
+    },
+    "canonical_node_count": 9,
+    "top_alias_tokens": [
+      "gap",
+      "via",
+      "lean",
+      "uniform",
+      "caloric",
+      "dissipation",
+      "strict-margin",
+      "certificate",
+      "opaque-subcriticality",
+      "density",
+      "active-singular",
+      "receipt",
+      "five-channel",
+      "radius",
+      "commutator",
+      "asymptotic",
+      "cascade",
+      "super-type-i",
+      "budget",
+      "bound"
+    ]
+  },
+  "schema": "path-c-temporal-basin-score-v1",
+  "scored_candidates": [
+    {
+      "advisory": "cleanup_only_do_not_spend_solver_budget",
+      "components": {
+        "lever_popularity": 0,
+        "local_cooccurrence": 1,
+        "positive_support": 1,
+        "recurrence": 1,
+        "recurrence_penalty": 0.25
+      },
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "row_id": "T2P_42",
+      "score": 0.65,
+      "top_overlap_tokens": [
+        "t2p_42"
+      ]
+    },
+    {
+      "advisory": "cleanup_only_do_not_spend_solver_budget",
+      "components": {
+        "lever_popularity": 0,
+        "local_cooccurrence": 1,
+        "positive_support": 1,
+        "recurrence": 1,
+        "recurrence_penalty": 0.25
+      },
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "row_id": "T2P_51",
+      "score": 0.65,
+      "top_overlap_tokens": [
+        "t2p_51"
+      ]
+    },
+    {
+      "advisory": "cleanup_only_do_not_spend_solver_budget",
+      "components": {
+        "lever_popularity": 0,
+        "local_cooccurrence": 1,
+        "positive_support": 1,
+        "recurrence": 1,
+        "recurrence_penalty": 0.25
+      },
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "row_id": "T2P_57",
+      "score": 0.65,
+      "top_overlap_tokens": [
+        "t2p_57"
+      ]
+    },
+    {
+      "advisory": "cleanup_only_do_not_spend_solver_budget",
+      "components": {
+        "lever_popularity": 0,
+        "local_cooccurrence": 1,
+        "positive_support": 1,
+        "recurrence": 1,
+        "recurrence_penalty": 0.25
+      },
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "row_id": "T2P_80",
+      "score": 0.65,
+      "top_overlap_tokens": [
+        "t2p_80"
+      ]
+    },
+    {
+      "advisory": "cleanup_only_do_not_spend_solver_budget",
+      "components": {
+        "lever_popularity": 0,
+        "local_cooccurrence": 1,
+        "positive_support": 1,
+        "recurrence": 1,
+        "recurrence_penalty": 0.25
+      },
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "row_id": "T2P_81",
+      "score": 0.65,
+      "top_overlap_tokens": [
+        "t2p_81"
+      ]
+    },
+    {
+      "advisory": "cleanup_only_do_not_spend_solver_budget",
+      "components": {
+        "lever_popularity": 0,
+        "local_cooccurrence": 1,
+        "positive_support": 1,
+        "recurrence": 1,
+        "recurrence_penalty": 0.25
+      },
+      "kind": "historical_contract_cleanup",
+      "next_lever": "official_contract_restatement_or_retire_not_path_c_canary",
+      "row_id": "T2P_93",
+      "score": 0.65,
+      "top_overlap_tokens": [
+        "t2p_93"
+      ]
+    },
+    {
+      "advisory": "data_acquisition_only_no_model_claim",
+      "components": {
+        "lever_popularity": 0,
+        "local_cooccurrence": 0,
+        "positive_support": 0,
+        "recurrence": 0,
+        "recurrence_penalty": 0.0
+      },
+      "kind": "typed_label_diagnostic_completed",
+      "next_lever": "acquire_rank1_negative_or_larger_typed_label_eval_before_any_model_claim",
+      "row_id": "typed_label_next",
+      "score": 0.0,
+      "top_overlap_tokens": []
+    }
+  ]
+}

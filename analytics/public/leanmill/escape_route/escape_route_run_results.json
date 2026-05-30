@@ -1,0 +1,66 @@
+{
+  "class": "escape_route",
+  "sandbox_mathlib": "v4.29.0",
+  "n_rows": 5,
+  "n_closed_raw": 0,
+  "natural_control": "v32_route_c_replay_results.json (0/10 closed)",
+  "note": "raw closures NOT counted until v33 anti-laundering audit (PL-156 pre-registered). 0 raw => pessimism SOUND per PL-156 event-2; >=1 raw => v33 audit then per-class verdict",
+  "results": [
+    {
+      "row_id": "ER_SIE1_intervalIntegral_pow_exp",
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "genuine_attempt": true,
+      "proposed_lemmas": [
+        "integral_exp_neg_mul_induction",
+        "integral_exp_neg_mul_by_parts",
+        "integral_exp_neg_mul_by_parts"
+      ]
+    },
+    {
+      "row_id": "ER_SIE2_sum_Ico_pow_exp",
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "genuine_attempt": true,
+      "proposed_lemmas": [
+        "sum_ico_pow_exp_induction",
+        "sum_ico_pow_exp_induction",
+        "sum_ico_pow_exp_induction"
+      ]
+    },
+    {
+      "row_id": "ER_SIE3_sum_Iic_pow_exp",
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "genuine_attempt": true,
+      "proposed_lemmas": [
+        "sum_pow_exp_induction_upper_bound",
+        "sum_pow_exp_induction_upper_bound",
+        "sum_pow_exp_induction_upper_bound"
+      ]
+    },
+    {
+      "row_id": "ER_SIE4_sum_Iic_pow_twopow",
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "genuine_attempt": true,
+      "proposed_lemmas": [
+        "sum_pow_mul_exp_negc_induction_bound",
+        "sum_pow_mul_exp_negc_induction_bound",
+        "sum_pow_mul_exp_negc_induction_bound"
+      ]
+    },
+    {
+      "row_id": "ER_PENT_strictMonoOn",
+      "closure_verdict": "OPEN_GAP_REPORT",
+      "compiled_any": false,
+      "genuine_attempt": true,
+      "proposed_lemmas": [
+        "int_normalization_exists",
+        "int_normalization_exists",
+        "int_normalization_exists"
+      ]
+    }
+  ],
+  "generated_at": "2026-05-16T13:14:50Z"
+}
