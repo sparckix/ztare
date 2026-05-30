@@ -1,0 +1,5 @@
+{
+  "_doc": "GP-241 cross-family trust anchors (cold review boibujil4 D1). The mutator family is NEVER derived from the agent-supplied proposal (attacker-controlled). Both families are COMMITTED anchors, same trust class as deploy/gp241_judge_pubkey.hex: operator-provisioned once, rotated explicitly. The daemon requires the judge-KEY-SIGNED model_identity's canonical provider == `judge`, and `judge` != `mutator`, and neither `unknown`. Rotating the mutator model to a different family = edit `mutator` here + re-commit (a deliberate operator act, like key rotation). Until valid, judge_verdict fail-closes (substantive ticks blocked, never falsely trusted).",
+  "judge": "openai",
+  "mutator": "anthropic"
+}

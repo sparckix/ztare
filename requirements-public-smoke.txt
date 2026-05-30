@@ -1,0 +1,17 @@
+# Minimal dependency set for the public Docker smoke image.
+#
+# The full research stack lives in requirements.txt and includes optional ML,
+# analytics, and substrate dependencies. The public clean-container smoke path
+# only needs role preflight, daemon dry-run, forecast pool, action intelligence,
+# and JSON/YAML/schema support.
+pydantic>=2.0
+python-dotenv>=1.0.0
+PyYAML>=6.0
+cryptography>=42.0
+jsonschema>=4.0
+requests>=2.30
+tenacity>=8.0
+click>=8.0
+rich>=13.0
+httpx>=0.27
+pytest>=8.0

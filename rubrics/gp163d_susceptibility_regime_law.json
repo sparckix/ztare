@@ -1,0 +1,102 @@
+{
+  "name": "gp163d_susceptibility_regime_law",
+  "project": "gp163d_susceptibility_regime_law",
+  "rubric_version": "0.1-susceptibility-regime-law",
+  "rubric_version_reason": "Frontier packet for a stronger but still bounded gp163d claim: not a raw orientation law, but a candidate diffuse susceptibility regime law that must stay below astrophysical overclaim and cash out in explicit promotion/kill criteria.",
+  "description": "Qualitative frontier substrate for generating, attacking, or bounding a diffuse susceptibility regime law candidate for the current gp163d gravity branch.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "The task is to generate a law packet, attacker packet, or no-go theorem, not to fit a direct formula."
+  },
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "This substrate is about a law packet and promotion logic rather than direct curve fitting.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "The goal is to evaluate law-packet quality, falsifier quality, scope honesty, and implementation cash-out rather than uniqueness of a fitted expression.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "No direct regression formula is being searched for here.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": [
+      "qualitative_evidence_seed"
+    ]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": [
+    "typing"
+  ],
+  "persona": "You are a hostile nonlinear-gravity frontier referee. Your job is not to defend the current gp163d branch and not to demote it reflexively. You must decide whether there exists a stronger science-grade law packet hiding inside the current evidence. The only acceptable upward move is a bounded diffuse susceptibility regime law, a promotion theorem packet, an external-system bridge map, or a no-go theorem. Penalize raw chi4 phase rhetoric, bland baseline laundering, denominator tricks, implementation-independence denial, and MOND/dark-matter overclaim. Reward bold but explicit law packets that state exactly what is being claimed, what it would resolve in the current literature, what independent evidence would still be needed, and what would kill the law.",
+  "dimensions": [
+    {
+      "name": "Law-Packet Ambition",
+      "weight": 15,
+      "description": "Does the submission attempt a genuinely stronger claim than the current solver/object bridge while keeping it technically coherent?"
+    },
+    {
+      "name": "Evidence Discipline",
+      "weight": 15,
+      "description": "Does it respect the known constraints: phase non-invariance, compact-control flatness, current primitive-anchor support, and independence debt?"
+    },
+    {
+      "name": "Explicit Law Specificity",
+      "weight": 15,
+      "description": "Does it define the candidate law or regime clearly enough to falsify?"
+    },
+    {
+      "name": "Literature Resolution Value",
+      "weight": 10,
+      "description": "Does it state what the law would and would not resolve in the current modified-gravity literature if true?"
+    },
+    {
+      "name": "Implementation Cash-Out",
+      "weight": 15,
+      "description": "Does it say what independent implementation, external system, or theorem burden would validate the claim?"
+    },
+    {
+      "name": "Adversarial Kill Quality",
+      "weight": 10,
+      "description": "Does it name concrete kill tests, rival hypotheses, and demotion conditions?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a better law packet, a better attacker packet, or a no-go theorem that changes what to build next?"
+    },
+    {
+      "name": "Scope Honesty",
+      "weight": 5,
+      "description": "Does it stay explicit about the difference between solver science, portable science candidate, and astrophysical law?"
+    }
+  ],
+  "criteria": {
+    "Law_Packet_Ambition": "Full credit requires a bounded but stronger law packet than the current CR-APD bridge alone, or a compelling no-go theorem explaining why no stronger law is yet earned.",
+    "Evidence_Discipline": "Full credit requires respecting the current evidence: phase is not invariant, compact controls are flat, the primitive anchor is the explanatory core, and clean-room independence is still missing.",
+    "Explicit_Law_Specificity": "Full credit requires a concrete candidate law/regime stated in explicit observable or theorem terms.",
+    "Literature_Resolution_Value": "Full credit requires stating what the law would and would not resolve in the live modified-gravity literature if true.",
+    "Implementation_Cash_Out": "Full credit requires saying what independent implementation, external-system bridge, or theorem burden would validate the law packet.",
+    "Adversarial_Kill_Quality": "Full credit requires naming the exact experiments, audits, or failure signatures that would kill the proposal.",
+    "Generative_Yield": "Full credit requires a law packet, attacker packet, or no-go theorem that materially changes what should be tested next.",
+    "Scope_Honesty": "Reject MOND/dark-matter victory language, astrophysical overclaim, and any claim that skips clean-room independence."
+  },
+  "success_criteria": [
+    "A bounded diffuse susceptibility regime law candidate that is stronger than the current solver-science wording and still technically honest.",
+    "A law-attacker packet that exposes the precise failure modes before any physics promotion.",
+    "A no-go theorem proving that current evidence cannot yet sustain a stronger law than the CR-APD bridge."
+  ],
+  "failure_modes": [
+    "Restating raw phase structure as if it were the law.",
+    "Calling the current primitive anchor itself an astrophysical law without new validation.",
+    "Using implementation-local regularity as if it already settled the literature.",
+    "Confusing a portable solver-object candidate with a nature-level law."
+  ]
+}

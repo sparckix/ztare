@@ -1,0 +1,68 @@
+{
+  "cage_meta": {
+    "type": "qualitative_audit",
+    "class": "audit",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "recommender_proxy_goodhart_public_critique"
+  },
+  "cage_observe_mode": true,
+  "enable_primitive_class_rotation": true,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_plateau_threshold": 3,
+  "enable_forced_reframe": true,
+  "gp168_stagnation_threshold": 2,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative critique project \u2014 no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative critique \u2014 evidence surface is source code + repo docs, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative critique \u2014 rival critiques scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1-mini",
+  "persona": "I am two readers at once judging whether this is worth posting on x.com. Reader 1 is a sharp tech-literate critic who will only amplify a post that says ONE thing they did not already know, states it in a line they would screenshot, and backs it with the actual code. Reader 2 is a hostile X reply-guy and an xAI engineer hunting for the one sentence that lets them quote-tweet 'this is wrong / they didn't even read the repo' and kill it. I reward a single sharp, memorable, load-bearing claim anchored line-to-code with a concrete, plausible mechanism of user or platform harm that a reader feels. I reward claims that survive the strongest steelmanned rebuttal. I punish, hard, BOTH failure directions: (a) mush \u2014 hedged, 'not decidable', throat-clearing, scope-laddering, or a thesis so qualified it says nothing postable; and (b) overclaim \u2014 any assertion the code does not support, any dependence on a withheld weight magnitude, any claim about undisclosed production components stated as fact. The highest score goes to a critique that is simultaneously punchy AND unkillable: sharp enough to go viral, true enough that the xAI engineer cannot land a single clean rebuttal. A correct, precisely-scoped, still-pointed claim beats both a timid hedge and a spicy overreach.",
+  "dimensions": [
+    {
+      "name": "Screenshot Claim (the hook)",
+      "weight": 18.7,
+      "description": "Is there ONE sharp, specific, memorable thesis sentence a reader would screenshot and quote? Full marks: a single load-bearing claim about the X For You algorithm that is non-obvious (not a paraphrase of the README's own 'Key Design Decisions'), stated in plain forceful language, no hedging ladder. Zero if the thesis is a hedged bundle, a 'not decidable' non-answer, or a generic 'engagement optimization is Goodhart' truism anyone could write without the repo."
+    },
+    {
+      "name": "Code-Anchored Harm Mechanism",
+      "weight": 25.5,
+      "description": "Does the critique trace, line-to-code from the evidence surface, a concrete mechanism by which the design produces a harm or failure a reader cares about (degraded/unhealthy feed, exploitability, a structural incentive)? Full marks: each step of the harm chain is pinned to a named file/structure (the separable linear scorer, the offset asymmetry, candidate isolation, the continuous engagement training loop, the narrow-channel guardrails) AND the harm is made vivid, not abstract. Penalize hand-waved sociotechnical theory and any step not grounded in the code."
+    },
+    {
+      "name": "Survives the Quote-Tweet",
+      "weight": 22.1,
+      "description": "Steelman the strongest hostile rebuttal an xAI engineer or sharp critic would fire back, in their words. Full marks: the critique pre-empts and survives that rebuttal from the code surface without retreating into mush. Heavy penalty if the single strongest rebuttal (e.g. 'Phoenix action predictions may already encode quality', 'grox/ + the transformer are unexposed') is ignored, strawmanned, or 'answered' only by weakening the claim into nothing."
+    },
+    {
+      "name": "Unkillable: scoped, no overclaim",
+      "weight": 18.7,
+      "description": "Is every assertion defensible strictly from the evidence surface, with scope stated in ONE clean clause (not a retreat ladder)? Full marks: no dependence on withheld weight magnitudes, no undisclosed-production claim stated as fact, scope named once and held \u2014 while the claim stays pointed. Zero if the thesis is either nuked by one clean rebuttal (overclaim) OR so scope-laddered it is unpostable (mush). This dimension is the anti-mush / anti-overclaim balance: precision in service of the punch, not instead of it."
+    },
+    {
+      "name": "M-Form Charter Alignment: steelman_rebuttal_survival",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Explicit steelmanning and code-anchored rebuttal survival: thesis must directly and rigorously rebut the strongest plausible hostile reply using only exposed code, not retreating or leaving unresolved vulnerabilities. Gap detected: The thesis neglects to explicitly steelman and survive the strongest known rebuttal that Phoenix action predictions may already encode quality, and that the unexposed Grox and transformer internal mechanisms could counterbalance the identified offset bias. While it states this rebuttal, it does not concretely refute or explain why the offset bias survives potential internal model corrections beyond the additive offset layer, nor does it fully demonstrate that no internal transformer mechanism could normalize, contextualize, or reweight candidates in a way that invalidates the claim. This leaves the critique vulnerable to the core anticipated xAI engineer response and thus incomplete per the charter's mandate to produce a claim that survives the strongest hostile reply from the code itself."
+    }
+  ],
+  "criteria": {
+    "screenshot_claim": "Highest when one sentence carries the whole post and a reader would quote it verbatim; the claim is non-obvious relative to the repo's own README and could not have been written without reading the code. Penalize hedge-bundles, 'not decidable' as the headline, and engagement-Goodhart truisms.",
+    "code_anchored_harm_mechanism": "Highest when the harm chain is pinned step-by-step to named code structures on the evidence surface (separable linear scorer, offset_score asymmetry, candidate isolation, continuous-on-engagement training, narrow-channel guardrails) and the harm is concrete and felt. Penalize abstract psychologizing and any link not on the code surface.",
+    "survives_the_quote_tweet": "Highest when the single strongest hostile rebuttal is stated in the opponent's strongest form and then survived from the code surface without dissolving the claim. Name the dominant rival (Phoenix-as-sufficient-quality-proxy; unexposed grox/transformer) explicitly. Penalize ignoring it, strawmanning it, or 'surviving' it only by retreating to a claim that says nothing.",
+    "unkillable_scoped_no_overclaim": "Highest when scope is one clean clause and every clause is defensible from evidence while the thesis stays sharp. Penalize equally: (a) any overclaim a critic can cleanly nuke (withheld magnitude, undisclosed-production-as-fact); (b) mush \u2014 scope-laddering, stacked qualifiers, or a verdict diluted until unpostable.",
+    "mform_steelman_rebuttal_survival": "Explicit steelmanning and code-anchored rebuttal survival: thesis must directly and rigorously rebut the strongest plausible hostile reply using only exposed code, not retreating or leaving unresolved vulnerabilities."
+  }
+}

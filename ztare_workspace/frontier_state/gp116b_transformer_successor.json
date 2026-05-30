@@ -1,0 +1,86 @@
+{
+  "project_slug": "gp116b_transformer_successor",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 4,
+  "pending_actions": [
+    {
+      "action_kind": "fork_substrate",
+      "params": {
+        "evidence_diff_strategy": "constructive_complement",
+        "rationale": "primary route obstructed twice; fork to constructive complement",
+        "route_id": "gate_HOLDOUT",
+        "from_iter": 4,
+        "project_slug": "gp116b_transformer_successor"
+      },
+      "reason": "A route that produces the same obstruction twice in a row signals the\napparatus is in a basin the current substrate can't escape. Fork a\nsuccessor substrate with constructive-complement evidence (anchors\nthe obstructed route AS evidence, not as goal) so the next iter\nattacks from a different direction.\n",
+      "rule_id": "obstruction_repeated_fork",
+      "from_event": {
+        "kind": "obstruction_detected",
+        "iter_index": 4,
+        "route_id": "gate_HOLDOUT",
+        "gate_name": "HOLDOUT",
+        "consecutive_count": 2,
+        "ts": "2026-05-07T12:53:47.270357Z",
+        "project_slug": "gp116b_transformer_successor"
+      },
+      "ts": "2026-05-07T12:53:47.590362Z"
+    },
+    {
+      "action_kind": "queue_cold_shot",
+      "params": {
+        "model_id": "gpt-5.5",
+        "prompt_template": "fractal_de_anchor_v1",
+        "from_iter": 3,
+        "project_slug": "gp116b_transformer_successor"
+      },
+      "reason": "Three consecutive iters at score 0 with no progress signals the\nmutator is locked in. Per the fractal-de-anchoring memory: the\nFRAME may be the suspect, not the form. Cold-shot a fresh model\nwith explicit de-anchoring discipline before continuing.\n",
+      "rule_id": "stagnation_propose_de_anchor",
+      "from_event": {
+        "kind": "stagnation_detected",
+        "iter_index": 3,
+        "consecutive_zeros": 3,
+        "ts": "2026-05-07T12:53:47.270362Z",
+        "project_slug": "gp116b_transformer_successor"
+      },
+      "ts": "2026-05-07T12:53:47.594761Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 4,
+      "ts": "2026-05-07T12:53:47.270405Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "fork_substrate",
+      "reason": "A route that produces the same obstruction twice in a row signals the\napparatus is in a basin the current substrate can't escape. Fork a\nsuccessor substrate with constructive-complement evidence (anchors\nthe obstructed route AS evidence, not as goal) so the next iter\nattacks from a different direction.\n",
+      "ts": "2026-05-07T12:53:47.590378Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "obstruction_repeated_fork",
+      "action_kind": "fork_substrate",
+      "from_event_kind": "obstruction_detected",
+      "ts": "2026-05-07T12:53:47.590632Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "queue_cold_shot",
+      "reason": "Three consecutive iters at score 0 with no progress signals the\nmutator is locked in. Per the fractal-de-anchoring memory: the\nFRAME may be the suspect, not the form. Cold-shot a fresh model\nwith explicit de-anchoring discipline before continuing.\n",
+      "ts": "2026-05-07T12:53:47.594777Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "stagnation_propose_de_anchor",
+      "action_kind": "queue_cold_shot",
+      "from_event_kind": "stagnation_detected",
+      "ts": "2026-05-07T12:53:47.595097Z"
+    }
+  ],
+  "updated_utc": "2026-05-07T12:53:47.595097Z"
+}

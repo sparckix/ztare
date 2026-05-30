@@ -1,0 +1,98 @@
+{
+  "name": "gp163d_admsr_attack_and_cleanroom_bridge",
+  "project": "gp163d_admsr_attack_and_cleanroom_bridge",
+  "rubric_version": "0.1-admsr-attack-cleanroom-bridge",
+  "rubric_version_reason": "Successor substrate after the bounded regime-law packet converged on ADMSR. This packet freezes ADMSR as the current best law gate and searches for the smallest honest clean-room contract, the strongest remaining attacker bundle, and the cheapest campaign that would actually change belief.",
+  "description": "Qualitative frontier substrate for turning ADMSR from a good law packet into a concrete build/test object: minimal honest clean-room standard, strongest attacker suite, cheapest belief-changing campaign, or a no-go theorem if that cannot be specified cleanly.",
+  "rubric_mode": "newton",
+  "fit_score_mode": "none",
+  "falsification_mode": "bounded_discriminator",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "The task is to generate a concrete validation bridge or no-go theorem, not a direct numeric fit."
+  },
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "This substrate is qualitative and protocol-oriented. It searches for a clean-room/attacker bridge rather than a regression formula.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals should be adjudicated by contract quality, attacker quality, and executable validation value rather than expression uniqueness.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "No direct fit primitive is relevant here.",
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": [
+      "qualitative_evidence_seed"
+    ]
+  },
+  "runner_allowed_imports": [
+    "typing"
+  ],
+  "persona": "You are a hostile research director for nonlinear-gravity validation design. The law-packet search is over for now: ADMSR is the current best bounded promotion gate, and your job is not to restate it or inflate it. You must identify the smallest honest clean-room standard that counts as real independence, the strongest remaining attacker bundle that could still kill the claim, and the cheapest campaign that would actually move belief; if that cannot be done without hidden assumptions, say so as a no-go theorem. Penalize abstract validation bureaucracy, same-family laundering, vague calls for more experiments, and any attempt to smuggle astrophysical promotion into the substrate.",
+  "dimensions": [
+    {
+      "name": "Bridge Specificity",
+      "weight": 16,
+      "description": "Does the submission define a concrete minimal clean-room contract, attacker packet, or no-go theorem rather than just restating ADMSR?"
+    },
+    {
+      "name": "Independence Honesty",
+      "weight": 16,
+      "description": "Does it keep a real notion of implementation independence and explicitly reject same-family laundering?"
+    },
+    {
+      "name": "Attacker Yield",
+      "weight": 15,
+      "description": "Does it identify concrete remaining artifact channels or kill tests beyond the already-frozen seeded CR-APD checker?"
+    },
+    {
+      "name": "Frugal Executability",
+      "weight": 15,
+      "description": "Does it cash out as the cheapest believable campaign or build plan that would actually change the branch state?"
+    },
+    {
+      "name": "Evidence Discipline",
+      "weight": 12,
+      "description": "Does it respect the known evidence: phase non-invariance, compact flatness, primitive-anchor support, current same-ecosystem limitations, and the existing CR-APD/RAGT hardening?"
+    },
+    {
+      "name": "No-Go Quality",
+      "weight": 11,
+      "description": "If it blocks promotion, does it do so with a precise theorem burden or contamination argument rather than generic caution?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it materially change what should be built next: contract, attacker suite, campaign plan, or explicit closure?"
+    }
+  ],
+  "criteria": {
+    "Bridge_Specificity": "Full credit requires a concrete output class: minimal clean-room contract, attacker packet, cheapest campaign spec, or a precise no-go theorem. Reject generic prose that only repeats ADMSR or says 'needs more validation.'",
+    "Independence_Honesty": "Full credit requires preserving a real independence standard and explicitly rejecting same-family extractor diversity, cached transform reuse, or residual-presentation churn as substitutes for clean-room evidence.",
+    "Attacker_Yield": "Full credit requires naming concrete remaining attack surfaces beyond the current seeded checker, such as hidden feature genealogy, class leakage through preprocessing, anchor-substitute mimicry, or construction coupling.",
+    "Frugal_Executability": "Full credit requires identifying the cheapest credible campaign or build plan that would change belief, not the most maximal validation stack imaginable.",
+    "Evidence_Discipline": "Full credit requires respecting the current branch facts: no phase law, diffuse > compact inside the current ecosystem, compact flatness, primitive-anchor support, CR-APD hardening already done, and no honest clean-room run yet.",
+    "No_Go_Quality": "Full credit requires that a negative answer say exactly why the bridge cannot yet be concretized without hidden contamination, and what would have to change before reopening it.",
+    "Generative_Yield": "Full credit requires an output that changes what code, audit, or experiment should be built next instead of just improving rhetoric."
+  },
+  "success_criteria": [
+    "A concrete minimal clean-room contract that is smaller and more buildable than the current prose frontier while remaining scientifically honest.",
+    "A stronger attacker packet that names the surviving kill channels after the current CR-APD checker hardening.",
+    "A frugal campaign plan that says exactly what should be built or run next to change belief.",
+    "A precise no-go theorem if none of the above can be specified cleanly yet."
+  ],
+  "failure_modes": [
+    "Restating ADMSR with different wording and no new executable content.",
+    "Treating same-family code or extractor diversity as clean-room independence.",
+    "Inflating the validation burden into abstract bureaucracy without improving attack coverage.",
+    "Sneaking astrophysical law language into a bridge packet.",
+    "Calling for more GPU or more ZTARE without a narrower executable target."
+  ]
+}

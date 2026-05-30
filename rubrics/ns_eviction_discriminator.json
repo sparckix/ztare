@@ -1,0 +1,59 @@
+{
+  "name": "ns_eviction_discriminator",
+  "project": "ns_eviction_discriminator",
+  "rubric_version": "0.1-proof-path-discriminator",
+  "description": "Bounded ZTARE substrate for discovering compact local observables that separate Navier-Stokes stretching consolidation from anti-blowup eviction/sterility.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "This is a finite proof-path discriminator over audited diagnostic rows. It has no numeric farther-tail coordinate; the output must name a fresh falsifying experiment rather than claim extrapolation."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail region exists for this proof-path/audit substrate. Generalization is tested by the required Generative Yield dimension and future Kida-Pelz diagnostics, not by a coordinate-range extrapolation gate.",
+  "runner_allowed_imports": ["features", "math"],
+  "disable_evidence_fit_gate": true,
+  "disable_uniqueness_gap_gate": true,
+  "holdout_hard_gate": true,
+  "persona": "You are an adversarial PDE proof-path auditor. Your task is to propose a compact, falsifiable scalar law I_model(features)->sterility_next that predicts whether a local Navier-Stokes peak state proceeds toward stretching consolidation or anti-blowup eviction/sterility. You must not claim global regularity or a Clay solution. You must name the next experiment that would falsify your discriminator.",
+  "dimensions": [
+    {
+      "name": "Observable Compression",
+      "weight": 25,
+      "description": "Does the thesis propose a compact mathematical discriminator using local geometry features such as a_pos, chi, strain_projection, lambda_positive, support_leakage, and omega_max, rather than lookup tables by source phase or family?"
+    },
+    {
+      "name": "Holdout Validation",
+      "weight": 25,
+      "description": "Does test_model.py pass the deterministic holdout gate in gate_harness.py with MAE < 0.20 and max/critical-row error < 0.30?"
+    },
+    {
+      "name": "Proof-Path Usefulness",
+      "weight": 20,
+      "description": "Does the thesis translate the discriminator into a concrete next proof-path decision: universal eviction law, Kida-Pelz inverse construction, second eviction channel, or abandoned branch?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does the thesis make at least two concrete, falsifiable predictions for fresh diagnostics, such as Kida-Pelz N=128/N=256 or another symmetry-locked flow?"
+    },
+    {
+      "name": "Rival Falsification",
+      "weight": 10,
+      "description": "Does the thesis compare against at least two rival discriminators, such as chi-only, a_pos-only, strain_projection-only, and support_leakage-only?"
+    },
+    {
+      "name": "Claim Discipline",
+      "weight": 5,
+      "description": "Does the thesis explicitly avoid overclaiming global Navier-Stokes regularity from this finite substrate?"
+    }
+  ],
+  "criteria": {
+    "Observable_Compression": "Full credit requires a formula or algorithm that could be tested on a fresh Kida-Pelz N>=128 run. Penalize use of family/source_phase as direct lookup keys.",
+    "Holdout_Validation": "gate_harness.py is authoritative. The thesis must cite the JSON output. Averaging away the critical hidden danger-exit row does not pass.",
+    "Proof_Path_Usefulness": "A useful result names what experiment should run next and what result would kill the proposed observable.",
+    "Generative_Yield": "Full credit requires two numeric, falsifiable predictions for future diagnostic rows. Qualitative next-step prose is not enough.",
+    "Rival_Falsification": "At least two simpler rivals must be evaluated on the same visible/holdout split.",
+    "Claim_Discipline": "Reject Clay-solution claims. This substrate is an instrument for mechanism discovery."
+  }
+}

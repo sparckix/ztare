@@ -1,0 +1,98 @@
+{
+  "name": "gp116b_transformer_successor",
+  "project": "gp116b_transformer_successor",
+  "rubric_version": "v0.4-depth-phase-deanchor-rival-baseline",
+  "rubric_version_reason": "v0.4 (2026-05-02): excludes planning-only documented summaries from law targets, adds Mamba depth-phase as a first-class transfer stressor, updates the cheap-rival burden, and opts into de-anchored advisory seed/reframe discipline without enabling qualitative-only stagnation triggers.",
+  "runner_allowed_imports": ["features"],
+  "description": "Measured residual-cancellation substrate over GP116 diagnostic rows. The target is cancellation_pct / 100, with provenance stripped and external successor rows kept as context only until directly measured. Candidate laws must beat cheap category and step-regime rival baselines, not merely pass absolute MAE thresholds.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "The substrate has measured targets and adversarial holdout rows spanning GQA, late-depth SSM, MHA control, and from-scratch dynamics.",
+  "falsification_mode": "bounded_discriminator",
+  "holdout_hard_gate": true,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Evidence is an nd_features measured diagnostic surface with custom gate_harness.py, not a single-column curve.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Custom nd_features measured-cancellation substrate. Rival forms are scored by gate_harness.py holdout MAE and rubric dimensions; the global mathematical-form keyword heuristic is not the scientific discriminator.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom nd_features substrate with explicit holdout rows in gate_harness.py; no separate numeric farther-tail region is defined for evidence.txt.",
+  "enable_fit_primitive_features": false,
+  "enable_substrate_critic": true,
+  "enable_cold_llm_erdos_seed": true,
+  "enable_cold_llm_erdos_seed_reason": "Advisory de-anchoring is useful for residual-state economics: it should propose state-carrier / memory-topology analogies, not architecture-name rankings. It is only used when a paid loop is launched.",
+  "cold_llm_seed_model_id": "@mutator",
+  "cold_llm_seed_forbidden_domain": "LLM architecture, Transformer, attention, Mamba, RWKV, RetNet, xLSTM, deep learning, neural networks",
+  "cold_llm_seed_timeout_seconds": 45,
+  "cold_llm_seed_k_law_budget": 6,
+  "enable_forced_reframe": true,
+  "gp168_stagnation_threshold": 3,
+  "gp168_ast_bucket_threshold": 4,
+  "gp168_max_consecutive_fires": 2,
+  "enable_qualitative_stagnation_detection": false,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 5,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["de_anchor_seed"],
+    "disabled_families": ["physics_lagrangian_seed"],
+    "budget": {
+      "max_calls_per_run": 1,
+      "max_cost_usd": 0.75
+    }
+  },
+  "parallel_mutator_k": 1,
+  "cage_observe_mode": false,
+  "cage_authoritative_mode": true,
+  "evidence_contract": {
+    "format": "NONE",
+    "columns": [],
+    "independent_vars": [],
+    "min_rows": 0,
+    "require_finite": false,
+    "format_provenance": "operator_set_nd_features",
+    "docstring": "gp116b_transformer_successor is cage_meta.class=nd_features. Each row is an abstract mechanism/training feature dict; target is measured residual_cancellation_fraction in [0,1]."
+  },
+  "cage_meta": {
+    "type": "measured_residual_cancellation",
+    "class": "nd_features",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 1,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "persona": "You are an adversarial mechanistic scientist. Find a compact law for measured residual cancellation using architecture, depth-phase, and training-dynamics features. Do not use provenance names, repos, paper titles, URLs, source hashes, or target keys. Do not fabricate successor metrics; state explicitly that RetNet/xLSTM/AttnRes/RMT require direct diagnostics before law claims. De-anchor from model-name tournaments: the object is residual-state economics, meaning the minimal sufficient state carrier and its cancellation/rank/downstream-retention tradeoff.",
+  "dimensions": [
+    {
+      "name": "Measured Target Accuracy",
+      "weight": 35,
+      "description": "Predicts residual_cancellation_fraction on visible and holdout rows under gate_harness.py, including the cheap-rival baseline gate. Full credit requires beating the current rival-baseline threshold, not merely passing holdout < 0.13."
+    },
+    {
+      "name": "Generative Yield and Mechanistic Compression",
+      "weight": 20,
+      "description": "Uses compact architecture, state-carrier, depth-phase, and training-dynamics mechanisms rather than row memorization or row_type bookkeeping."
+    },
+    {
+      "name": "Holdout Transfer",
+      "weight": 20,
+      "description": "Transfers to the semantic hard holdout: late-depth SSM/Mamba, GQA diagnostic, MHA diagnostic, and from-scratch low-cancellation dynamics."
+    },
+    {
+      "name": "De-anchored Rival Reframe",
+      "weight": 10,
+      "description": "Explicitly separates mechanism/family features from architecture names and considers at least two disjoint state-carrier framings or rivals. Reward reframes that propose the next measurement likely to falsify the law; penalize Transformer-vs-Mamba leaderboard narratives."
+    },
+    {
+      "name": "Leakage Discipline",
+      "weight": 15,
+      "description": "Does not use or recreate provenance identifiers."
+    }
+  ],
+  "criteria": {
+    "Measured_Target_Accuracy": "gate_harness.py reports all_gates_pass=true for residual_cancellation_fraction, including rival_baselines.passed=true. Current required holdout MAE is computed by the harness from the best cheap rival.",
+    "Generative_Yield_and_Mechanistic_Compression": "I_model is a compact function over abstract row_type, architecture_family, recurrence/attention, layer_window_center_frac/depth phase, and training coordinates, and it proposes which successor-family diagnostics would most reduce uncertainty.",
+    "Holdout_Transfer": "Holdout MAE stays below 0.13 and below the cheap-rival improvement threshold without direct row lookup, including the late-depth SSM stress row.",
+    "De_anchored_Rival_Reframe": "Submission de-anchors from model names and tests at least two disjoint state-carrier explanations: residual checkpoint/KV recompute, recurrent/SSM state, learned residual routing, matrix residual memory, or another abstract mechanism. It must identify what data is missing before any successor ranking claim.",
+    "Leakage_Discipline": "No model names, repos, source files, paper names, URLs, hashes, authors, or target keys are used."
+  }
+}

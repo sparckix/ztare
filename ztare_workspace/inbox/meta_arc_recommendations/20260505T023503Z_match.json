@@ -1,0 +1,82 @@
+{
+  "stall": "Need to prove that, for actual Leray/NSE paraproduct blocks at fixed LP/Besov topology, the low-high catalyst interaction's payoff is charged by the leakage budget. Lean adapter exists at obligation level; the actual PDE estimate that supplies the leakage absorption is open.",
+  "n_catalog": 40,
+  "saturation_flag": false,
+  "saturation_reason": null,
+  "modal_cluster": "add apparatus gate",
+  "modal_share": 0.225,
+  "lift": 0.841,
+  "ranked": [
+    {
+      "rank": 1,
+      "move_id": "ns:5gb\u21925gb",
+      "move_name": "branch_decomposition_with_falsifier",
+      "signature": "Split the low-high branch into a rotator/stretcher dichotomy by introducing a flat-torus Killing-mode falsifier theorem (amplitude_zero_of_zero_symmetric_gradient_mode) and a kinematic ledger adapter that gates leakage gain on positive deformation co",
+      "source_substrate": "ns",
+      "source_cycle": "5gb\u21925gb",
+      "object_created": "ns_flat_torus_killing_mode.lean (theorem amplitude_zero_of_zero_symmetric_gradient_mode) and ns_low_high_kinematic_dichotomy.lean (LowHighKinematicDichotomyLedger, LowHighKinematicDichotomyCertificate",
+      "cluster_id": "branch_decomposition_with_falsifier",
+      "cosine_raw": 0.841,
+      "cosine_idf_adjusted": 1.617
+    },
+    {
+      "rank": 2,
+      "move_id": "ns:5fr\u21925fr",
+      "move_name": "shell_residual_pre_declaration",
+      "signature": "Instantiate the abstract profile obligation into a dyadic-shell pricing stream with pre-declared cross-shell residual ledgers, blocking tautological route selection by fixing the shell stream before payoff is scored.",
+      "source_substrate": "ns",
+      "source_cycle": "5fr\u21925fr",
+      "object_created": "ns_littlewood_paley_profile_bridge.lean with LPShellPricingStream fixing crossPrice and crossPayoff before payoff scoring",
+      "cluster_id": "shell_residual_pre_declaration",
+      "cosine_raw": 0.836,
+      "cosine_idf_adjusted": 1.606
+    },
+    {
+      "rank": 3,
+      "move_id": "ns:5fs\u21925fs",
+      "move_name": "interaction_class_partition",
+      "signature": "Introduce a typed inductive partition of Bony/LP interaction classes (lowHigh, highLow, highHigh, sameShell, remainder) and prove an abstract bridge theorem that any above-wall Track B trade must be attributable to one named class, closing the finite",
+      "source_substrate": "ns",
+      "source_cycle": "5fs\u21925fs",
+      "object_created": "ns_littlewood_paley_paraproduct_bridge.lean with LPParaproductClass inductive type, LPInteractionLedger/LPInteractionFamily structures, and the abstract bridge theorem over all five interaction classe",
+      "cluster_id": "interaction_class_partition",
+      "cosine_raw": 0.833,
+      "cosine_idf_adjusted": 1.6
+    },
+    {
+      "rank": 4,
+      "move_id": "ns:5bp\u21925bp",
+      "move_name": "certificate_portability_abstraction",
+      "signature": "Lift the mode-specific SOS receipt into an abstract spectral-diseconomy structure (ToxicBlock + schurSlack) that encodes the viscous-quadratic dominance argument independent of which mode index is chosen, making the certificate portable across substi",
+      "source_substrate": "ns",
+      "source_cycle": "5bp\u21925bp",
+      "object_created": "ns_spectral_diseconomy_toxic_block.lean \u2014 defines ToxicBlock, ToxicBlock.schurSlack, and ToxicBlock.qform as the obligation skeleton for the spectral-diseconomy bridge theorem.",
+      "cluster_id": "certificate_portability_abstraction",
+      "cosine_raw": 0.826,
+      "cosine_idf_adjusted": 1.587
+    },
+    {
+      "rank": 5,
+      "move_id": "ns:5ch\u21925ch",
+      "move_name": "Definitional Kill Bifurcation",
+      "signature": "Splits a conflated obstruction package into a nontriviality bar isolating the internal definitional kill from a PDE-derived obligation, bridged by a transport-ratio theorem naming the exact disc.",
+      "source_substrate": "ns",
+      "source_cycle": "5ch\u21925ch",
+      "object_created": "Lean file pair defining obstruction target and transport-ratio bridge theorem",
+      "cluster_id": "cluster_6.1",
+      "cosine_raw": 0.818,
+      "cosine_idf_adjusted": 1.572
+    }
+  ],
+  "adversary_move": {
+    "move_id": "neural:iter4\u21925",
+    "move_name": "replace certification gate",
+    "signature": "Demoted the global Liouville dissipativity condition from a hard certification gate to a soft prior, replacing it with a finite-sample-compatible local divergence bound apparatus that acknowledges modelling error tolerance.",
+    "source_substrate": "neural",
+    "source_cycle": "iter4\u21925",
+    "object_created": "A local divergence bound apparatus with explicit finite-sample and modelling-error tolerance parameters replacing the global dissipativity gate.",
+    "cluster_id": "replace certification gate",
+    "cosine_raw": 0.783,
+    "purpose": "G4 adversary: structurally-distinct alternative \u2014 different source_substrate AND different cluster from top match. Panel clause F monoculture guard."
+  }
+}

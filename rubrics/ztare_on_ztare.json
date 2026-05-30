@@ -1,7 +1,7 @@
 {
   "rubric_mode": "newton",
   "enable_dag_steering": true,
-  "enable_dag_steering_reason": "GP-134 DAG steering patch: parse latest_probability_dag.json each iter, compute urgency = edge_weight * node_probability, prepend highest-urgency node's watch_signal to mutator prompt. Converts DAG from passive reflection to active steering. See research_areas/private/seams/mission/GP-134_ztare_on_ztare_self_recursive_seam.md.",
+  "enable_dag_steering_reason": "GP-134 DAG steering patch: parse latest_probability_dag.json each iter, compute urgency = edge_weight * node_probability, prepend highest-urgency node's watch_signal to mutator prompt. Converts DAG from passive reflection to active steering. See GP-134 (internal seam)",
   "rubric_mode_reason": "Discovery-class target — ztare_on_ztare asks whether small architectural primitives can convert fitting into constructing. Newton-mode enforces Generative Yield dimension: each primitive must name ≥1 secondary observable its mechanism predicts beyond the fitting target. See GP-133 Round 4 § Kepler→Newton reframe.",
   "farther_tail_region": null,
   "farther_tail_region_disable_reason": "qualitative thesis project — no numerical holdout gate",

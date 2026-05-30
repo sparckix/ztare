@@ -78,7 +78,7 @@ Return JSON using this exact schema:
 
 Guidance:
 - `immutable_ground_truth`: use for hard facts, direct observations, or strong source-backed contextual truths
-- `numerical_ranges_and_constraints`: include load-bearing values or operational constraints a thesis could exploit if left vague
+- `numerical_ranges_and_constraints`: include central values or operational constraints a thesis could exploit if left vague
 - `potentially_conflicting_assertions`: list strong assertions from this source that could disagree with other sources later
 - `epistemic_voids`: note the important things this source does not resolve
 - `candidate_claims_to_test`: keep to 1-4 per source

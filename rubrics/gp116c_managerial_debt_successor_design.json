@@ -1,0 +1,85 @@
+{
+  "rubric_version": "v0.1-qualitative-managerial-debt-falsifier",
+  "project": "gp116c_managerial_debt_successor_design",
+  "name": "GP116C Managerial-Debt Successor Design",
+  "description": "Qualitative successor-design project that turns the Transformer managerial-debt hypothesis into falsifiable cheaper/faster architecture interventions.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "This is not a numeric fit substrate. Newton-mode means the thesis must generate falsifiable interventions and secondary observables that can feed new measured rows into GP116B.",
+  "falsification_mode": "qualitative_thesis",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative design substrate. The target is an intervention packet and falsifier, not a numeric residual-cancellation predictor.",
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "No numeric hidden holdout. GP116B is the quantitative discriminator; GP116C generates measurement candidates.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Evidence is a qualitative/measured research brief, not a curve to fit.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Uniqueness-gap requires numeric I_model residuals; this project scores intervention design and falsifiability.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Qualitative substrate. Numeric cage signals are observed but not enforced.",
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "The expected submission is a prose intervention packet. Requiring I_model would create false R1 failures.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric tail region in a qualitative design substrate.",
+  "enable_cold_llm_erdos_seed": true,
+  "enable_erdos_requery_on_stagnation": true,
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_max_per_run": 2,
+  "enable_forced_reframe": true,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 5,
+  "qualitative_stagnation_reason": "If the loop repeats 'hybrid attention plus SSM' without sharper falsifiers, force a reframe. The project exists to break architecture-story stagnation.",
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["de_anchor_seed"],
+    "disabled_families": ["physics_lagrangian_seed"],
+    "budget": {
+      "max_calls_per_run": 1,
+      "max_cost_usd": 0.75
+    }
+  },
+  "persona": "You are a ruthless successor-architecture research director. Your job is not to praise Mamba, RWKV, attention, or any named model family. Your job is to turn 'Transformer layers are managerial debt' into a falsifiable intervention. Reward only proposals that identify a precise debt-like depth/mechanism, replace it with a cheaper state carrier, predict residual-state and downstream-retention consequences, include a cheap failure test, and name the strongest rival explanation. Reject architecture fan fiction, model-name tournaments, and proposals whose first test is full pretraining.",
+  "dimensions": [
+    {
+      "name": "Debt Hypothesis Precision",
+      "weight": 20,
+      "description": "Does the thesis restate managerial debt mechanically as a marginal-cost versus marginal-state-sufficiency claim? Full credit requires a specific depth region or mechanism, a debt criterion, and a distinction between global redundancy and localized coordination debt."
+    },
+    {
+      "name": "Intervention Packet Completeness",
+      "weight": 25,
+      "description": "Does the thesis provide the required Intervention Packet fields: target debt window, replacement state carrier, expected cost delta, expected quality delta, mechanistic prediction, cheap falsifier, rival explanation, and next GP116B row?"
+    },
+    {
+      "name": "Generative Yield and Measurement Consequences",
+      "weight": 15,
+      "description": "Newton-mode dimension. Does the proposal predict observables beyond the primary claim, including at least one downstream-retention metric and one cost metric? Tautological claims such as 'the replacement is better if it is better' score zero."
+    },
+    {
+      "name": "Falsifier Strength and Frugality",
+      "weight": 15,
+      "description": "Does the first experiment have a clear fail threshold and avoid full pretraining as the first test? Full credit requires a cheap proxy or local measurement that can reject the intervention before expensive compute."
+    },
+    {
+      "name": "Rival and Leakage Discipline",
+      "weight": 15,
+      "description": "Does the thesis name the strongest rival explanation and prevent model-name/provenance leakage? Full credit requires mechanism/family abstractions rather than named-model rankings."
+    },
+    {
+      "name": "GP116B Integration Path",
+      "weight": 10,
+      "description": "Does the proposal specify exactly what measured row should be added back to GP116B, which abstract features it needs, and which target observable it would reduce uncertainty on?"
+    }
+  ],
+  "criteria": {
+    "Debt Hypothesis Precision": "Zero if managerial debt remains metaphorical. Full credit only with a localized, measurable cost-vs-state-sufficiency definition and explicit rejection of the naive global-redundancy version unless separately defended.",
+    "Intervention Packet Completeness": "Zero if the thesis lacks a section titled Intervention Packet. Full credit requires every schema field from evidence.txt, including thresholds and the next GP116B row.",
+    "Generative Yield and Measurement Consequences": "Must predict residual-state behavior plus at least one downstream-retention observable and one cost observable. Must be falsifiable without relying on model names.",
+    "Falsifier Strength and Frugality": "Reward local, cheap, decisive experiments. Penalize proposals whose first falsifier requires full-scale pretraining or whose thresholds are vague.",
+    "Rival and Leakage Discipline": "Reward explicit rivals: layer redundancy artifact, family-average artifact, small-model artifact, kernel/memory overhead artifact, downstream collapse. Reject provenance leakage.",
+    "GP116B Integration Path": "Full credit requires a source-auditable but feature-abstract row plan that can be absorbed by GP116B after measurement."
+  }
+}
+

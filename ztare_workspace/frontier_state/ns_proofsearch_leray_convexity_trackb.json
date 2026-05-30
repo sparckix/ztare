@@ -1,0 +1,143 @@
+{
+  "project_slug": "ns_proofsearch_leray_convexity_trackb",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 4,
+  "pending_actions": [
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 73,
+        "parametric_form": "",
+        "ts": "2026-05-07T12:53:47.287616Z",
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "ts": "2026-05-07T12:53:48.186092Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 73,
+        "parametric_form": "",
+        "ts": "2026-05-07T12:53:57.111317Z",
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "ts": "2026-05-07T12:53:57.349193Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 73,
+        "parametric_form": "",
+        "ts": "2026-05-07T12:54:07.326982Z",
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "ts": "2026-05-07T12:54:07.572188Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 73,
+        "parametric_form": "",
+        "ts": "2026-05-10T21:17:59.693022Z",
+        "project_slug": "ns_proofsearch_leray_convexity_trackb"
+      },
+      "ts": "2026-05-10T21:17:59.926561Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 4,
+      "ts": "2026-05-07T12:53:47.287663Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:48.186110Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:48.186381Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.349209Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.349496Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.572205Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.572527Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.926567Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.926918Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.926918Z"
+}

@@ -1,0 +1,113 @@
+{
+  "name": "ns_proofsearch_independent_multishell_cascade",
+  "project": "ns_proofsearch_independent_multishell_cascade",
+  "rubric_version": "0.1-independent-cascade-anti-tautology",
+  "rubric_version_reason": "Successor after Phase 5DL-5DP showed local and bounded multi-shell residual-tax domination while the projection ratio approaches one from below. The target is now an independent multi-shell cascade generator or a theorem-shaped ceiling, with strict anti-tautology discipline.",
+  "description": "Focused theorem-search substrate for independent multi-shell Navier-Stokes cascade generators at the residual-tax boundary.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative frontier theorem-search over independently generated multi-shell cascades and residual-defect/profit ledgers."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by generator independence, residual-defect accounting, profit discipline, and theorem boundary sharpness.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 25,
+  "post_run_synthesis_max_cluster_size": 4,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The prior deterministic audits found local and bounded multi-shell residual-tax domination near the canonical stationary-Euler packet, with ratios approaching one from below. Reward only an independently generated multi-shell cascade, a theorem-shaped subcritical ceiling, or an exact escrowed conjecture. Penalize phase-fitting, backward-solved residual cancellation, Clay overclaims, metric-kernel substitution, pressure-source-only claims, envelope-only pincer repeats, and tautological definitions of cascade/profit/Defect_n.",
+  "dimensions": [
+    {
+      "name": "Independent Generator Discipline",
+      "weight": 18,
+      "description": "Does the submission define a cascade generator independently of the desired residual/profit result before scoring?"
+    },
+    {
+      "name": "Residual-Defect Ledger",
+      "weight": 14,
+      "description": "Does it compute or bound projected residual, transfer margin, reset residual, or Defect_n rather than assuming realization?"
+    },
+    {
+      "name": "Pressure-Profit Discipline",
+      "weight": 13,
+      "description": "Does it distinguish pressure source/visibility from signed pressure-strain, recurrence, resupply, or Leray-visible velocity profit?"
+    },
+    {
+      "name": "Multi-Shell Specificity",
+      "weight": 12,
+      "description": "Does it specify shell support, lattice geometry, amplitude/phase law, and divergence-free constraints precisely enough to falsify?"
+    },
+    {
+      "name": "No-Go Or Positive Strength",
+      "weight": 10,
+      "description": "Does it provide a plausible positive construction or a sharp subcritical ceiling theorem with stated scope?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a theorem packet, CAS/Lean-facing object list, exact Fourier falsifier, or decisive reranking?"
+    },
+    {
+      "name": "Adversarial Falsifier Quality",
+      "weight": 8,
+      "description": "Does it name the cheapest exact Fourier, symbolic, or residual-defect falsifier?"
+    },
+    {
+      "name": "Anti-Tautology Independence",
+      "weight": 8,
+      "description": "HARD GATE. Reject phase sequences, amplitudes, observables, thresholds, or Defect_n values defined by the desired cancellation or profit conclusion."
+    },
+    {
+      "name": "Scope Honesty And Nonclaim Control",
+      "weight": 2,
+      "description": "Does it avoid Clay-level overclaims and state exact finite/asymptotic scope?"
+    }
+  ],
+  "criteria": {
+    "Independent_Generator_Discipline": "Full credit requires a predeclared geometric/dynamical generator independent of the scored residual/profit outcome.",
+    "Residual_Defect_Ledger": "Full credit requires projected residual/Defect_n accounting sufficient to assess transfer to true NSE behavior.",
+    "Pressure_Profit_Discipline": "Full credit requires explicit separation of pressure source from useful pressure-strain, recurrence, resupply, or Leray-visible velocity profit.",
+    "Multi_Shell_Specificity": "Full credit requires concrete shell support, lattice recursion, phase/amplitude law, and divergence-free constraints.",
+    "No_Go_Or_Positive_Strength": "Full credit requires either a positive independent construction with obligations or a no-go/ceiling theorem with sharp boundary.",
+    "Generative_Yield": "Full credit requires a theorem packet, exact Fourier falsifier, symbolic ceiling, or project-reranking.",
+    "Adversarial_Falsifier_Quality": "Full credit requires naming what would kill the proposal and how to test it cheaply.",
+    "Anti_Tautology_Independence": "Score ZERO for phase-fitting, backward-solved residual cancellation, defining cascade as profit/residual optimizer, or assuming Defect_n/profit dominance in the antecedent.",
+    "Scope_Honesty_And_Nonclaim_Control": "Reject Clay-level overclaims, pressure-gauge artifacts, metric-kernel substitution, envelope-only repeats, and approximate-equals-exact laundering."
+  },
+  "success_criteria": [
+    "An independent multi-shell cascade generator with residual/profit ledger crossing ratio 1 and Defect_n obligations.",
+    "A subcritical ceiling theorem explaining the bounded ladder approaching 1 from below for a stated generator class.",
+    "A falsifiable multi-shell conjecture with generator class, observable, projected residual, and exact bounded test.",
+    "A decisive proof-cost reranking between broader exact Fourier audits, ZTARE theorem search, and abandoning this pressure-profit route."
+  ],
+  "failure_modes": [
+    "Choosing phases or amplitudes by solving backward for residual cancellation.",
+    "Defining the cascade as whatever maximizes profit/residual ratio.",
+    "Assuming Defect_n < 1 or profit dominance in the theorem antecedent.",
+    "Claiming pressure source implies pressure profit.",
+    "Using broad pincer exponents without explicit packet realization.",
+    "Ignoring gauge, Leray projection, or projected residual.",
+    "Promoting a near-1 projection ratio to a Clay-level claim."
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 5,
+  "pending_actions": [
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 86,
+        "parametric_form": "0.5",
+        "ts": "2026-05-07T12:53:47.279831Z",
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "ts": "2026-05-07T12:53:47.956576Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 86,
+        "parametric_form": "0.5",
+        "ts": "2026-05-07T12:53:57.106195Z",
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "ts": "2026-05-07T12:53:57.257952Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 86,
+        "parametric_form": "0.5",
+        "ts": "2026-05-07T12:54:07.320889Z",
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "ts": "2026-05-07T12:54:07.478482Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 86,
+        "parametric_form": "0.5",
+        "ts": "2026-05-10T21:17:59.677014Z",
+        "project_slug": "gp163d_admsr_attack_and_cleanroom_bridge"
+      },
+      "ts": "2026-05-10T21:17:59.841158Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 5,
+      "ts": "2026-05-07T12:53:47.279872Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:47.956593Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:47.956838Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.257968Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.258276Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.478499Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.478822Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.841165Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.841574Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.841574Z"
+}

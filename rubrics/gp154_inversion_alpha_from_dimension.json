@@ -1,0 +1,142 @@
+{
+  "name": "gp154_inversion_alpha_from_dimension",
+  "project": "gp154_inversion_alpha_from_dimension",
+  "rubric_version": "v1.1-newton-mode-inversion-spec-compliant",
+  "rubric_version_reason": "v1.1 (2026-05-01): first run of the inversion substrate. The forward-regression direction was falsified earlier the same day; this rubric is the Newton-mode pivot to derive z = f(d_int) with PSLQ-recoverable constants. v1.1 adds spec-required persona / criteria / dimensions and aligns farther_tail_region to the null + custom-gate-harness convention.",
+  "description": "Newton-mode substrate for the inversion principle: the scaling-law exponent z is hypothesized to be a closed-form function of the intrinsic dimensionality d of the data manifold. Anchor data is bahri2024 controlled image-classification rows where d is independently controlled. Pre-registered Kepler fit gives z = 0.62/d + 0.07. The Newton bar requires that at least one constant in the candidate closed form be PSLQ-recoverable as a named-constant ratio.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate. Open question: is the inversion principle's strict form correct, and what closed form has constants that are recoverable as ratios of named constants?",
+  "persona": "You are an adversarial epistemic auditor for a closed-form scaling-law derivation. The substrate has 4 visible (z, d) pairs from a controlled experiment, plus a separately-held interpolation point (d=5.0) and a separately-held ambient-dimension extrapolation point (d=10^6). The discovery target is a closed-form z = f(d) with K_law <= 4 and at least one constant that is recoverable as a named-constant ratio (rational, multiple of pi/e/ln2/phi, etc.) within tolerance 1e-4. Reject any candidate that is just another curve fit. Reject Bahri-retrieval (a candidate that proposes z=4/d without earning it on this data). Reject any form that does not predict z -> 0 as d -> infinity. Reward derivations that come from approximation theory, information theory, fractal geometry, or harmonic analysis. The Kepler-fit baseline (z = 0.62/d + 0.07) is the lower bar to clear; the Newton bar requires PSLQ-recoverable constants and ambient-control passing. Be ruthless about the difference between a curve fit and a derivation.",
+  "dimensions": [
+    {
+      "name": "Closed-Form Discovery",
+      "weight": 30,
+      "description": "Find a compact closed-form z = f(d) with K_law <= 4. Full credit requires the form to predict z(d=5.0) within MAE 0.030 on holdout AND |z(d=10^6)| < 0.005 on the ambient-control extrapolation point."
+    },
+    {
+      "name": "PSLQ Constant Recovery",
+      "weight": 25,
+      "description": "At least one fitted constant in the candidate closed form must be recoverable as a named-constant ratio within tolerance 1e-4. Library includes {1, 2, 3, 4, 1/2, 1/3, 1/4, 1/pi, 1/(2pi), 1/(2pi^2), 1/e, 1/ln(2), 1/phi, ln(2), 4/(2pi), e, pi, phi, sqrt(2)}. This is what separates a derivation from a curve fit; the Newton bar requires this gate to pass."
+    },
+    {
+      "name": "Ambient-Control Limit",
+      "weight": 15,
+      "description": "The candidate must predict |z(d=10^6)| < 0.005, satisfying the strict inversion limit (z -> 0 as d -> infinity). Forms with non-vanishing additive bias terms (e.g., the Kepler fit's c0 = 0.07) fail this gate."
+    },
+    {
+      "name": "Beat-Kepler Holdout",
+      "weight": 10,
+      "description": "The candidate must match or beat the Kepler-fit baseline (z = 0.62/d + 0.07) on holdout MAE within 10% tolerance. Pre-registered Kepler holdout MAE: 0.0067."
+    },
+    {
+      "name": "Generative Yield (Variational / First-Principles)",
+      "weight": 15,
+      "description": "Required for Newton-mode rubrics per spec \u00a718. The candidate primitive must name a distinct mathematically-orthogonal secondary observable beyond the primary z-prediction (e.g., a predicted ratio of \u03b1 across two distinct d_int values, a predicted curvature d\u00b2\u03b1/dd\u00b2, or a derived constant whose value is testable against a separate quantity). Full credit requires (a) a concrete variational/approximation-theoretic/information-theoretic derivation, AND (b) a pre-committed measurement method + expected value or range for the secondary observable. Partial credit (~50%) for naming a secondary observable without an evaluation method. Zero credit for restatements of z as the only prediction (Kepler-class naked fit)."
+    },
+    {
+      "name": "Rival Skepticism",
+      "weight": 5,
+      "description": "Compare against at least two rival forms, including (a) the Kepler-fit baseline z = 0.62/d + 0.07 and (b) Bahri's published prediction z = 4/d. Show why the proposed candidate beats both on the joint trio of holdout, ambient-control, and PSLQ gates."
+    }
+  ],
+  "criteria": {
+    "Closed_Form_Discovery": "Compact closed-form z = f(d) with K_law <= 4 that passes interpolation holdout (MAE < 0.030 at d=5.0) and ambient-control extrapolation (|z(d=10^6)| < 0.005).",
+    "PSLQ_Constant_Recovery": "At least one fitted constant must match a named-constant ratio within tolerance 1e-4. Without this, the candidate is a curve fit, not a derivation.",
+    "Ambient_Control_Limit": "Inversion principle requires z -> 0 as d -> infinity. Forms with additive bias that does not vanish at large d fail.",
+    "Beat_Kepler_Holdout": "Match or beat Kepler-fit baseline (MAE 0.0067) on holdout within 10% tolerance.",
+    "Generative_Yield": "Required for Newton mode (spec \u00a718). Name a mathematically-orthogonal secondary observable beyond z-prediction; pre-commit to its measurement method and expected value/range. Bonus for variational/approximation-theoretic/information-theoretic derivation. Zero credit for z-only restatements.",
+    "Rival_Skepticism": "Compare against Kepler baseline and Bahri's published z=4/d. Show the candidate beats both on the joint gate trio."
+  },
+  "fit_score_mode": "continuous_rmse",
+  "fit_required_vars": [
+    "d"
+  ],
+  "fit_expression_grammar": "math_exp_only",
+  "evidence_fit_threshold": 0.03,
+  "gate_residual_threshold": 0.03,
+  "holdout_hard_gate": true,
+  "holdout_budget": 1,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom gate_harness.py defines farther-tail as the variance-limited ambient-dimension row at d=1e6. The strict inversion principle requires |z| < 0.005 there.",
+  "farther_tail_threshold": 0.005,
+  "enforce_per_class_farther_tail": false,
+  "disable_evidence_fit_gate": true,
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Substrate is small (5 real-data rows + 1 ambient control). Rivals are judged by the joint trio: holdout MAE, ambient-control gate, and PSLQ constant recovery via custom gate_harness.py.",
+  "enable_fit_primitive_features": true,
+  "fit_primitive_features_k_max": 4,
+  "fit_primitive_features_k_max_reason": "Pre-registered Kepler fit uses K=2 (slope c1, bias c0). Allow up to K=4 to admit forms like z = c1/d^p + c0 or z = c1/(d+d_floor). K>4 risks overfit on a 5-row substrate.",
+  "effective_parameter_count_slack": 0,
+  "falsification_mode": "bounded_discriminator",
+  "enable_substrate_critic": true,
+  "enable_analogy": true,
+  "analogy_domain_hint": "approximation theory and information theory; topological dimensionality; manifold geometry",
+  "enable_cold_llm_erdos_seed": true,
+  "enable_cold_llm_erdos_seed_reason": "Cross-domain de-anchoring is critical here: the LLM mutator has read every neural-scaling-law paper. We must explicitly forbid the AI / deep-learning domain so the mutator derives structure from numbers, not from Bahri/Sharma-Kaplan retrieval.",
+  "cold_llm_seed_forbidden_domain": "machine learning, deep learning, neural network scaling, AI, scaling laws, Bahri, Sharma-Kaplan, Kaplan, Chinchilla, intrinsic dimensionality of data manifolds, neural networks, transformers",
+  "enable_cold_shot_seed": true,
+  "cold_shot": {
+    "enabled": true,
+    "model_priority": [
+      "gpt-5.5",
+      "gemini-3.1-pro-preview",
+      "claude-opus-4-7"
+    ],
+    "max_models": 2,
+    "prompt_extension": "The substrate has 5 visible (z, d) pairs and 1 ambient-dim control (d=10^6, z near zero). The discovery target is a closed form z = f(d) with K_law <= 4 and at least one constant that is recoverable as a named-constant ratio (rational, multiple of pi/e/ln2/phi, etc.) within tolerance 1e-4. The empirical fit gives z \u2248 0.62/d + 0.07; your job is to either (a) propose a closed form that explains 0.62 and 0.07 as derived constants, or (b) propose a different functional form whose constants ARE derived. Cross-domain candidates from approximation theory, information theory, fractal geometry, and harmonic analysis are explicitly invited; do NOT cite specific neural-scaling-law papers. The candidate must satisfy z -> 0 as d -> infinity (no non-vanishing additive bias)."
+  },
+  "enable_lagrangian_derivation": true,
+  "enable_lagrangian_derivation_reason": "A variational / approximation-theory route is the path the inversion principle prescribes. The Lagrangian primitive should yield closed forms whose constants are PSLQ-recoverable.",
+  "enable_forced_reframe": true,
+  "enable_erdos_requery_on_stagnation": true,
+  "erdos_requery_max_per_run": 2,
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_ast_bucket_threshold": 3,
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "framer_primary_feature_key": "d",
+  "substrate_class_key": "regime_hint",
+  "fit_robust_loss": false,
+  "fit_weighted_residuals": false,
+  "parallel_mutator_k": 1,
+  "parallel_mutator_force": false,
+  "parallel_mutator_force_iters": [],
+  "evidence_contract": {
+    "format": "NONE",
+    "columns": [],
+    "independent_vars": [
+      "d"
+    ],
+    "min_rows": 4,
+    "require_finite": true,
+    "format_provenance": "operator_set_inversion_substrate",
+    "docstring": "gp154_inversion_alpha_from_dimension is a Newton-mode substrate for the inversion principle. Each row is a (z, d, r, m) tuple where z is a fitted scaling exponent and d is the controlled intrinsic dimensionality of the data manifold."
+  },
+  "cage_meta": {
+    "type": "inversion_law",
+    "class": "nd_features",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "cage_observe_mode": false,
+  "cage_authoritative_mode": true,
+  "cage_constant_laundering_score_cap": 50,
+  "runner_allowed_imports": [
+    "features",
+    "gate_harness"
+  ],
+  "killer_question": "What closed form for z = f(d) has constants that are PSLQ-recoverable as named-constant ratios, while passing the ambient-control limit (z -> 0 as d -> infinity) and matching observed z within MAE 0.030 on the held-out d=5.0 point?",
+  "anti_patterns_blocked": [
+    "architecture_dependence",
+    "modality_one_hot",
+    "k_law_inflation_above_4",
+    "bahri_retrieval",
+    "non_vanishing_bias_term"
+  ],
+  "disable_evidence_fit_gate_reason": "v3 multi-column substrate (z d q r m row_id) has categorical string columns that global_evidence_fit._parse_evidence rejects via float(); also I_model(features, params) API does not match the gate_s expected f(x) shape. The project_s own gate_harness.py runs evidence-row evaluation via the feature dict and is the correct evaluator.",
+  "enable_lagrangian_inversion_limit_guard": true,
+  "enable_lagrangian_inversion_limit_guard_reason": "v3 substrate has HARD STRUCTURAL CONSTRAINT 2 (inversion limit \u03b1(d\u2192\u221e)\u21920); this rubric flag activates the apparatus-side Lagrangian-source-divergence guard so submissions with log_d / d^k / log(d) in J are rejected at R1 instead of silently failing the ambient gate."
+}

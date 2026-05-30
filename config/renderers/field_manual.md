@@ -68,7 +68,7 @@ A 2-sentence plain-English explanation of how the logical fallacy works. No jarg
 A 3-4 sentence explanation of why this failure pattern is structural rather than accidental. Why does it survive ordinary review? What makes it look reasonable on the surface?
 
 **The Real Example:**
-A brief summary of how this pattern actually appeared in one of the source projects. Reference the project by name (e.g., "In the EU Union load-bearing pillars analysis...") and describe the specific failure without using kernel jargon. 4-6 sentences.
+A brief summary of how this pattern actually appeared in one of the source projects. Reference the project by name (e.g., "In the EU Union central pillars analysis...") and describe the specific failure without using kernel jargon. 4-6 sentences.
 
 **In Practice:**
 A hypothetical, realistic quote of an executive making this exact same mistake in a real-world corporate setting. Flag it as hypothetical ("Imagine a CFO presenting to the board:..."). Make the example domain-appropriate: M&A diligence, product launch, market entry, turnaround plan, etc. 3-5 sentences for the quote, plus 1-2 sentences explaining why the quote exhibits the trap.

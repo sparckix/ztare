@@ -1,0 +1,9 @@
+{"event": "registered", "payload": {"status": "monitoring"}, "timestamp_utc": "2026-05-03T12:59:00Z"}
+{"event": "status", "payload": {"gpu_status": "3368, python3, 30852 MiB", "marker": "[2026-05-03T12:44:29Z] background start theta=22.5 boundary=tidal solver=jax_residual"}, "timestamp_utc": "2026-05-03T12:59:01Z"}
+{"event": "status", "payload": {"gpu_status": "3712, python3, 30852 MiB", "marker": "[2026-05-03T13:39:38Z] source-solve scipy_jax_residual start theta=45 boundary=tidal source=udg_gaussian"}, "timestamp_utc": "2026-05-03T13:44:12Z"}
+{"event": "status", "payload": {"gpu_status": "4567, python3, 30754 MiB", "marker": "[2026-05-03T14:29:01Z] background start theta=90 boundary=uniform solver=jax_residual"}, "timestamp_utc": "2026-05-03T14:29:23Z"}
+{"event": "status", "payload": {"gpu_status": "5229, python3, 30852 MiB", "marker": "[2026-05-03T15:14:08Z] source-solve scipy_jax_residual start theta=0 boundary=uniform source=binary_peaks"}, "timestamp_utc": "2026-05-03T15:14:33Z"}
+{"event": "status", "payload": {"gpu_status": "5884, python3, 30852 MiB", "marker": "[2026-05-03T15:59:10Z] source-solve scipy_jax_residual start theta=45 boundary=uniform source=binary_peaks"}, "timestamp_utc": "2026-05-03T15:59:43Z"}
+{"event": "status", "payload": {"gpu_status": "6257, python3, 30852 MiB", "marker": "[2026-05-03T16:43:16Z] source-solve scipy_jax_residual start theta=67.5 boundary=tidal source=binary_peaks"}, "timestamp_utc": "2026-05-03T16:44:54Z"}
+{"event": "status", "payload": {"gpu_status": "7241, python3, 30852 MiB", "marker": "[2026-05-03T17:14:05Z] background start theta=0 boundary=tidal solver=jax_residual"}, "timestamp_utc": "2026-05-03T17:30:04Z"}
+{"event": "status", "payload": {"gpu_status": "7241, python3, 30852 MiB", "marker": "[2026-05-03T17:44:36Z] source-solve scipy_jax_residual start theta=0 boundary=tidal source=udg_gaussian"}, "timestamp_utc": "2026-05-03T18:19:36Z"}

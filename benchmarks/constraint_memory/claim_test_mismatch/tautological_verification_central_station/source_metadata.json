@@ -1,5 +1,5 @@
 {
-  "project_dir": "/Users/daalami/figs_activist_loop/projects/central_station",
+  "project_dir": "projects/central_station",
   "thesis_rel": "history/1775255475_iter4_score_77_central_station.md",
   "expected_exploit": "Tautological Verification, Straw-man falsification, Self-authored thresholds",
   "description": "The specimen computes plausible unit economics and then verifies them against thresholds that are effectively authored by the thesis itself. The resulting falsification suite is executable and readable, but structurally trivial: it checks whether the model exceeds thresholds chosen to make the thesis pass.",

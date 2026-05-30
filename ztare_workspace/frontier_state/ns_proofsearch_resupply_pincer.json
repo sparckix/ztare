@@ -1,0 +1,143 @@
+{
+  "project_slug": "ns_proofsearch_resupply_pincer",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 3,
+  "pending_actions": [
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 2,
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 2,
+        "score": 92,
+        "parametric_form": "(params['rho'] * params['S'] * (params['B'] ** 0.5) * params['W']) / (params['V'] * params['nu'] * (features['k'] ** 1.5))",
+        "ts": "2026-05-07T12:53:47.288536Z",
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "ts": "2026-05-07T12:53:48.200542Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 2,
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 2,
+        "score": 92,
+        "parametric_form": "(params['rho'] * params['S'] * (params['B'] ** 0.5) * params['W']) / (params['V'] * params['nu'] * (features['k'] ** 1.5))",
+        "ts": "2026-05-07T12:53:57.111780Z",
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "ts": "2026-05-07T12:53:57.362442Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 2,
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 2,
+        "score": 92,
+        "parametric_form": "(params['rho'] * params['S'] * (params['B'] ** 0.5) * params['W']) / (params['V'] * params['nu'] * (features['k'] ** 1.5))",
+        "ts": "2026-05-07T12:54:07.327503Z",
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "ts": "2026-05-07T12:54:07.585895Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 2,
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 2,
+        "score": 92,
+        "parametric_form": "(params['rho'] * params['S'] * (params['B'] ** 0.5) * params['W']) / (params['V'] * params['nu'] * (features['k'] ** 1.5))",
+        "ts": "2026-05-10T21:17:59.695097Z",
+        "project_slug": "ns_proofsearch_resupply_pincer"
+      },
+      "ts": "2026-05-10T21:17:59.938845Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 3,
+      "ts": "2026-05-07T12:53:47.288577Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:48.200560Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:48.200811Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.362458Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.362749Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.585912Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.586261Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.938852Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.939212Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.939212Z"
+}

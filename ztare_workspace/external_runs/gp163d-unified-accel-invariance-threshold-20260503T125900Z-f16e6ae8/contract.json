@@ -1,0 +1,29 @@
+{
+  "artifact_files": [
+    "repinv_L4p0_n160_gamma0p25_artifacts.tgz",
+    "repinv_L4p0_n160_gamma0p25_invariance_threshold_summary.json",
+    "repinv_L4p0_n160_gamma0p25_invariance_threshold_summary.md"
+  ],
+  "created_utc": "2026-05-03T12:59:00Z",
+  "host": "129.146.52.20",
+  "label_prefix": "repinv_L4p0_n160_gamma0p25",
+  "launch_command": "RUN_STENCILS=face_flux,isotropic_18_flux,normal_face_flux N=160 BOX_HALF_SIZE=4.0 ANGLES=0,22.5,45,67.5,90 BACKGROUND_AQUAL_SOLVER=jax_residual SOURCE_SOLVER=scipy_jax_residual SKIP_SOURCE_WARMUP=0 LABEL_PREFIX=repinv_L4p0_n160_gamma0p25 deploy_and_launch_invariance_threshold.sh 129.146.52.20",
+  "launcher_pid": 2581,
+  "local_results_root": "/projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/remote_results",
+  "metadata": {
+    "monitor_log": "projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/workspace/gp163d_invariance_monitor_20260503.log",
+    "poll_seconds": 300.0,
+    "status_interval_seconds": 2700.0
+  },
+  "notification_server": "https://ntfy.sh",
+  "notification_topic": "sparckix-claude-mgr-9f4a2b1cde",
+  "progress_hint": "repinv_L4p0_n160_gamma0p25.nohup.log",
+  "project_slug": "gp163d_unified_accel",
+  "remote_dir": "/home/ubuntu/gp163d_invariance_threshold/projects/gp163d_unified_accel/raw/three_d_gravity_sandbox",
+  "remote_user": "ubuntu",
+  "result_files": [
+    "repinv_L4p0_n160_gamma0p25_invariance_threshold_summary.json"
+  ],
+  "run_id": "gp163d-unified-accel-invariance-threshold-20260503T125900Z-f16e6ae8",
+  "run_kind": "invariance-threshold"
+}

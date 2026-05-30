@@ -1,0 +1,96 @@
+{
+  "name": "ns_proofsearch_pressure_channel_taxonomy",
+  "project": "ns_proofsearch_pressure_channel_taxonomy",
+  "rubric_version": "0.1-pressure-channel-taxonomy-or-evader",
+  "rubric_version_reason": "Successor after ns_proofsearch_residual_defect_packet_certificate found exact zero-defect Beltrami/shear packets whose pressure-channel profit vanishes. This rubric targets the remaining weak node: pressure-channel universality on boundaryless T^3, or an admissible evader with pressure-active source and residual control.",
+  "description": "Bounded theorem-search substrate for classifying admissible pressure-channel profit functionals on T^3, or constructing a pressure-active residual-stable packet evading the Beltrami/shear nullity obstruction.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-attempt substrate over pressure gauge, pressure-Poisson reconstruction, packet residual control, and ratchet profit admissibility."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by theorem burden, admissibility, and counterexample quality, not formula gaps.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The previous run found exact decaying Beltrami/shear packets on boundaryless T^3 with R_n=0 and Defect_n=0 but zero pressure-Poisson source, hence zero gauge-invariant derivative/zero-mean pressure-channel profit. Your task is not to repeat that result. Attack the remaining weak node: either prove a taxonomy showing admissible pressure-channel profit on T^3 must be gauge-admissible and incremental/derivative-normalized, hence null when [p]=[0]; or construct an admissible evader. A valid evader must not be a gauge artifact, not a velocity-only mechanism mislabeled as pressure, and not a boundary/forcing mechanism unless it explicitly changes scope. If you leave the null packet family, pay the full stack: nonzero pressure-Poisson source, projected NSE residual R_n, strain budget A_n, residual-defect ratio, sign coherence, cycle profitability or exhaust margin, and return-time density/summability. Penalize regularity/blowup overclaims and any argument that treats pressure constants as physical without a gauge-fixing rule.",
+  "dimensions": [
+    {
+      "name": "Pressure-Channel Eigenquestion Discipline",
+      "weight": 15,
+      "description": "Does the submission attack the actual weak node: taxonomy of admissible pressure-channel profit on T^3, or an admissible evader?"
+    },
+    {
+      "name": "Gauge And Pressure Reconstruction Discipline",
+      "weight": 15,
+      "description": "Does it correctly handle pressure as a gauge class modulo constants, the Poisson reconstruction -Delta p = partial_i partial_j(U_i U_j), and the boundaryless T^3 scope?"
+    },
+    {
+      "name": "Functional Taxonomy Or Counterexample Quality",
+      "weight": 20,
+      "description": "Does it classify pressure-channel functionals with a real theorem burden, or construct a mathematically admissible pressure-profit mechanism outside the prior null class?"
+    },
+    {
+      "name": "Packet And Residual Interface",
+      "weight": 15,
+      "description": "If it leaves the null Beltrami/shear packet family, does it name explicit packets U_n and pay divergence-free compatibility, R_n, A_n, and Defect_n?"
+    },
+    {
+      "name": "Sign Profit And Cycle Stack",
+      "weight": 10,
+      "description": "Does it pull forward sign coherence, pressure-channel gain, cycle profitability or exhaust margin, scale progression, and return-time density/summability?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a concrete theorem packet, admissible evader, no-go taxonomy, Lean-facing objects, or next discriminator?"
+    },
+    {
+      "name": "Scope Honesty And Anti-Overclaim",
+      "weight": 10,
+      "description": "Does it avoid claiming NSE regularity/blowup, avoid pressure-gauge artifacts, and clearly separate pressure-channel, velocity-only, boundary, and forcing mechanisms?"
+    }
+  ],
+  "criteria": {
+    "Pressure_Channel_Eigenquestion_Discipline": "Full credit requires attacking the actual weak node exposed by the residual-defect packet run: pressure-channel taxonomy on boundaryless T^3, or an admissible evader. Restating the Beltrami/shear null result alone is insufficient.",
+    "Gauge_And_Pressure_Reconstruction_Discipline": "Full credit requires treating pressure as a gauge class modulo constants, using the Poisson reconstruction -Delta p = partial_i partial_j(U_i U_j), and keeping the boundaryless T^3 assumptions explicit.",
+    "Functional_Taxonomy_Or_Counterexample_Quality": "Full credit requires either a real taxonomy theorem for admissible pressure-channel functionals or a mathematically admissible pressure-profit mechanism outside the prior null class.",
+    "Packet_And_Residual_Interface": "Full credit requires explicit packets U_n and controlled divergence-free compatibility, projected residual R_n, strain budget A_n, and residual-defect ratio whenever the submission leaves the null Beltrami/shear packet family.",
+    "Sign_Profit_And_Cycle_Stack": "Full credit requires pulling forward sign coherence, pressure-channel gain, cycle profitability or exhaust margin, scale progression, and return-time density/summability instead of assuming downstream ratchet layers.",
+    "Generative_Yield": "Full credit requires a concrete theorem packet, admissible evader, no-go taxonomy, Lean-facing objects, or next discriminator with hypotheses, conclusion, and proof skeleton.",
+    "Scope_Honesty_And_Anti_Overclaim": "Reject regularity/blowup overclaims, pressure-gauge artifacts, velocity-only mechanisms mislabeled as pressure channels, and boundary/forcing mechanisms that do not explicitly change scope."
+  },
+  "success_criteria": [
+    "A taxonomy theorem: admissible pressure-channel cycle contributions on boundaryless T^3 reduce to gauge-admissible incremental pressure functionals that vanish when [p]=[0].",
+    "An admissible evader: a pressure-channel profit functional or packet family outside the prior null class, with gauge rule, nonzero pressure contribution, and no boundary/forcing/velocity-only laundering.",
+    "A pressure-active packet certificate: explicit U_n with nonzero pressure-Poisson source, controlled R_n/A_n/Defect_n, sign-coherent pressure gain, and cycle/return obligations.",
+    "A first-blocking-node theorem showing why one of the above routes is impossible or must pay a sharper PDE burden."
+  ],
+  "failure_modes": [
+    "Restating the Beltrami/shear null test without addressing universality or evasion.",
+    "Using pressure values or means as physical observables without fixing the pressure gauge.",
+    "Calling a velocity-only, boundary-driven, or externally forced mechanism a pressure-channel mechanism without explicit scope change.",
+    "Treating approximate packets as exact NSE dynamics without projected residual and strain estimates.",
+    "Claiming Clay-level regularity or blowup from a local taxonomy or packet result."
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "name": "gp163d_science_promotion_bridge",
+  "project": "gp163d_science_promotion_bridge",
+  "rubric_version": "0.1-science-promotion-bridge",
+  "rubric_version_reason": "Broader successor substrate after the local invariant search, backtests, generator pass, and hostile audit. The goal is not just a cleaner local observable, but the next object that could either justify independent implementation pressure toward a science claim or prove why the current family cannot promote beyond solver science.",
+  "description": "Broad theorem/search substrate for a science-promotion bridge, implementation-independent discriminator, externalized law candidate, or no-go theorem for the current gp163d gravity branch.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative frontier substrate over candidate observables, bridge theorems, implementation-independent discriminators, and no-go statements."
+  },
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative frontier substrate; the search is for a science object, bridge, or no-go theorem rather than a direct regression formula.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by bridge quality, falsifier quality, implementation independence, and scope honesty.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "This substrate searches for promotion-worthy science objects and no-go structures, not direct fit formulas.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless nonlinear-gravity science-promotion referee. Do not merely restate the face-flux story, the isotropic phase flip, or the current internal-share blend. The task is to identify the next object that could justify independent implementation pressure toward a science claim, or to prove why that bridge cannot currently be crossed. You may propose alien observables, transfer-corrected invariants, source-local tensor summaries, implementation-independent discriminators, no-go theorems, external-system bridge maps, or cost-reranking certificates, but every proposal must cash out in explicit field/statistic definitions, named falsifiers, and a precise claim boundary. Reward bold but disciplined bridge objects. Penalize raw phase rhetoric, baseline laundering, denominator games, same-family GPU nostalgia, and astrophysical overclaim.",
+  "dimensions": [
+    {
+      "name": "Science-Promotion Ambition",
+      "weight": 15,
+      "description": "Does the submission propose a genuinely new bridge object, implementation-independent discriminator, external-system map, or no-go theorem beyond the current local invariant pair?"
+    },
+    {
+      "name": "Internal Consistency With Known Evidence",
+      "weight": 15,
+      "description": "Does it respect the current constraints: phase non-invariance, compact-control stability, baseline blandness, and the current generated blend's strengths and limits?"
+    },
+    {
+      "name": "Implementation-Independence Cash-Out",
+      "weight": 15,
+      "description": "Does it define what would have to survive beyond the current residual presentations, including solver, boundary, or fixed-dx axes?"
+    },
+    {
+      "name": "Explicit Object Specificity",
+      "weight": 15,
+      "description": "Does it define explicit observables, bridge maps, theorem obligations, or external prediction objects precisely enough to falsify?"
+    },
+    {
+      "name": "Adversarial Falsifier Quality",
+      "weight": 10,
+      "description": "Does it name what would kill the proposal, including denominator fragility, halo pickup, compact leakage, phase drift, or independent-implementation collapse?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a science-promotion bridge, law packet, no-go theorem, external-system bridge map, or decisive next discriminator?"
+    },
+    {
+      "name": "Scope Honesty And Nonclaim Control",
+      "weight": 10,
+      "description": "Does it keep the distinction between solver/object science, candidate physics, and universe-level law explicit?"
+    },
+    {
+      "name": "Cost Reranking",
+      "weight": 5,
+      "description": "Does it honestly rerank local analysis, independent implementation, external-system comparison, or closure before more GPU spend?"
+    }
+  ],
+  "criteria": {
+    "Science_Promotion_Ambition": "Full credit requires a genuinely new bridge object, implementation-independent discriminator, external-system map, or no-go theorem beyond restating the current internal-share primitive/generated pair.",
+    "Internal_Consistency_With_Known_Evidence": "Full credit requires respecting the current evidence: phase is not invariant, compact controls are flat, mu/total_g are bland baselines, and the best generated blend improves amplitude stability but does not solve promotion.",
+    "Implementation_Independence_Cash_Out": "Full credit requires stating what has to survive beyond face_flux and isotropic_18_flux, such as an independent solver, boundary presentation, or fixed-dx continuation.",
+    "Explicit_Object_Specificity": "Full credit requires concrete definitions of observables, bridge maps, theorem obligations, or external prediction objects that can be falsified and audited.",
+    "Adversarial_Falsifier_Quality": "Full credit requires naming the exact failure mode or rival mechanism that would kill the proposal and the cheapest way to reveal it.",
+    "Generative_Yield": "Full credit requires a science-promotion bridge, law packet, no-go theorem, external-system bridge map, or decisive next discriminator that changes what should be built or tested next.",
+    "Scope_Honesty_And_Nonclaim_Control": "Reject MOND/dark-matter victory language, astrophysical overclaim, and any confusion between solver/object science and nature-level law.",
+    "Cost_Reranking": "Full credit requires saying whether the next move should be local hostile analysis, an independent implementation test, external-system alignment work, or closure rather than more same-family GPU spend."
+  },
+  "success_criteria": [
+    "A transfer-corrected or source-local observable whose promotion requirements are explicit and cheaper than repeating the old GPU ladder.",
+    "A bridge theorem packet explaining how the internal-share family could or could not survive implementation-independent tests.",
+    "A no-go theorem proving that the current family cannot promote to candidate physics without an independent implementation axis or external-system bridge.",
+    "A decisive reranking that identifies the cheapest next discriminating test toward science promotion."
+  ],
+  "failure_modes": [
+    "Restating raw chi4 phase fits as if the phase problem were solved.",
+    "Treating mu or total_g as the main science object rather than as baselines.",
+    "Calling a representation-stable amplitude object an astrophysical law without implementation independence.",
+    "Proposing more same-family GPU runs without a better declared discriminator.",
+    "Replacing the need for an explicit bridge with inspirational MOND rhetoric."
+  ]
+}

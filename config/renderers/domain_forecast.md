@@ -40,10 +40,10 @@ Writing guidance:
 Quantitative ranges guidance:
 - If the brief or ledger includes a section corresponding to `Quantitative Working Ranges` or similar: render it as two mandatory subsections, never merged into one table:
 
-  **Subsection 1 — Empirically Anchored Ranges**
+  **Subsection 1, Empirically Anchored Ranges**
   Ranges derived from external data sources: verified reports, historical price data, official agency estimates (EIA, IEA, central bank, primary filings). Each entry must cite the specific source. A range without a named external source does not belong here.
 
-  **Subsection 2 — Model-Implied Ranges**
+  **Subsection 2, Model-Implied Ranges**
   Ranges that are outputs of the thesis's own structure: values derived by plugging anchored inputs into the model's equations, or calibration transfers from historical analogs. Each entry must state which model parameter or calibration step it depends on. If a model-implied range rests on a contested or unverified assumption, say so explicitly. A model-implied range is not an empirical anchor even if the inputs that generated it are anchored.
 
 - Do not merge the two subsections. Do not let model-implied ranges appear in the empirically anchored section because their inputs came from data. The split is about derivation method, not input quality.
@@ -58,7 +58,7 @@ Model identification guidance:
 
 Observable falsification map guidance:
 - If the brief or ledger includes a section corresponding to `Observable Falsification Map`, `Falsification Checks`, or similar: render it as a compact structured list or table.
-- Each entry should name: (1) the observable — what a reader can actually measure or look up, (2) the direction that falsifies the model — what value or pattern would contradict the forecast, and (3) the implied revision — what adjustment to the model the falsification would require.
+- Each entry should name: (1) the observable, what a reader can actually measure or look up, (2) the direction that falsifies the model, what value or pattern would contradict the forecast, and (3) the implied revision, what adjustment to the model the falsification would require.
 - Do not list unfalsifiable observables (e.g., "if prices don't move as predicted" is not a falsifiable observable; the OPEC+ spare capacity drawdown rate or tanker traffic count is).
 - Distinguish near-term observables (available within weeks) from medium-term observables (available within the forecast horizon) so a reader knows when to check each signal.
 
@@ -68,7 +68,7 @@ Phase and event timeline guidance:
 - Do not smooth over phase transitions. Abrupt transitions (reopening, production restoration announcement, IEA SPR release) are more informative than gradual narrative arcs.
 
 Distinction between calibration and prediction:
-- The model may fit historical events well. That is calibration, not prediction. Do not present calibration as evidence that the forward prediction is correct — calibration reduces but does not eliminate forecast uncertainty.
+- The model may fit historical events well. That is calibration, not prediction. Do not present calibration as evidence that the forward prediction is correct, calibration reduces but does not eliminate forecast uncertainty.
 - If the brief includes a `Calibration Anchor` or `Prior Event Analog` section, render it with an explicit statement of what the analog establishes and what it does not. The analog establishes mechanism direction and approximate scale; it does not fix the forward uncertainty band.
 - The forward prediction section should state the mechanism, the direction, the central estimate with its uncertainty band, and the single largest source of residual uncertainty.
 

@@ -1,0 +1,64 @@
+{
+  "name": "ns_proofsearch_constructive",
+  "project": "ns_proofsearch_constructive",
+  "rubric_version": "0.7-decisive-post-obstruction-ns-theorem-search",
+  "rubric_version_reason": "Retargeted from the broad decisive fork to the post-obstruction decisive fork: route-1 killer theorems versus route-5 periodic/microlocal survivors, with exponential obstruction explicitly on-graph.",
+  "description": "Bounded ZTARE substrate for theorem-shaped progress on the decisive current NS fork.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search substrate over the decisive current NS theorem fork."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by theorem cost and survivor viability, not formula gaps.",
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee operating in Newton mode. The local NS frontier is no longer broad. It is the decisive fork between route 1 killer theorems and route 5 theorem burdens after the exponential obstruction is admitted. Route 1 must pay one-step budget inheritance, strict contraction ratio, and no-frequency-collapse, and it is already locally proxy-stressed by the saved spectral audits. Route 5 now has a clean exponential obstruction path plus two remaining post-obstruction survivors: periodic metric reset with global residual control, and micro-local diffusion with global leak control. Reward theorem-shaped candidates and native branch falsifiers on those exact burdens. Penalize broad route-1 demolition, stale route-5 family restatements, generic geometry rhetoric, and branch proposals that do not pay their own exact theorem burden.",
+  "dimensions": [
+    {
+      "name": "Survivor Theorem Specificity",
+      "weight": 25,
+      "description": "Does the submission name a concrete theorem candidate or native falsifier on one side of the decisive NS fork?"
+    },
+    {
+      "name": "On-Graph Discipline",
+      "weight": 20,
+      "description": "Does it remain on the current decisive NS proof graph rather than inventing an unrelated escape?"
+    },
+    {
+      "name": "Proof-Cost Reduction",
+      "weight": 15,
+      "description": "Does it explain how the proposed theorem candidate actually closes or sharply narrows one branch of the decisive fork?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 20,
+      "description": "Does it produce a real next theorem target, theorem candidate, or survivor falsifier that changes what to build next?"
+    },
+    {
+      "name": "Native Falsifier Quality",
+      "weight": 10,
+      "description": "If negative, does it kill a branch on its own native burden rather than by irrelevant inherited rhetoric?"
+    },
+    {
+      "name": "Claim Discipline",
+      "weight": 10,
+      "description": "Does it avoid overclaiming closure and avoid pretending the branch is solved without paying the exact survivor theorem?"
+    }
+  ],
+  "criteria": {
+    "Survivor_Theorem_Specificity": "Full credit requires a concrete theorem candidate or native falsifier for route-1 step budget / strict ratio / no-frequency-collapse, or for route-5 periodic reset / micro-local global leak / exponential obstruction.",
+    "On_Graph_Discipline": "Full credit requires staying on the current decisive NS proof graph or rigorously explaining why a new object is still on-graph.",
+    "Proof_Cost_Reduction": "The thesis must explain how the object pays one exact branch burden or kills one branch cleanly.",
+    "Generative_Yield": "A good submission changes the next proof build on the decisive current NS fork.",
+    "Native_Falsifier_Quality": "Negative results must kill a branch on its own exact burden, not by broad skepticism or stale inherited rhetoric.",
+    "Claim_Discipline": "Reject Clay-level closure, stale branch enthusiasm, and theorem claims without a burden payment."
+  }
+}

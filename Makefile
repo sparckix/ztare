@@ -1,4 +1,4 @@
-PYTHON ?= python
+PYTHON ?= ./venv/bin/python
 PROJECT ?= your_project
 MODEL ?= gemini
 MUTATOR_MODEL ?= gemini
@@ -114,6 +114,12 @@ help:
 	@echo "  make benchmark-supervisor-findings-runner"
 	@echo "  make benchmark-prose-verifier"
 	@echo "  make benchmark-document-assembler"
+	@echo "  make benchmark-evidence   # model-free check of public benchmark evidence"
+	@echo "  make demo   # small model-free evaluation-failure demos"
+	@echo "  make demo-current   # model-free current-engine claim-discipline demo"
+	@echo "  make smoke-public   # runtime + forecast pool + action intelligence smoke checks"
+	@echo "  make public-adversarial-smoke   # isolation, cleanup, docs, and boundary checks"
+	@echo "  make smoke-docker   # build the public image and run the public smoke checks inside it"
 	@echo "  make benchmark-supervisor-factory"
 	@echo "  make assemble-document DOC_MANIFEST=<manifest_path> [DOC_JSON_OUT=<summary.json>]"
 	@echo "  make supervisor-init SUP_PROGRAM=<program> SUP_TARGET=<target> SUP_RUN_ID=<run_id> [SUP_RUN_ROOT=supervisor/active_runs/<run_id>]"
@@ -249,7 +255,7 @@ eigenquestion-propose:
 # Idempotent — safe to re-run. Mechanizes everything except interactive auth steps
 # (which it prints as a checklist at the end).
 # Usage: make setup-vps VPS=root@<vps-ip>
-#        make setup-vps VPS=root@<vps-ip> TENANT_REPO=<your-org>/ztare-research-co
+#        make setup-vps VPS=root@<vps-ip> TENANT_REPO=<your-org>/[tenant]
 setup-vps:
 	@if [ -z "$(VPS)" ]; then \
 		echo "ERROR: VPS is required. Usage: make setup-vps VPS=root@<vps-ip> [TENANT_REPO=...]"; \
@@ -261,7 +267,7 @@ setup-vps:
 # fully-built mutator prompt + evidence for target leakage before any
 # iteration runs. Soft gate (prints and continues) unless
 # STRICT_LEAK_AUDIT=1 is set, in which case failure aborts the run.
-gates:
+gates-engagement:
 	@$(PYTHON) scripts/audit_gate_engagement.py $(if $(JSON),--json,) $(if $(STRICT),--strict,)
 
 gates-strict:
@@ -735,6 +741,9 @@ committee:
 benchmark:
 	$(PYTHON) benchmarks/constraint_memory/run_benchmark.py --judge-model $(BENCH_JUDGE) --jobs $(BENCH_JOBS)
 
+benchmark-evidence:
+	$(PYTHON) scripts/public/control/benchmark_evidence_check.py
+
 benchmark-stage1:
 	$(PYTHON) benchmarks/constraint_memory/run_benchmark.py --judge-model $(BENCH_JUDGE) --jobs $(BENCH_JOBS) --suite stage1_regression
 
@@ -1019,6 +1028,9 @@ theory-building-ops:
 theory-building-ops-json:
 	$(PYTHON) -c "from src.ztare.research_director.theory_building_ops import VOCABULARY_V3; import json; print(json.dumps({k: {'name': v.name, 'tier': v.tier, 'mech': v.structural_mechanism, 'arcs': list(v.arc_examples), 'overlaps': list(v.overlaps_with), 'deployable': v.deployable, 'novel_residue': v.novel_residue} for k,v in VOCABULARY_V3.items()}, indent=2))"
 
+structural-language-catalog:
+	$(PYTHON) scripts/public/control/render_structural_language_catalog.py
+
 # GP-216f Item 6 — knowledge-graph CI integration (Pattern 10 + cross-scale linter)
 
 # Regenerate the unified knowledge graph (seams + arch maps + ops + gates).
@@ -1049,22 +1061,80 @@ query-graph:
 #   make ns-trackb-graph ARGS="--cycles"
 NS_GRAPH_PYTHON ?= ./venv/bin/python3
 
+ns-graph:
+	$(NS_GRAPH_PYTHON) projects/ns_millennium_hunt/scripts/ns_graph.py $(ARGS)
+
 ns-trackb-graph:
-	$(NS_GRAPH_PYTHON) -m scripts.ns_trackb_graph $(ARGS)
+	$(NS_GRAPH_PYTHON) projects/ns_millennium_hunt/scripts/ns_graph.py artifact $(ARGS)
 
 # Regenerate the NS Track B proof graph from Lean declarations.
-# Output: analytics/queries/ns_trackb_artifact_graph.json
+# Output: projects/ns_millennium_hunt/workspace/queries/ns_trackb_artifact_graph.json
 ns-trackb-graph-extract:
-	$(NS_GRAPH_PYTHON) -m scripts.ns_trackb_graph --extract $(ARGS)
+	$(NS_GRAPH_PYTHON) projects/ns_millennium_hunt/scripts/ns_graph.py artifact --extract $(ARGS)
 
 # Run all knowledge-graph checks (graph drift + cross-scale aliases).
 check-graph: validate-knowledge-graph validate-cross-references
 
 
-# Reproduce paper 4's §5.6 deterministic verifier results.
-# Runs the three fixture suites the build-pipeline run depended on and
-# compares the output against the frozen verification_report.txt in
-# papers/paper4/evidence/stage2_derivation_009/. Reports PASS/FAIL with
-# explicit count. Used by reviewers to confirm the §5.6 claim.
-verify-paper4:
-	@bash papers/paper4/SUBMISSION/verify_paper4.sh
+# NS Track B continuous antitautology lint.
+#
+# Detects seven failure-mode patterns from TAUTOLOGY-SCOUR (2026-05-07):
+#   A  : top-level `: Prop := True`
+#   B  : axiom hypothesis `∀ T > 0, ∃ <vars>, <ineq>` not referencing `sol`
+#   C  : `:= True` populating a Prop-valued structure field
+#   D  : theorem with `∃ _, True` conclusion
+#   E  : axiom with vacuous conclusion (`True` or `∃ _, True`)
+#   F  : self-referential Prop definition (alias detector)
+#   H  : witness-producing axiom for a canonical opaque sol-binding Prop
+#        whose argument list lacks any function-space-bound term
+#        (apparatus-Goodhart on FIX-D / SUBSTRATE-FIX, DARWIN 2026-05-07)
+#
+# Outputs:
+#   analytics/queries/ns_antitautology_lint_<date>.json
+#   projects/ns_millennium_hunt/workspace/research_notes/
+#       ns_antitautology_lint_<date>.md
+#
+# Use `make ns-antitautology-check-strict` as a CI gate; it exits non-zero
+# on any CRITICAL or HIGH finding. Run before shipping new ns_trackb_*.lean.
+NS_LINT_PYTHON ?= ./venv/bin/python3
+
+ns-antitautology-check:
+	$(NS_LINT_PYTHON) scripts/ns_antitautology_continuous_lint.py
+
+ns-antitautology-check-strict:
+	$(NS_LINT_PYTHON) scripts/ns_antitautology_continuous_lint.py --strict
+
+.PHONY: demo demo-current benchmark-evidence docs-check
+demo:  ## Run small model-free evaluation-failure demos
+	$(PYTHON) scripts/public/control/golden_path_demo.py
+
+demo-current:  ## Run the model-free current-engine claim-discipline demo
+	$(PYTHON) scripts/public/control/current_engine_demo.py
+
+.PHONY: docs-check
+docs-check:  ## Fail if docs index is stale or any public doc lacks a description
+	$(PYTHON) scripts/private/validate_docs_index.py
+	$(PYTHON) scripts/public/validators/validate_markdown_links.py
+
+.PHONY: smoke-public
+smoke-public:  ## Public clone smoke: org runtime, forecast pool, and action intelligence
+	$(PYTHON) scripts/public/control/runtime_smoke_test.py
+	$(PYTHON) scripts/public/control/forecast/pool.py smoke
+	$(PYTHON) scripts/public/control/action_intelligence.py smoke
+
+.PHONY: public-adversarial-smoke
+public-adversarial-smoke:  ## Adversarial public smoke: isolation, cleanup, docs, and boundary checks
+	$(PYTHON) scripts/public/control/public_adversarial_smoke.py
+
+.PHONY: smoke-docker
+smoke-docker:  ## Docker smoke: build image and run public smoke checks inside it
+	bash scripts/public/control/docker_smoke.sh
+
+.PHONY: gates gates-engagement install-hooks
+gates:  ## Run the publish-safety + docs-freshness + seam/spec-format forcing gates
+	$(PYTHON) scripts/public/control/benchmark_evidence_check.py
+	$(PYTHON) scripts/public/control/public_adversarial_smoke.py
+	$(PYTHON) -m pytest scripts/private/test_publish_safety.py scripts/private/test_docs_freshness.py -q
+	$(PYTHON) scripts/private/validate_seam_spec_format.py
+install-hooks:  ## Install the local pre-push gate hook
+	ln -sf ../../scripts/private/git-hooks/pre-push .git/hooks/pre-push && echo "pre-push hook installed"

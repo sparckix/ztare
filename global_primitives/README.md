@@ -128,3 +128,22 @@ Start with:
 - repeated attack/test patterns from startup and architecture runs
 
 Do not start with broad cross-domain causal laws. Those are the easiest to overgeneralize.
+
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`approved/`](approved/) - 18 file(s)
+- [`incidents/`](incidents/) - 3 file(s)
+- [`rejected/`](rejected/) - 2 file(s)
+- [`review/`](review/) - 4 file(s)
+
+**Documents**
+
+- [primitive_candidate.schema.json](primitive_candidate.schema.json)
+- [primitive_incident.schema.json](primitive_incident.schema.json)
+
+<sub>4 sub-folder(s), 2 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

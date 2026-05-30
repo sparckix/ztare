@@ -1,0 +1,26 @@
+{
+  "artifact_files": [
+    "projects/neural_hunt/workspace/h62_diversity_capped_schema_outputs/official"
+  ],
+  "created_utc": "2026-05-11T12:41:25Z",
+  "host": "132.226.159.108",
+  "label_prefix": "external-gpu",
+  "launch_command": "tmux:h62_run python run_oe_eval_checkpoint_sequence.py h62 heldout gate min",
+  "launcher_pid": null,
+  "local_results_root": null,
+  "metadata": {
+    "command_sheet": "projects/neural_hunt/workspace/h62_diversity_capped_schema_official_alias_resolved_heldout_gate_min_commands_2026_05_11.sh",
+    "prediction_id": "PL-173"
+  },
+  "notification_server": null,
+  "notification_topic": null,
+  "progress_hint": "projects/neural_hunt/workspace/h62_checkpoint_status_heldout_gate_min.jsonl",
+  "project_slug": "neural_hunt",
+  "remote_dir": "/home/ubuntu/neural_hunt_h62_run",
+  "remote_user": "ubuntu",
+  "result_files": [
+    "projects/neural_hunt/workspace/h62_checkpoint_status_heldout_gate_min.jsonl"
+  ],
+  "run_id": "neural-hunt-olmes-h62-heldout-gate-min-20260511T124125Z-b5b39ae4",
+  "run_kind": "olmes_h62_heldout_gate_min"
+}

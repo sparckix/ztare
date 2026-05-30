@@ -75,7 +75,7 @@
     "7_Primitive_Substrate_Mapping": "Are the code-level insertion point, input contract, and output contract named?",
     "8_Empirical_Stress_Test_Discipline": "Does the thesis pre-register a pass-rate gate on N>=5 perturbed substrates with explicit rejection criterion and sigma-scaling analysis?"
   },
-  "_charter_pre_reg_seam": "research_areas/private/seams/mission/GP-140_ztare_discovery_seam.md",
+  "_charter_pre_reg_seam": "GP-140 (internal seam)",
   "_inversion_of": "ztare_on_ztare",
   "_evidence_set_g_reference": "CA-bridge apparatus-leverage experiment 2026-04-24; INS-045 (prior sufficiency of OEIS on cold LLMs); INS-046 pending (paired-primitive complementarity).",
   "_v1_archived_at": "projects/gp140_ztare_discovery/workspace/archive_mlh_contaminated/rubric_v1.json",

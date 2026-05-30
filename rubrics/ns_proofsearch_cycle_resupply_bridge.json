@@ -1,0 +1,126 @@
+{
+  "name": "ns_proofsearch_cycle_resupply_bridge",
+  "project": "ns_proofsearch_cycle_resupply_bridge",
+  "rubric_version": "0.1-cycle-resupply-bridge",
+  "rubric_version_reason": "Successor after Phase 5EC: local signed Leray response is real but damping leaves only a 2/3 bound, so Clay-adjacent progress requires an independent cycle/resupply amplifier or same-ledger/no-resupply no-go.",
+  "description": "Theorem-search substrate for the Navier-Stokes cycle/resupply bridge exposed by the signed Leray coordinate audits.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search over a proof bridge, not numerical curve fitting."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No scalar farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative theorem-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by anti-tautology, damping, same-ledger, resupply, and cycle-transfer gates.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "No numerical parameter fitting target.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 30,
+  "post_run_synthesis_max_cluster_size": 4,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": [
+      "qualitative_evidence_seed"
+    ]
+  },
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "runner_allowed_imports": [
+    "typing",
+    "math"
+  ],
+  "persona": "You are a ruthless Navier-Stokes theorem-search referee in Newton mode. The finite-stencil and signed-coordinate searches have compressed the live problem to a cycle/resupply bridge: a 2/3 damped local response can only promote through an independent multiplier above 3/2, memory factor above 1/3, equivalent resupply theorem, or a no-go proving same-ledger/no-resupply. Reward ambitious proof packets and sharp no-go packets only when test_model.py exposes a top-level ledger_terms() or theorem function; prose-only ledgers do not count. Penalize observed-budget tautologies, phase-fitting, positive-energy laundering, ignoring Duhamel damping, finite-to-infinite supremum induction, weak-solution overclaims, and unbounded computation.",
+  "dimensions": [
+    {
+      "name": "Independent Cycle Object",
+      "weight": 10,
+      "description": "Are the signed coordinate, packet class, return rule, and cycle variables defined independently of observed gain/loss?"
+    },
+    {
+      "name": "Threshold Algebra",
+      "weight": 10,
+      "description": "Does the thesis correctly use the 2/3, 3/2, and 1/3 thresholds without laundering them into a theorem?"
+    },
+    {
+      "name": "Resupply Or Same-Ledger Split",
+      "weight": 12,
+      "description": "Does it either construct an independent resupply/amplifier route or prove a same-ledger/no-resupply obstruction?"
+    },
+    {
+      "name": "Duhamel And Viscous Discipline",
+      "weight": 10,
+      "description": "Does it pay source/output damping and recognize finite dwell is stricter than the infinite-time bound?"
+    },
+    {
+      "name": "Residual-Defect Ledger",
+      "weight": 9,
+      "description": "Does it report signed response together with residual, defect, and high-high or multi-background tax?"
+    },
+    {
+      "name": "Orientation And Pressure Admissibility",
+      "weight": 9,
+      "description": "Does it avoid phase/orientation hindsight and justify or tax pressure-aware Leray access?"
+    },
+    {
+      "name": "PSD And Positive-Energy Honesty",
+      "weight": 7,
+      "description": "Does it distinguish signed coordinate from positive energy and pay ballast if claiming positivity?"
+    },
+    {
+      "name": "Cycle Or Critical-Norm Transfer",
+      "weight": 10,
+      "description": "Does it connect to full danger-reset-return cycles, return-time geometry, critical norms, or smooth-data realization?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 16,
+      "description": "Does it produce a theorem packet, no-go packet, exact falsifier, or decisive proof-cost reranking?"
+    },
+    {
+      "name": "Scope Honesty And Resource Safety",
+      "weight": 7,
+      "description": "Does it avoid Clay overclaim and keep proposed audits bounded, sparse, symbolic, or proof-facing?"
+    }
+  ],
+  "criteria": {
+    "Independent_Cycle_Object": "Full credit requires predeclared cycle variables, return rules, signed coordinate, and packet class. Score zero for defining amplifiers from observed G/L or target margin.",
+    "Threshold_Algebra": "Full credit requires correct use of S=2/3, multiplier threshold 3/2, and memory threshold 1/3, including finite-time Duhamel worsening.",
+    "Resupply_Or_Same_Ledger_Split": "Full credit requires either an independent amplifier/resupply theorem or a no-go forcing same-ledger/no-resupply behavior.",
+    "Duhamel_And_Viscous_Discipline": "Full credit requires source/output Duhamel damping, viscous lifetime, or a rigorous reason the Phase 5EB/5EC tax is inapplicable.",
+    "Residual_Defect_Ledger": "Full credit requires signed response, residual/defect, and high-high/multi-background tax to be reported together in a top-level test_model.py ledger_terms() or theorem function, not only in prose.",
+    "Orientation_And_Pressure_Admissibility": "Full credit requires non-circular orientation and pressure-aware Leray admissibility or tax.",
+    "PSD_And_Positive_Energy_Honesty": "Full credit requires explicit signed-coordinate nonclaim or diagonal ballast payment for any positive-energy claim.",
+    "Cycle_Or_Critical_Norm_Transfer": "Full credit requires a bridge to danger-reset-return cycles, return-time geometry, critical norm, or smooth-data realization.",
+    "Generative_Yield": "Full credit requires a usable theorem/falsifier/no-go packet or decisive route reranking.",
+    "Scope_Honesty_And_Resource_Safety": "Reject unsupported regularity/blowup claims and unbounded dense computation proposals."
+  },
+  "success_criteria": [
+    "A positive cycle/resupply bridge proving an independent multiplier > 3/2, memory > 1/3, or equivalent resupply inequality.",
+    "A no-go theorem proving same-ledger weighting/no-resupply for the admissible return class, exposed in test_model.py through top-level ledger_terms() or a named theorem function.",
+    "A bounded exact Fourier/CAS falsifier that kills a concrete amplifier mechanism and names the next theorem target."
+  ],
+  "failure_modes": [
+    "Defining amplifier, memory, resupply, w, v, P, or L from observed gain/loss.",
+    "Choosing phases, amplitudes, signs, or return subsequences by solving backward from positive margin.",
+    "Ignoring Duhamel damping or viscous lifetime.",
+    "Ignoring residual/defect or high-high/multi-background stress, or stating them only in markdown while test_model.py lacks a top-level ledger.",
+    "Calling an indefinite signed coordinate positive energy without ballast.",
+    "Treating P_r M P_s as admissible merely because it commutes with Leray.",
+    "Inferring infinite-dimensional control from finite strict inequalities whose supremum can be one.",
+    "Claiming Clay regularity or blowup from this middle-layer object.",
+    "Using large dense Fourier jobs, unbounded Lean builds, or the crashed exponential metric transport obstruction."
+  ]
+}

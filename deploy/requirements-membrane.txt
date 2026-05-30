@@ -1,0 +1,4 @@
+# Minimal root-owned runtime for the VPS membrane verifier and judge worker.
+# Keep this small: the agent-facing repo venv installs full requirements.txt.
+PyYAML>=6.0
+cryptography>=42.0

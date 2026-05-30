@@ -1,0 +1,143 @@
+{
+  "project_slug": "gp154_scaling_law_normalized",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 4,
+  "pending_actions": [
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 94,
+        "parametric_form": "features['curve_axis_rev'] ** exp(params['log_alpha_N'] + params['delta_D'] * (1.0 if features['is_d_sweep'] else 0.0) + params['delta_M'] * (1.0 if features['is_compute_mixed'] else 0.0) + params['delta_joint'] * (1.0 if 'joint' in str(features['fit_convention']) else 0.0) + params['delta_error_los",
+        "ts": "2026-05-07T12:53:47.276942Z",
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "ts": "2026-05-07T12:53:47.885876Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 94,
+        "parametric_form": "features['curve_axis_rev'] ** exp(params['log_alpha_N'] + params['delta_D'] * (1.0 if features['is_d_sweep'] else 0.0) + params['delta_M'] * (1.0 if features['is_compute_mixed'] else 0.0) + params['delta_joint'] * (1.0 if 'joint' in str(features['fit_convention']) else 0.0) + params['delta_error_los",
+        "ts": "2026-05-07T12:53:57.104281Z",
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "ts": "2026-05-07T12:53:57.217257Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 94,
+        "parametric_form": "features['curve_axis_rev'] ** exp(params['log_alpha_N'] + params['delta_D'] * (1.0 if features['is_d_sweep'] else 0.0) + params['delta_M'] * (1.0 if features['is_compute_mixed'] else 0.0) + params['delta_joint'] * (1.0 if 'joint' in str(features['fit_convention']) else 0.0) + params['delta_error_los",
+        "ts": "2026-05-07T12:54:07.318743Z",
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "ts": "2026-05-07T12:54:07.436520Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 94,
+        "parametric_form": "features['curve_axis_rev'] ** exp(params['log_alpha_N'] + params['delta_D'] * (1.0 if features['is_d_sweep'] else 0.0) + params['delta_M'] * (1.0 if features['is_compute_mixed'] else 0.0) + params['delta_joint'] * (1.0 if 'joint' in str(features['fit_convention']) else 0.0) + params['delta_error_los",
+        "ts": "2026-05-10T21:17:59.671478Z",
+        "project_slug": "gp154_scaling_law_normalized"
+      },
+      "ts": "2026-05-10T21:17:59.801476Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 4,
+      "ts": "2026-05-07T12:53:47.276982Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:47.885900Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:47.886218Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.217273Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.217562Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.436540Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.436893Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.801488Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.802031Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.802031Z"
+}

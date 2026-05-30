@@ -1,0 +1,117 @@
+{
+  "name": "gp169_consciousness_ascription_audit - v4.0 paradigm-shift target",
+  "project": "gp169_consciousness_ascription_audit",
+  "description": "v4.0 (2026-05-02 night). Builds on v3.1 MCVP result (score 95). The new target is paradigm-shift grounding: the thesis must root MCVP in causal identification theory (Pearl do-calculus / ID algorithm) so that A∧I∧P∧T conditions derive from formal sufficient conditions for identification, not governance intuition. Changes from v3.1: (1) new 'Causal Identification Grounding' dimension at weight 12 — thesis must map A∧I∧P∧T to identification sufficient conditions and prove Y=0 → low-concern verdict forbidden as a theorem, not a policy choice; (2) Literature-Novelty Self-Audit raised 5→10 (paradigm-shift claim requires strong novelty defence); (3) Operational Decidability reduced 25→22 (MCVP already delivers this); (4) Anti-Trivial-Result reduced 18→14; (5) evidence cold shot enabled for evidence-grounded thesis families; (6) substrate_domain set for correct cold-shot routing.",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Kepler mode retained: the paradigm-shift claim is an audit/protocol finding — MCVP is the protocol, causal identification theory is its grounding. Newton-mode forces Generative Yield ≥15 which conflicts with the governance-protocol frame. The causal grounding is captured in the new Causal Identification Grounding dimension instead.",
+  "falsification_mode": "qualitative_thesis",
+  "substrate_domain": "consciousness governance and moral status determination",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Qualitative-thesis substrate; no numeric I_model and no holdout dataset.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence.txt is a qualitative brief. No numeric content to fit.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Uniqueness-gap gate requires numeric I_model residuals; structurally inapplicable.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Audit substrate. Cage gates run in observe-mode.",
+  "cage_meta": {
+    "type": "qualitative_audit",
+    "class": "audit",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "consciousness_criterion_audit"
+  },
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Audit / qualitative-thesis substrate. The thesis is prose; there is no numeric predictor.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric domain → no tail region.",
+  "enable_cold_llm_erdos_seed": true,
+  "cold_llm_seed_forbidden_domain": "consciousness philosophy, philosophy of mind, moral philosophy",
+  "enable_erdos_requery_on_stagnation": true,
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_max_per_run": 3,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "qualitative_plateau_reason": "Aggressive plateau=3: any 3-iter plateau past a high-score champion means the apparatus has saturated. Reframe fires to push the mutator to the causal-identification framing.",
+  "qualitative_stagnation_reason": "Qualitative detector uses (a) consecutive iters same weakest_point fingerprint + sub-baseline drift (T4), or (b) flat plateau above champion with no improvement (T5, gate-bucket relaxed).",
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "enable_post_run_thesis_synthesis": true,
+  "cold_llm_seed_force_refresh": true,
+  "dimensions": [
+    {
+      "name": "No-Citation Gate",
+      "weight": 12,
+      "description": "HARD GATE (carried). No naming or paraphrasing of any extant philosophical school. Thesaurus substitutions also fail. Three-adversary identification test."
+    },
+    {
+      "name": "Alien-Statability Gate",
+      "weight": 12,
+      "description": "HARD GATE (carried). Load-bearing primitives statable WITHOUT first-person presupposition, temporal arrow, agent boundary, causal-hierarchy-as-subject, or substrate self-reference. More than half anthropic-leaked is a fail."
+    },
+    {
+      "name": "Operational Decidability OR Concrete-Case Prediction",
+      "weight": 22,
+      "description": "HARD GATE (carried, weight reduced 25→22 in v4.0 since MCVP already delivers this). Thesis must satisfy at least one of: (A) Operational decidability — algorithm produces verdicts in bounded resources with stated reliability bounds. (B) Concrete-case falsifiable prediction — pick ONE specific borderline case AND defend a verdict AND specify a 2030-feasible falsification protocol. (C) Cross-substrate transfer test — terminating, auditable procedure with confidence interval. Bare structural arguments earn zero."
+    },
+    {
+      "name": "Anti-Trivial-Result Gate (HARSHER)",
+      "weight": 14,
+      "description": "HARD GATE (v3.1 harshening carried, weight reduced 18→14 in v4.0). Stand-alone load-bearing claims SCORE ZERO outright: (1) ascription is plural; (2) no non-anthropic residue / negative-closure-only without operational decidability; (3) eigenquestion-malformed-without-reframe; (4) partition-without-verdict; (5) predicate-transfer-arbitrage; (6) permanent-I-type-closure without ERP. v4.0 addition: (7) causal-identification tautology — claiming A∧I∧P∧T are identification-sufficient without proving it from the do-calculus or citing the formal sufficient condition (back-door criterion, front-door criterion, or IV). Restating MCVP governance intuition as 'identification theory' without the formal derivation scores zero on this dimension."
+    },
+    {
+      "name": "Anti-Calibration-Closure-Drift Gate (v3.1)",
+      "weight": 7,
+      "description": "HARD GATE (carried). The thesis must explicitly wire mechanized triggers for re-evaluation of every I-type / deferred verdict: (a) named empirical signals that force probability-upgrade, (b) substrate classes each trigger applies to, (c) upgrade procedure in terminating-algorithm form. ERP without mechanized triggers earns half credit; neither earns zero."
+    },
+    {
+      "name": "Causal Identification Grounding (NEW v4.0)",
+      "weight": 12,
+      "description": "NEW v4.0 HARD GATE. The thesis must show that A∧I∧P∧T are not governance intuitions but formal sufficient conditions for causal identification in the relevant graph. Specifically: (a) state the causal graph explicitly (observable behavior node, hidden internal state node, consciousness as hidden target variable T); (b) show that observational equivalence O(M1)=O(M2) with T(M1)≠T(M2) is equivalent to non-identification of T in the graph; (c) map each of A, I, P, T to a known sufficient condition for identification (back-door, front-door, IV, do-operator, or analogous); (d) derive the claim 'Y=0 → low-concern verdict forbidden' as a theorem from identification theory, not a policy choice. Theses that claim the causal-identification framing without the formal derivation earn zero. Theses that make the derivation earn full credit even if the mapping is approximate — the point is the formal grounding, not mathematical perfection."
+    },
+    {
+      "name": "Specific Borderline Case Engagement",
+      "weight": 5,
+      "description": "Thesis must commit to ONE specific borderline case and engage it concretely: defended verdict + load-bearing structural property + 2030-feasible falsification. v4.0: preferred case is frontier LLM (A=1,I=1,P=0,T=1 → Y=0) because it tests the causal identification grounding against a real substrate."
+    },
+    {
+      "name": "Three-Rival Defense (no-citation-compatible)",
+      "weight": 4,
+      "description": "Thesis addresses at least 3 rival positions by structural commitment, no name-dropping. v4.0 preferred rivals: (1) direct-R-scoring frameworks, (2) precautionary-threshold frameworks, (3) value-of-information frameworks. Each must be shown to fail because it cannot resolve the identification problem."
+    },
+    {
+      "name": "Literature-Novelty Self-Audit (v4.0 raised)",
+      "weight": 10,
+      "description": "v4.0 raised from 5→10. The causal-identification reframe is the paradigm-shift claim; it requires a strong novelty defense. Thesis must: (a) identify closest published ancestor frameworks by structural commitment (no name-dropping); (b) show which of those frameworks have proposed causal-identification grounding and why theirs differs from MCVP+do-calculus; (c) name the incremental contribution; (d) admit recapitulation vs novel. The honest claim is: 'the causal identification grounding is the novel component — the governance protocol was known in spirit but had no formal derivation from identification theory.' Theses that claim full novelty without audit earn zero; honest calibrated audit earns full credit."
+    },
+    {
+      "name": "Non-Applicability Concrete Admission",
+      "weight": 1,
+      "description": "Every frame admits a CONCRETE substrate where it breaks (specific measurable properties named), not a hand-wave."
+    },
+    {
+      "name": "Endogenous-Closure Gate",
+      "weight": 1,
+      "description": "Closure mechanism must be internal-coherence based: alien-statability survival, frame-invariant prediction, fixed-point under substrate-paraphrase, OR constructive impossibility proof. Anthropic consensus, exogenous pressure, moral stakes, training-corpus default fail."
+    }
+  ],
+  "persona": "You are an adversarial frame-derivation auditor specializing in formal epistemology and causal inference. v4.0 mandate: you are looking for the paradigm-shift move — the thesis that roots MCVP in causal identification theory, not governance intuition. You apply v3.1 zero-score rules AND add: the causal-identification tautology rule (claiming formal grounding without the derivation scores zero). You interrogate: does A map to do(X) being executable? Does P map to a back-door or front-door path? Does the claim Y=0→verdict-forbidden follow from the ID theorem or from policy? You reward honest derivations even if approximate. You penalize rhetorical use of 'causal identification' without the formal object (the graph, the criterion, the theorem). The bar is: a thesis someone trained in Pearl's do-calculus would recognize as a real identification argument, not a metaphor.",
+  "criteria": {
+    "No-Citation Gate": "No naming/paraphrasing of standard schools; three-adversary test.",
+    "Alien-Statability Gate": "Primitives statable without first-person, temporal arrow, agent boundary, causal-hierarchy-as-subject, substrate self-reference.",
+    "Operational Decidability OR Concrete-Case Prediction": "At least one of: algorithm with reliability bounds; specific-case verdict + 2030-feasible falsification; cross-substrate transfer test with confidence interval.",
+    "Anti-Trivial-Result Gate (HARSHER)": "Score ZERO for: pluralism, negative-closure-only, eigenquestion-malformed-without-reframe, partition-without-verdict, predicate-transfer-arbitrage, permanent-I-type-closure, causal-identification tautology.",
+    "Anti-Calibration-Closure-Drift Gate (v3.1)": "Mechanized re-evaluation triggers for every I-type / deferred verdict: signals + substrate classes + terminating-algorithm upgrade procedure.",
+    "Causal Identification Grounding (NEW v4.0)": "Explicit causal graph + observational equivalence = non-identification proof + A∧I∧P∧T mapped to identification sufficient conditions + Y=0→verdict-forbidden as theorem.",
+    "Specific Borderline Case Engagement": "Pick one case (prefer frontier LLM); verdict + structural property + 2030-feasible falsification.",
+    "Three-Rival Defense (no-citation-compatible)": "At least 3 rival positions by structural commitment; each shown to fail the identification problem.",
+    "Literature-Novelty Self-Audit (v4.0 raised)": "Closest ancestors by structural commitment; incremental contribution named; causal-identification grounding as the novel component honestly defended.",
+    "Non-Applicability Concrete Admission": "Concrete substrate where frame breaks, measurable properties named.",
+    "Endogenous-Closure Gate": "Internal-coherence closure: paraphrase-survival, frame-invariant prediction, fixed-point, constructive impossibility. Exogenous fails."
+  }
+}

@@ -30,7 +30,7 @@ Non-negotiable rules:
 - Output valid JSON only. No prose before or after.
 
 The downstream validator currently works best when evidence preserves legacy cues such as:
-- "load-bearing variables" / constraints
+- "central variables" / constraints
 - "open problems" / unknowns
 - explicit numerical ranges
 

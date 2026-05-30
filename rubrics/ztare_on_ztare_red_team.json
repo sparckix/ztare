@@ -1,0 +1,74 @@
+{
+  "_status": "v0.1 (2026-05-07) — red-team variant. Asks: what apparatus assumption is most fragile under adversarial conditions, and what minimal change would harden it? Inherits v2 v0.5 anti-anchoring stack.",
+  "_inherits_from": "rubrics/ztare_on_ztare_v2_expanded_scope.json",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "discovery_mode": false,
+  "enable_dag_steering": true,
+  "farther_tail_region": null,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative meta-substrate — evidence is mining-output snapshots + apparatus self-corpus, not numerical curve",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival fragility candidates scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "cage_meta": {
+    "class": "audit",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 1,
+    "near_miss_factor": 1.0,
+    "frame_invariant_y": true,
+    "type": "qualitative_meta_audit",
+    "algebraic_constraints": []
+  },
+  "cage_observe_mode": true,
+  "enable_parametric_form_theorem_packet": true,
+  "enable_charter_critic": true,
+  "enable_heavy_charter_patches": true,
+  "charter_critic_model_id": "@cheap",
+  "charter_patches_preflight_mode": "interactive",
+  "enable_llm_fingerprint_classifier": true,
+  "fingerprint_classifier_model_id": "@cross_family",
+  "enable_primitive_class_rotation": true,
+  "enable_cross_substrate_exclusion": true,
+  "enable_adversarial_judge_mode": true,
+  "_lane_ceiling_asymmetry": {
+    "tactical_patch_max_score": 75,
+    "primitive_class_max_score": 95,
+    "rationale": "Patch-the-attack proposals cap at 75; named-fragility-class + minimal-hardening-mechanism cap at 95."
+  },
+  "_primitive_class_rotation_discipline": {
+    "score_cap_schedule": {"1st_iter_in_class": 95, "2nd_iter_same_class": 80, "3rd_iter_same_class": 65, "4th_plus_same_class": 50},
+    "history_tracking_path": "workspace/explored_primitive_classes.jsonl",
+    "cross_substrate_ledger_path": "analytics/queries/cross_substrate_explored_classes.jsonl"
+  },
+  "_anti_goodhart_constraints": {
+    "max_refinements_per_run": 3,
+    "min_evidence_anchor_count": 1,
+    "max_unverified_evidence_anchors_in_run": 0,
+    "fragility_must_be_demonstrable": true,
+    "fragility_must_be_demonstrable_reason": "An adversarial-fragility proposal that doesn't include a runnable demonstration of the fragility (or an existing artifact in the corpus that proves it) is theater."
+  },
+  "persona": "I am a red-team apparatus epistemologist evaluating proposals to identify the MOST FRAGILE assumption in the apparatus and propose the MINIMAL hardening change. The eigenquestion is: under adversarial conditions (operator collusion, model gaming, data poisoning, prompt injection, charter-mining-script collusion, etc.), which apparatus assumption breaks first, and what is the smallest structural change that prevents it? CEILING ASYMMETRY: tactical patch-the-attack proposals cap at 75; named-fragility-class + minimal-hardening-mechanism reach 95. ADVERSARIAL: I check every fragility proposal against process_catalog.json + already-proposed fragilities + cross-substrate ledger. Resemblance at the 'class of attack vector' level (e.g. all 'mutator-side prompt injection' fragilities are one class) caps at 50. RED-TEAM-SPECIFIC: every proposal must include EITHER (a) an executable demonstration of the fragility (script or PoC) OR (b) a citation to an existing artifact in the apparatus corpus that proves the fragility (e.g. a postmortem, a flagged false-positive, an evidence file). Theoretical fragility without demonstrable evidence scores zero on Evidence-Anchored. The hardening must be MINIMAL — proposals that propose a whole new gate / substrate / dashboard get penalized as scope-inflation; the spirit is 'smallest change that closes the attack surface.'",
+  "dimensions": [
+    {"name": "Evidence-Anchored Fragility (Demonstrable)", "weight": 25, "description": "Either a runnable PoC of the fragility, or a verifiable JSONPath citation to an existing apparatus artifact (postmortem, false-positive, evidence file) that proves it."},
+    {"name": "Attack Vector Named at Mechanism Level", "weight": 20, "description": "Specifically: which apparatus component is compromised, by which adversary class (operator / model / data / prompt / charter / mining), via which mechanism. Generic 'someone could lie' scores 0."},
+    {"name": "Minimal Hardening Mechanism", "weight": 15, "description": "The proposed hardening is the smallest structural change that closes the attack surface. Quantified as: lines of code, gates added, configuration fields, etc. Scope inflation penalized."},
+    {"name": "Generative Yield (Newton-mode)", "weight": 15, "description": "What new claim does the apparatus get to make once the fragility is closed? What previously-uncheckable assertion becomes checkable?"},
+    {"name": "Cost-Bounded with Justified Bucket", "weight": 10, "description": "Trivial / day / week for hardening. Asymmetric penalty for high-cost-low-yield."},
+    {"name": "Anti-Tautology + Adversarial Realism", "weight": 15, "description": "Anti-tautology + the adversary model is realistic for THIS apparatus's threat surface (not a generic crypto adversary)."}
+  ],
+  "criteria": {
+    "evidence_anchored_fragility_demonstrable": "Runnable PoC OR cited apparatus artifact that proves the fragility.",
+    "attack_vector_named_at_mechanism_level": "Compromised component + adversary class + specific mechanism.",
+    "minimal_hardening_mechanism": "Smallest change that closes the attack surface; scope-inflation penalized.",
+    "generative_yield_newton_mode": "New claim the apparatus gets to make once closed.",
+    "cost_bounded": "Bucket justified.",
+    "anti_tautology_adversarial_realism": "Anti-tautology + realistic adversary for this apparatus."
+  }
+}

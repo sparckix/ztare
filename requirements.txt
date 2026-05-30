@@ -1,5 +1,52 @@
+# LLM provider SDKs
 google-genai>=1.0.0
 anthropic>=0.25.0
 openai>=1.0.0
-sympy
-numpy
+
+# Scientific stack — required by validator/orchestrator/substrate paths
+sympy>=1.14
+scipy>=1.14
+
+sentence-transformers>=5.0
+hdbscan>=0.8.40
+umap-learn>=0.5.10
+numpy>=2.0
+networkx>=3.5
+pandas>=2.0
+matplotlib>=3.10  # used by analytics/queries dashboards
+mpmath>=1.3       # arbitrary precision; sympy companion, used in substrate paths
+
+# Core apparatus + operator surfaces
+pydantic>=2.0     # src/ztare/supervisor wrappers
+streamlit>=1.30   # src/ztare/supervisor/inbox_streamlit.py (operator inbox UI)
+
+# I/O + config
+python-dotenv>=1.0.0
+PyYAML>=6.0
+cryptography>=42.0  # GP-241 daemon/judge ed25519 signatures
+jsonschema>=4.0    # role yaml validation in scripts/org_role_preflight.py
+requests>=2.30     # telegram + ad-hoc HTTP
+
+# Resilience + UX in scripts
+tenacity>=8.0
+tqdm>=4.60
+click>=8.0
+rich>=13.0
+httpx>=0.27
+
+# Lean backend note: Hammer/Duper/auto/Zipperposition and ripgrep (`rg`)
+# are not pip dependencies. Fresh servers should run:
+#   bash deploy/prepare_lean_backends.sh
+# `scripts/public/control/setup_vps.sh` does this automatically when
+# the pinned Lean sandbox is present.
+
+# Dev / test — needed to run `make gates` and the fixture suites
+pytest>=8.0
+
+# Optional, per-substrate only (NOT needed for the core apparatus or
+# `make gates`; imported solely by individual project / benchmark
+# test_model.py substrate files). Install on demand:
+#   torch>=2.0     # projects/epistemic_engine_v3* substrate
+#   pint>=0.23     # constraint_memory dimensional-analysis substrate
+#   ripser>=0.6    # persistent-homology (TDA) substrate
+#   persim>=0.3    # persistent-homology (TDA) substrate

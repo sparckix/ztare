@@ -1,0 +1,175 @@
+{
+  "project_slug": "oeis_a000959",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 15,
+  "pending_actions": [
+    {
+      "action_kind": "queue_cold_shot",
+      "params": {
+        "model_id": "gpt-5.5",
+        "prompt_template": "fractal_de_anchor_v1",
+        "from_iter": 8,
+        "project_slug": "oeis_a000959"
+      },
+      "reason": "Three consecutive iters at score 0 with no progress signals the\nmutator is locked in. Per the fractal-de-anchoring memory: the\nFRAME may be the suspect, not the form. Cold-shot a fresh model\nwith explicit de-anchoring discipline before continuing.\n",
+      "rule_id": "stagnation_propose_de_anchor",
+      "from_event": {
+        "kind": "stagnation_detected",
+        "iter_index": 8,
+        "consecutive_zeros": 3,
+        "ts": "2026-05-07T12:53:47.290193Z",
+        "project_slug": "oeis_a000959"
+      },
+      "ts": "2026-05-07T12:53:48.254667Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 1,
+        "project_slug": "oeis_a000959"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 1,
+        "score": 29,
+        "parametric_form": "",
+        "ts": "2026-05-07T12:53:47.290227Z",
+        "project_slug": "oeis_a000959"
+      },
+      "ts": "2026-05-07T12:53:48.285929Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 1,
+        "project_slug": "oeis_a000959"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 1,
+        "score": 29,
+        "parametric_form": "",
+        "ts": "2026-05-07T12:53:57.112739Z",
+        "project_slug": "oeis_a000959"
+      },
+      "ts": "2026-05-07T12:53:57.384671Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 1,
+        "project_slug": "oeis_a000959"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 1,
+        "score": 29,
+        "parametric_form": "",
+        "ts": "2026-05-07T12:54:07.328532Z",
+        "project_slug": "oeis_a000959"
+      },
+      "ts": "2026-05-07T12:54:07.608955Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 1,
+        "project_slug": "oeis_a000959"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 1,
+        "score": 29,
+        "parametric_form": "",
+        "ts": "2026-05-10T21:17:59.698213Z",
+        "project_slug": "oeis_a000959"
+      },
+      "ts": "2026-05-10T21:17:59.959193Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 15,
+      "ts": "2026-05-07T12:53:47.290270Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "queue_cold_shot",
+      "reason": "Three consecutive iters at score 0 with no progress signals the\nmutator is locked in. Per the fractal-de-anchoring memory: the\nFRAME may be the suspect, not the form. Cold-shot a fresh model\nwith explicit de-anchoring discipline before continuing.\n",
+      "ts": "2026-05-07T12:53:48.254689Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "stagnation_propose_de_anchor",
+      "action_kind": "queue_cold_shot",
+      "from_event_kind": "stagnation_detected",
+      "ts": "2026-05-07T12:53:48.254982Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:48.285950Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:48.286294Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.384686Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.384998Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.608973Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.609353Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.959199Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.959660Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.959660Z"
+}

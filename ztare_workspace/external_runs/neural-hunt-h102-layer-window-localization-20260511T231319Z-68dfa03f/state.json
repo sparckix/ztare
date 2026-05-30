@@ -1,0 +1,15 @@
+{
+  "artifact_bundle": null,
+  "gpu_status": null,
+  "host": "150.136.223.255",
+  "latest_marker": "checkpointed per selected_step",
+  "launcher_pid": 4434,
+  "local_results_dir": "projects/neural_hunt/workspace/h102_remote_a100_2026_05_11",
+  "notes": null,
+  "project_slug": "neural_hunt",
+  "run_id": "neural-hunt-h102-layer-window-localization-20260511T231319Z-68dfa03f",
+  "run_kind": "h102_layer_window_localization",
+  "status": "registered",
+  "summary_file": null,
+  "updated_utc": "2026-05-11T23:13:19Z"
+}

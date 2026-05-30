@@ -18,3 +18,20 @@ Regenerate the suite with:
 ```bash
 python benchmarks/constraint_memory/mine_claim_test_mismatch.py
 ```
+
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`selective_rigor_recursive_bayesian/`](selective_rigor_recursive_bayesian/) - 6 file(s)
+- [`selective_rigor_simulation_god/`](selective_rigor_simulation_god/) - 6 file(s)
+- [`tautological_verification_central_station/`](tautological_verification_central_station/) - 6 file(s)
+
+**Documents**
+
+- [index.json](index.json)
+
+<sub>3 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

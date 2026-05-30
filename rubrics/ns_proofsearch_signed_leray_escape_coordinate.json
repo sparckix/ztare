@@ -1,0 +1,121 @@
+{
+  "name": "ns_proofsearch_signed_leray_escape_coordinate",
+  "project": "ns_proofsearch_signed_leray_escape_coordinate",
+  "rubric_version": "0.1-signed-leray-escape-coordinate",
+  "rubric_version_reason": "Successor after Phase 5DX-5EB: exact pressure-aware Leray intertwiners produce a real signed local signal, but PSD completion and viscous lifetime block naive promotion.",
+  "description": "Focused theorem-search substrate for promoting or killing a signed pressure-aware Leray escape coordinate as a Navier-Stokes middle-layer bridge.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search over an exact signed-coordinate bridge, not numerical curve fitting."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No scalar farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative theorem-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by admissibility, damping, PSD, and cycle-transfer gates.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "No numerical parameter fitting target.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 30,
+  "post_run_synthesis_max_cluster_size": 4,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "runner_allowed_imports": ["typing", "math"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The exact local audits found a real pressure-aware signed Leray-intertwiner signal, but positive-energy ballast and viscous lifetime currently kill naive promotion. Reward only a theorem packet or no-go that handles independent orientation, pressure-aware admissibility, residual-defect transfer, PSD honesty, viscous/Duhamel damping, high-high or multi-background stress, and cycle/critical-norm transfer. Penalize arbitrary Leray smuggling, positive-energy laundering, absolute-value orientation after seeing gamma, metric-kernel substitution, finite-to-infinite supremum induction, weak-solution overclaims, and unbounded computation.",
+  "dimensions": [
+    {
+      "name": "Independent Signed Coordinate",
+      "weight": 10,
+      "description": "Is the signed coordinate, support rule, matrix family, and orientation defined independently of residual/profit outcomes?"
+    },
+    {
+      "name": "Pressure-Aware Admissibility",
+      "weight": 12,
+      "description": "Does the thesis justify or tax use of P_r M P_s rather than treating Leray access as free?"
+    },
+    {
+      "name": "Orientation Non-Tautology",
+      "weight": 10,
+      "description": "Does the sign/orientation rule avoid absolute-value hindsight and phase-fitting?"
+    },
+    {
+      "name": "Residual-Defect Ledger",
+      "weight": 10,
+      "description": "Does the packet report mixed residual, projected defect, and transfer conditions?"
+    },
+    {
+      "name": "PSD And Ballast Honesty",
+      "weight": 9,
+      "description": "Does it distinguish signed coordinate from positive energy and pay diagonal ballast if claiming positivity?"
+    },
+    {
+      "name": "Viscous Lifetime Discipline",
+      "weight": 10,
+      "description": "Does it pay source/output damping or provide a theorem showing the Phase 5EB damping proxy is not the right tax?"
+    },
+    {
+      "name": "High-High And Multi-Background Stress",
+      "weight": 7,
+      "description": "Does it survive or explicitly fail self-interaction and two-background stress?"
+    },
+    {
+      "name": "Cycle Or Critical-Norm Transfer",
+      "weight": 10,
+      "description": "Does it connect the signed coordinate to a danger-reset-return cycle, critical norm, or smooth-data realization?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a theorem packet, exact falsifier, new CAS/Lean-facing target, or decisive proof-cost reranking?"
+    },
+    {
+      "name": "Scope Honesty And Resource Safety",
+      "weight": 7,
+      "description": "Does it avoid Clay overclaim and keep proposed audits bounded, sparse, symbolic, or proof-facing?"
+    }
+  ],
+  "criteria": {
+    "Independent_Signed_Coordinate": "Full credit requires a predeclared signed coordinate, matrix family, support rule, and locality rule. Score zero for choosing M, phases, signs, or amplitudes from the desired margin.",
+    "Pressure_Aware_Admissibility": "Full credit requires a PDE-side admissibility mechanism or explicit tax for P_r M P_s. Merely commuting with Leray is insufficient.",
+    "Orientation_Non_Tautology": "Full credit requires a non-circular sign/orientation rule. Absolute value of gamma is only an optimistic diagnostic, not a theorem.",
+    "Residual_Defect_Ledger": "Full credit requires signed response and projected residual/defect to be reported together with a transfer condition.",
+    "PSD_And_Ballast_Honesty": "Full credit requires either explicit signed-coordinate nonclaim or diagonal ballast payment for any positive-energy claim.",
+    "Viscous_Lifetime_Discipline": "Full credit requires source/output damping, Duhamel lifetime, or a proof that the local damping proxy is inapplicable.",
+    "High_High_And_Multi_Background_Stress": "Full credit requires self-interaction or multi-background stress accounting.",
+    "Cycle_Or_Critical_Norm_Transfer": "Full credit requires a bridge to cycle margin, return-time geometry, critical norm, or smooth-data realization.",
+    "Generative_Yield": "Full credit requires a usable theorem/falsifier packet or decisive route reranking.",
+    "Scope_Honesty_And_Resource_Safety": "Reject unsupported regularity/blowup claims and unbounded dense computation proposals."
+  },
+  "success_criteria": [
+    "A positive signed-coordinate bridge satisfying admissibility, orientation, residual-defect, damping, and cycle/critical-norm transfer.",
+    "A no-go theorem proving that admissible pressure-aware intertwiners cannot promote beyond signed local signal after ballast/damping/transfer costs.",
+    "A bounded exact Fourier/CAS falsifier that kills the live signed-coordinate class and names the next theorem target."
+  ],
+  "failure_modes": [
+    "Choosing orientation, phases, amplitudes, or M by solving backward from positive gamma.",
+    "Calling an indefinite signed coordinate a positive energy without ballast.",
+    "Treating P_r M P_s as admissible merely because it commutes with Leray.",
+    "Ignoring viscous damping or Duhamel lifetime.",
+    "Ignoring high-high or multi-background stress.",
+    "Defining cycle variables from observed gain/loss.",
+    "Substituting a metric kernel for Euclidean pressure/Leray.",
+    "Inferring a Clay result from a local bounded Fourier signal.",
+    "Using large dense Fourier jobs, unbounded Lean builds, or the crashed exponential metric transport obstruction."
+  ]
+}

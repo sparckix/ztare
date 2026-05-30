@@ -1,0 +1,158 @@
+{
+  "name": "ns_proofsearch_low_high_operator_norm_bridge",
+  "project": "ns_proofsearch_low_high_operator_norm_bridge",
+  "rubric_version": "0.3-projected-commutator-finite-core",
+  "rubric_version_reason": "Branch-local substrate for the low-high LP/Bony operator estimate after Phase 5HC. v0.3 incorporates the hostile-auditor correction: the projected H1 transport term must be charged as a commutator receipt, the H grad^2 L stretch term must be paid by paired Bernstein, and finite low shells need their own finite-core receipt.",
+  "description": "NS Track B low-high branch substrate: prove or falsify the fixed flat-torus LP/Bony operator-norm receipt that feeds the low-frequency Lipschitz reserve ledger, preferably through FixedTopologyLowHighOperatorReceipt.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "require_i_model_in_submission": false,
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search over a named low-high PDE estimate and its falsifier, not scalar fitting."
+  },
+  "theorem_packet_contract": {
+    "required_top_level_functions": [
+      "fixed_lp_bony_topology",
+      "low_high_operator_definition",
+      "leray_energy_pairing",
+      "h1_commutator_estimate",
+      "projected_transport_commutator_receipt",
+      "stretching_h_grad_l_receipt",
+      "low_frequency_separation",
+      "finite_low_shell_core_receipt",
+      "reserve_embedding_bridge",
+      "smooth_counterexample_or_falsifier",
+      "accepted_branch_outcome"
+    ],
+    "reason": "The candidate must declare the LP/Bony topology before scoring payoff, define the low-high operator, prove or break the local operator estimate, pay the projected transport commutator and H grad^2 L term explicitly, handle finite low shells separately, and separate that local estimate from the global reserve embedding burden."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No scalar farther-tail coordinate exists; generalization is tested by topology-fixed theorem/falsifier content.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "The target is a proof-shaped LP/Bony theorem packet, not data fitting.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "The hard gate and rubric evaluate theorem scope, anti-tautology, and falsifier shape directly.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 35,
+  "post_run_synthesis_max_cluster_size": 4,
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "evidence_gap_score_caps": [
+    {
+      "name": "proof_grade_requires_fixed_topology_estimate_or_falsifier",
+      "cap": 89,
+      "when_score_at_least": 90,
+      "severity_any": ["blocking", "degrading"],
+      "text_contains_any": [
+        "no fixed topology",
+        "missing topology",
+        "no commutator estimate",
+        "no reserve embedding",
+        "global reserve remains open",
+        "constant not uniform",
+        "endpoint topology",
+        "counterexample not constructed",
+        "not proved"
+      ],
+      "reason": "Scores above 90 require either a constant-bearing fixed-topology PDE estimate, or a smooth periodic counterexample/falsifier under that same topology. Honest obligation mapping stays below proof-grade."
+    }
+  ],
+  "runner_allowed_imports": ["typing", "math", "sympy"],
+  "persona": "You are a ruthless Navier-Stokes low-high LP/Bony branch referee. Reward only theorem packets that fix the flat-torus LP projectors before payoff is scored; define L=S_{j-2}u, H=Delta_j v, and B_L(H)=Delta_j P((L·grad)H+(H·grad)L); prove or falsify the L2/H1 operator estimate |<Lambda B_L(H), Lambda H>| <= C_LP ||grad L||_infty ||Lambda H||_2^2 uniformly in shell j; explicitly pay the projected H1 transport term as a commutator rather than exact skew cancellation; pay H grad^2 L through paired Bernstein factors ||H||_2 <= C 2^-j ||Lambda H||_2 and ||grad^2 L||_infty <= C 2^j ||grad L||_infty; handle finite low shells with a separate finite-core receipt; and separately state whether the resulting Lipschitz cost embeds into the predeclared Track B low-frequency reserve ledger. Penalize broad Track B/global Clay claims, new finite packet searches, dense-slab or degree-only scaling, moving topology after seeing payoff, charging by local low self-tax alone, and qualitative Bony prose with no constants, support gap, or counterexample.",
+  "dimensions": [
+    {
+      "name": "Fixed LP/Bony Topology",
+      "weight": 13,
+      "description": "Does the candidate declare the flat-torus projectors, shell support gap, norm, and constants before scoring payoff?"
+    },
+    {
+      "name": "Low-High Operator Definition",
+      "weight": 10,
+      "description": "Does it define the actual projected dyadic operator Delta_j P((L·grad)H+(H·grad)L), not an informal unprojected term?"
+    },
+    {
+      "name": "Leray Pairing And Skew Transport",
+      "weight": 10,
+      "description": "Does it use divergence-free periodic integration and Leray self-adjointness correctly, with transport skew only where valid?"
+    },
+    {
+      "name": "H1 Commutator Estimate",
+      "weight": 14,
+      "description": "Does it provide a constant-bearing H1/shell-energy commutator estimate with derivative-loss terms accounted for, without falsely claiming exact skew cancellation after Lambda Delta_j P?"
+    },
+    {
+      "name": "Low-Frequency Separation",
+      "weight": 10,
+      "description": "Does it pay the Bernstein/support-gap step 2^{-j}||grad^2 L||_infty <= C_sep||grad L||_infty with declared low-shell treatment?"
+    },
+    {
+      "name": "Reserve Embedding Honesty",
+      "weight": 12,
+      "description": "Does it distinguish the local operator estimate from the global low-frequency Lipschitz reserve embedding and state what remains unpaid?"
+    },
+    {
+      "name": "Smooth Falsifier Discipline",
+      "weight": 8,
+      "description": "If negative, does it construct a smooth periodic sequence under the fixed topology where the estimate or reserve embedding fails?"
+    },
+    {
+      "name": "Anti-Tautology Discipline",
+      "weight": 8,
+      "description": "Does it avoid defining the reserve price from observed leakage, changing the topology after payoff, or using the desired inequality as the price?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a usable constant-bearing PDE estimate, a finite Fourier multiplier Lean target, a smooth counterexample/falsifier, or a sharper endpoint-topology obstruction?"
+    }
+  ],
+  "criteria": {
+    "Fixed_LP/Bony_Topology": "Full credit requires naming Delta_j, S_{j-2}, support gap, norm (L2/H1 or Lambda), flat torus Fourier multiplier compatibility, and constants fixed before scoring payoff.",
+    "Low-High_Operator_Definition": "Full credit requires the projected dyadic operator with Leray P and Delta_j explicitly present.",
+    "Leray_Pairing_And_Skew_Transport": "Full credit requires correct use of P self-adjointness and divergence-free periodic integration; transport skew must not be applied to the stretching term.",
+    "H1_Commutator_Estimate": "Full credit requires a real H1 estimate including projected transport commutator, grad L * grad H, and H * grad^2 L terms, with constants independent of j above the declared finite core. Exact skew cancellation may be used only for the uncommuted L2 transport main term.",
+    "Low-Frequency_Separation": "Full credit requires a Bernstein/support-gap step controlling 2^{-j}||grad^2 L||_infty by ||grad L||_infty, plus finite low-shell handling.",
+    "Reserve_Embedding_Honesty": "Full credit requires saying whether the local Lipschitz coefficient embeds into the global LowFrequencyLipschitzLedger; local estimate alone is not Clay closure.",
+    "Smooth_Falsifier_Discipline": "Full credit for a negative result requires a smooth periodic sequence under the declared projectors/topology, not a one-mode or changed-topology objection.",
+    "Anti_Tautology_Discipline": "Full credit requires independent topology, independent reserve price, and no backwards fitting from leakage.",
+    "Generative_Yield": "Full credit requires a theorem, falsifier, finite Lean multiplier target, or endpoint obstruction that changes the next proof move."
+  },
+  "success_criteria": [
+    "Top-level fixed_lp_bony_topology() declares projectors, shell gap, norms, constants, flat-torus multiplier compatibility, and finite low-shell handling.",
+    "Top-level low_high_operator_definition() defines Delta_j P((L·grad)H+(H·grad)L) with divergence-free L and H.",
+    "Top-level leray_energy_pairing() correctly proves or reduces the L2 transport skew and stretching bound.",
+    "Top-level h1_commutator_estimate() supplies a constant-bearing H1 estimate or names the exact missing term.",
+    "Top-level projected_transport_commutator_receipt() pays the Lambda Delta_j P transport commutator and does not assert exact skew cancellation for the projected H1 expression.",
+    "Top-level stretching_h_grad_l_receipt() pays the H grad^2 L term using both ||H||_2 <= C 2^-j ||Lambda H||_2 and ||grad^2 L||_infty <= C 2^j ||grad L||_infty.",
+    "Top-level low_frequency_separation() pays the Bernstein/support-gap estimate uniformly in j above a finite core.",
+    "Top-level finite_low_shell_core_receipt() handles j < j0 with a separate finite-core constant or explicitly scopes the theorem to high shells.",
+    "Top-level reserve_embedding_bridge() either embeds the Lipschitz cost into the declared Track B reserve ledger or marks it as the remaining theorem.",
+    "Top-level smooth_counterexample_or_falsifier() either gives a smooth periodic falsifier sequence or states why the fixed-topology falsifier failed.",
+    "Top-level accepted_branch_outcome() labels the result as local low-high branch progress, proof/falsifier, or remaining obstruction without Clay overclaim."
+  ],
+  "failure_modes": [
+    "Asking for broad Track B closure instead of the low-high LP/Bony estimate.",
+    "Changing the LP projectors, norm, or observable class after seeing payoff.",
+    "Defining reserve price as the observed leakage.",
+    "Using local low self-tax or viscosity alone to charge the shear catalyst.",
+    "Claiming global NS/Clay proof from a local operator estimate.",
+    "Packet hunting, dense slabs, or degree-only q>p scaling.",
+    "Ignoring the Leray projection or Delta_j output projection.",
+    "Applying transport skew to the stretching term.",
+    "Claiming exact H1 skew cancellation after Lambda Delta_j P instead of paying the transport commutator.",
+    "Hiding derivative loss in qualitative commutator prose.",
+    "Paying H grad^2 L with only one Bernstein factor instead of the paired ||H||_2 and ||grad^2 L||_infty estimates.",
+    "Ignoring finite low shells or endpoint topology."
+  ]
+}

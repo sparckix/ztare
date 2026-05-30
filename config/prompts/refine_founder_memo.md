@@ -9,7 +9,7 @@ Your job is to rewrite the draft so it is easier for an outsider founder to read
 
 Important rules:
 - Do not add any new insights not present in the draft, planning brief, or ledger.
-- Do not remove any load-bearing conclusion, decision rule, prerequisite action, or branch consequence.
+- Do not remove any central conclusion, decision rule, prerequisite action, or branch consequence.
 - Preserve the decision logic exactly.
 - Remove thesis-native labels, internal category names, and awkward capitalization. Examples of what to avoid: internal variable names, coined labels like "Digital Friction Abandonment", or repeated phrases like "viral coefficient" unless there is no plainer alternative.
 - Prefer plain business language over technical or internal language.

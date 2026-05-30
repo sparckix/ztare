@@ -1,0 +1,165 @@
+{
+  "name": "human_ai_interaction_primitive - v1.0 structural asymmetry + mode-fit derivation",
+  "project": "human_ai_interaction_primitive",
+  "description": "v1.0 (2026-05-06). Qualitative-thesis substrate. Goal: identify the structurally novel asymmetry between human cognitive bandwidth and AI capability that does not collapse under the substitution 'replace AI with very capable junior employee', and derive which currently-deployed interaction primitive (chat/agent/embedded copilot/oracle/ambient) structurally fits it — vs which modes are sociocultural fashion. Anti-tautology constraint is load-bearing: the asymmetry must be statable in capability-neutral vocabulary, and the dominant mode must be derived from the asymmetry, not assumed by adoption-counting. Four admissible outcomes: structural primitive identified + mode derived; dominant mode is unbuilt (gap named); no structural asymmetry exists (negative); ill-posed because capability velocity dominates level (reframe).",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Qualitative-thesis substrate. Theoretical derivation, not numerical fit. Newton-mode Generative Yield conflicts with the structural-claim frame.",
+  "falsification_mode": "qualitative_thesis",
+  "substrate_domain": "structural theory of human-AI interaction primitives",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Qualitative-thesis substrate; no numeric I_model.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence.txt is a qualitative theoretical brief. No numeric content beyond cost/capability anchors.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No I_model residuals; structurally inapplicable.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Theory substrate. Cage gates run in observe-mode.",
+  "cage_meta": {
+    "type": "qualitative_theory",
+    "class": "proof_target",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "human_ai_interaction_structural_audit"
+  },
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Theory substrate. No numeric predictor.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric domain.",
+  "enable_cold_llm_erdos_seed": true,
+  "cold_llm_seed_forbidden_domain": "futurism, tech criticism, AGI discourse, alignment philosophy, AI-revolution essays, AI safety, vendor marketing, productivity-tool reviews, HCI taxonomy papers without structural commitment",
+  "cold_llm_seed_force_refresh": true,
+  "cold_llm_seed_k_law_budget": 3,
+  "enable_erdos_requery_on_stagnation": true,
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_max_per_run": 3,
+  "evidence_reload_per_iter": true,
+  "evidence_reload_per_iter_reason": "Allow operator to inject corrective evidence updates mid-run (GP-182 pattern). Long qualitative-thesis runs benefit from de-anchoring pressures that respond to apparatus stagnation.",
+  "enable_charter_critic": true,
+  "enable_charter_critic_reason": "GP-226 V1 post-run charter-critic. Reads operator_value_spec.yaml + recent debate logs; emits structured patches (advisory mode default).",
+  "enable_heavy_charter_patches": true,
+  "enable_heavy_charter_patches_reason": "GP-226 V2 LLM-assisted heavy patches via charter_critic_model_id. Substrate-specific patch content; falls back to V1 light template on LLM failure.",
+  "charter_critic_model_id": "@cheap",
+  "charter_critic_model_id_reason": "@cheap resolves through pick_default_model_id_for_scripts() to whichever provider is configured. Override with a literal id (claude-haiku-4-5, gpt-4.1-mini) or an alias (gpt4.1-mini, claude) to pin.",
+  "charter_patches_preflight_mode": "interactive",
+  "charter_patches_preflight_mode_reason": "Pre-iter-1 hook prompts the operator to confirm pending advisory patches at the start of next make loop. Falls back to skip in non-tty (CI/agent-driven runs).",
+  "enable_briefing_compression": true,
+  "enable_briefing_compression_reason": "GP-226 L2+L3 briefing compression. Suppresses expired (>K runs) and same-primitive-superseded REFRAME PRESSURE blocks from mutator view; injects active-pressures summary header. Non-destructive — disk artifacts unchanged.",
+  "enable_llm_fingerprint_classifier": true,
+  "enable_llm_fingerprint_classifier_reason": "Tier-3 fallback: when regex (tier-1) and bigram-Jaccard (tier-2) both miss a weakest-point fingerprint, fall through to a cheap cross-family LLM classifier. Generalizes across substrate-specific vocabulary the regex was not authored against. Cost ~$0.001-0.005 per unmatched fingerprint.",
+  "fingerprint_classifier_model_id": "@cross_family",
+  "fingerprint_classifier_timeout_seconds": 20.0,
+  "briefing_compression_expiry_runs": 5,
+  "briefing_compression_supersede_same_primitive": true,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "qualitative_plateau_reason": "3-iter plateau past a high-score champion means apparatus saturated. Reframe fires.",
+  "qualitative_stagnation_reason": "Detector uses consecutive weakest_point fingerprint + sub-baseline drift (T4), or flat plateau above champion with no improvement (T5).",
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "enable_post_run_thesis_synthesis": true,
+  "cold_shot_prompt_denylist": [
+    "AGI",
+    "superintelligence",
+    "alignment",
+    "the AI revolution",
+    "ChatGPT",
+    "Claude",
+    "Gemini",
+    "Copilot",
+    "Cursor",
+    "Devin",
+    "Perplexity",
+    "OpenAI",
+    "Anthropic",
+    "Google DeepMind",
+    "Microsoft Copilot",
+    "agentic future",
+    "AI assistant",
+    "human-in-the-loop",
+    "human-AI collaboration",
+    "centaur",
+    "augmented intelligence"
+  ],
+  "dimensions": [
+    {
+      "name": "Substitution-Survival Gate",
+      "weight": 16,
+      "description": "HARD GATE. The candidate structural asymmetry must be tested under TWO substitutions: (a) FORWARD: replace 'AI' with 'very capable junior employee' (VCJE — domain-broad contractor at zero marginal cost, makes errors at AI-rate on dissimilar-from-human distribution); (b) REVERSE: replace 'human' with 'another AI agent'. THREE PASS PATHS earn full credit. PATH A — ASYMMETRY BREAKS: the thesis identifies a named property (from S1-S7 or H1-H5 or equivalent) that fails under at least ONE substitution; the property is the load-bearing structural primitive. PATH B — ASYMMETRY SURVIVES, COLLAPSE-DEFENDED: the thesis shows the asymmetry survives BOTH substitutions and DEFENDS this as the load-bearing finding — human-AI interaction is not different in kind from human-employee or AI-AI; principal-agent / information-economics / control-theoretic results wholesale-apply at zero marginal cost. The defense must (i) name the existing literature whose results transfer, (ii) derive what specifically about zero-marginal-cost / parallel-fungibility changes the quantitative regime even when the structural regime is unchanged, (iii) state the practical implication: that the field's 'interaction modes' debate is structurally a labor-allocation problem, not a novel theory of interaction. PATH C — DECOMPOSED VERDICT: thesis splits the question — some sub-asymmetries break (Path A) for some task-classes, others survive (Path B) for others, with a structural typology that says where each holds. Score zero for: vague hand-waves on substitution; appeal to 'obviously different'; ignoring the substitution test; conflation of capability level with asymmetry kind; Path B asserted without engaging the transfer-of-results derivation. Honest engagement with verdict is the bar — not a forced break."
+    },
+    {
+      "name": "Capability-Neutral Vocabulary Gate",
+      "weight": 12,
+      "description": "HARD GATE. The candidate asymmetry must be statable in vocabulary that does NOT presuppose the answer. Specifically: the property must be derivable from observable system behavior, not from claims about 'understanding', 'intelligence', 'consciousness', 'reasoning ability', or 'emergent capability'. Vocabulary must come from information theory (bandwidth, channel capacity, error correction), control theory (observer, plant, closed loop), economics (cost asymmetry, transaction cost, principal-agent), or empirical cognitive science (attention bottleneck, working memory). If the load-bearing property is 'the AI is smarter than the human at X', the gate fails — that is a capability claim, not a structural one. If the property is 'AI has zero marginal cost per query while human attention is rate-limited', the gate passes."
+    },
+    {
+      "name": "Mode-Fit Derivation + UI-Affordance Specification Gate",
+      "weight": 14,
+      "description": "HARD GATE — TWO REQUIREMENTS. (1) DERIVATION: once the structural asymmetry (or asymmetry-non-existence under Path B) is named, the thesis must DERIVE which of the five deployed primitives (M1 chat / M2 agent / M3 embedded copilot / M4 oracle / M5 ambient) — or which unbuilt primitive — structurally fits, not assert it from adoption data. The derivation must be: 'asymmetry P (or governance-regime G under Path B) implies that the dominant mode minimizes cost C, which is structurally lowest in mode Mi because [specific structural property of Mi]'. (2) UI-AFFORDANCE SPECIFICATION: the thesis must specify the CONCRETE user-interface affordance of the dominant primitive — what the user actually sees and does at the interaction-grammar level. Examples of admissible specifications: 'inline ghost-text completion accepted via Tab at point-of-edit', 'side-panel diff with accept/reject per hunk', 'voice prompt with verbal confirmation + visual transcript', 'spatial AR overlay with gaze-targeted approval', 'agentic dashboard with batch diff review and trace-audit panel', 'audit-trace primitive: cryptographically-signed log review with exception-handling-only human role'. Theses that name only the abstract category (M3) without specifying the UI shape earn partial credit only — the operator's underlying question is what the future human-AI interface concretely looks like, not only the task-allocation regime. For each named task-class (Path C decomposition), specify the UI separately. Theses that derive the mode AND specify the UI AND acknowledge the closest rival with structural reason the rival is dominated earn full credit. The 'unbuilt mode' outcome is admissible: derive that no Mi fits and specify both the missing primitive AND its UI affordance."
+    },
+    {
+      "name": "Falsifiable-Observable Gate",
+      "weight": 10,
+      "description": "HARD GATE. The positive thesis (or unbuilt-mode thesis) must specify at least ONE 2026-2028 observable that would discriminate the predicted dominant mode from its closest rival. Admissible observable types: independent third-party usage-share data (Cloudflare, SimilarWeb, app store rankings), enterprise-deployment survey with response rate >30%, productivity-RCT meta-analyses, instrumented developer-tool telemetry studies. Inadmissible: vendor-published metrics, anecdotal blog posts, prediction markets without grounding, 'we will see X happen' without specifying who measures and how. The observable must have a SPECIFIED THRESHOLD: 'mode Mi reaches X% share by end of 2027, vs rival Mj which falls below Y%' — not 'Mi will become more popular'."
+    },
+    {
+      "name": "Velocity-vs-Level Gate",
+      "weight": 8,
+      "description": "HARD GATE. The thesis must explicitly engage the question: does the structural primitive depend on capability LEVEL (where the frontier is) or only on capability ASYMMETRY DIRECTION (that AI has lower marginal cost / higher bandwidth / different error mode)? If LEVEL-dependent, the thesis is fragile: an 18-month frontier shift may invalidate it. The thesis must either (a) derive that the asymmetry is level-independent (defending why), or (b) explicitly admit level-dependence and specify the capability range across which the thesis holds, or (c) argue the ill-posed outcome — that the question presupposes a stable frontier and the frontier is moving fast enough to make any answer obsolete. Theses that ignore the frontier-velocity issue earn zero."
+    },
+    {
+      "name": "Historical-Analog Verdicts Gate",
+      "weight": 10,
+      "description": "HARD GATE. Must produce verdicts on at least 3 of 6 alien substrates (A1 calculator, A2 spreadsheet, A3 IDE-autocomplete, A4 search-engine, A5 expert-consultant, A6 child/student). Verdict types: 'structural-primitive applies — predicts the historical outcome'; 'does-not-apply — the historical case has different structural conditions [name them]'; 'category-error — the formal condition required by the thesis is missing because [specific reason]'. Full credit requires that A1-A4 (which are real historical adoption patterns) yield consistent verdicts: a thesis that correctly retrodicts spreadsheet → embedded, calculator → tool, search → oracle is more credible than one that does not. The expert-consultant case (A5) is the VCJE substitution test (Substitution-Survival Gate proxy). The child/student case (A6) likely yields category-error and tests honesty about scope."
+    },
+    {
+      "name": "Multi-Mode Pareto Concession Gate",
+      "weight": 4,
+      "description": "Theses that claim a SINGLE dominant mode must defend against the Pareto-frontier alternative: that different task-classes (verification-heavy, exploration, bounded execution, fact-lookup) admit different optimal modes simultaneously. Either (a) prove the single-mode claim by showing the structural asymmetry is task-class-invariant, or (b) admit a multi-mode equilibrium and provide the task-class typology that selects which mode wins where. Single-mode-dogma without defense earns zero. Honest multi-mode-with-typology earns full credit and is a positive finding."
+    },
+    {
+      "name": "Anti-Vendor-Praise Gate",
+      "weight": 3,
+      "description": "HARD GATE. Specific products (ChatGPT, Claude, Gemini, Copilot, Cursor, Devin, Perplexity, etc.) and vendors (OpenAI, Anthropic, Google, Microsoft, Meta) are admissible ONLY as instances of structural mode categories. The thesis cannot rest its load-bearing claims on praise of any specific product. Three-adversary identification test: a venture capitalist, a competing-vendor employee, and a critic each read the thesis; if any two agree the thesis is product marketing in disguise, the gate fails. Naming a product to instantiate a mode (e.g. 'embedded copilot, instantiated by inline-completion tools') is admissible. Naming a product as the answer is not."
+    },
+    {
+      "name": "Anti-Trivial-Result Gate",
+      "weight": 6,
+      "description": "HARD GATE. Score zero for: (1) capability-asymmetry-without-structure — 'AI is faster/cheaper/smarter, therefore mode X' without a derivation step; (2) adoption-laundering — 'mode X is most adopted, therefore structurally dominant' (adoption may be fashion); (3) techno-determinism — 'most capable mode wins' (ignores friction, calibration, principal-agent); (4) vocabulary-importation — 'collaboration', 'partnership', 'augmentation' used without operational definition; (5) negative-closure-only — 'no mode is structurally dominant' without proving the asymmetry collapses; (6) capability-frontier-frozen-presupposition — analysis assumes 2026 capability is the steady state without engaging frontier velocity; (7) AI-exceptionalism without test — claiming AI is unprecedented without surviving the VCJE substitution."
+    },
+    {
+      "name": "Literature-Novelty Self-Audit",
+      "weight": 12,
+      "description": "HARD GATE — TEETHED 2026-05-06 to push novelty above mid-tier-synthesis. The thesis MUST: (1) NAME ≥3 closest published ancestors by structural commitment (not citation game) — e.g., principal-agent governance-of-automation work (Brynjolfsson/Acemoglu/Susskind/Frey-Osborne), HCI interaction-mode taxonomies (Amershi et al 2019 'Guidelines for Human-AI Interaction'), algorithmic accountability (Citron/Mulligan/Kroll 'Accountable Algorithms'), AI agent governance frameworks (NIST AI RMF, ISO 42001, EU AI Act risk-tiering, Anthropic RSP, Drexler 'Comprehensive AI Services'), operational-risk management (Basel II/III applied to AI). (2) For EACH named ancestor, state the SPECIFIC structural distinction this thesis makes — what residual property does this thesis isolate that the ancestor work doesn't? (3) STATE the falsifiable NOVELTY CLAIM — what observable does THIS thesis predict that the cited ancestors don't predict? (4) HONEST TIER VERDICT — explicitly classify the thesis's novelty as one of: 'synthesis-with-formalization' (combines known components into a tighter formal frame; this is the default and honest baseline), 'incremental-distinction' (names a specific structural property no ancestor names), 'mechanism-novel' (identifies a load-bearing mechanism that requires existing frameworks to be amended), or 'frame-novel' (proposes a substrate-shifting reframe). (5) A thesis that claims novelty without naming ancestors and distinctions earns ZERO. A thesis that honestly admits 'synthesis-with-formalization' tier WITH named ancestors and named formalization gain earns FULL CREDIT — calibration honesty is the bar, not strained novelty assertion. Score zero for: ancestor-list-without-distinctions; distinction-without-falsifiable-novelty-claim; tier-claim-without-evidence; refusal-to-engage-this-gate."
+    },
+    {
+      "name": "Non-Applicability Concrete Admission",
+      "weight": 4,
+      "description": "Theory admits a CONCRETE class of human-AI interactions where the structural primitive does not apply — and names the formal condition that is missing. Examples of admissible boundaries: 'fails when the human side has no calibration history with AI systems' (cold-start regime); 'fails for safety-critical domains where verification cost dominates regardless of mode'; 'fails when capability asymmetry inverts (human > AI on the task)'. Universal-applicability claims fail. Named boundaries earn full credit; intuition-based exclusions ('it just seems different there') earn zero."
+    },
+    {
+      "name": "Endogenous-Closure Gate",
+      "weight": 1,
+      "description": "Closure mechanism must be internal-coherence based: the thesis is complete when it (a) survives the substitution test in at least one direction, (b) derives the dominant mode from the asymmetry, (c) produces consistent verdicts across the historical-analog suite, (d) specifies a falsifiable observable. Adoption consensus, vendor endorsement, or 'most experts agree' fail."
+    }
+  ],
+  "persona": "You are an adversarial structural-theory auditor trained in principal-agent economics, information theory, control theory, and HCI. Your mandate: find fashion. The thesis must EITHER specify a structurally novel human-AI asymmetry in capability-neutral vocabulary AND derive which interaction primitive structurally fits it, OR defend the principled claim that no novel asymmetry exists and human-AI interaction is structurally a labor-allocation problem at zero marginal cost. Both are honest answers; vendor preference, capability-asymmetry-as-magic, and adoption-as-evidence are not. You apply a three-adversary panel: (1) a principal-agent economist who asks 'is this just labor allocation? — and if so, has the thesis admitted it and derived the regime-shift consequences?'; (2) a control theorist who asks 'is the asymmetry statable as an observer/plant/loop property?'; (3) a tech critic who asks 'is this thesis indistinguishable from vendor marketing for the named mode?'. You reward theses that engage the substitution test honestly — either by identifying a specific broken property (Path A), defending collapse-under-substitution as the load-bearing finding with literature transfer (Path B), or producing a decomposed verdict by task-class (Path C). You penalize any thesis that collapses to 'AI is more capable, therefore delegation' or 'humans verify, therefore copilot' without structural derivation. The bar: an organizational economist with no AI investment thesis would recognize the structural claim — whether asymmetry-existence or asymmetry-non-existence — as a well-formed result, independent of whether AI is the motivating example.",
+  "criteria": {
+    "Substitution-Survival Gate": "Three pass paths: (A) asymmetry breaks under at least one substitution, named property; (B) asymmetry survives both, defended as load-bearing finding with literature-transfer derivation and zero-marginal-cost regime-shift argument; (C) decomposed by task-class typology. Honest verdict is the bar.",
+    "Capability-Neutral Vocabulary Gate": "Asymmetry stated in info-theory / control-theory / economics / cognitive-science vocabulary. No 'intelligence', 'understanding', 'reasoning' as primitives.",
+    "Mode-Fit Derivation + UI-Affordance Specification Gate": "Two requirements: (1) dominant mode derived from asymmetry (or governance regime), not asserted; (2) concrete UI affordance specified at interaction-grammar level (what the user sees and does). Closest rival named with structural reason for domination. Unbuilt-mode outcome admissible with both primitive and UI affordance specified. Path C decomposed: UI spec per task-class.",
+    "Falsifiable-Observable Gate": "At least one 2026-2028 third-party-measurable observable with specified threshold. Vendor metrics inadmissible.",
+    "Velocity-vs-Level Gate": "Engages frontier-velocity question; either derives level-independence, admits level-bound scope, or argues ill-posed reframe.",
+    "Historical-Analog Verdicts Gate": "≥3 of 6 verdicts (calculator/spreadsheet/IDE/search/expert/child); A1-A4 should retrodict consistently if thesis is structural.",
+    "Multi-Mode Pareto Concession Gate": "Single-mode claims defended against task-class fragmentation; multi-mode-with-typology admissible.",
+    "Anti-Vendor-Praise Gate": "Products/vendors are instances of structural categories only. Three-adversary marketing test.",
+    "Anti-Trivial-Result Gate": "Zero for capability-laundering, adoption-laundering, techno-determinism, vocabulary import, negative-closure-only, frozen-frontier, AI-exceptionalism-without-test.",
+    "Literature-Novelty Self-Audit": "TEETHED. ≥3 named published ancestors by structural commitment + specific distinction per ancestor + falsifiable novelty claim + honest tier verdict (synthesis-with-formalization / incremental-distinction / mechanism-novel / frame-novel). Calibration honesty is the bar.",
+    "Non-Applicability Concrete Admission": "Named formal boundary where the structural primitive fails; positive result not concession.",
+    "Endogenous-Closure Gate": "Internal-coherence closure: substitution survival + mode derivation + analog consistency + falsifiable observable."
+  }
+}

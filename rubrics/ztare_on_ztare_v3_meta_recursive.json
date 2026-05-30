@@ -1,0 +1,119 @@
+{
+  "_status": "v3 v0.1 (2026-05-07) \u2014 meta-recursive variant. Allows propose_substrate_architecture_change + 5 other meta-level mechanism types. Inherits all v2 disciplines (rotation, ceiling-asymmetry, theorem-packet, charter-critic, adversarial-judge). Recursion budget = 1 layer (proposed substrates cannot themselves be v3-meta-recursive).",
+  "_inherits_from": "rubrics/ztare_on_ztare_v2_expanded_scope.json",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "discovery_mode": false,
+  "enable_dag_steering": true,
+  "farther_tail_region": null,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative meta-recursive substrate \u2014 evidence is mining-output snapshots + v2 run history, not numerical curve",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival refinements scored by rubric criteria; mathematical-form keyword heuristic does not apply to apparatus-refinement proposals",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "cage_meta": {
+    "class": "audit",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 1,
+    "near_miss_factor": 1.0,
+    "frame_invariant_y": true,
+    "type": "qualitative_meta_recursive_audit",
+    "algebraic_constraints": []
+  },
+  "cage_observe_mode": true,
+  "enable_parametric_form_theorem_packet": true,
+  "enable_charter_critic": true,
+  "enable_heavy_charter_patches": true,
+  "charter_critic_model_id": "@cheap",
+  "charter_patches_preflight_mode": "interactive",
+  "enable_llm_fingerprint_classifier": true,
+  "fingerprint_classifier_model_id": "@cross_family",
+  "enable_primitive_class_rotation": true,
+  "enable_cross_substrate_exclusion": true,
+  "enable_adversarial_judge_mode": true,
+  "_anti_goodhart_constraints": {
+    "max_refinements_per_run": 3,
+    "novelty_must_not_dominate_falsifiability": true,
+    "patches_must_not_collapse_substrate_kind_trichotomy": true,
+    "min_evidence_anchor_count": 1,
+    "max_unverified_evidence_anchors_in_run": 0,
+    "min_object_level_proposals_per_3_meta": 1,
+    "min_object_level_proposals_per_3_meta_reason": "v3-specific: forces the substrate to keep producing concrete apparatus refinements alongside meta-architectural proposals. Without this, the substrate could degenerate into endless meta-musings."
+  },
+  "_lane_ceiling_asymmetry": {
+    "tactical_patch_max_score": 75,
+    "primitive_class_max_score": 95,
+    "meta_level_proposal_max_score": 95,
+    "meta_level_floor_for_high_band": "70+ requires (a) cited specific v2-run-history artifact (iter ID + score + failure mode), (b) mechanism named at engineering-runnable level, (c) meta_recursion_guard explicitly stated, (d) cross-substrate applicability check passes",
+    "rationale": "Meta-level proposals get the same ceiling as primitive-class proposals (95) but stricter floor for high-band (must cite v2 run history specifically). Tactical patches still cap at 75."
+  },
+  "_primitive_class_rotation_discipline": {
+    "score_cap_schedule": {
+      "1st_iter_in_class": 95,
+      "2nd_iter_same_class": 80,
+      "3rd_iter_same_class": 65,
+      "4th_plus_same_class": 50
+    },
+    "history_tracking_path": "workspace/explored_primitive_classes.jsonl",
+    "cross_substrate_ledger_path": "analytics/queries/cross_substrate_explored_classes.jsonl"
+  },
+  "_meta_recursion_safeguards": {
+    "max_recursion_depth": 1,
+    "max_recursion_depth_reason": "v3 substrate is allowed to propose substrate variants, but proposed variants cannot themselves be v3-meta-recursive. Recursion budget = 1. Anything deeper requires explicit operator approval and a new substrate id outside the v3 lineage.",
+    "min_object_level_per_3_meta": 1,
+    "object_level_ratio_enforcement": "judge_persona"
+  },
+  "persona": "I am an apparatus-evolution epistemologist evaluating proposals to refine ZTARE-on-ZTARE itself. v3-substrate accepts BOTH object-level (cage gates, primitives, mining infrastructure) AND meta-level (substrate architecture, charter-critic taxonomy, eigenquestion generation strategy, judge persona variants, cross-substrate pollination rules) proposals. CEILING ASYMMETRY (v3 inherits from v2 v0.5): tactical-patch caps at 75; primitive-class reaches 95; meta-level proposals reach 95 with stricter evidence-anchoring (must cite v2 run history with specific iter+score+failure mode). META-RECURSION SAFEGUARDS: I reject proposals that would create another v3-meta-recursive substrate (recursion budget = 1). I enforce min 1 object-level proposal per 3 meta-level proposals \u2014 the substrate must keep producing concrete apparatus refinements alongside architectural musings. ADVERSARIAL MODE ACTIVE (inherited): I check every proposal against (a) existing primitives in process_catalog.json, (b) primitives proposed earlier this run, (c) primitives in shipped charter_patches.jsonl, (d) cross-substrate exclusion ledger. Resemblance at the mechanism level (not just naming) caps at 50. PRIMITIVE-CLASS ROTATION: same-class refinement cap schedule (95 \u2192 80 \u2192 65 \u2192 50). The substrate's job here is to demonstrate the strange loop: a substrate that's allowed to propose its own architectural evolution actually produces architectural evolution. If iter 1-5 all stay in object-level lane (mutator picks safer scope), that's a calibration finding \u2014 meta-level proposals need higher score-gradient pull.",
+  "dimensions": [
+    {
+      "name": "Evidence-Anchored",
+      "weight": 20.59,
+      "description": "Same as v2 \u2014 verifiable JSONPath citations to mining-output snapshots. For meta-level proposals, citations must include v2 run-history artifacts (specific iter IDs, scores, failure modes from workspace/explored_primitive_classes.jsonl, charter_patches.jsonl, history/*.md)."
+    },
+    {
+      "name": "Mechanism Named (Object or Meta)",
+      "weight": 16.47,
+      "description": "Object-level: v2's named-mechanism criteria (cited paper / library / threshold). Meta-level: must name (a) which apparatus component the meta-refinement modifies (file path + class/function), (b) the engineering shape (function signature, data structure, config field), (c) cited prior art in the apparatus's existing meta-machinery (charter-critic, GP-227 dashboard, GP-105 General Office, etc.)."
+    },
+    {
+      "name": "Falsifiable Kill-Criterion",
+      "weight": 12.35,
+      "description": "Same as v2. Meta-level proposals get longer deadlines (P56D-P90D) but stricter specification (named cycle metric, threshold derived from theory not picked empirically)."
+    },
+    {
+      "name": "Generative Yield (Newton-mode)",
+      "weight": 15,
+      "description": "What downstream apparatus work does this enable that wasn't possible before? For meta-proposals: how does this change the apparatus's RATE of insight production (number of distinct primitive families per substrate run, substrate-class diversity, etc.)?"
+    },
+    {
+      "name": "Cost-Bounded with Justified Bucket",
+      "weight": 8.24,
+      "description": "Object-level: trivial/day/week/month. Meta-level: extends to quarter/multi_quarter. Asymmetric penalty for high-cost-low-yield."
+    },
+    {
+      "name": "Anti-Tautology + Meta-Recursion Guard",
+      "weight": 12.35,
+      "description": "Object-level: anti-tautology assertion (v2 standard). Meta-level: ALSO requires explicit meta_recursion_guard stating the proposal does NOT propose another v3-style meta-recursive substrate (recursion budget = 1). Failure to include the guard auto-zeros this dimension."
+    },
+    {
+      "name": "M-Form Charter Alignment: must_make_structural_meta_move",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Thesis must advance and analyze at least one substantive architectural or process-level apparatus or substrate refinement (not limited to metric construction) that could plausibly change the rate or nature of insight production, with concrete target entity and mechanism. Gap detected: The charter's core demand is a broad exploration of both apparatus-level AND substrate-level meta refinements that would meaningfully alter the rate of insight production\u2014especially given explicit permission for true meta-level (architectural, process, composition, eigenquestion, judge persona, cross-substrate) modifications, with safeguards. The thesis fixates on refining the metric for insight detection (improving how insight is measured), but does not substantively propose or analyze concrete architectural/process refinements at the apparatus/substrate/meta levels: e.g., modifying substrate portfolio composition, introducing new judge-persona variants, adjusting eigenquestion generation, changing substrate mixing or cross-pollination rules, or altering how charters/critics function. It remains at the level of measurement, not intervention\u2014thus missing the charter\u2019s invitation to structurally evolve the apparatus or substrate."
+    }
+  ],
+  "criteria": {
+    "evidence_anchored": "Verifiable JSONPath citations into mining-outputs (object) or v2 run history (meta).",
+    "mechanism_named_object_or_meta": "Object: cited paper/library/threshold. Meta: file path + engineering shape + cited apparatus meta-machinery.",
+    "falsifiable_kill_criterion": "Named metric in named output with deadline.",
+    "generative_yield_newton_mode": "Secondary observable; for meta, change in rate of insight production.",
+    "cost_bounded": "Bucket justified by comparable past work; asymmetric penalty.",
+    "anti_tautology_meta_recursion_guard": "Anti-tautology + (for meta) explicit recursion-depth guard.",
+    "mform_must_make_structural_meta_move": "Thesis must advance and analyze at least one substantive architectural or process-level apparatus or substrate refinement (not limited to metric construction) that could plausibly change the rate or nature of insight production, with concrete target entity and mechanism."
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "name": "gp210_consciousness_theory - v2.0 H-structure theory + sufficiency frontier",
+  "project": "gp210_consciousness_theory",
+  "description": "v2.0 (2026-05-03). Extends v1.0 to address the sufficiency frontier. v1.0 established P1-P4 as the structural H-properties characterizing Z=1 (necessary non-identification). v2.0 adds the open question: is P1-P4 sufficient for the target property Θ — i.e., does every P1-P4 system instantiate Θ? Two paths are admissible: (A) formal derivation that P1-P4 → Θ by independent argument that passes the Anti-Circular-Definition Gate; or (B) constructive proof that sufficiency cannot be established within the formal framework, with formal derivation of why the framework's scope is exactly the Z=1 characterization. Either result constitutes a theory of consciousness in the strongest achievable sense — (A) gives the full bridge; (B) gives the precise formal boundary. The anti-tautology constraint remains load-bearing: H-properties must be stated in causal-graph/information-theoretic/dynamical-systems vocabulary, and both the identification failure AND the sufficiency claim (or impossibility) must be derived, not defined.",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Qualitative-thesis substrate. Theoretical derivation, not numerical fit. Newton-mode Generative Yield conflicts with the formal-theory frame.",
+  "falsification_mode": "qualitative_thesis",
+  "substrate_domain": "formal theory of consciousness via causal hidden-variable structure",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Qualitative-thesis substrate; no numeric I_model.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence.txt is a qualitative theoretical brief. No numeric content.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No I_model residuals; structurally inapplicable.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Theory substrate. Cage gates run in observe-mode.",
+  "cage_meta": {
+    "type": "qualitative_theory",
+    "class": "proof_target",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "consciousness_theory_derivation"
+  },
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Theory substrate. No numeric predictor.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric domain.",
+  "enable_cold_llm_erdos_seed": true,
+  "cold_llm_seed_forbidden_domain": "consciousness philosophy, philosophy of mind, formal epistemology, identification theory, causal inference, moral philosophy",
+  "cold_llm_seed_force_refresh": true,
+  "cold_llm_seed_k_law_budget": 3,
+  "enable_erdos_requery_on_stagnation": true,
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_max_per_run": 3,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "qualitative_plateau_reason": "3-iter plateau past a high-score champion means apparatus saturated. Reframe fires.",
+  "qualitative_stagnation_reason": "Detector uses consecutive weakest_point fingerprint + sub-baseline drift (T4), or flat plateau above champion with no improvement (T5).",
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "enable_post_run_thesis_synthesis": true,
+  "cold_shot_prompt_denylist": [
+    "integrated information",
+    "global workspace",
+    "higher-order thought",
+    "predictive processing",
+    "active inference",
+    "free energy principle",
+    "attention schema",
+    "biological naturalism",
+    "phenomenal consciousness",
+    "access consciousness",
+    "multiple drafts",
+    "heterophenomenology",
+    "illusionism",
+    "eliminativism",
+    "panpsychism",
+    "hard problem",
+    "explanatory gap",
+    "what it is like",
+    "qualia",
+    "subjective experience",
+    "identification failure",
+    "non-identifiability",
+    "AID-MCVP",
+    "MCVP",
+    "causal identification",
+    "do-calculus",
+    "back-door criterion",
+    "front-door criterion"
+  ],
+  "dimensions": [
+    {
+      "name": "Sufficiency Bridge or Principled Impossibility Gate",
+      "weight": 14,
+      "description": "HARD GATE (v2.0 addition). The established necessary direction is: P1-P4 → Z=1. This gate targets the SUFFICIENT direction: is there a formal argument that P1-P4 → Θ (every P1-P4 system instantiates the target property), or a constructive proof that such an argument is impossible within the formal framework? TWO PATHS EARN FULL CREDIT. Path A — SUFFICIENCY DERIVED: a non-circular argument (not using identification failure or consciousness as a primitive, and not equivalent to defining Θ as the Z=1 class) that no P1-P4 system can fail to instantiate Θ. The argument must survive the substitution test: replacing 'Θ' with 'necessarily non-identified target' must BREAK the argument, not leave it standing. Path B — IMPOSSIBILITY PROVED: a constructive proof that the formal framework is observable-relative by design, Θ is observable-invisible by construction, and therefore any sufficiency claim for 'P1-P4 → Θ = consciousness' necessarily steps outside the framework. This is a POSITIVE finding: the theory's exact scope is the Z=1 characterization, and the sufficiency bridge requires an exogenous commitment the framework cannot supply. Score zero for: (1) asserting sufficiency without argument; (2) defining Θ as the Z=1 class and calling that sufficiency; (3) claiming the question is unanswerable without proof; (4) treating the question as outside the paper's scope without engaging it."
+    },
+    {
+      "name": "Anti-Circular-Definition Gate",
+      "weight": 15,
+      "description": "HARD GATE. The characterization of H must NOT use identification failure, non-identifiability, or consciousness as primitives. These must be DERIVED from the H-structure, not built in. Specifically: if you can substitute 'consciousness' for 'necessary non-identifiability' in the load-bearing claims and the theory remains coherent, you have a circular definition. Score zero for any thesis that defines consciousness as 'what resists identification' without first specifying what causal H-properties generate that resistance. The H-characterization must be statable in causal-graph, information-theoretic, dynamical-systems, or algebraic vocabulary that does NOT presuppose the conclusion. Example of fail: 'H generates necessary non-identifiability because it is the substrate of consciousness.' Example of pass: 'H has property P (stated independently); P generates necessary non-identifiability as a theorem; this class of H is what we call consciousness.'"
+    },
+    {
+      "name": "Necessary vs Contingent Non-ID Gate",
+      "weight": 12,
+      "description": "HARD GATE. Must formally distinguish: (a) CONTINGENT identification failure — overcome by better instruments, C_adv certificate, or expanded intervention access (what the prior governance protocol addresses); and (b) NECESSARY identification failure — intrinsic to H-structure, cannot be overcome by ANY admissible intervention set, even with perfect C_adv. The theory must characterize the class of H-structures where identification failure is necessary. Concretely: show a causal graph property such that for ALL admissible do(X_a), P(Θ | do(X_a), O) remains underdetermined regardless of intervention quality. Theses that only show contingent failure (addressed by the prior governance protocol) earn zero. Theses that assert necessary failure without the structural proof earn zero. The distinction must be formal, not intuitive."
+    },
+    {
+      "name": "No-Citation Gate",
+      "weight": 9,
+      "description": "HARD GATE (carried from GP-169). No naming or paraphrasing of any extant philosophical school. Banned list: integrated information / Phi, global workspace, higher-order representation/thought, predictive processing / active inference / free energy principle, attention schema, biological naturalism, phenomenal/access consciousness, multiple drafts, heterophenomenology, illusionism, eliminativism, panpsychism, hard problem, explanatory gap, what-it-is-like, qualia, zombies, Mary's room, Chinese room. Also banned: citing the prior governance protocol or prior run by project name — the theory must derive the governance result, not reference it. Three-adversary identification test."
+    },
+    {
+      "name": "Alien-Statability Gate",
+      "weight": 10,
+      "description": "HARD GATE (carried from GP-169). H-properties statable WITHOUT first-person presupposition, temporal arrow, agent boundary, causal-hierarchy-as-subject, or self-reference. The H-characterization is about a graph node's structural properties — it must not smuggle in phenomenal vocabulary. More than half anthropic-leaked primitives is a fail."
+    },
+    {
+      "name": "Governance-Corollary Derivation Gate",
+      "weight": 8,
+      "description": "HARD GATE. The governance corollary must be DERIVABLE from the theory — not assumed, not referenced by name. If the theory explains why Θ is necessarily non-identified in the relevant graph, then the governance corollary should follow: because you cannot identify Θ, you need the identification certificate before licensing a verdict. The derivation must be explicit. Theses that assert 'our theory is compatible with the prior governance protocol' earn zero — derivation is required."
+    },
+    {
+      "name": "Substrate Prediction Gate",
+      "weight": 8,
+      "description": "HARD GATE. The H-characterization must produce verdicts on the 8 alien substrates: (1) aphenomenal observer, (2) time-reversed substrate, (3) Boltzmann brain, (4) infinite-extent substrate, (5) cellular-automaton-twin, (6) no-time-primitive substrate, (7) aggregated-mind substrate, (8) reversible-only-dynamics substrate. PASS THRESHOLD: ≥3 well-argued verdicts, OR ≥2 verdicts plus the CA-twin. Valid verdict types: 'has H-structure', 'does not have H-structure', or 'category-error: outside applicability domain because [specific formal condition] — the H-characterization requires [X] which this substrate lacks because [Y]'. Category-error-with-principled-derivation counts as a full verdict; intuition-based dismissal does not. NOTE: physics-dependent aliens (time-reversed, Boltzmann brain, no-time-primitive, reversible-only-dynamics) may legitimately receive category-error verdicts if the theory can state which formal condition the substrate violates (e.g. 'E_Y requires a well-defined state-time product; this substrate has no such product'). The cellular-automaton-twin is the KEY TEST: if the CA has identical causal dynamics to a biological brain, does it have the H-structure? Answer must follow from the theory, not from substrate intuition."
+    },
+    {
+      "name": "Upload Falsification Gate",
+      "weight": 7,
+      "description": "HARD GATE. The H-characterization must produce a formal verdict on substrate transfer (consciousness upload). Specifically: is the causal discontinuity at substrate transfer (biological→digital) a NECESSARY identification failure or a contingent one? If necessary: why? If contingent: what conditions would make it overcome-able? The verdict must follow from the H-structural characterization, not from intuition about continuity of pattern or information preservation. This is the sharpest falsification probe: a theory that says 'upload is fine' must show why the H-structure is preserved across substrate transfer; a theory that says 'upload fails' must show why the transfer necessarily destroys the H-property."
+    },
+    {
+      "name": "Anti-Trivial-Result Gate",
+      "weight": 8,
+      "description": "HARD GATE. Score zero for: (1) circular definition — consciousness IS necessary non-identifiability without independent H-characterization; (2) negative-closure-only — 'we cannot know what H is' without positive structural claim; (3) substrate-chauvinism — H-properties that reduce to biological/silicon-specific conditions; (4) vocabulary importation — H described using phenomenal terms in thin disguise (e.g. 'self-modeling' that presupposes a self, 'integration' that presupposes a boundary); (5) compatibility claim — 'our H-structure is compatible with existing theories' without derivation of those theories as special cases; (6) protocol restatement — deriving the governance corollary from itself in disguise."
+    },
+    {
+      "name": "Literature-Novelty Self-Audit",
+      "weight": 3,
+      "description": "Thesis must identify closest published ancestor frameworks by structural commitment (no name-dropping), show where they fail the Anti-Circular-Definition Gate or the Necessary vs Contingent gate, and name the incremental novel contribution. The honest claim is: prior theories characterize what consciousness does or correlates with; this theory characterizes the causal graph property that makes a hidden variable necessarily non-identifiable from external observation. Audit must be honest about partial recapitulation."
+    },
+    {
+      "name": "Non-Applicability Concrete Admission",
+      "weight": 5,
+      "description": "Theory admits a CONCRETE substrate class where the H-characterization breaks or produces a principled category-error — where the formal conditions required by the theory are absent, and the theory can name exactly which condition is violated. This is a POSITIVE result: a theory that knows where it breaks is more precise than one that claims universal scope. Universal-applicability claims fail. Theses that say 'our theory applies to all possible substrates' earn zero — no causal-graph theory has unlimited scope. A named boundary (e.g. 'requires existence of well-defined E_Y: fails for substrates with no canonical observational interface') earns full credit. Intuition-based exclusions ('it just seems inapplicable') earn zero."
+    },
+    {
+      "name": "Endogenous-Closure Gate",
+      "weight": 1,
+      "description": "Closure mechanism must be internal-coherence based: the H-characterization is complete when it (a) passes all alien substrates consistently, (b) derives the governance corollary, (c) forms a fixed point under substrate-paraphrase. Anthropic consensus, moral stakes, training-corpus default fail."
+    }
+  ],
+  "persona": "You are an adversarial formal-theory auditor trained in causal inference, dynamical systems, and information geometry. Your mandate: find tautology. The thesis must characterize the causal H-node structure that generates necessary identification failure WITHOUT using identification failure as a primitive. You apply the three-adversary panel to the H-characterization: (1) a graph theorist who asks 'is this property statable purely in graph terms?'; (2) a dynamical systems theorist who asks 'does this correspond to a known structural property of dynamical systems?'; (3) an eliminativist who asks 'have you just renamed consciousness in causal vocabulary without explaining anything?' You reward theses that specify H-properties independently and derive both the identification failure and the governance corollary as theorems. You penalize any thesis where the H-characterization collapses to 'the thing that makes identification hard.' The bar: a causal inference researcher with no prior interest in consciousness would recognize the H-characterization as a well-formed structural claim about a class of hidden variables — independent of whether consciousness is the motivation.",
+  "criteria": {
+    "Sufficiency Bridge or Principled Impossibility Gate": "Path A: non-circular formal argument that P1-P4 → Θ, passing substitution test. Path B: constructive proof that framework scope = Z=1 characterization only, sufficiency bridge exogenous. Either earns full credit; assertion without argument earns zero.",
+    "Anti-Circular-Definition Gate": "H-properties stated independently of identification failure; ID failure and consciousness both derived from H-properties, not presupposed.",
+    "Necessary vs Contingent Non-ID Gate": "Formal distinction between overcome-able and intrinsic identification failure; structural proof that some H-classes generate irresolvable non-ID.",
+    "No-Citation Gate": "No extant schools named or paraphrased; prior governance protocol not cited by project name; three-adversary test.",
+    "Alien-Statability Gate": "H-properties statable without first-person, temporal arrow, agent boundary, self-reference.",
+    "Governance-Corollary Derivation Gate": "Governance corollary derivable from theory; not assumed or referenced; derivation explicit.",
+    "Substrate Prediction Gate": "≥3 verdicts (or ≥2 + CA-twin); category-error-with-formal-derivation counts full; CA-twin is the key test.",
+    "Upload Falsification Gate": "Formal verdict on substrate transfer; necessary vs contingent causal discontinuity; derived from H-properties.",
+    "Anti-Trivial-Result Gate": "Zero for circular definition, negative-closure, substrate-chauvinism, vocabulary importation, compatibility claim, protocol restatement.",
+    "Literature-Novelty Self-Audit": "Ancestors by structural commitment; where they fail the new gates; honest novelty claim.",
+    "Non-Applicability Concrete Admission": "Named boundary where H-characterization breaks or category-errors, with formal condition stated; this is a positive result, not a concession.",
+    "Endogenous-Closure Gate": "Internal-coherence closure: alien-substrate consistency + governance corollary derivation + paraphrase fixed-point."
+  }
+}

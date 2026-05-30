@@ -1,0 +1,43 @@
+[Unit]
+Description=ZTARE GP-241 out-of-loop JUDGE worker (services daemon-signed judge_requests as the dedicated ztare_judge identity)
+After=network.target ztare-membrane-daemon.service
+
+[Service]
+Type=simple
+# The dedicated JUDGE identity — NOT the agent (ztare), NOT the
+# daemon signer (ztare_verify). Holds the judge ed25519 key
+# (/srv/ztare_judge_keys, 0400 ztare_judge); the agent cannot read
+# it, so a mutator cannot fabricate a verdict. This is the OS-level
+# third leg of mutator → JUDGE → monitor.
+User=ztare_judge
+Group=ztare_judge
+Environment=ZTARE_OFFICIAL_STORE=/srv/ztare_official_store
+Environment=PYTHONPATH=/srv/ztare_gate
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONDONTWRITEBYTECODE=1
+# The judge is a DIRECT OpenAI API call (NOT codex). The API key is
+# supplied from an AGENT-UNREADABLE EnvironmentFile (root:ztare_judge
+# 0640). The mutator cannot read it — and even if it could, it still
+# lacks the ed25519 judge key, so it cannot sign a verdict. Absent ⇒
+# _llm raises ⇒ no verdict ⇒ substantive ticks fail-closed (safe),
+# never falsely trusted. gpt-4.1 is fully API-supported (the codex
+# ChatGPT-subscription model limit does not apply to the API).
+EnvironmentFile=-/etc/ztare/judge.env
+Environment=ZTARE_JUDGE_MODEL=gpt-4.1
+# Code runs from the read-only gate tree (OUTSIDE the agent-owned
+# synced repo): ztare_judge can read it, the agent cannot write it ⇒
+# the worker code itself is tamper-prevented.
+WorkingDirectory=/srv/ztare_gate
+ExecStart=/srv/ztare_gate_venv/bin/python3 -B -m src.ztare.validator.judge_worker
+Restart=on-failure
+RestartSec=5
+# The worker may write ONLY the judge_queue subtree (its verdicts +
+# its own worker_state). OS ownership still prevents it writing the
+# requests dir (ztare_verify-owned) — defence in depth.
+ReadWritePaths=/srv/ztare_official_store/judge_queue
+ProtectSystem=strict
+ProtectHome=read-only
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

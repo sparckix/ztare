@@ -1,0 +1,634 @@
+{
+  "project_slug": "gp072_sandbox_14",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": null,
+  "pending_actions": [
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A1",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:47.266415Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:47.299660Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A2",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:47.266422Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:47.304107Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A3",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:47.266424Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:47.308737Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A4",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:47.266426Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:47.313533Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A5",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:47.266428Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:47.318227Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A1",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:57.098011Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:57.120779Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A2",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:57.098018Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:57.125700Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A3",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:57.098020Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:57.130452Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A4",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:57.098022Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:57.135414Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A5",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:53:57.098024Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:53:57.140283Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A1",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:54:07.312404Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:54:07.336389Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A2",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:54:07.312410Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:54:07.341550Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A3",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:54:07.312413Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:54:07.346871Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A4",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:54:07.312415Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:54:07.352076Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A5",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-07T12:54:07.312416Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-07T12:54:07.357228Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A1",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-10T21:17:59.653905Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-10T21:17:59.711287Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A2",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-10T21:17:59.653910Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-10T21:17:59.715938Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A3",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-10T21:17:59.653912Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-10T21:17:59.720172Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A4",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-10T21:17:59.653914Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-10T21:17:59.724573Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": "A5",
+        "axiom_statement": "",
+        "external_consistency_checks_present": false,
+        "ts": "2026-05-10T21:17:59.653915Z",
+        "project_slug": "gp072_sandbox_14"
+      },
+      "ts": "2026-05-10T21:17:59.728881Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:47.299677Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:47.299891Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:47.304126Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:47.304453Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:47.308754Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:47.309088Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:47.313550Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:47.313910Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:47.318244Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:47.318611Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:57.120807Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:57.121349Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:57.125718Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:57.126169Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:57.130468Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:57.130910Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:57.135431Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:57.135892Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:57.140301Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:57.140788Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:54:07.336416Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:54:07.337084Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:54:07.341569Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:54:07.342159Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:54:07.346892Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:54:07.347534Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:54:07.352095Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:54:07.352721Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:54:07.357245Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:54:07.357892Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-10T21:17:59.711300Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-10T21:17:59.711955Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-10T21:17:59.715947Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-10T21:17:59.716427Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-10T21:17:59.720179Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-10T21:17:59.720625Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-10T21:17:59.724581Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-10T21:17:59.725092Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-10T21:17:59.728887Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-10T21:17:59.729387Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.729387Z"
+}

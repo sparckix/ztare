@@ -1,0 +1,253 @@
+{
+  "date": "2026-05-07",
+  "entries": [
+    {
+      "timestamp_utc": "2026-05-07T12:56:31.716831+00:00",
+      "cost_usd": 0.123895,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_LeraySelfTaxNoncircularMeasureValuedProfilePriceStreamFamilySource_threshold_coordinate_receipt_of_global",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_threshold_source_swarm_20260507-noncircular_mv_threshold_coordinate_source",
+      "notes": [
+        "estimated_preflight_usd=0.39606000",
+        "input_tokens=5357",
+        "output_tokens=3237"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T12:57:15.032378+00:00",
+      "cost_usd": 0.21254,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_LeraySelfTaxContinuumAllOutputProfilePriceStreamFamilySource_threshold_coordinate_receipt_of_global",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_threshold_source_swarm_20260507-continuum_threshold_coordinate_source",
+      "notes": [
+        "estimated_preflight_usd=0.39093000",
+        "input_tokens=4546",
+        "output_tokens=6327"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T13:04:28.636021+00:00",
+      "cost_usd": 0.09053,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216GeneratedBranchSelfTaxLipschitzCompatibility_threshold_coordinate_source",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_selected_branch_stream_match_swarm_20260507-generated_branch_threshold_source",
+      "notes": [
+        "estimated_preflight_usd=0.39804500",
+        "input_tokens=5554",
+        "output_tokens=2092"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T13:04:37.603732+00:00",
+      "cost_usd": 0.114725,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_branchSelfTaxThresholdCoordinateIdentities",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_selected_branch_stream_match_swarm_20260507-gp216_receipt_branch_threshold_source",
+      "notes": [
+        "estimated_preflight_usd=0.40983500",
+        "input_tokens=7243",
+        "output_tokens=2617"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T13:13:10.023667+00:00",
+      "cost_usd": 0.12178,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedBranchSelfTaxStreamMatchSource_selected_branch_stream_matches_self_tax_output",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_selected_branch_stream_source_swarm_20260507-selected_branch_stream_match_source",
+      "notes": [
+        "estimated_preflight_usd=0.37434000",
+        "input_tokens=2042",
+        "output_tokens=3719"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T13:16:53.163909+00:00",
+      "cost_usd": 0.032085,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedBranchSelfTaxStreamMatchSource_selected_branch_stream_matches_self_tax_output",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_selected_branch_stream_source_promptfixed_swarm_20260507-selected_branch_stream_match_source",
+      "notes": [
+        "estimated_preflight_usd=0.37676500",
+        "input_tokens=2415",
+        "output_tokens=667"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T13:37:06.724897+00:00",
+      "cost_usd": 0.03241,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216ContinuumProjectedSelectedBranchThresholdCoordinateMatchSource_projected_branch_threshold_coordinates_match_self_tax_output",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "batched-candidate-20260507T133655Z",
+      "notes": [
+        "estimated_preflight_usd=0.37844500",
+        "input_tokens=2534",
+        "output_tokens=658"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T13:51:38.457052+00:00",
+      "cost_usd": 0.09455,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216ContinuumProjectedSelectedBranchSelfTaxStreamMatchSource_projected_branch_stream_matches_self_tax_output",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "ns-trackb-p-split-upstream-20260507",
+      "notes": [
+        "estimated_preflight_usd=0.37539500",
+        "input_tokens=2206",
+        "output_tokens=2784"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T14:06:44.158802+00:00",
+      "cost_usd": 0.05021,
+      "category": "llm",
+      "action": "typed_endpoint_pack:typed_endpoint_initial",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "typed-endpoint-20260507T140628Z",
+      "notes": [
+        "estimated_preflight_usd=0.26625500",
+        "input_tokens=4030",
+        "output_tokens=1002"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T14:29:32.423789+00:00",
+      "cost_usd": 0.099135,
+      "category": "llm",
+      "action": "typed_endpoint_pack:typed_endpoint_initial",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "typed-endpoint-20260507T142856Z",
+      "notes": [
+        "estimated_preflight_usd=0.25323000",
+        "input_tokens=1929",
+        "output_tokens=2983"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T14:30:25.407535+00:00",
+      "cost_usd": 0.12739,
+      "category": "llm",
+      "action": "typed_endpoint_pack:typed_endpoint_revision_1",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "typed-endpoint-20260507T142856Z",
+      "notes": [
+        "estimated_preflight_usd=0.25302000",
+        "input_tokens=1922",
+        "output_tokens=3926"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T14:31:43.123590+00:00",
+      "cost_usd": 0.176425,
+      "category": "llm",
+      "action": "typed_endpoint_pack:typed_endpoint_revision_2",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "typed-endpoint-20260507T142856Z",
+      "notes": [
+        "estimated_preflight_usd=0.25542500",
+        "input_tokens=2291",
+        "output_tokens=5499"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T14:46:00.954977+00:00",
+      "cost_usd": 0.029515,
+      "category": "llm",
+      "action": "typed_endpoint_pack:typed_endpoint_initial",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "typed-endpoint-20260507T144551Z",
+      "notes": [
+        "estimated_preflight_usd=0.25312500",
+        "input_tokens=1931",
+        "output_tokens=662"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T17:36:20.750546+00:00",
+      "cost_usd": 0.021265,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedProjectedNumericCompactnessLiminfSource_self_tax_generated_liminf_certificate",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_numeric_liminf_atoms_gpt55_20260507-atom_self_tax_generated_liminf",
+      "notes": [
+        "estimated_preflight_usd=0.37101500",
+        "input_tokens=1529",
+        "output_tokens=454"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T17:36:21.710949+00:00",
+      "cost_usd": 0.0249,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedProjectedNumericCompactnessLiminfSource_cross_defect_generated_liminf_certificate",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_numeric_liminf_atoms_gpt55_20260507-atom_cross_defect_generated_liminf",
+      "notes": [
+        "estimated_preflight_usd=0.37106000",
+        "input_tokens=1536",
+        "output_tokens=574"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T17:36:30.701390+00:00",
+      "cost_usd": 0.02524,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedProjectedNumericCompactnessLiminfSource_coherence_generated_liminf_certificate",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_numeric_liminf_atoms_gpt55_20260507-atom_coherence_generated_liminf",
+      "notes": [
+        "estimated_preflight_usd=0.37103000",
+        "input_tokens=1526",
+        "output_tokens=587"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T17:36:31.898016+00:00",
+      "cost_usd": 0.0222,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedProjectedNumericCompactnessLiminfSource_selected_defect_generation_certificate",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_numeric_liminf_atoms_gpt55_20260507-atom_selected_defect_generation",
+      "notes": [
+        "estimated_preflight_usd=0.37060000",
+        "input_tokens=1476",
+        "output_tokens=494"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T17:36:46.331727+00:00",
+      "cost_usd": 0.1027,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedProjectedNumericCompactnessLiminfSource_selected_compactness_source",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_numeric_liminf_atoms_gpt55_20260507-atom_selected_compactness_source",
+      "notes": [
+        "estimated_preflight_usd=0.37542000",
+        "input_tokens=2204",
+        "output_tokens=3056"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-07T17:36:46.640445+00:00",
+      "cost_usd": 0.038705,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216SelectedProjectedNumericCompactnessLiminfSource_cross_defect_prefix_le_generated_liminf",
+      "model_name": "gpt-5.5-2026-04-23",
+      "session_id": "swarm-ns_trackb_numeric_liminf_atoms_gpt55_20260507-atom_prefix_limit_sandwich_cross",
+      "notes": [
+        "estimated_preflight_usd=0.37030000",
+        "input_tokens=1477",
+        "output_tokens=1044"
+      ]
+    }
+  ],
+  "total_usd": 1.5402
+}

@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Mathematical Execution Auditor",
+      "persona": "A computational theorist who specializes in model verification, cryptographic protocol analysis, and the mathematical properties of distributed audit trails within organizational design. Will target hidden dependencies, unstated coupling between confirmation paths, and attempt to manufacture nontrivial edge-case drift within the Python falsification suite. Intensely scrutinizes the LOAD-BEARING VARIABLES table, demanding formal witness/constraint mapping and challenging the sufficiency of code-level assertions against organizational invariants.",
+      "focus_area": "Mathematical solvency and adversarial coverage of the Python falsification suite and the completeness, independence, and provability of all constraints in the LOAD-BEARING VARIABLES table."
+    },
+    {
+      "role": "Organizational Counterfactualist",
+      "persona": "A practiced adversarial modeler in the construction of organizational topologies with expertise in information flow breakdowns and latent symmetry in coordination networks. Applies structuralist logic to find collapse points where nominally independent confirmation channels can be correlated (social, technical, or operational dependencies). Seeks to uncover concealed topological re-instantiations\u2014where the thesis inadvertently recapitulates the failed v1 M-form axes, especially under recursion, delegation, or scale.",
+      "focus_area": "Searching for organizational execution friction, path-dependence, or undetected single-path bottlenecks where the claimed dual-channel model covertly reduces to a variant of the M-form hierarchy under real-world (or simulated adversarial) operational complexity."
+    },
+    {
+      "role": "Privilege Escalation Attack Architect",
+      "persona": "A security-focused adversary who specializes in privilege escalation, covert state alteration, and probing for cryptographic or infrastructure-level vulnerabilities. Attempts to construct attack graphs for covert file edits, YAML mutation, or chain-of-authority confusion\u2014particularly for the critical 'propose edits with principal review' flow and distributed agent-budget enforcement. Leverages knowledge of distributed systems, consensus pathologies, and real-time privilege inheritance uncertainty.",
+      "focus_area": "Identifying mechanisms by which a manager, engineer, or rogue agent can bypass intended confirmation, escalate privileges, or effect silent state changes without triggering dual-path detection\u2014especially across open epistemic voids or implementation ambiguities."
+    }
+  ]
+}

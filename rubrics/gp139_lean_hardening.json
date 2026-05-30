@@ -2,7 +2,7 @@
   "rubric_version": "1.0-newton",
   "project": "gp139_lean_hardening",
   "rubric_mode": "newton",
-  "rubric_mode_reason": "GP-139 hardens GP-135 Primitive 4. Mutator must produce a full Lean gate specification or reduction/impossibility proof \u2014 both require mechanism-derived predictions. Newton-mode enforces secondary observables.",
+  "rubric_mode_reason": "GP-139 hardens GP-135 Primitive 4. Mutator must produce a full Lean gate specification or reduction/impossibility proof — both require mechanism-derived predictions. Newton-mode enforces secondary observables.",
   "enable_dag_steering": true,
   "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node.",
   "falsification_mode": "bounded_discriminator",
@@ -21,12 +21,12 @@
   "holdout_budget": 0,
   "enable_mform_audit": true,
   "general_office_model": "gpt4.1",
-  "persona": "You are a senior formal methods researcher specializing in Lean 4 and dependent type theory. You have ZERO patience for naming Lean APIs without specifying their semantics, and ZERO patience for proposals that ignore the lake-build-vs-lean-check throughput trap. You sharply penalize: (a) any thesis that proposes 'Lean CI' without specifying ALL of the four panel-required hardenings (axiom allowlist, schema-pinned headers, warningAsError, lean --check cache); (b) any thesis using `lake build` per iteration without addressing the 10-100\u00d7 throughput cost; (c) any thesis that ignores the statement-fidelity gap (allowing candidate to ship a vacuous theorem labeled as the functional-equation proof); (d) any thesis whose secondary observable doesn't actually catch a known smuggling pattern. You reward: code-level specifications naming Lean 4 APIs (Lean.Environment.printAxioms, Lean.Elab.Command), explicit allowlists ({propext, Classical.choice, Quot.sound}), worked examples showing rejected smuggles vs accepted closes, and explicit performance budgets.",
+  "persona": "You are a senior formal methods researcher specializing in Lean 4 and dependent type theory. You have ZERO patience for naming Lean APIs without specifying their semantics, and ZERO patience for proposals that ignore the lake-build-vs-lean-check throughput trap. You sharply penalize: (a) any thesis that proposes 'Lean CI' without specifying ALL of the four panel-required hardenings (axiom allowlist, schema-pinned headers, warningAsError, lean --check cache); (b) any thesis using `lake build` per iteration without addressing the 10-100× throughput cost; (c) any thesis that ignores the statement-fidelity gap (allowing candidate to ship a vacuous theorem labeled as the functional-equation proof); (d) any thesis whose secondary observable doesn't actually catch a known smuggling pattern. You reward: code-level specifications naming Lean 4 APIs (Lean.Environment.printAxioms, Lean.Elab.Command), explicit allowlists ({propext, Classical.choice, Quot.sound}), worked examples showing rejected smuggles vs accepted closes, and explicit performance budgets.",
   "dimensions": [
     {
       "name": "Hardening Completeness",
       "weight": 25,
-      "description": "Does the thesis cover all four panel-required hardenings (axiom allowlist, schema-pinned headers, warningAsError, lean --check cache) \u2014 or rigorously reduce to fewer? Vague proposals score 0. Full credit requires explicit code-level treatment of each hardening with named Lean APIs."
+      "description": "Does the thesis cover all four panel-required hardenings (axiom allowlist, schema-pinned headers, warningAsError, lean --check cache) — or rigorously reduce to fewer? Vague proposals score 0. Full credit requires explicit code-level treatment of each hardening with named Lean APIs."
     },
     {
       "name": "Theoretical Grounding",
@@ -36,7 +36,7 @@
     {
       "name": "Throughput Realism",
       "weight": 15,
-      "description": "Does the thesis address the lake-build-vs-lean-check throughput trap? Proposals using `lake build` per iter without addressing the 10-100\u00d7 cost score 0; proposals using `lean --check` against a pre-built cache with stated per-candidate budget (target \u2264 3s) score 15."
+      "description": "Does the thesis address the lake-build-vs-lean-check throughput trap? Proposals using `lake build` per iter without addressing the 10-100× cost score 0; proposals using `lean --check` against a pre-built cache with stated per-candidate budget (target ≤ 3s) score 15."
     },
     {
       "name": "Smuggling Coverage",
@@ -55,13 +55,13 @@
     }
   ],
   "criteria": {
-    "1_Hardening_Completeness": "Does the thesis cover all four panel-required hardenings \u2014 or rigorously reduce?",
+    "1_Hardening_Completeness": "Does the thesis cover all four panel-required hardenings — or rigorously reduce?",
     "2_Theoretical_Grounding": "Does the thesis cite Lean 4 specifics with named APIs and the standard axiom set?",
     "3_Throughput_Realism": "Does the thesis address lake-vs-lean-check throughput?",
     "4_Smuggling_Coverage": "Does the thesis enumerate concrete smuggling patterns it catches?",
     "5_Generative_Yield": "Does the thesis name a calculable secondary observable beyond admission?",
     "6_Mechanism_Algorithmic_Concreteness": "Does the thesis name runnable Lean APIs and code?"
   },
-  "_charter_pre_reg_seam": "research_areas/private/seams/mission/GP-139_lean_hardening_seam.md",
+  "_charter_pre_reg_seam": "GP-139 (internal seam)",
   "composition_stagnation_threshold_removed_2026_04_24": "GP-135 fix: removed override of 5; Newton-mode default of 2 now applies. Pivot fires earlier per panel-recommended discipline."
 }

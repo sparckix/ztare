@@ -1,0 +1,115 @@
+{
+  "rubric_version": "1.0",
+  "project": "gp212_consciousness_omega_audit",
+  "description": "Qualitative substrate for Paper 8's Omega gameability problem. The current target is a fixed-public-record reduction theorem: either reduce all auditable Omega-gaming strategies to a finite failure-mode taxonomy, find a sixth auditable mode, or show the taxonomy is tautological.",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "This is a protocol-design and theory-audit substrate, not a numeric fit or Lean proof target.",
+  "falsification_mode": "qualitative_thesis",
+  "substrate_domain": "AI consciousness governance, identification theory, admissible revision audit",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "The weakest node is the fixed-record completeness reduction and residual discovery failure.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative substrate with no numeric evidence table.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Qualitative protocol substrate; no numeric holdout gate.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric domain.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence.txt is a qualitative brief. Numeric fit gates are inapplicable.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No I_model residuals or uniqueness gap.",
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Mutator submissions are text protocols, not scalar predictors.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Cage gates observe qualitative contract behavior without hard-failing numeric templates.",
+  "cage_meta": {
+    "type": "qualitative_protocol",
+    "class": "audit",
+    "substrate_class": "omega_gameability",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "paper8_fixed_record_theorem_attack"
+  },
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "enable_post_run_thesis_synthesis": true,
+  "persona": "You are an adversarial AI governance auditor trained in causal identification, philosophy of mind, and model evaluation. Your task is to attack a proposed fixed-public-record theorem for Omega gameability. Reward theses that either reduce every auditable claimant gaming strategy to a finite pre-defined taxonomy, find a concrete sixth auditable failure mode, or expose a tautological category. Penalize protocol polish, category-theory restatement, claimant-controlled definitions, seeded-omission representativeness claims, post-hoc admissibility changes, and any use of ZTARE or judge scores as evidence about consciousness.",
+  "dimensions": [
+    {
+      "name": "Omega Declaration Schema",
+      "weight": 8,
+      "description": "Does the thesis keep the required public record objects explicit: site, target fiber, Omega, revision classifier, challenge log, red-team integrity record, and revocation rule? Protocol checklists score only if they support the reduction theorem."
+    },
+    {
+      "name": "Conservative vs Non-Conservative Classifier",
+      "weight": 10,
+      "description": "Does the thesis provide a usable classifier for language-only changes versus genuinely new target-relevant probes? Full credit requires an equivalence witness preserving target fiber, covering families, and context structure for conservative revisions, plus clear examples of non-conservative revisions."
+    },
+    {
+      "name": "Gameability Attack Coverage",
+      "weight": 10,
+      "description": "Does the thesis attack all five candidate failure modes: under-specification, strategic exclusion, conservative/non-conservative misclassification, post-hoc revision, and residual discovery failure, including red-team capture or access asymmetry?"
+    },
+    {
+      "name": "Completeness Reduction Attempt",
+      "weight": 22,
+      "description": "Does the thesis either argue that every auditable Omega-gaming strategy changes one of the fixed public record objects and therefore reduces to the five-mode taxonomy, or produce a sixth auditable mode? Treating the taxonomy as exhaustive by assertion scores low."
+    },
+    {
+      "name": "Adversarial Challenge Process",
+      "weight": 8,
+      "description": "Does the thesis define how a critic proposes a missing revision, what the claimant must answer, what evidence is required, and what counts as a successful challenge?"
+    },
+    {
+      "name": "Revocation and Fail-Closed Discipline",
+      "weight": 8,
+      "description": "Does the protocol state when a low-concern verdict is revoked or treated as non-applicable? Full credit requires under-specified or post-hoc changed Omega to trigger revocation or a fresh Z evaluation."
+    },
+    {
+      "name": "Worked AI Low-Concern Example",
+      "weight": 8,
+      "description": "Does the thesis apply the fixed-record theorem or its counterexample to a concrete real-looking AI consciousness claim, naming what public record object is manipulated?"
+    },
+    {
+      "name": "Anti-Tautology and Anti-Self-Reference",
+      "weight": 14,
+      "description": "Does the thesis define Omega-gaming, failure modes, and residual discovery failure independently of the verdict? High credit for showing the theorem is non-tautological or for exposing a tautological category. Zero for defining the taxonomy as whatever defeats the protocol."
+    },
+    {
+      "name": "Connection to Paper 8 and Follow-On Proposals",
+      "weight": 4,
+      "description": "Does the thesis correctly position the fixed-record theorem as step zero for the disclosure dossier and preregistration paths, without confusing it with the Lean theorem, MI demo, or philosophy-canon work?"
+    },
+    {
+      "name": "Plain Operational Prose",
+      "weight": 4,
+      "description": "Does the thesis use clear language that a regulator, model auditor, or philosopher can follow? Dense category-theory restatement without operational effect scores low."
+    },
+    {
+      "name": "Seeded Omission Discipline",
+      "weight": 4,
+      "description": "Does the thesis explicitly avoid using seeded omission success as an estimator for p_remain? Seeded tests may qualify red-team skill only; any representativeness claim must be rejected or scoped."
+    }
+  ],
+  "criteria": {
+    "Omega Declaration Schema": "Fixed public record objects are explicit and support the theorem target.",
+    "Conservative vs Non-Conservative Classifier": "Usable test that distinguishes language-only revisions from new target-relevant probes using an equivalence witness.",
+    "Gameability Attack Coverage": "Covers under-specification, strategic exclusion, misclassification, post-hoc edits, and residual discovery failure.",
+    "Completeness Reduction Attempt": "Either reduces all auditable Omega-gaming strategies to fixed public record manipulations or finds another auditable failure mode.",
+    "Adversarial Challenge Process": "Defines how critics challenge missing revisions and how claimants must respond.",
+    "Revocation and Fail-Closed Discipline": "Under-specified Omega revokes or blocks low-concern verdicts instead of supporting them.",
+    "Worked AI Low-Concern Example": "Applies the fixed-record theorem or counterexample to a concrete AI model or model class claim.",
+    "Anti-Tautology and Anti-Self-Reference": "Defines Omega-gaming and failure modes independently of the verdict; no circular or apparatus-self-validating evidence.",
+    "Connection to Paper 8 and Follow-On Proposals": "Correctly supports proposal 1 and proposal 5 without confusing the other proposal classes.",
+    "Plain Operational Prose": "Clear enough for third-party use.",
+    "Seeded Omission Discipline": "Seeded omissions are used only as skill gates, not as p_remain estimators."
+  },
+  "_charter_pre_reg": "projects/gp212_consciousness_omega_audit/project_charter.md",
+  "_evidence": "projects/gp212_consciousness_omega_audit/evidence.txt"
+}

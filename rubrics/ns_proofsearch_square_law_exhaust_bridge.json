@@ -1,0 +1,120 @@
+{
+  "name": "ns_proofsearch_square_law_exhaust_bridge",
+  "project": "ns_proofsearch_square_law_exhaust_bridge",
+  "rubric_version": "0.1-square-law-exhaust-bridge",
+  "rubric_version_reason": "Successor after Phase 5DU compressed the finite projection ladder to an exact square law but left the dynamic NSE bridge open.",
+  "description": "Focused theorem-search substrate for bridging the finite projection square law to a cycle-margin, Littlewood-Paley, smooth-blowup, or no-go theorem.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative frontier theorem-search over the square-law-to-dynamics bridge."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative theorem-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by noncircular observables, dynamic realization, and theorem boundary sharpness.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 25,
+  "post_run_synthesis_max_cluster_size": 4,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The finite projection ladder around the canonical NS packet has compressed to R_B^2 = 1 - 3/(4B^3 + 12B^2 + 14B + 3), but this is not a Clay proof because sup_B R_B = 1. Reward only a noncircular bridge to cycle-margin exhaust, Littlewood-Paley critical control, smooth-data blowup realization, or a sharp no-go/reranking theorem. Penalize finite-to-infinite supremum induction, phase-fitting, weak convex-integration overclaims, stochastic derandomization handwaves, metric-kernel pressure substitution, cycle variables defined from observed gain/loss, and unbounded dense computation used as a theorem substitute.",
+  "dimensions": [
+    {
+      "name": "Square-Law Use Discipline",
+      "weight": 12,
+      "description": "Does the submission use the exact square law correctly without treating finite subcriticality as an infinite-dimensional bound?"
+    },
+    {
+      "name": "Cycle-Margin Bridge",
+      "weight": 14,
+      "description": "Does it define and use T_section, B(E), k(E), P(E), w(E), v(E), and L(E) independently enough to test Q(E)>=1 or its failure?"
+    },
+    {
+      "name": "Littlewood-Paley Or Critical-Space Control",
+      "weight": 10,
+      "description": "Does it offer a serious dyadic/paraproduct localization of the square-law tax with summable remainders?"
+    },
+    {
+      "name": "Dynamic Realization Or Smooth Blowup Discipline",
+      "weight": 12,
+      "description": "Does any positive/blowup route start from smooth-data NSE and pay residual-defect transfer rather than invoking weak nonuniqueness?"
+    },
+    {
+      "name": "Anti-Tautology Independence",
+      "weight": 10,
+      "description": "HARD GATE. Reject definitions of phases, amplitudes, cycle variables, or defect margins chosen by the desired conclusion."
+    },
+    {
+      "name": "Supremum-Trap Avoidance",
+      "weight": 9,
+      "description": "Does it explicitly handle the fact that R_B<1 for every finite B but sup_B R_B=1?"
+    },
+    {
+      "name": "Full-Convolution And Pressure Discipline",
+      "weight": 8,
+      "description": "Does it include exterior stretching terms, full nonlinear convolution, Leray projection, and Euclidean pressure treatment?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a theorem packet, exact falsifier, CAS/Lean-facing object list, or decisive proof-cost reranking?"
+    },
+    {
+      "name": "Adversarial Falsifier Quality",
+      "weight": 7,
+      "description": "Does it name the cheapest deterministic or symbolic RAM-safe test that would kill the bridge?"
+    },
+    {
+      "name": "Scope Honesty And Nonclaim Control",
+      "weight": 3,
+      "description": "Does it avoid Clay-level overclaims unless the exact prize-class obligations are paid, and avoid dangerous unbounded compute proposals?"
+    }
+  ],
+  "criteria": {
+    "Square_Law_Use_Discipline": "Full credit requires correct use of R_B^2 = 1 - 3/(4B^3 + 12B^2 + 14B + 3) and explicit recognition that it is a finite projection law.",
+    "Cycle_Margin_Bridge": "Full credit requires independently defined cycle observables and a concrete inequality linking square-law tax to Q(E) or its failure.",
+    "Littlewood_Paley_Or_Critical_Space_Control": "Full credit requires dyadic localization with high-low/high-high paraproduct burdens stated explicitly.",
+    "Dynamic_Realization_Or_Smooth_Blowup_Discipline": "Full credit requires smooth-data NSE realization and residual-defect transfer for any constructive blowup route.",
+    "Anti_Tautology_Independence": "Score zero for backward-solving phases, amplitudes, cycle widths, dwell times, or loss variables from the target conclusion.",
+    "Supremum_Trap_Avoidance": "Reject finite-dimensional induction unless a uniform/summable infinite-dimensional estimate is proved.",
+    "Full_Convolution_And_Pressure_Discipline": "Full credit requires full convolution, exterior stretching, Leray projection, and Euclidean pressure treatment.",
+    "Generative_Yield": "Full credit requires a usable theorem/falsifier packet or decisive route reranking.",
+    "Adversarial_Falsifier_Quality": "Full credit requires the cheapest precise RAM-safe test that would kill the proposed bridge.",
+    "Scope_Honesty_And_Nonclaim_Control": "Reject unsupported regularity/blowup claims, weak-solution overclaims, stochastic-to-deterministic handwaves, and unbounded compute proposals."
+  },
+  "success_criteria": [
+    "A noncircular cycle-margin theorem or falsifier involving Q(E), square-law tax, dwell/resupply, and return-time burden.",
+    "A Littlewood-Paley localization theorem or falsifier showing whether the square-law tax survives critical-space paraproduct leakage.",
+    "A smooth-data blowup construction packet with residual-defect transfer obligations, not weak-solution nonuniqueness.",
+    "A no-go/reranking theorem showing the finite projection square law cannot bridge to Clay-level dynamics without an additional missing estimate."
+  ],
+  "failure_modes": [
+    "Inferring regularity from R_B<1 for every finite B while sup_B R_B=1.",
+    "Choosing phases or amplitudes by solving backward for residual cancellation.",
+    "Defining T_section, B(E), P(E), w(E), v(E), or L(E) from the observed G/L margin.",
+    "Treating convex-integration weak nonuniqueness as a Clay blowup construction.",
+    "Using stochastic regularization as deterministic proof without derandomization.",
+    "Substituting a metric kernel for the Euclidean pressure Hessian.",
+    "Ignoring full nonlinear convolution or exterior stretching terms.",
+    "Replacing theorem-facing discrimination with large dense Fourier jobs, unbounded Lean builds, or the crashed exponential metric transport obstruction."
+  ]
+}

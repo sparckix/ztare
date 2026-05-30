@@ -2,6 +2,11 @@
 
 This is the practical manual for using the supervisor instead of typing `ur turn`.
 
+If you are trying to run persistent organizational roles such as Manager or
+Research Director, start with `docs/guides/org_runtime_quickstart.md` instead.
+The supervisor owns typed program state transitions; the org runtime owns role
+daemons, mandates, preferences, task discovery, and session claims.
+
 ## Active Run Location
 
 Use in-repo active runs under:
@@ -433,6 +438,22 @@ The supervisor has two layers with a hard boundary between them:
 | Draft/revise a paper section or manuscript | M-form supervisor (research pipeline) |
 | Build a kernel feature from a spec | M-form supervisor (build pipeline) |
 
+## Operator-Agent Replay Boundary
+
+Not every useful engine improvement starts as a supervisor program. Some start as a fast operator-agent loop: a run fails, the operator asks for the hostile discriminator, the coding agent writes a narrow script, and the result changes the next move. That loop is legitimate exploration, but it is not allowed to remain chat-only if it changes the engine.
+
+Use this boundary:
+
+| Object | Home |
+|---|---|
+| One-off exploratory discriminator or GPU probe | Mode A operator-agent session |
+| Reusable next-test shape | `projects/<slug>/workspace/next_discriminator_queue.jsonl` via GP-190 replay |
+| Configurable preference/routing choice | `org/preferences/*.yaml` + `research_taste.py` |
+| Bounded implementation with verifier | Supervisor M-form program |
+| Public architecture claim | Docs + experiment/insight ledger after closure |
+
+The supervisor should not absorb scratchpad ideation. It should absorb implementation once the artifact is stable, bounded, and verifiable. This keeps the supervisor from becoming a cathedral while preserving provenance for changes that matter.
+
 ### Architecture Note: Shared Utilities and Duplication
 
 The findings runner currently shares only two utilities with the supervisor stack:
@@ -450,7 +471,7 @@ This duplication was a deliberate first-slice decision (GP-031 Turn 2: keep find
 
 ```bash
 python -m src.ztare.validator.supervisor_findings_runner \
-  --seam-path research_areas/private/seams/<SEAM_FILE>.md \
+  --seam-path [internal-ref]<SEAM_FILE>.md \
   --max-cycles 6 \
   --max-cost-usd 0.50 \
   --execute
@@ -474,7 +495,7 @@ Without `--execute`, the runner parses the seam, checks convergence state, and r
 from src.ztare.validator.supervisor_findings_promotion import promote_findings_seam
 
 promote_findings_seam(
-    seam_path="research_areas/private/seams/GP-034_..._seam.md",
+    seam_path="GP-034 (internal seam)",
     spec_path="research_areas/specs/active/GP-034_..._spec.md",
     seed_id="gp034_dual_channel_loop_control",
     pipeline_type="build",
@@ -490,8 +511,8 @@ After promotion, the seed is in `seed_registry.json` and the standard supervisor
 
 The runner alternates **Claude** (Anthropic Messages API) and **Gemini** (Google GenAI SDK). Each agent reads the full seam text and contributes one debate turn, ending with:
 
-- `SENTINEL_DECISION: raise`: no new load-bearing claim; ready to converge from this agent's side
-- `SENTINEL_DECISION: hold`: still introducing or rebutting a load-bearing claim
+- `SENTINEL_DECISION: raise`: no new controlling claim; ready to converge from this agent's side
+- `SENTINEL_DECISION: hold`: still introducing or rebutting a controlling claim
 
 Convergence requires both agents to raise in consecutive turns with a minimum of 2 turns per agent. At the hard cap (12 total turns), the runner exits with `ESCALATED_CAP` and the operator decides.
 
@@ -508,7 +529,7 @@ make benchmark-supervisor-findings-runner
 
 Active work is tracked on the ZTARE Board:
 - Public: `research_areas/ZTARE_BOARD.md`
-- Full detail: `research_areas/private/ZTARE_BOARD.md`
+- Full detail: `[internal-ref]`
 
 Seeds in the seed layer stay there until a genesis file is written and a human accepts opening them.
 

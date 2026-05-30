@@ -1,0 +1,25 @@
+{
+  "artifact_files": [
+    "logs/h102_extract.nohup.log"
+  ],
+  "created_utc": "2026-05-11T23:13:19Z",
+  "host": "150.136.223.255",
+  "label_prefix": "external-gpu",
+  "launch_command": "python projects/neural_hunt/workspace/extract_h102_layer_window_features.py --packet projects/neural_hunt/workspace/h73_h68_promotion_prompt_packet_2026_05_11.jsonl --steps 0,10000,50000,100000,200000,400000,800000,1200000 --device cuda --output-stem h102_h73_layer_window_features_2026_05_11 --resume --checkpoint-each-step",
+  "launcher_pid": 4434,
+  "local_results_root": "projects/neural_hunt/workspace/h102_remote_a100_2026_05_11",
+  "metadata": {},
+  "notification_server": null,
+  "notification_topic": null,
+  "progress_hint": "checkpointed per selected_step",
+  "project_slug": "neural_hunt",
+  "remote_dir": "/home/ubuntu/ztare_neural_h100",
+  "remote_user": "ubuntu",
+  "result_files": [
+    "projects/neural_hunt/workspace/h102_h73_layer_window_features_2026_05_11.csv",
+    "projects/neural_hunt/workspace/h102_h73_layer_window_features_2026_05_11.json",
+    "projects/neural_hunt/workspace/h102_h73_layer_window_features_2026_05_11.md"
+  ],
+  "run_id": "neural-hunt-h102-layer-window-localization-20260511T231319Z-68dfa03f",
+  "run_kind": "h102_layer_window_localization"
+}

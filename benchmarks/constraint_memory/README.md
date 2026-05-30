@@ -139,3 +139,27 @@ The repository also contains a separate synthetic sensitivity suite in:
 - `benchmarks/constraint_memory/derived_subtle/`
 
 This suite is for controlled adversarial variants, not historical corpus reproduction.
+
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`auxiliary_historical/`](auxiliary_historical/) - 25 file(s)
+- [`claim_test_mismatch/`](claim_test_mismatch/) - 19 file(s)
+- [`derived_subtle/`](derived_subtle/) - 15 file(s)
+- [`specimens/`](specimens/) - 72 file(s)
+- [`stage1_ood/`](stage1_ood/) - 12 file(s)
+- [`stage3_ood/`](stage3_ood/) - 4 file(s)
+
+**Documents**
+
+- [Historical Candidate Review](historical_candidate_review.md)
+- [mine_auxiliary_historical.py](mine_auxiliary_historical.py)
+- [mine_claim_test_mismatch.py](mine_claim_test_mismatch.py)
+- [mine_specimens.py](mine_specimens.py)
+- [run_benchmark.py](run_benchmark.py)
+
+<sub>6 sub-folder(s), 5 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

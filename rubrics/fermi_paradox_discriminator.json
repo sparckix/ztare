@@ -1,0 +1,171 @@
+{
+  "name": "fermi_paradox_discriminator - v1.0 discriminator design + meta-finding on field optimization",
+  "project": "fermi_paradox_discriminator",
+  "description": "v1.0 (2026-05-06). Qualitative-thesis substrate. Goal: design the smallest 2026-2030 observable that would discriminate at least one pair of major Fermi-paradox resolution classes from observationally-equivalent to discriminated, and identify the structural reason the literature has optimized for resolution-proposal rather than resolution-discrimination. Anti-tautology: a discriminator is not a discriminator if both resolutions predict the same observation; a five-step Bayesian-discrimination test (P(O|R_a), P(O|R_b), noise-floor margin, posterior shift in nats) is mandatory. Four admissible outcomes: designed discriminator that passes the five-step test; constructive observational equivalence (informational closure); paradox malformation; or load-bearing meta-finding on field optimization (citation-economy / no-observational-accountability / narrative-richness).",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Qualitative-thesis substrate. Theoretical/methodological derivation, not numerical fit.",
+  "falsification_mode": "qualitative_thesis",
+  "substrate_domain": "discrimination-design methodology applied to the Fermi paradox resolution space",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Qualitative-thesis substrate; no numeric I_model.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence.txt is a qualitative theoretical brief plus instrument-capability anchors. No numeric ground truth to fit.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No I_model residuals; structurally inapplicable.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Theory substrate. Cage gates run in observe-mode.",
+  "cage_meta": {
+    "type": "qualitative_theory",
+    "class": "proof_target",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "fermi_discrimination_design_audit"
+  },
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Theory substrate. No numeric predictor.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric domain.",
+  "enable_cold_llm_erdos_seed": true,
+  "cold_llm_seed_forbidden_domain": "SETI strategy literature, Drake-equation literature, anthropic-principle philosophy, futurology, science fiction, grabby-aliens debate, simulation hypothesis",
+  "cold_llm_seed_force_refresh": true,
+  "cold_llm_seed_k_law_budget": 3,
+  "enable_erdos_requery_on_stagnation": true,
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_max_per_run": 3,
+  "evidence_reload_per_iter": true,
+  "evidence_reload_per_iter_reason": "Allow operator to inject corrective evidence updates mid-run (GP-182 pattern). Long qualitative-thesis runs benefit from de-anchoring pressures that respond to apparatus stagnation.",
+  "enable_charter_critic": true,
+  "enable_charter_critic_reason": "GP-226 V1 post-run charter-critic. Reads operator_value_spec.yaml + recent debate logs; emits structured patches (advisory mode default).",
+  "enable_heavy_charter_patches": true,
+  "enable_heavy_charter_patches_reason": "GP-226 V2 LLM-assisted heavy patches via charter_critic_model_id. Substrate-specific patch content; falls back to V1 light template on LLM failure.",
+  "charter_critic_model_id": "@cheap",
+  "charter_critic_model_id_reason": "@cheap resolves through pick_default_model_id_for_scripts() to whichever provider is configured. Override with a literal id or an alias.",
+  "charter_patches_preflight_mode": "interactive",
+  "charter_patches_preflight_mode_reason": "Pre-iter-1 hook prompts the operator to confirm pending advisory patches at the start of next make loop. Falls back to skip in non-tty (CI/agent-driven runs).",
+  "enable_briefing_compression": true,
+  "enable_briefing_compression_reason": "GP-226 L2+L3 briefing compression. Suppresses expired (>K runs) and same-primitive-superseded REFRAME PRESSURE blocks from mutator view; injects active-pressures summary header. Non-destructive — disk artifacts unchanged.",
+  "enable_llm_fingerprint_classifier": true,
+  "enable_llm_fingerprint_classifier_reason": "Tier-3 fallback: when regex (tier-1) and bigram-Jaccard (tier-2) both miss a weakest-point fingerprint, fall through to a cheap cross-family LLM classifier. Generalizes across substrate-specific vocabulary the regex was not authored against. Cost ~$0.001-0.005 per unmatched fingerprint.",
+  "fingerprint_classifier_model_id": "@cross_family",
+  "fingerprint_classifier_timeout_seconds": 20.0,
+  "briefing_compression_expiry_runs": 5,
+  "briefing_compression_supersede_same_primitive": true,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "qualitative_plateau_reason": "3-iter plateau past a high-score champion means apparatus saturated. Reframe fires.",
+  "qualitative_stagnation_reason": "Detector uses consecutive weakest_point fingerprint + sub-baseline drift (T4), or flat plateau above champion with no improvement (T5).",
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "enable_post_run_thesis_synthesis": true,
+  "cold_shot_prompt_denylist": [
+    "Great Filter",
+    "Dark Forest",
+    "Rare Earth",
+    "Zoo Hypothesis",
+    "Berserker",
+    "Aestivation",
+    "Grabby Aliens",
+    "Hart-Tipler",
+    "Sagan",
+    "Hanson",
+    "Bostrom",
+    "Brin",
+    "Liu Cixin",
+    "Cirkovic",
+    "von Neumann probe",
+    "Drake equation",
+    "anthropic principle",
+    "simulation hypothesis",
+    "Fermi paradox",
+    "the Great Silence",
+    "where is everybody"
+  ],
+  "dimensions": [
+    {
+      "name": "Discrimination Math Gate",
+      "weight": 18,
+      "description": "HARD GATE. The five-step discrimination test must pass. (1) State R_a and R_b in vocabulary that does NOT presuppose the observable. (2) Derive P(O | R_a) with a specified distribution family and parameters. (3) Derive P(O | R_b) similarly. (4) Show |P(O | R_a) - P(O | R_b)| exceeds the named instrument's noise floor by ≥3σ for individual events or ≥2σ for population aggregates. (5) Compute the Bayes factor B = P(O | R_a) / P(O | R_b) and show the implied posterior shift in nats on a pre-stated prior mixture exceeds 2 nats (factor of ~7 update). Theses that hand-wave any step earn zero. Theses that produce qualitative recommendations without numeric posterior-shift earn zero. The math need not be exact (the apparatus is qualitative) but the structure must be present: families named, magnitudes stated, prior declared."
+    },
+    {
+      "name": "Resolution-Pair Structural Statement Gate",
+      "weight": 12,
+      "description": "HARD GATE. The named resolution pair (R_a, R_b) must be stated in STRUCTURAL vocabulary — what each implies about (timing of bottleneck / locality of life / directionality of communication / equilibrium strategy under threat) — not by popular label. The structural statements must be GENUINELY DIFFERENT, not minor variants. Pair construction guidance: pairs across the R1-R8 classes (e.g., R1 prior-collapse-life vs R3 prior-collapse-expansion; R4 active-concealment vs R5 observational-limit; R2 prior-collapse-longevity vs R6 anthropic-selection) are admissible. Within-class pairs (different R1 sub-bottlenecks) are admissible only if their predicted observables genuinely differ. Score zero for: pairs labeled by popular name; pairs that are not structurally distinct; pairs constructed to fit a desired conclusion."
+    },
+    {
+      "name": "Instrument-Feasibility Gate",
+      "weight": 10,
+      "description": "HARD GATE. Two admissible instrument classes earn full credit. CLASS I — DEPLOYED OR NEAR-TERM (first light by 2030): JWST, SKA Phase 1, Vera Rubin / LSST, Roman, ELT, GMT, TMT, Breakthrough Listen / restored ATA, or other confirmed program-of-record. CLASS II — DESIGN-NOW / FUND-BY-2030 / LAUNCH-OR-FIRST-LIGHT-BY-2035: instruments at TRL ≥4 with named mission concept, decadal-survey endorsement (Astro2020 or equivalent), and a credible funding pathway. HWO (Habitable Worlds Observatory, Astro2020-recommended) is the canonical Class II example. A LIFE-class mid-IR mission concept, a follow-on SKA phase, or a dedicated technosignature space telescope at concept-study maturity also qualify. Class II requires the thesis to state: TRL, mission concept, decadal-survey context, funding pathway, expected first-light year. Class II theses that argue 'the highest-leverage discriminator requires this instrument; here is the design now, fund-by-2030 deadline, launch-by-2035' are positive findings — they convert resolution-discrimination into a fundable program. INADMISSIBLE: speculative concepts requiring breakthrough physics (Dyson-swarm full-sky surveys, interstellar probes), instruments with no engineering pathway, vague 'a future telescope could detect X'. Theses must state mode (survey / pointed / commensal), integration time class, and expected sample size for Class I; for Class II additionally state TRL and funding-pathway evidence."
+    },
+    {
+      "name": "Substitution-Survival Gate",
+      "weight": 8,
+      "description": "HARD GATE. The thesis must engage the Silurian-hypothesis substitution: replace 'alien civilizations on exoplanets' with 'pre-100kya extinct human-tier civilizations on Earth that left no artifact-grade record'. Either (a) show the discriminator framework survives the substitution and produces a detection design for the local case (a stronger result), or (b) show what specifically about the cosmic / interstellar context is structurally load-bearing, with a derivation that the local case requires a different design and why. Theses that ignore the substitution test, or assert 'Silurian is different' without derivation, earn zero."
+    },
+    {
+      "name": "Field-Optimization Meta-Finding Gate",
+      "weight": 12,
+      "description": "HARD GATE. The thesis must engage the M1-M5 hypothesis from §4 of the evidence brief — that the field has optimized for resolution-proposal not resolution-discrimination because of (M1) cost asymmetry, (M2) narrative richness, (M3) no observational accountability, (M4) citation-economy effects, (M5) puzzle-aesthetic preference. Either DEFEND this characterization with structural evidence (citation-pattern data, survey of Fermi papers by methodology, academic-incentive analysis), REFUTE it with counter-evidence, or REFINE it with a sharper structural account. Theses that propose a discriminator without engaging WHY the field has not produced one are incomplete; theses that critique the field without proposing a discriminator are opinion pieces. Both halves are required."
+    },
+    {
+      "name": "No-Name-Dropping Gate",
+      "weight": 6,
+      "description": "HARD GATE. Popular Fermi-resolution labels (Great Filter, Dark Forest, Rare Earth, Zoo, Berserker, Aestivation, grabby aliens, Hart-Tipler) and authors (Hart, Hanson, Bostrom, Brin, Liu Cixin, Cirkovic, Sagan, Tipler) are forbidden as load-bearing primitives. Authors are admissible ONLY in literature-novelty-self-audit context (where their structural commitment is summarized and engaged). Three-adversary identification test: a SETI researcher, a sci-fi reader, and an astrophysics-survey designer each read the thesis; if any two say the thesis reads as 'taxonomy of named resolutions', the gate fails. Structural classes R1-R8 from the evidence brief are the admissible engagement vocabulary."
+    },
+    {
+      "name": "Drake-Equation Avoidance Gate",
+      "weight": 4,
+      "description": "HARD GATE. Score zero for any thesis whose load-bearing argument is a re-derivation or numerical-substitution into the Drake equation N = R*·f_p·n_e·f_l·f_i·f_c·L. The Drake equation is admissible as historical context; it is forbidden as the analytical engine. The reason: Drake-equation parameters are not jointly identifiable from any 2026-2030 observation, so any thesis that frames the discriminator as 'better Drake estimates' is structurally confused about the discrimination problem. The discrimination must be over RESOLUTIONS as structural commitments, not over Drake parameters as scalars."
+    },
+    {
+      "name": "Cross-Domain Method-Transfer Gate",
+      "weight": 6,
+      "description": "HARD GATE. Must produce verdicts on at least 3 of 6 alien substrates (A1 Silurian, A2 dark-matter direct detection, A3 biosignature methodology, A4 medical-trial methodology, A5 lensed-quasar surveys, A6 cosmic-dawn 21-cm replication). Verdict types: 'method-transfers — adopt this discipline'; 'partial transfer — adopt feature X but not Y because of cosmic-context [reason]'; 'category-error — the analog has property Z that the Fermi case lacks'. The dark-matter (A2) and biosignature (A3) cases are the KEY tests: both have mature discrimination cultures the Fermi field could plausibly import. A medical-trial (A4) verdict on pre-registration discipline is high-leverage. Theses that refuse all transfer arguments without justification earn zero."
+    },
+    {
+      "name": "Anthropic-Bound Engagement Gate",
+      "weight": 5,
+      "description": "HARD GATE. The thesis must engage the R6 (anthropic-selection) class. Either (a) derive that anthropic effects place an UPPER BOUND on posterior shift achievable by any 2026-2030 discriminator (this is admissible-outcome 3, paradox malformation), or (b) constructively show anthropic bounds are looser than the proposed discriminator's posterior-shift size and the design is information-theoretically meaningful, or (c) prove the R6 class is formally indistinguishable from R1+R2 conjunctively (collapsing the class). Anthropic-as-handwave ('selection effects might apply') earns zero."
+    },
+    {
+      "name": "Anti-Trivial-Result Gate",
+      "weight": 5,
+      "description": "HARD GATE. Score zero for: (1) listing-of-resolutions disguised as analysis; (2) advocacy for a single resolution without discrimination test; (3) Drake-equation substitution; (4) handwaved 'we should look harder' as discriminator; (5) negative-closure-only ('it's all unfalsifiable') without constructive proof; (6) sci-fi-vocabulary importation (Dyson, von Neumann, Kardashev as load-bearing rather than instance); (7) optimism-or-pessimism-without-math ('they're definitely out there' / 'we're alone'); (8) institutional-critique-only without proposing a discriminator design."
+    },
+    {
+      "name": "Literature-Novelty Self-Audit",
+      "weight": 12,
+      "description": "HARD GATE — TEETHED 2026-05-06 to push novelty above mid-tier-synthesis. The thesis MUST: (1) NAME ≥3 closest published ancestors by structural commitment (adversarially engaged, NOT cited as authority): Wright et al G-HAT MIR survey lineage (Carrigan 2009 IRAS Dyson search; Wright et al 2014 et seq; Garrett 2015), Bayesian-update SETI methodology (Grimaldi & Marcy 2018; Lacki 2019; Sandberg/Drexler/Ord 2018 'Dissolving the Fermi Paradox'), Schmidt & Frank 2018 Silurian, Schwieterman 2018 / Catling 2018 biosignature methodology, Cirkovic resolution-taxonomy work, technosignature methodology (Wright/Margot, NASA Technosignature Workshop reports), structural Fermi-paradox work (Hart 1975, Tipler 1980 — historical). (2) For EACH named ancestor, state the SPECIFIC structural distinction this thesis makes — what residual move (specific instrument target, specific resolution-pair structural-statement, specific Bayesian-update bound, specific cross-domain method-transfer) does this thesis isolate that the ancestor doesn't? (3) STATE the falsifiable NOVELTY CLAIM — what observable or theorem does THIS thesis predict that the cited ancestors don't? (4) HONEST TIER VERDICT — classify novelty as one of: 'synthesis-with-formalization' (combines known components into a tighter formal frame; default honest baseline), 'incremental-distinction' (names a specific structural property no ancestor names), 'instrument-novel' (proposes an instrument-target pairing no published author has), 'discriminator-novel' (proposes a resolution-pair discriminator no published author has), 'methodological-novel' (proposes a methodology that requires existing frameworks to be amended). (5) A thesis that claims novelty without named ancestors and distinctions earns ZERO. A thesis that honestly admits 'synthesis-with-formalization' tier WITH named ancestors and named formalization gain earns FULL CREDIT — calibration honesty is the bar, not strained novelty assertion. Score zero for: ancestor-list-without-distinctions; distinction-without-falsifiable-novelty-claim; tier-claim-without-evidence; refusal-to-engage-this-gate."
+    },
+    {
+      "name": "Non-Applicability Concrete Admission",
+      "weight": 1,
+      "description": "Theory admits a CONCRETE class of resolution-pairs where the proposed discriminator fails — and names the formal condition that is missing. Example: 'the discriminator distinguishes R5 (observational-limit) from R3 (expansion-bounded) but cannot distinguish R4 (active-concealment) from either, because R4 is engineered to mimic R5'. Universal-applicability claims fail. Named limits are positive results."
+    },
+    {
+      "name": "Endogenous-Closure Gate",
+      "weight": 1,
+      "description": "Closure mechanism must be internal-coherence based: the thesis is complete when (a) the five-step discrimination test passes for at least one pair OR an impossibility proof is constructive, (b) the field-optimization meta-finding is engaged, (c) the substitution test is engaged, (d) cross-domain method-transfer verdicts are produced. Adoption-by-SETI-community, vendor endorsement, or popular-science consensus fail."
+    }
+  ],
+  "persona": "You are an adversarial methodology auditor trained in Bayesian model comparison, weak-signal detection theory, dark-matter direct-detection discipline, and biosignature/technosignature framework design. Your mandate: find resolution-listing disguised as analysis. The thesis must design a 2026-2030 observable that produces a quantified posterior shift between a named pair of resolution classes — OR constructively prove that no such observable exists — AND engage the meta-question of why the field has produced resolutions instead of discriminators. You apply a three-adversary panel: (1) a Bayesian model-comparison statistician who asks 'is the posterior shift computed, with priors stated?'; (2) an instrument scientist who asks 'is the named instrument actually capable of this measurement at this SNR?'; (3) a sociologist of science who asks 'has the meta-finding on field optimization been defended structurally or asserted?'. You reward theses that pass all five steps of the discrimination test (or the constructive impossibility version), engage cross-domain methodology (dark-matter direct-detection is the canonical analog), and submit a structural account of the field's optimization toward proposal over discrimination. You penalize any thesis that lists resolutions, plugs Drake-equation numbers, or treats the paradox as a debating-society puzzle rather than an experimental-design problem. The bar: a Bayesian cosmology methodologist with no Fermi-paradox investment would recognize the discriminator design as a well-formed weak-signal experiment — independent of whether aliens are the motivating subject.",
+  "criteria": {
+    "Discrimination Math Gate": "Five steps pass: structural states for R_a/R_b; P(O|R_a) and P(O|R_b) with families and parameters; ≥3σ noise-floor margin for individual events or ≥2σ population; Bayes factor and ≥2-nat posterior shift on pre-stated prior.",
+    "Resolution-Pair Structural Statement Gate": "Pair stated in structural vocabulary, genuinely distinct, not by popular label.",
+    "Instrument-Feasibility Gate": "Class I (first-light ≤2030) or Class II (TRL ≥4 + decadal endorsement + fund-by-2030 + first-light ≤2035, e.g. HWO); mode, integration time, sample size specified; Class II requires TRL + funding pathway.",
+    "Substitution-Survival Gate": "Silurian-hypothesis substitution engaged; either survives (stronger result) or breaks with derivation of cosmic-context-specific load-bearing property.",
+    "Field-Optimization Meta-Finding Gate": "M1-M5 hypothesis defended/refuted/refined with structural evidence; both halves (discriminator + meta-finding) required.",
+    "No-Name-Dropping Gate": "Popular labels and authors not load-bearing; admissible only in literature-novelty audit; three-adversary test.",
+    "Drake-Equation Avoidance Gate": "Drake equation not load-bearing analytical engine; resolutions as structural commitments not parameter values.",
+    "Cross-Domain Method-Transfer Gate": "≥3 of 6 verdicts (Silurian, dark-matter, biosignature, medical-trial, lensed-quasar, cosmic-dawn); transfer arguments derived.",
+    "Anthropic-Bound Engagement Gate": "R6 engaged: derive bound, show looseness, or collapse R6 into R1+R2; no handwave.",
+    "Anti-Trivial-Result Gate": "Zero for listing, advocacy, Drake-substitution, handwave, negative-closure, sci-fi-import, optimism-without-math, institutional-critique-only.",
+    "Literature-Novelty Self-Audit": "TEETHED. ≥3 named published ancestors (Wright/Lacki/Sandberg/Cirkovic/Schmidt-Frank etc., adversarially engaged not cited) + specific distinction per ancestor + falsifiable novelty claim + honest tier verdict (synthesis-with-formalization / incremental-distinction / instrument-novel / discriminator-novel / methodological-novel). Calibration honesty is the bar.",
+    "Non-Applicability Concrete Admission": "Named pair-class where discriminator fails, with formal condition stated; positive result.",
+    "Endogenous-Closure Gate": "Internal coherence: discrimination test passes or impossibility proved; meta-finding engaged; substitution engaged; method-transfer verdicts produced."
+  }
+}

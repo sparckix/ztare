@@ -1,0 +1,61 @@
+# Reverse-sync (VPS → this local git repo) CURATED list. The VPS is
+# source-of-truth for these: the daemon MATERIALIZES some (official
+# F-rows) and ticks APPEND others ON the VPS (membrane lifecycle runs
+# in local-enforce on the VPS). Without a reverse pull these
+# authoritative research records live ONLY on the VPS and are lost if
+# it dies. JUDICIOUS: research records / ledgers / manifests only —
+# NOT src/, NOT node_modules/.lake, NOT the 33GB tree.
+research_areas/EXPERIMENT_TRACK_RECORD.md
+projects/ns_millennium_hunt/workspace/ns_residual_manifest.md
+projects/ns_millennium_hunt/workspace/queries/ns_trackb_residual_void_audit.json
+analytics/public/ledgers/catch/catch_ledger.jsonl
+analytics/public/ledgers/residual_to_lever/
+analytics/public/forecast_pool/contracts/
+analytics/public/forecast_pool/forecasts/
+analytics/public/forecast_pool/outcomes/
+analytics/public/forecast_pool/scores/
+analytics/public/queries/scientific_amnesia/
+analytics/public/pretick/
+analytics/public/posttick/
+projects/ns_millennium_hunt/public/
+projects/ns_millennium_hunt/poincare-insights.md
+projects/ns_millennium_hunt/project_charter.md
+ztare_proofs/ZtareProofs/ns_tick645_homogeneity0_obstruction.lean
+# LeanMill generated repair-family memory: VPS agents can update these; pull before local edits.
+analytics/public/leanmill/repair_families/
+# LeanMill generated operating artifacts: compact enough for routine VPS -> local pull.
+analytics/public/leanmill/dashboard_data/c_supply_batch_status.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_status.md
+analytics/public/leanmill/dashboard_data/c_supply_batch_checkpoint.jsonl
+analytics/public/leanmill/dashboard_data/c_supply_batch_row_context.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_c_discriminating_slice.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_c_discriminating_slice.md
+analytics/public/leanmill/dashboard_data/c_supply_batch_c_discriminating_row_context.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_c_discriminating_slice_frozen.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_cleaned_c_discriminating_slice_frozen.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_cleaned_c_discriminating_row_context.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_cleaned_c_discriminating_slice.md
+analytics/public/leanmill/dashboard_data/c_supply_batch_cleaned_c_discriminating_slice.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_cleaned_row_context.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_cleaned_checkpoint.jsonl
+analytics/public/leanmill/dashboard_data/c_supply_batch_expost_cleaner.md
+analytics/public/leanmill/dashboard_data/c_supply_batch_expost_cleaner.json
+analytics/public/leanmill/dashboard_data/c_supply_batch_reports/
+analytics/public/leanmill/dashboard_data/family_spec_gate.json
+analytics/public/leanmill/dashboard_data/family_spec_gate.md
+analytics/public/leanmill/dashboard_data/leanmill_factory_intelligence.json
+analytics/public/leanmill/dashboard_data/leanmill_factory_intelligence.md
+analytics/public/leanmill/dashboard_data/leanmill_observability.json
+analytics/public/leanmill/dashboard_data/leanmill_observability.md
+analytics/public/leanmill/dashboard_data/station_health_dashboard.json
+analytics/public/leanmill/dashboard_data/c_supply_growth_controller.json
+analytics/public/leanmill/dashboard_data/c_supply_growth_controller.md
+analytics/public/leanmill/dashboard_data/c_supply_demand_corpus_builder.json
+analytics/public/leanmill/dashboard_data/c_supply_demand_corpus_builder.md
+analytics/public/leanmill/dashboard_data/c_supply_source_materialization.json
+analytics/public/leanmill/dashboard_data/c_supply_source_materialization.md
+analytics/public/leanmill/dashboard_data/c_supply_upstream_rater.json
+analytics/public/leanmill/dashboard_data/c_supply_upstream_rater_prompt.txt
+analytics/public/leanmill/dashboard_data/leanmill_population_elo.json
+analytics/public/leanmill/dashboard_data/leanmill_population_elo.md
+analytics/public/leanmill/dashboard_data/leanmill_governance_sentinel_suite_latest.json

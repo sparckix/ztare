@@ -1,0 +1,51 @@
+{
+  "project_slug": "riemann_zero_spacing",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 8,
+  "pending_actions": [
+    {
+      "action_kind": "queue_cold_shot",
+      "params": {
+        "model_id": "gpt-5.5",
+        "prompt_template": "fractal_de_anchor_v1",
+        "from_iter": 4,
+        "project_slug": "riemann_zero_spacing"
+      },
+      "reason": "Three consecutive iters at score 0 with no progress signals the\nmutator is locked in. Per the fractal-de-anchoring memory: the\nFRAME may be the suspect, not the form. Cold-shot a fresh model\nwith explicit de-anchoring discipline before continuing.\n",
+      "rule_id": "stagnation_propose_de_anchor",
+      "from_event": {
+        "kind": "stagnation_detected",
+        "iter_index": 4,
+        "consecutive_zeros": 3,
+        "ts": "2026-05-07T12:53:47.292698Z",
+        "project_slug": "riemann_zero_spacing"
+      },
+      "ts": "2026-05-07T12:53:48.357237Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 8,
+      "ts": "2026-05-07T12:53:47.292742Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "queue_cold_shot",
+      "reason": "Three consecutive iters at score 0 with no progress signals the\nmutator is locked in. Per the fractal-de-anchoring memory: the\nFRAME may be the suspect, not the form. Cold-shot a fresh model\nwith explicit de-anchoring discipline before continuing.\n",
+      "ts": "2026-05-07T12:53:48.357253Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "stagnation_propose_de_anchor",
+      "action_kind": "queue_cold_shot",
+      "from_event_kind": "stagnation_detected",
+      "ts": "2026-05-07T12:53:48.357505Z"
+    }
+  ],
+  "updated_utc": "2026-05-07T12:53:48.357505Z"
+}

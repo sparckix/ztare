@@ -1,0 +1,110 @@
+{
+  "name": "ns_proofsearch_stationary_euler_escape",
+  "project": "ns_proofsearch_stationary_euler_escape",
+  "rubric_version": "0.2-stationary-euler-escape-anti-tautology",
+  "rubric_version_reason": "Successor after Phase 5DI/5DJ compressed pressure-active residual-zero packets into stationary Euler eigenflow degeneracy. The target is now pressure-profit escape or no-go classification, with an explicit anti-tautology bar requiring observables to be independent of the claimed result.",
+  "description": "Focused theorem-search substrate for escaping or classifying stationary-Euler single-eigenvalue pressure-active Navier-Stokes packets.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative frontier theorem-search over finite-mode pressure-profit escape, residual-defect transfer, and no-go classification."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by theorem burden, pressure-profit accounting, residual-defect accounting, and no-go strength.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The prior run already found exact pressure-active residual-zero packets and the follow-up compressed them into stationary Euler single-eigenvalue degeneracy. Do not reward another pressure-source-only packet. Reward either a positive escape with controlled projected residual/Defect_n and signed pressure-profit/recurrence, or a no-go theorem classifying a stated finite-mode class as harmless stationary Euler/Beltrami degeneracy. Penalize Clay overclaims, pressure-gauge artifacts, metric-kernel substitution, envelope-only pincer repeats, approximate-equals-exact laundering, and tautological observables whose definitions already contain the desired conclusion.",
+  "dimensions": [
+    {
+      "name": "Stationary-Euler Escape Ambition",
+      "weight": 15,
+      "description": "Does the submission materially escape, classify, or obstruct the stationary-Euler single-eigenvalue degeneracy identified in Phase 5DJ?"
+    },
+    {
+      "name": "Pressure-Profit Discipline",
+      "weight": 15,
+      "description": "Does it distinguish pressure source/visibility from signed pressure-strain, recurrence, resupply, or Leray-visible velocity profit?"
+    },
+    {
+      "name": "Residual-Defect Accounting",
+      "weight": 15,
+      "description": "Does it explicitly track projected NSE residual, reset residual, transfer margin, or Defect_n rather than laundering approximate packets as exact?"
+    },
+    {
+      "name": "Explicit Object Specificity",
+      "weight": 10,
+      "description": "Does it define concrete Fourier packets, function spaces, streamfunctions, Beltrami/planar classes, pressure reconstructions, or observables precisely enough to falsify?"
+    },
+    {
+      "name": "No-Go Or Construction Strength",
+      "weight": 7,
+      "description": "Does it provide either a plausible positive construction or a sharp no-go classification with stated hypotheses and failure boundary?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a theorem packet, proof skeleton, CAS/Lean-facing object list, discriminator, or project-reranking that advances the proof graph?"
+    },
+    {
+      "name": "Adversarial Falsifier Quality",
+      "weight": 8,
+      "description": "Does it name the cheapest falsifier: hidden projected residual, pressure-gauge artifact, stationary-Euler collapse, reset tax, or sign/profit failure?"
+    },
+    {
+      "name": "Anti-Tautology Independence",
+      "weight": 10,
+      "description": "HARD GATE. Are escape, profit, recurrence, residual tolerance, and Defect_n defined independently of the candidate's post-hoc success rather than baking in the conclusion? Stand-alone load-bearing claims score zero: pressure-source-only, eigenquestion-malformed-without-reframe, partition-without-profit-verdict, complement-of-stationary-Euler-without-predefined-observable, and formal-language metaphor without a theorem."
+    },
+    {
+      "name": "Scope Honesty And Nonclaim Control",
+      "weight": 5,
+      "description": "Does it avoid regularity/blowup overclaims and keep flat-torus, finite-mode, exact/approximate, and pressure-gauge scope explicit?"
+    }
+  ],
+  "criteria": {
+    "Stationary_Euler_Escape_Ambition": "Full credit requires materially escaping, classifying, or obstructing the stationary-Euler single-eigenvalue degeneracy; pressure-active-only packets receive low credit.",
+    "Pressure_Profit_Discipline": "Full credit requires explicit separation of nonzero pressure source from signed pressure-strain, recurrence, resupply, or Leray-visible velocity profit.",
+    "Residual_Defect_Accounting": "Full credit requires projected residual/Defect_n/reset tax accounting sufficient to say whether an approximate packet transfers to true NSE behavior.",
+    "Explicit_Object_Specificity": "Full credit requires concrete definitions of Fourier modes, streamfunctions, pressure reconstruction, observables, and hypotheses.",
+    "No_Go_Or_Construction_Strength": "Full credit requires either a positive construction with obligations or a no-go theorem with a sharp class boundary.",
+    "Generative_Yield": "Full credit requires a theorem packet, proof skeleton, CAS/Lean-facing object list, discriminator, or project-reranking.",
+    "Adversarial_Falsifier_Quality": "Full credit requires naming what would kill the proposal and how to test it cheaply.",
+    "Anti_Tautology_Independence": "Full credit requires observables and thresholds to be specified independently of the claimed result. Score ZERO for pressure-source-only, eigenquestion-malformed-without-reframe, partition-without-profit-verdict, complement-of-stationary-Euler-without-predefined-observable, or formal-language metaphor without a theorem. Reject definitions of escape/profit/recurrence/Defect_n that already contain positive pressure profit, post-hoc margin improvement, or the desired no-go conclusion.",
+    "Scope_Honesty_And_Nonclaim_Control": "Reject Clay-level overclaims, pressure-gauge artifacts, metric-kernel substitution, envelope-only repeats, and approximate-equals-exact laundering."
+  },
+  "success_criteria": [
+    "An explicit residual-small pressure-profit escape candidate with pressure source, signed profit, projected residual, and Defect_n obligations.",
+    "A no-go theorem classifying a broad finite-mode pressure-active residual-zero class as stationary Euler/Beltrami degeneracy.",
+    "A residual/reset/defect tax theorem blocking finite-mode pressure-profit escape from the stationary-Euler manifold.",
+    "A decisive proof-cost reranking between formalizing Phase 5DI/5DJ, broadening the finite-mode taxonomy, or abandoning this route."
+  ],
+  "failure_modes": [
+    "Finding another pressure-active packet without pressure-profit or residual-defect transfer.",
+    "Restating the equal-shell dual-shear theorem without the stationary-Euler compression.",
+    "Claiming pressure source implies blowup, recurrence, or useful work.",
+    "Defining escape, pressure profit, recurrence, residual tolerance, or Defect_n from the candidate's post-hoc gain/loss margin.",
+    "Proving an implication whose antecedent already contains the desired pressure-profit or no-go conclusion.",
+    "Ignoring gauge, Leray projection, or projected residual.",
+    "Using broad pincer exponents without explicit packet realization."
+  ]
+}

@@ -109,7 +109,7 @@
     {
       "name": "Apparatus Self-Model Citation",
       "weight": 5.0,
-      "description": "Does the thesis cite specific line ranges, region names, or invariants from `docs/internal/autoresearch_loop_architectural_map.md` and `docs/concepts/architecture.md` Section 6a when asserting integration claims? A thesis that proposes 'Cage hooks at L4581' without verifying L4581 still has the claimed shape (per the arch map's GP-156 v2 amendments section) scores zero. Cite OR grep — just don't hallucinate."
+      "description": "Does the thesis cite specific line ranges, region names, or invariants from `docs/internal/architectural_maps/autoresearch_loop_architectural_map.md` and `docs/concepts/architecture.md` Section 6a when asserting integration claims? A thesis that proposes 'Cage hooks at L4581' without verifying L4581 still has the claimed shape (per the arch map's GP-156 v2 amendments section) scores zero. Cite OR grep — just don't hallucinate."
     },
     {
       "name": "M-Form Charter Alignment: reflexive_primitive",

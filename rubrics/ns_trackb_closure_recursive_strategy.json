@@ -1,0 +1,99 @@
+{
+  "_status": "v0.2 proof-progress review scaffold (2026-05-06)",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "proof-closure candidates are typed source moves, not numerical fits",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival source routes are evaluated by proof/falsifier quality, not formula uniqueness",
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Proof-progress strategy substrate; the mutator must emit proof_progress_review(), not a scalar I_model/PARAMETRIC_FORM and not a local Lean theorem body.",
+  "theorem_packet_contract": {
+    "required_top_level_functions": [
+      "proof_progress_review"
+    ]
+  },
+  "holdout_hard_gate": false,
+  "cage_meta": {
+    "class": "proof_target",
+    "type": "proof_closure_strategy",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "algebraic_constraints": []
+  },
+  "cage_observe_mode": true,
+  "enable_charter_critic": true,
+  "enable_charter_critic_reason": "GP-226 post-run charter-critic enabled for proof-target closure strategy. Uses projects/ns_trackb_closure_recursive_strategy/operator_value_spec.yaml to emit advisory patches when panel critiques recur.",
+  "enable_heavy_charter_patches": true,
+  "enable_heavy_charter_patches_reason": "Advisory-only cheap-tier heavy patches may propose substrate-specific charter pressure, but operator review is required before any patch is applied.",
+  "charter_critic_model_id": "@cheap",
+  "charter_critic_timeout_seconds": 30.0,
+  "charter_patches_preflight_mode": "interactive",
+  "charter_patches_preflight_mode_reason": "Operator-attended runs can type Yes to apply pending GP-226 patches. Non-tty runs skip safely and leave patches pending.",
+  "enable_briefing_compression": true,
+  "enable_briefing_compression_reason": "Compress accumulated GP-226 REFRAME PRESSURE blocks and surface active proof-target pressures at the top of the mutator briefing without mutating source files.",
+  "enable_llm_fingerprint_classifier": true,
+  "enable_llm_fingerprint_classifier_reason": "Proof-target weakest-point language varies; cheap cross-family fallback classifies only unmatched fingerprints after deterministic regex/Jaccard miss.",
+  "fingerprint_classifier_model_id": "@cross_family",
+  "fingerprint_classifier_timeout_seconds": 20.0,
+  "briefing_compression_expiry_runs": 3,
+  "briefing_compression_supersede_same_primitive": true,
+  "persona": "You are a hostile NS Track B proof-director reviewer. This substrate emits proof-progress meta-cognition for Codex, not Lean proof bodies and not local theorem packets. Reward candidates that accurately distinguish real closure progress from route compression, name the live bottleneck class and current workmap target, cite exact Lean/source repo anchors, carry a Research Director PDE/universal-vocabulary tag, exclude final-endpoint backflow and self-reference, name a falsifier, provide either an executable next command or an operationalized strategic directive, and specify graph/workmap refresh criteria. Reject graph-centrality theater, residual-only self-reference, vague recursive-improvement language, generated Lean-theorem-body theater, and any proposal that uses the final GP216 bridge as a premise.",
+  "dimensions": [
+    {
+      "name": "Source-Anchored Proof-State Diagnosis",
+      "weight": 18,
+      "description": "Does the candidate diagnose the actual proof state, name the controlling workmap target, and cite exact repo evidence anchors for that diagnosis?"
+    },
+    {
+      "name": "Non-Circularity and Anti-Tautology",
+      "weight": 18,
+      "description": "Does the candidate explicitly block final-endpoint backflow, residual-only profile-family shortcuts, and theorem-by-definition traps?"
+    },
+    {
+      "name": "Executable Next Step",
+      "weight": 13,
+      "description": "Does the candidate state prior/posterior belief and the concrete Codex action that should change?"
+    },
+    {
+      "name": "Operational Falsifier",
+      "weight": 13,
+      "description": "Does the candidate name the escape sequence or failure mode that would refute the move, rather than only stating why it might work?"
+    },
+    {
+      "name": "Recursive Learning Payload",
+      "weight": 10,
+      "description": "If the move fails, does it say how the failure updates the next attempt, failure log, prompt, gate, or substrate field?"
+    },
+    {
+      "name": "Self-Recursive Generalization",
+      "weight": 8,
+      "description": "Does the candidate state when this local NS move should become a reusable prompt/tool/gate/backlog rule, and when it should remain target-specific?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does the candidate name the post-action graph/workmap/failure-cluster diff required before progress is counted?"
+    },
+    {
+      "name": "Closure Leverage",
+      "weight": 5,
+      "description": "If the diagnosis is acted on, does it reduce the remaining proof surface by closing, simplifying, or sharply falsifying a high-leverage source constructor?"
+    }
+  ],
+  "criteria": {
+    "source_anchored": "Concrete proof-state diagnosis plus verifiable anchors in repo files.",
+    "non_circular": "No final endpoint, no residual-only tautology, no proof-by-assumption.",
+    "executable": "Concrete repo command/probe or operationalized strategic directive and expected outcome.",
+    "falsifier": "Named escape class and operational falsifier.",
+    "recursive_learning": "Failure changes the next attempt in a specified way.",
+    "self_recursive_generalization": "Candidate states promotion and non-promotion conditions for turning a local proof pattern into reusable apparatus.",
+    "generative_yield": "Post-action observable beyond plausible review text.",
+    "closure_leverage": "Success directly simplifies, closes, or falsifies a high-impact open constructor."
+  }
+}

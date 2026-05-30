@@ -14,7 +14,7 @@ from drowning out the repo's actual contribution.
 - [ ] No OS/editor artifacts are tracked: `.DS_Store`, `*.bak`, `*.pre_audit_*`.
 - [ ] No model checkpoints or large generated artifacts are tracked unless they
       are deliberate release assets with provenance and checksums.
-- [ ] `git ls-files` has no paths under `research_areas/private/` or other
+- [ ] `git ls-files` has no paths under `[internal-ref]` or other
       private-state folders. `org/mandates/` and `org/preferences/` may track
       only README/template files; real local mandate/preference files remain
       ignored.

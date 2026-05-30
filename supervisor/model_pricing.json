@@ -19,6 +19,12 @@
       "input_per_million_usd": 0.3,
       "output_per_million_usd": 2.5
     },
+    "gemini-3.1-flash-lite-preview": {
+      "cache_creation_input_per_million_usd": 0.025,
+      "cache_read_input_per_million_usd": 0.025,
+      "input_per_million_usd": 0.25,
+      "output_per_million_usd": 1.5
+    },
     "gemini-3.1-pro-preview": {
       "cache_creation_input_per_million_usd": 0.2,
       "cache_read_input_per_million_usd": 0.2,
@@ -78,6 +84,18 @@
       "cache_read_input_per_million_usd": 0.275,
       "input_per_million_usd": 1.1,
       "output_per_million_usd": 4.4
+    },
+    "deepseek-chat": {
+      "cache_creation_input_per_million_usd": 0.27,
+      "cache_read_input_per_million_usd": 0.07,
+      "input_per_million_usd": 0.27,
+      "output_per_million_usd": 1.10
+    },
+    "deepseek-reasoner": {
+      "cache_creation_input_per_million_usd": 0.55,
+      "cache_read_input_per_million_usd": 0.14,
+      "input_per_million_usd": 0.55,
+      "output_per_million_usd": 2.19
     }
   }
 }

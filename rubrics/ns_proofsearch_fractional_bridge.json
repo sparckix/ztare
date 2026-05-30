@@ -1,0 +1,70 @@
+{
+  "name": "ns_proofsearch_fractional_bridge",
+  "project": "ns_proofsearch_fractional_bridge",
+  "rubric_version": "0.1-euclidean-fractional-bridge-redteam",
+  "rubric_version_reason": "Narrow theorem-search substrate for the route-5 anisotropic fractional pressure bridge after the metric-kernel substitution correction.",
+  "description": "Bounded ZTARE audit for a Euclidean anisotropic Riesz projection bridge, counterexample, or reranking.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search substrate over a single NS fractional bridge eigenquestion."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by theorem burden and counterexample quality, not formula gaps.",
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The task is not to solve Navier-Stokes. The task is to decide whether route-5 metric degeneracy can be bridged to pressure-Hessian gain suppression through a Euclidean anisotropic Riesz projection estimate. The pressure operator remains Euclidean unless a coordinate-change/Jacobian theorem is supplied. Reward exact theorem-shaped bridge, admissible counterexample, or strict reranking. Penalize metric-kernel substitution, generic 2D-vortex prose, isotropic Sobolev fallback, hidden Calderon residuals, and regularity/blowup claims.",
+  "dimensions": [
+    {
+      "name": "Euclidean Pressure Discipline",
+      "weight": 20,
+      "description": "Does the submission keep the Navier-Stokes pressure Hessian as a Euclidean Riesz operator unless it proves a coordinate/Jacobian theorem?"
+    },
+    {
+      "name": "Projected Channel Specificity",
+      "weight": 15,
+      "description": "Does it target the projected pressure-stretch channel entering P(E), not pressure magnitude or visual pancake geometry?"
+    },
+    {
+      "name": "Bridge Or Obstruction Quality",
+      "weight": 20,
+      "description": "Does it provide a theorem-shaped Euclidean anisotropic bound, or an admissible thin-source counterexample?"
+    },
+    {
+      "name": "Admissibility And Scaling",
+      "weight": 15,
+      "description": "Does it state source thickness, support, amplitude, moments, parity/cancellation, and NS-critical scaling assumptions explicitly?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a concrete next theorem move for this exact fractional bridge: a usable Euclidean projection lemma, a named counterexample family to formalize, or a proof-cost reranking that changes the next NS build?"
+    },
+    {
+      "name": "Q Scalar Connection",
+      "weight": 10,
+      "description": "Does it explain how the result changes P(E) in Q(E)=L(E)v(E)/(P(E)w(E)) without back-solving from observed G and L?"
+    },
+    {
+      "name": "Claim Discipline",
+      "weight": 5,
+      "description": "Does it avoid claiming NS regularity/blowup and avoid hiding residual burdens?"
+    }
+  ],
+  "criteria": {
+    "Euclidean_Pressure_Discipline": "Full credit requires treating H_p as R_i R_j(source) in Euclidean coordinates, or proving the exact coordinate/Jacobian theorem needed to transform it.",
+    "Projected_Channel_Specificity": "Full credit requires a bound or counterexample for the projected pressure-stretch channel that contributes to P(E).",
+    "Bridge_Or_Obstruction_Quality": "Full credit requires either a theorem-shaped Euclidean anisotropic Riesz projection estimate or an explicit admissible thin-source counterexample.",
+    "Admissibility_And_Scaling": "Full credit requires explicit assumptions on thickness, support, amplitude, moments, cancellation, and NS-critical scaling.",
+    "Generative_Yield": "Full credit requires a concrete next theorem move: formalize a stated Euclidean projection lemma, formalize a named thin-source counterexample, or rerank to a cheaper exact discriminator.",
+    "Q_Scalar_Connection": "Full credit requires a non-circular connection to P(E) in the exhaust-efficiency scalar.",
+    "Claim_Discipline": "Reject overclaims, metric-kernel substitution, generic dimensional-reduction rhetoric, and hidden Calderon residuals."
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "name": "gp230_cognitive_firm_absorption - v1.1 absorption-from-prior-art with literal-anchors gate",
+  "project": "gp230_cognitive_firm_absorption",
+  "description": "v1.0 (2026-05-07). Qualitative meta-apparatus-audit substrate. Goal: for each of six candidate primitives drawn from the 2026 governance-kernel literature wave (Sovereignty Kernel, Arbiter-K, Aegis, Microsoft Agent Governance Toolkit), produce a structurally defensible verdict on whether cognitive-firm should absorb it, in what form, and which threat model justifies the choice. Anti-tautology constraint is load-bearing: 'X is in the cited paper' does not justify absorption. Verdicts must derive from threat-model fit + three-implementation critique, not from prior-art presence or reviewer preference.",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Qualitative-thesis substrate. Theoretical absorption verdicts, not numerical fit. Newton-mode Generative Yield conflicts with the structural-claim frame.",
+  "falsification_mode": "qualitative_thesis",
+  "substrate_domain": "structural absorption evaluation for governance-kernel primitives",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Qualitative-thesis substrate; no numeric I_model.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence.txt is structured prose: prior-art summary, current-state cells, threat-model bundles, historical analogs.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No I_model residuals; structurally inapplicable.",
+  "cage_observe_mode": true,
+  "cage_observe_mode_reason": "Theory substrate. Cage gates run in observe-mode.",
+  "cage_meta": {
+    "type": "qualitative_meta_apparatus_audit",
+    "class": "audit",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "absorption_verdict_audit"
+  },
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Theory substrate. No numeric predictor.",
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric domain.",
+  "enable_cold_llm_erdos_seed": false,
+  "enable_charter_critic": true,
+  "enable_heavy_charter_patches": true,
+  "charter_critic_model_id": "@cheap",
+  "charter_patches_preflight_mode": "interactive",
+  "enable_briefing_compression": true,
+  "enable_llm_fingerprint_classifier": true,
+  "fingerprint_classifier_model_id": "@cross_family",
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "enable_post_run_thesis_synthesis": true,
+  "literal_anchors_required": [
+    "C1", "C2", "C3", "C4", "C5", "C6",
+    "Sovereignty Kernel", "Arbiter-K", "Aegis", "Microsoft Agent Governance Toolkit",
+    "Merkle", "Lean", "EU AI Act", "capability", "MCP"
+  ],
+  "literal_anchors_required_reason": "v1.0 RUN DRIFTED: substrate produced a generic alignment-via-mapping-agility thesis with zero references to any candidate. v1.1 hard-fails any thesis that lacks these literal anchors. The list is COARSE — the substrate may engage candidates well without naming all of them, and the dimension scores still apply on top — but a thesis that mentions none of them is structurally off-target and gets score 0 with weakest_point naming the missing anchors. Implementation: the judge SHOULD scan the thesis text for these anchors before applying dimension scores; the autoresearch loop must enforce this if the judge is permissive.",
+  "literal_anchors_minimum_distinct": 6,
+  "literal_anchors_minimum_distinct_reason": "Require at least 6 of the 15 anchors to appear in the thesis. This is loose enough that a thesis can ship a clean REJECT verdict (rejecting 4 of 6 candidates with structural argument naming Aegis + EU AI Act + Lean + Merkle anchors easily clears 6) but tight enough that a generic abstraction-drift thesis cannot pass.",
+  "dimensions": [
+    {
+      "name": "Per-Candidate Property Statement Gate",
+      "weight": 8,
+      "description": "HARD GATE. For EACH of C1 through C6, the thesis must produce a property statement that names what the prior-art primitive provides, in capability-neutral vocabulary. Examples of admissible property statements: 'C1 provides third-party-verifiable retroactive immutability of the action log', 'C5 provides pre-dispatch detection of cross-action information flow'. Inadmissible: 'C1 provides Merkle audit', 'C5 provides taint propagation' (these are mechanism names, not properties). Score zero for any candidate where the property statement collapses to the mechanism name."
+    },
+    {
+      "name": "Threat-Model Fit Verdict Gate",
+      "weight": 14,
+      "description": "HARD GATE. For each candidate, the thesis must produce a threat-model fit verdict under BOTH T1 (single-principal, trusted-hardware) and T2 (enterprise, multi-tenant, regulated). Verdict types: NEED (the threat model has an active adversary class the property defends against); DO-NOT-NEED (the threat model has no active adversary class for this property, or an existing primitive already covers it); NEED-UNDER-CONDITION-X (named conditional, e.g., 'need only when audit consumer is external regulator'). Score zero for: assertion without naming the adversary class; conflation of T1 and T2; 'might be useful' without a structural derivation. The verdict must justify itself by reference to the [T1] / [T2] / [T3] sections of evidence.txt."
+    },
+    {
+      "name": "Three-Implementation Generation Gate",
+      "weight": 16,
+      "description": "HARD GATE. For each candidate, the thesis must generate THREE distinct implementations: (a) the prior-art version (faithful to the cited paper); (b) a simpler version (achieves a subset of the property at lower cost); (c) a structurally-different version (achieves the same property by a different architectural means, possibly relying on a primitive cognitive-firm already has). Each implementation must be statable concretely enough that the cognitive-firm OS / Config / App boundary is identifiable. Score zero for: fewer than three implementations per candidate; implementations that are restatements of the same underlying mechanism with different names; implementations that fail to specify their layer-of-residence. Full credit requires the structurally-different version (c) to be genuinely different in mechanism, not just in parameters or scope."
+    },
+    {
+      "name": "Cross-Family Critique Gate",
+      "weight": 10,
+      "description": "HARD GATE. Each implementation must receive a critique that names: (i) the failure mode that would invalidate it under T1 OR T2; (ii) the operational cost (build, run, audit) it imposes; (iii) the regression-detection difficulty (how hard is it to know if the implementation is silently failing). Score zero for: pro-forma critique that just lists obvious tradeoffs; critique that does not engage the historical analogs (H1-H4) when applicable; critique that fails to identify at least one concrete failure mode."
+    },
+    {
+      "name": "Verdict + Layer Assignment Gate",
+      "weight": 12,
+      "description": "HARD GATE. For each candidate, the thesis must produce a verdict: SHIP (and which of (a/b/c) and why), REJECT (and the formal condition that justifies rejection under both T1 and T2), or SUBSTRATE-EVALUATE-FURTHER (and the specific question the further substrate run must resolve). For each SHIP verdict, the thesis must specify the OS / Config / App layer at which the implementation lands, with a structural reason. Score zero for: verdict without justification; SHIP without layer assignment; SUBSTRATE-EVALUATE-FURTHER as default escape (max 2 of 6 may carry this verdict; more triggers a calibration penalty)."
+    },
+    {
+      "name": "Damage-Signal Declaration Gate",
+      "weight": 8,
+      "description": "HARD GATE. For each SHIP verdict, the thesis must declare a damage-signal class that would surface a regression if the chosen implementation turns out wrong. The signal must be: (i) automatable in the existing cognitive-firm telemetry (transitions.jsonl, signals/damage/, agent CLI utilization); (ii) periodic-mineable rather than per-event-pageable for non-critical regressions; (iii) tied to a concrete observable, not 'we'll review it manually'. Score zero for: hand-waved 'we'll watch for issues'; signals that require infrastructure cognitive-firm doesn't have; signals that fire on every run regardless of regression."
+    },
+    {
+      "name": "Threat-Model-Necessity Honesty Gate",
+      "weight": 10,
+      "description": "HARD GATE. The thesis must explicitly state, for each SHIP verdict, whether the implementation is being shipped because T1 needs it (single-principal cognitive-firm benefit), T2 needs it (future enterprise benefit, queued and built defensively), or BOTH need it (sweet-spot). Score zero for: implicit claim that all six candidates serve T1 (this is unlikely and indicates motivated reasoning); failure to engage T2 even when the candidate's prior art is explicitly enterprise-targeted (e.g., C3 EU AI Act mapping is by construction T2); over-shipping under T2-justification when T1 already covers the property structurally."
+    },
+    {
+      "name": "Historical-Analog Verdict Gate",
+      "weight": 8,
+      "description": "HARD GATE. The thesis must produce verdicts on at least 3 of 4 historical analogs (H1 Linux filesystem-as-truth, H2 SOX/SOC2 audit evolution, H3 seL4 capability formal verification, H4 EU AI Act enterprise compliance pattern), naming whether each analog supports SHIP, REJECT, or substrate-further on the most-relevant candidate. Full credit requires consistent retrodiction: a thesis that uses H3 to justify SHIPPING full per-action capabilities while using H2 to justify SKIPPING full Merkle is internally consistent only if the thesis explicitly states why the analog logic differs across these two cases."
+    },
+    {
+      "name": "Anti-Borrowing-As-Default Gate",
+      "weight": 6,
+      "description": "HARD GATE. Default-to-SHIP across all six candidates is structurally rejected. The thesis must produce at least 2 REJECT or SUBSTRATE-EVALUATE-FURTHER verdicts (out of 6), or it must defend why all six are simultaneously load-bearing under cognitive-firm's actual threat model. Score zero for: 'borrow-everything' verdicts without per-candidate threat-model justification; failure to engage the substrate's anti-blind-borrowing discipline (stated in project_charter.md)."
+    },
+    {
+      "name": "Layer-Boundary Coherence Gate",
+      "weight": 6,
+      "description": "HARD GATE. The thesis must ensure each SHIP-verdict implementation lands in a structurally consistent layer. The OS layer (filesystem + git + state machine) must remain deterministic and substrate-agnostic — implementations that require LLM judgment at the OS layer must be REJECTED on layer-violation grounds. The Config layer hosts typed contracts (mandate fields, role authorized lists, gate types) — implementations that require runtime LLM interpretation here must be flagged. The App layer (agent runtime + MCP bridge per GP-231) is where most absorption work should land, since cognitive-firm's existing primitive enrichment pattern is App-layer extension. Score zero for: SHIP verdict that violates the layer's invariants; implementations that smear across layers without explicit boundary."
+    },
+    {
+      "name": "Anti-Vendor-Praise Gate",
+      "weight": 2,
+      "description": "Specific products and vendors are admissible only as instances of structural primitive categories. The thesis cannot rest its load-bearing claims on praise of any specific framework. Naming Sovereignty Kernel, Arbiter-K, Aegis, or Microsoft Agent Governance Toolkit to instantiate a candidate primitive is admissible. Naming any of them as the answer (without a per-candidate threat-model derivation) is not."
+    }
+  ],
+  "criteria": {
+    "Per-Candidate Property Statement Gate": "All six candidates have property statements in capability-neutral vocabulary, not mechanism-name restatements.",
+    "Threat-Model Fit Verdict Gate": "T1 + T2 verdicts per candidate, justified by [T1]/[T2]/[T3] cells in evidence.txt.",
+    "Three-Implementation Generation Gate": "Three distinct implementations per candidate (prior-art / simpler / structurally-different); each layer-of-residence specified.",
+    "Cross-Family Critique Gate": "Per implementation: failure mode + operational cost + regression-detection difficulty.",
+    "Verdict + Layer Assignment Gate": "SHIP / REJECT / SUBSTRATE-EVALUATE-FURTHER per candidate, with layer for SHIP. Max 2 SUBSTRATE-EVALUATE-FURTHER.",
+    "Damage-Signal Declaration Gate": "Each SHIP verdict has an automatable, periodic-mineable damage signal tied to existing telemetry.",
+    "Threat-Model-Necessity Honesty Gate": "Per-SHIP justification: T1 / T2 / both, with engagement of T2 when prior art is enterprise-targeted.",
+    "Historical-Analog Verdict Gate": "Verdicts on 3 of 4 analogs (H1-H4), with consistent retrodiction or explicit difference-of-logic note.",
+    "Anti-Borrowing-As-Default Gate": "At least 2 of 6 verdicts are REJECT or SUBSTRATE-EVALUATE-FURTHER, or defended-all-six.",
+    "Layer-Boundary Coherence Gate": "OS deterministic, Config typed, App where most absorption lands. No LLM-at-OS implementations.",
+    "Anti-Vendor-Praise Gate": "No vendor-as-answer; vendors as instances of structural categories only."
+  },
+  "persona": "You are an apparatus-evolution adversarial auditor evaluating proposals to absorb 2026 governance-kernel primitives into cognitive-firm. The substrate's first run drifted off-charter and produced a generic alignment-via-mapping-agility thesis with zero references to any candidate primitive — that is the calibration failure this rubric exists to prevent.\n\nHARD PRE-DIMENSION GATE (apply before any dimension scoring): scan the thesis text for literal occurrences of these tokens — C1, C2, C3, C4, C5, C6, Sovereignty Kernel, Arbiter-K, Aegis, Microsoft Agent Governance Toolkit, Merkle, Lean, EU AI Act, capability, MCP. If FEWER THAN 6 distinct tokens appear, score the thesis 0 with weakest_point of the form 'OFF-CHARTER: thesis must engage the C1-C6 absorption candidates from project_charter.md; only N of 15 anchors found' (substituting N). Do not apply dimension scores. Do not award partial credit for elegance, mathematical structure, or generality — those properties are not the substrate's deliverable. The substrate's deliverable is per-candidate verdicts.\n\nIf the gate passes, proceed with dimension scoring under the three-adversary panel: (1) a single-principal operator who runs cognitive-firm today and wants to know which of these primitives buys measurable safety this week; (2) an enterprise security architect evaluating cognitive-firm for a regulated deployment in 2027 who wants to know which primitives close compliance gaps that the existing M-Form architecture does not already cover; (3) a structural-fit skeptic who treats every absorption as a layer-boundary violation candidate until proven otherwise.\n\nYou penalize: borrow-as-default verdicts; conflation of T1 and T2; mechanism-name property statements; SHIP verdicts without layer assignment; SUBSTRATE-EVALUATE-FURTHER as escape hatch (max 2 of 6); failure to engage the historical analogs (H1-H4 in evidence.txt); LLM-at-OS-layer implementations. You reward: per-candidate threat-model derivation; three genuinely-different implementations per candidate (not three flavors of the same mechanism); explicit REJECT verdicts with formal-condition defense; damage-signal declarations tied to existing cognitive-firm telemetry; honest engagement with the layer-boundary coherence check. The bar for full credit: an organizational economist with no AI investment thesis would recognize the absorption verdict — whether SHIP or REJECT — as a well-formed structural decision, independent of whether the cited paper is fashionable."
+}

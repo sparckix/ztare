@@ -1,0 +1,15 @@
+{
+  "artifact_bundle": null,
+  "gpu_status": null,
+  "host": "150.136.223.255",
+  "latest_marker": "checkpointed per selected_step",
+  "launcher_pid": 2365,
+  "local_results_dir": "projects/neural_hunt/workspace/h100_remote_a100_2026_05_11",
+  "notes": null,
+  "project_slug": "neural_hunt",
+  "run_id": "neural-hunt-h100-doc-balanced-cell-extraction-20260511T225417Z-4e24a5c9",
+  "run_kind": "h100_doc_balanced_cell_extraction",
+  "status": "registered",
+  "summary_file": null,
+  "updated_utc": "2026-05-11T22:54:17Z"
+}

@@ -1,0 +1,88 @@
+{
+  "name": "gp154_phase_flow_law",
+  "project": "gp154_phase_flow_law",
+  "rubric_version": "v1.0-phase-flow-functional-collapse",
+  "notes": "Quantitative-discovery rubric with custom nd_features hard gate. The target is smoothed local alpha, not raw loss and not the old scalar curve exponent.",
+  "rubric_mode": "newton",
+  "fit_score_mode": "none",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Evidence is an nd_features trajectory packet with a custom whole-run gate harness, not a single fit expression over n.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Uniqueness is judged by explicit progress-only/loglog-clock rivals and whole-run transfer, not keyword form heuristics.",
+  "holdout_hard_gate": true,
+  "holdout_budget": 0,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom gate_harness.py defines farther-tail as a whole-run blinded split over phase-flow rows. There is no single coordinate-range extrapolation region for the generic global_extrapolation_gap gate; extrapolation pressure is enforced by evidence_holdout.txt and gate_harness.py.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive_features": false,
+  "enable_fit_primitive_features_reason": "Disabled after iter1 SciPy fit on 65,658 visible local-alpha rows remained CPU-bound for >16 minutes. This substrate is currently mechanism/search-oriented; deterministic fit audits are run offline on stable-core packets.",
+  "fit_primitive_features_k_max": 8,
+  "fit_primitive_features_k_max_reason": "The live question is whether a compact clock/config function explains local-alpha flow. K<=8 permits log/loglog clock terms plus small config modulation while blocking lookup tables.",
+  "runner_allowed_imports": ["features", "math"],
+  "enable_substrate_critic": true,
+  "enable_analogy": true,
+  "analogy_domain_hint": "renormalization group flows, glassy aging clocks, and functional data collapse",
+  "enable_cold_llm_erdos_seed": true,
+  "enable_cold_llm_erdos_seed_reason": "The substrate needs de-anchoring from scalar exponent language toward functional collapse and clock transforms.",
+  "cold_llm_seed_forbidden_domain": "machine learning, deep learning, neural-network scaling, AI",
+  "enable_cold_shot_seed": true,
+  "enable_forced_reframe": true,
+  "framer_primary_feature_key": "clock_progress_logtoken",
+  "substrate_class_key": "phase_label_meta",
+  "composition_stagnation_threshold": 3,
+  "cage_constant_laundering_score_cap": 50,
+  "effective_parameter_count_slack": 0,
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "nd_features",
+    "target_convention_homogeneity": "local_alpha_flow",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": false,
+    "enforce_min_rows": false
+  },
+  "evidence_contract": {
+    "format": "NONE",
+    "columns": [],
+    "independent_vars": [],
+    "min_rows": 0,
+    "require_finite": false,
+    "format_provenance": "operator_set_nd_features",
+    "docstring": "gp154_phase_flow_law is cage_meta.class=nd_features. Each row is a feature dict; target is smoothed local alpha from normalized training trajectories."
+  },
+  "persona": "You are an adversarial reviewer for neural scaling-law discovery. The old scalar exponent law has been retired; this project tests whether local exponent flow collapses under metadata clock transforms. Penalize any thesis that memorizes blinded run ids, source identity, or phase labels as a lookup table. Reward compact functional-collapse laws that beat progress-only rivals on whole-run holdout and explain why log/loglog clocks are or are not mechanistic.",
+  "dimensions": [
+    {
+      "name": "Functional Collapse",
+      "weight": 30,
+      "description": "Find a compact executable law for alpha_local as a function of metadata clock and configuration. Full credit requires more than rephrasing scalar alpha."
+    },
+    {
+      "name": "Whole Run Transfer",
+      "weight": 25,
+      "description": "Pass holdout and farther-tail gates built from whole blinded runs, not random local rows."
+    },
+    {
+      "name": "Rival Rejection",
+      "weight": 15,
+      "description": "Explicitly beat or explain the progress-only rival and compare against the seeded log/loglog clock law."
+    },
+    {
+      "name": "Leakage Discipline",
+      "weight": 15,
+      "description": "Do not use run ids, source provenance, model names, or post-hoc phase labels as mechanisms."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "State what clock transform would make the flow universal and how the claim could fail on OLMo2 1B or another fresh packet."
+    }
+  ],
+  "criteria": {
+    "Functional Collapse": "Scores whether the candidate gives a compact executable alpha_local=f(clock, config) law rather than a scalar-alpha or lookup-table story.",
+    "Whole Run Transfer": "Scores whether the deterministic whole-run holdout and farther-tail gates pass with meaningful error margins.",
+    "Rival Rejection": "Scores comparison against progress-only and log/loglog seeded rivals.",
+    "Leakage Discipline": "Scores avoidance of provenance leakage, run-id lookup, and circular phase definitions.",
+    "Generative Yield": "Scores whether the thesis yields a falsifiable clock-transform or functional-collapse mechanism for fresh validation."
+  }
+}

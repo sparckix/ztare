@@ -3,6 +3,8 @@
   "project": "gp163d_unified_accel",
   "description": "Newton-mode N-D substrate: multi-scale acceleration interpolation across SPARC galaxies + CLASH clusters + Chae wide-binary 100-MC ensemble. v3.2.2 Tier-3 mode: bridge phenomenology already verified (path-a closed, audit-pass MRE 0.220, NFW-distinguishable). Mandate: derive a Lagrangian whose Euler-Lagrange equations reduce to a closed-form y(g_bar, mass_log10, radius_log10) that recovers the bridge AND passes strict Cassini + Mercury PPN gates. Universal-law candidate.",
   "rubric_mode": "newton",
+  "rubric_modes": ["invariant_search"],
+  "rubric_modes_reason": "GP-180/GP-181 (2026-04-28): primary mode stays \"newton\" so the mform-alignment baseline-anchor gate keeps firing; secondary \"invariant_search\" composes via rubric_mode_resolver and activates Lagrangian derivation + Buckingham \u03c0 + Noether-variance loss + DAG steering. Operator-set explicit flags below WIN over the mode defaults.",
   "rubric_mode_reason": "Discovery substrate: phenomenological bridge form is verified (Tier-1 closed). Tier-3 reach is the live question \u2014 derive the bridge from a modified-gravity Lagrangian. Generative yield = a Lagrangian whose weak-field limit reproduces the bridge.",
   "tier_3_universal_law_target": {
     "active": true,
@@ -10,9 +12,22 @@
     "promotion_floor_raw_score": 100,
     "promotion_floor_reason": "Bridge form already produces raw=100 (visible passes) but capped=50 (R20-R24 effective-K-9). New champion must beat raw=100 AND avoid R20-R24 cap. The only path is a Lagrangian-derived form with K_extra <= 2 free dimensional constants beyond G and a_0."
   },
-  "holdout_audit_fraction": 0.30,
+  "holdout_audit_fraction": 0.3,
   "holdout_audit_fraction_reason": "Apparatus-wide upgrade (2026-04-26): 30% of farther-tail rows are hash-locked into an audit slice the mutator NEVER sees during iteration. Computed once at run-end and written to iteration_telemetry.jsonl's final record. Defends against substrate-leakage parameter laundering: a sufficiently flexible Lagrangian/parametric class can fit visible+holdout simultaneously when both are nominally available; the audit slice enforces honest extrapolation. Seed = sha256(rubric_id + rubric_version) so the same split is reproducible across runs.",
-  "checkpoint_iters": [[5, "any_pass_l3"], [10, "any_score_geq_70"], [15, "raw_score_improved_from_iter_1"]],
+  "checkpoint_iters": [
+    [
+      5,
+      "any_pass_l3"
+    ],
+    [
+      10,
+      "any_score_geq_70"
+    ],
+    [
+      15,
+      "raw_score_improved_from_iter_1"
+    ]
+  ],
   "checkpoint_iters_reason": "Bound runaway open-ended runs. iter-5: at least one iter must have passed all gates (L3 unit-test floor); iter-10: at least one iter must have raw_judge_score >= 70 (Newton-step threshold); iter-15: best raw_judge_score must exceed iter-1 (apparatus is moving). Failing any checkpoint aborts the run with run_exit_reason='checkpoint_failure'.",
   "falsification_mode": "bounded_discriminator",
   "enable_fit_primitive": false,
@@ -32,24 +47,49 @@
   "persona": "You are an adversarial epistemic auditor. The substrate has THREE system classes (A, B, C) connected by an interpolation y=f(x) that approaches y\u2192x at high x and y\u2192sqrt(c\u00b7x) at low x. CLASS A IS IN VISIBLE; CLASSES B AND C ARE WITHHELD. The thesis MUST pre-commit to ONE of two hypotheses: (U) Universality \u2014 c is the same across all classes; OR (S) Scale-dependence \u2014 c is a function of physical features. **v3 SUBSTRATE (2026-04-26 enrichment)**: Class B (clusters) now carries REAL per-cluster baryonic mass (Umetsu+2016 CLASH M_500c \u00d7 f_bar=0.13) spanning mass_log10\u2208[13.73, 14.46] (0.73 dex within-class spread) and r_500c-derived radius_log10\u2208[3.00, 3.23] (0.23 dex). Class C (wide-binary aggregate stacks from Chae 2023) carries REAL per-bin radius_log10\u2208[-6.0, -3.88] (2.12 dex spread, fixed v2 placeholder bug) but SYNTHESIZED per-row mass_log10\u2208[0.04, 0.32] flagged as `synthesized_log_msun_jitter_chae2023_typical` \u2014 this is instrumentation, not physics. **A+B success on joint(mass, radius) is a CITABLE Newton-step finding; A+C success that depends on Class C mass variation is a GRAMMAR-test result, NOT a per-binary physics claim**. Available continuous Class A axes: mass_log10 (3.73 dex span, real per-galaxy from SPARC log_lum + log_mhi), radius_log10, gas_fraction (0.06\u20130.97, anti-correlated with mass), SBdisk_log10 (six-decade range, per-row from rotmod.dat). gas_fraction and SBdisk_log10 are NaN on classes B and C \u2014 forms that depend on them must declare what they predict on B/C without those terms. Hardcoded class-label multipliers (10.0 if class=='B' else 0.1 if class=='C' else 1.0) are an algebraic hack at the substrate-ceiling and DO NOT count as Hypothesis S \u2014 a true S form expresses scale-dependence as a smooth function of these continuous axes. BOTH hypotheses are legitimate pre-commits. Hypothesis U is correct if farther-tail passes; if it fails, the failure itself is the finding. Hypothesis S requires the form to express c as a function of features only (no free c_B or c_C parameters that 'fit' against absent data). The Newton-step claim lives in farther-tail performance, NOT in recovery of c_A \u2014 c_A's value (~1.2e-10) is potentially recital from training data, so do not heavily reward c_A accuracy alone. REJECT: forms that introduce free parameters c_B, c_C, k_B, or k_C without enough visible class-B/C data to constrain them; forms that reduce to universality in disguise without declaring Hypothesis U; any thesis without an explicit pre-commit. REWARD: explicit pre-commit + farther-tail validation; pre-committed scaling rules expressed as functions of features only; honest reporting when a pre-committed hypothesis fails (the failure is publishable). DO NOT REJECT: the apparatus-required idiom p.get(name, default) for parameter reads \u2014 this is the apparatus contract for I_model so it remains importable pre-fit (when MODEL_PARAMS={} during gate setup), not a falsifiability violation. The apparatus substitutes fitted values into MODEL_PARAMS before gate-time evaluation. DO NOT REJECT (apparatus-contract idioms, not violations): (1) `p.get(name, default)` for parameter reads \u2014 the apparatus contract for I_model so it remains importable pre-fit when MODEL_PARAMS={}; (2) inline dict/list literals replacing `from features import ...` inside `__main__` falsification suites \u2014 this is the R1 stdlib-only pattern, not a logic violation. The apparatus runs the harness against real data separately; the suite proves only that the form is internally consistent on hand-built inputs.",
   "cage_observe_mode": false,
   "cage_authoritative_mode": true,
-  "cage_mode_reason": "GP-157 v5.0 promoted from observe-mode → authoritative on 2026-04-27. R8/R9 + R10/R11 are Cage-routed with can_handle predicates; gp163d is homogeneous so R9 passes; R8 enforces feature coverage; R10 surfaces cross-class extrapolation diagnostic non-blocking; R11 enforces per-class MRE ceiling when enforce_per_class_farther_tail is set.",
+  "cage_mode_reason": "GP-157 v5.0 promoted from observe-mode \u2192 authoritative on 2026-04-27. R8/R9 + R10/R11 are Cage-routed with can_handle predicates; gp163d is homogeneous so R9 passes; R8 enforces feature coverage; R10 surfaces cross-class extrapolation diagnostic non-blocking; R11 enforces per-class MRE ceiling when enforce_per_class_farther_tail is set.",
   "framer_primary_feature_key": "radius_log10",
+  "parallel_mutator_k": 3,
+  "parallel_mutator_k_reason": "GP-157 Phase 4e blitzkrieg (2026-04-27 night) — K=3 personas (newton_discovery / munger_inversion / engineer_pragmatist) running in parallel per iter. Cost shape: 3× mutator tokens, 1× judge/fit (winner picked by syntactic heuristic before judge). Engineered divergence beats sampled divergence on multi-basin search; gp163d's class-asymmetric bridging is exactly that.",
+  "enable_recombination": true,
+  "enable_recombination_reason": "GP-174 Phase 1 panel-revised pipeline (2026-04-27 night) — adds AST crossover + persona-fusion onto Phase 4e parallel mutators. Closes ANALOGY-collapse / threshold-prior failure mode by producing structurally-novel hybrids the LLM prior alone cannot reach. Default OFF apparatus-wide; opt-in here because the 4-panel debate's synthesis target requires fragment-level recombination from disjoint families. Cost: 1 extra LLM call per stagnation-iter (fusion); crossovers are deterministic SymPy work, no LLM cost.",
+  "recombination_max_pairs": 3,
+  "recombination_max_hybrids_per_pair": 2,
+  "recombination_fusion_min_stagnation": 2,
+  "parallel_mutator_min_stagnation": 2,
+  "parallel_mutator_min_stagnation_reason": "Raised from 1 to 2 (2026-04-27 night) for short 6-iter runs — K=3 fires only when the apparatus has been stuck TWO consecutive iters, so K=3 hits at most ~3/6 iters (iter 3, iter 4, iter 6 if all consecutive non-promotions). Cost shape ~half of always-on K=3.",
+  "parallel_mutator_k1_ablation_every": 5,
+  "parallel_mutator_k1_ablation_every_reason": "Munger Lollapalooza C mitigation (panel seat 4 + apparatus seat) — every 5th iter is FORCED to K=1 regardless of stagnation triggers, so the K=3 pipeline can be compared against a K=1 baseline on the same trajectory. Detects compositional pipeline-overfitting (the failure mode where K=3 beats K=1 not via discovery but via self-conditioning on prior outputs). Cost: ~3% per-run overhead. Set to 0 to disable.",
   "substrate_class_key": "system_class",
   "enforce_per_class_farther_tail": true,
   "enable_forced_reframe": true,
   "enable_erdos_requery_on_stagnation": true,
-  "erdos_requery_stagnation_threshold": 2,
-  "erdos_requery_ast_bucket_threshold": 3,
+  "erdos_requery_stagnation_threshold": 1,
+  "erdos_requery_ast_bucket_threshold": 2,
+  "erdos_requery_thresholds_reason": "Tightened 2026-04-27: Erd\u0151s spec (GP-169) explicitly argues 'right move was at iter 1, apply cross-domain method BEFORE home-discipline iteration.' On gp163d the capped-stagnation pattern (3 consecutive iters at score=50 by R20-R24) doesn't manifest as zero-scores. Lowering thresholds + capped-streak detector (WAR-T16b) means Erd\u0151s re-fires after just 1 stagnation signal, surfacing cross-domain candidates earlier in the iter trajectory.",
+  "gp168_stagnation_threshold": 2,
+  "gp168_ast_bucket_threshold": 3,
+  "gp168_thresholds_reason": "Default GP-168 thresholds (3 zero-scores / 5 same-bucket) never trigger on gp163d's capped-50 pattern. Lowered to 2/3 so REFRAME fires after 2 stagnant iters or 3 same-bucket iters \u2014 early enough to inject Lagrangian alternatives (substrate_domain=modified_gravity) before the apparatus burns 5+ iters polishing the bridge skeleton.",
   "erdos_requery_max_per_run": 3,
   "cage_constant_laundering_score_cap": 50,
-  "cage_constant_laundering_score_cap_reason": "Defense-in-depth (Gemini-Pro panel 2026-04-26): when R20/R21/R24 detect kernel-camouflage, anchor coincidence, or effective-K mismatch, the apparatus caps the score at 50 deterministically — judge does not perform AST analysis (LLMs are blind to AST topology and get talked out of it by mutator prose). The cap is BELOW the 70 threshold typically required for a Newton-step claim; a hack form can score up to 50 (acknowledging the underlying observation may be real) but cannot earn a Newton-step result without declaring its hidden parameters as fitted DoF.",
+  "cage_constant_laundering_score_cap_reason": "Defense-in-depth (Gemini-Pro panel 2026-04-26): when R20/R21/R24 detect kernel-camouflage, anchor coincidence, or effective-K mismatch, the apparatus caps the score at 50 deterministically \u2014 judge does not perform AST analysis (LLMs are blind to AST topology and get talked out of it by mutator prose). The cap is BELOW the 70 threshold typically required for a Newton-step claim; a hack form can score up to 50 (acknowledging the underlying observation may be real) but cannot earn a Newton-step result without declaring its hidden parameters as fitted DoF.",
   "effective_parameter_count_slack": 0,
-  "effective_parameter_count_slack_reason": "R21 default: declared K must match effective K (every chosen literal is a parameter). Mutator can submit forms with derivable constants (4·ln(2), π, etc.) — those are on the trivial whitelist. Magic numbers like 15.16 / 1.865 / 0.12 count as DoF.",
-  "r11_excluded_classes": ["C"],
+  "effective_parameter_count_slack_reason": "R21 default: declared K must match effective K (every chosen literal is a parameter). Mutator can submit forms with derivable constants (4\u00b7ln(2), \u03c0, etc.) \u2014 those are on the trivial whitelist. Magic numbers like 15.16 / 1.865 / 0.12 count as DoF.",
+  "r11_excluded_classes": [
+    "C"
+  ],
   "r11_excluded_classes_reason": "Class C wide-binary y/x<1 is a known deprojection geometry artifact, not a physical y<x relation. Excluded from R11 hard-fail enforcement; surfaced as honest_null. R10 cross-class diagnostic still computes Class C residual structure for telemetry.",
+  "per_class_farther_tail_thresholds": {
+    "A": 0.50,
+    "B": 0.50,
+    "D": 0.60,
+    "N": 0.30,
+    "S": 0.01
+  },
+  "per_class_farther_tail_thresholds_reason": "Calibrated per-class MRE ceilings for v3.5 substrate (2026-04-28 night). A/B (SPARC galaxies, CLASH clusters) keep canonical 0.50 farther-tail floor. D (43 dwarf-spheroidals from McConnachie+2012) gets 0.60 due to wide g_obs/g_bar ratio range (2 to 1517 — Wolf-estimator + stellar-only g_bar uncertainty). N (5 Banik+2024 wide-binary null) gets 0.30 — small sample, well-defined null hypothesis, any form predicting MOND boost should fail this. S (3 Solar System anchors) gets 0.01 — Newtonian regime is essentially exact within Cassini-PPN. **CRITICAL: forms that pass A+B+C anchors but fail D or N MRE are the kernel-camouflage pattern caught by the offline 12-form sweep on 2026-04-28. The 5/5-anchor false-positive shape only existed because R11 wasn't running on D and N.**",
   "enable_cold_llm_erdos_seed": true,
   "cold_llm_seed_forbidden_domain": "astrophysics",
-  "cold_llm_seed_reason": "GP-169 Phase 1: pre-iter-1 + stagnation re-query. Forbidden domain stays 'astrophysics' (per Erdős-23-year-old rationale: human astrophysicists are anchored on canonical MOND/NFW/ΛCDM textbook priors; forbidding native domain forces cross-domain framings the field's experts wouldn't reach for). Path-b push to Lagrangian framings is handled by REFRAME's domain-aware seam (rubric.substrate_domain='modified_gravity' → REFRAME offers chameleon/AQUAL/MOG/f(R)) — these are research-frontier modified-gravity, not textbook astrophysics, so they're delivered via REFRAME's force-disjoint-architecture path rather than Erdős's anti-canonical path. Three-mechanism separation: (1) Erdős gives cross-domain candidates pre-iter-1, (2) REFRAME forces physics Lagrangians on AST-bucket-lock or stagnation, (3) verified_axioms successor_lock + R20/R21/R24/R22 cage-cap drive path-a closure.",
+  "cold_llm_seed_reason": "GP-169 Phase 1: pre-iter-1 + stagnation re-query. Forbidden domain stays 'astrophysics' (per Erd\u0151s-23-year-old rationale: human astrophysicists are anchored on canonical MOND/NFW/\u039bCDM textbook priors; forbidding native domain forces cross-domain framings the field's experts wouldn't reach for). Path-b push to Lagrangian framings is handled by REFRAME's domain-aware seam (rubric.substrate_domain='modified_gravity' \u2192 REFRAME offers chameleon/AQUAL/MOG/f(R)) \u2014 these are research-frontier modified-gravity, not textbook astrophysics, so they're delivered via REFRAME's force-disjoint-architecture path rather than Erd\u0151s's anti-canonical path. Three-mechanism separation: (1) Erd\u0151s gives cross-domain candidates pre-iter-1, (2) REFRAME forces physics Lagrangians on AST-bucket-lock or stagnation, (3) verified_axioms successor_lock + R20/R21/R24/R22 cage-cap drive path-a closure.",
   "cage_meta": {
     "type": "accel_interpolation",
     "class": "nd_features",
@@ -105,13 +145,14 @@
   "substrate_expected_y_over_x": "ge_one",
   "substrate_expected_y_over_x_reason": "On gp163d the physical relation expects y >= x (observed acceleration exceeds Newtonian baseline in low-acceleration regime). Class C binary data violates this systematically (deprojection artifact). The flag is substrate-specific and should NOT be set for substrates where y < x is the expected behavior.",
   "analogy_domain_hint": "physics",
-  "analogy_domain_hint_reason": "GP-167 Turn 7 light semantic anchor — broad field category only (case 1 retrieval: known forms, new constants from data). Does not name MOND, Milgrom, or any specific theory; restores ANALOGY's anchor-escape function without recital risk.",
+  "analogy_domain_hint_reason": "GP-167 Turn 7 light semantic anchor \u2014 broad field category only (case 1 retrieval: known forms, new constants from data). Does not name MOND, Milgrom, or any specific theory; restores ANALOGY's anchor-escape function without recital risk.",
   "enable_framer": true,
   "enable_framer_reason": "GP-152 v2.0 \u2014 active reframing on gp163d to search coordinate transforms before fitting (RAR scale-dependent y, multi-decade x). NOTE: framer is currently wired only into 1D fit_primitive path, not the N-D fit_primitive_features path gp163d uses. Flag is set so when N-D wiring lands (gp-164 Turn 3 Phase 1) the substrate engages without further rubric edits.",
   "enable_analogy": true,
   "enable_analogy_active": true,
   "enable_analogy_reason": "GP-164 L1 ANALOGY \u2014 cross-domain candidate forms via JUDGE_MODEL_ID. ACTIVE mode (not observe): briefing provider injects candidates as concrete suggestions to mutator. Engagement gates: stagnation_count >= 3 OR pathological=True.",
-  "analogy_min_stagnation": 3,
+  "analogy_min_stagnation": 1,
+  "analogy_min_stagnation_reason": "Lowered from 3 to 1 (2026-04-27). Per GP-169 spec: 'iterating within human-prior architectures for 2-7 iters and only reaching ANALOGY when stuck is backwards.' Fire ANALOGY from iter 2 onward so the mutator sees cross-domain candidate suggestions while still considering the locked bridge form, not after stagnation has burned 3 iters.",
   "enable_solar_system_ppn_gates": true,
   "enable_solar_system_ppn_gates_reason": "Substrate makes a modified-gravity claim (radial acceleration y(g_bar) spanning 10 orders of magnitude). Any candidate must reduce to Newtonian/GR weak-field gravity in the Solar System: G-CASSINI-PPN enforces |y/g_bar - 1| < 2.3e-5 across probe g_bar in [1e-3, 3e-1] m/s^2 (Bertotti+ 2003 Cassini Shapiro time-delay); G-MERCURY-PRECESSION enforces fractional deviation < 4e-10 at Mercury orbit g_bar~3.96e-2 m/s^2 (translates to <0.5% of 43 arcsec/century perihelion shift). Both fire as Cage-routed POST_FIT hard_fails on the gp163d nd_features substrate.",
   "mercury_precession_relative_bound": 4e-10,
@@ -126,5 +167,133 @@
     "mass_log10": 0.0,
     "radius_log10": -3.0,
     "_comment": "Solar-System-typical (mass_log10, radius_log10) for forms that gate c_eff on these axes; chosen so cluster/galaxy-scale activation gates remain closed."
-  }
+  },
+  "research_director_literature_anchors": [
+    {
+      "label": "galaxy_milgrom_a0",
+      "x": 1e-12,
+      "expected_y": 1.0954e-11,
+      "tolerance_dex": 0.13,
+      "features": {
+        "x": 1e-12,
+        "system_class": "A",
+        "mass_log10": 10.0,
+        "radius_log10": 1.0,
+        "gas_fraction": 0.1,
+        "SBdisk_log10": 0.0,
+        "M_gas_log10": NaN,
+        "sigma": 1e-13,
+        "id": -1,
+        "system_id": "anchor_galaxy"
+      },
+      "source": "Milgrom 1983 / Famaey-McGaugh 2012 RAR (arXiv:1112.3960): y/g_bar = sqrt(a0/g_bar) at deep-MOND, a0 = 1.2e-10 m/s\u00b2",
+      "rationale": "At g_bar=1e-12 in pure-MOND deep regime, expect y = sqrt(1.2e-10 * 1e-12) = 1.095e-11 m/s\u00b2 (ratio ~10.95). Form must agree within 0.13 dex (35%)."
+    },
+    {
+      "label": "cluster_tian2020_rar",
+      "x": 1e-10,
+      "expected_y": 4.5e-10,
+      "tolerance_dex": 0.13,
+      "features": {
+        "x": 1e-10,
+        "system_class": "B",
+        "mass_log10": 14.0,
+        "radius_log10": 3.0,
+        "gas_fraction": NaN,
+        "SBdisk_log10": NaN,
+        "M_gas_log10": 13.95,
+        "sigma": 1e-11,
+        "id": -2,
+        "system_id": "anchor_cluster"
+      },
+      "source": "Tian, Umetsu, Ko, Donahue & Chiu 2020 ApJ 896:70 (arXiv:2001.08340) cluster RAR Fig 2 + CDS VizieR J/ApJ/896/70: at g_bar\u22481e-10 m/s\u00b2, g_obs\u22484.5e-10 m/s\u00b2 for CLASH stack",
+      "rationale": "Tian+2020's cluster-RAR is materially above galaxy-MOND at this g_bar. Forms that recover MOND for galaxies but stay near MOND for clusters fail this anchor \u2014 that's the substrate-ceiling signal."
+    },
+    {
+      "label": "widebinary_chae2023_deep_mond",
+      "x": 7.08e-11,
+      "expected_y": 1.011e-10,
+      "tolerance_dex": 0.13,
+      "features": {
+        "x": 7.08e-11,
+        "system_class": "C",
+        "mass_log10": 0.176,
+        "radius_log10": -5.31,
+        "gas_fraction": NaN,
+        "SBdisk_log10": NaN,
+        "M_gas_log10": NaN,
+        "sigma": 7.08e-12,
+        "id": -3,
+        "system_id": "anchor_widebinary"
+      },
+      "source": "Chae 2023 ApJ 952:128 (arXiv:2305.04613): at log10(g_N)=-10.15, g_obs/g_pred = 1.426. \u2192 expected y = 1.426*7.08e-11 = 1.01e-10 m/s\u00b2",
+      "rationale": "Wide-binary deep-MOND boost is the small-scale Newton-step. Form must agree at this anchor or the cross-class bridging claim fails."
+    }
+  ],
+  "research_director_literature_anchors_meta": {
+    "added_utc": "2026-04-27",
+    "rule_authority": "RD-1.1-TRIANGULATION (mandate v1.1) + GP-172 Director's-duty",
+    "consumer": "scripts/research_director_triangulate.py \u2014 invoked by the Research Director (Claude Code session) per the GP-172 mandate AFTER every champion promotion or score>=70 event. NOT consumed by autoresearch_loop or any apparatus code path.",
+    "rationale": "Literature anchors are substrate-specific (gravity has Tian/Chae/Milgrom; OEIS has dictionary references; org topology has none). Putting anchors in the substrate-agnostic apparatus would spaghettify the loop. Putting anchors in the per-substrate rubric is correct (rubrics are the substrate-customization surface). The Research Director (Claude Code) reads them as part of the mandate and invokes the standalone triangulation script. The mandate, not the apparatus, is what enforces the rule."
+  },
+  "fit_anchors": [
+    {
+      "name": "solar_system",
+      "features": {"x": 5.93e-3, "radius_log10": -7.5, "rho_local_log10": 8.0, "mass_log10": 0.0, "M_gas_log10": null, "gas_to_bary_ratio_log10": null, "SBdisk_log10": 0.0, "gas_fraction": 0.0, "system_class": "S", "M_500c_uncertainty_dex": 0.0, "sigma": 5.93e-5},
+      "y_expected": 5.93e-3,
+      "tolerance_dex": 0.005
+    },
+    {
+      "name": "deep_mond_galaxy",
+      "features": {"x": 1.0e-12, "radius_log10": 1.0, "rho_local_log10": 8.0, "mass_log10": 10.0, "M_gas_log10": null, "gas_to_bary_ratio_log10": null, "SBdisk_log10": 0.0, "gas_fraction": 0.1, "system_class": "A", "M_500c_uncertainty_dex": 0.0, "sigma": 1.0e-13},
+      "y_expected": 1.095e-11,
+      "tolerance_dex": 0.13
+    },
+    {
+      "name": "cluster",
+      "features": {"x": 1.0e-10, "radius_log10": 3.0, "rho_local_log10": 5.0, "mass_log10": 11.5, "M_gas_log10": 14.0, "gas_to_bary_ratio_log10": 2.5, "SBdisk_log10": null, "gas_fraction": null, "system_class": "B", "M_500c_uncertainty_dex": 0.15, "sigma": 1.0e-11},
+      "y_expected": 4.5e-10,
+      "tolerance_dex": 0.13
+    },
+    {
+      "name": "wide_binary",
+      "features": {"x": 7.08e-11, "radius_log10": -5.31, "rho_local_log10": 8.0, "mass_log10": 0.176, "M_gas_log10": null, "gas_to_bary_ratio_log10": null, "SBdisk_log10": null, "gas_fraction": null, "system_class": "C", "M_500c_uncertainty_dex": 0.0, "sigma": 7.08e-12},
+      "y_expected": 1.011e-10,
+      "tolerance_dex": 0.13
+    }
+  ],
+  "fit_anchors_reason": "Frame Adjudicator v2 — Component 2 (anchor-augmented loss). Each anchor enters the fit objective as hinge-loss in dex^2: penalty = max(0, |log10(pred/expected)| - tolerance_dex)^2. lambda scales against SSE (default 100; tunable via fit_anchor_penalty_lambda). Solar tolerance is tight (0.005 dex ~1.2%) since Solar must be Newtonian-exact; others are 0.13 dex per RD anchor convention. Closes the 'optimizer cheats the screen' failure mode confirmed in /tmp/framer_sim_v2_results.txt where a free anchor-screen got log_w=34 (flattened) and Solar blew to 0.47 dex.",
+  "fit_anchor_penalty_lambda": 100.0,
+  "frame_adjudicator_threshold_bits": 20.0,
+  "frame_adjudicator_threshold_bits_reason": "Frame Adjudicator v2 — Component 3 (mechanism-generative briefing). When framer's MDL_gain >= 20 bits AND class-balanced MDL >= 10 bits, the mutator briefing switches from 'consider applying h_in' to 'propose 2-3 physical mechanisms that would produce this coordinate preference; encode the strongest as PARAMETRIC_FORM, ensure it vanishes at anchors.' 20 bits = ~3x Kass-Raftery 'decisive' threshold (7 bits); below 20, observe-only.",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "GP-134 closed-loop DAG steering (2026-04-28). The probability DAG was being computed every iter and written to disk for 5 runs while flag stayed false. Every recent DAG flagged Density-irrel as the weakest node (p=0.55) and the mutator never saw the signal. Flag flipped: compute_dag_steering_context now consumes urgency = edge_weight × node_probability, applies 3-iter hysteresis bump-to-#2 if the same node stays #1, and emits dag_stagnation damage signal if 5+ iters stuck. Result: mutator briefing names the weakest claim explicitly with watch_signal.",
+  "enable_buckingham_pi_gate": true,
+  "buckingham_strict": false,
+  "enable_buckingham_pi_gate_reason": "GP-179 Buckingham π gate (2026-04-28). AST-walks PARAMETRIC_FORM and rejects any transcendental (exp/log/tanh/sin/asinh/sigmoid/erf) whose argument contains features['x'] (g_bar, [m/s²]) or features['sigma'] without a same-units divisor. Forces dimensional thinking: transcendentals only take dimensionless arguments. Soft mode (strict=false) surfaces violations to the mutator briefing without blocking the fit; strict mode hard-skips. We start soft to gather telemetry on how often the mutator violates dimensional analysis.",
+  "dimensional_features": {"x": "acceleration", "sigma": "acceleration"},
+  "analogy_structural_mode": true,
+  "analogy_structural_mode_reason": "GP-179 (2026-04-28). Switches the ANALOGY prompt from 'find a closed-form whose shape matches residual surface' (curve-fitting) to 'identify the structural-physical isomorphism (Coulomb→screened-Coulomb, laminar→turbulent, gas→plasma) and propose the action-term that encodes the analogous symmetry'. Mechanism-first; closed-form is downstream of the action. Output schema adds structural_correspondence + symmetry + action_term fields alongside legacy candidate_forms.",
+  "enable_lagrangian_derivation": true,
+  "enable_lagrangian_derivation_reason": "GP-180 Lagrangian Derivation Primitive (2026-04-28). When the mutator submission declares LAGRANGIAN + Q_VARIABLES + BACKGROUND + PREDICTION + SYMMETRIES alongside the legacy PARAMETRIC_FORM, the apparatus uses sympy to compute Euler-Lagrange equations, solve steady state, and SUBSTITUTE the derived closed-form for the mutator's hand-written one. The mutator's PARAMETRIC_FORM is now a FALLBACK; the action principle is the search target. Noether invariants from declared symmetries are extracted for downstream loss augmentation. If derivation fails, falls back transparently to PARAMETRIC_FORM (no run break).",
+  "noether_variance_weight": 0.3,
+  "noether_variance_weight_reason": "GP-180 Hamilton-Noether dovetail (2026-04-28). For every Noether invariant Π extracted from a successful Lagrangian derivation, the fit objective adds λ · Var(Π)/⟨|Π|⟩² (squared coefficient of variation, dimensionless). λ=0.3 calibrates so a 30% inconstancy across rows costs ~3% of the SSE — enough to penalize fake invariants without dominating the residual signal. A real conservation law has CV→0 and the term vanishes. Set to 0 to disable.",
+  "enable_cold_shot_seed": true,
+  "enable_cold_shot_seed_reason": "GP-184 cold-shot structural-seed primitive (2026-04-28 afternoon, paper 7 §11.14). Pre-iter-1 single LLM call with full substrate context + the four falsification gates (B1-B4) as constraints. Output: a structurally-honest Lagrangian declaration the iterative apparatus fits rather than re-derives. Activated to complement the existing GP-169 Erdős cross-domain seed, which deliberately forbids native-domain priors. The cold-shot seed does the OPPOSITE: gives the seed model substrate priors AND falsification-gate constraints upfront, then ZTARE's parameter-fitter adapts the proposed structure on the substrate.",
+  "cold_shot_falsification_gates": ["G-LAGRANGIAN-NONTRIVIAL", "G-SCREEN-SIGN", "G-FEATURE-CONTRIB", "G-CROSS-CLASS-DEGEN"],
+  "cold_shot_pareto_target": {
+    "description": "Cross the (Cluster ≤ 0.55, Banik wide-binary ≤ 0.30) Pareto frontier on per-class farther-tail mean MRE. Iter5_bridge+screen historical Pareto-best: Cluster=0.51, Banik=0.28, capped by R21 effective-K-9. Iter 2 of run 1777381378: Cluster=0.55, Banik=0.10, capped by per-class farther-tail thresholds AND falsified by the structural inversion (cosmetic Lagrangian, wrong-sign chameleon). Goal: a structurally-honest Lagrangian whose closed form lands at or below this Pareto frontier on per-class MRE.",
+    "cluster_threshold": 0.55,
+    "banik_threshold": 0.30,
+    "current_baseline_form": "iter 2 of run 1777381378 (planted as test_model_baseline.py 2026-04-28); type=phenomenological_bridge_v1; falsified as new-law claim by G-LAGRANGIAN-NONTRIVIAL + G-SCREEN-SIGN tests run by Research Director."
+  },
+  "cold_shot_seed_timeout_seconds": 240,
+  "cold_shot_seed_max_tokens": 12000,
+  "substrate_version_target": "v3.6",
+  "substrate_version_target_reason": "GP-185 substrate v3.6 (paper 7 §11.15) adds three load-bearing columns: a_pressure_baryon (|∇P_b|/ρ_b), eta_pressure (a_P/g_bar regime discriminator — empirically η_P~0.1 for galaxy disks vs η_P~190 for cluster cores), and g_external (Galactic background / cluster constant). features.py prefers v3.6 when the CSV exists; v3.5 is the fallback. The cold-shot v4 prompt includes the new substrate signature; the mutator briefing surfaces the new keys via feature_keys() to per_class_breakdown / data_diagnostics providers. Set GP163D_SUBSTRATE_VERSION=v3.5 in the environment to force v3.5 fallback for sensitivity comparison.",
+  "briefing_budget_chars": 12000,
+  "briefing_budget_chars_reason": "Paper 7 §11.15 briefing-density fix. Tiered fade-in: T0/T1/T2 always render (~6.5k chars baseline); T3 (data_diagnostics, gate_gap, framer_recommendation, contamination_defense) renders when stagnation_count > 2; T4 (forced_reframe, cold_llm_seed, analogy_candidates) when stagnation_count > 4; T5 (iter_trajectory, row_outliers) hibernate. Soft cap of 12000 chars: T3+ providers that would push past budget are dropped; T0/T1/T2 are never trimmed. Set briefing_tiered_disable=true to revert to legacy ~28k briefing.",
+  "cold_shot_iter1_direct_inject": false,
+  "cold_shot_iter1_direct_inject_reason": "Paper 7 §11.15. Default OFF for v1.9 → set to true to bypass mutator on iter 1 and use the cold-shot's own LAGRANGIAN/PARAMETRIC_FORM as the iter-1 candidate (skips the briefing-density routing failure on the first iteration). Mutator resumes from iter 2 onward with cold-shot visible in briefing at T1 priority 145. Conservative default while v3.6 substrate is being validated; flip to true for the cold-shot v4 run once Phase 3 validation passes.",
+  "rubric_version": "1.10"
 }

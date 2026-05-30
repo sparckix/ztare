@@ -1,5 +1,5 @@
 {
-  "project_dir": "/Users/daalami/figs_activist_loop/projects/recursive_bayesian_claude_gemini",
+  "project_dir": "projects/recursive_bayesian_claude_gemini",
   "thesis_rel": "history/1775252009_iter4_score_95_recursive_bayesian.md",
   "expected_exploit": "Selective Rigor, Claim-test mismatch, Scaffolding proof",
   "description": "The specimen contains clean internal arithmetic and architecture-scaffolding checks (bridge parameter counts, regularization scope, beta ordering), but the load-bearing claim is that the architecture preserves predictive variance and solves the orthogonality-utility trade-off. The tests are rigorous, but they target scaffolding rather than the central claim.",

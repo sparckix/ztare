@@ -3,15 +3,12 @@
   "project": "gp147_gate_discovery_validation",
   "rubric_mode": "newton",
   "rubric_mode_reason": "gp147 asks the mutator to discover Phase D / E1 claim-pipeline failure-mode gates via Munger inversion + Popper falsification, without spoon-feeding GP-144's answers. The task is meta-architectural — the operator will compare output to GP-144 offline.",
-
   "enable_dag_steering": true,
   "enable_dag_steering_reason": "DAG steering keeps the mutator anchored on the claim-pipeline gap between Phase C admission gates and gp139 Lean hardening.",
-
   "falsification_mode": "bounded_discriminator",
   "enable_fit_primitive": false,
   "fit_score_mode": "none",
   "fit_score_mode_reason": "Qualitative substrate — the output is a gate design, not a numerical fit. Scoring is rubric-driven.",
-
   "discovery_mode": false,
   "holdout_hard_gate": false,
   "farther_tail_region": null,
@@ -20,14 +17,11 @@
   "disable_evidence_fit_gate_reason": "qualitative substrate — evidence is pipeline description, not numerical curve",
   "disable_uniqueness_gap_gate": true,
   "disable_uniqueness_gap_gate_reason": "qualitative substrate — rival gate designs scored by rubric",
-
   "gp103_stagnation_threshold": 3,
   "holdout_budget": 0,
   "enable_mform_audit": true,
   "general_office_model": "gpt4.1",
-
   "persona": "You are an adversarial architectural auditor with Charlie Munger's inversion discipline and Karl Popper's falsification discipline. You are evaluating proposals for guardrail gates that defend against SPECIFIC, NAMED failure modes of the new-science claim pipeline. You REJECT: (a) proposals that copy the five admission-gate categories from ztare_on_ztare Evidence Set C (pMDL / Tracy-Widom / Noether / Lean allowlist / rubric hardening — those are a different layer); (b) proposals that propose 'stronger' versions of gp139's Lean hardening (already solved); (c) proposals that rely on empirically tuned thresholds rather than mechanistic acceptance boundaries; (d) proposals without an explicit Munger inversion statement; (e) proposals without a pre-registered Popper falsifier. You REWARD: (i) specific, named failure modes at the claim-pipeline layer that admission gates and Lean hardening DO NOT catch; (ii) concrete gate designs at named file-level insertion points; (iii) inversions that genuinely flip the gate (not restatements); (iv) Popper falsifiers that are deterministically computable from claim artifacts; (v) proposals that explicitly credit existing work (gp136/137/138/139) and identify the gap those leave. You are Munger-strict on inversion depth: 'how would we guarantee this fails' must be substantive, not a trivial negation.",
-
   "dimensions": [
     {
       "name": "Failure-Mode Specificity",
@@ -80,9 +74,8 @@
     "7_Non_Overlap_With_Existing_Work": "Does the thesis explicitly differentiate its gates from the 5 admission categories and gp136-139 hardening?",
     "8_Circularity_Audit": "Are circular gates identified and ruled out?"
   },
-
   "_charter_reference": "projects/gp147_gate_discovery_validation/project_charter.md",
-  "_seam_reference": "research_areas/private/seams/engine/GP-144_new_science_claim_discipline_seam.md (operator side; mutator is blind to this)",
+  "_seam_reference": "GP-144 (internal seam) (operator side; mutator is blind to this)",
   "_v1_notes": [
     "2026-04-24: gp147 is a meta-validation substrate — does ZTARE discover the Phase D/E1 bridge gates via inversion without being told?",
     "Operator compares mutator output to GP-144 OFFLINE. No bidirectional feedback loop.",

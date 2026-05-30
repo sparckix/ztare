@@ -1,0 +1,116 @@
+{
+  "name": "gp154_scaling_law_normalized",
+  "project": "gp154_scaling_law_normalized",
+  "rubric_version": "v3.1-axis-collapse-baseline",
+  "rubric_version_reason": "v3.1 (2026-05-01): after run 1777609672 and offline replay, the axis-conditioned law z=curve_axis_rev^alpha_axis passed both holdout and farther-tail with K=3. The next loop must beat or mechanize this baseline, not rediscover it accidentally.",
+  "runner_allowed_imports": ["features"],
+  "description": "Newton-mode substrate for normalized neural scaling laws. Target is z=(L-L_min(curve))/(L_max(curve)-L_min(curve)), not raw L. v3.1 baseline: axis-conditioned curve-shape collapse z=curve_axis_rev^alpha_axis passes holdout/farther-tail; candidates must beat, simplify, or mechanize it.",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "Discovery substrate: the open question is whether normalized scaling-curve shape is a transferable law after measurement gauges are removed.",
+  "falsification_mode": "bounded_discriminator",
+  "holdout_hard_gate": true,
+  "holdout_budget": 0,
+  "enforce_per_class_farther_tail": true,
+  "farther_tail_threshold": 0.15,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Custom gate_harness.py defines farther-tail as held-out studies Hestness + Henighan and scores bounded z with MAE.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Evidence is an nd_features table with a custom gate harness, not a single curve.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival forms are judged by holdout/farther-tail MAE and anti-pattern gates.",
+  "enable_fit_primitive_features": true,
+  "fit_primitive_features_k_max": 8,
+  "fit_primitive_features_k_max_reason": "The normalized target should need fewer parameters than raw L because curve floor/amplitude gauges are removed. K<=8 leaves room for sweep-specific curvature while forcing compression.",
+  "enable_substrate_critic": true,
+  "enable_analogy": true,
+  "analogy_domain_hint": "statistical physics / renormalization group",
+  "framer_primary_feature_key": "curve_axis_unit",
+  "substrate_class_key": "study",
+  "fit_robust_loss": true,
+  "fit_weighted_residuals": false,
+  "parallel_mutator_k": 1,
+  "parallel_mutator_force": false,
+  "parallel_mutator_force_iters": [],
+  "enable_cold_llm_erdos_seed": true,
+  "enable_cold_llm_erdos_seed_reason": "Cross-domain de-anchoring remains useful, but the substrate now has a specific invariant target.",
+  "cold_llm_seed_forbidden_domain": "machine learning, deep learning, neural-network scaling, AI",
+  "enable_cold_shot_seed": true,
+  "enable_lagrangian_derivation": true,
+  "enable_lagrangian_derivation_reason": "A variational/free-energy route is admissible if it yields a concrete closed-form z(curve_axis_unit, ...) and not merely a metaphor.",
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["physics_lagrangian_seed"],
+    "disabled_families": [],
+    "budget": {"max_calls_per_run": 3, "max_cost_usd": 1.5}
+  },
+  "enable_forced_reframe": true,
+  "enable_erdos_requery_on_stagnation": true,
+  "erdos_requery_stagnation_threshold": 2,
+  "erdos_requery_ast_bucket_threshold": 3,
+  "erdos_requery_max_per_run": 2,
+  "inject_antipattern_catalog": "hardkill",
+  "structural_blocker_enforcement": "both",
+  "cage_observe_mode": false,
+  "cage_authoritative_mode": true,
+  "cage_constant_laundering_score_cap": 50,
+  "effective_parameter_count_slack": 0,
+  "evidence_contract": {
+    "format": "NONE",
+    "columns": [],
+    "independent_vars": [],
+    "min_rows": 0,
+    "require_finite": false,
+    "format_provenance": "operator_set_nd_features",
+    "docstring": "gp154_scaling_law_normalized is cage_meta.class=nd_features. Each row is a feature dict; target is z_normalized_excess_loss in [0,1]."
+  },
+  "cage_meta": {
+    "type": "scaling_law",
+    "class": "nd_features",
+    "target_convention_homogeneity": "heterogeneous",
+    "min_rows_per_category": 3,
+    "near_miss_factor": 1.5,
+    "frame_invariant_y": true,
+    "enforce_min_rows": false
+  },
+  "persona": "You are an adversarial epistemic auditor. This substrate is NOT raw-loss prediction. It tests whether neural scaling curves share a compact normalized shape after per-curve floor/amplitude gauge removal. The target is z=(L-L_min(curve))/(L_max(curve)-L_min(curve)), a bounded coordinate in [0,1]. Gate metrics use mean absolute error, not relative error. Reject lookup tables over study/source_paper_table/curve_id. Reject hidden numeric defaults inside PARAMETRIC_FORM. v3.1 baseline to beat: z=curve_axis_rev^alpha_axis with alpha_MIXED≈3.45, alpha_N≈1.46, alpha_D≈1.48; it passes holdout and farther-tail offline. Reward candidates that beat this baseline, reduce its K, or mechanize why mixed compute-frontier curves have a steeper exponent than pure N/D sweeps. A Lagrangian/free-energy story is admissible only if it produces an executable closed-form I_model.",
+  "dimensions": [
+    {
+      "name": "Normalized Invariant Discovery",
+      "weight": 30,
+      "description": "Find a compact closed-form predictor for z_normalized_excess_loss using curve geometry. Full credit requires K<=8, no curve/source lookup, and a transferable shape law."
+    },
+    {
+      "name": "Holdout Validation",
+      "weight": 25,
+      "description": "HOLDOUT MAE < 0.08 on Chinchilla/Kaplan normalized targets using gate_harness.py."
+    },
+    {
+      "name": "Farther-Tail Transfer",
+      "weight": 15,
+      "description": "FARTHER_TAIL MAE < 0.15 on all Hestness/Henighan normalized targets. Passing supports shape transfer after gauge removal."
+    },
+    {
+      "name": "Anti-Memorization Discipline",
+      "weight": 10,
+      "description": "No branching over study, source_paper_table, curve_id, or hidden numeric defaults. Effective parameter count must match declared K."
+    },
+    {
+      "name": "Generative Yield + Variational Mechanism",
+      "weight": 15,
+      "description": "Optional but rewarded: derive the curve-shape law from a concrete variational/free-energy or RG-style principle that yields the executable form."
+    },
+    {
+      "name": "Rival Skepticism",
+      "weight": 5,
+      "description": "Compare against at least two rivals, including z=curve_axis_rev and the v3.1 axis-conditioned exponent family."
+    }
+  ],
+  "criteria": {
+    "Normalized_Invariant_Discovery": "Compact closed-form z predictor, K<=8 preferred, no curve lookup.",
+    "Holdout_Validation": "HOLDOUT MAE < 0.08.",
+    "Farther_Tail_Transfer": "FARTHER_TAIL MAE < 0.15.",
+    "Anti_Memorization_Discipline": "No study/source/curve lookup; no hidden defaults.",
+    "Variational_Mechanistic_Yield": "Executable variational or RG-style derivation if claimed.",
+    "Rival_Skepticism": "At least two rival forms tested, including the v3.1 axis-conditioned exponent baseline."
+  }
+}

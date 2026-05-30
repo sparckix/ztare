@@ -1,0 +1,128 @@
+{
+  "name": "ns_proofsearch_null_profile_cap",
+  "project": "ns_proofsearch_null_profile_cap",
+  "rubric_version": "0.1-null-cap-branch-killer",
+  "rubric_version_reason": "Branch-killer substrate: target one obligation (NullProfileCapped) for one named class, NOT the global Track B theorem. Per advisor_channel Turn 10 §4.",
+  "description": "NS Track B branch-killer: null-profile cap. Closes either by Lean instantiation of NullProfileCapped on a named class, or by deterministic Python falsifier exhibiting a null profile with payoff > price.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search over a named obligation in a fixed Lean kernel; not numerical curve fitting."
+  },
+  "theorem_packet_contract": {
+    "required_top_level_functions": [
+      "null_class_name",
+      "null_class_construction",
+      "pricing_kernel_terms",
+      "null_profile_cap_theorem",
+      "accepted_branch_outcome"
+    ],
+    "reason": "Branch-killer substrate. The candidate must name the null class, expose its construction, expose the declared kernel terms, and produce a theorem (positive arm) or a falsifier (negative arm). The pre-judge gate enforces these top-level functions before paid judge calls."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No scalar farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "The target is a proof-shaped predicate instantiation, not data fitting.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "The hard gate evaluates Lean closure or Python falsifier directly.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 35,
+  "post_run_synthesis_max_cluster_size": 4,
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "runner_allowed_imports": [
+    "typing",
+    "math",
+    "sympy"
+  ],
+  "persona": "You are a ruthless NS Track B null-profile-cap referee. Reward only ONE of two outcomes: (A) a Lean instantiation of NullProfileCapped for an explicit named null class (shear, Beltrami, embedded Euler, or a fixed Leray-invisible family) on the flat torus under the declared pricing kernel from ns_pricing_kernel_limit_passage.lean; or (B) a deterministic Python audit exhibiting a null profile with payoff > price under that same declared kernel. Penalize: any global Track B claim from null-class evidence, any new pricing-kernel definition not shown equivalent to the declared one, any sorry-laden Lean proof, any backward fitting of the kernel to the profile, any restatement of the obligation without an instantiation, any conflation with concentration/dichotomy/cross-profile/vanishing branches. The substrate is BRANCH-LOCAL by design.",
+  "dimensions": [
+    {
+      "name": "Null Class Naming",
+      "weight": 12,
+      "description": "Does the candidate name an explicit null class (shear, Beltrami, embedded Euler, or a fixed Leray-invisible family) BEFORE evaluating the cap?"
+    },
+    {
+      "name": "Pricing-Kernel Consistency",
+      "weight": 14,
+      "description": "Does the candidate use the declared kernel from ns_pricing_kernel_limit_passage.lean, with no silent redefinition?"
+    },
+    {
+      "name": "Predicate Instantiation",
+      "weight": 18,
+      "description": "Does the candidate produce a Lean instantiation of NullProfileCapped for the named class, OR a deterministic Python falsifier with concrete (price, payoff, selfTax) values?"
+    },
+    {
+      "name": "Class Coverage",
+      "weight": 10,
+      "description": "Does the candidate cover the entire named class, not just one mode? (E.g. all shear vector fields, not just one f(y).)"
+    },
+    {
+      "name": "Anti-Tautology Discipline",
+      "weight": 10,
+      "description": "Does the candidate avoid backward fitting the kernel to the profile, defining 'null' as 'the set where the cap holds', and similar circular moves?"
+    },
+    {
+      "name": "Scope Honesty",
+      "weight": 10,
+      "description": "Does the candidate label its result as a per-class branch closure, not a global Track B theorem? Does it explicitly NOT cite concentration/dichotomy/cross-profile/vanishing branches as load-bearing?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 12,
+      "description": "Does the candidate produce a usable Lean theorem, a precise Python falsifier with output JSON, a named obstruction, or a sharper boundary between null classes?"
+    },
+    {
+      "name": "Nonclaim And Resource Safety",
+      "weight": 8,
+      "description": "Does the candidate avoid Clay/global-NS overclaim, packet hunting, and unbounded computation?"
+    },
+    {
+      "name": "Lean Discipline",
+      "weight": 6,
+      "description": "If positive arm: does the Lean proof avoid `sorry`, import the declared kernel, and not redefine its types?"
+    }
+  ],
+  "criteria": {
+    "Null_Class_Naming": "Full credit requires a named class declared at the top of the candidate, with the construction exposed before the cap is evaluated.",
+    "Pricing_Kernel_Consistency": "Full credit requires using PricingProfile and the kernel as declared; any modification must be explicitly justified and shown equivalent.",
+    "Predicate_Instantiation": "Full credit requires a Lean theorem of the form `theorem null_profile_cap_concrete (P : PricingProfile) (h : P.isNull) (...) : ProfileNoArbitrage P` for the named class, OR a Python script that constructs P with isNull=True and payoff > price under the declared kernel.",
+    "Class_Coverage": "Full credit requires the proof or falsifier to cover the full named class. A single-mode check is insufficient.",
+    "Anti_Tautology_Discipline": "Full credit requires no backward kernel fitting; the kernel and class must be declared first, the cap evaluated second.",
+    "Scope_Honesty": "Full credit requires the substrate output to label its result as 'branch-closure for class X' not 'Track B closed'.",
+    "Generative_Yield": "Full credit requires either a Lean theorem (positive arm), a deterministic falsifier (negative arm), a named obstruction (e.g. 'Beltrami needs a separate kernel'), or a sharper class boundary.",
+    "Nonclaim_And_Resource_Safety": "Full credit requires no Clay or global-NS claim, no packet hunt, no unbounded dense computation.",
+    "Lean_Discipline": "Full credit requires the Lean proof to compile, import the declared kernel, and not contain `sorry`."
+  },
+  "success_criteria": [
+    "Names the null class explicitly (one of shear, Beltrami, embedded Euler, named Leray-invisible family).",
+    "Exposes the construction of the named class as a top-level function.",
+    "Uses the declared pricing kernel from ns_pricing_kernel_limit_passage.lean without redefinition.",
+    "Produces either a Lean instantiation of NullProfileCapped for the class OR a Python falsifier with concrete (price, payoff, selfTax).",
+    "Covers the entire named class, not a single mode.",
+    "Labels the result as a branch closure, not as global Track B closure."
+  ],
+  "failure_modes": [
+    "Searching for new packet families instead of instantiating the predicate.",
+    "Defining a new pricing kernel and using it to satisfy the cap.",
+    "Defining 'null' as 'the set where the cap holds' (circular).",
+    "Submitting a Lean proof with `sorry`.",
+    "Single-mode checks instead of class-wide proof or falsifier.",
+    "Claiming global Track B from a null-class result.",
+    "Citing concentration/dichotomy/cross-profile branches as load-bearing.",
+    "Using degree-only q>p scaling without the exact quartic survival.",
+    "Backward fitting (price/payoff chosen to make the cap hold).",
+    "Heavy unbounded computation."
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "rubric_version": "1.0-newton",
+  "project": "gp211_paper8_lean_proofs",
+  "rubric_mode": "newton",
+  "rubric_mode_reason": "GP-211 targets a formal Lean proof of Conservative Invariance. Mutator must produce a Lean theorem statement plus a proof script (or principled reduction/counterexample). Newton-mode enforces secondary observables on each candidate proof.",
+  "enable_dag_steering": true,
+  "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node \u2014 likely the descent/Morita-equivalence reduction.",
+  "falsification_mode": "bounded_discriminator",
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "fit_score_mode_reason": "Qualitative substrate; no (n, z) evidence.",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative substrate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative substrate",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative substrate",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "cage_observe_mode": true,
+  "cage_meta": {
+    "class": "proof_target",
+    "substrate_class": "lean_proof"
+  },
+  "persona": "You are a senior formal methods researcher specializing in Lean 4 / Mathlib category theory and Grothendieck descent. You have ZERO patience for: (a) theses that paste pseudocode and label it Lean; (b) proofs that close abstract goals with `decide` or `native_decide`; (c) statements that are vacuously true (empty hypotheses, trivial conclusions, hypotheses that contradict each other); (d) `sorry` left without a precise annotation of which Mathlib lemma would close it; (e) restatements of `Equivalence`'s definition labeled as Conservative Invariance. You sharply reward: theorems whose statement compiles in Mathlib v4.30 with named API references (CategoryTheory.Equivalence, CategoryTheory.Sites.EffectiveEpimorphic, CategoryTheory.Limits.preservesLimitsOfShape, etc.); proofs that compose 3+ Mathlib lemmas in a non-trivial chain; and counterexamples that identify a missing hypothesis precisely. You are aware that paper 8 has already verified the kernel-pair lemma (paper8_kernel_pair.lean), the finite-alias case (paper8_conservative_invariance.lean), and Case 4 (paper8_case4_benchmark.lean) \u2014 proposals that merely re-verify these score 0 on novelty.",
+  "dimensions": [
+    {
+      "name": "Statement Validity",
+      "weight": 16.47,
+      "description": "Does the proposed Lean theorem statement compile in Mathlib v4.30? Vague pseudocode scores 0. Compiles + uses Mathlib's actual descent/equivalence APIs scores full credit. Vacuous-when-instantiated statements score 0."
+    },
+    {
+      "name": "Proof Progress",
+      "weight": 20.58,
+      "description": "Does the proof discharge the goal (full credit), reduce to a precisely-named open Mathlib lemma (high credit), or stall with annotated sorries (partial credit)? Unannotated sorries = 0. Closing with decide/native_decide on the abstract statement = 0."
+    },
+    {
+      "name": "Anti-Tautology",
+      "weight": 12.35,
+      "description": "Does the theorem state more than the definition of Morita-equivalence? Restatements of `Equivalence` or `Iso` with renamed variables score 0. Theorems that compose equivalence with sieve-pushforward and descent-preservation in a non-trivial chain score full credit."
+    },
+    {
+      "name": "Mathlib API Concreteness",
+      "weight": 8.24,
+      "description": "Does the proposal name specific Mathlib v4.30 APIs (CategoryTheory.Equivalence, CategoryTheory.Sites.*, CategoryTheory.Limits.preserves*, etc.)? Class-level references ('use category theory') score 0. Three or more correctly named APIs with their import paths score full credit."
+    },
+    {
+      "name": "Smuggling Coverage",
+      "weight": 4.12,
+      "description": "Does the proposal explicitly address how it would catch: vacuous theorem statements, smuggled axioms (axiom foo : P; apply foo), sorry-with-warnings-suppressed, decide on abstract goals? Each major pattern caught scores partial credit; full coverage scores 5."
+    },
+    {
+      "name": "Throughput Realism",
+      "weight": 4.12,
+      "description": "Does the proposal use `lean --check` against a pre-built Mathlib cache (target \u22645s per candidate) rather than `lake build` from scratch? Naive `lake build` per iter scores 0."
+    },
+    {
+      "name": "Reduction Quality (impossibility/counterexample track)",
+      "weight": 4.12,
+      "description": "If the substrate produces a counterexample or impossibility-reduction instead of a proof, is it precise? Vague 'this seems hard' = 0. Specific Mathlib gap, missing hypothesis, or counterexample construction = full credit."
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does the proposal name a calculable secondary observable beyond proof-discharge that survives Newton-mode scrutiny? Specific to this Lean-proof substrate, valid secondary observables include: (a) compiled-line-count of the proof script (target: \u2264200 lines for the main theorem; >500 lines flags reducibility), (b) named Mathlib lemmas the proof depends on (target: 3-7; <3 = likely tautology, >7 = likely overcomplication), (c) `#print axioms` output post-proof (must be \u2286 {propext, Classical.choice, Quot.sound}; any extra axiom = 0 score), (d) for a counterexample track: the precise hypothesis whose negation produces a Lean-checkable failing instance, with the failing instance compilable. Tautological 'predicts the proof compiles' scores 0."
+    },
+    {
+      "name": "M-Form Charter Alignment: formal_lean_artifact_required",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Thesis must exhibit an explicit Lean theorem statement, proof attempt, reduction to specific Mathlib lemmas, counterexample construction, or precise formal infrastructure diagnosis. General prose or informal reasoning is insufficient. Gap detected: The charter requires engagement with the full scope of formal proof in Lean/Mathlib, specifically either producing a formal Lean proof, reducing to a specific missing lemma, constructing a formal counterexample, or precisely diagnosing an infrastructure gap. The thesis instead provides a prose-level explanation about topology compatibility\u2014with references to Lean/Mathlib concepts\u2014but does not exhibit or describe any Lean/Mathlib formal proof scripts, explicit theorem statements, or precise accounts of what the formal infrastructure can or cannot do in this setting. It does not document an attempt at formalization, nor does it present a candidate statement, reduction, or identifier for infrastructure limitations. Essentially, it remains at the conceptual/meta-mathematical level without operationalizing those insights as required Lean artifacts."
+    }
+  ],
+  "criteria": {
+    "1_Statement_Validity": "Does the Lean theorem statement compile in Mathlib v4.30?",
+    "2_Proof_Progress": "Does the proof discharge, reduce to named Mathlib lemma, or stall with annotated sorries?",
+    "3_Anti_Tautology": "Does the theorem state more than the definition of Morita-equivalence?",
+    "4_Mathlib_API_Concreteness": "Does the proposal name specific Mathlib APIs with import paths?",
+    "5_Smuggling_Coverage": "Does it catch vacuous statements, smuggled axioms, sorry-suppression, decide on abstract goals?",
+    "6_Throughput_Realism": "Does it use lean --check against cache?",
+    "7_Reduction_Quality": "If counterexample/reduction, is it precise?",
+    "8_Generative_Yield": "Calculable secondary observable: line count, Mathlib lemma count, #print axioms output, or counterexample-with-failing-instance",
+    "mform_formal_lean_artifact_required": "Thesis must exhibit an explicit Lean theorem statement, proof attempt, reduction to specific Mathlib lemmas, counterexample construction, or precise formal infrastructure diagnosis. General prose or informal reasoning is insufficient."
+  },
+  "_charter_pre_reg": "projects/gp211_paper8_lean_proofs/project_charter.md",
+  "_evidence": "projects/gp211_paper8_lean_proofs/evidence.txt",
+  "_already_verified": [
+    "ZtareProofs/paper8_kernel_pair.lean",
+    "ZtareProofs/paper8_conservative_invariance.lean",
+    "ZtareProofs/paper8_case4_benchmark.lean"
+  ],
+  "_target_file_to_produce": "ZtareProofs/paper8_full_conservative_invariance.lean"
+}

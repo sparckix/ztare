@@ -1,0 +1,74 @@
+{
+  "_status": "v0.1 (2026-05-07) — evaluation-surface variant. Asks: what Newton-mode evaluation surface is the apparatus blind to, and what minimal primitive would open it? Inherits v2 v0.5 anti-anchoring stack.",
+  "_inherits_from": "rubrics/ztare_on_ztare_v2_expanded_scope.json",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "discovery_mode": false,
+  "enable_dag_steering": true,
+  "farther_tail_region": null,
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative meta-substrate — evidence is mining-output snapshots + apparatus self-corpus, not numerical curve",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "rival surface candidates scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "cage_meta": {
+    "class": "audit",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 1,
+    "near_miss_factor": 1.0,
+    "frame_invariant_y": true,
+    "type": "qualitative_meta_audit",
+    "algebraic_constraints": []
+  },
+  "cage_observe_mode": true,
+  "enable_parametric_form_theorem_packet": true,
+  "enable_charter_critic": true,
+  "enable_heavy_charter_patches": true,
+  "charter_critic_model_id": "@cheap",
+  "charter_patches_preflight_mode": "interactive",
+  "enable_llm_fingerprint_classifier": true,
+  "fingerprint_classifier_model_id": "@cross_family",
+  "enable_primitive_class_rotation": true,
+  "enable_cross_substrate_exclusion": true,
+  "enable_adversarial_judge_mode": true,
+  "_lane_ceiling_asymmetry": {
+    "tactical_patch_max_score": 75,
+    "primitive_class_max_score": 95,
+    "rationale": "Patches that improve an existing eval surface cap at 75; proposals that OPEN a structurally new surface (orthogonal observable + measurement method) cap at 95."
+  },
+  "_primitive_class_rotation_discipline": {
+    "score_cap_schedule": {"1st_iter_in_class": 95, "2nd_iter_same_class": 80, "3rd_iter_same_class": 65, "4th_plus_same_class": 50},
+    "history_tracking_path": "workspace/explored_primitive_classes.jsonl",
+    "cross_substrate_ledger_path": "analytics/queries/cross_substrate_explored_classes.jsonl"
+  },
+  "_anti_goodhart_constraints": {
+    "max_refinements_per_run": 3,
+    "min_evidence_anchor_count": 1,
+    "max_unverified_evidence_anchors_in_run": 0,
+    "must_be_orthogonal_to_existing_surfaces": true,
+    "must_be_orthogonal_to_existing_surfaces_reason": "Adding a surface that correlates >0.7 with an existing one is not opening a surface, it's adding noise."
+  },
+  "persona": "I am an evaluation-surface epistemologist evaluating proposals to open NEW measurement surfaces in the apparatus. The eigenquestion is: what observable about the apparatus's behavior is currently not measured, would be measurable with a small primitive, and is structurally orthogonal to the existing measurement surfaces (cage gate verdicts, F-row scores, mining outputs, charter-critic patches, briefing providers)? CEILING ASYMMETRY: improvements to existing surfaces cap at 75; structurally orthogonal new surfaces reach 95. ADVERSARIAL: I check every proposed surface against existing ones for correlation/redundancy. A proposed surface that correlates >0.7 with an existing one (estimated by mechanism, not measured) caps at 50 — that's noise, not a new surface. CROSS-SUBSTRATE: I check the cross-substrate ledger; surfaces already proposed by other substrates cap at 50. NEWTON-MODE-NATIVE: this rubric is the most directly Newton-mode of the portfolio — every proposal MUST name (a) the new observable, (b) the measurement method (cited primitive or library), (c) the expected value or range under the apparatus's current behavior, (d) what behavior change in the apparatus would shift the observable in a predicted direction. Trivial restatements of existing observables (e.g. 'add another fit metric') score 0.",
+  "dimensions": [
+    {"name": "Evidence-Anchored Blindspot", "weight": 25, "description": "Verifiable citation to an existing artifact (cage_engagement.jsonl, eval_history.jsonl, mining output) that demonstrates the apparatus is blind to the proposed observable."},
+    {"name": "Surface Orthogonality (Mechanism)", "weight": 20, "description": "Argument from mechanism that the proposed observable is orthogonal to existing ones (correlation <0.5 estimated, OR captures a behavior dimension not currently captured at all)."},
+    {"name": "Measurement Method Named", "weight": 15, "description": "Specific cited primitive / library / formula / file path the measurement would use. Not 'we should measure X' — 'here is how, in this file, with this code.'"},
+    {"name": "Generative Yield (Newton-mode)", "weight": 15, "description": "What downstream apparatus decision becomes possible once the observable is measured? Which existing primitive's score / verdict would change? Trivial 'more visibility' answers score 0."},
+    {"name": "Cost-Bounded with Justified Bucket", "weight": 10, "description": "Trivial / day / week for the measurement primitive. Asymmetric penalty for measurement-cost > insight-density."},
+    {"name": "Anti-Tautology + Predicted Value Range", "weight": 15, "description": "Anti-tautology + the proposal pre-commits to an expected value or range under the apparatus's current behavior, so subsequent measurement can falsify."}
+  ],
+  "criteria": {
+    "evidence_anchored_blindspot": "Cited artifact demonstrating apparatus blindness to the observable.",
+    "surface_orthogonality_mechanism": "Argument from mechanism for orthogonality with existing surfaces.",
+    "measurement_method_named": "Specific cited primitive/library/formula/file path.",
+    "generative_yield_newton_mode": "Downstream decision newly possible; which primitive verdict changes.",
+    "cost_bounded": "Bucket justified.",
+    "anti_tautology_predicted_value_range": "Anti-tautology + pre-committed expected value/range."
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "name": "ns_proofsearch_alien_invariant_bridge",
+  "project": "ns_proofsearch_alien_invariant_bridge",
+  "rubric_version": "0.1-alien-invariant-or-packet-bridge",
+  "rubric_version_reason": "Ambitious successor after the residual-defect and pressure-channel-nullity runs. The goal is not another incremental pincer rerun; it is to find a new invariant, proof bridge, explicit packet, or first-blocking theorem that crosses from kinematic diagnostics to PDE-relevant Navier-Stokes structure.",
+  "description": "Broad theorem-search substrate for an alien invariant, monotone/exhaust functional, pressure-active residual-stable packet, or no-go theorem for the current Navier-Stokes proof fork.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative frontier theorem-search substrate over possible invariants, packet certificates, and PDE bridge obligations."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by theorem burden, invariant quality, and counterexample quality, not formula gaps.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless alien-math PDE theorem-search referee in Newton mode. Do not merely restate the current Navier-Stokes pincer, residual-defect, or pressure-channel-nullity results. The goal is a frontier bridge: find a new invariant, monotone/exhaust functional, compactness obstruction, pressure-active residual-stable packet, or first-blocking theorem that materially changes the proof graph. You may propose alien coordinates, gauge/topology, information/entropy, Lagrangian recurrence, microlocal defect measures, frame-rotation variables, or renormalized packet economics, but every proposal must cash out in PDE-facing obligations: explicit definitions, a sign or monotonicity inequality, residual-defect or pressure-reconstruction interface, scope limits, and a falsifier. Reward bold theorem packets that either cross the bridge or honestly prove why the bridge cannot cross. Penalize inspirational analogies, metric-kernel substitution, envelope-only pincer repeats, pressure-gauge artifacts, approximate-equals-exact laundering, and regularity/blowup overclaims.",
+  "dimensions": [
+    {
+      "name": "Alien Invariant Ambition",
+      "weight": 15,
+      "description": "Does the submission propose a genuinely new invariant, coordinate, monotone quantity, compactness object, or packet economics beyond the current residual/pincer restatement?"
+    },
+    {
+      "name": "PDE Cash-Out Discipline",
+      "weight": 15,
+      "description": "Does the invariant cash out as a theorem-facing Navier-Stokes obligation: sign, monotonicity, compactness, pressure reconstruction, residual-defect control, or explicit packet construction?"
+    },
+    {
+      "name": "Bridge Across Current Fork",
+      "weight": 15,
+      "description": "Does it materially connect to the current fork: high-normal resupply vs escape/viscosity, residual-defect realization, pressure-channel nullity, or reset-residual cancellation?"
+    },
+    {
+      "name": "Explicit Object Specificity",
+      "weight": 15,
+      "description": "Does it define concrete objects U_n, functionals, measures, sections, return maps, pressure sources, or invariant variables precisely enough to falsify?"
+    },
+    {
+      "name": "Adversarial Falsifier Quality",
+      "weight": 10,
+      "description": "Does it name what would kill the proposal, including rival packet families, gauge artifacts, reset-residual costs, pressure-active evaders, or compactness escapes?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a theorem packet, explicit construction, no-go theorem, Lean-facing object list, or next decisive discriminator?"
+    },
+    {
+      "name": "Scope Honesty And Nonclaim Control",
+      "weight": 10,
+      "description": "Does it avoid Clay-level overclaim, separate regularity/blowup implications from local theorem objects, and keep domain assumptions explicit?"
+    },
+    {
+      "name": "Proof Cost Reranking",
+      "weight": 5,
+      "description": "Does it say whether the route is cheaper than pressure taxonomy, explicit packet construction, or Lean formalization of existing scaffolds?"
+    }
+  ],
+  "criteria": {
+    "Alien_Invariant_Ambition": "Full credit requires a genuinely new invariant, coordinate, monotone quantity, compactness object, or packet economics beyond restating residual-defect or pincer algebra.",
+    "PDE_Cash_Out_Discipline": "Full credit requires converting the invariant into a Navier-Stokes-facing theorem obligation: sign, monotonicity, pressure reconstruction, residual-defect control, compactness, or packet construction.",
+    "Bridge_Across_Current_Fork": "Full credit requires materially addressing the current live fork: high-normal resupply vs signed escape/viscosity, residual-defect realization, pressure-channel nullity, or reset-residual cancellation.",
+    "Explicit_Object_Specificity": "Full credit requires concrete definitions of fields, functionals, sections, measures, return maps, pressure sources, or variables that can be falsified.",
+    "Adversarial_Falsifier_Quality": "Full credit requires naming the precise family or mechanism that would kill the proposal and the cheapest discriminator that would reveal it.",
+    "Generative_Yield": "Full credit requires a theorem packet, construction, no-go theorem, Lean-facing object list, or next decisive discriminator.",
+    "Scope_Honesty_And_Nonclaim_Control": "Reject regularity/blowup overclaims, pressure-gauge artifacts, metric-kernel substitution, envelope-only repeats, and approximate-equals-exact laundering.",
+    "Proof_Cost_Reranking": "Full credit requires comparing the proposal's proof cost to the current alternatives and saying why it should or should not supersede pressure taxonomy or packet construction."
+  },
+  "success_criteria": [
+    "A new invariant or functional with a plausible sign, monotonicity, compactness, or coercivity theorem that attacks the live NS fork.",
+    "An explicit pressure-active or cancellation-corrected packet construction with residual-defect and pressure-channel obligations in view.",
+    "A no-go theorem proving that an entire class of alien invariants, reset mechanisms, or pressure channels cannot cross the PDE bridge.",
+    "A decisive reranking theorem showing which of Lean formalization, pressure taxonomy, packet construction, or alien invariant search has the lowest proof cost."
+  ],
+  "failure_modes": [
+    "Restating the pincer exponent inequality or residual-defect Gronwall lemma as if it were new.",
+    "Using geometric or alien-math analogies without a PDE-facing inequality or falsifier.",
+    "Substituting a metric kernel for the Euclidean pressure operator without proof.",
+    "Calling velocity-only, boundary, forcing, or pressure-gauge artifacts pressure-channel mechanisms without explicit scope change.",
+    "Claiming Navier-Stokes regularity or blowup from a local invariant or packet result."
+  ]
+}

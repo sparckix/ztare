@@ -1,0 +1,63 @@
+{
+  "cage_meta": {
+    "type": "qualitative_audit",
+    "class": "audit",
+    "target_convention_homogeneity": "homogeneous",
+    "min_rows_per_category": 0,
+    "near_miss_factor": 0.0,
+    "frame_invariant_y": true,
+    "review_type": "recommender_proxy_goodhart_audit"
+  },
+  "cage_observe_mode": true,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative thesis project \u2014 no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative thesis \u2014 evidence surface is text documents, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative thesis \u2014 rival mechanisms scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": true,
+  "general_office_model": "gpt4.1",
+  "persona": "As a critical algorithmic social systems expert with an uncompromising empiricist stance, I take a hostile view toward hand-waved sociotechnical theory or abstract claims about user wellbeing unsupported by line-by-line mechanistic links to system code and outputs. I categorically reject high-altitude model or incentive descriptions when controls and proxies are directly observable. I will ruthlessly penalize speculative psychologizing, hindsight narratives, and any appeal to unspecified user behaviors or assumed intent. I will further hit scores for any analysis that treats metric tradeoffs as exogenously fixed rather than consequences of code structure, or which glosses over interaction and compound effects when the evidence surface is code-accessible.",
+  "dimensions": [
+    {
+      "name": "Code-Surfaced Mechanistic Causality",
+      "weight": 34.0,
+      "description": "Full points require a concrete, line-traceable demonstration of how the published proxy objective (as implemented) structurally leads to the identified failure mode; scoring is penalized for general system-level theorizing, unstated leaps in logic, or failure to ground claims in the actual code operations visible post-May 2026 release."
+    },
+    {
+      "name": "Rival Failure Mode Enumeration",
+      "weight": 21.25,
+      "description": "To earn full marks, the thesis must enumerate at least three plausible rival high-leverage failure-mode hypotheses on the evidence/code surface and directly structure them as mutually exclusive/competitive with the chosen mode. Weaknesses include shallow listing, lack of mechanistic definition, or treating rivals only as strawmen."
+    },
+    {
+      "name": "Guardrail-Failure Dissection",
+      "weight": 17.0,
+      "description": "Points are earned by rigorously showing not just the stated intent, but how the negative-action weights and author-diversity attenuation as they mathematically/net-operatively function fail against the chosen structural pathology. Point loss for generic 'limitations' discussion or for relying on policy statements over demonstrated guardrail-pathology interactions."
+    },
+    {
+      "name": "Rival Hypothesis Falsification",
+      "weight": 12.75,
+      "description": "Full credit goes to direct, evidence-based falsification of rival hypotheses using the static code surface in evidence.txt (functional form, sign convention, component ordering, what a guardrail structurally can/cannot do). The mutator cannot execute the artifact, so falsification must be a structural argument from the visible code \u2014 NOT runtime output traces. Loss occurs for indirect, assumed, or conclusory dismissals, for failing to address the strongest competing account, or for any claim that smuggles in a withheld weight magnitude."
+    },
+    {
+      "name": "M-Form Charter Alignment: enumerate_and_falsify_rivals",
+      "weight": 15,
+      "description": "[GP-105 General Office insertion] Thesis must explicitly enumerate at least two plausible rival structural failure modes from the evidence and systematically show, using only structural properties visible in the evidence, why these alternatives are either already neutralized by concrete code components or not decisively supported by the current evidence. Gap detected: The thesis clearly identifies and argues for the structural failure mode of 'non-instrumented quality blindness,' demonstrates that it is derivable from the evidence, and begins to outline why stated guardrails do not neutralize it. However, it does not fully enumerate and systematically falsify rival failure-mode explanations on the evidence surface, as the charter requires. The thesis focuses on its proposed highest-leverage failure mode but does not explicitly list and dismiss other candidate failure modes (e.g., overexploitation of specific actions, overuse of negative weights, miscalibration of diversity attenuators, etc.) by structural analysis. This enumeration and falsification of rivals is a core analytical breadth requirement of the charter and is only partially or implicitly done here."
+    }
+  ],
+  "criteria": {
+    "mechanistic_causality": "Scores highest when the causal chain from weighted proxy (Grok-transformer predicted actions) to the ailing feed is surfaced using code snippets, parameter logic, or tangible stepwise scenarios. Generalizations about 'engagement traps' or vague references to algorithmic bias without a tightly linked chain from the code surface will be heavily penalized. Minimally, each intermediate state within the failure mode must be shown rooted in an observable code or variable.",
+    "rival_failure_enumeration": "Claims full points with a minimum of three concretely distinct, code-grounded explanations for structural failures\u2014e.g., homogeneity collapse, negative feedback loop instability, or reward-gaming exploits\u2014articulated in a way that they plausibly account for the high-level divergence and could be selected over the chosen mode. Penalty for listing only superficial or outcome-focused alternatives without code-linked mechanisms.",
+    "guardrail_failure_dissection": "Maximum score requires a precise, mathematical or operational demonstration of how and why negative weights (block, mute, etc.) and author-diversity attenuation fail\u2014such as by being easily compensated by the main engagement scores, suffering from loopholes in threshold/weighting logic, or through combinatorial effects with certain user groups. Any analysis that merely states these guardrails 'should' help or fails to demonstrate a bind from their parameterization to the persistence of failure is downgraded.",
+    "rival_hypothesis_falsification": "Best work will not only state alternatives but use distinctive structural signatures of the visible code (component ordering, the linear/separable form, the sign convention, what a guardrail multiplicatively can/cannot do) to prove why the chosen explanation dominates, demonstrating that each rival is either already structurally neutralized by some component on the evidence surface or is undecidable because it depends on a withheld magnitude. Execution/output-trace 'proof' is impossible here and is NOT required; conclusory dismissals or rivals knocked down only as strawmen receive sharply reduced credit.",
+    "mform_enumerate_and_falsify_rivals": "Thesis must explicitly enumerate at least two plausible rival structural failure modes from the evidence and systematically show, using only structural properties visible in the evidence, why these alternatives are either already neutralized by concrete code components or not decisively supported by the current evidence."
+  }
+}

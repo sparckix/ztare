@@ -1,7 +1,7 @@
 ### 🚨 TOPOLOGICAL PIVOT EXECUTED 🚨
 
 **RETIRED AXIOM 1: Volunteer Host Volatility.** Previous logic assumed volunteer host unreliability was the load-bearing constraint. This is retired. Host behavior is a secondary operational drag; it does not dictate the binary existence of the network. If the viral coefficient is zero, the business dies regardless of host quality.
-**RETIRED AXIOM 2: Standard Hypothesis Testing ($p < 0.05$).** Standard statistical power parameters are structurally irrelevant to start-up survival. Capital constraints demand *Empirical Dominance Margin*—not academic certainty. If Design A cannot defeat Design B in $>80\%$ of empirical trials at $N=20$, the experiment is mathematically insolvent and the signal is dead. 
+**RETIRED AXIOM 2: Standard Hypothesis Testing ($p < 0.05$).** Standard statistical power parameters are structurally irrelevant to start-up survival. Capital constraints demand *Empirical Dominance Margin*, not academic certainty. If Design A cannot defeat Design B in $>80\%$ of empirical trials at $N=20$, the experiment is mathematically insolvent and the signal is dead. 
 
 ### SYMBOLIC MAPPING: THE VIRAL EIGENVALUE
 The Central Station model caps Net Revenue at $60/year. Because LTV is severely restricted, CAC must approach zero. The business only survives if the Viral Cohort Coefficient ($Z$) is positive. 
@@ -94,7 +94,7 @@ If a founder proposes testing **Referral Timing** (Design 2) with a 20-person pi
 Conversely, an $N=20$ pilot testing **Cohort Continuity** (Design 1) is a flawless experiment. The delta between retaining a *Curated/Same Cohort* (mean $73\%$) vs a *Random Cohort* (mean $42\%$) is large enough that it pierces the Binomial variance. "Same Cohort" dominates "Random" in **>89%** of Monte Carlo pathways. It forces an immediate, unambiguous decision.
 
 **2. Highest Sensitivity Behavioral Assumption:**
-The single most sensitive variable is the **Low-Friction Onboarding Show-Up Rate**. Moving from the bottom of the range ($55\%$) to the top ($80\%$) drives a variance of 3.6 attendees per cohort—mathematically outpacing the impact of downstream retention ($85\%-60\%$ spread yielding 3.3 attendees). If the top of the funnel collapses due to digital friction, all downstream viral equations yield zero. 
+The single most sensitive variable is the **Low-Friction Onboarding Show-Up Rate**. Moving from the bottom of the range ($55\%$) to the top ($80\%$) drives a variance of 3.6 attendees per cohort, mathematically outpacing the impact of downstream retention ($85\%-60\%$ spread yielding 3.3 attendees). If the top of the funnel collapses due to digital friction, all downstream viral equations yield zero. 
 
 **3. Conservation of Trade-Offs (Operational Drag):**
 Mandating *Same Cohort Repeated* scheduling ($X=1$) drastically increases operational drag ($E$). Central Station can no longer slot members asynchronously based on calendar availability; they must enforce rigid temporal blocks. This penalizes overall network liquidity to protect micro-network trust. 

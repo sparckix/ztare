@@ -1,0 +1,274 @@
+{
+  "name": "ns_proofsearch_leray_convexity_trackb",
+  "project": "ns_proofsearch_leray_convexity_trackb",
+  "rubric_version": "0.7-gp216-5iw-5ix-all-output-event-recurrence",
+  "rubric_version_reason": "Raises the bar after Phase 5IW/5IX: candidates must use all-output positive-coherence LSC rather than hidden source-L2 pricing, and event-level reciprocal recurrence pricing rather than shell-only harmonic recurrence.",
+  "description": "Navier-Stokes theorem-search substrate for the fixed-topology LP/Bony/profile all-output continuum LSC and event-recurrence price bridge for the Leray self-tax integral.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "require_i_model_in_submission": false,
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search over a fixed PDE estimate and smooth escape falsifier, not numerical curve fitting."
+  },
+  "theorem_packet_contract": {
+    "required_top_level_functions": [
+      "fixed_profile_topology",
+      "self_tax_component_prices",
+      "cross_defect_and_coherence_prices",
+      "low_beat_reserve_charge",
+      "all_output_positive_coherence_lsc",
+      "dynamic_event_recurrence_price",
+      "global_self_tax_budget_bridge",
+      "continuation_price_connection",
+      "smooth_escape_falsifier_or_theorem",
+      "accepted_bridge_outcome"
+    ],
+      "reason": "The candidate must engage the live GP-216 / 5IW-5IX bridge directly: fixed profile topology, branch self-tax LSC, positive coherence undercharges, low-beat physical reserve, all-output positive-coherence LSC, event-level recurrence price, global self-tax budget, continuation linkage, and an actual continuum theorem/falsifier or dynamic event-recurrence theorem/falsifier."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No scalar farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "The target is a proof-shaped local-to-global PDE estimate, not data fitting.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "The theorem-packet gate evaluates topology, price components, and anti-tautology directly.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 35,
+  "post_run_synthesis_max_cluster_size": 4,
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "potential_function": {
+    "name": "Track B closure score",
+    "field": "score",
+    "ceiling": 100,
+    "monotone": "increasing",
+    "tolerance": 0.5
+  },
+  "bound_chain": [
+    {
+      "id": "fixed_topology_declaration",
+      "premises": [
+        "flat torus T^3",
+        "fixed LP/Bony projectors",
+        "fixed Leray/Sobolev profile topology"
+      ],
+      "conclusion": "declaredTopology <= prePayoffTopology",
+      "constants": {
+        "C_topology": 1.0
+      },
+      "scope": "fixed flat-torus LP/Bony/profile topology",
+      "depends_on": []
+    },
+    {
+      "id": "all_output_lsc_receipt",
+      "premises": [
+        "declaredTopology",
+        "all-output Leray atoms",
+        "positive coherence charges"
+      ],
+      "conclusion": "allOutputProfilePayoff <= allOutputPositiveCoherencePrice",
+      "constants": {
+        "C_all_output": 1.0
+      },
+      "scope": "fixed all-output LP/Bony profile topology",
+      "depends_on": [
+        "fixed_topology_declaration"
+      ]
+    },
+    {
+      "id": "event_recurrence_price_receipt",
+      "premises": [
+        "edge return events",
+        "fixed event sections",
+        "preparation windows declared before payoff",
+        "overlap-adjusted effective multiplicity M_eff",
+        "event weights a_e with convergent reciprocal event budget",
+        "finite Cauchy duality"
+      ],
+      "conclusion": "divergentEventGain <= overlapAdjustedReciprocalEventBudget",
+      "constants": {
+        "C_event": 1.0
+      },
+      "scope": "event-level recurrence topology after multiplicity and overlap",
+      "depends_on": [
+        "fixed_topology_declaration"
+      ]
+    },
+    {
+      "id": "global_self_tax_assembly",
+      "premises": [
+        "allOutputProfilePayoff",
+        "divergentEventGain",
+        "low-beat physical reserve"
+      ],
+      "conclusion": "leraySelfTaxIntegral <= declaredTrackBBudget",
+      "constants": {
+        "C_global": 1.0
+      },
+      "scope": "fixed continuum Track B budget assembly",
+      "depends_on": [
+        "all_output_lsc_receipt",
+        "event_recurrence_price_receipt"
+      ]
+    }
+  ],
+  "special_case_candidates": [
+    {
+      "name": "All-output LSC negative-control closure",
+      "structural_barrier_addressed": "hidden source-L2 aggregate undercharging",
+      "instantiation_hint": "construct a smooth fixed-topology prefix where source-L2 stays bounded but all-output positive-coherence price is declared before payoff",
+      "complexity_class": "narrower"
+    },
+    {
+      "name": "Event reciprocal budget PDE lower envelope",
+      "structural_barrier_addressed": "shell-only or raw-count harmonic recurrence is too weak after event multiplicity and preparation-window overlap",
+      "instantiation_hint": "supply fixed event sections, preparation windows, overlap-adjusted M_eff, and a_e with sum_e 1/a_e convergence independent of payoff scoring; near-minimal audited shape is a_j >= M_eff_j * j * log(j)^(1+eps) or a positive dyadic event price",
+      "complexity_class": "same"
+    },
+    {
+      "name": "Smooth escape sequence under fixed topology",
+      "structural_barrier_addressed": "continuum limit passage could smear declared prices",
+      "instantiation_hint": "attempt a smooth periodic Sobolev sequence with bounded all-output/coherence/event prices and surviving payoff",
+      "complexity_class": "same"
+    }
+  ],
+  "evidence_gap_score_caps": [
+    {
+      "name": "proof_grade_requires_bridge_theorem_or_smooth_escape",
+      "cap": 89,
+      "when_score_at_least": 90,
+      "severity_any": [
+        "blocking",
+        "degrading"
+      ],
+      "text_contains_any": [
+        "no component lsc",
+        "missing lsc",
+        "coherence not proved",
+        "low-beat reserve not proved",
+        "all-output lsc not proved",
+        "source-l2 substitute",
+        "shell-only recurrence",
+        "event recurrence not proved",
+        "reserve remains open",
+        "smooth escape not excluded",
+        "counterexample not constructed",
+        "not proved",
+        "named analytic obstruction",
+        "conditional reduction",
+        "uniform continuum analytic lemma"
+      ],
+      "reason": "Scores above 90 require either a fixed-topology continuum bridge theorem with component LSC + positive coherence + low-beat reserve + all-output output pricing, an event-level dynamic recurrence-price theorem, or a smooth Sobolev escape falsifier. Honest conditional reduction stays below proof-grade."
+    }
+  ],
+  "runner_allowed_imports": [
+    "typing",
+    "math",
+    "sympy"
+  ],
+  "persona": "You are a ruthless Navier-Stokes GP-216/5IW-5IX bridge referee. The old conditional bridge packet is no longer enough. Reward only packets that attack the current fixed LP/Bony/profile all-output continuum LSC and event-recurrence theorem for int ||P((u.grad)u)||_2^2 dt. The candidate must expose fixed_profile_topology(), self_tax_component_prices(), cross_defect_and_coherence_prices(), low_beat_reserve_charge(), all_output_positive_coherence_lsc(), dynamic_event_recurrence_price(), global_self_tax_budget_bridge(), continuation_price_connection(), smooth_escape_falsifier_or_theorem(), and accepted_bridge_outcome(). It must charge branch self-tax, positive cross/coherence undercharges, high-high low-beat physical reserve, all-output L1/positive-coherence output pricing, and event-level reciprocal recurrence budget before scoring payoff, then attempt a prefix-uniform continuum reserve/LSC theorem, smooth fixed-topology escape, matrix-valued Leray cancellation charge/falsifier, or dynamic event-recurrence theorem/falsifier. Penalize stale generic matrix-block infrastructure-gap packets, merely conditional reductions, qualitative PSD/state-pricing slogans, branch-only LSC, energy-only reserve, hidden source-L2 substitutes, shell-only recurrence pricing, finite packet searches, dense-slab or degree-only scaling, topology chosen after payoff, and Clay/global-regularity overclaim.",
+  "dimensions": [
+    {
+      "name": "Fixed Profile Topology",
+      "weight": 7,
+      "description": "Does the packet declare the flat-torus LP/Bony/profile topology, projectors, norms, and prices before payoff?"
+    },
+    {
+      "name": "Component Self-Tax LSC",
+      "weight": 7,
+      "description": "Does it state a real lower-semicontinuity price for branch self-tax components in the fixed topology?"
+    },
+    {
+      "name": "Positive Coherence Charging",
+      "weight": 8,
+      "description": "Does it charge positive cross/coherence terms 2<A,B>, 2<A,C>, and 2<B,C> rather than relying on branch-only LSC?"
+    },
+    {
+      "name": "Low-Beat Reserve Charge",
+      "weight": 10,
+      "description": "Does it use the Phase 5IQ incompressible-symbol fact and physical vorticity/grad-vorticity reserve for coherent low beats?"
+    },
+    {
+      "name": "Continuum Reserve LSC Lift",
+      "weight": 15,
+      "description": "Does it attempt the prefix-uniform continuum LP/Bony all-output reserve and lower-semicontinuity theorem with constants independent of profile refinement, rejecting hidden source-L2 pricing?"
+    },
+    {
+      "name": "Dynamic Recurrence Price",
+      "weight": 12,
+      "description": "Does it prove or falsify an event-level preparation/dwell/rearming price for actual NSE returns, including reciprocal budget after event multiplicity?"
+    },
+    {
+      "name": "Global Self-Tax Budget",
+      "weight": 7,
+      "description": "Does it assemble branch, cross, coherence, reserve, all-output LSC, and event recurrence prices into a budget for int ||P((u.grad)u)||_2^2 dt?"
+    },
+    {
+      "name": "Continuation Link",
+      "weight": 5,
+      "description": "Does it connect the priced self-tax integral to enstrophy production and a continuation criterion without overclaiming?"
+    },
+    {
+      "name": "Smooth Escape Discipline",
+      "weight": 9,
+      "description": "Does it construct or exclude a smooth periodic Sobolev escape sequence under the same fixed topology?"
+    },
+    {
+      "name": "Anti-Tautology Discipline",
+      "weight": 5,
+      "description": "Does it avoid defining topology, prices, reserve, recurrence clocks, or observables from observed payoff?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a usable continuum theorem, smooth falsifier, matrix cancellation charge, recurrence-price theorem, or decisive proof-cost reranking?"
+    }
+  ],
+  "criteria": {
+    "Fixed_Profile_Topology": "Full credit requires fixed flat-torus LP/Bony projectors, profile decomposition, Sobolev topology, and predeclared prices.",
+    "Component_Self_Tax_LSC": "Full credit requires branch self-tax prices with lower-semicontinuity in the declared topology.",
+    "Positive_Coherence_Charging": "Full credit requires explicit positive-part charging of cross/coherence terms, not branch-only gluing.",
+    "Low_Beat_Reserve_Charge": "Full credit requires the 5IQ a+b=q incompressible-symbol identity and physical reserve scaling, with energy-only reserve rejected.",
+    "Continuum_Reserve_LSC_Lift": "Full credit requires a concrete prefix-uniform continuum LP/Bony all-output reserve/LSC theorem or exact falsifier, with hidden source-L2 pricing explicitly rejected, not merely naming the missing lemma.",
+    "Dynamic_Recurrence_Price": "Full credit requires an event-level recurrence/preparation/dwell price theorem or falsifier for actual NSE edge-state returns, with reciprocal event budget and multiplicity declared.",
+    "Global_Self_Tax_Budget": "Full credit requires a prefix/summability budget for the time integral of the Leray self-tax including recurrence, reserve, all-output LSC, and positive coherence prices.",
+    "Continuation_Link": "Full credit requires the production identity, Cauchy/Young 4nu bound, and honest separation from global regularity.",
+    "Smooth_Escape_Discipline": "Full credit for negative output requires a smooth periodic Sobolev sequence under the fixed topology.",
+    "Anti_Tautology_Discipline": "Full credit requires all topology and prices fixed before payoff.",
+    "Generative_Yield": "Full credit requires a theorem, falsifier, matrix cancellation charge, recurrence theorem, or next proof object that changes the route."
+  },
+  "success_criteria": [
+    "Top-level fixed_profile_topology() declares flat torus, LP/Bony projectors, profile decomposition, Sobolev topology, and pre-payoff scope.",
+    "Top-level self_tax_component_prices() states lower-semicontinuity for component Leray self-tax prices.",
+    "Top-level cross_defect_and_coherence_prices() charges positive cross/coherence terms and rejects branch-only LSC.",
+    "Top-level low_beat_reserve_charge() uses the Phase 5IQ incompressible-symbol charge and physical reserve scaling.",
+    "Top-level all_output_positive_coherence_lsc() declares all-output L1 / positive-coherence output pricing and rejects hidden source-L2 substitutes.",
+    "Top-level dynamic_event_recurrence_price() declares event-level recurrence pricing with reciprocal budget after multiplicity and rejects shell-only harmonic recurrence.",
+    "Top-level global_self_tax_budget_bridge() assembles component prices into a budget for int ||P((u.grad)u)||_2^2 dt and addresses prefix-uniform all-output continuum reserve/LSC plus event recurrence.",
+    "Top-level continuation_price_connection() states the enstrophy production inequality and the separate continuation burden.",
+    "Top-level smooth_escape_falsifier_or_theorem() gives a fixed-topology smooth escape sequence, a matrix cancellation falsifier, a dynamic recurrence falsifier, or proves/explains why these cannot exist.",
+    "Top-level accepted_bridge_outcome() names the honest outcome without Clay/global-regularity overclaim and without stopping at the previous conditional bridge."
+  ],
+  "failure_modes": [
+    "Repeating the older generic matrix-block infrastructure-gap packet as the main result.",
+    "Saying PSD/state-pricing/SOS without the GP-216 local-to-global price components.",
+    "Branch-only LSC that omits positive coherence terms.",
+    "Energy-only reserve for low-beat backscatter.",
+    "Hidden source-L2 aggregate pricing used as a substitute for all-output positive-coherence pricing.",
+    "Shell-only harmonic recurrence pricing used as a substitute for event-level recurrence with multiplicity.",
+    "Changing LP topology or reserve after observing payoff.",
+    "Finite packet families, dense slabs, or degree-only scaling.",
+    "Stopping at the previous 78-point conditional reduction without paying the continuum reserve/recurrence gap.",
+    "Claiming Navier-Stokes regularity or Clay proof."
+  ]
+}

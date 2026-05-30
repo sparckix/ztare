@@ -1,0 +1,59 @@
+{
+  "name": "ns_spike_lifecycle_discriminator",
+  "project": "ns_spike_lifecycle_discriminator",
+  "rubric_version": "0.1-spike-life-cycle",
+  "description": "Bounded ZTARE substrate for discovering a compact coupled observable that predicts Navier-Stokes peak persistence versus eviction in the next observed window.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "This finite audit substrate has no numeric farther-tail coordinate. The output should propose a falsifiable mechanism and next experiment, not an extrapolation theorem."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "Generalization is tested by hidden branch/turn-over rows and by the required next-experiment predictions, not by coordinate extrapolation.",
+  "runner_allowed_imports": ["features", "math"],
+  "disable_evidence_fit_gate": true,
+  "disable_uniqueness_gap_gate": true,
+  "holdout_hard_gate": true,
+  "persona": "You are an adversarial PDE mechanism-discovery auditor. Your task is to propose a compact, falsifiable scalar law I_model(features)->eviction_next that predicts whether a local Navier-Stokes vorticity peak compounds or loses persistence in the next observed window. You must not claim global regularity or a Clay solution.",
+  "dimensions": [
+    {
+      "name": "Coupled Observable Compression",
+      "weight": 25,
+      "description": "Does the thesis compress concentration persistence, shell transfer, and signed alignment/frame quality into a compact testable discriminator rather than a lookup table?"
+    },
+    {
+      "name": "Holdout Validation",
+      "weight": 25,
+      "description": "Does test_model.py pass the deterministic holdout gate in gate_harness.py, including the critical turn-over and exact-N384 rows?"
+    },
+    {
+      "name": "Rival Falsification",
+      "weight": 15,
+      "description": "Does the thesis compare against simpler rivals such as SAGE-only, concentration-only, shell-transfer-only, and budget-only?"
+    },
+    {
+      "name": "Mechanism Usefulness",
+      "weight": 15,
+      "description": "Does the thesis explain what physical split it suggests: spike persistence, shell-transfer eviction, alignment/frame escape, or budget death?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does the thesis make concrete falsifiable predictions for fresh diagnostics, especially exact N=384 post-1.80 replay or a fresh high-concentration branch?"
+    },
+    {
+      "name": "Claim Discipline",
+      "weight": 5,
+      "description": "Does the thesis explicitly avoid overclaiming global Navier-Stokes regularity from this finite substrate?"
+    }
+  ],
+  "criteria": {
+    "Coupled_Observable_Compression": "Full credit requires a formula or algorithm that could be tested on fresh telemetry. Penalize use of family/source_phase as direct lookup keys.",
+    "Holdout_Validation": "gate_harness.py is authoritative. The thesis must cite the JSON output.",
+    "Rival_Falsification": "At least two simpler rivals must be evaluated on the same visible/holdout split.",
+    "Mechanism_Usefulness": "A useful result names which mechanism it supports or kills and why.",
+    "Generative_Yield": "Full credit requires numeric, falsifiable predictions for future diagnostic rows.",
+    "Claim_Discipline": "Reject Clay-solution claims. This substrate is a mechanism-discovery instrument."
+  }
+}

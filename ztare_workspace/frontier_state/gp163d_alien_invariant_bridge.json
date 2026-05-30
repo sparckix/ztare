@@ -1,0 +1,143 @@
+{
+  "project_slug": "gp163d_alien_invariant_bridge",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 4,
+  "pending_actions": [
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 92,
+        "parametric_form": "0.5*log(mass_weighted_internal_accel/ref_a) + 0.5*log(total_over_internal_mass_weighted_ratio/ref_b)",
+        "ts": "2026-05-07T12:53:47.280095Z",
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "ts": "2026-05-07T12:53:47.961023Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 92,
+        "parametric_form": "0.5*log(mass_weighted_internal_accel/ref_a) + 0.5*log(total_over_internal_mass_weighted_ratio/ref_b)",
+        "ts": "2026-05-07T12:53:57.106318Z",
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "ts": "2026-05-07T12:53:57.262481Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 92,
+        "parametric_form": "0.5*log(mass_weighted_internal_accel/ref_a) + 0.5*log(total_over_internal_mass_weighted_ratio/ref_b)",
+        "ts": "2026-05-07T12:54:07.321077Z",
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "ts": "2026-05-07T12:54:07.483104Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 4,
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 4,
+        "score": 92,
+        "parametric_form": "0.5*log(mass_weighted_internal_accel/ref_a) + 0.5*log(total_over_internal_mass_weighted_ratio/ref_b)",
+        "ts": "2026-05-10T21:17:59.677551Z",
+        "project_slug": "gp163d_alien_invariant_bridge"
+      },
+      "ts": "2026-05-10T21:17:59.845371Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 4,
+      "ts": "2026-05-07T12:53:47.280149Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:47.961052Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:47.961341Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.262498Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.262787Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.483122Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.483449Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.845379Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.845765Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.845765Z"
+}

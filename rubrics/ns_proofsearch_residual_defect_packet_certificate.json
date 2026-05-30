@@ -1,0 +1,89 @@
+{
+  "name": "ns_proofsearch_residual_defect_packet_certificate",
+  "project": "ns_proofsearch_residual_defect_packet_certificate",
+  "rubric_version": "0.2-full-stack-residual-defect-packet-certificate",
+  "rubric_version_reason": "Successor theorem-search substrate after ns_proofsearch_resupply_pincer iter 3 reranked the dynamic-realization node to residual-defect packet transfer. v0.2 pulls forward sign, cycle-margin, pressure-reconstruction, and return-time obligations so the run does not stop at a conditional Gronwall lemma.",
+  "description": "Bounded ZTARE theorem attempt for residual-stable supercritical packet certificates, full ratchet/exhaust stack exclusions, or no-go/reranking theorems.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-attempt substrate over explicit approximate packet fields and residual-defect transfer."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by theorem burden, counterexample quality, and reranking, not formula gaps.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The prior pincer run proved a lesson: supercritical coupled exponent envelopes are only kinematic. The live theorem target is residual-stable dynamic realization, but do not stop at the abstract Gronwall lemma. Pull forward the full bridge stack: explicit approximate packet fields U_n, projected NSE residual R_n, strain budget A_n, observable Lip_n/Margin_n, Defect_n<1, pressure reconstruction, sign coherence, cycle profitability/exhaust margin, and return-time density or summability. Reward theorem packets that construct the full certificate, exclude it by proving the first blocking node, or rerank to a cheaper bridge. Penalize exponent-only arguments, metric-kernel substitution, pointwise P_inst chasing, regularity/blowup overclaims, and any argument that treats approximate fields as exact NSE solutions without a residual estimate.",
+  "dimensions": [
+    {
+      "name": "Residual-Defect Eigenquestion Discipline",
+      "weight": 15,
+      "description": "Does the submission attack Defect_n<1 for explicit packet fields U_n, rather than restating the exponent pincer?"
+    },
+    {
+      "name": "Approximate Packet Field Specificity",
+      "weight": 15,
+      "description": "Does it name or construct U_n, its interval I_n, divergence-free compatibility, packet observable Phi_n, and scale/return assumptions?"
+    },
+    {
+      "name": "NSE Residual And Strain Control",
+      "weight": 15,
+      "description": "Does it correctly handle projected residual R_n, H^{-1} residual norm, viscosity weighting, and strain budget A_n in the Gronwall transfer estimate?"
+    },
+    {
+      "name": "Observable Margin Transfer",
+      "weight": 10,
+      "description": "Does it control Lip_n and Margin_n non-circularly, so the packet property actually transfers to a true NSE solution?"
+    },
+    {
+      "name": "Full Certificate Stack Ambition",
+      "weight": 20,
+      "description": "Does it pull forward pressure reconstruction, sign coherence, cycle profitability/exhaust margin, scale progression, and return-time density/summability, either paying them or proving the first blocking node?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a concrete theorem packet: constructive certificate, residual-instability exclusion, exact no-go/reranking theorem, Lean-facing objects, and next discriminator?"
+    },
+    {
+      "name": "Pincer And Ratchet Interface",
+      "weight": 5,
+      "description": "Does it keep the connection to supercritical burden and the original resupply-escape pincer without overclaiming the final NS consequence?"
+    },
+    {
+      "name": "Claim Discipline",
+      "weight": 5,
+      "description": "Does it avoid claiming NS regularity/blowup or hiding residual PDE burdens?"
+    }
+  ],
+  "criteria": {
+    "Residual_Defect_Eigenquestion_Discipline": "Full credit requires centering Defect_n<1 or a theorem showing why it fails; exponent-only pincer arguments are insufficient.",
+    "Approximate_Packet_Field_Specificity": "Full credit requires explicit U_n/I_n/Phi_n/return assumptions or a proof that such explicit packets cannot satisfy the target.",
+    "NSE_Residual_And_Strain_Control": "Full credit requires correct projected residual, H^{-1} residual norm, viscosity scaling, and Gronwall strain-budget treatment.",
+    "Observable_Margin_Transfer": "Full credit requires non-circular Lip_n and Margin_n estimates that preserve the packet observable.",
+    "Full_Certificate_Stack_Ambition": "Full credit requires attacking the full downstream stack: pressure reconstruction, sign coherence, cycle margin or exhaust margin, scale progression, and return-time density/summability. A submission may pay the stack, exclude the stack, or prove the first blocking node, but it may not merely assume every hard layer.",
+    "Generative_Yield": "Full credit requires a formal theorem packet with hypotheses, conclusion, proof skeleton, exact estimate, Lean-facing objects, and remaining PDE assumptions.",
+    "Pincer_And_Ratchet_Interface": "Full credit requires explaining how the residual certificate interacts with supercritical burden and later sign/profit/return-time obligations.",
+    "Claim_Discipline": "Reject regularity/blowup overclaims, approximate-equals-exact laundering, metric-kernel substitution, and hidden recurrence burdens."
+  }
+}

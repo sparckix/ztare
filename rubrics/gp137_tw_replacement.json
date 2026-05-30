@@ -2,9 +2,9 @@
   "rubric_version": "1.0-newton",
   "project": "gp137_tw_replacement",
   "rubric_mode": "newton",
-  "rubric_mode_reason": "GP-137 hardens GP-135 Primitive 2. The mutator must produce a parameter-free class detector or impossibility proof \u2014 both require mechanism-derived predictions beyond curve-fitting. Newton-mode enforces secondary observables.",
+  "rubric_mode_reason": "GP-137 hardens GP-135 Primitive 2. The mutator must produce a parameter-free class detector or impossibility proof — both require mechanism-derived predictions beyond curve-fitting. Newton-mode enforces secondary observables.",
   "enable_dag_steering": true,
-  "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node \u2014 important when the substrate is qualitative and search space is broad.",
+  "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node — important when the substrate is qualitative and search space is broad.",
   "falsification_mode": "bounded_discriminator",
   "enable_fit_primitive": false,
   "fit_score_mode": "none",
@@ -12,21 +12,21 @@
   "discovery_mode": false,
   "holdout_hard_gate": false,
   "farther_tail_region": null,
-  "farther_tail_region_disable_reason": "qualitative substrate \u2014 no numerical holdout",
+  "farther_tail_region_disable_reason": "qualitative substrate — no numerical holdout",
   "disable_evidence_fit_gate": true,
-  "disable_evidence_fit_gate_reason": "qualitative substrate \u2014 no numerical evidence curve",
+  "disable_evidence_fit_gate_reason": "qualitative substrate — no numerical evidence curve",
   "disable_uniqueness_gap_gate": true,
-  "disable_uniqueness_gap_gate_reason": "qualitative substrate \u2014 no mathematical-form keyword discriminator",
+  "disable_uniqueness_gap_gate_reason": "qualitative substrate — no mathematical-form keyword discriminator",
   "gp103_stagnation_threshold": 3,
   "holdout_budget": 0,
   "enable_mform_audit": true,
   "general_office_model": "gpt4.1",
-  "persona": "You are a senior random matrix theorist trained in the Wigner / Dyson / Tracy-Widom / Mehta tradition. You have ZERO patience for naming-without-formulas: a thesis that says 'use the level-spacing ratio' without stating <r> \u2248 0.5307 GOE / 0.5996 GUE / 0.386 Poisson is naming-without-content. You sharply penalize: (a) any thesis that requires the operator to declare the symmetry class \u2014 that smuggles the answer into the premise; (b) any thesis that uses 'universality' or 'Wigner's semicircle' as if naming the concept were sufficient; (c) any thesis whose discriminator is a one-sided quantile test on a single scalar (the original gate's failure mode); (d) any thesis whose secondary observable is dimensionally inconsistent (raw spacing variance without unfolding by local density). You reward: detectors with explicit formulas, named discriminating values from cited papers (Atas et al. 2013, Bohigas-Giannoni-Schmit 1984, Mehta 2004, Forrester 2010), finite-N error envelopes, and composition specifications with the existing admission decision.",
+  "persona": "You are a senior random matrix theorist trained in the Wigner / Dyson / Tracy-Widom / Mehta tradition. You have ZERO patience for naming-without-formulas: a thesis that says 'use the level-spacing ratio' without stating <r> ≈ 0.5307 GOE / 0.5996 GUE / 0.386 Poisson is naming-without-content. You sharply penalize: (a) any thesis that requires the operator to declare the symmetry class — that smuggles the answer into the premise; (b) any thesis that uses 'universality' or 'Wigner's semicircle' as if naming the concept were sufficient; (c) any thesis whose discriminator is a one-sided quantile test on a single scalar (the original gate's failure mode); (d) any thesis whose secondary observable is dimensionally inconsistent (raw spacing variance without unfolding by local density). You reward: detectors with explicit formulas, named discriminating values from cited papers (Atas et al. 2013, Bohigas-Giannoni-Schmit 1984, Mehta 2004, Forrester 2010), finite-N error envelopes, and composition specifications with the existing admission decision.",
   "dimensions": [
     {
       "name": "Detector Specificity",
       "weight": 30,
-      "description": "Does the thesis give an explicit parameter-free class detector \u2014 or impossibility proof \u2014 with a named statistic and discriminating values? Vague proposals score 0. Full credit requires formula + values for each universality class + finite-N error envelope."
+      "description": "Does the thesis give an explicit parameter-free class detector — or impossibility proof — with a named statistic and discriminating values? Vague proposals score 0. Full credit requires formula + values for each universality class + finite-N error envelope."
     },
     {
       "name": "Theoretical Grounding",
@@ -50,12 +50,12 @@
     }
   ],
   "criteria": {
-    "1_Detector_Specificity": "Does the thesis emit a parameter-free class detector \u2014 or impossibility \u2014 with formula + values + error envelope?",
+    "1_Detector_Specificity": "Does the thesis emit a parameter-free class detector — or impossibility — with formula + values + error envelope?",
     "2_Theoretical_Grounding": "Does the thesis cite a concrete published RMT result with author and year?",
     "3_Class_Selection_Independence": "Does the detector work WITHOUT operator-supplied class declaration?",
     "4_Generative_Yield": "Does the thesis name a calculable, mathematically-orthogonal secondary observable beyond the primary admission decision?",
     "5_Mechanism_Algorithmic_Concreteness": "Does the thesis name a runnable algorithm (formula, library, or threshold), not a class-of-technique label?"
   },
-  "_charter_pre_reg_seam": "research_areas/private/seams/mission/GP-137_tw_replacement_seam.md",
+  "_charter_pre_reg_seam": "GP-137 (internal seam)",
   "composition_stagnation_threshold_removed_2026_04_24": "GP-135 fix: removed override of 5; Newton-mode default of 2 now applies. Pivot fires earlier per panel-recommended discipline."
 }

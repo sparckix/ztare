@@ -1,0 +1,15 @@
+{
+  "artifact_bundle": null,
+  "gpu_status": null,
+  "host": "150.136.223.255",
+  "latest_marker": "checkpointed per selected_step",
+  "launcher_pid": 5964,
+  "local_results_dir": "projects/neural_hunt/workspace/h103_remote_a100_2026_05_11",
+  "notes": null,
+  "project_slug": "neural_hunt",
+  "run_id": "neural-hunt-h103-doc-balanced-window-robustness-20260511T232044Z-6cf89064",
+  "run_kind": "h103_doc_balanced_window_robustness",
+  "status": "registered",
+  "summary_file": null,
+  "updated_utc": "2026-05-11T23:20:44Z"
+}

@@ -1,0 +1,500 @@
+{
+  "date": "2026-05-24",
+  "entries": [
+    {
+      "timestamp_utc": "2026-05-24T00:03:11.527270+00:00",
+      "cost_usd": 0.001998,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:cusp_function_qparam_periodic_planner:decomposition:1779580976_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00428880",
+        "input_tokens=4575",
+        "output_tokens=105"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:05:19.379180+00:00",
+      "cost_usd": 0.001846,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_eigenvalue_nonneg_planner:decomposition:1779581111_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00399160",
+        "input_tokens=4135",
+        "output_tokens=120"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:05:22.343250+00:00",
+      "cost_usd": 0.0019068,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:cstar_unitary_spectrum_circle_planner:decomposition:1779581111_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00404360",
+        "input_tokens=4255",
+        "output_tokens=128"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:05:24.490543+00:00",
+      "cost_usd": 0.0019388,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:qparam_tendsto_norm_exp_planner:decomposition:1779581111_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00416000",
+        "input_tokens=4451",
+        "output_tokens=99"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:05:27.408451+00:00",
+      "cost_usd": 0.0018868,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:gram_posdef_linear_independent_planner:decomposition:1779581111_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00404360",
+        "input_tokens=4273",
+        "output_tokens=111"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:05:30.229113+00:00",
+      "cost_usd": 0.001812,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:lpnorm_hasSum_packaging_planner:decomposition:1779581111_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00399280",
+        "input_tokens=4114",
+        "output_tokens=104"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:05:32.654992+00:00",
+      "cost_usd": 0.0018356,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_rayleigh_spectrum_planner:decomposition:1779581111_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00400440",
+        "input_tokens=4161",
+        "output_tokens=107"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:07:30.056473+00:00",
+      "cost_usd": 0.0018452,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_rayleigh_singular_values_planner:decomposition:1779581232_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00401680",
+        "input_tokens=4189",
+        "output_tokens=106"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:12:46.205220+00:00",
+      "cost_usd": 0.0019292,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:zpow_quotient_covering_nat_neg_split_planner:decomposition:1779581558",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00410600",
+        "input_tokens=4371",
+        "output_tokens=113"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:12:48.455432+00:00",
+      "cost_usd": 0.0019092,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:zpow_covering_subtype_transport_planner:decomposition:1779581558",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00407400",
+        "input_tokens=4289",
+        "output_tokens=121"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:12:50.954193+00:00",
+      "cost_usd": 0.0018864,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:asymptotics_bigo_eq_mul_planner:decomposition:1779581558",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00404960",
+        "input_tokens=4244",
+        "output_tokens=118"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:14:48.112359+00:00",
+      "cost_usd": 0.0020856,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:complex_limit_causeq_planner:decomposition:1779581682",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00432360",
+        "input_tokens=4654",
+        "output_tokens=140"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:14:51.242545+00:00",
+      "cost_usd": 0.0018936,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_rayleigh_extremum_planner:decomposition:1779581682",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00406400",
+        "input_tokens=4294",
+        "output_tokens=110"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:18:53.151512+00:00",
+      "cost_usd": 0.0020456,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:cusp_function_qparam_periodic_planner:decomposition:1779581923",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00434840",
+        "input_tokens=4698",
+        "output_tokens=104"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:21:10.219150+00:00",
+      "cost_usd": 0.0018472,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_eigenvalue_nonneg_planner:decomposition:1779582059_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00403440",
+        "input_tokens=4206",
+        "output_tokens=103"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:21:13.067387+00:00",
+      "cost_usd": 0.0019112,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:cstar_unitary_spectrum_circle_planner:decomposition:1779582059_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00407320",
+        "input_tokens=4290",
+        "output_tokens=122"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:21:15.179025+00:00",
+      "cost_usd": 0.001916,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:qparam_tendsto_norm_exp_planner:decomposition:1779582059_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00412160",
+        "input_tokens=4386",
+        "output_tokens=101"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:21:17.244328+00:00",
+      "cost_usd": 0.0018888,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:gram_posdef_linear_independent_planner:decomposition:1779582059_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00408160",
+        "input_tokens=4318",
+        "output_tokens=101"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:21:19.896750+00:00",
+      "cost_usd": 0.0019092,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:lpnorm_hasSum_packaging_planner:decomposition:1779582059_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00409160",
+        "input_tokens=4305",
+        "output_tokens=117"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:21:22.677698+00:00",
+      "cost_usd": 0.0018656,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_rayleigh_spectrum_planner:decomposition:1779582059_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00403680",
+        "input_tokens=4212",
+        "output_tokens=113"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:23:08.670801+00:00",
+      "cost_usd": 0.0018372,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_rayleigh_singular_values_planner:decomposition:1779582179_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00404720",
+        "input_tokens=4205",
+        "output_tokens=97"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:25:04.967648+00:00",
+      "cost_usd": 0.0020776,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:bigo_specialization:decomposition:1779582295_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00416840",
+        "input_tokens=4666",
+        "output_tokens=132"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:25:06.935671+00:00",
+      "cost_usd": 0.002288,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:summability_transport:decomposition:1779582295_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00450760",
+        "input_tokens=5308",
+        "output_tokens=103"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:25:09.582062+00:00",
+      "cost_usd": 0.0020796,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:cstar_selfadjoint_spectral_radius_planner:decomposition:1779582295_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00417600",
+        "input_tokens=4679",
+        "output_tokens=130"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:25:11.774484+00:00",
+      "cost_usd": 0.0020384,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:abs_transport:decomposition:1779582295_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00416600",
+        "input_tokens=4660",
+        "output_tokens=109"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:25:14.367197+00:00",
+      "cost_usd": 0.0020304,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:abel_stolz_power_series_planner:decomposition:1779582295_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00417240",
+        "input_tokens=4676",
+        "output_tokens=100"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:28:55.240876+00:00",
+      "cost_usd": 0.0025316,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:zpow_quotient_covering_nat_neg_split_planner:decomposition:1779582527",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00478960",
+        "input_tokens=5901",
+        "output_tokens=107"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:29:01.281421+00:00",
+      "cost_usd": 0.0025044,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:zpow_covering_subtype_transport_planner:decomposition:1779582527",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00475960",
+        "input_tokens=5821",
+        "output_tokens=110"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:29:04.565892+00:00",
+      "cost_usd": 0.0024996,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:asymptotics_bigo_eq_mul_planner:decomposition:1779582527",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00473240",
+        "input_tokens=5773",
+        "output_tokens=119"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:31:02.174283+00:00",
+      "cost_usd": 0.002496,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_rayleigh_extremum_planner:decomposition:1779582649",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00475120",
+        "input_tokens=5840",
+        "output_tokens=100"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:31:06.057219+00:00",
+      "cost_usd": 0.0026168,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:complex_limit_causeq_planner:decomposition:1779582649",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00497120",
+        "input_tokens=6126",
+        "output_tokens=104"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:35:07.787222+00:00",
+      "cost_usd": 0.0026384,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:cusp_function_qparam_periodic_planner:decomposition:1779582899",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00499280",
+        "input_tokens=6164",
+        "output_tokens=108"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:37:14.453987+00:00",
+      "cost_usd": 0.0024368,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_eigenvalue_nonneg_planner:decomposition:1779583026_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00471640",
+        "input_tokens=5724",
+        "output_tokens=92"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:37:17.659971+00:00",
+      "cost_usd": 0.0025192,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:cstar_unitary_spectrum_circle_planner:decomposition:1779583026_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00474920",
+        "input_tokens=5802",
+        "output_tokens=124"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:37:23.883624+00:00",
+      "cost_usd": 0.0024536,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:spectral_rayleigh_spectrum_planner:decomposition:1779583026_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00470840",
+        "input_tokens=5706",
+        "output_tokens=107"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:37:26.266768+00:00",
+      "cost_usd": 0.0025552,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:qparam_tendsto_norm_exp_planner:decomposition:1779583026_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00480400",
+        "input_tokens=5908",
+        "output_tokens=120"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:37:30.432103+00:00",
+      "cost_usd": 0.0025128,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:gram_posdef_linear_independent_planner:decomposition:1779583026_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00475960",
+        "input_tokens=5834",
+        "output_tokens=112"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-24T00:37:32.885245+00:00",
+      "cost_usd": 0.0025092,
+      "category": "llm",
+      "action": "leanmill_llm_proposal:proposal:lpnorm_hasSum_packaging_planner:decomposition:1779583026_proposal_agent",
+      "model_name": "gpt-4.1-mini-2025-04-14",
+      "session_id": "leanmill_24x7",
+      "notes": [
+        "estimated_preflight_usd=0.00477640",
+        "input_tokens=5837",
+        "output_tokens=109"
+      ]
+    }
+  ],
+  "total_usd": 0.0808
+}

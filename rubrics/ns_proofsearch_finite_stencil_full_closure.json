@@ -1,0 +1,127 @@
+{
+  "name": "ns_proofsearch_finite_stencil_full_closure",
+  "project": "ns_proofsearch_finite_stencil_full_closure",
+  "rubric_version": "0.1-finite-stencil-full-closure",
+  "rubric_version_reason": "Successor after Phase 5DV: square-law-only bridges are blocked, but finite-stencil/correlated full nonlinear closure remains live.",
+  "description": "Focused theorem-search substrate for constructing or excluding a non-tautological finite-stencil/correlated Navier-Stokes certificate that closes the full nonlinear remainder.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative frontier theorem-search over the finite-stencil full-closure bridge."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative theorem-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by full nonlinear closure gates, non-tautology, and proof-cost reranking.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 25,
+  "post_run_synthesis_max_cluster_size": 4,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The exact projection square law blocks square-law-only and tail-reducible bridges, but moving finite-stencil/correlated certificates remain live. Reward only a non-tautological certificate or no-go theorem that pays the full nonlinear Navier-Stokes remainder: high-low, high-high, Euclidean pressure/Leray, exterior stretching, signed profit, and residual transfer. Penalize phase-fitting, observed-margin definitions, metric-kernel pressure substitution, finite-to-infinite supremum induction, weak-solution overclaims, stochastic derandomization handwaves, and unbounded computation.",
+  "dimensions": [
+    {
+      "name": "Certificate Independence",
+      "weight": 10,
+      "description": "Is the finite-stencil/correlated certificate defined independently of residual cancellation, profit dominance, or observed gain/loss?"
+    },
+    {
+      "name": "Escape Survival",
+      "weight": 8,
+      "description": "Does the certificate remain nontrivial on escaping high-frequency active-shell profiles?"
+    },
+    {
+      "name": "High-Low Closure",
+      "weight": 7,
+      "description": "Does it pay the high-low paraproduct/exterior transport burden?"
+    },
+    {
+      "name": "High-High Closure",
+      "weight": 7,
+      "description": "Does it pay high-high cascade transfer rather than hiding it in a tail term?"
+    },
+    {
+      "name": "Pressure And Leray Discipline",
+      "weight": 8,
+      "description": "Does it use the Euclidean pressure/Leray operator correctly and avoid metric-kernel substitution?"
+    },
+    {
+      "name": "Residual-Defect Transfer",
+      "weight": 8,
+      "description": "Does it report projected NSE residual or defect alongside signed profit and give a real transfer condition?"
+    },
+    {
+      "name": "Non-Tail Domination",
+      "weight": 7,
+      "description": "Does it avoid reducing the decisive margin to the summable square-law tail?"
+    },
+    {
+      "name": "Cycle Or Critical-Norm Relevance",
+      "weight": 7,
+      "description": "Does it connect the closure ledger to a danger-reset-return cycle, LP critical norm, or smooth-data realization?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 18,
+      "description": "Does it produce a theorem packet, exact falsifier, CAS/Lean-facing object list, or decisive proof-cost reranking?"
+    },
+    {
+      "name": "Scope Honesty And Resource Safety",
+      "weight": 8,
+      "description": "Does it avoid Clay overclaim and keep proposed audits bounded, sparse, symbolic, or proof-facing?"
+    },
+    {
+      "name": "Ledger Non-Tautology",
+      "weight": 12,
+      "description": "HARD GATE. Candidate code must not set the audited margin equal to tau_B and then assert it is <= tau_B. High scores require explicit ledger terms or a symbolic class-collapse theorem."
+    }
+  ],
+  "criteria": {
+    "Certificate_Independence": "Full credit requires an independent rule for the certificate before residual/profit evaluation; score zero for phase-fitting or observed-margin definitions.",
+    "Escape_Survival": "Full credit requires nontriviality on active-shell escaping profiles or a proof that such survival is impossible for the stated class.",
+    "High_Low_Closure": "Full credit requires explicit high-low paraproduct/exterior transport control or a falsifier showing the class fails there.",
+    "High_High_Closure": "Full credit requires explicit high-high/cascade transfer control or a falsifier showing the class fails there.",
+    "Pressure_And_Leray_Discipline": "Full credit requires Euclidean pressure/Leray treatment and rejects metric-kernel substitution.",
+    "Residual_Defect_Transfer": "Full credit requires residual/defect and signed profit to be reported together with a transfer condition.",
+    "Non_Tail_Domination": "Full credit requires the decisive margin not be bounded by sum_{B>=K}(1-R_B^2).",
+    "Cycle_Or_Critical_Norm_Relevance": "Full credit requires a bridge to cycle margin, critical norm, or smooth-data realization rather than a purely kinematic certificate.",
+    "Generative_Yield": "Full credit requires a usable theorem/falsifier packet or decisive route reranking.",
+    "Scope_Honesty_And_Resource_Safety": "Reject unsupported regularity/blowup claims and unbounded dense computation proposals.",
+    "Ledger_Non_Tautology": "Score at most 60 if the code uses I_model=tau_B as the sole margin audit. Full credit requires explicit high-low/high-high/pressure/exterior/profit/residual ledger terms or a proof that the enumerated certificate class symbolically collapses to tau_B."
+  },
+  "success_criteria": [
+    "A positive non-tautological finite-stencil/correlated certificate satisfying the full nonlinear closure ledger.",
+    "A no-go theorem proving a stated finite-stencil/correlated class collapses to square-law-tail domination or fails a closure gate.",
+    "A bounded exact Fourier/CAS falsifier that kills a concrete class and names the next theorem target."
+  ],
+  "failure_modes": [
+    "Choosing phases, amplitudes, stencils, cycle widths, dwell times, or loss variables from the target conclusion.",
+    "Inferring a uniform infinite-dimensional margin from R_B<1 despite sup_B R_B=1.",
+    "Treating stencil survival as full nonlinear closure.",
+    "Setting margin = tau_B and treating margin <= tau_B as an independent finite-stencil ledger audit.",
+    "Ignoring high-low, high-high, pressure/Leray, exterior stretching, or residual-defect transfer.",
+    "Substituting a metric kernel for the Euclidean pressure Hessian.",
+    "Treating convex-integration weak nonuniqueness as a Clay blowup route.",
+    "Using stochastic regularization without a deterministic derandomization theorem.",
+    "Replacing theorem-facing discrimination with large dense Fourier jobs, unbounded Lean builds, or the crashed exponential metric transport obstruction."
+  ]
+}

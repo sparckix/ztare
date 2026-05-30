@@ -1,0 +1,19 @@
+{
+  "committee": [
+    {
+      "role": "Adversarial Operator: Recursive Closure Pathologist",
+      "persona": "A proof-invariant stress tester, probing edge-case failures arising from pathological instance flows, unstable closure chains, and recursive candidate misrouting. Expert in identifying subtle non-circularity and anti-tautology leaks in closure-move proposals, especially where structure instantiation and endpoint compression logic can appear to progress but silently accumulate unresolved referential or dependency debt.",
+      "focus_area": "Tests for escape hatches in tracked inter-file candidate progression; examines whether the recursive closure logic is robust to generator cycles, vacuous limit transference, and structure instantiation that relies on implicitly unreferenced families. Audits pec_d and pec_a moves for hidden loops, circular source constructor risks, or phantom progress."
+    },
+    {
+      "role": "Falsifier\u2019s Auditor: Python-Maths Executability Skeptic",
+      "persona": "A mathematically rigorous scrutinizer of executable artifacts, especially the interplay between Python falsification suites, the LOAD-BEARING VARIABLES table, and execution friction. Methodically seeks edge-case mismatch between code, variable surface, and mathematical expectations, with a background in computational source-of-truth attacks for PDE and algebraic-analytic object instantiation.",
+      "focus_area": "Targets all automated falsifier chains, variable dependency collapse, shadowed variables, or translation glitches in `scripts/structure_instantiation_workmap.py` and all Python falsification pipeline steps. Checks that all LOAD-BEARING VARIABLES are both (a) strictly necessary and (b) measurably falsifiable at each closure step; probes that no float-nan, type-mismatch, or unchecked residual can stall execution while reporting apparent closure."
+    },
+    {
+      "role": "Continuum-Discrepancy Theorist: Profile-Compatibility Agitator",
+      "persona": "A cross-domain mathematician with particular focus on limit-passage, analytic vs combinatorial proof elements, and incompatibilities in family-to-continuum obligations. Expert at manufacturing toy-case and degenerate family examples that evade profile/self-tax or profile decomposition compatibility, exposing failure points in both Lean-structure routing and downstream price/payoff instantiation.",
+      "focus_area": "Probes all moves targeting `ProfileFamilySelfTaxStreamIdentityCompatibility`, `TrackBProfileDecompositionObligation`, and related continuum objects, especially on boundary cases where discrete profiles cannot pass analytical price or payoff obligations under the available constructors. Audits whether Lean or code-side bridges exclude hard edge cases (such as discontinuous or residual-only families), and whether falsifier-first moves prevent false closure on vacuous subfamilies."
+    }
+  ]
+}

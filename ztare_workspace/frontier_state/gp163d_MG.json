@@ -1,0 +1,267 @@
+{
+  "project_slug": "gp163d_MG",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 5,
+  "pending_actions": [
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (exp(params['log_c']) / features['x']) ** 2.0) ** 0.25",
+        "ts": "2026-05-07T12:53:47.279557Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-07T12:53:47.943569Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-07T12:53:47.279620Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-07T12:53:47.951971Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (exp(params['log_c']) / features['x']) ** 2.0) ** 0.25",
+        "ts": "2026-05-07T12:53:57.105994Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-07T12:53:57.248871Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-07T12:53:57.106069Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-07T12:53:57.253412Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (exp(params['log_c']) / features['x']) ** 2.0) ** 0.25",
+        "ts": "2026-05-07T12:54:07.320669Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-07T12:54:07.469153Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-07T12:54:07.320730Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-07T12:54:07.473791Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (exp(params['log_c']) / features['x']) ** 2.0) ** 0.25",
+        "ts": "2026-05-10T21:17:59.676457Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-10T21:17:59.832475Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_MG"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-10T21:17:59.676628Z",
+        "project_slug": "gp163d_MG"
+      },
+      "ts": "2026-05-10T21:17:59.836839Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 5,
+      "ts": "2026-05-07T12:53:47.279635Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:47.943601Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:47.944141Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:47.951988Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:47.952301Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.248887Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.249238Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:57.253429Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:57.253776Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.469171Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.469555Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:54:07.473808Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:54:07.474235Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.832483Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.832935Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-10T21:17:59.836847Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-10T21:17:59.837294Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.837294Z"
+}

@@ -1,0 +1,64 @@
+{
+  "name": "ns_proofsearch_frontier",
+  "project": "ns_proofsearch_frontier",
+  "rubric_version": "0.1-broad-proofsearch-frontier",
+  "rubric_version_reason": "Repair Newton preflight, add qualitative gate opt-outs, and admit geometric/gauge proof-search competitors.",
+  "description": "Bounded ZTARE substrate for advancing the current Navier-Stokes pressure-l=2 proof frontier by finding a theorem-shaped bridge, obstruction, or justified reranking among the live obligations.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "This is a qualitative proof-search audit over named theorem obligations. It is not a numeric farther-tail substrate and has no finite target rows."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists. Progress is judged by theorem-shaped bridge quality, obligation specificity, and claim discipline.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative theorem-cage proof-search substrate with no numeric target law.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival routes are scored by theorem-cost and unpaid-term honesty, not by formula-gap heuristics.",
+  "enable_fit_primitive_features": false,
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE proof-search referee. You do not reward beautiful prose, only theorem-shaped progress on the current pressure-l=2 Navier-Stokes frontier. You force the candidate to choose or rerank a live obligation, state the bridge or obstruction in repo-native terms, and explicitly name what remains unpaid. You reject generic Sobolev fallback, hidden fixed exponents, fake exact cancellation, and any claim of Clay-level closure.",
+  "dimensions": [
+    {
+      "name": "Obligation Ranking and Route Choice",
+      "weight": 20,
+      "description": "Does the thesis correctly identify which ranked obligation it attacks, or justify a reranking with a load-bearing comparative argument?"
+    },
+    {
+      "name": "Theorem-Shaped Bridge Specificity",
+      "weight": 25,
+      "description": "Does the submission state a concrete theorem-shaped bridge or obstruction in repo-native terms, rather than generic PDE prose?"
+    },
+    {
+      "name": "Singular-Integral Discipline",
+      "weight": 20,
+      "description": "If the route touches the commutator tower or pressure tail, does it use singular-integral / commutator structure rather than generic Sobolev embedding?"
+    },
+    {
+      "name": "Residual and Unpaid-Term Honesty",
+      "weight": 15,
+      "description": "Does the thesis explicitly name what remains unpaid, including residual terms, instead of laundering them into notation?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does the thesis produce a real next theorem target, obstruction, or route re-ranking that would change what to build next?"
+    },
+    {
+      "name": "Claim Discipline",
+      "weight": 5,
+      "description": "Does the thesis avoid overclaiming Navier-Stokes regularity or exact cancellations not earned by the current branch?"
+    }
+  ],
+  "criteria": {
+    "Obligation_Ranking_and_Route_Choice": "Full credit requires attacking or reranking one of the four live obligations in the packet with explicit comparative reasoning.",
+    "Theorem_Shaped_Bridge_Specificity": "Full credit requires a theorem-shaped bridge, obstruction, or reranking in repo-native terms such as pressureL2TransportDefectObligation, phase5cgBroadProofSearchTarget, globalPressureTailBootstrap, or commutatorTowerProofSearchTarget.",
+    "Singular_Integral_Discipline": "Generic Sobolev-only arguments fail if the route is supposed to address commutators or pressure tails. Kato-Ponce / Coifman-Meyer class reasoning is preferred where relevant.",
+    "Residual_and_Unpaid_Term_Honesty": "The thesis must explicitly name residuals or missing coercive estimates. Hiding them inside notation or asserting exact cancellation fails this dimension.",
+    "Generative_Yield": "A good submission changes the next build or proof step by producing a sharper target or a clean impossibility witness.",
+    "Claim_Discipline": "Reject claims of Clay-level closure, exact cancellation, or fixed-rate decay unless explicitly derived."
+  }
+}

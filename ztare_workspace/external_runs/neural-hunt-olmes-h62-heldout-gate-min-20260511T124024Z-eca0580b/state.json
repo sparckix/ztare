@@ -1,0 +1,15 @@
+{
+  "artifact_bundle": null,
+  "gpu_status": null,
+  "host": "132.226.159.108",
+  "latest_marker": "projects/neural_hunt/workspace/h62_checkpoint_status_heldout_gate_min.jsonl",
+  "launcher_pid": null,
+  "local_results_dir": null,
+  "notes": null,
+  "project_slug": "neural_hunt",
+  "run_id": "neural-hunt-olmes-h62-heldout-gate-min-20260511T124024Z-eca0580b",
+  "run_kind": "olmes_h62_heldout_gate_min",
+  "status": "failed_instrument_dependency",
+  "summary_file": null,
+  "updated_utc": "2026-05-11T12:40:24Z"
+}

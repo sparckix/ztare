@@ -1,0 +1,89 @@
+{
+  "name": "ns_proofsearch_resupply_pincer",
+  "project": "ns_proofsearch_resupply_pincer",
+  "rubric_version": "0.2-resupply-escape-pincer-cold-synthesis",
+  "rubric_version_reason": "Narrow theorem-attempt substrate for the post-fractional pressure-dwell pincer after the static metric-kernel bridge was falsified. v0.2 enables qualitative cold-shot and post-run synthesis after the 2026-05-03 run showed the proof object can pivot sharply across iterations.",
+  "description": "Bounded ZTARE theorem attempt for a SupplyLoad upper bound, ratchet lower-bound obstruction theorem, or proof-cost no-go/reranking theorem.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-attempt substrate over the NS resupply-escape pincer eigenquestion."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative proof-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by theorem burden, counterexample quality, and reranking, not formula gaps.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "Qualitative theorem-search substrate; do not route as numerical fit primitive.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless PDE theorem-search referee in Newton mode. The static fractional bridge is dead. Do not be timid: attempt the theorem. The task is not to solve all of Navier-Stokes, but it is to formalize or falsify the corrected pressure-dwell pincer and its new dynamic-realization node. A prior run found that SupplyLoad(E,k)=rho_resupply(E,k)*S(E,k)*sqrt(B(E,k)) against signed escape and viscous erasure is only kinematic unless explicit approximate packet fields U_n satisfy a residual-defect transfer certificate Defect_n<1. Reward theorem packets that either construct/exclude residual-stable supercritical packet fields, prove a PDE exclusion theorem, or sharpen the no-go/reranking theorem. Penalize metric-kernel substitution, pointwise P_inst chasing, generic 2D rhetoric, resupply-rate claims that ignore S*sqrt(B), envelope-only ratchet claims that ignore residual stability, and regularity/blowup overclaims.",
+  "dimensions": [
+    {
+      "name": "Supply-Load Eigenquestion Discipline",
+      "weight": 15,
+      "description": "Does the submission attack SupplyLoad=rho_resupply*S*sqrt(B), not the already-falsified pointwise pressure or metric-kernel bridge?"
+    },
+    {
+      "name": "Signed-Escape And Dwell Coupling",
+      "weight": 10,
+      "description": "Does it use section width W and escape-speed lower bound V to control T_section non-circularly?"
+    },
+    {
+      "name": "Viscous Packet Scaling",
+      "weight": 10,
+      "description": "Does it correctly use P_inst~S*sqrt(B*k), tau_visc~1/(nu*k^2), and one-packet impulse ~S*sqrt(B)/(nu*k^(3/2))?"
+    },
+    {
+      "name": "Resupply Bound Or Ratchet Obstruction Quality",
+      "weight": 15,
+      "description": "Does it provide a formal theorem attempt for a SupplyLoad upper bound, or an admissible ratchet obstruction theorem beating the k^(3/2) threshold without hiding dynamic-realization obligations?"
+    },
+    {
+      "name": "Residual-Defect Dynamic Realization",
+      "weight": 20,
+      "description": "Does it attack the iter-3 weakest node: explicit approximate packet fields U_n, projected NSE residual R_n, strain budget A_n, observable margin/Lipschitz control, and Defect_n<1 or a theorem excluding such certificates?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a concrete theorem packet for this exact pincer: hypotheses, conclusion, proof skeleton, formalizable SupplyLoad lemma, named ratchet obstruction family, or no-go/reranking theorem that changes the next NS build?"
+    },
+    {
+      "name": "Cycle And Return-Time Connection",
+      "weight": 10,
+      "description": "Does it explain how the result enters Q_dwell or cycle margin without back-solving from observed G and L, and does it name return-time requirements on the ratchet side?"
+    },
+    {
+      "name": "Claim Discipline",
+      "weight": 5,
+      "description": "Does it avoid claiming NS regularity/blowup and avoid hiding residual PDE burdens?"
+    }
+  ],
+  "criteria": {
+    "Supply_Load_Eigenquestion_Discipline": "Full credit requires explicitly targeting rho_resupply*S*sqrt(B), not static metric degeneracy or pointwise P_inst alone.",
+    "Signed_Escape_And_Dwell_Coupling": "Full credit requires non-circular W and V definitions and the dwell relation T_section<=W/V.",
+    "Viscous_Packet_Scaling": "Full credit requires the k^(3/2) impulse threshold and correct treatment of tau_visc.",
+    "Resupply_Bound_Or_Ratchet_Obstruction_Quality": "Full credit requires either a formal upper-bound theorem attempt or an admissible returning lower-bound obstruction theorem, while explicitly separating kinematic envelope claims from dynamic NSE realization.",
+    "Residual_Defect_Dynamic_Realization": "Full credit requires a theorem packet centered on explicit U_n, projected residual R_n, strain budget A_n, observable Lip/Margin, and Defect_n<1; or a PDE exclusion/no-go theorem proving why such residual-stable packet certificates cannot exist.",
+    "Generative_Yield": "Full credit requires a concrete theorem packet: formalize a SupplyLoad lemma, formalize a ratchet obstruction, or prove/rerank to a cheaper discriminator.",
+    "Cycle_And_Return_Time_Connection": "Full credit requires a non-circular connection to Q_dwell/cycle margin and explicit return-time obligations.",
+    "Claim_Discipline": "Reject regularity/blowup overclaims, metric-kernel substitution, pointwise-only pressure arguments, and hidden recurrence burdens."
+  }
+}

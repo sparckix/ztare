@@ -1,0 +1,136 @@
+{
+  "name": "ns_proofsearch_gain_tax_tether",
+  "project": "ns_proofsearch_gain_tax_tether",
+  "rubric_version": "0.5-sharp-survival-nonlocal-ghost-scope",
+  "rubric_version_reason": "Adds the GPT-5.5-discovered survival correction, elevates the non-local ghost as the Track B vector-ledger target, and hardens against statement-narrowing: finite or named-class theorems must not be labeled as global Leray-convexity.",
+  "description": "Theorem-search substrate for the Navier-Stokes full-ledger gain/tax tether exposed by finite-support multi-background audits.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative theorem-search over a proof bridge, not numerical curve fitting."
+  },
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No scalar farther-tail coordinate exists.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative theorem-search substrate.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by anti-tautology, full-ledger, high-high tax, damping, and asymptotic tether gates.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "No numerical parameter fitting target.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "post_run_synthesis_include_iter0": false,
+  "post_run_synthesis_max_score_gap": 30,
+  "post_run_synthesis_max_cluster_size": 4,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": [
+      "qualitative_evidence_seed"
+    ]
+  },
+  "holdout_hard_gate": true,
+  "pre_judge_gate_harness": true,
+  "enable_symbolic_asymptotic_gate": true,
+  "symbolic_asymptotic_gate_reason": "The exact residual polynomial D(t)=t^2+2bt^3+ct^4 turns gain~A and self_tax~A^2 into a constant survival burden, not a vanishing degree split.",
+  "symbolic_asymptotic_survival_transform": "gain_over_sqrt_self_tax",
+  "symbolic_asymptotic_survival_threshold": 0.6666666666666666,
+  "runner_allowed_imports": [
+    "typing",
+    "math",
+    "sympy"
+  ],
+  "persona": "You are a ruthless Navier-Stokes theorem-search referee in Newton mode. The live proof object is not broad resupply and not mixed-only finite-stencil discovery. Multi-background mixed-only Leray crossings exist, but reconstructed eigenvectors are killed by high-high self-tax. Reward only candidates that expose a top-level full-ledger gain/tax tether theorem with mechanical asymptotic_terms(), a Leray-projected vector_ledger_terms(), or a concrete violating block that survives P(V·∇V), damping, defect, and PSD honesty. The highest-value no-go is the non-local ghost exclusion: show that the sharp gain/sqrt(self_tax) survival constant is enforced by the torus Leray symbol/tensor ledger, not by dense-slab averaging. Penalize prose-only ledgers, phase-fitting, mixed-only promotion, finite-to-infinite overclaim, theorem-narrowing overclaim, qualitative Sobolev/nonlinear-maximum-principle slogans, and unbounded computation.",
+  "dimensions": [
+    {
+      "name": "Independent Fourier Class",
+      "weight": 10,
+      "description": "Is the mode/eigenclass/generator rule defined independently of the desired margin?"
+    },
+    {
+      "name": "Mixed Gain Ledger",
+      "weight": 8,
+      "description": "Does the thesis correctly state and use the damped signed mixed gain channel?"
+    },
+    {
+      "name": "High-High Self-Tax Ledger",
+      "weight": 14,
+      "description": "Does it charge P(V·∇V) explicitly and quantitatively?"
+    },
+    {
+      "name": "Full Defect And Survival Amplitude",
+      "weight": 10,
+      "description": "Does it use the total residual and first-defect amplitude rather than mixed-only normalization?"
+    },
+    {
+      "name": "Duhamel And Viscous Discipline",
+      "weight": 8,
+      "description": "Does it pay source/output damping or justify a different lifetime tax?"
+    },
+    {
+      "name": "PSD And Signed-Coordinate Honesty",
+      "weight": 7,
+      "description": "Does it avoid laundering an indefinite signed coordinate into positive energy without ballast?"
+    },
+    {
+      "name": "Asymptotic Tether Or Concrete Violator",
+      "weight": 14,
+      "description": "Does it mechanically derive a symbolic/vector gain-tax tether with constants, or provide a full-ledger block violation?"
+    },
+    {
+      "name": "Anti-Tautology Discipline",
+      "weight": 8,
+      "description": "Does it avoid phases, amplitudes, or certificates chosen backward from target cancellation?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 16,
+      "description": "Does it produce a theorem packet, exact falsifier, sequence law, or decisive proof-cost reranking?"
+    },
+    {
+      "name": "Scope Honesty And Resource Safety",
+      "weight": 5,
+      "description": "Does it avoid Clay overclaim and keep proposed audits bounded, sparse, symbolic, or proof-facing?"
+    }
+  ],
+  "criteria": {
+    "Independent_Fourier_Class": "Full credit requires a predeclared mode/eigenclass/generator rule independent of the desired margin.",
+    "Mixed_Gain_Ledger": "Full credit requires correct use of the damped signed mixed gain channel, including the 2/3 one-background ceiling and multi-background mixed-only crossings.",
+    "High_High_Self_Tax_Ledger": "Full credit requires explicit P(V·∇V) self-tax, not only residual words.",
+    "Full_Defect_And_Survival_Amplitude": "Full credit requires total residual t R_mixed + t^2 R_self and first-defect amplitude or equivalent full-ledger normalization.",
+    "Duhamel_And_Viscous_Discipline": "Full credit requires Duhamel/viscous lifetime payment or a rigorous reason the Phase 5EB/5EC tax is inapplicable.",
+    "PSD_And_Signed_Coordinate_Honesty": "Full credit requires signed-coordinate nonclaim or PSD/ballast payment for any positive-energy statement.",
+    "Asymptotic_Tether_Or_Concrete_Violator": "Full credit requires either asymptotic_terms() with an independent parametric class, gain/self-tax polynomials or symbolic bounds, cross terms, degree comparison, leading coefficients, limit, and falsifier; vector_ledger_terms() with Leray-projected tensor/vector burden; or a concrete full-ledger violating block.",
+    "Anti_Tautology_Discipline": "Full credit requires no backward phase/certificate fitting and no observed-budget amplifier.",
+    "Generative_Yield": "Full credit requires a usable theorem/falsifier/no-go packet or decisive route reranking.",
+    "Scope_Honesty_And_Resource_Safety": "Reject unsupported regularity/blowup claims, unbounded dense computation proposals, and finite/bounded/named-class theorems labeled as global Leray-convexity without an explicit closure argument."
+  },
+  "success_criteria": [
+    "A symbolic/asymptotic no-go packet proving a gain-tax tether for a named independent Fourier class, with explicit asymptotic_terms().",
+    "A Leray-projected vector/tensor ledger proving the gain-tax tether for a named class, with explicit vector_ledger_terms().",
+    "A non-local ghost exclusion showing the sharp gain/sqrt(self_tax) survival constant follows from the flat-torus Leray projection/vector ledger rather than from dense-slab scaling.",
+    "A concrete full-ledger violating block with profit above 2/3 after high-high, damping, defect, and PSD/ballast accounting.",
+    "A bounded exact Fourier/CAS falsifier showing the bounded gain-tax dichotomy is an artifact and naming the next audit.",
+    "A class-specific theorem that is explicitly labeled as class-specific and states the exact missing closure needed before it could become a global Track B theorem."
+  ],
+  "failure_modes": [
+    "Promoting mixed-only generalized eigen crossings without P(V·∇V).",
+    "Choosing phases, amplitudes, signs, or return subsequences by solving backward from positive margin.",
+    "Ignoring total defect or first-defect amplitude.",
+    "Ignoring Duhamel damping or viscous lifetime.",
+    "Calling an indefinite signed coordinate positive energy without ballast.",
+    "Inferring infinite-dimensional control from finite-bound strict inequalities without asymptotic_terms() or vector_ledger_terms().",
+    "Proving a finite-mode, bounded-subspace, named packet class, two-mode/triad, or dyadic-ladder statement and labeling it as the global Leray-convexity theorem.",
+    "Assuming dense support, family averages, or local triad exhaustion exclude the non-local ghost without a Leray-projected vector-ledger constant.",
+    "Asserting self_tax >= k0 * mixed_gain^2, a nonlinear maximum principle, or a Fourier/spatial uncertainty bridge without deriving the constant-bearing ledger.",
+    "Claiming Clay regularity or blowup from this middle-layer object.",
+    "Using large dense Fourier jobs, unbounded Lean builds, or the crashed exponential metric transport obstruction."
+  ]
+}

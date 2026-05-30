@@ -1,0 +1,100 @@
+{
+  "name": "gp163d_alien_invariant_bridge",
+  "project": "gp163d_alien_invariant_bridge",
+  "rubric_version": "0.1-internal-share-alien-invariant-bridge",
+  "rubric_version_reason": "Successor substrate after local science-grade audit, invariant search, backtests, generator pass, and hostile audit. The goal is no longer raw chi4 phase fitting; it is to generate a cleaner law candidate, invariant packet, or no-go theorem for the diffuse internal-share susceptibility object.",
+  "description": "Broad law-search substrate for a representation-stable diffuse susceptibility observable, explanatory primitive anchor, or no-go theorem for current gp163d internal-share candidates.",
+  "rubric_mode": "newton",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "cage_meta": {
+    "class": "audit",
+    "class_reason": "Qualitative frontier law-search substrate over invariant candidates, explanatory bridges, and no-go statements."
+  },
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Qualitative frontier substrate; no direct numeric fit primitive.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rivals are adjudicated by invariant quality, interpretation, and falsifier quality.",
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_reason": "This substrate searches for science objects and theorem-shaped bridges, not direct regression formulas.",
+  "enable_fit_primitive_features": false,
+  "enable_qualitative_evidence_cold_shot": true,
+  "qualitative_evidence_cold_shot_model_id": "@mutator",
+  "qualitative_evidence_cold_shot_timeout_seconds": 90,
+  "enable_post_run_thesis_synthesis": true,
+  "force_post_run_synthesis_numerical": true,
+  "post_run_synthesis_margin_threshold": 1,
+  "post_run_synthesis_max_attempts": 3,
+  "cold_shot": {
+    "mode": "advisory",
+    "force_families": ["qualitative_evidence_seed"]
+  },
+  "holdout_hard_gate": false,
+  "runner_allowed_imports": ["typing"],
+  "persona": "You are a ruthless alien-math nonlinear-gravity referee. Do not restate the old face-flux chi4 story. The live object is narrower: generate a representation-stable diffuse susceptibility observable, an explanatory bridge between the generated blend and the primitive internal-share anchor, or a no-go theorem explaining why the current family cannot promote beyond instrument science. Reward objects that separate diffuse from compact, survive admissible representation change in amplitude, cash out as explicit field/statistic definitions, and name a falsifier. Penalize raw phase rhetoric, generic smoothness, denominator-floor games, baseline-subtraction mirages, and astrophysical overclaim.",
+  "dimensions": [
+    {
+      "name": "Alien Invariant Ambition",
+      "weight": 15,
+      "description": "Does the submission propose a genuinely new observable, bridge, or no-go object beyond raw chi4 phase fitting?"
+    },
+    {
+      "name": "Diffuse-Compact Separation",
+      "weight": 15,
+      "description": "Does it preserve a large diffuse-vs-compact separation on the admissible representation set?"
+    },
+    {
+      "name": "Representation-Stability Cash-Out",
+      "weight": 15,
+      "description": "Does it improve or honestly interpret amplitude stability across face_flux and isotropic_18_flux?"
+    },
+    {
+      "name": "Explanatory Specificity",
+      "weight": 15,
+      "description": "Does it define explicit channel objects, blends, normalizations, or no-go claims precisely enough to falsify?"
+    },
+    {
+      "name": "Adversarial Falsifier Quality",
+      "weight": 10,
+      "description": "Does it name what would kill the proposal: denominator fragility, phase-only wins, halo-only pickup, compact-control leakage, or independent-solver collapse?"
+    },
+    {
+      "name": "Generative Yield",
+      "weight": 15,
+      "description": "Does it produce a law candidate, theorem packet, explanatory bridge, or decisive next discriminator?"
+    },
+    {
+      "name": "Scope Honesty And Nonclaim Control",
+      "weight": 10,
+      "description": "Does it avoid MOND/dark-matter overclaim and keep the distinction between solver science and astrophysical law explicit?"
+    },
+    {
+      "name": "Cost Reranking",
+      "weight": 5,
+      "description": "Does it say whether the next move is local backtest, independent solver/boundary test, or no-go closure rather than more same-family GPU spend?"
+    }
+  ],
+  "criteria": {
+    "Alien_Invariant_Ambition": "Full credit requires a genuinely new observable, explanatory bridge, or no-go object that goes beyond repeating the current chi4 phase story or merely renaming the existing primitive/generated pair.",
+    "Diffuse_Compact_Separation": "Full credit requires preserving a large diffuse-vs-compact separation on the admissible representation set, with the compact binary control staying operationally flat or safely small.",
+    "Representation_Stability_Cash_Out": "Full credit requires either improving amplitude stability across face_flux and isotropic_18_flux or honestly explaining why the best object cannot do better without an independent implementation axis.",
+    "Explanatory_Specificity": "Full credit requires explicit field/statistic definitions, blend rules, normalization logic, or theorem/no-go objects stated concretely enough to be falsified and audited.",
+    "Adversarial_Falsifier_Quality": "Full credit requires naming what would kill the proposal: denominator fragility, phase-only wins, halo-only pickup, compact-control leakage, or collapse under an independent solver/boundary presentation.",
+    "Generative_Yield": "Full credit requires producing a law candidate, theorem packet, explanatory bridge, no-go theorem, or decisive next discriminator that changes what should be built or tested next.",
+    "Scope_Honesty_And_Nonclaim_Control": "Reject any MOND/dark-matter victory language, astrophysical overclaim, or confusion between solver/object science and universe-level law.",
+    "Cost_Reranking": "Full credit requires saying whether the next move should be a local hostile backtest, an independent implementation test, or closure rather than another same-family GPU sweep."
+  },
+  "success_criteria": [
+    "A cleaner internal-share / internal-channel observable that beats the current generated blend or primitive anchor under the existing local backtests.",
+    "An explanatory theorem packet showing why the blend improves amplitude stability without becoming a denominator-floor artifact.",
+    "A no-go theorem proving the current family cannot become a physics law without an independent implementation axis.",
+    "A decisive reranking that identifies the cheapest next discriminating test."
+  ],
+  "failure_modes": [
+    "Restating raw chi4 phase fits as if phase non-invariance were solved.",
+    "Using mu or total_g smoothness as the main claim object rather than as a baseline.",
+    "Winning only by denominator or sign instability.",
+    "Calling a representation-stable amplitude object an astrophysical MOND/AQUAL law.",
+    "Asking for more same-family GPU runs without a stronger local discriminator."
+  ]
+}

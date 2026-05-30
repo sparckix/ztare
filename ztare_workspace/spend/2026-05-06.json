@@ -1,0 +1,279 @@
+{
+  "date": "2026-05-06",
+  "entries": [
+    {
+      "timestamp_utc": "2026-05-06T20:24:24.928964+00:00",
+      "cost_usd": 0.022125,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_branch_matches_profile_lipschitz_generated_block",
+      "model_name": "claude-sonnet-4-6",
+      "session_id": "batched-candidate-20260506T202413Z",
+      "notes": [
+        "estimated_preflight_usd=0.19272000",
+        "input_tokens=4105",
+        "output_tokens=654"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:35:17.460333+00:00",
+      "cost_usd": 0.106238,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_TrackBProfileLipschitzControlObligation_generated_quartic_survival_amplitude_observable_source",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T203424Z",
+      "notes": [
+        "estimated_preflight_usd=0.16689600",
+        "input_tokens=9553",
+        "output_tokens=1047"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:36:18.551398+00:00",
+      "cost_usd": 0.078156,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_branchSelfTaxThresholdCoordinateIdentities",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T203537Z",
+      "notes": [
+        "estimated_preflight_usd=0.16679600",
+        "input_tokens=9858",
+        "output_tokens=731"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:37:19.023334+00:00",
+      "cost_usd": 0.095072,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_lowHighReservePDESource",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T203626Z",
+      "notes": [
+        "estimated_preflight_usd=0.15513800",
+        "input_tokens=4570",
+        "output_tokens=865"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:41:51.917505+00:00",
+      "cost_usd": 0.05921,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_SignedObservable_crossTermCharged",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204119Z",
+      "notes": [
+        "estimated_preflight_usd=0.15373000",
+        "input_tokens=3967",
+        "output_tokens=506"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:41:59.735068+00:00",
+      "cost_usd": 0.083068,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_FlatTorusLowHighKinematicPDEObligation_positive_deformation_charged_by_reserve_loss",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204119Z",
+      "notes": [
+        "estimated_preflight_usd=0.15844600",
+        "input_tokens=6650",
+        "output_tokens=553"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:42:04.858823+00:00",
+      "cost_usd": 0.084324,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_TrackBProfileLipschitzSourceCoupling_no_posthoc_profile_lipschitz_block_substitution_paid",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204120Z",
+      "notes": [
+        "estimated_preflight_usd=0.15570200",
+        "input_tokens=4914",
+        "output_tokens=1139"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:42:06.904997+00:00",
+      "cost_usd": 0.097838,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_TrackBProfileLipschitzControlObligation_generated_quartic_survival_amplitude_observable_source",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204119Z",
+      "notes": [
+        "estimated_preflight_usd=0.16689600",
+        "input_tokens=9553",
+        "output_tokens=1229"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:42:39.694164+00:00",
+      "cost_usd": 0.047758,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_phaseLatencyConcreteFourierSymbol",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204218Z",
+      "notes": [
+        "estimated_preflight_usd=0.16071200",
+        "input_tokens=7295",
+        "output_tokens=686"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:43:15.324844+00:00",
+      "cost_usd": 0.106398,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_LowHighLipschitzReservePDEObligation_smooth_limit_preserves_cost_and_reserve",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204155Z",
+      "notes": [
+        "estimated_preflight_usd=0.15460000",
+        "input_tokens=4797",
+        "output_tokens=657"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:43:17.628793+00:00",
+      "cost_usd": 0.095224,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_lowHighReservePDESource",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204224Z",
+      "notes": [
+        "estimated_preflight_usd=0.15489000",
+        "input_tokens=4496",
+        "output_tokens=453"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:43:21.358947+00:00",
+      "cost_usd": 0.087136,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_macroscopicFlatTorusClockSource",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "batched-candidate-20260506T204218Z",
+      "notes": [
+        "estimated_preflight_usd=0.16261000",
+        "input_tokens=8102",
+        "output_tokens=560"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:51:21.916802+00:00",
+      "cost_usd": 0.00187725,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_lowHighReservePDESource",
+      "model_name": "gemini-3.1-flash-lite-preview",
+      "session_id": "swarm-20260506T2102_gemini_lite_control-gp216_low_high_reserve_source_cheap_control",
+      "notes": [
+        "estimated_preflight_usd=0.01973825",
+        "input_tokens=5871",
+        "output_tokens=273"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:51:24.070348+00:00",
+      "cost_usd": 0.00245075,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_phaseLatencyConcreteFourierSymbol",
+      "model_name": "gemini-3.1-flash-lite-preview",
+      "session_id": "swarm-20260506T2102_gemini_lite_control-gp216_phase_fourier_symbol_cheap_control",
+      "notes": [
+        "estimated_preflight_usd=0.02016600",
+        "input_tokens=7541",
+        "output_tokens=377"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:51:27.648312+00:00",
+      "cost_usd": 0.0034015,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_TrackBProfileLipschitzControlObligation_generated_quartic_survival_amplitude_observable_source",
+      "model_name": "gemini-3.1-flash-lite-preview",
+      "session_id": "swarm-20260506T2102_gemini_lite_control-trackb_amplitude_strong_source_cheap_control",
+      "notes": [
+        "estimated_preflight_usd=0.02106375",
+        "input_tokens=10246",
+        "output_tokens=560"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:51:47.140567+00:00",
+      "cost_usd": 0.070578,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_lowHighReservePDESource",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "swarm-20260506T2102_pro_truncation_rerun-gp216_low_high_reserve_source_rerun",
+      "notes": [
+        "estimated_preflight_usd=0.15790600",
+        "input_tokens=5871",
+        "output_tokens=434"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:51:56.556758+00:00",
+      "cost_usd": 0.093418,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_phaseLatencyConcreteFourierSymbol",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "swarm-20260506T2102_pro_truncation_rerun-gp216_phase_fourier_symbol_rerun",
+      "notes": [
+        "estimated_preflight_usd=0.16132800",
+        "input_tokens=7541",
+        "output_tokens=873"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:52:01.219198+00:00",
+      "cost_usd": 0.090226,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_macroscopicFlatTorusClockSource",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "swarm-20260506T2102_pro_truncation_rerun-gp216_macro_clock_source_rerun",
+      "notes": [
+        "estimated_preflight_usd=0.16415800",
+        "input_tokens=8783",
+        "output_tokens=1148"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:55:27.603646+00:00",
+      "cost_usd": 0.052468,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_phaseLatencyConcreteFourierSymbol",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "swarm-20260506T2122_source_witness_pro-gp216_phase_fourier_symbol_source_witness",
+      "notes": [
+        "estimated_preflight_usd=0.16160400",
+        "input_tokens=7628",
+        "output_tokens=890"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:55:53.369095+00:00",
+      "cost_usd": 0.092052,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_GP216BridgeCompositionReceipt_lowHighReservePDESource",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "swarm-20260506T2122_source_witness_pro-gp216_low_high_reserve_source_witness",
+      "notes": [
+        "estimated_preflight_usd=0.15818200",
+        "input_tokens=5958",
+        "output_tokens=1003"
+      ]
+    },
+    {
+      "timestamp_utc": "2026-05-06T20:56:04.144078+00:00",
+      "cost_usd": 0.068128,
+      "category": "llm",
+      "action": "batched_candidate_generator:batched_TrackBProfileLipschitzControlObligation_generated_quartic_survival_amplitude_observable_source",
+      "model_name": "gemini-3.1-pro-preview",
+      "session_id": "swarm-20260506T2122_source_witness_pro-trackb_amplitude_source_witness",
+      "notes": [
+        "estimated_preflight_usd=0.16879200",
+        "input_tokens=10334",
+        "output_tokens=841"
+      ]
+    }
+  ],
+  "total_usd": 1.4371
+}

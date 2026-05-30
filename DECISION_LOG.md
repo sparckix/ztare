@@ -1,5 +1,13 @@
 # DECISION LOG: Adversarial Reasoning Engine
 
+> **Status notice (2026-05-20):** This log is historical. It was last touched
+> on 2026-05-17 and has not yet been updated to reflect the current ZTARE
+> architecture: in-loop validation, out-of-loop research operations, and the
+> reflexive intelligence layer. It remains useful as provenance for early
+> validator and hardening decisions, but it is not the current architecture
+> reference. A future pass should either append new dated decisions or split the
+> log into historical and current decision records.
+
 **Premise:** LLMs optimize for semantic probability, not verifiable truth. This engine acts as a synthetic compiler for qualitative logic, forcing System 2 reasoning via multi-agent adversarial debate. 
 
 **Core Tenet:** Good intentions do not prevent model hallucination; only hard mechanisms do. 
@@ -70,7 +78,7 @@
 **The Anomaly (SDK Version Conflict):** Mixing server-side tools (Search) with client-side tools (Python) requires the `include_server_side_tool_invocations` flag. However, the local Pydantic schema in the `google-genai` SDK actively rejected this flag as an "Extra input," resulting in unresolvable `400/422` validation crashes. 
 
 **Decision: Entropy Stripping of Tools (Python Only)**
-* **The Fix:** We stripped the Google Search tool entirely. Attackers are now explicitly prompted to rely on their "deep parametric knowledge" to verify Load-Bearing Variables, relying solely on `execute_python_code` to prove insolvency.
+* **The Fix:** We stripped the Google Search tool entirely. Attackers are now explicitly prompted to rely on their "deep parametric knowledge" to verify Central Variables, relying solely on `execute_python_code` to prove insolvency.
 * **Trade-Off Analysis:** * **Loss of Real-Time Grounding:** We lose the ability to fetch today's exact stock price or interest rate dynamically from the web. 
   * **Zero-Crumple Stability:** We completely bypassed the SDK catch-22. The model's internal weights are highly precise for fundamental constants (e.g., Planck limits, Bekenstein bounds, baseline financial formulas), making the Python sandbox sufficient to destroy hallucinated math without crashing the loop.
 
@@ -97,7 +105,7 @@ Decision: Implemented a mandatory Deterministic Evidentiary Gate.
 Rationale: The Meta-Judge is instructed to treat natural language claims as "unsupported" unless they are accompanied by Python stdout. By forcing the "Verification Panel" to deliver critiques via code execution, we collapse the model's ability to use rhetorical flair to mask mathematical insolvency. We trade "chatty" feedback for verified, binary outcomes.
 
 ## 10. Parametric Sensitivity Auditing
-Context: Strategic theses often rely on "Load-Bearing Variables"—single numbers (like cost of capital or model lifetime) that dictate the entire conclusion.
+Context: Strategic theses often rely on "Central Variables"—single numbers (like cost of capital or model lifetime) that dictate the entire conclusion.
 Decision: Shifted from "Static Verification" to Sensitivity Assertions.
 Rationale: We mandated that Attackers must perform a "Boundary Audit" on the Mutator’s variables. If a thesis is proven to be hyper-sensitive to a 5-10% variance in a contested input, the engine triggers a "Contested Variable Failure." This prevents the system from accepting "Fragile Truths" that look good in a vacuum but fail under real-world volatility.
 
@@ -128,7 +136,7 @@ Rationale: We mandated that Attackers must perform a "Boundary Audit" on the Mut
 * **Debuggability Through Separation:** Because QA checks the memo against both the ledger and the brief, failures become legible. A miss can now be identified as an extraction problem, a planning problem, or a rendering problem rather than collapsing into one opaque "bad memo" outcome.
 
 ## 13. History Contamination vs. Epistemic Memory (Focused vs. Full)
-**Context:** Startup projects accumulate mixed histories across rubrics and thesis phases (e.g., early Monte Carlo/unit-econ frames, later experiment-design frames). Feeding raw mixed history into synthesis improves auditability but can contaminate founder-facing artifacts: the extractor/planner latches onto older explicit thresholds or obsolete frameworks, producing memos that are internally “faithful” yet strategically mis-sequenced (e.g., prioritizing host ask-rate ops or PSFS gates over the currently load-bearing upstream blocker like onboarding friction).
+**Context:** Startup projects accumulate mixed histories across rubrics and thesis phases (e.g., early Monte Carlo/unit-econ frames, later experiment-design frames). Feeding raw mixed history into synthesis improves auditability but can contaminate founder-facing artifacts: the extractor/planner latches onto older explicit thresholds or obsolete frameworks, producing memos that are internally “faithful” yet strategically mis-sequenced (e.g., prioritizing host ask-rate ops or PSFS gates over the currently central upstream blocker like onboarding friction).
 
 **Decision: Introduced `history_mode` and `history_summary.json`.**
 * **Modes:**
@@ -301,7 +309,7 @@ This is the first serious organic wedge for the primitives layer on the historic
 
 **Decision: Treat This As A Recursive Self-Improvement Finding, Not Just A Benchmark Result.**
 * **New architectural rule:** primitives should not shape the judge's first-pass identification of the crux.
-* **Implication:** the evaluator should identify the load-bearing claim / eigenquestion first, test whether the suite targets that claim, and only then consult precedent memory.
+* **Implication:** the evaluator should identify the central claim / eigenquestion first, test whether the suite targets that claim, and only then consult precedent memory.
 * **Reasoning:** front-loading precedent memory can bias the detector toward accepting peripheral rigor as substantive proof.
 
 **Interpretation:** This is a concrete example of the `failure -> diagnosis -> constraint` loop that motivates the second paper. The engine used its own benchmark output to discover a blind spot in its own evaluation architecture. That is recursive epistemic gain in the narrow, defensible sense: a failure mode of the system itself became a new architectural constraint for the next version.
@@ -415,7 +423,7 @@ It may not become:
 * `papers/paper4/main.tex`
 
 **Archived provenance:**
-* `research_areas/archive/paper4_supervisor/`
+* `research_areas/_archive/paper4_supervisor/`
 
 **Trade-Off Analysis:**
 * **Factory purity vs. paper quality:** Finishing the paper inside the supervisor would have preserved perfect procedural symmetry, but the marginal prose gain was poor and the operational cost was high.

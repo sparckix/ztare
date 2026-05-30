@@ -6,8 +6,8 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=ztare
-WorkingDirectory=/home/ztare/figs_activist_loop
-ExecStart=/home/ztare/figs_activist_loop/venv/bin/python scripts/agent_daemon.py --interval 600
+WorkingDirectory=/home/ztare/ztare
+ExecStart=/home/ztare/ztare/venv/bin/python scripts/agent_daemon.py --interval 600
 Restart=on-failure
 RestartSec=60
 Environment=ANTHROPIC_API_KEY=

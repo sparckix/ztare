@@ -1,0 +1,221 @@
+{
+  "candidates": [
+    {
+      "name": "ns_resonant_branch_falsifier",
+      "predicted_class": "theorem_proving_search",
+      "confidence": "high",
+      "mining_basis": "E-NS-TRACKB-20260504-HIGHHIGH-CROSS-01, F-GP215-NS-FIRST-PASS-20260504",
+      "rationale": "The previous work, as detailed in E-NS-TRACKB-20260504-HIGHHIGH-CROSS-01, has sharpened the high-high falsifier target, showing that exact self-tax-free routes move to the null-route cap and the deterministic above-wall frontier is nonresonant/cross-zero. The critical remaining challenge is the resonant branch, requiring either a global Leray/Sobolev anti-alignment plus self-tax-floor theorem or a real resonant violation. This aligns with the F-GP215-NS-FIRST-PASS-20260504 finding that obligation-naming is saturated for open paraproduct branches, and the next valuable move should be a 'Killing-falsifier' or 'Partition Interaction Space,' which directly targets the resonant branch's open questions.",
+      "charter_sketch": "Target: Construct a formal Lean proof or a Python-executable counterexample that falsifies the absence of a profitable resonant branch in the Leray convexity problem, specifically targeting the conditions for global Leray/Sobolev anti-alignment or the self-tax-floor theorem. The submission must either provide a Lean proof of a resonant violation or a Python function `find_resonant_violator(params)` that returns a specific set of parameters (e.g., Fourier modes, coefficients, background fields) that yield a positive profit above the `2/3` wall under resonant conditions, surviving the current PSD/SOS receipt contract.\nFalsification Criterion: The submission is falsified if the Lean proof contains logical errors, or if the Python counterexample is deterministically verified to yield a profit below the `2/3` wall, or if it fails to satisfy the `sos_pricing_kernel_receipt()` contract for the specified resonant interaction partition.\nGate Package: `ns_trackb_v0.4_receipt_contract_gate`, `lean_proof_validator`, `python_counterexample_executor`, `psd_sos_receipt_checker`.",
+      "what_changes_if_succeeds": "Success would fundamentally shift the NS Millennium Hunt. Instead of refining the conditions under which no-survivor holds for non-resonant cases, it would either close the resonant branch by proving a global anti-alignment/self-tax-floor theorem, or it would open a new frontier by demonstrating a concrete resonant violation. This would provide the first Clay-adjacent evidence of a profitable escape route for the Track B problem, forcing a re-evaluation of the entire no-survivor hypothesis under resonant conditions and potentially leading to a new class of mathematical objects.",
+      "meta_arc_recommendation": {
+        "stall": "Cited prior findings: F-GP215-NS-FIRST-PASS-20260504. The current arc is stalled at this obligation; the question is what shape of work would close it.",
+        "n_catalog": 40,
+        "saturation_flag": false,
+        "saturation_reason": null,
+        "modal_cluster": "add apparatus gate",
+        "modal_share": 0.225,
+        "lift": 0.797,
+        "ranked": [
+          {
+            "rank": 1,
+            "move_id": "aqual:iter2\u21921",
+            "move_name": "install veto pre-commitment",
+            "signature": "Replaced the unresolved forward dependency on the SI-Closure Certificate with a pre-committed veto apparatus: a Blind SI-Closure Certificate obligation was installed as a charter constraint that retroactively voids all physical claims if provenance a",
+            "source_substrate": "aqual",
+            "source_cycle": "iter2\u21921",
+            "object_created": "A Blind SI-Closure Certificate pre-commitment veto installed as a charter constraint, making physical claim validity formally conditional on a named audit event.",
+            "cluster_id": "install veto pre-commitment",
+            "cosine_raw": 0.797,
+            "cosine_idf_adjusted": 1.531
+          },
+          {
+            "rank": 2,
+            "move_id": "ns:5fz\u21925fz",
+            "move_name": "interface_composition_bridge",
+            "signature": "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces both maps are declared before payoff scoring, bridging FullLedgerNoSurvivor through criticalControl to globalRegular via the theo",
+            "source_substrate": "ns",
+            "source_cycle": "5fz\u21925fz",
+            "object_created": "ns_profile_lipschitz_clay_bridge.lean, containing TrackBProfileLipschitzClayObligation and the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+            "cluster_id": "interface_composition_bridge",
+            "cosine_raw": 0.792,
+            "cosine_idf_adjusted": 1.523
+          },
+          {
+            "rank": 3,
+            "move_id": "aqual:iter2\u21923",
+            "move_name": "collapse to precondition gate",
+            "signature": "Collapsed the physical law claim entirely by emptying the thesis primitives list, accepting that without a published and audited SI provenance ledger for 'x' across all classes, no structural primitive could be defended as more than table regularity.",
+            "source_substrate": "aqual",
+            "source_cycle": "iter2\u21923",
+            "object_created": "An empty thesis primitive set with the SI provenance ledger for 'x' established as the mandatory precondition gate before any physical primitive can be asserted",
+            "cluster_id": "collapse to precondition gate",
+            "cosine_raw": 0.788,
+            "cosine_idf_adjusted": 1.515
+          }
+        ],
+        "adversary_move": {
+          "move_id": "ns:5fz\u21925fz",
+          "move_name": "interface_composition_bridge",
+          "signature": "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces both maps are declared before payoff scoring, bridging FullLedgerNoSurvivor through criticalControl to globalRegular via the theo",
+          "source_substrate": "ns",
+          "source_cycle": "5fz\u21925fz",
+          "object_created": "ns_profile_lipschitz_clay_bridge.lean, containing TrackBProfileLipschitzClayObligation and the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+          "cluster_id": "interface_composition_bridge",
+          "cosine_raw": 0.792,
+          "purpose": "G4 adversary: structurally-distinct alternative \u2014 different source_substrate AND different cluster from top match. Panel clause F monoculture guard."
+        },
+        "g5_stall_text": "Cited prior findings: F-GP215-NS-FIRST-PASS-20260504. The current arc is stalled at this obligation; the question is what shape of work would close it.",
+        "g5_cited_anchors": [
+          "F-GP215-NS-FIRST-PASS-20260504"
+        ],
+        "advisory_only": true
+      }
+    },
+    {
+      "name": "gp163d_tacit_leakage_audit",
+      "predicted_class": "apparatus_protocol_hardening",
+      "confidence": "high",
+      "mining_basis": "F-GP163D-ADMSR-BRIDGE-01, INS-080",
+      "rationale": "The F-GP163D-ADMSR-BRIDGE-01 finding explicitly states that 'tacit leakage through protocol ambiguity' is the strongest surviving attacker against the ADMSR law gate, scoring 86. This is echoed in INS-080, which clarifies that a clean-room environment can still be porous if critical steps like featurization or compact-transfer are ambiguous, leading to different 'reasonable' choices by independent teams. The current ecosystem check already fails on independence criteria, not on Delta_e values, confirming the need to address this ambiguity. The next logical step is to formalize this attack vector and audit it.",
+      "charter_sketch": "Target: Design and execute a two-arm clean-room audit to quantify tacit leakage due to protocol ambiguity in the `CR-APD` bridge. One arm will follow an 'ambiguous' protocol specification (allowing reasonable interpretation choices for featurization, source-domain, compact-transfer, mask steps), and the other will follow a 'formal' protocol with all ambiguities resolved to a single, explicit choice. The submission should include the ambiguity register, the two protocol specifications, and the results of the audit (e.g., `Delta_e` values, clean-room certificate pass/fail, and a quantitative measure of divergence between the two arms).\nFalsification Criterion: The audit is falsified if the 'ambiguous' and 'formal' arms produce identical results (indicating no tacit leakage), or if the ambiguity register is incomplete, or if the audit fails to correctly apply the `CR-APD` and `RAGT` certificate templates.\nGate Package: `crapd_protocol_contract_gate`, `ragt_certificate_template_gate`, `two_arm_audit_executor`, `divergence_metric_calculator`.",
+      "what_changes_if_succeeds": "Success would significantly harden the ZTARE engine's ability to promote scientific claims in the gravity branch and beyond. By quantifying and mitigating tacit leakage, it would establish a higher standard for clean-room verification, making future scientific promotions more robust against subtle implementation-dependent biases. This would transform the `CR-APD` and `RAGT` bridges from theoretical protocols into empirically validated, practically applicable tools for ensuring the genuine independence of scientific findings, thereby accelerating the path to `paper7` and `paper8_gravity_methods` with higher confidence.",
+      "meta_arc_recommendation": {
+        "stall": "Cited prior findings: INS-080. The current arc is stalled at this obligation; the question is what shape of work would close it.",
+        "n_catalog": 40,
+        "saturation_flag": false,
+        "saturation_reason": null,
+        "modal_cluster": "add apparatus gate",
+        "modal_share": 0.225,
+        "lift": 0.801,
+        "ranked": [
+          {
+            "rank": 1,
+            "move_id": "aqual:iter2\u21921",
+            "move_name": "install veto pre-commitment",
+            "signature": "Replaced the unresolved forward dependency on the SI-Closure Certificate with a pre-committed veto apparatus: a Blind SI-Closure Certificate obligation was installed as a charter constraint that retroactively voids all physical claims if provenance a",
+            "source_substrate": "aqual",
+            "source_cycle": "iter2\u21921",
+            "object_created": "A Blind SI-Closure Certificate pre-commitment veto installed as a charter constraint, making physical claim validity formally conditional on a named audit event.",
+            "cluster_id": "install veto pre-commitment",
+            "cosine_raw": 0.801,
+            "cosine_idf_adjusted": 1.541
+          },
+          {
+            "rank": 2,
+            "move_id": "ns:5fz\u21925fz",
+            "move_name": "interface_composition_bridge",
+            "signature": "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces both maps are declared before payoff scoring, bridging FullLedgerNoSurvivor through criticalControl to globalRegular via the theo",
+            "source_substrate": "ns",
+            "source_cycle": "5fz\u21925fz",
+            "object_created": "ns_profile_lipschitz_clay_bridge.lean, containing TrackBProfileLipschitzClayObligation and the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+            "cluster_id": "interface_composition_bridge",
+            "cosine_raw": 0.782,
+            "cosine_idf_adjusted": 1.504
+          },
+          {
+            "rank": 3,
+            "move_id": "aqual:iter2\u21923",
+            "move_name": "collapse to precondition gate",
+            "signature": "Collapsed the physical law claim entirely by emptying the thesis primitives list, accepting that without a published and audited SI provenance ledger for 'x' across all classes, no structural primitive could be defended as more than table regularity.",
+            "source_substrate": "aqual",
+            "source_cycle": "iter2\u21923",
+            "object_created": "An empty thesis primitive set with the SI provenance ledger for 'x' established as the mandatory precondition gate before any physical primitive can be asserted",
+            "cluster_id": "collapse to precondition gate",
+            "cosine_raw": 0.778,
+            "cosine_idf_adjusted": 1.496
+          }
+        ],
+        "adversary_move": {
+          "move_id": "ns:5fz\u21925fz",
+          "move_name": "interface_composition_bridge",
+          "signature": "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces both maps are declared before payoff scoring, bridging FullLedgerNoSurvivor through criticalControl to globalRegular via the theo",
+          "source_substrate": "ns",
+          "source_cycle": "5fz\u21925fz",
+          "object_created": "ns_profile_lipschitz_clay_bridge.lean, containing TrackBProfileLipschitzClayObligation and the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+          "cluster_id": "interface_composition_bridge",
+          "cosine_raw": 0.782,
+          "purpose": "G4 adversary: structurally-distinct alternative \u2014 different source_substrate AND different cluster from top match. Panel clause F monoculture guard."
+        },
+        "g5_stall_text": "Cited prior findings: INS-080. The current arc is stalled at this obligation; the question is what shape of work would close it.",
+        "g5_cited_anchors": [
+          "INS-080"
+        ],
+        "advisory_only": true
+      }
+    },
+    {
+      "name": "gp169_aid_mcvp_empirical_envelope",
+      "predicted_class": "governance_identification",
+      "confidence": "medium",
+      "mining_basis": "INS-078, F-GP167-AGENT-CHANNEL-01",
+      "rationale": "INS-078 establishes AID-MCVP as a critical governance theorem for consciousness ascription, defining strict criteria for identifiability. However, it explicitly leaves 'empirical envelope robustness plus literature-novelty review open.' This indicates a need to explore the practical boundaries and applications of AID-MCVP, particularly how it interacts with real-world measurement channels and multi-agent systems. The F-GP167-AGENT-CHANNEL-01 finding, which mechanizes the distinction between persistent role offices and transient LLM invocations, provides a relevant context for applying AID-MCVP, as it defines the 'governance objects' to which ascription might apply, and how their 'measurement channels' (e.g., A2A handoffs) are structured.",
+      "charter_sketch": "Target: Conduct an adversarial verification of AID-MCVP's empirical envelope by proposing and testing scenarios where a target property (e.g., 'sentience,' 'preference,' 'goal-directedness') is difficult to identify using the AID-MCVP criteria within a simulated multi-agent system. The submission should define specific 'measurement channels' and 'intervention-accessible' points for a given agent architecture (e.g., a `Persistent-Agent Channel` from F-GP167-AGENT-CHANNEL-01). It must then present a scenario where a high-scoring agent-generated claim of low-concern (or high-concern) for the target property is either falsified by the AID-MCVP criteria or reveals a boundary condition where AID-MCVP's application becomes ambiguous.\nFalsification Criterion: The substrate is falsified if AID-MCVP consistently provides clear, unambiguous verdicts across all proposed adversarial scenarios, or if the proposed scenarios fail to genuinely challenge the 'intervention-accessible, independently replicated, bridge-invertible, adversarially complete, environment-bounded, sequentially monitored measurement channel' criteria.\nGate Package: `aid_mcvp_criterion_checker`, `multi_agent_simulation_harness`, `scenario_generator`, `ambiguity_quantifier`.",
+      "what_changes_if_succeeds": "Success would provide crucial empirical grounding for AID-MCVP, moving it from a theoretical governance theorem to a practically validated framework. It would clarify the boundaries of its applicability, identifying specific types of agent architectures or measurement channels where ascription becomes robust or problematic. This would directly inform the `alignment_governance` paper target, enabling more precise and defensible policies regarding the ethical and practical treatment of AI systems, by understanding where causal identification of critical properties is genuinely possible versus where it remains speculative.",
+      "meta_arc_recommendation": {
+        "stall": "Cited prior findings: F-GP167-AGENT-CHANNEL-01, INS-078. The current arc is stalled at this obligation; the question is what shape of work would close it.",
+        "n_catalog": 40,
+        "saturation_flag": false,
+        "saturation_reason": null,
+        "modal_cluster": "add apparatus gate",
+        "modal_share": 0.225,
+        "lift": 0.793,
+        "ranked": [
+          {
+            "rank": 1,
+            "move_id": "aqual:iter2\u21921",
+            "move_name": "install veto pre-commitment",
+            "signature": "Replaced the unresolved forward dependency on the SI-Closure Certificate with a pre-committed veto apparatus: a Blind SI-Closure Certificate obligation was installed as a charter constraint that retroactively voids all physical claims if provenance a",
+            "source_substrate": "aqual",
+            "source_cycle": "iter2\u21921",
+            "object_created": "A Blind SI-Closure Certificate pre-commitment veto installed as a charter constraint, making physical claim validity formally conditional on a named audit event.",
+            "cluster_id": "install veto pre-commitment",
+            "cosine_raw": 0.793,
+            "cosine_idf_adjusted": 1.524
+          },
+          {
+            "rank": 2,
+            "move_id": "ns:5fz\u21925fz",
+            "move_name": "interface_composition_bridge",
+            "signature": "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces both maps are declared before payoff scoring, bridging FullLedgerNoSurvivor through criticalControl to globalRegular via the theo",
+            "source_substrate": "ns",
+            "source_cycle": "5fz\u21925fz",
+            "object_created": "ns_profile_lipschitz_clay_bridge.lean, containing TrackBProfileLipschitzClayObligation and the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+            "cluster_id": "interface_composition_bridge",
+            "cosine_raw": 0.788,
+            "cosine_idf_adjusted": 1.514
+          },
+          {
+            "rank": 3,
+            "move_id": "neural:iter3\u21922",
+            "move_name": "add obligation skeleton",
+            "signature": "Replaced the single-side Method-A tweak with a formally paired primitive skeleton that named both the Class-A ladder selection mechanism and the Class-B law-finder, binding them through an explicit A\u2194B hand-off contract, while adding a rational-coeff",
+            "source_substrate": "neural",
+            "source_cycle": "iter3\u21922",
+            "object_created": "A paired-primitive obligation skeleton naming Class-A ladder selection and Class-B law-finder with an explicit A\u2194B hand-off contract, scoped to integer or small-denominator rational coefficients.",
+            "cluster_id": "add obligation skeleton",
+            "cosine_raw": 0.773,
+            "cosine_idf_adjusted": 1.486
+          }
+        ],
+        "adversary_move": {
+          "move_id": "ns:5fz\u21925fz",
+          "move_name": "interface_composition_bridge",
+          "signature": "Compose the two prior interface obligations into a single structure (TrackBProfileLipschitzClayObligation) that enforces both maps are declared before payoff scoring, bridging FullLedgerNoSurvivor through criticalControl to globalRegular via the theo",
+          "source_substrate": "ns",
+          "source_cycle": "5fz\u21925fz",
+          "object_created": "ns_profile_lipschitz_clay_bridge.lean, containing TrackBProfileLipschitzClayObligation and the theorem global_regular_of_trackB_profile_lipschitz_closure.",
+          "cluster_id": "interface_composition_bridge",
+          "cosine_raw": 0.788,
+          "purpose": "G4 adversary: structurally-distinct alternative \u2014 different source_substrate AND different cluster from top match. Panel clause F monoculture guard."
+        },
+        "g5_stall_text": "Cited prior findings: F-GP167-AGENT-CHANNEL-01, INS-078. The current arc is stalled at this obligation; the question is what shape of work would close it.",
+        "g5_cited_anchors": [
+          "F-GP167-AGENT-CHANNEL-01",
+          "INS-078"
+        ],
+        "advisory_only": true
+      }
+    }
+  ]
+}

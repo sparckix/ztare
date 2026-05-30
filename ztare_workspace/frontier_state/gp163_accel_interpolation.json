@@ -1,0 +1,18 @@
+{
+  "project_slug": "gp163_accel_interpolation",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 2,
+  "pending_actions": [],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 2,
+      "ts": "2026-05-07T12:53:47.278915Z"
+    }
+  ],
+  "updated_utc": "2026-05-07T12:53:47.278915Z"
+}

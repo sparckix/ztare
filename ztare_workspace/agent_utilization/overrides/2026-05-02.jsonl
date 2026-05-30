@@ -1,0 +1,1 @@
+{"event": "override_event", "kind": "cap_extension", "role_id": "research_director", "actor": "principal", "target": "daily_cap_seconds", "old_value": 7200, "new_value": 10800, "reason": "smoke test \u2014 extending cap for late-night seam work", "session_id": "smoke-001", "timestamp_utc": "2026-05-02T21:54:39.411302Z"}

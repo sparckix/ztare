@@ -1,0 +1,267 @@
+{
+  "project_slug": "gp163d_unified_accel",
+  "schema_version": 1,
+  "route_ranking": [],
+  "active_escapes": [],
+  "champion_meaning": null,
+  "obstruction_counters": {},
+  "last_iter_observed": 5,
+  "pending_actions": [
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (((exp(params['log_c']) * sigmoid(log(features['radius_log10'] + sqrt(features['radius_log10']*features['radius_log10'] + 1.0)), params['rad_center'], abs(params['rad_width']) + 0.000001) * (1.0 + exp(params['log_rho_amp']) * sigmoid(params['rho_cross'] - (features['rho_local_",
+        "ts": "2026-05-07T12:53:47.281075Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-07T12:53:47.974459Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-07T12:53:47.281156Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-07T12:53:47.978938Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (((exp(params['log_c']) * sigmoid(log(features['radius_log10'] + sqrt(features['radius_log10']*features['radius_log10'] + 1.0)), params['rad_center'], abs(params['rad_width']) + 0.000001) * (1.0 + exp(params['log_rho_amp']) * sigmoid(params['rho_cross'] - (features['rho_local_",
+        "ts": "2026-05-07T12:53:57.106862Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-07T12:53:57.275954Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-07T12:53:57.106925Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-07T12:53:57.280558Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (((exp(params['log_c']) * sigmoid(log(features['radius_log10'] + sqrt(features['radius_log10']*features['radius_log10'] + 1.0)), params['rad_center'], abs(params['rad_width']) + 0.000001) * (1.0 + exp(params['log_rho_amp']) * sigmoid(params['rho_cross'] - (features['rho_local_",
+        "ts": "2026-05-07T12:54:07.321878Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-07T12:54:07.496619Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-07T12:54:07.321970Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-07T12:54:07.501373Z"
+    },
+    {
+      "action_kind": "update_champion_meaning",
+      "params": {
+        "from_iter": 3,
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "rule_id": "champion_shift_update_meaning",
+      "from_event": {
+        "kind": "champion_promoted",
+        "iter_index": 3,
+        "score": 50,
+        "parametric_form": "features['x'] * (1.0 + (((exp(params['log_c']) * sigmoid(log(features['radius_log10'] + sqrt(features['radius_log10']*features['radius_log10'] + 1.0)), params['rad_center'], abs(params['rad_width']) + 0.000001) * (1.0 + exp(params['log_rho_amp']) * sigmoid(params['rho_cross'] - (features['rho_local_",
+        "ts": "2026-05-10T21:17:59.679877Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-10T21:17:59.858373Z"
+    },
+    {
+      "action_kind": "create_lean_cage",
+      "params": {
+        "cage_dir": "ztare_proofs/cages/",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "from_event": {
+        "kind": "verified_axiom_emitted",
+        "axiom_label": null,
+        "axiom_statement": "",
+        "external_consistency_checks_present": true,
+        "ts": "2026-05-10T21:17:59.680111Z",
+        "project_slug": "gp163d_unified_accel"
+      },
+      "ts": "2026-05-10T21:17:59.862860Z"
+    }
+  ],
+  "history": [
+    {
+      "event": "iter_cursor_advanced",
+      "iter": 5,
+      "ts": "2026-05-07T12:53:47.281182Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:47.974476Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:47.974733Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:47.978955Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:47.979307Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:53:57.275971Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:53:57.276322Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:53:57.280575Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:53:57.280922Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-07T12:54:07.496636Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-07T12:54:07.497023Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-07T12:54:07.501390Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-07T12:54:07.501792Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "update_champion_meaning",
+      "reason": "When a new champion promotes, update the frontier_state's\nchampion_meaning label so dashboards + downstream rules use the\ncorrect interpretive layer. Cheap; runs every champion shift.\n",
+      "ts": "2026-05-10T21:17:59.858381Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "champion_shift_update_meaning",
+      "action_kind": "update_champion_meaning",
+      "from_event_kind": "champion_promoted",
+      "ts": "2026-05-10T21:17:59.858876Z"
+    },
+    {
+      "event": "action_queued",
+      "kind": "create_lean_cage",
+      "reason": "A verified axiom (per gate_harness + judge approval) becomes a Lean\ntheorem cage so the claim is mechanized. RD-1.11 mandate authorizes\nthis. The cage is a separate artifact track from the project's\nworkspace; it lives under ztare_proofs/.\n",
+      "ts": "2026-05-10T21:17:59.862868Z"
+    },
+    {
+      "event": "policy_rule_fired",
+      "rule_id": "verified_axiom_to_lean_cage",
+      "action_kind": "create_lean_cage",
+      "from_event_kind": "verified_axiom_emitted",
+      "ts": "2026-05-10T21:17:59.863359Z"
+    }
+  ],
+  "updated_utc": "2026-05-10T21:17:59.863359Z"
+}
