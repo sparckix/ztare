@@ -19,16 +19,29 @@ preconditions:
   - claim_is_substrate_testable: numerical / symbolic / computational
 chain_position: post
 related_patterns:
-  - PATTERN-001 (friction_debate — typical predecessor)
-  - PATTERN-009 (independent_cas_verification — lighter variant)
+  - PATTERN-001 (friction_debate, typical predecessor)
+  - PATTERN-009 (independent_cas_verification, lighter variant)
+falsifiable_test: |
+  Over N>=10 conditional theorems that PASS all three legs, the rate of subsequent
+  defect discovery (sign error, scope over-claim, trivially-fires bug) found after
+  F-row recording must be <=20% AND must be LOWER than the post-recording defect
+  rate for theorems recorded without 3-leg verification, by >=20 percentage points.
+  If 3-leg-passed theorems fail downstream at a rate within 20 points of unverified
+  theorems, the verification adds no grounding and demotes.
+  metric_source: F-rows for conditional theorems (verification status) joined to
+  the catch ledger for post-recording defect catches; PATTERN-008 dispatches tagged
+  in pattern_deployment_ledger.jsonl.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 8 — Three-Leg Analytical Verification
+# Pattern 8, Three-Leg Analytical Verification
 
 ## Problem
 
 Conditional theorems produced by Pattern 1 friction debates often
-"float" — true on paper but ungrounded in concrete substrate. Without
+"float", true on paper but ungrounded in concrete substrate. Without
 multi-substrate verification, an off-paper detail (sign error, scope
 mismatch) can survive the debate and break only at first real use.
 
@@ -81,7 +94,7 @@ delicate cases.
 
 ## Concrete example
 
-2026-05-08 ~08:15 — Pattern 1 #8 produced "Conditional Infinite-Σ
+2026-05-08 ~08:15, Pattern 1 #8 produced "Conditional Infinite-Σ
 Bohr-Mean Enstrophy Extension" (under Diophantine OR ℓ¹ hypothesis).
 
 3-leg verification:
@@ -97,7 +110,7 @@ empirical grounding." Conditional structure verified.
 
 ## Cross-references
 
-- `verify_pattern1_8_3leg_2026_05_08.py` — concrete instance
-- PATTERN-009 (independent_cas_verification) — lighter version when
+- `verify_pattern1_8_3leg_2026_05_08.py`, concrete instance
+- PATTERN-009 (independent_cas_verification), lighter version when
   3-leg overkill
 - ZTARE pattern catalog #6 (ztare_patterns_to_backport_2026_05_07.md)

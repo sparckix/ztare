@@ -24,11 +24,24 @@ related_patterns:
   - id: PATTERN-002
     relation: parent  # this pattern is a specialization of darwin_idea_killer
     note: "tautology trap is one of darwin_idea_killer's failure-mode buckets"
+falsifiable_test: |
+  Over N>=15 proposed "falsifiable tests" screened by the detector, claims it flags
+  TAUTOLOGICAL must, on independent re-check, contain a conjecture-named quantity
+  on the prediction RHS in >=85% of cases (precision floor), AND it must pass at
+  least one genuinely non-tautological test per 15-dispatch window. Precision below
+  85% or a 15/15 all-TAUTOLOGICAL run (over-stripping anti-pattern) triggers
+  demotion.
+  metric_source: tautology_verdict_v1 outputs vs manual/cross-family re-check, both
+  logged in pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-006, or
+  PATTERN-002 with --mode=tautology).
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
 **HONESTY (DARWIN catch H3, 2026-05-08)**: this pattern was originally
 declared as a peer of PATTERN-002 darwin_idea_killer but DARWIN audit
-confirmed it is a SPECIALIZATION (sub-mode) — bullet 3 of darwin's
+confirmed it is a SPECIALIZATION (sub-mode), bullet 3 of darwin's
 "Pattern" section explicitly lists "Tautological reduction" as a
 DARWIN failure-mode bucket. Counting tautology_trap_detector as a
 distinct peer pattern was laundering: the count "10 patterns" overstates
@@ -39,13 +52,13 @@ may ask for a TAUTOLOGY-FOCUSED audit specifically), but the architecture
 should treat this as `PATTERN-002 --mode=tautology`, not as an
 independent primitive.
 
-# Pattern 6 — Tautology-Trap Detector
+# Pattern 6, Tautology-Trap Detector
 
 ## Problem
 
 When an agent proposes a "test" or "falsifiable prediction" for a
 conjecture, the predicted value of the test quantity sometimes uses the
-named labels of the conjecture being tested — making the prediction
+named labels of the conjecture being tested, making the prediction
 TAUTOLOGICAL by construction (both sides of the predicted equation are
 the same object dressed differently).
 
@@ -71,7 +84,7 @@ Operationally:
 ## Why it works
 
 Catches circular reasoning at the type level. A prediction that uses
-conjecture-named quantities in its RHS is testing nothing — it's
+conjecture-named quantities in its RHS is testing nothing, it's
 asserting "X = X" with extra steps.
 
 ## When to deploy
@@ -90,11 +103,11 @@ prediction `bracket(VBNS-PT) = k-invariant(VBNS-PT)` is the trap.
 
 ## Concrete example
 
-2026-05-08 ~07:30 — Massey-Toda agent proposed:
+2026-05-08 ~07:30, Massey-Toda agent proposed:
 > "If VBNS-PT is real, the bracket ⟨α,β,γ⟩ = κ_4 ∈ H²(W_{≤3}; π_1(W_4))"
 
 Tautology detector: κ_4 is the Postnikov k-invariant of VBNS-PT's
-tower. Stripping that — "bracket = (the thing VBNS-PT defines)" — is
+tower. Stripping that, "bracket = (the thing VBNS-PT defines)", is
 not a test of VBNS-PT.
 
 REJECTED as tautological. Real test would require an EXTERNAL
@@ -102,5 +115,5 @@ observable not named-after VBNS-PT.
 
 ## Cross-references
 
-- `agent_orchestration_meta_patterns_2026_05_08.md` Pattern 3 — origin
-- PATTERN-002 (darwin_idea_killer) — generalized version
+- `agent_orchestration_meta_patterns_2026_05_08.md` Pattern 3, origin
+- PATTERN-002 (darwin_idea_killer), generalized version

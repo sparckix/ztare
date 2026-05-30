@@ -1,8 +1,8 @@
-# org/workers/ — Ephemeral Tool-Invocation Membranes
+# org/workers/, Ephemeral Tool-Invocation Membranes
 
 Workers are **ephemeral, per-call actors** that a role invokes as a tool. They have no persistent identity, no session, no inbox, no mandate of their own. They execute a bounded task, deposit a trace, and die.
 
-The purpose of this folder is **not** to give workers org-chart positions — they have none. The purpose is to document each worker as a **membrane**: what it reads (input contract) and what it writes (output contract). This is the GP-129 Margulis pull-forward. When a new agent substrate is added, integration cost concentrates at the membrane; treating workers as membrane specs (not subordinates) keeps that attention focused.
+The purpose of this folder is **not** to give workers org-chart positions, they have none. The purpose is to document each worker as a **membrane**: what it reads (input contract) and what it writes (output contract). This is the GP-129 Margulis pull-forward. When a new agent substrate is added, integration cost concentrates at the membrane; treating workers as membrane specs (not subordinates) keeps that attention focused.
 
 ## Schema
 
@@ -52,3 +52,16 @@ opened_by: <member_id>
 - Workers are **tool calls** with an input/output contract and a kill-after-return lifecycle.
 
 The manager role's `delegates_to` list names workers (e.g. `worker.explore_agent`); the `org/workers/<id>.yaml` file is the membrane spec for that worker.
+
+<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py, edit prose OUTSIDE this block) -->
+
+## Index
+
+**Documents**
+
+- [explore_agent.yaml](explore_agent.yaml)
+- [general_purpose.yaml](general_purpose.yaml)
+- [plan_agent.yaml](plan_agent.yaml)
+
+<sub>0 sub-folder(s), 3 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

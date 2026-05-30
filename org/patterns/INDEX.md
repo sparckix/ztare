@@ -6,7 +6,7 @@ The `id:` frontmatter field in each file under `org/patterns/*.md` is the
 **authoritative** namespace. Any other artifact (architecture index,
 dispatch prompts, code, research notes) that references a `PATTERN-XXX`
 ID must agree with this table. Disagreements are
-ANTI-PATTERN-003 (vocabulary smuggling — sub-mode: id-namespace drift)
+ANTI-PATTERN-003 (vocabulary smuggling, sub-mode: id-namespace drift)
 and should be patched at the consumer site, never by mutating the
 source-of-truth file.
 
@@ -14,7 +14,7 @@ source-of-truth file.
 empirical-test agent surfaced "PATTERN-008 vs PATTERN-010" disagreement
 between a dispatch prompt and the file frontmatter). Audit then surfaced
 8 of 11 pattern ids out-of-sync between `org/patterns/` and
-`analytics/architecture_index.jsonl` — `architecture_index.jsonl` was
+`analytics/architecture_index.jsonl`, `architecture_index.jsonl` was
 patched to match the canonical ids; future drift should be patched the
 same direction.
 
@@ -33,6 +33,7 @@ same direction.
 | PATTERN-009 | `org/patterns/independent_cas_verification.md` | independent_cas_verification |
 | PATTERN-010 | `org/patterns/business_framing.md` | business_framing |
 | PATTERN-011 | `org/patterns/swarm_dispatch.md` | swarm_dispatch |
+| PATTERN-028 | `org/patterns/recursive_tool_depth_loop.md` | recursive_tool_depth_loop |
 
 ## Anti-pattern catalog
 

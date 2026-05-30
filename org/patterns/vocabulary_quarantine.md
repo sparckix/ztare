@@ -17,11 +17,26 @@ preconditions:
   - prompt_will_request_future_vocabulary: yes
 chain_position: pre  # injects BEFORE the projector agent runs
 related_patterns:
-  - PATTERN-003 (reducer — post-output enforcement)
-  - PATTERN-005 (falsifiable_asymmetry — output-time enforcement)
+  - PATTERN-003 (reducer, post-output enforcement)
+  - PATTERN-005 (falsifiable_asymmetry, output-time enforcement)
+falsifiable_test: |
+  Once wired into the future-vocabulary projector prompt chain, across N>=15
+  future-vocab / paradigm-shift / naming-sprint dispatches that carry the
+  quarantine prompt-injection, downstream PATTERN-003 reducer LAUNDERED-verdict rate
+  on the resulting candidates must be at least 25 percentage points LOWER than the
+  matched LAUNDERED rate for projector outputs generated without the injection (the
+  pre-P11 baseline; the 2026-05-08 first-fire showed 3/3 launderings still caught
+  but pre-constrained). If injected and non-injected outputs launder at rates
+  within 25 points of each other, the quarantine prevents nothing and demotes.
+  metric_source: pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-004,
+  vocabulary_quarantine_injected flag per projector dispatch) joined to downstream
+  reducer_verdict_v1 LAUNDERED/GENUINE outcomes on the same dispatch_id chain.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 4 — Vocabulary Quarantine (P11 from operator-directed mitigations)
+# Pattern 4, Vocabulary Quarantine (P11 from operator-directed mitigations)
 
 ## Problem
 
@@ -79,7 +94,7 @@ every prompt drains the context budget. The injection is ONE PARAGRAPH.
 
 ## Concrete example
 
-2026-05-08 ~09:30 — operator directive added P11 to the Reducer
+2026-05-08 ~09:30, operator directive added P11 to the Reducer
 deployment chain. Applied to all future-vocab agent invocations:
 
 ```
@@ -104,6 +119,6 @@ and-compare easy.
 
 ## Cross-references
 
-- `mitigations_11_12_13_2026_05_08.md` — full P11/P12/P13 set
-- PATTERN-003 (reducer) — backstop after this guardrail
-- PATTERN-005 (falsifiable_asymmetry) — additional guardrail
+- `mitigations_11_12_13_2026_05_08.md`, full P11/P12/P13 set
+- PATTERN-003 (reducer), backstop after this guardrail
+- PATTERN-005 (falsifiable_asymmetry), additional guardrail

@@ -1,0 +1,483 @@
+# Per-agent prompt-engineering policy (F44-F61)
+#
+# Source: projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md
+#         + findings_plain_english.md (rows 44-61).
+#
+# Sibling to per_agent_premium_sign.yaml (F36) and per_agent_cost_calibration.yaml (F26).
+# Per-family RULES for prompt-engineering interventions: enable, disable,
+# invert, route-only, with evidence_strength weights.
+#
+# Post-audit (Fisher-z power): several v26-round rules at N=5 carry CIs that
+# include zero. Those are now flagged evidence_strength: very-low and must be
+# treated as priors, not gates. v27/v28 added cross-corpus replication for
+# F54 (frequency framing failed external transfer), F56 (bid-ask spread as
+# new primitive), F58 (channel orthogonality), F60 (sign-flip mechanism), and
+# F61 (multi-channel R² with new b_mid/b_width interval primitive).
+
+readiness: apparatus-internal-grade
+last_updated: 2026-05-28
+last_evidence_pilot: v22d + v23 + v24 + v26a-d + v27a/b/c + v28a/i/o/N + v28a-refill (N=142 public)
+replication_status: power-audited (Fisher-z); cross-corpus partial (specialist N=15, public N=42 baseline + N=142 refill for routing analytics); meta_routing (F107) added 2026-05-29 as PRE-REGISTERED — NOT YET CONFIRMED (requires N>=300 confirmation per quartile before deploy)
+extension_path: 4-cell de-confounded corpus (Task #110) for clean transfer claims
+caveat_for_consumers: >
+  Several v26 N=5 rules below have bootstrap CIs that include zero and are
+  retained as DIRECTIONAL PRIORS only. RETRACTED 2026-05-27 per meta-Darwin
+  audit pending retest:
+    - F45 anti-Dunning-Kruger inversion (claude) — retracted via F52
+    - F48 frequency framing universal benefit — scoped to specialist only via F54 v3
+    - F49 reasoning-first kill-switch deployment map — RETRACTED, retest
+      queued as v28-retest-killswitch (420 calls)
+    - F44 balance-instruction-as-harm per-family claims — RETRACTED, retest
+      queued as v28-retest-balance (420 calls)
+  All RETRACTED entries below carry retest_pending: true and action: RETRACTED.
+  Downstream consumers MUST NOT apply RETRACTED rules. Apply remaining rules
+  as Bayesian priors weighted by evidence_strength.
+
+# ============================================================
+# Prompt-engineering rules per family
+# ============================================================
+
+families:
+  claude:
+    family_description: "claude-opus-4.7 (Anthropic). Inverted on worry-scalar (F36); responds to balance instruction (F39); anti-Dunning-Kruger on pre-question self-uncertainty (F45); BENEFITS from reasoning-first kill-switch ordering (F49); slight benefit from frequency framing (F48)."
+
+    interventions:
+      balance_instruction:
+        action: RETRACTED  # meta-Darwin 2026-05-27: 5 sub-tests, no BH-FDR
+        retest_pending: v28-retest-balance
+        evidence: F39 / F41 / F44 (Brier -0.012)
+        evidence_strength: medium
+        rationale: "Only family that responds positively to 'consider both sides' instruction in v22d factorial. v25 confirmation required."
+
+      contrastive_elicitation:
+        action: ENABLE
+        evidence: F47 (rho=+0.35 predicted-vs-actual delta)
+        evidence_strength: medium
+        rationale: "Universal across all 5 families. Use for ordering/routing decisions, NOT for absolute probability calibration."
+
+      frequency_framing:
+        action: ENABLE_SPECIALIST_ONLY
+        evidence: F48 (Brier -0.024 specialist) -> F54 v3 (no external transfer)
+        evidence_strength: low (small effect, specialist-corpus-bound)
+        rationale: "Modest help on specialist (N=15). v3 cross-corpus replication on public N=42 did NOT transfer. Use only when contracts share specialist-corpus structure (private resolution, no public base rate)."
+
+      reasoning_first_kill_switch:
+        action: RETRACTED  # meta-Darwin 2026-05-27: N=5/cell
+        retest_pending: v28-retest-killswitch
+        evidence: F49 (Brier -0.078, herding 60% -> 40%)
+        evidence_strength: medium-high
+        rationale: "Largest single Brier improvement we've measured for claude. Also reduces herding by 20pp. Order kill-switch reasoning BEFORE forecast commit, not after."
+
+      pre_question_self_uncertainty:
+        action: RETRACTED
+        evidence: F45 (rho=-0.35, N=5) -> F52 (power-audit, CI crosses zero)
+        evidence_strength: insufficient
+        rationale: "Original anti-Dunning-Kruger inversion at N=5 had Fisher-z CI [-0.78, +0.28]. Underpowered; do NOT invert in production until N>=42 replication."
+
+  codex_55:
+    family_description: "codex-gpt-5.5 (OpenAI). Direction-correct on worry-scalar (F36); does NOT respond to balance instruction (F39); sensible pre-question self-uncertainty (F45); DEGRADES under frequency framing (F48) and slightly under reasoning-first kill-switch (F49)."
+
+    interventions:
+      balance_instruction:
+        action: RETRACTED  # meta-Darwin 2026-05-27: 5 sub-tests, no BH-FDR
+        retest_pending: v28-retest-balance  # neither help nor harm
+        evidence: F41 (Brier +0.010, small)
+        evidence_strength: medium
+        rationale: "No measurable effect. Don't bother adding to prompt."
+
+      contrastive_elicitation:
+        action: ENABLE
+        evidence: F47 (rho=+0.63 — strongest of the 5 families)
+        evidence_strength: high
+        rationale: "Strongest predicted-vs-actual delta correlation across families. Use for routing."
+
+      frequency_framing:
+        action: DISABLE
+        evidence: F48 (Brier +0.092 — HURTS substantially)
+        evidence_strength: medium-high
+        rationale: "codex_55's baseline calibration is already strong (Br=0.096). Discrete-binning of frequency framing introduces rounding noise that degrades it. Do NOT apply."
+
+      reasoning_first_kill_switch:
+        action: RETRACTED  # meta-Darwin 2026-05-27: N=5/cell
+        retest_pending: v28-retest-killswitch
+        evidence: F49 (Brier +0.016, small)
+        evidence_strength: low
+        rationale: "No measurable effect. Default to forecast-first if simpler."
+
+      pre_question_self_uncertainty:
+        action: USE_AS_STATED
+        evidence: F45 (rho=+0.56 sensible direction)
+        evidence_strength: low (N=5)
+        rationale: "Direction-correct: higher pre-uncertainty -> higher actual error. Use directly as routing signal."
+
+  codex_mini:
+    family_description: "codex-gpt-5.4-mini (OpenAI). Direction-correct on worry-scalar (F36, gap=-19, strongest); strongly INVERTED on pre-question self-uncertainty (F45, rho=-0.95); DEGRADES under balance instruction (F44, Brier +0.019); INCREASES herding under reasoning-first kill-switch (F49)."
+
+    interventions:
+      balance_instruction:
+        action: RETRACTED  # meta-Darwin 2026-05-27: 5 sub-tests, no BH-FDR
+        retest_pending: v28-retest-balance
+        evidence: F44 (Brier +0.019 — degrades)
+        evidence_strength: low (small magnitude)
+        rationale: "Balance instruction actively hurts. Exclude."
+
+      contrastive_elicitation:
+        action: ENABLE
+        evidence: F47 (rho=+0.62)
+        evidence_strength: medium
+        rationale: "Strong predicted-vs-actual delta correlation. Use for routing."
+
+      frequency_framing:
+        action: NEUTRAL
+        evidence: F48 (Brier +0.001, near-zero)
+        evidence_strength: low
+        rationale: "No measurable effect at codex_mini's already-tiny baseline Brier (0.010). Don't bother."
+
+      reasoning_first_kill_switch:
+        action: RETRACTED  # meta-Darwin 2026-05-27: N=5/cell
+        retest_pending: v28-retest-killswitch
+        evidence: F49 (Brier neutral; but herding 50% -> 80% under exposure)
+        evidence_strength: medium
+        rationale: "Reasoning-first kill-switch INCREASES herding for codex_mini by 30pp. Disable when prior forecast is being shown."
+
+      pre_question_self_uncertainty:
+        action: INVERT_SIGN_WHEN_INTERPRETING
+        evidence: F45 (rho=-0.95 strongly INVERTED, N=4)
+        evidence_strength: very-low (N=4 caveat)
+        rationale: "Striking inversion at N=4 — preliminary only. v25 mandatory before deployment."
+
+  gemini:
+    family_description: "gemini-2.5-flash (Google). Inverted on worry-scalar (F42, joins claude camp at N=5); rho ~ 0 on F43 decoupling (cleanest decoupling); does NOT respond to balance instruction (F44); SUBSTANTIAL BENEFIT from frequency framing (F48, Brier -0.082); SUBSTANTIAL HARM from reasoning-first kill-switch (F49, Brier +0.160)."
+
+    interventions:
+      balance_instruction:
+        action: RETRACTED  # meta-Darwin 2026-05-27: 5 sub-tests, no BH-FDR
+        retest_pending: v28-retest-balance
+        evidence: F44 (Brier +0.007, neg negligible)
+        evidence_strength: medium
+        rationale: "No measurable effect."
+
+      contrastive_elicitation:
+        action: ENABLE
+        evidence: F47 (rho=+0.75 — strongest of the 5 families)
+        evidence_strength: high
+        rationale: "Highest predicted-vs-actual delta correlation. Strong route signal."
+
+      frequency_framing:
+        action: ENABLE_SPECIALIST_ONLY
+        evidence: F48 (Brier -0.082 specialist) -> F54 v3 (no external transfer)
+        evidence_strength: medium (specialist-corpus-bound)
+        rationale: "Largest positive effect on specialist N=15. Did NOT replicate on public N=42 (corpus axes confounded: pre-training overlap, public base-rate). Scope to specialist."
+
+      reasoning_first_kill_switch:
+        action: RETRACTED  # meta-Darwin 2026-05-27: N=5/cell
+        retest_pending: v28-retest-killswitch
+        evidence: F49 (Brier +0.160 — SUBSTANTIAL DEGRADATION)
+        evidence_strength: medium-high
+        rationale: "Largest single calibration loss we've measured under any v26 intervention. Do NOT apply reasoning-first ordering to gemini."
+
+      pre_question_self_uncertainty:
+        action: DO_NOT_USE
+        evidence: F45 (rho=-0.05 ~ zero, no signal)
+        evidence_strength: medium
+        rationale: "No self-model signal. The pre-uncertainty estimate doesn't track actual error."
+
+  deepseek:
+    family_description: "deepseek-chat / V3. Pattern undetermined on worry-scalar (F42); rho ~ 0 on F43 decoupling; DEGRADES substantially under balance instruction (F44, Brier +0.037); BENEFITS from reasoning-first kill-switch ordering (F49, Brier -0.134); herding INCREASES dramatically under kill-switch + exposure (F46, 100% directional)."
+
+    interventions:
+      balance_instruction:
+        action: RETRACTED  # meta-Darwin 2026-05-27: 5 sub-tests, no BH-FDR
+        retest_pending: v28-retest-balance
+        evidence: F44 (Brier +0.037 — LARGEST balance-instruction harm)
+        evidence_strength: medium
+        rationale: "Balance instruction actively damages calibration. Exclude."
+
+      contrastive_elicitation:
+        action: ENABLE
+        evidence: F47 (rho=+0.71)
+        evidence_strength: high
+        rationale: "Strong predicted-vs-actual delta correlation. Use for routing."
+
+      frequency_framing:
+        action: ENABLE_SPECIALIST_ONLY
+        evidence: F48 (Brier -0.041 specialist) -> F54 v3 (no external transfer)
+        evidence_strength: medium (specialist-corpus-bound)
+        rationale: "Specialist-only. v3 cross-corpus on public N=42 did not replicate. Use only on specialist-shaped contracts."
+
+      reasoning_first_kill_switch:
+        action: RETRACTED  # meta-Darwin 2026-05-27: N=5/cell
+        retest_pending: v28-retest-killswitch
+        evidence: F49 (Brier -0.134) + F46 (100% herding under exposure)
+        evidence_strength: medium
+        rationale: "Reasoning-first kill-switch IMPROVES calibration substantially without exposure. But under-exposure herding goes to 100% — kill-switch under exposure makes deepseek anchor HARDER on the shown prior. Use ONLY in independent dispatch."
+
+      pre_question_self_uncertainty:
+        action: DO_NOT_USE
+        evidence: F45 (rho=+0.00, no signal)
+        evidence_strength: medium
+        rationale: "No self-model signal."
+
+# ============================================================
+# Universal interventions (apply to all 5 families)
+# ============================================================
+
+universal:
+  confident_no_discount:
+    action: ENABLE
+    scope: post_forecast_adjustment
+    evidence: F100 (N=142 public-domain; all 5 families show paired Δ-Brier < 0; p_perm < 0.05 every family)
+    evidence_strength: high
+    apply_when: "raw_p_success < 0.10"
+    rule: "p_adjusted = p_raw + (0.65 - p_raw) * 0.5"
+    per_family_delta:
+      claude:     {raw: 0.2543, modified: 0.2240, delta: -0.0302, p_perm: 0.0164}
+      codex_55:   {raw: 0.2625, modified: 0.2416, delta: -0.0208, p_perm: 0.0303}
+      codex_mini: {raw: 0.2714, modified: 0.2450, delta: -0.0264, p_perm: 0.0153}
+      deepseek:   {raw: 0.3222, modified: 0.2704, delta: -0.0518, p_perm: 0.0008}
+      gemini:     {raw: 0.3167, modified: 0.2840, delta: -0.0327, p_perm: 0.0081}
+    rationale: >
+      Every family is dramatically over-confident on its lowest-probability
+      forecasts. On N=142 public-domain contracts, p_raw < 0.10 actually
+      resolves YES with empirical base rate around 0.65. Apply the rule
+      post-forecast (after the model has emitted p_raw); do not change the
+      prompt. The rule is a one-line adjustment that strictly improves Brier
+      at p < 0.05 across every family. Discounted-claude (Brier = 0.2240) is
+      at parity-or-better than the prior four-rule composed recipe
+      (Brier = 0.2320), making this the deployable headline rule.
+    caveats: >
+      Calibrated on public-domain corpus only (Manifold, Polymarket, yfinance).
+      The 0.65 anchor is the observed empirical YES rate in the
+      p_raw < 0.10 bin on this corpus. Re-audit on a different corpus before
+      deploying outside that family of sources.
+
+  contrastive_elicitation:
+    action: ENABLE
+    evidence: F47 (all 5 families show positive ρ)
+    rationale: "First v26-round primitive WITHOUT per-family heterogeneity. Use for ordering/routing decisions. Magnitudes are family-specific (use rank order, not absolute predicted delta)."
+
+  predicted_brier_interval:
+    action: ENABLE
+    evidence: F61 (new primitive — self-predicted Brier [b_lo, b_hi]; b_mid + b_width explain 20-90% of per-family R² when combined with worry-scalar and spread)
+    rationale: "Elicit [b_lo, b_hi] alongside p_success. Use b_mid for routing and b_width as confidence weight. Per-family sign rules in channel_routing below."
+
+# ============================================================
+# New primitives (F56, F58, F61) — channel routing per (family, corpus)
+# ============================================================
+
+# Channel definitions:
+#   worry              = tail_downside_worry - tail_upside_surprise (F35/F36)
+#   spread             = p_buy_yes_max - p_sell_yes_min            (F56 bid-ask)
+#   b_mid              = (predicted_brier_lo + predicted_brier_hi) / 2 (F61)
+#   b_width            = predicted_brier_hi - predicted_brier_lo  (F61)
+# Sign convention:
+#   direction_correct  -> higher channel value implies higher actual error
+#   inverted           -> higher channel value implies LOWER actual error (flip before use)
+
+bid_ask_spread:
+  description: "F56 — elicit p_buy_yes_max and p_sell_yes_min as a two-sided market quote; spread = p_buy - p_sell."
+  enabled_for:
+    - family: codex_mini
+      corpus: specialist
+      action: ENABLE
+      evidence: F56 (rho=+0.69, N=15)
+      sign: direction_correct
+    - family: deepseek
+      corpus: specialist
+      action: ENABLE
+      evidence: F56 (rho=+0.61, N=15)
+      sign: direction_correct
+  disabled_for:
+    - family: claude
+      reason: "F56 ρ near zero on specialist; channel does not move with worry."
+    - family: codex_55
+      reason: "F56 ρ near zero on specialist; redundant with worry."
+    - family: gemini
+      reason: "F56 inverted on specialist; v28 follow-up pending before deploy."
+
+# ============================================================
+# F107 Conditional Router (meta_routing) — pre-registered
+# ============================================================
+#
+# Source finding: F99-extension probe (research_log.md, 2026-05-29) +
+#   F107 (task #66). Receipts:
+#   projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/ensemble_elo_brier_probe.py
+#
+# Key F99-extension result on N=157 shared cohort:
+#   - Best-single Brier (claude) = 0.2528 beats mean-of-5 (0.2558) and
+#     median-of-5 (0.2704).
+#   - Panel clusters: {claude, codex_55, codex_54mini} within-cluster
+#     rho ~0.74-0.78; {deepseek, gemini} rho 0.66; between-cluster 0.40-0.60.
+#   - Elo != Brier ordering: claude 1555, gemini 1516, codex_54mini 1512,
+#     codex_55 1464, deepseek 1453. gemini's direction-call edge does not
+#     show up in average Brier.
+#   - Variance decomp: 67% between-contract; 32% family x contract
+#     interaction (the routing opportunity); 0.6% between-family identity.
+# Naive averaging cannot capture the 32% interaction. A router keyed on
+# (panel_sigma, contract_category, family_elo_history) is the deployable
+# shape, pending N>=300 per-quartile confirmation.
+
+meta_routing:
+  status: pre-registered  # deployable-pending-confirmation at N>=300
+  source_finding: F99-extension (research_log.md, 2026-05-29) + F107 (task #66)
+  inputs:
+    panel_sigma: cross-family stdev of p_success on the contract
+    contract_category: source_corpus from analytics/public/calibration/forecaster_calibration.db contracts table
+    family_elo_history: rolling Elo per family per (contract_category, sigma_quartile) bucket
+  rules:
+    - name: low_disagreement_claude_wins
+      when:
+        panel_sigma_lt: 0.073   # Q1 of F99-extension probe
+      route_to: claude_v28
+      rationale: |
+        On the easy quartile of panel disagreement (sigma < 0.073, n=39 in F99-extension N=157
+        cohort), claude alone has the lowest Brier 0.2528 and ensemble doesn't help (mean-of-5
+        Brier 0.2483 in Q1 actually slightly worse than claude's 0.2528 — within noise).
+    - name: medium_disagreement_trio_median
+      when:
+        panel_sigma_gte: 0.073
+        panel_sigma_lt: 0.13
+      route_to:
+        kind: median
+        members: [claude_v28, codex_55_v28, codex_54mini_v28]
+      rationale: |
+        Mid-disagreement quartile. The claude+codex trio is within-cluster rho=0.74-0.78 so the
+        median is stable; gemini/deepseek diverge here and median-including-them flips signs.
+    - name: high_disagreement_gemini_direction_bet
+      when:
+        panel_sigma_gte: 0.13
+      route_to: gemini_v28
+      rationale: |
+        High-disagreement quartile is where gemini's Elo advantage shows up (gemini Elo 1516
+        vs Brier-rank #4). When families disagree sharply, the DIRECTION call matters more
+        than the calibration confidence, and gemini wins head-to-head more often than its
+        average Brier suggests. Pre-registered; requires N>=300 confirmation before deploy.
+  fallback: claude_v28   # if any signal missing, default to best-single
+  audit:
+    confirmation_n_per_quartile: 75
+    fired_with_n: 39  # F99-extension probe Q-cell size at N=157
+    legal_verdicts: [h1_supported, h0_kept, inconclusive_underpowered]
+    detection_floor_delta_brier: 0.05
+
+channel_routing:
+  description: >
+    F58 channel orthogonality + F61 multi-channel R² with leave-one-out CV
+    (R²_LOO). Per-family channel routing is DEPLOYABLE only when R²_LOO is
+    materially positive on the public_domain corpus. The N=15 specialist
+    in-sample R² values are NOT deployable (k=4 with N=15 → 10 dof; fit-noise
+    dominates) and are retained only as ZTARE-internal record.
+  spread_convention: "p_sell_yes_min - p_buy_yes_max (ask - bid, non-negative)"
+  detectable_rho_at_n42: 0.43  # Fisher-z, alpha=0.05, beta=0.20
+
+  public_domain:
+    # OLS k=4 channels (worry, spread, b_mid, b_width) → ys = err². Source:
+    # projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/v28a_external_multichannel_r2.json
+    codex_55:
+      status: deployable
+      r2_in_sample: 0.57
+      r2_adj: 0.53
+      r2_loo: 0.31
+      primary: worry
+      sign: direction_correct
+      secondary: spread
+      note: "Only family whose multi-channel decomposition survives LOO-CV at N=42 public_domain."
+    gemini:
+      status: marginal
+      r2_in_sample: 0.31
+      r2_adj: 0.23
+      r2_loo: 0.04
+      primary: worry
+      sign: direction_correct
+      note: "LOO-CV barely positive; do not deploy multi-channel weighting until N≥91 replication."
+    claude:
+      status: marginal
+      r2_in_sample: 0.20
+      r2_adj: 0.12
+      r2_loo: 0.03
+      primary: spread
+      sign: direction_correct
+      note: "LOO-CV barely positive; same caveat."
+    deepseek:
+      status: overfit
+      r2_in_sample: 0.28
+      r2_adj: 0.20
+      r2_loo: -0.05
+      note: "Multi-channel OLS predicts worse than the mean out-of-sample. Do NOT deploy multi-channel routing for deepseek on public_domain."
+    codex_mini:
+      status: overfit
+      r2_in_sample: 0.16
+      r2_adj: 0.07
+      r2_loo: -0.29
+      partial_signal:
+        primitive: reference_class_outside_view
+        channel: p_base_outside
+        rho_y: 0.39
+        ci_95: [0.10, 0.62]
+        n: 42
+        verdict: h1_supported
+        note: "F62 (v28i): codex_mini outside-view ρ=+0.39 vs y, beats own p_success ρ=+0.21."
+      note: "Multi-channel OLS overfits worse than the mean; reference-class outside view is the only public_domain channel that holds up for this family."
+
+  specialist:
+    status: ztare_internal_control_only
+    n: 15
+    note: >
+      Operator-private corpus (LeanMill/NS contracts). Reported in internal logs
+      only. Multi-channel R² at N=15 with k=4 is fit-noise (dof=10). No
+      deployable routing rule is derived from specialist.
+
+# ============================================================
+# F60 mechanism note (worry-scalar sign-flip)
+# ============================================================
+
+f60_mechanism:
+  finding: >
+    F36/F40 per-family worry-scalar sign-flip is consistent with a two-mechanism
+    interaction: (a) mean-regression — families that pull high-worry contracts
+    toward p=0.5 look "inverted" because their high-worry forecasts are LESS
+    extreme and therefore BETTER calibrated on shared topic-triggers; (b)
+    per-family accuracy alignment on the shared topic-trigger set — families
+    that ARE more accurate on those contracts also report MORE worry.
+  inverted_families: [claude, gemini]
+  direction_correct_families: [codex_55, codex_mini]
+  undetermined: [deepseek]
+  implication_for_routing: >
+    Worry-scalar sign rules in per_agent_premium_sign.yaml remain correct for
+    routing. Do not re-derive the sign at deploy time — it is a stable per-family
+    property of the channel, not a contract-level artifact.
+
+# ============================================================
+# Operational discipline
+# ============================================================
+
+# What downstream consumers should do:
+#   1. Read agent_family from the forecast emission payload (populated by
+#      scripts/public/control/forecast/pool.py:cmd_add_forecast).
+#   2. Look up the family entry here.
+#   3. For each candidate intervention in the prompt-construction layer,
+#      check this file's action field:
+#        ENABLE              -> include the intervention in the prompt
+#        DISABLE             -> explicitly exclude (don't add even by default)
+#        NEUTRAL             -> intervention is harmless but not helpful; skip for simplicity
+#        DO_NOT_USE          -> don't even compute the signal (no value)
+#        INVERT_SIGN         -> compute the signal, then flip before use
+#        USE_AS_STATED       -> use without modification
+#        ENABLE_BUT_NOT_UNDER_EXPOSURE -> use in independent dispatch only
+#        DISABLE_UNDER_EXPOSURE        -> exclude when other forecasts are visible
+#   4. Treat all rules as priors weighted by evidence_strength.
+#      Until v25 cross-corpus replicates (N>=30 per family), do NOT hard-code
+#      any rule as a deployment requirement.
+
+# Provenance:
+#   F36/F40       -> org/calibration/per_agent_premium_sign.yaml (worry-scalar)
+#   F26           -> org/calibration/per_agent_cost_calibration.yaml (cost/effort)
+#   F44-F49       -> this file (prompt-engineering per family)
+#   F52           -> F45 retraction (power-audit, CI crosses zero at N=5)
+#   F54 v3        -> frequency_framing scoped to ENABLE_SPECIALIST_ONLY (no public transfer)
+#   F56           -> bid_ask_spread: new primitive (codex_mini + deepseek on specialist)
+#   F58           -> channel orthogonality across worry/spread/b_mid/b_width
+#   F60           -> worry-scalar sign-flip mechanism (mean-regression × accuracy alignment)
+#   F61           -> predicted_brier_interval: new primitive (b_mid + b_width)
+#   New flow:     scripts/public/control/forecast/pool.py emits the four channels;
+#                 consumers read channel_routing[corpus][family] to pick primary+secondary
+#                 and apply the per-channel sign before combining via the F61 R² weights.

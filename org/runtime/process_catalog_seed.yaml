@@ -27,11 +27,11 @@ processes:
     kind: loop
     trigger: gap_detected_in_F_row_or_seam
     consumes: [F-row gap, raw_source_doc]
-    produces: ["research_areas/private/evidence/{topic}.md"]
+    produces: ["research_areas/[redacted]{topic}.md"]
     re_trigger_period: per_iter_or_per_seam_open
     code_pointers:
       - scripts/compile_evidence.py
-      - research_areas/private/MERGE_WORKSPACE.md
+      - research_areas/[redacted]
 
   - name: ztare_iter_loop
     kind: loop
@@ -165,7 +165,7 @@ processes:
     kind: static
     trigger: one_decision
     consumes: [readability_concern]
-    produces: [research_areas/private/seams/reflexive/r_prefix_naming_convention.md]
+    produces: [research_areas/[redacted]]
     re_trigger_period: never
     notes: |
       Decision artifact. Not a recursion candidate.

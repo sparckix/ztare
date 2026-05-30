@@ -13,7 +13,7 @@ triggers:
     - n_chosen_vocabularies_collude_to_produce_n_axes_split
   problem_classes: [pre_category_emergence, apparatus_self_audit]
 detection_protocol:
-  primary: PATTERN-003  # reducer (P13) — strip elite vocab, see what remains
+  primary: PATTERN-003  # reducer (P13), strip elite vocab, see what remains
   secondary: PATTERN-006  # tautology_trap_detector
   rule:
     - "When N vocabularies produce a (k, N-k) split that gets framed as 'newly-surfaced axis', verify the vocabularies' output spaces are NOT pre-disjoint. Swap one for a different op; if the split flips, the axis was rigged."
@@ -23,20 +23,20 @@ mitigation:
   - "Withdraw promotion evidence when rigged-quartet detected (e.g. PATTERN-012 N=2 → reverted to N=1 after catch #23)."
   - "Substitute honest grade label from the pre-registration alphabet (WEAK PASS, not STRONG WEAK PASS)."
   - "Document the laundered framing in the file's docstring; retain the file as scaffold but mark NOT a foundational primitive."
-  - "Externalize the splitting outside the architecture's own vocabulary: cite a prior literature dichotomy with non-overlapping hypotheses (e.g. Bourgain-Goldstein-Schlag 2002 vs Eliasson-Kuksin) — if the architecture's split aligns, the dichotomy is real; if not, it is vocabulary-internal."
+  - "Externalize the splitting outside the architecture's own vocabulary: cite a prior literature dichotomy with non-overlapping hypotheses (e.g. Bourgain-Goldstein-Schlag 2002 vs Eliasson-Kuksin), if the architecture's split aligns, the dichotomy is real; if not, it is vocabulary-internal."
 examples:
   - id: catch_23
-    summary: "Rigged-Quartet — 4-vocabulary translation produced 2-2 split framed as PATTERN-012 N=2 evidence. V4 (pec_b) and V3 (core_07) had pre-disjoint output spaces by op definition. Swap V4 for cand_g → 1-3 split; the 'axis' flipped. Plus pre-existing articulation 3 days earlier."
+    summary: "Rigged-Quartet, 4-vocabulary translation produced 2-2 split framed as PATTERN-012 N=2 evidence. V4 (pec_b) and V3 (core_07) had pre-disjoint output spaces by op definition. Swap V4 for cand_g → 1-3 split; the 'axis' flipped. Plus pre-existing articulation 3 days earlier."
     file: anti_laundering_catch_23_rigged_quartet_2026_05_08.md
   - id: catch_26
     summary: "Vocabulary-rename of Tendsto → liminf_eq framed as analytic reduction (Onsager-1/3-open → uncontroversial). Strip-vocab: same hypothesis at different name."
     file: anti_laundering_catch_26_vocabulary_relabel_refactor_2026_05_08.md
   - id: catch_30
-    summary: "Pincer 'STRONG WEAK PASS' — hybrid grade not in pre-registration's verdict alphabet. Retrofitted to inflate a joint verdict. Also: criterion-selection step not pre-registered (chosen during deployment, knowing each agent's attack vector)."
+    summary: "Pincer 'STRONG WEAK PASS', hybrid grade not in pre-registration's verdict alphabet. Retrofitted to inflate a joint verdict. Also: criterion-selection step not pre-registered (chosen during deployment, knowing each agent's attack vector)."
     file: pincer_meta_darwin_audit_2026_05_08.md
 falsifiable_test:
-  description: "For an N-vocabulary split claimed as architecturally informative, swap one of the N vocabularies for a different op in the SAME catalog (e.g. swap pec_b for cand_g). The anti-pattern fires iff the split structure changes — meaning the 'axis' was an artifact of op selection."
-  binary_check: "split_is_robust_under_one_op_swap(vocabularies, alternative_ops) — firing iff False."
+  description: "For an N-vocabulary split claimed as architecturally informative, swap one of the N vocabularies for a different op in the SAME catalog (e.g. swap pec_b for cand_g). The anti-pattern fires iff the split structure changes, meaning the 'axis' was an artifact of op selection."
+  binary_check: "split_is_robust_under_one_op_swap(vocabularies, alternative_ops), firing iff False."
   not_trivial: "Returns 'not firing' (True) when the N vocabularies have non-disjoint output spaces and produce the same split structure under at least one swap. Empirically the test discriminates: catch #23's split flipped on swap; the falsifiable comparison test (Bourgain-Goldstein-Schlag vs Eliasson-Kuksin) was non-pre-disjoint and gave a robust signal. NOT True := by trivial."
 chain_position: post  # runs AFTER any naming-sprint, multi-vocabulary translation, or hybrid-grade verdict
 references:
@@ -47,7 +47,7 @@ references:
   - "pincer_meta_darwin_audit_2026_05_08.md"
 ---
 
-# ANTI-PATTERN-003 — Vocabulary Smuggling
+# ANTI-PATTERN-003, Vocabulary Smuggling
 
 ## What it is
 

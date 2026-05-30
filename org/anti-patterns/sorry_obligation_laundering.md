@@ -14,31 +14,31 @@ triggers:
     - composition_layer_sorry_free_only_because_only_one_sub_lemma_invoked
   problem_classes: [apparatus_self_audit, hard_mathematical_residual]
 detection_protocol:
-  primary: PATTERN-007  # smuggling_audit (load-bearing-step enumeration)
+  primary: PATTERN-007  # smuggling_audit (central-step enumeration)
   secondary: PATTERN-002  # darwin_idea_killer
   rule:
     - "When a refactor proposes hypothesis A → hypothesis B with claim B is at a lower analytic level, ENUMERATE the upstream constructors that produce B. If every such constructor still consumes A-equivalent hypotheses, refactor is vocabulary-laundering."
-    - "When a constructor binds a hypothesis parameter with underscore (never consumed in body), the obligation has NOT been discharged — it has been MOVED to the caller's M structure or to a transitive callee."
+    - "When a constructor binds a hypothesis parameter with underscore (never consumed in body), the obligation has NOT been discharged, it has been MOVED to the caller's M structure or to a transitive callee."
     - "When a composition theorem is sorry-free 'only because step 4 is the only step invoked', and steps 2-3 are sorry-bearing transitive dependencies of step 4, the composition is sorry-free-modulo-its-named-callees, which is sorry-bearing in substance."
 mitigation:
-  - "Require at least ONE new upstream constructor whose hypothesis is classically discharged at a strictly weaker level than A — without it, the refactor is vocabulary, not analytic."
+  - "Require at least ONE new upstream constructor whose hypothesis is classically discharged at a strictly weaker level than A, without it, the refactor is vocabulary, not analytic."
   - "Document underscore-bound parameters explicitly: 'recorded as input parameter, NOT consumed inside this constructor's body'. Treat the witness Prop as caller-burden tracker, not discharge."
   - "When evaluating sorry counts, count obligations at the leaf-Prop boundary, not at the composition theorem boundary. Sorry-free composition over sorry-bearing leaves is bookkeeping, not closure."
   - "Honest verdict labels: 'PASS-with-displacement' or 'WEAK PASS', not 'STRONG PASS'. Hybrid grades like 'STRONG WEAK PASS' that don't appear in the pre-registration's verdict alphabet are inflation."
 examples:
   - id: catch_21e
-    summary: "Atom 8 defect-positivity smuggling — three positivity floors disjuncted in a witness Prop. Refusing to ship a sorry-laden bridge that would smuggle small-divisor / open analytic content through a positivity certificate."
+    summary: "Atom 8 defect-positivity smuggling, three positivity floors disjuncted in a witness Prop. Refusing to ship a sorry-laden bridge that would smuggle small-divisor / open analytic content through a positivity certificate."
     file: atom8_defect_positivity_clay_level_open_2026_05_08.md
   - id: catch_26
     summary: "_of_liminf_eq refactor framed as 'Onsager-1/3-open → weak-L² LSC of dissipation (uncontroversial)'. Mechanical plumbing real; semantic claim laundered: obligation moved to selfTax_liminf_eq_relaxed; both upstream constructors of that field still take Tendsto / monotone-iSup."
     file: anti_laundering_catch_26_vocabulary_relabel_refactor_2026_05_08.md
   - id: catch_30
-    summary: "Pincer GENUINE verdict — `_h_weak_l2_lsc` parameter underscore-bound; analytic obligation displaced to caller's M structure. T9_closure_attempt sorry-free at composition layer only because its only invoked step is sorry-free; transitive dependencies sorry-bearing."
+    summary: "Pincer GENUINE verdict, `_h_weak_l2_lsc` parameter underscore-bound; analytic obligation displaced to caller's M structure. T9_closure_attempt sorry-free at composition layer only because its only invoked step is sorry-free; transitive dependencies sorry-bearing."
     file: pincer_meta_darwin_audit_2026_05_08.md
 falsifiable_test:
   description: "For each refactor that claims an analytic reduction, enumerate the upstream constructors of the renamed structure field. The anti-pattern is firing iff every constructor still requires hypotheses analytically equivalent to the original."
-  binary_check: "exists_constructor_with_strictly_weaker_hypothesis(field) — firing iff False."
-  not_trivial: "Returns 'not firing' (True) when a genuine bucket-1 constructor exists (e.g. Lions tightness Prop has Mathlib IsTightMeasureSet path with Prokhorov closure — bucket-1 reachable per catch #27 note). Therefore the test is NOT True := by trivial."
+  binary_check: "exists_constructor_with_strictly_weaker_hypothesis(field), firing iff False."
+  not_trivial: "Returns 'not firing' (True) when a genuine bucket-1 constructor exists (e.g. Lions tightness Prop has Mathlib IsTightMeasureSet path with Prokhorov closure, bucket-1 reachable per catch #27 note). Therefore the test is NOT True := by trivial."
 chain_position: post  # runs AFTER any refactor or sorry-elimination claim
 references:
   - "PATTERN-007 smuggling_audit"
@@ -47,7 +47,7 @@ references:
   - "pincer_meta_darwin_audit_2026_05_08.md"
 ---
 
-# ANTI-PATTERN-002 — Sorry-Obligation Laundering
+# ANTI-PATTERN-002, Sorry-Obligation Laundering
 
 ## What it is
 
@@ -74,7 +74,7 @@ obligation. Three sub-modes:
 
 ## Why it appears
 
-Sorry-counting is a load-bearing metric in Lean projects, and the
+Sorry-counting is a central metric in Lean projects, and the
 incentive to "make sorry count go down" is strong. The cheap path
 is to refactor the obligation into a different position rather
 than discharge it. Without explicit boundary-counting, the metric
@@ -92,7 +92,7 @@ auditing.
 
 Apply PATTERN-007 (smuggling_audit) on every claimed refactor:
 
-1. List the load-bearing steps in the new structure's signature.
+1. List the central steps in the new structure's signature.
 2. For each step, identify what fact it requires.
 3. Is that fact equivalent to the obligation the refactor was
    supposed to lower?
@@ -107,7 +107,7 @@ sorry-free-modulo-callees, not sorry-free in substance.
 ## Mitigation when detected
 
 - Honest framing in docstring: "MECHANICAL plumbing reduction;
-  SEMANTIC framing was vocabulary-laundering — obligation moved
+  SEMANTIC framing was vocabulary-laundering, obligation moved
   to field X, upstream constructors still consume A-equivalent."
 - Demand at least one new upstream constructor at a strictly
   weaker analytic level.
@@ -118,7 +118,7 @@ sorry-free-modulo-callees, not sorry-free in substance.
 ## Falsifiable test (catalog-level)
 
 `exists_constructor_with_strictly_weaker_hypothesis(field)`. The
-anti-pattern fires iff this is False — every constructor still
+anti-pattern fires iff this is False, every constructor still
 takes A-equivalent.
 
 NOT trivially True: catch #27's downgrade path documents a real

@@ -1,4 +1,4 @@
-# `org/` — AI-Native M-Form Primitives
+# `org/`, AI-Native M-Form Primitives
 
 **Seam:** GP-128 (Persistent Manager Agent / AI-Native M-Form)
 **Opened:** 2026-04-23
@@ -9,10 +9,17 @@ organization: **roles** (persistent identity + authority), **mandates**
 **tasks** (work packets), **execution routes** (how work should be handled),
 and **sessions** (per-role audit windows).
 
-`org/` is domain-general. A travel agency, fintech startup, or scientific
-research lab should be able to reuse this skeleton. ZTARE-specific language
-belongs in role mandates, task bodies, project folders, or backend adapters,
-not in the core org primitive.
+The canonical generic kernel for these primitives now lives in
+[cognitive-firm](https://github.com/sparckix/cognitive-firm). This `org/`
+tree is the ZTARE tenant overlay and compatibility surface: it keeps the same
+ideas local to this research repository while ZTARE-specific mandates,
+preferences, project state, and notification providers remain outside the
+generic kernel.
+
+`org/` should still read as domain-general. A travel agency, fintech startup,
+or scientific research lab should be able to reuse the skeleton. ZTARE-specific
+language belongs in role mandates, task bodies, project folders, or backend
+adapters, not in the core org primitive.
 
 Kernel rule: `org/` owns mechanisms, not policy. Roles, mandates, claims,
 routes, budgets, inboxes, and transitions are the stable kernel surface.
@@ -71,8 +78,8 @@ Defined in `org/roles/<role_id>.yaml`. A role specifies:
 - SLA expectations and failure mode
 - Reference to the mandate document that expands the authorization
 
-A role persists indefinitely. The BODY (substrate) may come and go — a
-Claude session starts and ends, a daemon restarts — but the role
+A role persists indefinitely. The BODY (substrate) may come and go, a
+Claude session starts and ends, a daemon restarts, but the role
 definition is the contract that constrains all of them.
 
 ### 2. Mandate (authorization)
@@ -91,9 +98,9 @@ program state, patent portfolio, principal context). Public templates live in
 
 Defined in `org/sessions/<role_id>/<timestamp>/`. Gitignored because
 sessions are personal activity logs. Each session contains:
-- `transcript.md` — summary of what happened in this window
-- `actions.jsonl` — append-only log of significant actions
-- `spend.json` — cost telemetry for this session (matches spend_tracker schema)
+- `transcript.md`, summary of what happened in this window
+- `actions.jsonl`, append-only log of significant actions
+- `spend.json`, cost telemetry for this session (matches spend_tracker schema)
 
 Sessions enable (a) per-role daily/weekly spend rollups, (b) audit trail
 for what a role actually did, (c) cross-session state handoff.
@@ -103,13 +110,13 @@ for what a role actually did, (c) cross-session state handoff.
 Defined in `org/tasks/{pending,active,done}/<task_id>.md`. A task says what
 the organization wants done. The execution route says how it should be done:
 
-- `route_only` — decide the route and create the next task.
-- `direct_work` — a role-bearing agent can do the work directly.
-- `expert_review` — use a bounded expert/adversarial review packet.
-- `scripted_run` — run a script or external compute job with telemetry.
-- `artifact_build` — build a reusable artifact/contract/workflow.
-- `experiment_loop` — run a repeatable candidate-search loop after preflight.
-- `docs_records` — update documentation, ledgers, manuals, or public/private mirrors.
+- `route_only`, decide the route and create the next task.
+- `direct_work`, a role-bearing agent can do the work directly.
+- `expert_review`, use a bounded expert/adversarial review packet.
+- `scripted_run`, run a script or external compute job with telemetry.
+- `artifact_build`, build a reusable artifact/contract/workflow.
+- `experiment_loop`, run a repeatable candidate-search loop after preflight.
+- `docs_records`, update documentation, ledgers, manuals, or public/private mirrors.
 
 These route names are intentionally generic. In this repo, `experiment_loop`
 often means the ZTARE loop and `artifact_build` may mean a scientific substrate.
@@ -126,12 +133,12 @@ deployment should use a shared folder forever.
 
 The active state surfaces are:
 
-- `org/tasks/` — assignable work and task closure.
-- `org/channels/` — role-to-role messages.
-- `org/sessions/` — session/audit windows and claims.
-- `org/signals/` — damage signals.
-- `ztare_workspace/gates/` — principal/executive decisions.
-- `ztare_workspace/transitions.jsonl` — append-only transition trail.
+- `org/tasks/`, assignable work and task closure.
+- `org/channels/`, role-to-role messages.
+- `org/sessions/`, session/audit windows and claims.
+- `org/signals/`, damage signals.
+- `ztare_workspace/gates/`, principal/executive decisions.
+- `ztare_workspace/transitions.jsonl`, append-only transition trail.
 
 Any daemon only sees the filesystem mounted into its process. If a task exists
 on your laptop but the daemon is running on a VPS, the VPS will not see it
@@ -202,14 +209,14 @@ preference-based routing, see `docs/guides/org_runtime_quickstart.md`.
 
 Before a daemon acts, the boot contract is:
 
-1. `AGENTS.md` — repo-wide constitution loaded by every agent.
-2. `org/roles/<role>.yaml` — role scope, budget, path constraints.
-3. `org/mandates/<role>_mandate.md` — role-specific authority.
-4. `org/preferences/<member>.yaml` — private preference/taste model.
+1. `AGENTS.md`, repo-wide constitution loaded by every agent.
+2. `org/roles/<role>.yaml`, role scope, budget, path constraints.
+3. `org/mandates/<role>_mandate.md`, role-specific authority.
+4. `org/preferences/<member>.yaml`, private preference/taste model.
 
-`scripts/org_first_run_setup.py --init-private --skip-smoke` copies public
+`scripts/public/control/org_first_run_setup.py --init-private --skip-smoke` copies public
 templates into missing local private mandate/preference files.
-`scripts/org_role_preflight.py` checks these exist. `scripts/agent_daemon.py`
+`scripts/public/control/org_role_preflight.py` checks these exist. `scripts/public/control/agent_daemon.py`
 also tells the spawned runtime to read them. This matters in Docker because
 not every agent host auto-discovers `AGENTS.md` the way Codex/Claude do in an
 interactive repo session.
@@ -217,16 +224,16 @@ interactive repo session.
 Dry-run the Research Director against the current preferences:
 
 ```bash
-python scripts/org_role_preflight.py --role research_director
-python scripts/agent_daemon.py --role research_director --tick-once --dry-run
-docker compose --profile daemons run --rm research-director-daemon python scripts/org_role_preflight.py --role research_director
-docker compose --profile daemons run --rm research-director-daemon python scripts/agent_daemon.py --role research_director --tick-once --dry-run
+python scripts/public/control/org_role_preflight.py --role research_director
+python scripts/public/control/agent_daemon.py --role research_director --tick-once --dry-run
+docker compose --env-file .env --profile daemons run --rm research-director-daemon python scripts/public/control/org_role_preflight.py --role research_director
+docker compose --env-file .env --profile daemons run --rm research-director-daemon python scripts/public/control/agent_daemon.py --role research_director --tick-once --dry-run
 ```
 
 Run it continuously:
 
 ```bash
-docker compose --profile daemons up research-director-daemon
+docker compose --env-file .env --profile daemons up research-director-daemon
 ```
 
 The Docker service is only a process wrapper. It does not grant authority. The
@@ -238,7 +245,7 @@ agent CLI already authenticated.
 Runtime identity is configurable. Example:
 
 ```bash
-ZTARE_MEMBER_ID=codex ZTARE_AGENT_CLI=codex ZTARE_AGENT_ADAPTER=codex_exec docker compose --profile daemons up research-director-daemon
+ZTARE_MEMBER_ID=codex ZTARE_AGENT_CLI=codex ZTARE_AGENT_ADAPTER=codex_exec docker compose --env-file .env --profile daemons up research-director-daemon
 ```
 
 `ZTARE_MEMBER_ID` is the member/runtime written to sessions. `ZTARE_AGENT_CLI`
@@ -253,5 +260,5 @@ architecture proposed in paper 4 (§ Persistence Asymmetry and Role-Substrate
 Decoupling). Key paper claims grounded here:
 1. Roles are persistent contracts; substrates are interchangeable bodies
 2. Workers are ephemeral; managers are backed by persistent or session
-   substrates — the ROLE is always persistent
-3. Organizational leverage concentrates in role definition, not worker selection
+   substrates, the ROLE is always persistent
+3. Organizational outcomes are determined by role definition, not worker selection

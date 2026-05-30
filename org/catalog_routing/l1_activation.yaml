@@ -1,0 +1,55 @@
+# L1 (research-process) activation clauses. Catalog anchor =
+# org/patterns/<item_id>.md or org/menu/orchestration_menu.yaml leaf.
+- item_id: eigenquestion_phrasing_discipline
+  layer: L1
+  typed_when: {declared_true: [asks_discriminator]}
+  catalog_anchor: org/patterns/eigenquestion_phrasing_discipline.md
+  activation:
+    - clause_id: asks_for_pivot_or_discriminator
+      all: [asks_pivot_or_discriminator]
+      any_lexical: ["next discriminator", "propose the next", "pivot", "what would falsify", "falsifier", "eigenquestion", "next step"]
+  obligation: "Name the pivot/discriminator variable, state the single observation that would falsify it, and identify one cheaper rival explanation it must beat."
+  witness_schema:
+    required: [pivot_variable, falsifying_observation, cheaper_rival_explanation]
+  why_not_enum: [feature_absent, contradicted_by_goal, discharged_by_stricter_obligation, operator_scoped_out]
+  discharge:
+    mode: receipt
+    receipts: [forecast_tick_packet]
+    scope: routine_process
+
+- item_id: darwin_idea_killer
+  layer: L1
+  typed_when: {declared_true: [positive_claim]}
+  catalog_anchor: org/patterns/darwin_idea_killer.md
+  activation:
+    - clause_id: positive_claim_pending
+      all: [strong_positive_claim]
+      any_lexical: ["breakthrough", "this might be it", "promising", "finally", "closure", "proven", "solved"]
+  obligation: "Run an independent adversarial kill of the proposed positive claim BEFORE persisting; attach the kill verdict."
+  witness_schema:
+    required: [claim_under_test, adversary_verdict, conceded_or_survived]
+  why_not_enum: [no_positive_claim_present, contradicted_by_goal, discharged_by_stricter_obligation, operator_scoped_out]
+
+- item_id: business_framing
+  layer: L1
+  typed_when: {declared_true: [stuck]}
+  catalog_anchor: org/patterns/business_framing.md
+  activation:
+    - clause_id: stuck_diminishing_returns
+      all: [stuck_diminishing]
+  obligation: "When stuck/diminishing-returns: reframe the problem in a non-math domain (business/operations) to surface the implicit constraint before another in-domain attempt."
+  witness_schema:
+    required: [nonmath_reframe, surfaced_implicit_constraint]
+  why_not_enum: [feature_absent, contradicted_by_goal, discharged_by_stricter_obligation, operator_scoped_out]
+
+- item_id: cold_shot_dispatch
+  layer: L1
+  typed_when: {declared_true: [load_bearing_arch_decision]}
+  catalog_anchor: org/patterns/cold_shot_dispatch.md
+  activation:
+    - clause_id: load_bearing_architecture_decision
+      all: [load_bearing_arch_decision]
+  obligation: "A load-bearing architecture/mechanism decision requires a COLD cross-provider GENERATIVE pass (not self-simulated panels/Meta-Darwin) attached before it is persisted — the self-simulated-adversary-monoculture lesson; FLEET-PRE-HARD-CLAIM [5]."
+  witness_schema:
+    required: [cold_provider_used, generative_not_just_redteam, verdict_and_what_changed]
+  why_not_enum: [not_load_bearing, discharged_by_stricter_obligation, operator_scoped_out]

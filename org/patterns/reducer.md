@@ -20,14 +20,27 @@ preconditions:
   - claim_uses_future_vocabulary: at least one elite noun present
 chain_position: terminal  # final filter before promoting future-vocab claims
 related_patterns:
-  - PATTERN-004 (vocabulary_quarantine — prompt-time guardrail)
-  - PATTERN-005 (falsifiable_asymmetry — output-time guardrail)
+  - PATTERN-004 (vocabulary_quarantine, prompt-time guardrail)
+  - PATTERN-005 (falsifiable_asymmetry, output-time guardrail)
 references:
   - https://github.com/anthropics/skills (SKILL.md format precedent)
   - tonight's catch #12-14 (OCCT/FDOS/VBNS-PT all LAUNDERED)
+falsifiable_test: |
+  Over N>=15 reducer audits of future-vocabulary candidates, the reducer's
+  LAUNDERED verdicts must agree with an independent cross-family re-audit
+  (PATTERN-014) on >=80% of cases, AND the reducer must return at least one
+  non-LAUNDERED verdict (GENUINE-BUT-VACUOUS or GENUINE-AND-PREDICTIVE) across any
+  15-dispatch window. If cross-family agreement drops below 80%, or the reducer
+  outputs LAUNDERED on 15/15 (its own DEFAULT-TO-LAUNDERED anti-pattern), demote.
+  metric_source: reducer_verdict_v1 outputs vs cross-family re-audit verdicts; both
+  tagged in pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-003) and
+  external_prover_ledger.jsonl.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 3 — Reducer (P13 from operator-directed mitigations)
+# Pattern 3, Reducer (P13 from operator-directed mitigations)
 
 ## Problem
 
@@ -45,7 +58,7 @@ This is the laundering pattern that wastes review hours on theatrical
 Single-agent audit applied AFTER any future-vocabulary projection:
 
 1. Receive proposed concept + its definition
-2. STRIP all future-facing rhetoric — every elite noun (∞-category,
+2. STRIP all future-facing rhetoric, every elite noun (∞-category,
    topos, derived stack, Postnikov tower, gerbe, etc.)
 3. ASK: what concrete 2026 statement REMAINS after stripping?
    - Banach-space inclusion / non-inclusion claim?
@@ -89,7 +102,7 @@ to look thorough. Track precision; require occasional GENUINE verdicts
 
 ## Concrete example
 
-2026-05-08 ~09:30 — applied to OCCT (Obstruction-Coherent Compactness
+2026-05-08 ~09:30, applied to OCCT (Obstruction-Coherent Compactness
 Topos), FDOS (Filtered Derived Obstruction Stack), VBNS-PT (Viscous-
 Bilinear-NS Postnikov Tower).
 
@@ -115,6 +128,6 @@ as vocabulary scaffolds for ZTARE substrate consumers).
 
 ## Cross-references
 
-- `mitigations_11_12_13_2026_05_08.md` — full P11/P12/P13 set
-- `naming_sprint_deliverable_2026_05_08.md` — VBNS-PT instance
-- `anti_laundering_catches_9_10_2026_05_08.md` — adjacent catches
+- `mitigations_11_12_13_2026_05_08.md`, full P11/P12/P13 set
+- `naming_sprint_deliverable_2026_05_08.md`, VBNS-PT instance
+- `anti_laundering_catches_9_10_2026_05_08.md`, adjacent catches

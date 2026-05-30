@@ -17,10 +17,23 @@ preconditions:
   - algebra_is_substrate_for_argument: yes
 chain_position: post
 related_patterns:
-  - PATTERN-008 (three_leg_verification — fuller version)
+  - PATTERN-008 (three_leg_verification, fuller version)
+falsifiable_test: |
+  Over N>=20 algebraic claims flagged by handwave-words ("trivial", "by
+  computation", etc.) and checked by CAS, the CAS check must catch a genuine
+  discrepancy in >=15% of flagged claims, AND across N>=20 CAS-passed claims the
+  post-pass algebra-defect rate must be <=5%. If the catch-on-flag rate is below
+  15% (handwave-words are not predictive of error) or CAS-passed claims still carry
+  >5% algebra defects, demote.
+  metric_source: catch ledger entries tagged PATTERN-009 (CAS discrepancy catches)
+  and downstream algebra-defect catches; dispatch counts from
+  pattern_deployment_ledger.jsonl.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 9 — Independent CAS Verification
+# Pattern 9, Independent CAS Verification
 
 ## Problem
 
@@ -68,7 +81,7 @@ trusting the result.
 
 ## Concrete example
 
-2026-05-08 ~01:30 — agent claimed `∫ ω · curl ω = ∫ |∇u|²` for
+2026-05-08 ~01:30, agent claimed `∫ ω · curl ω = ∫ |∇u|²` for
 divergence-free `u` "by IBP." SymPy verification on ABC flow showed:
 - ∫ ω · curl ω = 8π³(A² + B² + C²)
 - ∫ |∇u|² = 8π³(A² + B² + C²)
@@ -83,6 +96,6 @@ the helicity-stationarity terminal lemma to BELTRAMI-ONLY scope.
 
 ## Cross-references
 
-- `scripts/verify_helicity_IBP_factor.py` — instance
-- `scripts/verify_4mode_stationary_NS_collapse.py` — another instance
-- PATTERN-008 (three_leg_verification) — fuller version
+- `scripts/verify_helicity_IBP_factor.py`, instance
+- `scripts/verify_4mode_stationary_NS_collapse.py`, another instance
+- PATTERN-008 (three_leg_verification), fuller version

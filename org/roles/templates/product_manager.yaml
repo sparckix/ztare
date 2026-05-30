@@ -1,0 +1,44 @@
+schema_version: 1
+role_id: product_manager
+role_class: manager
+description: >
+  Public-template product manager role for clean-container smoke checks.
+  Live tenant overlays can replace this with a richer apparatus-catalog role.
+
+authorized_paths:
+  - "docs/"
+  - "research_areas/"
+  - "org/sessions/"
+
+forbidden_paths:
+  - "org/mandates/"
+  - "org/roles/"
+  - "src/"
+  - "rubrics/"
+  - "~/.ssh/"
+  - "~/.aws/"
+
+delegates_to:
+  - worker.general_purpose
+
+escalates_to:
+  - role.principal
+  - role.manager
+
+budget:
+  daily_cap_usd: 10.00
+  session_cap_usd: 5.00
+  single_action_cap_usd: 2.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 10.00
+
+mandate_path: null
+
+sla:
+  response_time_inbox_hours: null
+
+failure_mode:
+  on_unavailable: "manager reviews apparatus catalog manually"
+  on_crash: "session logs preserve partial work"
+
+signs_gates: []

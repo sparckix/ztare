@@ -21,10 +21,24 @@ preconditions:
   - operator_or_agent_at_risk_of_grandiosity_or_retreat: yes
 chain_position: orthogonal  # not in the math chain; orthogonal pressure
 related_patterns:
-  - PATTERN-001 (friction_debate — math-side complement)
+  - PATTERN-001 (friction_debate, math-side complement)
+falsifiable_test: |
+  Over N>=8 business-framing deployments on stuck campaigns, the generative-prompt
+  deliverable must, within the next 3 campaign iterations, produce a measurable
+  unstick — defined as either (a) a new F-row closure or (b) a pre-registered
+  residual reclassification — at a rate >=2x the unstick-within-3-iterations rate
+  of matched stuck campaigns where no business-framing dispatch fired. If the
+  post-deployment unstick rate is below 2x the no-deployment baseline, the external
+  reframe earns nothing and demotes.
+  metric_source: business_diagnosis_v1 dispatch dates in
+  pattern_deployment_ledger.jsonl vs F-row closures / residual reclassifications in
+  the residual_to_lever ledger over the following 3 iterations.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 10 — Business-Framing Agent for Pre-Category-Emergence Stuck
+# Pattern 10, Business-Framing Agent for Pre-Category-Emergence Stuck
 
 ## Problem
 
@@ -46,7 +60,7 @@ emergence) and produce a diagnosis the math-team can't.
 
 ## Pattern
 
-Spawn an agent given ONLY meta-cognitive framing of the stuck point —
+Spawn an agent given ONLY meta-cognitive framing of the stuck point, 
 NO mathematical content. Ask:
 
 1. Business-strategy diagnosis: what kind of "stuck" is this?
@@ -87,7 +101,7 @@ context defeats the purpose. Strict no-math-content prompt.
 
 ## Concrete example
 
-2026-05-08 ~07:50 — after 7 hours of iteration on NS Track B Clay
+2026-05-08 ~07:50, after 7 hours of iteration on NS Track B Clay
 closure, business-framing agent diagnosed:
 
 > "This is **pre-category emergence stuck** (NOT platform-blocked). 4
@@ -98,7 +112,7 @@ closure, business-framing agent diagnosed:
 
 Generative prompt: "If all four traditions are shadows of the same
 object, what is the single property of that object that, if true, would
-make all four shadows necessary — and what is the one experiment,
+make all four shadows necessary, and what is the one experiment,
 runnable in our current apparatus this week, where the unifier predicts
 something different from any individual tradition?"
 
@@ -107,5 +121,5 @@ requirement that subsequently caught OCCT/FDOS/VBNS-PT as LAUNDERED.
 
 ## Cross-references
 
-- `naming_sprint_deliverable_2026_05_08.md` — output of this pattern
+- `naming_sprint_deliverable_2026_05_08.md`, output of this pattern
 - `agent_orchestration_meta_patterns_2026_05_08.md` Pattern 2

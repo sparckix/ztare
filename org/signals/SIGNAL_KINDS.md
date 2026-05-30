@@ -103,7 +103,7 @@ second from another substrate before mechanizing).
 When/if built, the emitter should fire INFO-severity to RD's
 review channel + flow into typed_endpoint_pack's mutator briefing
 as a "compression candidate" hint. See
-`research_areas/private/seams/protocol/GP-223_endpoint_type_compression_gate_seam.md`
+`GP-223 (internal seam)`
 for the proposed gate that would prevent the issue at PRE-LLM-PATCH
 time (separate from the post-hoc detector this kind would emit).
 

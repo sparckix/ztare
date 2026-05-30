@@ -1,0 +1,19 @@
+# V4-SUBSTRATE activation clauses. Keyed ONLY to V4 deterministic
+# telemetry (BriefingContext.stagnation_count, weakest-node, gate
+# verdicts) — NOT RD prediction-market/NS-manifest signals (operator
+# 2026-05-17: V4 obligations are substrate-specific; importing RD
+# obligations would never-fire or flood). Discharge = an existing
+# deterministic V4 telemetry/gate result, NOT an agent witness (V4 has
+# no witness channel). Conservative seed: ONE clause, composing a
+# capability V4 already has (forced-reframe-on-stall, GP-168).
+- item_id: stall_requires_disjoint_reframe
+  layer: L1
+  typed_when: {declared_true: [v4_stalled]}
+  catalog_anchor: org/patterns/cold_shot_dispatch.md
+  activation:
+    - clause_id: stagnation_gated
+      all: [v4_stalled]
+  obligation: "Stagnation (consecutive iters without improvement) ⇒ a DISJOINT-architecture reframe (a functional family different from the prior champion's) is obligatory this iteration — do not re-tune the same family."
+  witness_schema:
+    required: [parametric_family_changed_from_prior]
+  why_not_enum: [not_stalled, operator_scoped_out, discharged_by_stricter_obligation]

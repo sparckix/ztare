@@ -77,14 +77,14 @@ The daemon polls each task on each cycle. Two pressures evaluated:
 
 **Time pressure.**
 - `pct = (now - created_utc) / (closure_deadline - created_utc)`
-- At `warn_at_pct`, surfaces in Telegram digest as "imminent."
+- At `warn_at_pct`, surfaces in the notification digest as "imminent."
 - At `escalate_at_pct`, opens an entry in `ztare_workspace/gates/pending/`.
 - At `pct >= 1.0` (deadline passed), daemon submits state-transition
   request to GP-070 orchestrator: `auto_resolution` is the action.
 
 **Budget pressure.**
 - `pct = budget_spent_usd / budget_cap_usd`
-- At `warn_at_pct: 0.8` (default), surfaces in Telegram digest.
+- At `warn_at_pct: 0.8` (default), surfaces in the notification digest.
 - At `pct >= 1.0`, daemon submits `budget_exhaust_action` request.
 
 Both pressures are independent. Either firing triggers resolution.
@@ -166,5 +166,5 @@ When an agent session starts:
 
 - `org/objectives/README.md` — parent layer
 - `org/key_results/README.md` — measurable outcomes
-- `research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md`
+- `GP-168 (internal seam)`
   — Addendum 2026-04-27 has the full schema + panel synthesis

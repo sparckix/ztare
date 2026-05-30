@@ -17,7 +17,7 @@ detection_protocol:
   secondary: PATTERN-002  # darwin_idea_killer (cross-family LLM diagnostic)
   rule:
     - "Claiming 'cross-family validation' using N Claude Code Agent subagents (all Claude family) is AGENT-FAMILY-LAUNDERING. True cross-family requires the PY LLM-based variant of swarm_dispatch (Anthropic + Google + OpenAI)."
-    - "When a primitive is being claimed 'novel above the published frontier' OR a load-bearing decision turns on the verdict, escalate from agent-based → PY LLM-based swarm per AGENTS.md §6e.0."
+    - "When a primitive is being claimed 'novel above the published frontier' OR a central decision turns on the verdict, escalate from agent-based → PY LLM-based swarm per AGENTS.md §6e.0."
     - "DARWIN must run on cross-family LLM, not the same family that produced the claim (PATTERN-002 anti-pattern: SELF-GRADING)."
 mitigation:
   - "Escalate to PY LLM-based swarm via existing scripts (scripts/openmath_novel_ideas_swarm.py / surgical_swarm_panel.py / swarm_vitali_to_integral.py) with --budget-estimate-only first, then --allow-paid once authorized."
@@ -29,7 +29,7 @@ examples:
     file: anti_laundering_catch_25_lean_elaborator_rabbithole_2026_05_08.md
 falsifiable_test:
   description: "Inspect the dispatch record for any claim labeled 'cross-family validated'. The anti-pattern fires iff every agent in the swarm was the same provider family (e.g. all Claude Code Agents)."
-  binary_check: "len(distinct_provider_families(swarm_agents)) ≥ 2 — firing iff False."
+  binary_check: "len(distinct_provider_families(swarm_agents)) ≥ 2, firing iff False."
   not_trivial: "Returns 'not firing' when scripts/openmath_novel_ideas_swarm.py runs across Claude Opus + GPT-5.5 + Gemini 3.1 Pro (3 distinct families). Returns 'firing' when 5 Claude Code Agent subagents all return convergent verdicts and the verdict is then claimed cross-family. The test discriminates. NOT True := by trivial."
 chain_position: pre  # runs BEFORE promoting any claim that depends on cross-family validation
 references:
@@ -41,7 +41,7 @@ references:
   - "anti_laundering_catch_25_lean_elaborator_rabbithole_2026_05_08.md"
 ---
 
-# ANTI-PATTERN-006 — Cross-Agent Monoculture
+# ANTI-PATTERN-006, Cross-Agent Monoculture
 
 ## What it is
 
@@ -66,7 +66,7 @@ Tonight's catch #22 surfaced this in the META-DARWIN-HOFSTADTER
 audit. A primitive being claimed "novel above the published
 frontier" requires actual cross-family check (Anthropic + Google +
 OpenAI agreement), not 3 Claude subagents agreeing. The cost of
-not running paid swarm at the load-bearing decision points is
+not running paid swarm at the central decision points is
 overstated novelty claims that won't survive external review.
 
 ## Detection protocol
@@ -78,7 +78,7 @@ detection:
 2. If `len(distinct_provider_families) < 2`, the verdict is NOT
    cross-family validated.
 3. Cross-check against AGENTS.md §6e.0 trigger conditions:
-   primitive claimed "novel above frontier"? load-bearing decision
+   primitive claimed "novel above frontier"? central decision
    turns on verdict? → escalate to PY LLM-based swarm.
 
 ## Mitigation when detected
@@ -90,7 +90,7 @@ detection:
   - present estimate to operator
   - dispatch with `--allow-paid` once authorized
 - Per AGENTS.md §6e.1: judge family ≠ mutator family. Same rule
-  for anti-pattern audits — use cross-family DARWIN.
+  for anti-pattern audits, use cross-family DARWIN.
 
 ## Falsifiable test (catalog-level)
 
@@ -101,13 +101,13 @@ NOT trivially True: scripts/openmath_novel_ideas_swarm.py
 empirically runs across 3 distinct families (test passes,
 not-firing). Tonight's morning iteration used 7+ hours of
 agent-based swarm (test fails for any audit citing it as
-cross-family — firing). The test discriminates.
+cross-family, firing). The test discriminates.
 
 ## Cross-references
 
-- PATTERN-011 (`org/patterns/swarm_dispatch.md`) — anti-pattern
+- PATTERN-011 (`org/patterns/swarm_dispatch.md`), anti-pattern
   section names AGENT-FAMILY-LAUNDERING.
-- PATTERN-002 (`org/patterns/darwin_idea_killer.md`) — SELF-GRADING
+- PATTERN-002 (`org/patterns/darwin_idea_killer.md`), SELF-GRADING
   anti-pattern (related family-discipline rule).
 - AGENTS.md §6e.0 + §6e.1.
 - `scripts/openmath_novel_ideas_swarm.py`,

@@ -15,7 +15,7 @@ triggers:
   problem_classes: [apparatus_self_audit, pre_category_emergence]
 detection_protocol:
   primary: PATTERN-001  # friction_debate (rule_8_criteria_locked_before_dispatch)
-  secondary: PATTERN-003  # reducer (P13 — strip the new criterion's elite vocab; does the residual track an attack vector?)
+  secondary: PATTERN-003  # reducer (P13, strip the new criterion's elite vocab; does the residual track an attack vector?)
   rule:
     - "Read the criteria list at `pre_spec_sha`. Read the criteria list in the joint verdict. Compute the symmetric difference."
     - "If the symmetric difference is non-empty, fire on every member of the symmetric difference."
@@ -28,26 +28,26 @@ mitigation:
   - "Do NOT 'tighten' criteria mid-deployment. The honest move is to close the deployment, ship a re-audit note, and re-deploy with the tightened set under a new pre_spec_sha."
 examples:
   - id: catch_30
-    summary: "Pincer META-DARWIN deployment — the 5 criteria were chosen DURING deployment, with operator visibility into each agent's attack vector. The 'criteria set' is post-hoc curation framed as pre-registration. Disjointness audit found ~3 effective axes (not 5) because criteria collapsed onto shared DARWIN catches."
+    summary: "Pincer META-DARWIN deployment, the 5 criteria were chosen DURING deployment, with operator visibility into each agent's attack vector. The 'criteria set' is post-hoc curation framed as pre-registration. Disjointness audit found ~3 effective axes (not 5) because criteria collapsed onto shared DARWIN catches."
     file: projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_audit_2026_05_08.md
   - id: catch_31
     summary: "Re-audit confirmed this failure mode is process-only and was not addressed by any code-output fix. Promotion to ANTI-PATTERN-009 + PATTERN-001 rule_8 is the structural fix. Cross-vocabulary criterion selection (the operator picked criterion phrasings that matched specific agent outputs already seen) is the dominant mode."
     file: projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_re_audit_2026_05_08.md
 falsifiable_test:
   description: "For every Pattern-001 deployment, the criteria list in the joint verdict must be set-equal to the criteria list at pre_spec_sha (modulo wording-only refinements documented and signed in orchestration_state). The anti-pattern fires iff the symmetric difference is non-empty OR if any wording change altered the evidence set without an explicit removal+addition record."
-  binary_check: "set(criteria_in_joint_verdict) == set(criteria_at_pre_spec_sha) AND no_evidence_set_changing_wording_diffs — firing iff False."
+  binary_check: "set(criteria_in_joint_verdict) == set(criteria_at_pre_spec_sha) AND no_evidence_set_changing_wording_diffs, firing iff False."
   not_trivial: "Returns 'not firing' for any deployment that scored exactly the criteria committed at pre_spec_sha. Catch #30's pincer deployment returns firing (criteria selected during dispatch). A future deployment that locks 5 criteria pre-dispatch and scores those 5 returns not-firing. The test reduces to a set-equality check on criterion ids. NOT True := by trivial."
 chain_position: post  # runs at joint-verdict write time; verifies criteria didn't drift
 references:
   - "PATTERN-001 friction_debate (rule_8_criteria_locked_before_dispatch)"
   - "PATTERN-003 reducer (P13)"
-  - "ANTI-PATTERN-003 vocabulary_smuggling (sister mode — vocabulary-rigged splits)"
-  - "ANTI-PATTERN-008 deployment_time_pre_spec_laundering (sister mode — pre-spec timing)"
+  - "ANTI-PATTERN-003 vocabulary_smuggling (sister mode, vocabulary-rigged splits)"
+  - "ANTI-PATTERN-008 deployment_time_pre_spec_laundering (sister mode, pre-spec timing)"
   - "projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_audit_2026_05_08.md"
   - "projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_re_audit_2026_05_08.md"
 ---
 
-# ANTI-PATTERN-009 — Cross-Vocabulary Criterion-Selection Rigging
+# ANTI-PATTERN-009, Cross-Vocabulary Criterion-Selection Rigging
 
 ## What it is
 
@@ -87,7 +87,7 @@ get cover.
 1. Read criteria list at `pre_spec_sha`. Read criteria list in
    joint verdict. Compute symmetric difference.
 2. Fire on every member of the symmetric difference.
-3. For criteria whose wording changed: apply Reducer P13 — strip
+3. For criteria whose wording changed: apply Reducer P13, strip
    elite vocabulary, ask whether the change alters which
    evidence counts. If yes, treat as removal+addition.
 4. Cross-vocabulary audit: for each added/refined criterion,
@@ -121,7 +121,7 @@ get cover.
 
 The three anti-patterns (007, 008, 009) plus their parent
 ANTI-PATTERN-005 form the META-EPISTEMIC quartet for Pattern-001
-deployments — verdicts (007), pre-spec timing (008), criteria
+deployments, verdicts (007), pre-spec timing (008), criteria
 content (009), and overall narrative inflation (005).
 
 ## Falsifiable test (catalog-level)
@@ -132,7 +132,7 @@ Firing iff False.
 NOT trivially True: catch #30 fires (criteria selected during
 dispatch); a deployment that scores exactly the pre-committed
 criteria returns not-firing. The test reduces to a set-equality
-check on criterion ids — binary, machine-checkable, no
+check on criterion ids, binary, machine-checkable, no
 appeal-to-judgment. NOT `True := by trivial`.
 
 ## Cross-references

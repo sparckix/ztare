@@ -11,7 +11,7 @@ The pre-2026-04-27 `org/goals/` was task-shaped and ZTARE-flavored —
 no Objective layer above it (the "why" was implicit) and no
 measurable Key Results alongside it (success was undefined). This
 directory adds the Objective layer per the Panel B synthesis recorded
-in `research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md`
+in `GP-168 (internal seam)`
 (Addendum 2026-04-27, §"Composed decision").
 
 ## Lifecycle
@@ -21,7 +21,7 @@ org/objectives/<obj_id>.md
    │
    │  status: active   ← principal authors here
    │
-   │  daemon polls closure_deadline; on expiry posts Telegram closure prompt
+   │  daemon polls closure_deadline; on expiry posts notification closure prompt
    │  principal taps done | abandon | extend
    ▼
    status: done | abandoned   ← daemon writes archive_with_postmortem if no response
@@ -79,7 +79,7 @@ daemon reads. Keep frontmatter small.
 ## Closure pressure
 
 Daemon evaluates `closure_deadline` against wall clock on each poll.
-At `warn_at_pct` (default 80%), surfaces in Telegram digest with
+At `warn_at_pct` (default 80%), surfaces in the notification digest with
 Objective title + KR statuses + scores. At `closure_deadline`, posts
 closure prompt with options: `done | abandon | extend`. Default after
 7 days no response: `archive_with_postmortem`.
@@ -107,5 +107,5 @@ is being misused — prune the system, not your behavior.
 
 - `org/key_results/README.md` — KR layer schema
 - `org/tasks/README.md` — Task layer schema (renamed from goals/)
-- `research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md`
+- `GP-168 (internal seam)`
   — origin of the closure-pressure model and full panel synthesis

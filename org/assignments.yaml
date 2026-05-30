@@ -40,12 +40,36 @@ assignments:
     notes: "Research director — external validity layer (GP-167). Separate daemon instance from manager."
 
   - member: member.codex
+    role: role.research_director
+    substrate: codex_cli
+    is_primary: false
+    valid_from: "2026-05-10"
+    valid_until: null
+    notes: "Codex Research Director fallback / principal-invoked simulation path; same RD mandate, separate runtime from Claude primary."
+
+  - member: member.codex
     role: role.engineer
     substrate: codex_cli
     is_primary: true
     valid_from: "2026-04-23"
     valid_until: null
     notes: "Primary engineering substrate; invoked via wrapper by manager"
+
+  - member: member.claude
+    role: role.forecasting_agent
+    substrate: claude_headless_daemon
+    is_primary: true
+    valid_from: "2026-05-14"
+    valid_until: null
+    notes: "Warm read-only GP-230 forecaster via cognitive-firm A2A wake obligations; subscription session exits after forecast/no-update."
+
+  - member: member.codex
+    role: role.forecasting_agent
+    substrate: codex_cli
+    is_primary: false
+    valid_from: "2026-05-14"
+    valid_until: null
+    notes: "Second warm read-only GP-230 forecaster for cross-runtime pricing diversity; no execution or resolution authority."
 
   - member: member.gemini
     role: role.reviewer

@@ -12,7 +12,7 @@ authorized_paths:
   - "projects/"
   - "research_areas/"
   - "papers/"
-  - "scripts/"
+  - "scripts/public/"
   - "tests/"
   - "docs/"
   - ".ip_protected/"

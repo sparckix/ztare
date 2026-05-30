@@ -38,14 +38,29 @@ deployment_rules:
   - rule_8_criteria_locked_before_dispatch: the criteria set (the list of disjoint questions the joint verdict will answer) MUST be enumerated, frozen, and committed inside the pre-spec file referenced by `pre_spec_sha`. Adding, removing, refining, or re-weighting criteria after the first agent dispatch is automatic INSUFFICIENT_EVIDENCE on the changed criteria AND requires a new pre_spec_sha + a new deployment id (the prior deployment is closed). Criterion drift is not "tightening".
 chain_position: primary  # this pattern starts a chain typically
 related_patterns:
-  - PATTERN-002 (darwin_idea_killer — chained on output)
-  - PATTERN-008 (three_leg_verification — chained on theorem output)
+  - PATTERN-002 (darwin_idea_killer, chained on output)
+  - PATTERN-008 (three_leg_verification, chained on theorem output)
 references:
-  - https://arxiv.org/abs/2402.06782 (Khan et al. 2024 — closest published analog)
+  - https://arxiv.org/abs/2402.06782 (Khan et al. 2024, closest published analog)
   - https://arxiv.org/html/2603.27404v1 (Heterogeneous Debate Engine, Mar 2026)
+falsifiable_test: |
+  Across N>=15 friction_debate deployments tagged in the pattern_deployment_ledger,
+  the fraction whose Round-5 joint verdict is later overturned or downgraded by a
+  chained PATTERN-002 / cross-family audit must be LOWER than the matched overturn
+  fraction for single-perspective (non-debate) audit dispatches on comparable
+  claims, by an absolute margin of >=15 percentage points. If friction-debate
+  verdicts are overturned at a rate within 15 points of (or above)
+  single-perspective verdicts, the friction loop adds no verification value and
+  the pattern demotes.
+  metric_source: pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-001,
+  outcome_bucket_pre_registered vs outcome_bucket_realized) cross-referenced with
+  the catch ledger for overturn/downgrade events.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 1 — Friction Debate
+# Pattern 1, Friction Debate
 
 ## Problem
 
@@ -64,14 +79,14 @@ failure step.
 
 Five-round structure with friction enforced:
 
-1. **ROUND 1 — CHAMPION_EXIST**: assume the proposition holds. Construct
+1. **ROUND 1, CHAMPION_EXIST**: assume the proposition holds. Construct
    explicit candidate / proof / mechanism. Use construction freedom.
-2. **ROUND 2 — CHAMPION_NONEXIST**: rebut. Identify the EXACT step where
+2. **ROUND 2, CHAMPION_NONEXIST**: rebut. Identify the EXACT step where
    Round 1 fails. Use construction freedom.
-3. **ROUND 3 — CHAMPION_EXIST**: respond. Either repair or concede a
+3. **ROUND 3, CHAMPION_EXIST**: respond. Either repair or concede a
    specific class.
-4. **ROUND 4 — CHAMPION_NONEXIST**: tighten verdict.
-5. **ROUND 5 — JOINT VERDICT**: synthesize. Final answer + precise
+4. **ROUND 4, CHAMPION_NONEXIST**: tighten verdict.
+5. **ROUND 5, JOINT VERDICT**: synthesize. Final answer + precise
    theorem statement OR explicit counterexample.
 
 State persistence: `projects/{project}/orchestration_state/{task_id}/round_{k}.json`
@@ -84,7 +99,7 @@ with structured rebuttal references.
 - Friction forces NONEXIST agent to produce concrete proofs (not vague
   "no such thing").
 - Joint-verdict format eliminates ambiguity.
-- The CHAMPION_EXIST role acts as natural antibody to laundering — agent
+- The CHAMPION_EXIST role acts as natural antibody to laundering, agent
   self-rebuts when construction fails.
 
 Empirically validated 2026-05-08: 7 deployments produced 3 genuine clean
@@ -98,10 +113,10 @@ recursive-on-own-residual).
 
 - Conflicting prior verdicts (single-perspective bias)
 - Conjectured theorem needs sharpening to its sharpest form
-- Pivot is contested between alien-math panels — adversarialize them
+- Pivot is contested between alien-math panels, adversarialize them
 - Top-of-funnel SHARP question (NOT residual-grinding)
 
-## Process preconditions (rules 6-8) — enforceable, not aspirational
+## Process preconditions (rules 6-8), enforceable, not aspirational
 
 Rules 1-5 (above) gate WHO and WHAT. Rules 6-8 gate the META-EPISTEMIC
 shape of the deployment record. These were added 2026-05-08 after
@@ -111,7 +126,7 @@ were process-only (charity-grade qualifier inflation, deployment-time
 pre-spec laundering, cross-vocabulary criterion-selection rigging) were
 left unaddressed.
 
-**Rule 6 — `pre_spec_locked_before_deployment`**
+**Rule 6, `pre_spec_locked_before_deployment`**
 
 The pre-registration file MUST be authored, committed, and its commit
 hash recorded in `orchestration_state/{task_id}/pre_spec_sha.txt`
@@ -130,7 +145,7 @@ There is no retroactive pre-spec, no "the pre-reg captures what we
 intended", no "the pre-reg was finalized while the agents were
 warming up". The commit timestamp is the only honest signal.
 
-**Rule 7 — `verdict_alphabet_locked`**
+**Rule 7, `verdict_alphabet_locked`**
 
 The verdict alphabet is fixed at `{PASS, FAIL, PARTIAL, INSUFFICIENT_EVIDENCE}`.
 The arbiter (Round 5) selects exactly one from this set per criterion.
@@ -149,7 +164,7 @@ the answer is INSUFFICIENT_EVIDENCE. The alphabet is exhaustive by
 design; "we needed a finer label" is the failure mode this rule
 catches.
 
-**Rule 8 — `criteria_locked_before_dispatch`**
+**Rule 8, `criteria_locked_before_dispatch`**
 
 The criteria set (disjoint questions the joint verdict answers) is
 locked at `pre_spec_sha`. After the first agent dispatch:
@@ -164,7 +179,7 @@ locked at `pre_spec_sha`. After the first agent dispatch:
   evidence counts) is treated as removal+addition.
 
 The failure mode this rule catches: criterion drift after seeing
-each agent's attack vector — a form of cross-vocabulary criterion-
+each agent's attack vector, a form of cross-vocabulary criterion-
 selection rigging (ANTI-PATTERN-009).
 
 ## Anti-pattern
@@ -184,7 +199,7 @@ honest "open in 2026" call.
 
 ## Concrete example
 
-2026-05-08 ~01:00 — question "does any non-constant bounded smooth
+2026-05-08 ~01:00, question "does any non-constant bounded smooth
 stationary 3D NS solution exist with finite Bohr-Fourier spectrum?".
 
 - Round 1: ABC flow / Beltrami / multi-shell tilted shears tried;
@@ -200,6 +215,6 @@ Result: clean rigorous theorem (Bohr-Mean Enstrophy Identity for finite
 
 ## Cross-references
 
-- `pattern1_failure_mode_inversion_2026_05_08.md` — 5 deployment rules
-- `agent_orchestration_meta_patterns_2026_05_08.md` — full pattern catalog
-- `pattern1_rabbit_hole_catch_2026_05_08.md` — anti-pattern catch
+- `pattern1_failure_mode_inversion_2026_05_08.md`, 5 deployment rules
+- `agent_orchestration_meta_patterns_2026_05_08.md`, full pattern catalog
+- `pattern1_rabbit_hole_catch_2026_05_08.md`, anti-pattern catch

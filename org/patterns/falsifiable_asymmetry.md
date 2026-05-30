@@ -17,11 +17,24 @@ preconditions:
   - candidate_claims_to_be_a_paradigm_shift: yes
 chain_position: post  # runs AFTER projector, BEFORE reducer
 related_patterns:
-  - PATTERN-004 (vocabulary_quarantine — prompt-time guardrail)
-  - PATTERN-003 (reducer — terminal filter)
+  - PATTERN-004 (vocabulary_quarantine, prompt-time guardrail)
+  - PATTERN-003 (reducer, terminal filter)
+falsifiable_test: |
+  Over N>=15 paradigm-shift candidates passed through the asymmetry gate,
+  candidates that PASS (produce a concrete solved-system prediction) must survive
+  downstream PATTERN-003 reducer audit at a rate >=30 percentage points higher
+  than candidates that FAIL the gate. If PASS and FAIL candidates are demolished
+  by the reducer at statistically indistinguishable rates (margin <30 points), the
+  asymmetry gate is not discriminating and demotes.
+  metric_source: asymmetry_verdict_v1 outputs joined to downstream
+  reducer_verdict_v1 outcomes via pattern_deployment_ledger.jsonl dispatch_id
+  chains.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 5 — Falsifiable Asymmetry Requirement (P12 from operator-directed mitigations)
+# Pattern 5, Falsifiable Asymmetry Requirement (P12 from operator-directed mitigations)
 
 ## Problem
 
@@ -81,7 +94,7 @@ prediction must be NEW relative to current literature.
 
 ## Concrete example
 
-2026-05-08 ~09:30 — applied to OCCT, FDOS, VBNS-PT.
+2026-05-08 ~09:30, applied to OCCT, FDOS, VBNS-PT.
 
 Each candidate was asked: what does this predict about 2D Ladyzhenskaya
 NS that 2026 math doesn't already see?
@@ -105,6 +118,6 @@ P13 which confirmed LAUNDERED.
 
 ## Cross-references
 
-- `mitigations_11_12_13_2026_05_08.md` — full P11/P12/P13 set
-- PATTERN-004 (vocabulary_quarantine) — pre-output guardrail
-- PATTERN-003 (reducer) — post-output terminal filter
+- `mitigations_11_12_13_2026_05_08.md`, full P11/P12/P13 set
+- PATTERN-004 (vocabulary_quarantine), pre-output guardrail
+- PATTERN-003 (reducer), post-output terminal filter

@@ -1,0 +1,53 @@
+# L3 (failure-mode) activation clauses — deterministic DNF, no fuzzy scores.
+# Catalog anchor = org/anti-patterns/<item_id>.md. The item is the handle;
+# the obligation is the thing forced.
+- item_id: relapse_to_prior_alias
+  layer: L3
+  safety_critical: true
+  typed_when: {transition_type_in: [closure, forecast_resolution]}
+  catalog_anchor: org/anti-patterns/cross_agent_monoculture.md
+  activation:
+    - clause_id: closure_after_relabel
+      all: [closure_or_terminus_claim, prior_atom_similarity_available]
+      any_lexical: ["exhausted", "dead end", "stop", "terminus", "nothing new", "no further", "relapse", "alias", "same atom"]
+  obligation: "Show the proposed closure/terminus is NOT a vocabulary alias of a prior atom: compare against prior atom ids and give a distinguishing observation, OR a true-stop justification."
+  witness_schema:
+    required: [prior_atom_ids, similarity_basis, distinguishing_observation, next_discriminator_or_true_stop]
+  why_not_enum: [no_prior_atoms_exist, no_closure_claim_present, discharged_by_stricter_obligation, operator_scoped_out]
+
+- item_id: scientific_amnesia
+  layer: L3
+  typed_when: {declared_true: [proposes_new_route]}
+  catalog_anchor: org/anti-patterns/scientific_amnesia.md
+  activation:
+    - clause_id: new_route_without_prior_check
+      all: [amnesia_risk]
+  obligation: "Before proposing a new route/reduction: name which prior atoms/aliases/manifest entries were checked and why this is not a re-vocabularization of an existing one."
+  witness_schema:
+    required: [prior_artifacts_checked, why_not_a_revocabularization]
+  why_not_enum: [no_prior_corpus_exists, discharged_by_stricter_obligation, operator_scoped_out]
+
+- item_id: premature_settled_negative
+  layer: L3
+  safety_critical: true
+  typed_when: {declared_true: [declares_impossible]}
+  catalog_anchor: org/anti-patterns/premature_settled_negative.md
+  activation:
+    - clause_id: declares_impossible_without_construction
+      all: [declares_impossible]
+  obligation: "A settled-negative/impossibility claim requires a constructed falsifying candidate that was tried and failed, OR a precise derived obstruction — not consensus/handwave."
+  witness_schema:
+    required: [constructed_falsifier_or_derived_obstruction, why_not_consensus_gravity]
+  why_not_enum: [not_a_negative_claim, discharged_by_stricter_obligation, operator_scoped_out]
+
+- item_id: citation_laundering
+  layer: L3
+  typed_when: {declared_true: [citation_load_bearing]}
+  catalog_anchor: org/anti-patterns/citation_laundering.md
+  activation:
+    - clause_id: load_bearing_citation
+      all: [citation_load_bearing]
+  obligation: "A load-bearing citation must carry the exact transported structure + a falsifiable prediction, not an authority name standing in for the gap."
+  witness_schema:
+    required: [transported_structure, falsifiable_prediction]
+  why_not_enum: [citation_not_load_bearing, discharged_by_stricter_obligation, operator_scoped_out]

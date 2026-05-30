@@ -1,0 +1,99 @@
+# GP-238 STRUCTURAL-ANCHOR REGISTRY (parts 1-2 of the substrate-
+# agnostic generalization). GENERIC FORMAT, SUBSTRATE-SPECIFIC CONTENT.
+#
+# Each substrate declares its small set of route-invariant residual
+# targets / irreducible open atoms. The GP-241 daemon-minted signed
+# start_tick contract REQUIRES every tick to NAME which residual_target
+# it addresses (registry-membership-checked) or carry a structured
+# new_target_justification. This is the NS basin HARD RULE generalized
+# out of one project's entrypoint into the generic contract.
+#
+# NOTE: the Rung-2 vocabulary-independent op_fingerprint near-duplicate
+# auto-check was FALSIFIED on the NS 6-rediscovery leave-one-out
+# ship-gate (recall 5/6 but 9/20 false positives — unrelated NS files
+# scored higher than true siblings). It therefore does NOT ship. Parts
+# 1-2 (registry + name-the-target forcing rule) are independent of that
+# falsified mechanism and are what is implemented. Unregistered targets
+# are flagged for human/operator audit, not fingerprint-adjudicated.
+#
+# Schema:
+#   <substrate>:
+#     source_ref: <path>            # authoritative anchor doc (by
+#                                   # reference — NEVER forked here)
+#     anchor_visit_required: <path> # OPTIONAL: a structural-anchor
+#                                   # source file the pretick basin
+#                                   # traversal MUST have visited
+#                                   # (pretick_runner step 9 enforces
+#                                   # generically; omit ⇒ not required)
+#     gate_guard_sources:           # OPTIONAL: substrate-specific
+#       relapse_fingerprint:        # data copied into the root-owned
+#         - <path>                  # VPS gate tree by deploy/configured_
+#                                   # gate_sources.py; vps_sync_files.txt
+#                                   # stays generic and never lists
+#                                   # per-tick artifacts.
+#     vps_sync_sources:             # OPTIONAL: active-substrate files
+#       - <path>                    # synced to the agent repo on the VPS
+#                                   # by deploy/configured_gate_sources.py;
+#                                   # not copied into the root-owned gate
+#                                   # tree unless also listed above.
+#     targets:
+#       - id: <stable id>
+#         aliases: [<known re-vocabularizations>]
+#         note: <one line>
+
+schema_version: 1
+
+ns_millennium_hunt:
+  source_ref: projects/ns_millennium_hunt/workspace/AMNESIA_BASIN_ENTRYPOINT.md
+  anchor_visit_required: ztare_proofs/ZtareProofs/ns_trackb_FINAL_THEOREM.lean
+  gate_guard_sources:
+    relapse_fingerprint:
+      - projects/ns_millennium_hunt/workspace/ns_residual_manifest.md
+  vps_sync_sources:
+    - ztare_proofs/ZtareProofs/ns_L3_multiscale_YM_rescaled_increments.lean
+    - ztare_proofs/ZtareProofs/ns_route1_fresh_frequency_coercivity_adapter.lean
+  note: >
+    Route-1 closure ≡ discharge ≥1 of the 5 Clay-equivalent residual
+    axioms (+ 6 Galerkin + Aubin-Lions). Ingested BY REFERENCE from
+    ns_trackb_FINAL_THEOREM.lean; this registry does not fork it.
+  targets:
+    - id: BKM_global_extension
+      aliases: [beale-kato-majda, vorticity-sup-integral]
+      note: ∫‖∇×u‖_∞ dt < ∞ on every finite window.
+    - id: PSL_global_extension
+      aliases: [ladyzhenskaya-prodi-serrin, spacetime-LpLq]
+      note: Prodi-Serrin Lᵖ_tLq_x criterion.
+    - id: ESS_global_extension
+      aliases: [escauriaza-seregin-sverak, L3-endpoint, ESSL3]
+      note: L^∞_t L³_x boundedness.
+    - id: BdV_global_extension
+      aliases: [beirao-da-veiga, gradient-shell]
+      note: velocity-gradient Lᵖ_tLq_x criterion.
+    - id: CF_global_extension
+      aliases: [constantin-fefferman, vorticity-direction-lipschitz,
+                strict-margin-perennial-atom, strict_margin,
+                opaque-subcriticality, super-typeI, krz-leaf-b,
+                birkhoff-slaving, defectBudgetStrictMarginCertificate]
+      note: >
+        Vorticity-direction Lipschitz / strict-margin ratio<1. THE
+        perennial atom — rediscovered ≥6× under drifting vocabulary;
+        re-deriving it is FORBIDDEN (established tick576). Any tick
+        whose residual_target resolves here under a new alias is a
+        relapse, not progress.
+    - id: C7_viscous_alignment_surplus
+      aliases: [C7, viscous-alignment-surplus, viscous alignment surplus,
+                A_visc, avisc, localized-viscous-alignment-surplus,
+                positive-viscous-alignment-surplus, cv-stretching-source,
+                nonlocal-degiorgi-stretching,
+                LocalizedViscousAlignmentSurplusLevelSetGain]
+      note: >
+        Independent vorticity-stretching/CV node from the residual manifest:
+        the positive surplus A_visc = xi dot S xi - nu |grad xi|^2 on
+        high-vorticity level sets, with far-field tail and pressure reserve
+        paid separately. If it collapses to CF direction coherence, scalar
+        De Giorgi decay, BKM/L-infinity input, pressure-collar leakage, or
+        parabolic-rate slaving, the tick records that obstruction instead of
+        relabeling the old CF atom.
+    - id: galerkin_or_aubin_lions_input
+      aliases: [galerkin-axiom, aubin-lions, nonlinear-pairing-strong-conv]
+      note: One of the 6 Galerkin axioms / the Aubin-Lions Prop input.

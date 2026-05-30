@@ -1,0 +1,43 @@
+schema_version: 1
+role_id: debate_runner
+role_class: specialist
+description: >
+  Public-template debate runner role for clean-container smoke checks.
+  Live tenant overlays can replace this with richer seam-debate policy.
+
+authorized_paths:
+  - "research_areas/private/seams/"
+  - "org/sessions/"
+  - "org/signals/"
+
+forbidden_paths:
+  - "org/mandates/"
+  - "org/roles/"
+  - "src/"
+  - "papers/"
+  - "projects/"
+  - "rubrics/"
+
+delegates_to: []
+
+escalates_to:
+  - role.principal
+  - role.manager
+
+budget:
+  daily_cap_usd: 5.00
+  session_cap_usd: 2.00
+  single_action_cap_usd: 1.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 5.00
+
+mandate_path: org/mandates/debate_runner_mandate.md
+
+sla:
+  response_time_inbox_hours: null
+
+failure_mode:
+  on_unavailable: "debate seams remain idle"
+  on_crash: "session logs preserve partial work"
+
+signs_gates: []

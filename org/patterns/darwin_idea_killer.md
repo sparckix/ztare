@@ -12,7 +12,7 @@ spawn:
   mode: single_audit
   subagents:
     - role: idea_killer
-      description: Mungerian inversion — assume the claim is WRONG, find the failure mode
+      description: Mungerian inversion, assume the claim is WRONG, find the failure mode
       tools: [read]
 output_schema: kill_report_v1
 fallback: null  # terminal node, no fallback
@@ -21,14 +21,27 @@ preconditions:
   - claim_has_structure: hypothesis + conclusion identifiable
 chain_position: secondary  # always chained AFTER another pattern's output
 related_patterns:
-  - PATTERN-001 (friction_debate — typical predecessor)
-  - PATTERN-003 (reducer — sometimes chained after)
+  - PATTERN-001 (friction_debate, typical predecessor)
+  - PATTERN-003 (reducer, sometimes chained after)
 references:
-  - https://arxiv.org/html/2604.00478 (Silicon Mirror — anti-sycophancy 2026)
-  - existing src/ztare/orchestrator/post_run_meta_audit.py — apparatus-side analog
+  - https://arxiv.org/html/2604.00478 (Silicon Mirror, anti-sycophancy 2026)
+  - existing src/ztare/orchestrator/post_run_meta_audit.py, apparatus-side analog
+falsifiable_test: |
+  Over N>=20 darwin_idea_killer dispatches, the killer's true-positive rate
+  (catches confirmed as real defects on subsequent ratification) must be >=70% AND
+  it must surface >=1 confirmed defect per 5 dispatches that no upstream pattern
+  surfaced. The pattern's own anti-pattern section already sets the 70%
+  true-positive floor; if measured precision falls below 70%, or if 0 net-new
+  confirmed catches appear across any 10-dispatch window, demote.
+  metric_source: catch ledger (catch IDs tagged to PATTERN-002 dispatches,
+  ratified vs rejected/false_positive status) joined to
+  pattern_deployment_ledger.jsonl on dispatch_id.
+last_reviewed: 2026-05-22
+review_due: 2026-06-21
+review_cadence: per_campaign_summary
 ---
 
-# Pattern 2 — DARWIN-IDEA-KILLER
+# Pattern 2, DARWIN-IDEA-KILLER
 
 ## Problem
 
@@ -47,7 +60,7 @@ for catching laundering, not for endorsing.
 Single-agent audit run AFTER another pattern produces a claim:
 
 1. Receive claim + claim's proof/argument
-2. List load-bearing steps (the inversion target)
+2. List central steps (the inversion target)
 3. For each step: identify what could break it
    - Hidden hypothesis (what's silently assumed?)
    - Tautological reduction (does this rename the problem?)
@@ -98,19 +111,19 @@ true-positive rate.
 
 ## Concrete example
 
-2026-05-08 ~07:30 — Pattern 1 #5 produced "Conditional Infinite-Σ
+2026-05-08 ~07:30, Pattern 1 #5 produced "Conditional Infinite-Σ
 Extension Theorem". DARWIN-KILLER applied to its output identified:
 
 - Target A (mixed-class IBP): SURVIVES with caveat
-- Target B (OR is = in disguise): partial kill — (a) and (b) cover overlapping classes
+- Target B (OR is = in disguise): partial kill, (a) and (b) cover overlapping classes
 - Target C (Bourgain-Wang ℓ¹): confirmed
-- Target D (ℓ¹ vs ℓ² is Diophantine vs Liouvillian in disguise): KILLED — Bourgain GAFA 1995 §3 documents the small-divisor wall
+- Target D (ℓ¹ vs ℓ² is Diophantine vs Liouvillian in disguise): KILLED, Bourgain GAFA 1995 §3 documents the small-divisor wall
 
 VERDICT: theorem stays conditional, residual is structural-not-laundered.
 
 ## Cross-references
 
-- `src/ztare/orchestrator/post_run_meta_audit.py` — apparatus-side analog
+- `src/ztare/orchestrator/post_run_meta_audit.py`, apparatus-side analog
   (cross-family LLM diagnostic). Extend, don't duplicate.
-- `mitigations_11_12_13_2026_05_08.md` — Reducer (P13) is a specialized
+- `mitigations_11_12_13_2026_05_08.md`, Reducer (P13) is a specialized
   DARWIN variant for 2150-vocab projections.

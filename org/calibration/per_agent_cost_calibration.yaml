@@ -1,0 +1,51 @@
+# Per-agent cost/effort calibration coefficients (F26)
+#
+# Source: projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md#F26
+# Evidence: per-agent OOB calibration on cost (codex_5large 4.12× OOB n=74) and
+# effort (claude effort 4.36× OOB n=13). Brier-widen rule failed at F26-time.
+#
+# F26 finding: cost / effort predictions made by these agents are
+# systematically off-by-a-multiplier. Downstream consumers that use raw
+# expected-cost predictions to schedule / budget should DIVIDE by the
+# divisor below to get a calibrated estimate.
+#
+# Sign convention:
+#   divisor > 1.0:  agent OVERESTIMATES (divide raw by divisor for true)
+#   divisor < 1.0:  agent UNDERESTIMATES (divide raw by divisor, which scales up)
+#   null:           no calibration data yet; pass raw
+
+readiness: apparatus-internal-grade
+last_updated: 2026-05-26
+last_evidence_pilot: F26 OOB calibration
+replication_status: original-run-only
+extension_path: v23 cross-corpus replication; widen N before deployment
+
+families:
+  claude:
+    effort_divisor: 4.36           # n=13 OOB
+    effort_divisor_n: 13
+    cost_divisor: null              # not measured separately
+    note: >
+      Claude over-estimates own effort by ~4× (small N=13). The Brier-widen
+      rule from F17 fails on binary outcomes for claude (+0.034 Brier worse on
+      v10), so do NOT use this divisor for Brier-CI inflation.
+
+  codex_55:
+    effort_divisor: null
+    cost_divisor: 4.12              # n=74 OOB (codex_5large)
+    cost_divisor_n: 74
+    note: >
+      Codex_5large over-estimates cost by ~4×. Use the divisor when consuming
+      expected_cost_agent_minutes for scheduling, NOT for Brier calibration.
+
+  codex_mini:
+    effort_divisor: null
+    cost_divisor: null
+    note: >
+      No clean OOB sample yet for codex_mini cost/effort calibration.
+      Treat raw predictions as uncalibrated pending v23.
+
+# Operational rule:
+#   Any consumer of (raw_effort_prediction, agent_id) should call
+#   forecast_pool.apply_per_agent_cost_calibration(raw, agent_id) which
+#   returns (calibrated, metadata). Mirrors apply_per_agent_premium_sign.

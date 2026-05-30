@@ -1,0 +1,81 @@
+schema_version: 1
+role_id: forecasting_agent
+role_class: reviewer
+description: >
+  Read-only forecasting and prediction-market specialist. Prices GP-230
+  contracts, updates odds when new evidence changes the state, audits
+  calibration/externalities, and emits failure-mode preconditioners for
+  executors. This role does not execute the work it prices and does not
+  resolve or score outcomes.
+
+authorized_paths:
+  - "analytics/public/forecast_pool/forecasts/"
+  - "analytics/public/forecast_pool/wake_events/"
+  - "analytics/public/forecast_pool/status/"
+  - "analytics/public/forecast_pool/consumer_state/"
+  - "org/channels/"
+  - "org/sessions/"
+
+read_context_paths:
+  - "AGENTS.md"
+  - "org/mandates/forecasting_agent_mandate.md"
+  - "research_areas/"
+  - "analytics/public/"
+  - "projects/"
+  - "ztare_proofs/"
+  - "docs/"
+  - "specs/"
+
+forbidden_paths:
+  - "analytics/public/forecast_pool/contracts/"
+  - "analytics/public/forecast_pool/outcomes/"
+  - "analytics/public/forecast_pool/scores/"
+  - "analytics/public/forecast_pool/calibration_weights.json"
+  - "analytics/public/forecast_pool/calibration_summary.json"
+  - "org/mandates/"
+  - "org/roles/"
+  - "src/"
+  - "ztare_proofs/"
+  - "projects/*/test_model.py"
+  - "projects/*/gate_harness.py"
+  - "projects/*/evidence.txt"
+  - "~/.ssh/"
+  - "~/.aws/"
+
+delegates_to: []
+
+escalates_to:
+  - role.manager
+  - role.research_director
+  - role.principal
+
+budget:
+  daily_cap_usd: 10.00
+  session_cap_usd: 3.00
+  single_action_cap_usd: 1.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 10.00
+
+agent_utilization:
+  daily_cap_seconds: 1800
+  daily_cap_output_tokens: 80000
+  daily_cap_turn_count: 40
+  session_cap_seconds: 300
+  absolute_ceiling_seconds: 3600
+  warn_threshold_frac: 0.80
+
+mandate_path: org/mandates/forecasting_agent_mandate.md
+
+sla:
+  response_time_inbox_hours: null
+  response_time_urgent_hours: null
+
+failure_mode:
+  on_unavailable: "RD proceeds with one-off forecasts and logs absence as forecast-pool coverage gap"
+  on_crash: "wake event remains open; next warm-daemon-once may reissue if evidence changed"
+
+signs_gates: []
+
+opened_date: "2026-05-14"
+opened_by: principal
+last_updated: "2026-05-14"

@@ -1,0 +1,273 @@
+# Orchestration Menu — Problem-Class → Pattern-Chain Recommendations
+#
+# Hierarchical: 5 broad top-level classes → drill to ~15 sub-classes,
+# with cross-cutting pattern library indexed separately.
+#
+# Promotion rule: sub-classes promote candidate → leaf at N≥3 distinct
+# projects. Below threshold, Director sees confidence: low and falls
+# back to parent default chain.
+#
+# Director MAY deviate from menu recommendations when problem doesn't
+# fit cleanly. Document deviation reason in F-row.
+#
+# References: per `org/patterns/*.md` SKILL.md format files.
+
+version: 0.1.1
+spec_version: 1
+last_updated: 2026-05-20
+
+# ============================================================
+# 5 BROAD TOP-LEVEL FAILURE-MODE CLASSES
+# ============================================================
+
+problem_classes:
+
+  # --------------------------------------------------------
+  hard_mathematical_residual:
+    description: |
+      Conjectural class is opaque; need to localize the open
+      content. Applicable to substrates with formalizable
+      mathematical claims.
+    triggers:
+      lexical: [residual, conjecture-open, vague-class, can-not-localize]
+      structural: [theorem_statement_unsharp, residual_class_described_in_prose]
+    default_chain:
+      - PATTERN-025  # gowers_first_formalize_second
+      - PATTERN-011  # swarm_dispatch
+      - PATTERN-028  # recursive_tool_depth_loop
+      - PATTERN-002  # darwin_idea_killer
+      - PATTERN-008  # three_leg_verification
+    sub_classes:
+      precise_residual_unknown:
+        confidence: candidate  # DEMOTED 2026-05-08 (DARWIN catch X3): "~3 prior cases" was unverified; require explicit F-row citation before re-promoting
+        chain_addition:
+          - PATTERN-009  # independent_cas_verification before friction_debate
+      conjectural_emptiness_suspected:
+        confidence: candidate
+        chain_addition:
+          - PATTERN-007  # smuggling_audit on Mungerian inversions
+      sharp_open_problem:
+        confidence: leaf
+        chain_addition: []  # default chain suffices
+      formal_frontier_tool_depth_required:
+        confidence: leaf
+        chain_addition:
+          - META-PATTERN-022  # compose workflow scaffold + content ops + failure check
+
+  # --------------------------------------------------------
+  pre_category_emergence:
+    description: |
+      N traditions converging on same wall; vocabulary
+      saturation; need to name the unifier (or kill premature
+      naming attempts).
+    triggers:
+      lexical: [4-shadows, convergent-traditions, unifier-needed, vocabulary-saturation]
+      structural: [multiple_independent_frames_same_conclusion, naming_sprint_proposed]
+    default_chain:
+      - PATTERN-010  # business_framing
+      - PATTERN-004  # vocabulary_quarantine (prompt-time)
+      - PATTERN-005  # falsifiable_asymmetry (output-time)
+      - PATTERN-003  # reducer (terminal filter)
+    sub_classes:
+      naming_sprint_in_progress:
+        confidence: leaf
+        chain_addition:
+          - PATTERN-006  # tautology_trap_detector
+      paradigm_shift_speculation:
+        confidence: candidate
+        chain_addition: []  # default chain catches laundering
+      multi_tradition_diagnosis_needed:
+        confidence: candidate
+        chain_addition: []  # PATTERN-010 alone may suffice
+
+  # --------------------------------------------------------
+  apparatus_self_audit:
+    description: |
+      Catch rate climbing OR build green but suspect. Need
+      to audit the architecture's own claims for laundering,
+      tautology, or scope-overclaim.
+    triggers:
+      lexical: [audit-required, catch-rate-rising, suspect-claim, apparatus-laundering]
+      structural: [N_axioms_added_recently, no_external_validation_yet, prior_iteration_caught_issue]
+    default_chain:
+      - PATTERN-002  # darwin_idea_killer
+      - PATTERN-006  # tautology_trap_detector
+      - PATTERN-007  # smuggling_audit
+    sub_classes:
+      mungerian_fallback_failure:
+        confidence: candidate
+        chain_addition:
+          - PATTERN-007  # smuggling_audit (specialized)
+      post_rabbit_hole_audit:
+        confidence: candidate  # DEMOTED 2026-05-08 (DARWIN catch X3): leaf claim cited N=1 (tonight only); requires N≥3 distinct projects per promotion rule. Same laundering pattern PATTERN-006 was built to catch.
+        chain_addition: []
+      tautology_trap_detection:
+        confidence: candidate  # DEMOTED 2026-05-08 (DARWIN catch X3): N=1, not N≥3
+        chain_addition: []
+      closure_impossibility:
+        confidence: candidate
+        chain_addition: []  # demote 'last/final' language; theorem of impossibility
+
+  # --------------------------------------------------------
+  pure_analysis_drift:
+    description: |
+      N consecutive iterations no concrete numerics. Pure-prose
+      reasoning has lost grounding. Need substrate verification.
+    triggers:
+      lexical: [no-numerics-recently, all-prose, drift-suspected]
+      structural: [consecutive_iterations_without_cas_run]
+    default_chain:
+      - PATTERN-009  # independent_cas_verification (run FIRST)
+      - PATTERN-001  # friction_debate (on concrete substrate)
+      - PATTERN-002  # darwin_idea_killer
+    sub_classes:
+      sympy_verification_overdue:
+        confidence: candidate  # DEMOTED 2026-05-08 (DARWIN catch X3): N=1, not N≥3
+        chain_addition: []
+      paper_grade_claim_unverified:
+        confidence: candidate
+        chain_addition:
+          - PATTERN-008  # three_leg_verification
+
+  # --------------------------------------------------------
+  too_complex_direct_attack:
+    description: |
+      Question feels too big for direct attack. Need to
+      miniaturize or stratify before tackling.
+    triggers:
+      lexical: [too-complex, miniature-needed, stratify, divide-and-conquer]
+      structural: [problem_scope_exceeds_iteration_budget]
+    default_chain:
+      - PATTERN-010  # business_framing (diagnosis first)
+      - PATTERN-001  # friction_debate (on simpler sub-problem)
+    sub_classes:
+      mini_substrate_validator_needed:
+        confidence: candidate
+        chain_addition: []  # 1D toy version
+      stratification_axis_unclear:
+        confidence: candidate
+        chain_addition:
+          - PATTERN-001  # friction_debate on stratification axis
+
+# ============================================================
+# CROSS-CUTTING PATTERN LIBRARY
+# (patterns that apply across multiple problem classes)
+# ============================================================
+
+cross_cutting_patterns:
+
+  PATTERN-004:  # vocabulary_quarantine
+    name: vocabulary_quarantine
+    applies_to:
+      - pre_category_emergence
+      - hard_mathematical_residual.sharp_open_problem
+    deployment_layer: prompt_injection  # not a separate agent
+
+  PATTERN-005:  # falsifiable_asymmetry
+    name: falsifiable_asymmetry
+    applies_to:
+      - pre_category_emergence
+    deployment_layer: output_gate
+
+  PATTERN-006:  # tautology_trap_detector
+    name: tautology_trap_detector
+    applies_to:
+      - apparatus_self_audit.tautology_trap_detection
+      - pre_category_emergence.naming_sprint_in_progress
+    deployment_layer: post_audit
+
+  PATTERN-007:  # smuggling_audit
+    name: smuggling_audit
+    applies_to:
+      - apparatus_self_audit.mungerian_fallback_failure
+      - hard_mathematical_residual.conjectural_emptiness_suspected
+    deployment_layer: post_audit
+
+  PATTERN-028:  # recursive_tool_depth_loop
+    name: recursive_tool_depth_loop
+    applies_to:
+      - hard_mathematical_residual
+      - hard_mathematical_residual.formal_frontier_tool_depth_required
+      - too_complex_direct_attack
+    deployment_layer: evidence_carrier_forcing
+
+# ============================================================
+# DEPLOYMENT RULES (apply globally)
+#
+# HONESTY (DARWIN catch H5, 2026-05-08): the `enforcement` field below
+# is currently ADVISORY only. No code in src/ztare/orchestration/
+# reads these keys; the rules are operator-readable conventions, NOT
+# automatically enforced. Per Vocabulary Quarantine + Falsifiable
+# Asymmetry discipline: do not claim mechanical enforcement until a
+# `pattern_chain_runner.py` is shipped that actually reads + enforces
+# these. Until then, the load-bearing rule (rule_3 recursion-depth-cap)
+# is enforced by Director self-discipline + post-hoc audit, not by
+# the chain runtime.
+# ============================================================
+
+deployment_rules:
+
+  rule_1_construction_freedom:
+    description: |
+      Before spawning Pattern-001 friction_debate, verify at
+      least one champion has construction freedom. Without
+      construction freedom, friction collapses to ritual.
+    enforcement: pre_spawn_check
+
+  rule_2_orthogonal_pressure:
+    description: |
+      Between consecutive iterations of the SAME pattern on the
+      SAME residual, at least one orthogonal pattern must be
+      applied. Prevents Pattern-001 rabbit-hole.
+    enforcement: chain_runtime_check
+
+  rule_3_recursion_depth:
+    description: |
+      Pattern-001 may be recursively applied to its own
+      residual AT MOST 2 times in sequence. After 2 consecutive
+      iterations on same problem class, mandatory META-META-META
+      audit before any 3rd iteration.
+    enforcement: chain_runtime_check
+
+  rule_4_10x_criteria:
+    description: |
+      Each pattern output must be evaluated against the 10x
+      criteria from `ns_trackb_10x_swarm_promotion_criteria.md`:
+      compiled_constructor / compiled_falsifier / residual_split /
+      executable_external_test / promotion_gate. If NONE fire,
+      output is review-note-quality.
+    enforcement: post_output_gate
+
+  rule_5_top_of_funnel:
+    description: |
+      Pattern-001 is a TOP-OF-FUNNEL question-sharpening tool.
+      Use it to take a vague residual and produce its first sharp
+      formulation. DO NOT use it to recursively narrow already-
+      sharp residuals.
+    enforcement: pre_spawn_check
+
+# ============================================================
+# FLEXIBILITY CLAUSE
+# ============================================================
+
+flexibility_clause: |
+  The Research Director MAY deviate from menu recommendations
+  when the problem doesn't fit cleanly. Document deviation
+  reason in F-row at substrate-close. The menu is RECOMMENDATION,
+  not mandate.
+
+  When two sub-classes co-fire (e.g., tautology_trap_detection +
+  closure_impossibility both triggered), default behavior is
+  UNION of patterns; surface conflicts in the verdict for
+  human review.
+
+# ============================================================
+# CITATIONS
+# ============================================================
+
+references:
+  - https://github.com/anthropics/skills (SKILL.md format precedent)
+  - https://arxiv.org/abs/2411.04468 (Magentic-One — Director picks from menu)
+  - research_areas/[redacted] (this menu's design seam)
+  - docs/concepts/agentic_engineering_patterns.md (sister pattern catalogue)
+  - projects/ns_millennium_hunt/workspace/research_notes/repo_history_to_orchestration_patterns_2026_05_08.md (5 forward chains, including CHAIN A used here)

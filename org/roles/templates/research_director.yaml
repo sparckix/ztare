@@ -1,0 +1,47 @@
+schema_version: 1
+role_id: research_director
+role_class: director
+description: >
+  Public-template research director role for clean-container smoke checks.
+  Live ZTARE deployments normally replace this with the tenant overlay role.
+
+authorized_paths:
+  - "projects/*/workspace/"
+  - "research_areas/"
+  - "docs/"
+  - "org/sessions/"
+  - "org/signals/"
+
+forbidden_paths:
+  - "org/mandates/"
+  - "org/roles/"
+  - "src/"
+  - "rubrics/"
+  - "~/.ssh/"
+  - "~/.aws/"
+
+delegates_to:
+  - worker.explore_agent
+  - worker.general_purpose
+
+escalates_to:
+  - role.principal
+  - role.manager
+
+budget:
+  daily_cap_usd: 30.00
+  session_cap_usd: 20.00
+  single_action_cap_usd: 5.00
+  warn_threshold_frac: 0.80
+  absolute_ceiling_usd: 30.00
+
+mandate_path: org/mandates/research_director_mandate.md
+
+sla:
+  response_time_inbox_hours: null
+
+failure_mode:
+  on_unavailable: "operator reviews research manually"
+  on_crash: "session logs preserve partial work"
+
+signs_gates: []

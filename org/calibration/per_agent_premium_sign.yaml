@@ -1,0 +1,123 @@
+# Per-agent premium sign rules (F36)
+#
+# Source: projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md#F36
+# Evidence: v21 full pilot, N=270, 164 premium-rowed calls (2026-05-25)
+#
+# F36 finding: tail_insurance_premium's coupling to correctness is agent-specific.
+# The legacy F8 generalization "premium predicts per-row Brier" averaged a
+# direction-correct within-codex signal with an inverted within-claude signal.
+# Any downstream consumer that maps premium -> confidence-correction MUST apply
+# the per-family rule below; uniform treatment is wrong for one family.
+#
+# Sign convention:
+#   "direction_correct"  — agent pays MORE premium when about to be WRONG
+#                          (the well-calibrated direction; use premium as-stated)
+#   "inverted"           — agent pays MORE premium when about to be RIGHT
+#                          (degenerate direction; INVERT premium before use)
+#   "unknown"            — no calibration data yet; do not use premium for
+#                          confidence-correction on this agent
+
+readiness: apparatus-internal-grade
+last_updated: 2026-05-26
+last_evidence_pilot: v21 + v22b + v22d (claude/codex) + v23 (gemini/deepseek) + v28a/i (cross-corpus)
+last_evidence_n: 264 + 10  # 264 = F40 cumulative, 10 = v23 cross-family additions
+replication_status: cross-family-extended  # claude+codex from 3 pilots, gemini+deepseek from v23 only
+extension_path: v24 factorial replication in flight (gemini+deepseek across 12 cells); v25 external corpus still pending
+
+# F60 mechanism (2026-05-26): the sign-flip is consistent with a two-mechanism
+# interaction — mean-regression on high-worry contracts × per-family accuracy
+# alignment on shared topic-triggers. Sign is a STABLE per-family channel
+# property; do not re-derive at deploy time. See
+# org/calibration/per_agent_prompt_policy.yaml:f60_mechanism for details.
+
+# Per-family entries. Family is derived from agent_id via
+# scripts/public/control/forecast/pool.py:derive_agent_family().
+families:
+  claude:
+    premium_sign: "inverted"
+    scope_restriction: "internal-corpus-only-pending-retest"  # F84 2026-05-27
+    external_contradiction:
+      finding: F84
+      external_N: 248  # pooled v28a+v28-rng+v28-rollback+v28-stake public_domain
+      external_rho_worry_err2: 0.166
+      external_ci_95: [0.042, 0.285]
+      external_verdict: h1_supported_direction_correct  # OPPOSITE of internal
+      caveat: |
+        Internal F36 was inverted on v21-style prompts on specialist corpus.
+        External pooled (v28 prompts × public_domain N=42) shows
+        DIRECTION-CORRECT, h1_supported. The internal-inverted rule does not
+        generalize to v28-style prompts on external. Disambiguation requires
+        v28-retest-premium-claude (v21-style prompt × N=42 external).
+        RETEST LANDED 2026-05-28: ρ(worry,err2)=-0.09 [-0.38,+0.22] at N=42,
+        inconclusive but LEANS INVERTED — i.e. v21-prompt stays inverted-leaning
+        on external while v28-prompt went direction-correct (+0.17). Directionally
+        supports PROMPT-BOUND (the inversion follows v21-style elicitation, not the
+        corpus), but N=42 CI includes both 0 and +0.17. Need N>=91 v21xexternal to
+        settle. Until then, downstream consumers SHOULD restrict the
+        inverted-sign rule to internal/specialist contracts and TREAT EXTERNAL
+        CLAUDE WORRY AS DIRECTION-CORRECT (no inversion).
+    right_median: 45
+    wrong_median: 35
+    gap: 10
+    n_right: 41
+    n_wrong: 19
+    note: >
+      Claude pays more premium on contracts it ends up right on for v21-style
+      specialist prompts (N=270). On v28-style prompts on external N=248 this
+      reverses (F84 2026-05-27). Direction-USEFUL only when inverted on
+      internal corpus / v21 prompt; on external / v28 prompts treat as
+      direction-correct (no inversion). Pending v28-retest-premium-claude
+      disambiguates whether the flip is corpus-driven or prompt-driven.
+      Replication required (single-pilot finding); do not hard-code in emitters.
+
+  codex:
+    premium_sign: "direction_correct"
+    right_median: 58  # codex-5.5 only; mini diverges (right=15, wrong=34, gap=-19)
+    wrong_median: 62
+    gap: -4
+    n_right: 81  # codex-5.5 (43) + codex-5.4-mini (38)
+    n_wrong: 23  # codex-5.5 (16) + codex-5.4-mini (7)
+    note: >
+      Both codex variants (gpt-5.5 and gpt-5.4-mini) show direction-correct premium
+      coupling. Mini has a much larger absolute gap (-19) than 5.5 (-4); a future
+      revision may split codex into per-model sub-families if the variance matters
+      for downstream consumers.
+
+  gemini:
+    premium_sign: "unknown"
+    retracted_inversion_pending_retest: true
+    right_median: 40
+    wrong_median: 35
+    gap: 5
+    n_right: 3
+    n_wrong: 2
+    note: >
+      RETRACTED 2026-05-27 pending retest (meta-Darwin audit flag).
+      Prior "inverted" rule rested on N_wrong=2 — insufficient power for a
+      deployed sign rule (Fisher-z |ρ| detectable at N=5 ≥ 0.88). Until
+      v28-retest-premium-gemini lands at N≥42, downstream consumers MUST
+      treat gemini premium-sign as "unknown" (do not invert; do not use as
+      confidence signal). Retest queued at pilot_queue.md priority 1.5b.
+
+  deepseek:
+    premium_sign: "unknown"
+    right_median: 15
+    wrong_median: 15
+    gap: 0
+    n_right: 4
+    n_wrong: 1
+    note: >
+      Pattern undetermined at N=1 wrong (v23). DeepSeek-chat shows flat gap on
+      the v23 positive/magnitude/balance_off cell. Flat at N=1 is uninformative —
+      could be inverted, direction-correct, or genuinely flat. Do NOT apply a
+      sign-rule to deepseek until v24+ provides more wrong-pool data.
+
+# What downstream consumers should do:
+#   1. Read agent_family from the forecast emission payload (populated by
+#      scripts/public/control/forecast/pool.py:cmd_add_forecast).
+#   2. Look up the family entry here.
+#   3. Apply the sign rule to tail_insurance_premium before using it as a
+#      confidence-correction signal.
+#   4. Prefer the signed-split channel (tail_downside_worry, tail_upside_surprise)
+#      over premium when both are present (F35: signed split is the operative
+#      second-moment channel; magnitude on top is noise).

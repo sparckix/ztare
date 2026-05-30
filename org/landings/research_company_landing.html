@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZTARE Research Company</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #18211b;
+      --muted: #5d6b61;
+      --paper: #f5f0e6;
+      --paper-2: #e8dcc9;
+      --panel: rgba(255, 251, 240, 0.78);
+      --line: rgba(24, 33, 27, 0.16);
+      --field: #d7e8cd;
+      --moss: #365b3d;
+      --copper: #b85f30;
+      --blueprint: #223f5e;
+      --shadow: 0 28px 80px rgba(27, 38, 31, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(184, 95, 48, 0.20), transparent 24rem),
+        radial-gradient(circle at 84% 18%, rgba(54, 91, 61, 0.20), transparent 25rem),
+        linear-gradient(135deg, var(--paper) 0%, #fbf7ed 48%, var(--paper-2) 100%);
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(24, 33, 27, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 33, 27, 0.045) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.72), rgba(0,0,0,0.04));
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1180px, calc(100vw - 40px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: rgba(245, 240, 230, 0.72);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 70px;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--field);
+      box-shadow: 6px 6px 0 var(--ink);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 13px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .pill {
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 10px 14px;
+      text-decoration: none;
+      background: #fff8df;
+      box-shadow: 4px 4px 0 var(--ink);
+      color: var(--ink) !important;
+      font-weight: 600;
+    }
+
+    .hero {
+      padding: 86px 0 54px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 54px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.45);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      color: var(--moss);
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--copper);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(48px, 8vw, 104px);
+      line-height: 0.88;
+      letter-spacing: -0.075em;
+      max-width: 760px;
+    }
+
+    .hero p {
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.38;
+      color: var(--muted);
+      max-width: 690px;
+      margin: 28px 0 0;
+    }
+
+    .hero-actions {
+      margin-top: 34px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--ink);
+      border-radius: 16px;
+      padding: 14px 18px;
+      text-decoration: none;
+      font-weight: 700;
+      box-shadow: 5px 5px 0 var(--ink);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .button:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .button.primary { background: var(--copper); color: #fff8ef; }
+    .button.secondary { background: rgba(255,255,255,0.54); }
+
+    .console {
+      position: relative;
+      border: 1px solid var(--ink);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow), 9px 9px 0 var(--ink);
+      padding: 22px;
+      overflow: hidden;
+      transform: rotate(1deg);
+    }
+
+    .console::after {
+      content: "";
+      position: absolute;
+      inset: auto -20% -20% 20%;
+      height: 150px;
+      background: radial-gradient(circle, rgba(54,91,61,0.24), transparent 68%);
+    }
+
+    .card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 253, 247, 0.86);
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .card:last-child { margin-bottom: 0; }
+
+    .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--blueprint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .decision-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .meta {
+      border-radius: 14px;
+      background: rgba(215, 232, 205, 0.48);
+      padding: 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .choice {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 12px;
+      background: rgba(255,255,255,0.42);
+    }
+
+    .choice.rec {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    section {
+      padding: 54px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    h2 {
+      font-size: clamp(34px, 5vw, 62px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+      margin: 0;
+      max-width: 780px;
+    }
+
+    .section-head p {
+      max-width: 390px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .tile {
+      min-height: 250px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      background: rgba(255, 253, 247, 0.62);
+      box-shadow: 0 18px 50px rgba(27, 38, 31, 0.07);
+    }
+
+    .tile strong {
+      display: block;
+      font-size: 22px;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
+    }
+
+    .tile p {
+      color: var(--muted);
+      line-height: 1.48;
+      margin: 0;
+    }
+
+    .tile .num {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--ink);
+      background: var(--field);
+      font-family: "IBM Plex Mono", monospace;
+      margin-bottom: 38px;
+    }
+
+    .flow {
+      border: 1px solid var(--ink);
+      border-radius: 30px;
+      background: rgba(34, 63, 94, 0.08);
+      padding: 26px;
+      box-shadow: 8px 8px 0 var(--ink);
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .step {
+      background: rgba(255, 253, 247, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 138px;
+    }
+
+    .step span {
+      display: block;
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--copper);
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .step b {
+      display: block;
+      font-size: 18px;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .step small {
+      color: var(--muted);
+      line-height: 1.35;
+      display: block;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .row-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(255, 253, 247, 0.7);
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .row-card b {
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--blueprint);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .row-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.46;
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .status .tile {
+      min-height: auto;
+    }
+
+    .footer {
+      padding: 48px 0 70px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    code {
+      font-family: "IBM Plex Mono", monospace;
+      background: rgba(24,33,27,0.08);
+      padding: 2px 5px;
+      border-radius: 6px;
+      color: var(--ink);
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .split,
+      .flow-row,
+      .grid-3,
+      .status {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-inner {
+        align-items: flex-start;
+        padding: 16px 0;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
+      }
+
+      .console {
+        transform: none;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .section-head p {
+        margin-top: 14px;
+      }
+
+      .choices,
+      .meta-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .row-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <div class="brand"><div class="brand-mark">Z</div><span>ZTARE Research Company</span></div>
+      <div class="nav-links">
+        <a href="#model">Model</a>
+        <a href="#communication">Human-agent comms</a>
+        <a href="#status">Status</a>
+        <a class="pill" href="../guides/org_runtime_quickstart.md">Run it</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <header class="shell hero">
+      <div>
+        <div class="eyebrow">AI-native organization, not chat automation</div>
+        <h1>A research company that keeps its own books.</h1>
+        <p>
+          ZTARE turns a repo into a governed research organization: persistent
+          role offices, one executive inbox, explicit mandates, artifact-backed
+          experiments, and natural human approvals at the few points that matter.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="../guides/org_runtime_quickstart.md">Start the runtime</a>
+          <a class="button secondary" href="../concepts/ztare_research_company_architecture.md">Read the architecture</a>
+        </div>
+      </div>
+
+      <div class="console" aria-label="Example approval card">
+        <div class="card">
+          <div class="label">Decision card</div>
+          <div class="decision-title">Run the next hostile discriminator?</div>
+          <p>
+            Research Director proposes a bounded GPU/API experiment. The card
+            states the claim under pressure, expected cost, touched artifacts,
+            kill condition, and what will be learned if it fails.
+          </p>
+          <div class="meta-grid">
+            <div class="meta">cost: $2.10 est.</div>
+            <div class="meta">risk: reversible</div>
+            <div class="meta">owner: role.research_director</div>
+            <div class="meta">artifact: next_discriminator_queue.jsonl</div>
+          </div>
+          <div class="choices">
+            <div class="choice rec">Approve</div>
+            <div class="choice">Skip</div>
+            <div class="choice">Ask</div>
+            <div class="choice">Stop</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="label">System of record</div>
+          <div class="decision-title">Chat is not the ledger.</div>
+          <p>
+            The conversation is a user interface. Authority lives in roles,
+            mandates, gates, claims, telemetry, and experiment rows.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section id="model" class="shell">
+      <div class="section-head">
+        <h2>Three objects. Different authority.</h2>
+        <p>
+          ZTARE separates persistent offices from disposable model calls and
+          from the human principal. That distinction is the governance kernel.
+        </p>
+      </div>
+      <div class="grid-3">
+        <div class="tile">
+          <div class="num">01</div>
+          <strong>Principal</strong>
+          <p>Owns taste, budgets, public claims, irreversible decisions, and risk acceptance. The system reduces babysitting; it does not pretend legal accountability moved to a model.</p>
+        </div>
+        <div class="tile">
+          <div class="num">02</div>
+          <strong>Role office</strong>
+          <p>A persistent agent identity such as Manager or Research Director. It can claim work, refuse scope, open gates, send handoffs, and close experiments within a mandate.</p>
+        </div>
+        <div class="tile">
+          <div class="num">03</div>
+          <strong>Transient invocation</strong>
+          <p>A cold-shot, mutator, judge, or one-off LLM call. It produces evidence or proposals. It has no standing authority unless promoted into a role office.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell">
+      <div class="flow">
+        <div class="flow-row">
+          <div class="step">
+            <span>1</span>
+            <b>Preferences</b>
+            <small>Principal declares what is worth attention: hard problems, money/prize potential, architecture fit, governance learning.</small>
+          </div>
+          <div class="step">
+            <span>2</span>
+            <b>Role mandate</b>
+            <small>Each office gets allowed paths, forbidden actions, budget caps, escalation duties, and closure rules.</small>
+          </div>
+          <div class="step">
+            <span>3</span>
+            <b>Work discovery</b>
+            <small>Tasks, damage signals, inbox messages, and experiment debt become candidates; critical damage outranks routine work.</small>
+          </div>
+          <div class="step">
+            <span>4</span>
+            <b>Decision card</b>
+            <small>Orbit or Telegram asks for natural-language approval only when the action needs human authority.</small>
+          </div>
+          <div class="step">
+            <span>5</span>
+            <b>Closure</b>
+            <small>Artifacts, telemetry, result markers, E/F/INS rows, and transition logs make the outcome replayable.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="communication" class="shell">
+      <div class="section-head">
+        <h2>Human-agent communication should feel like a board packet, not a terminal.</h2>
+        <p>
+          The natural interface is text. The system still records structured
+          state underneath so approvals are auditable and agents cannot quietly
+          mutate scope.
+        </p>
+      </div>
+      <div class="split">
+        <div class="tile">
+          <strong>One backend, many projections.</strong>
+          <p>
+            Orbit, Telegram, and CLI are projections over the same state:
+            <code>ztare_workspace/gates/</code>,
+            <code>org/channels/</code>, <code>org/tasks/</code>, and the
+            transition log. None of them owns a separate truth.
+          </p>
+        </div>
+        <div class="stack">
+          <div class="row-card">
+            <b>Orbit</b>
+            <p>Rich governance UI for pending gates, role inboxes, context, trade-offs, and artifact links. Best for considered approvals.</p>
+          </div>
+          <div class="row-card">
+            <b>Telegram</b>
+            <p>Compact push channel for urgent approvals and completion/failure notices. Best for “approve/skip/ask/stop” while away from the repo.</p>
+          </div>
+          <div class="row-card">
+            <b>A2A inbox</b>
+            <p>Durable role-to-role envelopes. Messages create obligations, not execution authority; work still needs authorization, claim, and closure.</p>
+          </div>
+          <div class="row-card">
+            <b>CLI</b>
+            <p>Bootstrap, debugging, and direct operator-console surface. Use it when the principal wants to talk to Claude/Codex directly without starting the daemon.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="status" class="shell">
+      <div class="section-head">
+        <h2>Working today. Hardening tomorrow.</h2>
+        <p>
+          The single-team research loop runs end to end. Enterprise-grade
+          deployment needs a stronger control plane, auth, leases, and
+          production UI hardening.
+        </p>
+      </div>
+      <div class="status">
+        <div class="tile">
+          <strong>Works today</strong>
+          <p>
+            First-run setup, role preflight, daemon dry-run, Research Director
+            mandate, principal preferences, task claims, executive gates,
+            Orbit/Telegram projections, A2A-style role cards, damage signals,
+            and external-run watchdogs.
+          </p>
+        </div>
+        <div class="tile">
+          <strong>Still not enterprise-complete</strong>
+          <p>
+            Multi-tenant backend, production auth, SSO/RBAC, signed audit,
+            idempotent gate resolution, constrained execution containers,
+            retention policy, and packaged agent runtimes remain open.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <p>
+      Start locally with <code>python scripts/public/control/org_first_run_setup.py --member-id codex --agent-cli codex --agent-adapter codex_exec</code>.
+      Then read <a href="../guides/org_runtime_quickstart.md">the org runtime quickstart</a>.
+    </p>
+  </footer>
+</body>
+</html>

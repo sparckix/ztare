@@ -1,15 +1,15 @@
 # Agent bootstrap manifest — schema_version 1
 #
 # This file lists the files an agent MUST read on cold start, in order, plus
-# files to consult on demand. It is loaded by `scripts/agent_daemon.py` and
+# files to consult on demand. It is loaded by `scripts/public/control/agent_daemon.py` and
 # interpolated into the daemon prompt, so adding a 7th required-read file is
 # now a YAML edit rather than a Python source edit.
 #
-# Verified by `scripts/org_role_preflight.py` — all `required_reads` paths
+# Verified by `scripts/public/control/org_role_preflight.py` — all `required_reads` paths
 # must exist or preflight fails loud.
 #
 # Audience: internal engineering. Reference:
-# `docs/internal/agent_bootstrap_chain_2026-04-30.md`.
+# `docs/internal/agent_workflow/agent_bootstrap_chain_2026-04-30.md`.
 
 schema_version: 1
 last_updated: "2026-04-30"
@@ -46,7 +46,7 @@ conditional_reads:
   - path: "docs/guides/org_runtime_quickstart.md"
     purpose: "Role-daemon boot model. Read if the agent needs the multi-rail context (executive inbox / A2A / Telegram)."
 
-  - path: "docs/internal/agent_task_discipline_map.md"
+  - path: "docs/internal/agent_workflow/agent_task_discipline_map.md"
     purpose: "Procedural requirements: closure rows, validate_agent_task_discipline.py, escalation rules."
 
   - path: "docs/guides/experiment_cookbook.md"
@@ -55,22 +55,22 @@ conditional_reads:
   - path: "research_areas/EXPERIMENT_TRACK_RECORD.md"
     purpose: "Closure-row destination. Append E-row + optional F-row when an experiment closes."
 
-  - path: "docs/internal/agent_conflict_resolution_table.md"
+  - path: "docs/internal/agent_workflow/agent_conflict_resolution_table.md"
     purpose: "Canonical resolution table for AGENTS.md vs mandate, yaml vs prose, preferences vs mandate, etc."
 
-  - path: "docs/internal/human_agent_flow_map_2026-04-30.md"
+  - path: "docs/internal/agent_workflow/human_agent_flow_map_2026-04-30.md"
     purpose: "End-to-end NL → typed gate → audit flow reference. Read when designing any new approval/escalation path."
 
-  - path: "analytics/queries/ztare_knowledge_graph.json"
-    purpose: "GP-216d artifact-network knowledge graph (354 nodes / 623 edges across seams + arch maps + ops + gates). Do NOT load the JSON on cold start — query it via `python scripts/query_graph.py --depends-on <seam>` / `--instantiates <op_id>` / `--hubs` / `--orphans` / `--connects A B`. Drift-validated by `make validate-knowledge-graph`. Use this to discover what depends on / instantiates / connects-to a seam, op, or gate BEFORE proposing a new artifact."
+  - path: "analytics/public/queries/graphs/ztare_knowledge_graph.json"
+    purpose: "GP-216d artifact-network knowledge graph (354 nodes / 623 edges across seams + arch maps + ops + gates). Do NOT load the JSON on cold start — query it via `python scripts/public/control/query_graph.py --depends-on <seam>` / `--instantiates <op_id>` / `--hubs` / `--orphans` / `--connects A B`. Drift-validated by `make validate-knowledge-graph`. Use this to discover what depends on / instantiates / connects-to a seam, op, or gate BEFORE proposing a new artifact."
 
-  - path: "analytics/queries/decision_history_calibration.md"
-    purpose: "GP-217 empirical evidence base for role mandate scope. Read when proposing edits to `org/roles/*.yaml` `authorized_paths` or `org/mandates/*_mandate.md`; cite F-row counts as defense for any broadening. Re-runnable via `python scripts/mine_decision_history.py`."
+  - path: "analytics/public/queries/rd/decision_history_calibration.md"
+    purpose: "GP-217 empirical evidence base for role mandate scope. Read when proposing edits to `org/roles/*.yaml` `authorized_paths` or `org/mandates/*_mandate.md`; cite F-row counts as defense for any broadening. Re-runnable via `python scripts/public/mining/mine_decision_history.py`."
 
 # ── Conflict resolution priority ─────────────────────────────────────
 #
 # When two sources disagree, the higher-priority source wins. Matches
-# `docs/internal/agent_conflict_resolution_table.md`. Listed top-down,
+# `docs/internal/agent_workflow/agent_conflict_resolution_table.md`. Listed top-down,
 # stricter-wins-on-ties.
 
 conflict_resolution_priority:

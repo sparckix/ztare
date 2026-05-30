@@ -4,6 +4,254 @@
 spec_version: 1
 generated_by: src.ztare.orchestration.pattern_catalog_indexer
 patterns:
+  PATTERN-019:
+    source_file: org/patterns/adaptive_eigenquestion_generation.md
+    id: PATTERN-019
+    name: adaptive_eigenquestion_generation
+    version: 1
+    status: candidate
+    discovered: 2026-05-09
+    demoted_at: 2026-05-09 07:55:00+00:00
+    demoted_reason: "PL-076 audit (agent a13724f1bb8aa04db, reducer + tautology-trap\
+      \ on\ntonight's mintings) found this pattern's `falsifiable_test` field\nlacks\
+      \ a quantified baseline. Original test: \"substrates where\nPATTERN-019 has\
+      \ been deployed at the 5-runs-1-family threshold show\na higher rate of primitive-family\
+      \ rotation in subsequent runs than\nsubstrates where it was not deployed.\"\
+      \ The \"higher\" is unquantified\n\u2014 1.01x counts as \"higher\" but is not\
+      \ load-bearing. Demoted to\ncandidate confidence per PATTERN-005 falsifiable_asymmetry\
+      \ +\nPATTERN-006 tautology_trap_detector. Promote back to active when\nthe falsifiable_test\
+      \ has a quantified threshold (proposal: rotation\nrate in post-deployment runs\
+      \ \u2265 2x rotation rate in matched-history\ncontrol-window, with N\u22655\
+      \ deployment instances).\n"
+    discovered_reason: 'META-DARWIN audit on pattern architecture (2026-05-09 evening)
+      found
+
+      this primitive at src/ztare/research_director/eigenquestion_generator.py
+
+      (GP-228) was missing from the catalog. Audit catch C-2026-05-09-60
+
+      (cold-shot extraction failure) produced a sibling extraction failure
+
+      on the same audit pass.
+
+      '
+    triggers:
+      lexical:
+      - eigenquestion
+      - family-attractor
+      - fixed eigenquestion
+      - run-history
+      structural:
+      - 3+ runs on same substrate converging to same primitive family
+      - charter-eigenquestion is fixed but substrate has shifted
+      - per-run mining outputs suggest a different residual than the charter eigenquestion
+      problem_classes:
+      - orchestration_meta_architecture
+      - anti_anchoring
+    spawn:
+      mode: kernel_call
+      module: src.ztare.research_director.eigenquestion_generator
+      cost_per_call_usd: 0.005-0.01
+      output: advisory_eigenquestion_text
+    related_patterns:
+    - id: PATTERN-015
+      relation: complement
+    - id: PATTERN-014
+      relation: feeds
+    - id: PATTERN-013
+      relation: feeds
+    references:
+    - existing kernel: src/ztare/research_director/eigenquestion_generator.py
+    - GP-228 charter-critic V1+V2+preflight (project memory file project_gp226_charter_critic_status.md)
+    falsifiable_test: 'Across N>=5 deployment instances at the 5-runs-1-family threshold,
+      the
+
+      primitive-family-rotation rate in the K=3 runs following deployment must be
+      >=2x
+
+      the rotation rate in a matched-history K=3-run pre-deployment control-window;
+      the
+
+      pattern counts as working only if >=60% of the N instances clear the 2x bar.
+
+      Below that, demote.
+
+      metric_source: architecture_index.jsonl + miner residual-fingerprint history
+
+      (primitive-family-per-run), computed identically over pre- and post-deployment
+
+      K=3 windows.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-023:
+    source_file: org/patterns/anti_rename_charter_gate.md
+    id: PATTERN-023
+    name: anti_rename_charter_gate
+    version: 1
+    status: active
+    discovered: 2026-05-09
+    triggers:
+      lexical:
+      - novel closure
+      - novel theorem
+      - new admissibility
+      - breakthrough
+      - cornered
+      structural:
+      - closure_attempt_proposed
+      - charter_draft_pending
+      - pre_lean_port
+      problem_classes:
+      - hard_mathematical_residual
+      - novel_content_claim
+    spawn:
+      mode: pre_charter_self_audit
+      subagents:
+      - role: literature_collision_detector
+        description: Internal Claude lit-grep on Step-4 pre-flight; blinded to repo
+          charter prose
+        tools:
+        - read
+    output_schema: anti_rename_gate_verdict_v1
+    fallback: PATTERN-002 (darwin_idea_killer if Step 4 returns ambiguous)
+    preconditions:
+    - candidate_theorem_in_minimal_form: present (Step 1 output)
+    - target_admissibility_class_named: present
+    chain_position: pre_charter
+    related_patterns:
+    - PATTERN-002 (darwin_idea_killer, chained AFTER if Step 4 ambiguous)
+    - PATTERN-014 (cold_shot_dispatch, used for Step 4 pre-flight if internal Claude
+      isn't sufficient)
+    references:
+    - "C-2026-05-09-98 (\u03BC[u] / Duchon-Robert RENAME)"
+    - C-2026-05-09-103 (defect-calc / CKN-Lin RENAME)
+    - C-2026-05-09-104 (VBNS-PT / Bohr-mean energy identity RENAME)
+    - PL-105 mm_01 ACR Q1-Q5 self-check
+    - PL-106 Q3-binary literature-check protocol
+    falsifiable_test: 'Over N>=10 closure-attempt charters passed through the gate,
+      charters that PASS
+
+      (gate_outcome=PASS_proceed_to_lean) must subsequently be demolished as RENAME
+      by
+
+      a post-Lean cold-shot or audit in <=10% of cases, AND this PASS-then-RENAME
+      rate
+
+      must be lower than the pre-gate baseline RENAME rate (empirically 3-of-3 = 100%
+
+      in the 2026-05-09 window) by >=50 percentage points. If gate-passed charters
+      are
+
+      still demolished as RENAME at >10%, or the gate does not cut the RENAME rate
+      by
+
+      >=50 points versus the pre-gate baseline, demote.
+
+      metric_source: anti_rename_gate_verdict_v1 records (gate_outcome) joined to
+      the
+
+      catch ledger for subsequent RENAME catches (C-98/C-103/C-104-class); charters
+
+      tracked by charter_path.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-022:
+    source_file: org/patterns/bundle_discriminator_stack.md
+    id: PATTERN-022
+    name: bundle_discriminator_stack
+    version: 1
+    status: candidate
+    discovered: 2026-05-13
+    discovered_reason: 'GP-225 v18.21-v18.25 compressed shard generation, deterministic/public
+
+      baseline subtraction, residual sizing, and CPU-vs-text comparison into
+
+      one staged discriminator stack. Operator correctly flagged that this was
+
+      more specific than "pull forward" or "swarm": the missing move was to
+
+      prewire downstream gates whose artifact contracts were already known.
+
+      Prior sequential ticks were over-cautious after the strict witness stack
+
+      stabilized.
+
+      '
+    triggers:
+      lexical:
+      - bundle
+      - bundling
+      - 10x
+      - bridge
+      - compress
+      - why not faster
+      - pull forward
+      - maximum progress
+      structural:
+      - upstream_run_has_stable_artifact_contract
+      - downstream_gate_is_deterministic_given_upstream_artifact
+      - repeated_single_discriminator_ticks_delay_gate_answer
+      - strict_witness_or_resolver_stack_already_stable
+      - operator_generic_speed_pressure_changes_lane_choice
+      problem_classes:
+      - apparatus_self_audit.local_hillclimb_or_promotion_gate_stall
+      - too_complex_direct_attack.lane_compression_needed
+    composition:
+      derives_from:
+      - PATTERN-020
+      - PATTERN-012
+      - PATTERN-011
+      not_a_replacement_for:
+      - PATTERN-005
+      - PATTERN-006
+    spawn:
+      mode: staged_runner_or_agent_plan
+      required_bundle_contract:
+      - upstream_artifact_path
+      - downstream_scripts_or_gates
+      - pre_registered_thresholds_for_each_gate
+      - stop_conditions
+      - false_positive_controls
+      - closure_plan
+    output_schema: bundle_discriminator_stack_v1
+    references:
+    - GP-225 v18.21-v18.25 F-row: F-GP225-BUNDLE-DISCRIMINATOR-STACK-SHOULD-BE-ORCHESTRATION-PRIMITIVE-20260513-207
+    - scripts/public/models/gnn_lemma_relevance/v1821_third_hard_decoy_shard.py
+    - scripts/public/models/gnn_lemma_relevance/v1822_three_shard_residual_bridge.py
+    - scripts/public/models/gnn_lemma_relevance/v1824_four_shard_residual_bridge.py
+    - scripts/public/models/gnn_lemma_relevance/v1825_cpu_vs_text_cross_encoder_gate.py
+    falsifiable_test: 'Over N>=8 bundled discriminator stacks, the bundle must reach
+      the promotion-gate
+
+      answer in <=0.5x the wallclock (or <=0.5x the dispatch count) of the matched
+
+      sequential single-tick baseline for the same gate, WITHOUT raising the downstream
+
+      false-positive rate by more than 5 percentage points versus that baseline. If
+      the
+
+      bundle does not at least halve time-to-gate-answer, or it inflates false
+
+      positives by >5 points (the speed-theater / false-positive-amnesia anti-pattern),
+
+      demote.
+
+      metric_source: F-rows / E-rows for bundled-stack runs (e.g. F-GP225-BUNDLE-...)
+
+      compared against sequential-tick F-rows on the same gate; false-positive rate
+
+      from the witness-stack control logs.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-010:
     source_file: org/patterns/business_framing.md
     id: PATTERN-010
@@ -38,7 +286,267 @@ patterns:
     - operator_or_agent_at_risk_of_grandiosity_or_retreat: true
     chain_position: orthogonal
     related_patterns:
-    - "PATTERN-001 (friction_debate \u2014 math-side complement)"
+    - PATTERN-001 (friction_debate, math-side complement)
+    falsifiable_test: "Over N>=8 business-framing deployments on stuck campaigns,\
+      \ the generative-prompt\ndeliverable must, within the next 3 campaign iterations,\
+      \ produce a measurable\nunstick \u2014 defined as either (a) a new F-row closure\
+      \ or (b) a pre-registered\nresidual reclassification \u2014 at a rate >=2x the\
+      \ unstick-within-3-iterations rate\nof matched stuck campaigns where no business-framing\
+      \ dispatch fired. If the\npost-deployment unstick rate is below 2x the no-deployment\
+      \ baseline, the external\nreframe earns nothing and demotes.\nmetric_source:\
+      \ business_diagnosis_v1 dispatch dates in\npattern_deployment_ledger.jsonl vs\
+      \ F-row closures / residual reclassifications in\nthe residual_to_lever ledger\
+      \ over the following 3 iterations.\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-014:
+    source_file: org/patterns/cold_shot_dispatch.md
+    id: PATTERN-014
+    name: cold_shot_dispatch
+    version: 1
+    status: active
+    discovered: 2026-05-09
+    discovered_reason: "Pre-existed as kernel primitive at `src/ztare/fit/cold_llm_erdos_seed.py`\n\
+      and as project-side cold-shot scripts and `cold_shot_policy.json`\nworkspace\
+      \ files since approximately 2026-05-02.\nOperator catch (2026-05-09 evening):\
+      \ this cold-shot pattern had already\nbeen implemented in ZTARE (the Erd\u0151\
+      s cold-LLM seed) roughly a week\nearlier, and the operator had explicitly asked\
+      \ for such primitives to\nbe extracted; the catalog was minted without exhaustively\
+      \ ingesting\nexisting kernel primitives despite a patterns graph already existing.\n\
+      Pattern-extraction failure: minted org/patterns/INDEX.md\ncatalog without exhaustive\
+      \ ingestion of existing ZTARE kernel primitives.\nCatch C-2026-05-09-60.\n"
+    triggers:
+      lexical:
+      - treat as the book
+      - "Erd\u0151s-style"
+      - "Erd\u0151s style"
+      - alien-math
+      - alien math tradition
+      - no prior context
+      - de-anchor
+      - de_anchor
+      - ignore the literature
+      - fresh attempt
+      structural:
+      - load_bearing_eigenquestion_with_anchored_failure_modes
+      - same_family_LLM_dispatches_have_converged_on_a_dead_route
+      - need_to_break_anchoring_on_canonical_literature
+      - cross_vocabulary_audit_flagged_anchoring_risk
+      problem_classes:
+      - hard_mathematical_residual
+      - vocabulary_drift_risk
+      - pre_category_emergence
+      - load_bearing_falsifiable_proposition
+    spawn:
+      mode: cold_shot
+      variants:
+      - mode: kernel_library
+        description: 'Existing ZTARE kernel primitive. Used during ZTARE iter loop
+
+          pre_iter_1 advisory phase. Multi-family cold-shot family policy
+
+          (de_anchor_seed / structural_seed / physics_lagrangian_seed /
+
+          qualitative_evidence_seed) selected per substrate class.
+
+          '
+        module: src.ztare.fit.cold_llm_erdos_seed
+        project_examples:
+        - projects/*/workspace/cold_shot_policy.json
+        - projects/gp210_consciousness_theory/workspace/cold_shot_policy.json
+        - projects/ns_spike_lifecycle_discriminator/workspace/cold_shot_policy.json
+      - mode: rd_direct_external_prover
+        description: 'Research-Director-direct cross-family LLM cold-shot via OpenAI/
+
+          Anthropic/Google API. Used when (a) no ZTARE iter loop is active
+
+          on the substrate, or (b) the load-bearing question is at the
+
+          meta-architecture layer (e.g. "is this Lean encoding faithful?").
+
+          Operator-authorized 2026-05-09 with $10 hard cap.
+
+          '
+        tools:
+        - bash
+        scripts:
+        - scripts/public/control/dispatch_external_prover.py
+        kill_criteria:
+        - cumulative_session_spend_USD: 10.0
+        - per_dispatch_cap_USD: 5.0
+    output_schema: cold_shot_response_v1
+    fallback: PATTERN-011
+    preconditions:
+    - eigenquestion_shape_validated: true
+    - anchored_failure_modes_explicit: true
+    chain_position: pre_iter | post_demolition
+    related_patterns:
+    - id: PATTERN-005
+      relation: child
+    - id: PATTERN-009
+      relation: sibling
+    - id: PATTERN-011
+      relation: parent
+    - id: PATTERN-015
+      relation: required
+    references:
+    - existing kernel: src/ztare/fit/cold_llm_erdos_seed.py
+    - cold-shot policy schema: projects/*/workspace/cold_shot_policy.json
+    - ANTI-PATTERN-006 (cross_agent_monoculture), cold-shot is the cross-family answer
+    falsifiable_test: "Over N>=15 cold-shot dispatches in a campaign window, at least\
+      \ 30% must produce a\nverdict that either contradicts a same-family verdict\
+      \ the RD previously relied on\nOR names a structural defect the RD missed (measured\
+      \ against the catch ledger).\nIf the contradiction/net-new-defect rate across\
+      \ any 15 cold-shots falls below 30%\n\u2014 i.e. cold-shots only confirm internal\
+      \ verdicts \u2014 the cross-family-lift\nhypothesis is empirically false and\
+      \ the pattern demotes.\nmetric_source: external_prover_ledger.jsonl (cold-shot\
+      \ verdicts) joined to the\ncatch ledger for external_via_operator-sourced catches;\
+      \ dispatch counts from\npattern_deployment_ledger.jsonl primary_pattern=PATTERN-014.\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  META-PATTERN-021:
+    source_file: org/patterns/cross_layer_alignment_failure.md
+    id: META-PATTERN-021
+    name: cross_layer_alignment_failure
+    version: 1
+    status: active
+    discovered: 2026-05-09 07:50:00+00:00
+    discovered_reason: "Operator directive (2026-05-09 night): \"reflect metamathematically\
+      \ and\nmetaphysically too. you improve by analyzing yourself.\" META-DARWIN\n\
+      audit (PL-075, agent aa16e16d99ab177c1) on tonight's 9 catches (C-58\nthrough\
+      \ C-70) found a recurring layer-mismatch signature beyond\nANTI-PATTERN-010.\
+      \ AP-010 names the QUANTITATIVE-invariant subclass\n(height vs scale, decoupled\
+      \ for Liouville \u03C9). META-PATTERN-021 names\nthe STRUCTURAL/REPRESENTATIONAL\
+      \ superclass: an object X is asserted\nat layer L\u2081 but must align with\
+      \ a constraint at layer L\u2082; the\nalignment check is implicit, deferred,\
+      \ or rendered vacuous at\nencoding time; the misalignment is discovered post-deployment.\n\
+      \nSix disjoint instances established:\n  - C-62..C-66: Lean axiom signature\
+      \ (L\u2081) \u2260 stale Mathlib citations (L\u2082)\n  - C-63: Lean elaboration\
+      \ (L\u2081) \u2260 phantom Mathlib symbol (L\u2082)\n  - C-67: encoded precondition\
+      \ (bounded smooth + C\u2070 Bohr-AP) \u2260 argument\n    requirement (C\xB9\
+      _b Bohr-AP)\n  - C-68: precondition class (L\xB9-positivity) \u2260 operator\
+      \ class (L\xB2-skew)\n  - C-69: narrative headline \u2260 per-route reality\n\
+      \  - C-70: arXiv identifier (L\u2081) \u2260 actual cited theorem (L\u2082)\n\
+      \nDisjoint from existing 20 patterns + 10 anti-patterns; reducible to\nnone.\
+      \ ANTI-PATTERN-010 is a narrow subclass.\n"
+    triggers:
+      lexical:
+      - '"stale" + "line" / "encoding-layer" / "axiom-statement"'
+      - '"phantom" + "symbol" / "unverified" / "Mathlib"'
+      - '"precondition" + "mismatch" / "regularity" / "class"'
+      - '"narrative" + "overclaim" / "slippage" / "per-instance"'
+      - '"identifier" + "hallucination" / "verification" / "anchor"'
+      - "\"alignment rule\" / \"L\u2081 vs L\u2082\" / \"layer mismatch\""
+      structural:
+      - object_X_asserted_at_layer_L1
+      - X_must_align_with_constraint_at_layer_L2
+      - alignment_rule_implicit_or_unverified_at_encoding_time
+      - misalignment_discovered_post_deployment_via_external_audit
+      problem_classes:
+      - apparatus_self_audit
+      - meta_architecture_failure_class
+      - cross_vocabulary_drift_at_encoding_layer
+      - external_prover_calibration_drift
+    detection_protocol:
+      primary: PATTERN-006
+      secondary: PATTERN-002
+      tertiary: PATTERN-009
+      rule:
+      - "Before committing any X (invariant, class, precondition, identifier, axiom,\
+        \ narrative claim) at layer L\u2081, state the alignment rule to layer L\u2082\
+        \ EXPLICITLY and identify who/what will CHECK it."
+      - 'For Lean-layer objects, alignment check is MECHANICAL: Lean checks type/signature
+        alignment at elaboration time. But Lean does NOT check alignment to external
+        sources (arXiv IDs, Mathlib line numbers, published-form citations). External
+        alignment requires separate verification.'
+      - 'For narrative-layer objects (headlines, completion claims, verdict labels,
+        substrate-death statements), require per-instance decomposition at publication
+        time: ''substrate is dead EXCEPT on routes R1, R2, R3 which are structurally
+        alive'' instead of binary ''substrate is dead''.'
+      - For external-source alignment (arXiv IDs, Mathlib symbol names, published
+        theorem statements), make internal-Claude-with-WebFetch verification MANDATORY
+        before downstream reference use. Do NOT defer to post-campaign audit.
+    mitigation:
+    - "Add explicit `alignment_rule` field to project charters: for each load-bearing\
+      \ assertion X at layer L\u2081, state the layer L\u2082 where X must align AND\
+      \ the agent/timestamp/mechanism responsible for checking."
+    - 'For Lean-layer alignment to upstream Mathlib: prefer symbol-name citations
+      over line-number citations. If line-number citations are load-bearing, add a
+      drift-detection CI step that runs grep on the cited symbol and fails if the
+      line has shifted.'
+    - 'For external-source alignment: every cold-shot prompt that asks for citations
+      MUST require quotation of the abstract''s first sentence as a verification anchor
+      (per PATTERN-014 update 2026-05-09).'
+    - 'For narrative-layer assertions: require per-instance decomposition at publication
+      time. Binary ''X is closed/dead/proven'' statements are presumptively suspicious;
+      the instance-level breakdown is the load- bearing artifact.'
+    examples:
+    - id: C-62..C-66_lean_citation_layer_mismatch
+      summary: "T9 \xA71 axioms #2, #3, #4, #5 cite Mathlib line numbers in docstrings\n\
+        (L306, L563, L340) that are STALE relative to current upstream. Axiom\nSIGNATURE\
+        \ (Lean elaboration layer) is correct; DOCSTRING (citation\nlayer) has misaligned\
+        \ line numbers. Drift detection did not run.\n"
+      file: analytics/public/ledgers/catch/catch_ledger.jsonl#C-2026-05-09-62
+    - id: C-67_precondition_regularity_class_mismatch
+      summary: "Bohr-mean energy identity requires C\xB9_b Bohr-AP regularity (Bochner-\n\
+        Fej\xE9r lift precondition); axiom encodes \"bounded smooth + C\u2070 Bohr-AP\"\
+        \n(substrate-available class). Layer mismatch: encoded-precondition \u2260\
+        \nmathematical-requirement.\n"
+      file: analytics/public/ledgers/catch/catch_ledger.jsonl#C-2026-05-09-67
+    - id: C-69_narrative_substrate_death_overclaim
+      summary: "Session narrative slipped from \"three routes share root cause\" to\n\
+        \"substrate is dead.\" Per-route audit: 7 of 8 alive. Headline-layer\nassertion\
+        \ \u2260 instance-layer reality.\n"
+      file: analytics/public/ledgers/catch/catch_ledger.jsonl#C-2026-05-09-69
+    - id: C-70_external_prover_identifier_hallucination
+      summary: 'GPT-5 cold-shot supplies arXiv IDs without verification. Identifier-
+
+        layer (arXiv ID) decoupled from concept-layer (actual theorem). Fix:
+
+        mandatory abstract-first-sentence-quote verification anchor.
+
+        '
+      file: analytics/public/ledgers/catch/catch_ledger.jsonl#C-2026-05-09-70
+    chain_position: pre
+    related_patterns:
+    - id: ANTI-PATTERN-010
+      relation: narrow_subclass
+      note: AP-010 covers quantitative-invariant decoupling; MP-021 is the structural
+        superclass.
+    - id: PATTERN-006
+      relation: detection
+      note: tautology_trap_detector enforces alignment-rule circularity check.
+    - id: PATTERN-002
+      relation: detection
+      note: darwin_idea_killer asks whether the alignment was checked.
+    - id: PATTERN-009
+      relation: detection
+      note: CAS / WebFetch verification is the mechanical drift-detection mechanism.
+    - id: PATTERN-014
+      relation: instance
+      note: cold-shot identifier hallucination is a layer-mismatch instance; PATTERN-014
+        mitigation includes the verification anchor.
+    references:
+    - C-2026-05-09-58 through C-2026-05-09-70 (catch ledger)
+    - PL-075 META-DARWIN audit verdict (prediction_ledger.jsonl)
+    - org/anti-patterns/substrate_invariant_target_decoupling.md (narrow subclass)
+    falsifiable_test: "Once the pre-deployment alignment gate is wired, over N>=20\
+      \ sessions, the share\nof catches in the layer-mismatch categories {CV-1-*,\
+      \ CV-3-*, CV-4-*,\nnarrative_inflation, identifier_hallucination, encoding_precondition_mismatch}\n\
+      whose object carried an EXPLICIT pre-spec alignment_rule must rise above 80%\
+      \ (the\nmeta-pattern \"fires\" \u2014 i.e. fails \u2014 at <=20%, per its own\
+      \ binary check).\nEquivalently, the absolute count of post-deployment layer-mismatch\
+      \ catches per\nsession must fall to <=0.5x the pre-wiring baseline (the 2026-05-09\
+      \ window: 6\ndisjoint instances C-62..C-70 in one session). If explicit-alignment\
+      \ coverage\nstays below 80% or layer-mismatch catches do not halve, the gate\
+      \ earns nothing\nand the meta-pattern demotes.\nmetric_source: catch_ledger.jsonl\
+      \ filtered to the six layer-mismatch categories,\njoined to project-charter\
+      \ alignment_rule fields; per-session counts computed pre-\nvs post-wiring.\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-002:
     source_file: org/patterns/darwin_idea_killer.md
     id: PATTERN-002
@@ -64,8 +572,8 @@ patterns:
       mode: single_audit
       subagents:
       - role: idea_killer
-        description: "Mungerian inversion \u2014 assume the claim is WRONG, find the\
-          \ failure mode"
+        description: Mungerian inversion, assume the claim is WRONG, find the failure
+          mode
         tools:
         - read
     output_schema: kill_report_v1
@@ -75,12 +583,110 @@ patterns:
     - claim_has_structure: hypothesis + conclusion identifiable
     chain_position: secondary
     related_patterns:
-    - "PATTERN-001 (friction_debate \u2014 typical predecessor)"
-    - "PATTERN-003 (reducer \u2014 sometimes chained after)"
+    - PATTERN-001 (friction_debate, typical predecessor)
+    - PATTERN-003 (reducer, sometimes chained after)
     references:
-    - "https://arxiv.org/html/2604.00478 (Silicon Mirror \u2014 anti-sycophancy 2026)"
-    - "existing src/ztare/orchestrator/post_run_meta_audit.py \u2014 apparatus-side\
-      \ analog"
+    - https://arxiv.org/html/2604.00478 (Silicon Mirror, anti-sycophancy 2026)
+    - existing src/ztare/orchestrator/post_run_meta_audit.py, apparatus-side analog
+    falsifiable_test: 'Over N>=20 darwin_idea_killer dispatches, the killer''s true-positive
+      rate
+
+      (catches confirmed as real defects on subsequent ratification) must be >=70%
+      AND
+
+      it must surface >=1 confirmed defect per 5 dispatches that no upstream pattern
+
+      surfaced. The pattern''s own anti-pattern section already sets the 70%
+
+      true-positive floor; if measured precision falls below 70%, or if 0 net-new
+
+      confirmed catches appear across any 10-dispatch window, demote.
+
+      metric_source: catch ledger (catch IDs tagged to PATTERN-002 dispatches,
+
+      ratified vs rejected/false_positive status) joined to
+
+      pattern_deployment_ledger.jsonl on dispatch_id.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-015:
+    source_file: org/patterns/eigenquestion_phrasing_discipline.md
+    id: PATTERN-015
+    name: eigenquestion_phrasing_discipline
+    version: 2
+    status: active
+    discovered: 2026-05-09
+    discovered_reason: 'Operator observation (2026-05-09 evening): GPT-5.5 was producing
+
+      noticeably stronger output than internal Claude agents on the same
+
+      substrate. Diagnosis: not a model gap, a prompt-shape gap. The
+
+      Research Director had been dispatching constructive scoping packs
+
+      (2-3 page prompts) to internal Claude agents, while the operator
+
+      had been relaying 1-2 paragraph eigenquestion-shape prompts to
+
+      GPT-5.5. The framing asymmetry is a real, fixable defect.
+
+      '
+    triggers:
+      lexical:
+      - eigenquestion
+      - falsifiable
+      - sharp
+      - verdict-line
+      - in-standard-form
+      structural:
+      - dispatch_prompt_being_authored
+      - load_bearing_decision_will_turn_on_dispatch_output
+      - audit_or_calibrate_or_falsify_dispatch (NOT for construct/scope)
+      problem_classes:
+      - meta-architecture
+      - all
+    spawn:
+      mode: prompt_review
+      subagents: []
+    output_schema: eigenquestion_validated_v1
+    fallback: null
+    preconditions: []
+    chain_position: pre
+    related_patterns:
+    - id: PATTERN-005
+      relation: parent
+    - id: PATTERN-014
+      relation: required
+    - id: PATTERN-002
+      relation: applied_to
+    - id: PATTERN-007
+      relation: applied_to
+    falsifiable_test: 'Over N>=20 audit/calibrate/falsify dispatches, prompts that
+      PASS the 9-point
+
+      checklist must have a catch-rate per dispatch >=2x the catch-rate of dispatches
+
+      that fail the checklist (the pattern''s own narrative cites an observed ~3.3x
+
+      lift; 2x is the demotion floor). If checklist-passing prompts do not yield at
+
+      least 2x the catch-rate of non-conforming prompts, the discipline adds no
+
+      measurable lift and demotes.
+
+      metric_source: pattern_deployment_ledger.jsonl eigenquestion_shape flag per
+
+      dispatch, joined to catch-ledger catches attributed to each dispatch
+
+      (catches-per-dispatch by eigenquestion_shape true vs false).
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-005:
     source_file: org/patterns/falsifiable_asymmetry.md
     id: PATTERN-005
@@ -108,8 +714,421 @@ patterns:
     - candidate_claims_to_be_a_paradigm_shift: true
     chain_position: post
     related_patterns:
-    - "PATTERN-004 (vocabulary_quarantine \u2014 prompt-time guardrail)"
-    - "PATTERN-003 (reducer \u2014 terminal filter)"
+    - PATTERN-004 (vocabulary_quarantine, prompt-time guardrail)
+    - PATTERN-003 (reducer, terminal filter)
+    falsifiable_test: 'Over N>=15 paradigm-shift candidates passed through the asymmetry
+      gate,
+
+      candidates that PASS (produce a concrete solved-system prediction) must survive
+
+      downstream PATTERN-003 reducer audit at a rate >=30 percentage points higher
+
+      than candidates that FAIL the gate. If PASS and FAIL candidates are demolished
+
+      by the reducer at statistically indistinguishable rates (margin <30 points),
+      the
+
+      asymmetry gate is not discriminating and demotes.
+
+      metric_source: asymmetry_verdict_v1 outputs joined to downstream
+
+      reducer_verdict_v1 outcomes via pattern_deployment_ledger.jsonl dispatch_id
+
+      chains.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-016:
+    source_file: org/patterns/frontier_co_drive_protocol.md
+    id: PATTERN-016
+    name: frontier_co_drive_protocol
+    version: 1
+    status: active
+    discovered: 2026-05-09
+    discovered_reason: "META-DARWIN audit on pattern architecture (2026-05-09 evening)\
+      \ flagged\nsrc/ztare/orchestration/execution_routing.py + the RD-1.12 mandate\
+      \ as\na missing pattern. This is a role-level execution protocol that\nauthorizes\
+      \ the Research Director to live co-drive a research loop \u2014\nreading iter\
+      \ outputs, mutating substrate (evidence/charter/rubric),\nforking successor\
+      \ projects, queuing cold-shots, writing Lean cages\nfrom verified axioms \u2014\
+      \ subject to per-action budget gates and damage-\nsignal audit.\n"
+    triggers:
+      lexical:
+      - co-drive
+      - frontier
+      - RD direct
+      - route_rd_active
+      structural:
+      - RD action requires direct substrate mutation (not just dispatch)
+      - per-action budget gate exists and is reachable
+      - damage-signal audit is wired
+      problem_classes:
+      - orchestration_meta_architecture
+      - execution_routing
+    spawn:
+      mode: kernel_route
+      module: src.ztare.orchestration.execution_routing
+      authorized_actions:
+      - fork_substrate
+      - create_lean_cage
+      - demote_route
+      - mutate_evidence
+      - mutate_charter
+      - queue_cold_shot
+      - escalate_to_principal
+      guards:
+      - spend_tracker
+      - agent_utilization_tracker
+      - damage_signal_audit
+    related_patterns:
+    - id: PATTERN-017
+      relation: pairs_with
+    - id: PATTERN-014
+      relation: dispatches
+    - id: PATTERN-019
+      relation: dispatches
+    references:
+    - existing kernel: src/ztare/orchestration/execution_routing.py
+    - RD-1.12 mandate: org/directives/2026-04-30T155808Z_principal_research_director_mandate_v1_5_proposal.json
+    - related route schema: org/directives/2026-05-03T125433Z_research_director_ztare_frontier_prior_update.json
+    falsifiable_test: "Once the protocol is the routed standard, over N>=25 authorized\
+      \ RD\nsubstrate-mutation actions, the rate of post-action catches (catches that\
+      \ flag a\nco-drive action as wrong after the fact) per authorized action must\
+      \ DECLINE\nacross the deployment window \u2014 the last-15-action post-action\
+      \ catch rate must be\n<=0.5x the first-15-action rate \u2014 while the 8-action\
+      \ vocabulary is held constant.\nIf the post-action catch rate does not at least\
+      \ halve (action quality not\nimproving) or rises, the protocol's damage-signal\
+      \ audit earns nothing and\ndemotes.\nmetric_source: catch_ledger.jsonl entries\
+      \ joined to the action audit log\n(authorized-action records tagged PATTERN-016\
+      \ in pattern_deployment_ledger.jsonl),\npost-action catch rate computed per\
+      \ rolling 15-action window.\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-017:
+    source_file: org/patterns/frontier_state_ledger.md
+    id: PATTERN-017
+    name: frontier_state_ledger
+    version: 1
+    status: active
+    discovered: 2026-05-09
+    discovered_reason: 'META-DARWIN audit on pattern architecture (2026-05-09 evening)
+      flagged
+
+      src/ztare/role_extensions/frontier_state.py + iter_action_policy.yaml
+
+      as a missing pattern. This is the daemon-safe per-project state
+
+      abstraction that PATTERN-016 (frontier_co_drive_protocol) writes to,
+
+      paired with a hot-reloadable YAML policy mapping iter-loop events to
+
+      RD actions.
+
+      '
+    triggers:
+      lexical:
+      - frontier_state
+      - iter_action
+      - daemon
+      - hot-reload
+      - atomic write
+      structural:
+      - daemonized RD operating across multiple projects
+      - need to persist route_ranking + active_escapes + obstruction_counters
+      - policy mapping iter-loop event -> RD action evolves at runtime
+      problem_classes:
+      - orchestration_meta_architecture
+      - state_persistence
+    spawn:
+      mode: kernel_state
+      module: src.ztare.role_extensions.frontier_state
+      policy_file: src/ztare/role_extensions/iter_action_policy.yaml
+      storage_path: ztare_workspace/frontier_state/<project>.json
+      storage_discipline: atomic_write
+      schema_fields:
+      - route_ranking
+      - active_escapes
+      - obstruction_counters
+      - pending_actions
+      - history
+      policy_event_actions:
+      - obstruction_repeated_fork: fork_substrate
+      - verified_axiom_to_lean_cage: create_lean_cage
+      - champion_shift_update_meaning: mutate_evidence
+      - ambient_gate_repeated_cold_shot: queue_cold_shot
+    related_patterns:
+    - id: PATTERN-016
+      relation: paired_with
+    - id: PATTERN-013
+      relation: complementary
+    - id: PATTERN-014
+      relation: triggers
+    references:
+    - existing kernel: src/ztare/role_extensions/frontier_state.py
+    - existing policy: src/ztare/role_extensions/iter_action_policy.yaml
+    - storage spec: ztare_workspace/frontier_state/*.json
+    falsifiable_test: 'Once wired, over N>=20 simulated or real daemon restarts across
+      >=3 projects,
+
+      replaying frontier_state history must reproduce the exact next RD action the
+
+      daemon would have produced without restart in >=95% of cases, AND state reads
+
+      must return decision-relevant fields (route_ranking, obstruction_counters) in
+
+      O(1) without a full project re-mine in >=95% of reads. If post-restart action
+
+      agreement falls below 95%, or >5% of reads force a re-mine (stale-state
+
+      laundering), the state contract is not load-bearing and demotes.
+
+      metric_source: ztare_workspace/frontier_state/<project>.json history field
+
+      replayed under simulated restart; action-agreement and re-mine events counted
+
+      against the daemon action log.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-025:
+    source_file: org/patterns/gowers_first_formalize_second.md
+    id: PATTERN-025
+    name: gowers_first_formalize_second
+    version: 1
+    status: candidate
+    discovered: 2026-05-14
+    discovered_reason: 'NS route-1 ticks 353-356 showed a repeated discovery sequence:
+      informal
+
+      theorem-surface audit found the wrong observable before Lean formalization
+
+      could.  Lean then served as verifier, memory, and anti-smuggling guard for
+
+      the corrected primitive.  The pattern is sequencing-specific and therefore
+
+      distinct from PATTERN-007 smuggling_audit and PATTERN-002 darwin_idea_killer.
+
+      '
+    triggers:
+      lexical:
+      - lean_first
+      - formalize_first
+      - theorem_surface
+      - carrier
+      - observable
+      - positive_flux
+      - signed_flux
+      - countermodel
+      - no_go
+      - same_carrier
+      - pressure_l2
+      - duchon_robert
+      structural:
+      - statement_stability_unknown
+      - carrier_or_observable_identity_uncertain
+      - sign_scale_telescope_or_multiplicity_unknown
+      - residual_is_theorem_or_domain_gap
+      - single_interface_source_would_not_close_next_dependency
+      - upstream_branch_dominance_unknown
+      - proposed_formal_field_resembles_target_conclusion
+      - recent_no_go_changed_the_theorem_surface
+      - informal_countermodel_can_be_written_before_formal_proof
+      problem_classes:
+      - hard_mathematical_residual
+      - too_complex_direct_attack
+    composition:
+      precedes:
+      - PATTERN-002
+      - PATTERN-007
+      - PATTERN-008
+      complements:
+      - PATTERN-024
+      - PATTERN-012
+      not_a_replacement_for:
+      - PATTERN-006
+      - PATTERN-009
+    spawn:
+      mode: deterministic_pre_tick
+      cli:
+        generic: scripts/public/control/formalization_sequence_classifier.py
+      output_schema: formalization_sequence_report_v1
+      storage_path: analytics/public/queries/formalization_sequence/latest.json
+    chain_position: pre
+    content_layer: docs/reference/structural_language_catalog.json
+    content_layer_note: "This pattern is the WORKFLOW SCAFFOLD (when to run informal\
+      \ redescribe-and-replace\nbefore Lean formalization). The actual MATHEMATICAL\
+      \ CONTENT \u2014 the redescribe-and-\nreplace moves themselves \u2014 lives\
+      \ in the universal-language catalog:\n  - PDE estimate craft ops (7): Auxiliary\
+      \ Comparison Object Construction, Regime/\n    Class Scoping, Quantitative Threshold\
+      \ Dichotomy, Limit-Passage Property\n    Inheritance, Sharpness/Failure-Witness\
+      \ Construction, Proof-Surface Compression,\n    Distribution/Tail Upgrade; plus\
+      \ Candidate G Representation/Coordinate Reformulation.\n  - Universal v5 ops\
+      \ (18): Problem Reformulation & Reduction, Generalization &\n    Abstraction,\
+      \ Decomposition & Recomposition, Local-to-Global Assembly, etc.\nRunning this\
+      \ pattern WITHOUT consulting the content layer is a recurring meta-failure\n\
+      (sessional catches 2026-05-15: 5 instances of ANTI-PATTERN-012 vocabulary_chain_laundering\n\
+      while running PATTERN-025 with empty content scaffold). MITIGATION: every Gowers-first\n\
+      invocation MUST enumerate which universal-language ops are being applied, treating\n\
+      the JSONL as a checklist not optional reference.\n"
+    references:
+    - scripts/public/control/formalization_sequence_classifier.py
+    - src/ztare/research_director/formalization_sequence.py
+    - analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md
+    - research_areas/EXPERIMENT_TRACK_RECORD.md#F-GP225-NS-TRANSPORT-FUNCTIONAL-MISMATCH-IS-THE-LIVE-OBSTRUCTION-20260514-354
+    - research_areas/EXPERIMENT_TRACK_RECORD.md#F-GP225-NS-POSITIVE-CUTOFF-FLUX-RECEIPT-IS-CONDITIONAL-NOT-PROOF-20260514-355
+    - docs/reference/structural_language_catalog.json
+    - org/anti-patterns/vocabulary_chain_laundering.md
+    - META-PATTERN-022 (gowers_first_with_content_layer_composition)
+    falsifiable_test: "Once routed as a pre-tick gate on unstable-carrier proof branches,\
+      \ over N>=15\ndispatches classified gowers_first_required, at least 60% must\
+      \ yield a concrete\npayoff \u2014 a smaller formal primitive than the original\
+      \ target, a no-go guard\nblocking a prior shortcut, or a named missing hypothesis\
+      \ that changes the next\nbranch choice \u2014 AND for theorem/domain residuals\
+      \ a 5+ node dependency DAG must\nname the first unproved estimate. This 60%\
+      \ payoff rate must exceed the payoff\nrate of matched Lean-first dispatches\
+      \ on comparably unstable branches by >=20\npercentage points. If the payoff\
+      \ rate is below 60% or within 20 points of\nLean-first, the informal-first sequencing\
+      \ earns nothing and demotes.\nmetric_source: formalization_sequence_report_v1\
+      \ outputs and downstream F-rows;\nPATTERN-025 dispatches tagged in pattern_deployment_ledger.jsonl,\
+      \ payoff\nclassified from the F-row (primitive size / no-go guard / named hypothesis\n\
+      fields).\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  META-PATTERN-022:
+    source_file: org/patterns/gowers_first_with_content_layer_composition.md
+    id: META-PATTERN-022
+    name: gowers_first_with_content_layer_composition
+    version: 1
+    status: active
+    discovered: 2026-05-15
+    discovered_reason: "NS Clay closure session (ticks 495-508) repeatedly fired ANTI-PATTERN-012\n\
+      (vocabulary_chain_laundering) \u2014 5 sessional catches at severity 7-9 \u2014\
+      \ while\nnominally running PATTERN-025 (gowers_first_formalize_second). Operator\n\
+      meta-question 2026-05-15: \"this seems in itself a composition pattern of\n\
+      patterns. I fail to see how the orchestration menu and the language JSONL\n\
+      are related.\"\n\nInvestigation revealed: PATTERN-025 specifies the WORKFLOW\
+      \ SEQUENCE\n(informal-before-formal); the universal-language catalog\n(`docs/reference/structural_language_catalog.json`)\n\
+      specifies the MATHEMATICAL CONTENT (Problem Reformulation, Auxiliary Comparison\n\
+      Object, Limit-Passage Property Inheritance, Sharpness/Failure-Witness\nConstruction,\
+      \ etc.). These two catalogs are at DIFFERENT abstraction layers\n(research-process\
+      \ vs mathematical-content) but they MUST COMPOSE for Gowers-\nstyle PDE attacks\
+      \ to be sound.\n\nRunning PATTERN-025 with EMPTY content (no explicit universal-language\
+      \ ops\nenumerated) is exactly the failure pattern caught 5 times this session:\n\
+      vocabulary-chain laundering. The composition was previously undocumented in\n\
+      any catalog \u2014 operator surfaced the gap. This META-PATTERN names the\n\
+      composition explicitly so future sessions can compose all three layers from\n\
+      the start.\n"
+    triggers:
+      lexical:
+      - gowers_first
+      - redescribe_and_replace
+      - informal_before_lean
+      - PDE_residual_attack
+      - theorem_surface
+      - countermodel_construction
+      - vocabulary_association
+      structural:
+      - PATTERN_025_invoked_without_content_layer_enumeration
+      - multi_step_PDE_chain_constructed_without_per_step_explicit_verification
+      - universal_language_catalog_NOT_consulted_during_attack
+      - operator_must_prompt_to_get_content_layer_used
+      problem_classes:
+      - hard_mathematical_residual
+      - PDE_chain_closure
+      - formal_verification
+    composition_layers:
+      scaffold:
+        pattern: PATTERN-025
+        role: workflow_sequencing
+        content: 'Workflow scaffold (when to redescribe-and-replace, when to formalize,
+
+          when to introduce countermodel, when to ship Lean).
+
+          '
+      content:
+        catalog: docs/reference/structural_language_catalog.json
+        role: mathematical_moves
+        content: "Specific mathematical content moves applied at each scaffold step:\n\
+          \  - PDE estimate craft ops (7): Auxiliary Comparison Object Construction,\n\
+          \    Regime/Class Scoping, Quantitative Threshold Dichotomy, Limit-Passage\n\
+          \    Property Inheritance, Sharpness/Failure-Witness Construction,\n   \
+          \ Proof-Surface Compression, Distribution/Tail Upgrade; plus Candidate G\n\
+          \    Representation/Coordinate Reformulation.\n  - Universal v5 ops (18):\
+          \ Problem Reformulation & Reduction, Generalization\n    & Abstraction,\
+          \ Decomposition & Recomposition, Local-to-Global Assembly,\n    Canonical\
+          \ Form & Invariance, Cross-Domain Translation, Iterative\n    Refinement,\
+          \ Recursive Decomposition, Duality & Adversarial Framing,\n    Layered Approximation\
+          \ & Convergence, Extremal Method, Probabilistic\n    & Stochastic Methods,\
+          \ Dimensional & Structural Lifting, Constraint\n    Imposition & Propagation,\
+          \ Characterization by Obstruction,\n    Internalization & Self-Reference,\
+          \ Axiomatization & Foundational Repair,\n    Controlled Universe Extension.\n\
+          \  - Op tiers (12) and two-cultures pairs (4) provide additional\n    structural\
+          \ orientation.\n"
+      failure_check:
+        anti_pattern: ANTI-PATTERN-012
+        role: per_step_verification_gate
+        content: 'Vocabulary-chain laundering check per transition: 6-point verification
+
+          of form / direction / quantifier / domain / dimension / inclusion before
+
+          moving to the next step in the chain.
+
+          '
+    binding_rule: "Every invocation of PATTERN-025 MUST:\n  1. Begin by enumerating\
+      \ which universal-language ops will be applied\n     (treat structural_language_catalog\
+      \ as a CHECKLIST, not optional reference).\n  2. Per-step apply the ANTI-PATTERN-012\
+      \ 6-point verification gate.\n  3. Document the recursive application of ops\
+      \ on any open sub-theorem that\n     arises (the catalog is recursively usable\
+      \ on its own output).\n"
+    chain_position: precondition
+    sessional_catches:
+    - tick495_variation_charge_resolution
+    - tick496_minkowski_content_reduction
+    - tick498_serrin_5_4_exponent_miscalc
+    - tick501_helicity_pigeonhole_nested_disjoint
+    - tick504_frobenius_2foliation_dual_confusion
+    references:
+    - PATTERN-025 gowers_first_formalize_second
+    - ANTI-PATTERN-012 vocabulary_chain_laundering
+    - META-PATTERN-021 cross_layer_alignment_failure
+    - docs/reference/structural_language_catalog.json
+    - docs/concepts/anti_pattern_catalog.md (SB-4 parallel human-readable entry)
+    - feedback_be_meta_darwin_to_self_2026_05_14.md (load-bearing user-memory)
+    falsifiable_test: 'Once wired as a precondition on Gowers-first PDE attacks, over
+      N>=20 PATTERN-025
+
+      invocations, artifacts that explicitly enumerate the applied universal-language
+
+      ops by catalog name must fire ANTI-PATTERN-012 (vocabulary_chain_laundering)
+      at a
+
+      per-artifact rate at least 60% LOWER than artifacts produced without
+
+      op-enumeration (the pre-wiring baseline: 5 of 7 tick495-507 attempts fired
+
+      ANTI-PATTERN-012; tick508, which enumerated 4 ops, did not). If op-enumerated
+
+      artifacts launder at a rate within 60% of empty-scaffold artifacts, the
+
+      content-layer composition prevents nothing and demotes.
+
+      metric_source: pattern_deployment_ledger.jsonl (universal_ops_enumerated flag
+      per
+
+      PATTERN-025 artifact) joined to ANTI-PATTERN-012 firing events in
+
+      catch_ledger.jsonl (vocabulary_chain_laundering category, per-artifact).
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-009:
     source_file: org/patterns/independent_cas_verification.md
     id: PATTERN-009
@@ -138,7 +1157,288 @@ patterns:
     - algebra_is_substrate_for_argument: true
     chain_position: post
     related_patterns:
-    - "PATTERN-008 (three_leg_verification \u2014 fuller version)"
+    - PATTERN-008 (three_leg_verification, fuller version)
+    falsifiable_test: 'Over N>=20 algebraic claims flagged by handwave-words ("trivial",
+      "by
+
+      computation", etc.) and checked by CAS, the CAS check must catch a genuine
+
+      discrepancy in >=15% of flagged claims, AND across N>=20 CAS-passed claims the
+
+      post-pass algebra-defect rate must be <=5%. If the catch-on-flag rate is below
+
+      15% (handwave-words are not predictive of error) or CAS-passed claims still
+      carry
+
+      >5% algebra defects, demote.
+
+      metric_source: catch ledger entries tagged PATTERN-009 (CAS discrepancy catches)
+
+      and downstream algebra-defect catches; dispatch counts from
+
+      pattern_deployment_ledger.jsonl.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-020:
+    source_file: org/patterns/meta_arc_stall_resolution.md
+    id: PATTERN-020
+    name: meta_arc_stall_resolution
+    version: 1
+    status: active
+    discovered: 2026-05-09
+    discovered_reason: "META-DARWIN audit on pattern architecture (2026-05-09 evening)\
+      \ found\nthis primitive at src/ztare/research_director/meta_arc_matcher.py\n\
+      (GP-215) was missing from the catalog. Direct addressing of the\n\"operator\
+      \ manually scrolls through prior arcs to find applicable\nmeta-move\" bottleneck\
+      \ \u2014 exactly the recency-bias structural defect\nthat prompted PATTERN-013\
+      \ (pattern_deployment_ledger).\n"
+    triggers:
+      lexical:
+      - stall
+      - stuck
+      - meta-move
+      - arc
+      - bottleneck
+      - no progress
+      structural:
+      - K consecutive iterations with no score movement
+      - free-form stall description authored by RD or operator
+      - need to select a meta-move that has historically resolved similar stalls
+      problem_classes:
+      - orchestration_meta_architecture
+      - recency_bias_correction
+    spawn:
+      mode: kernel_call
+      module: src.ztare.research_director.meta_arc_matcher
+      inputs:
+      - free_form_stall_description: str
+      - cycle_catalogue_files:
+        - gp215_cycles_filled.json
+        - gp215_cluster6_subdivision.json
+        - gp215_results.json
+        - gp215_cycles_aqual.json
+        - gp215_cycles_neural.json
+      outputs:
+      - top_K_meta_moves: ranked by cosine embedding score, source-attributed
+      - adversary_move: highest-ranked move from a DIFFERENT cluster (monoculture
+          guard)
+    related_patterns:
+    - id: PATTERN-013
+      relation: complement
+    - id: PATTERN-002
+      relation: secondary
+    - id: PATTERN-019
+      relation: feeds
+    references:
+    - existing kernel: src/ztare/research_director/meta_arc_matcher.py
+    - cycle catalogues: analytics/public/gp215_cycles_*.json
+    - "GP-215 (NASA-LLIS bottleneck artifact, embedding-ranked stall\u2192move match)"
+    falsifiable_test: 'Once routed on the K=3-no-movement stall trigger, over N>=12
+      stalls where
+
+      PATTERN-020''s top-K or adversary_move was deployed within 1 iteration, median
+
+      time-to-next-score-movement must be <=0.6x the median for matched stalls resolved
+
+      by RD free-recall meta-move selection. If catalogue-ranked meta-moves do not
+      cut
+
+      time-to-unstick to at most 0.6x the free-recall baseline, the ranking apparatus
+
+      adds no measurable lift and demotes.
+
+      metric_source: agent_telemetry.jsonl (meta_arc_matcher dispatches tagged
+
+      PATTERN-020) joined to substrate score-progression telemetry; matched free-recall
+
+      control stalls drawn from the same substrates'' pre-wiring history.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  META-PATTERN-023:
+    source_file: org/patterns/multi_scope_pattern_application.md
+    id: META-PATTERN-023
+    name: multi_scope_pattern_application
+    version: 1
+    status: active
+    discovered: 2026-05-15
+    discovered_reason: "NS Clay closure session 2026-05-15: after operator-prompted\
+      \ minting of\nMETA-PATTERN-022 (gowers_first_with_content_layer_composition\
+      \ fixing the\ntool-not-consulted laundering between org/patterns and universal-language\n\
+      JSONL), the operator forwarded GPT-5.5's parallel A/B attack on the same\nPDE\
+      \ residual.\n\nGPT-5.5 produced FOUR substantive catches I had missed despite\
+      \ having access\nto the same catalogs:\n  1. Premature Reynolds-defect framing-kill\
+      \ (META-PATTERN-021 catch at\n     CHAIN scope: L\u2081 \"approximating sequence\
+      \ Reynolds defect\" \u2260 L\u2082\n     \"blowup weak limit Reynolds defect\"\
+      ).\n  2. Wrong local norm (parabolic L^3 vs spatial L^3 for Kim-Kozono\n   \
+      \  threshold comparison \u2014 chain-scope norm choice, not local-scope\n  \
+      \   dimension check).\n  3. Strategic pivot from \"FullInvisibilityForcesRegularity\"\
+      \ to\n     \"LocalL3LargeTypeIForcesVisibility\" \u2014 Proof-Surface Compression\n\
+      \     at GLOBAL proof-obligation scope.\n  4. Premature Lean encoding (tick508/509\
+      \ shipped before recursion\n     stabilized \u2014 META-PATTERN-022 binding\
+      \ rule violated at recursive\n     scope).\n\nDiagnosis: I was applying META-PATTERN-022's\
+      \ composition only at LOCAL\nstep scope. Every catch GPT-5.5 made was REACHABLE\
+      \ via the same catalog\nbut lives at chain / recursive / meta scope. Composing\
+      \ the two catalogs\nis necessary but not sufficient; the composition must run\
+      \ at every scope\nof the proof structure.\n\nOperator: \"maybe this deserves\
+      \ a meta pattern as well\". Minted as\nMETA-PATTERN-023 to crystallize the multi-scope\
+      \ application discipline.\n"
+    triggers:
+      lexical:
+      - applied_pattern_at_one_scope_only
+      - per_step_verified_but_chain_not_verified
+      - recursion_did_not_stabilize_but_encoded
+      - sub_chain_not_audited_with_same_patterns
+      structural:
+      - META_PATTERN_022_composition_applied_at_local_scope_only
+      - chain_level_load_bearing_piece_unaudited
+      - recursive_sub_chain_pattern_application_skipped
+      - meta_scope_failure_modes_not_examined
+      problem_classes:
+      - hard_mathematical_residual
+      - pde_chain_closure
+      - recursive_proof_obligation_audit
+    application_scopes:
+      local:
+        description: 'Each transition step in a multi-step argument. ANTI-PATTERN-012''s
+
+          6-point per-step verification (form / direction / quantifier /
+
+          domain / dimension / inclusion). The smallest scope; necessary
+
+          but not sufficient.
+
+          '
+        pattern_examples:
+        - ANTI-PATTERN-012 per-step verification
+        - Universal-language ops at single derivation step
+      chain:
+        description: 'The OVERALL chain structure. Questions at this scope: is this
+          the
+
+          right chain to be running? what''s the chain''s load-bearing piece?
+
+          do all links use the SAME interpretation of key objects (avoiding
+
+          META-PATTERN-021 cross-layer drift)?
+
+          '
+        pattern_examples:
+        - META-PATTERN-021 applied to chain-internal layer drift
+        - Proof-Surface Compression at full-chain scope
+        - PATTERN-007 smuggling_audit on the chain's vocabulary as a whole
+      recursive:
+        description: 'When sub-chains or sub-obligations arise (e.g., the chain
+
+          decomposes into a tree of nested obligations). At this scope:
+
+          apply the SAME patterns to each sub-chain; check the recursion has
+
+          STABILIZED before encoding in Lean (per META-PATTERN-022 binding
+
+          rule). Encoding before stabilization produces premature scaffolds.
+
+          '
+        pattern_examples:
+        - META-PATTERN-022 reapplied on each sub-chain
+        - PATTERN-024 scientific_amnesia_precheck on sub-obligation
+        - Recursive depth budget + stabilization criterion
+      meta:
+        description: 'Failure modes that only appear when applying patterns across
+
+          scopes. Examples: a META-PATTERN-021 cross-layer mismatch between
+
+          sub-chain and parent-chain interpretations of an object; a
+
+          vocabulary smuggle that''s invisible at local scope but visible
+
+          at chain scope.
+
+          '
+        pattern_examples:
+        - "cross-scope META-PATTERN-021 (sub-chain L\u2081 vs chain L\u2082)"
+        - tool-not-consulted laundering at recursive scope (consulting catalog at
+          local steps only, skipping at chain reformulation)
+        - this META-PATTERN-023 itself (a meta-scope catch about the scope-application
+          discipline)
+    binding_rule: "Every non-trivial PDE chain MUST be audited at all four scopes\n\
+      before shipping a closure claim or Lean encoding:\n  1. Local scope:  ANTI-PATTERN-012\
+      \ 6-point per-step verification.\n  2. Chain scope:  is this chain the right\
+      \ one? load-bearing piece\n                   named explicitly? cross-layer\
+      \ alignment checked\n                   for all key objects?\n  3. Recursive\
+      \ scope:  has the recursion stabilized? are sub-chains\n                   \
+      \    independently audited at the chain scope?\n  4. Meta scope:  any cross-scope\
+      \ failure modes (e.g., sub-chain\n                  cross-layer drift) examined?\n\
+      \nFailing any single scope is sufficient to invalidate the closure\nclaim, even\
+      \ if the other scopes pass.\n"
+    chain_position: precondition
+    sessional_catches:
+    - tick508_premature_lean_scaffolding_before_recursion_stabilized
+    - tick509_parabolic_vs_spatial_L3_norm_choice_unaudited_at_chain_scope
+    - route_A_premature_framing_kill_aubin_lions_at_chain_scope
+    - missing_strategic_pivot_to_visibility_completeness_at_global_scope
+    GPT55_comparison_evidence: 'In a controlled comparison (same PDE residual, same
+      catalog access, same
+
+      session time-budget), GPT-5.5 produced 4 catches I missed. All 4 were
+
+      reachable via the catalog I had; all 4 lived at chain / recursive /
+
+      meta scope where I had applied patterns only at local scope. This is
+
+      empirical evidence for the meta-pattern''s discriminating value.
+
+      '
+    references:
+    - META-PATTERN-022 gowers_first_with_content_layer_composition (composition of
+      two catalogs)
+    - META-PATTERN-021 cross_layer_alignment_failure (sibling: cross-layer at single
+        scope)
+    - ANTI-PATTERN-012 vocabulary_chain_laundering (local-scope per-step verification)
+    - "feedback_be_meta_darwin_to_self_2026_05_14.md (load-bearing user-memory \u2014\
+      \ multi-scope rule added 2026-05-15)"
+    - docs/reference/structural_language_catalog.json (content layer)
+    falsifiable_test: 'Once wired as a precondition on closure-claim artifacts, over
+      N>=15 closure
+
+      claims, artifacts carrying documented verification at all four scopes (local
+      /
+
+      chain / recursive / meta) must be subsequently overturned by a cold-shot or
+
+      Meta-Darwin audit in <=15% of cases, versus a matched baseline of closure claims
+
+      verified at local scope only; the four-scope overturn rate must be at least
+      30
+
+      percentage points below the local-only baseline (motivated by the 2026-05-15
+      A/B
+
+      comparison where GPT-5.5 produced 4 chain/recursive/meta-scope catches the
+
+      local-only pass missed). If four-scope-verified closures are overturned at >15%,
+
+      or within 30 points of the local-only baseline, the extra scopes catch nothing
+
+      and the meta-pattern demotes.
+
+      metric_source: closure-claim artifacts (F-rows / Lean files) with four-scope
+
+      verification notes, joined to subsequent overturn events in
+
+      external_prover_ledger.jsonl and catch_ledger.jsonl; matched local-only controls
+
+      from pre-wiring closure claims.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-001:
     source_file: org/patterns/pattern_1_friction_debate.md
     id: PATTERN-001
@@ -196,14 +1496,444 @@ patterns:
     - rule_4_10x_criteria: "output must meet \u22651 of {compiled_constructor, compiled_falsifier,\
         \ residual_split, executable_test, promotion_gate} or downgrade to review-note"
     - rule_5_top_of_funnel: question must be FRESH, not residual-grinding
+    - rule_6_pre_spec_locked_before_deployment: pre-registration file (criteria +
+        verdict alphabet + scoring rule) MUST exist as a committed git artifact BEFORE
+        the first agent dispatch. Operator must record `pre_spec_sha` (full commit
+        hash) in the orchestration_state directory before round_1.json is written.
+        If `pre_spec_sha` is empty, missing, or points to a commit timestamped AFTER
+        the earliest agent dispatch log entry, the deployment is automatic INSUFFICIENT_EVIDENCE
+        on all criteria. No retroactive pre-spec.
+    - rule_7_verdict_alphabet_locked: verdicts MUST be drawn from the fixed alphabet
+        `{PASS, FAIL, PARTIAL, INSUFFICIENT_EVIDENCE}`. Compound qualifiers ("STRONG
+        WEAK PASS", "GENUINE PASS", "PROVISIONAL PARTIAL"), charity grades, and any
+        new label coined during scoring are automatic INSUFFICIENT_EVIDENCE for the
+        affected criterion AND a catalog-level catch under ANTI-PATTERN-007. The arbiter
+        has no authority to extend the alphabet mid-debate.
+    - rule_8_criteria_locked_before_dispatch: the criteria set (the list of disjoint
+        questions the joint verdict will answer) MUST be enumerated, frozen, and committed
+        inside the pre-spec file referenced by `pre_spec_sha`. Adding, removing, refining,
+        or re-weighting criteria after the first agent dispatch is automatic INSUFFICIENT_EVIDENCE
+        on the changed criteria AND requires a new pre_spec_sha + a new deployment
+        id (the prior deployment is closed). Criterion drift is not "tightening".
     chain_position: primary
     related_patterns:
-    - "PATTERN-002 (darwin_idea_killer \u2014 chained on output)"
-    - "PATTERN-008 (three_leg_verification \u2014 chained on theorem output)"
+    - PATTERN-002 (darwin_idea_killer, chained on output)
+    - PATTERN-008 (three_leg_verification, chained on theorem output)
     references:
-    - "https://arxiv.org/abs/2402.06782 (Khan et al. 2024 \u2014 closest published\
-      \ analog)"
+    - https://arxiv.org/abs/2402.06782 (Khan et al. 2024, closest published analog)
     - https://arxiv.org/html/2603.27404v1 (Heterogeneous Debate Engine, Mar 2026)
+    falsifiable_test: 'Across N>=15 friction_debate deployments tagged in the pattern_deployment_ledger,
+
+      the fraction whose Round-5 joint verdict is later overturned or downgraded by
+      a
+
+      chained PATTERN-002 / cross-family audit must be LOWER than the matched overturn
+
+      fraction for single-perspective (non-debate) audit dispatches on comparable
+
+      claims, by an absolute margin of >=15 percentage points. If friction-debate
+
+      verdicts are overturned at a rate within 15 points of (or above)
+
+      single-perspective verdicts, the friction loop adds no verification value and
+
+      the pattern demotes.
+
+      metric_source: pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-001,
+
+      outcome_bucket_pre_registered vs outcome_bucket_realized) cross-referenced with
+
+      the catch ledger for overturn/downgrade events.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-013:
+    source_file: org/patterns/pattern_deployment_ledger.md
+    id: PATTERN-013
+    name: pattern_deployment_ledger
+    version: 1
+    status: active
+    minted_at: 2026-05-09
+    triggers:
+      lexical:
+      - pattern monoculture
+      - recency bias
+      - deployment ledger
+      - blind spot
+      - underused pattern
+      structural:
+      - repeated_pattern_dispatch
+      - campaign_summary_pending
+      - operator_monoculture_concern
+      problem_classes:
+      - apparatus_self_audit
+      - too_complex_direct_attack
+    minted_reason: "Operator caught recency-bias in orchestration menu twice in same\
+      \ session\n(2026-05-09): \"i'm not sure ur orchestration menu is top notch \u2014\
+      \ it\nseems to me that u are recency bias and even if i tell i have to keep\n\
+      telling you... if it is the case then we need to find a structural\nsolution.\"\
+      \ First-order patterns (PATTERN-001..012) describe HOW to\ndeploy a tactic;\
+      \ this second-order pattern describes how to AUDIT the\nRD's own deployment\
+      \ distribution and flag monoculture / recency bias\nbefore the operator has\
+      \ to.\n\nEmpirical justification at minting time: of the ~17 dispatches\ncaptured\
+      \ in `analytics/public/telemetry/agent_telemetry.jsonl` for the 2026-05-08/09\n\
+      NS Track B session, ~12 were PATTERN-001 (typed-companion / friction-\ndebate)\
+      \ and 0 were PATTERN-009 (independent_cas_verification). The\nLerner-2026 W6\
+      \ port unfaithfulness catch (C-2026-05-09-59) was\nsurfaced by an EXTERNAL prover\
+      \ (operator-relayed GPT-5.5), exactly\nbecause PATTERN-009 was not being deployed\
+      \ by the RD.\n"
+    falsifiable_test: "Over N>=10 logged monoculture_flag=true events, ignored flags\
+      \ must retroactively\npredict a missed catch: in >=60% of cases where the RD\
+      \ ignored a monoculture flag\nand continued the dominant pattern, the next dispatch\
+      \ must have failed to surface\na defect that a later off-pattern dispatch then\
+      \ caught. If ignored monoculture\nflags predict missed catches in <60% of cases,\
+      \ the diversity metric is not\nload-bearing and demotes \u2014 this quantifies\
+      \ the pattern's own existing\n(unquantified) falsifiable-asymmetry note.\nmetric_source:\
+      \ pattern_deployment_diversity.json (monoculture_flag history)\njoined to the\
+      \ catch ledger for the catch immediately following each ignored-flag\ndispatch.\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-012:
+    source_file: org/patterns/prediction_ledger.md
+    id: PATTERN-012
+    name: prediction_ledger
+    version: 2
+    status: active_conditional
+    discovered: 2026-05-08
+    promoted: 2026-05-09
+    meta_meta_audit: analytics/public/audits/META_META_DARWIN_PATTERN_012_2026_05_09.md
+    auto_demote_tripwire: "2026-05-16 OR ledger N=20 \u2014 whichever comes first;\
+      \ if validate_prediction_ledger.py is NOT wired into CI by then AND N<20 across\
+      \ <2 substrates AND <2 predictors, status flips back to PILOT"
+    triggers:
+      lexical:
+      - predict
+      - estimate
+      - odds
+      - probability
+      - timeline
+      - will take
+      - days
+      - weeks
+      - hours
+      structural:
+      - conditional_odds_assertion
+      - effort_estimate
+      - promotion_decision
+      - pre_registration
+      problem_classes:
+      - apparatus_self_audit
+      - calibration_drift
+      - decision_under_uncertainty
+    spawn:
+      mode: inline_record
+      rounds: 1
+      subagents:
+      - role: predictor
+        description: Author the prediction. May be the operator, the Research Director,
+          or a dispatched substrate agent.
+        tools:
+        - write
+      - role: resolver
+        description: "When the predicted event resolves (time passes / experiment\
+          \ runs / agent returns), fill the resolution fields. Same predictor or different\
+          \ \u2014 does not require a concurring-agent gate."
+        tools:
+        - write
+    output_schema: prediction_ledger_row_v1
+    fallback: PATTERN-008
+    preconditions:
+    - substantive_prediction: a prediction that gates a typed action (promotion, dispatch,
+        kill, escalation). Idle predictions ("the weather might be sunny") are NOT
+        logged.
+    - effort_in_agent_units: effort estimates MUST be expressed in agent-minutes (or
+        agent-hours), NOT human-hours. The operator-flagged calibration bug was systematic
+        over-estimation by 8-12x using human-effort units.
+    - pre_resolution_capture: row written BEFORE resolution. Backfilling a prediction
+        after the result is known is automatic INSUFFICIENT_EVIDENCE on the calibration
+        claim.
+    deployment_rules:
+    - rule_1_log_substantive_predictions: any prediction that gates a typed action
+        gets a ledger row before the action commits.
+    - rule_2_agent_minutes_not_human_hours: effort estimates in agent units. If you
+        find yourself estimating in human-hours, that's the bug the pattern was designed
+        to catch.
+    - rule_3_resolve_when_resolved: when the predicted event resolves, fill `actual_outcome`,
+        `actual_effort_minutes`, `calibration_delta_*` fields. Never edit prior fields.
+    - rule_4_meta_darwin_audit: each resolution writes a `meta_darwin_audit` field
+        naming any structural lessons (e.g., "predictor systematically under-confident
+        on event_X").
+    - rule_5_demotion_thresholds: "if predictors converge on Brier scores worse than\
+        \ uniform after >=20 predictions, pattern is curve-fitting calibration \u2192\
+        \ demote. If predictions get gamed (under-confident hedging to look calibrated)\
+        \ \u2192 demote."
+    chain_position: lateral
+    related_patterns:
+    - "PATTERN-005 (falsifiable_asymmetry \u2014 predictions are pre-registered falsifiers)"
+    - "PATTERN-008 (three_leg_verification \u2014 applied to verdicts derived FROM\
+      \ predictions)"
+    - "ANTI-PATTERN-005 (narrative_inflation \u2014 predictions caught padded for\
+      \ sentiment)"
+    references:
+    - 'Tetlock, Philip E. & Gardner, Dan (2015). Superforecasting: The Art and Science
+      of Prediction. Crown.'
+    - Brier, Glenn W. (1950). Verification of forecasts expressed in terms of probability.
+      Monthly Weather Review.
+    falsifiable_test: "After N>=20 resolved prediction-ledger rows across >=2 substrates\
+      \ and >=2\npredictors, the aggregate Brier score on probabilistic predictions\
+      \ must be\nstrictly better (lower) than a uniform/base-rate forecast by >=0.05,\
+      \ AND mean\neffort-calibration error (predicted vs actual agent-minutes) must\
+      \ be within 2x.\nIf Brier is no better than uniform, or effort estimates revert\
+      \ to >2x systematic\nerror (the original ~10x bug returning), demote \u2014\
+      \ this restates and quantifies\nthe pattern's own existing rule_5.\nmetric_source:\
+      \ prediction_ledger.jsonl resolved rows (conditional_odds vs\nactual_outcome_bucket;\
+      \ effort_estimate_agent_minutes vs actual_effort_minutes);\nBrier computed by\
+      \ validate_prediction_ledger.py.\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-026:
+    source_file: org/patterns/primitive_before_architecture_gate.md
+    id: PATTERN-026
+    name: primitive_before_architecture_gate
+    version: 1
+    status: active
+    discovered: 2026-05-15
+    triggers:
+      lexical:
+      - multi-layer architecture
+      - Layer 2a / Layer 2b / Layer N
+      - first pass is crude
+      - research thread
+      - deferred to future work
+      - TBD
+      - Layer N retrieves the gap
+      structural:
+      - architecture_spec_contains_unvalidated_layer
+      - layer_marked_deferred_or_TBD_inside_architecture_doc
+      - layer_admits_crude_first_pass_in_same_doc
+      - architecture_proposes_composition_before_primitives_pass_gates
+      problem_classes:
+      - apparatus_self_audit
+      - architecture_design
+    spawn:
+      mode: output_gate
+      subagents: []
+    output_schema: primitive_validation_verdict_v1
+    fallback: PATTERN-002
+    preconditions:
+    - artifact_claims_to_be_architecture: true
+    - architecture_has_multiple_named_layers: true
+    chain_position: pre
+    related_patterns:
+    - "PATTERN-005 (falsifiable_asymmetry \u2014 sibling": claim-level falsifier requirement;
+        this pattern is the architecture-level analog)
+    - "PATTERN-002 (darwin_idea_killer \u2014 fallback if architecture ships without\
+      \ primitive validation)"
+    - "ANTI-PATTERN-008 (deployment_time_pre_spec_laundering \u2014 sibling at the\
+      \ deployment-timing level)"
+    references:
+    - "GP-233 \xA77 (DEMOTED 2026-05-15) \u2014 the failure that motivated this pattern"
+    - "GP-235 (DAG fingerprint primitive validation seam) \u2014 the corrective application"
+    falsifiable_test: "Once wired as the pre-acceptance gate, over N>=15 multi-layer\
+      \ architecture\nartifacts passed through the gate, architectures that PASS (every\
+      \ layer cites\nartifact + pass-gate + measurement) must be subsequently demolished\
+      \ as\nARCHITECTURE-IS-FACADE by a PATTERN-002 Meta-Darwin audit in <=10% of\
+      \ cases, AND\nthis PASS-then-facade rate must be at least 50 percentage points\
+      \ below the\npre-gate baseline facade rate (the GP-233 \xA77 class: facade confirmed\
+      \ on the\nun-gated architectures audited in the 2026-05-15 window). If gate-passed\n\
+      architectures still collapse as facade at >10%, or the gate does not cut the\n\
+      facade rate by >=50 points, demote.\nmetric_source: primitive_validation_verdict_v1\
+      \ records (gate_outcome) joined to\nsubsequent PATTERN-002 audit verdicts (KILL/WEAK-KILL\
+      \ counts) on the same\narchitecture artifact; dispatches tagged PATTERN-026.\n"
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  META-PATTERN-024:
+    source_file: org/patterns/recursive_fixed_point_convergence.md
+    id: META-PATTERN-024
+    name: recursive_fixed_point_convergence
+    version: 1
+    status: active
+    discovered: 2026-05-15
+    triggers:
+      lexical:
+      - same atom again
+      - re-vocabularied
+      - every route collapses
+      - strange loop
+      - fractal
+      - keeps coming back
+      - fixed point
+      - criticality
+      structural:
+      - N>=3 recursive reformulations (incl. cross-field isomorphisms) each Meta-Darwin-collapse
+        to the SAME residual
+      - each reformulation provably degree-0 / scaling-critical (no free sub-critical
+        gain)
+      - operator says "don't stop / don't strawman" yet new ticks keep re-deriving
+        one atom
+      problem_classes:
+      - hard_mathematical_residual
+      - pure_analysis_drift
+      - apparatus_self_audit
+    spawn:
+      mode: convergence_audit
+      subagents:
+      - role: fixed_point_invariance_prover
+        tools:
+        - read
+        - bash
+    output_schema: fixed_point_convergence_report_v1
+    fallback: PATTERN-020
+    preconditions:
+    - at least 3 distinct reformulations attempted and Meta-Darwin-killed
+    - amnesia precheck (PATTERN-024) run before each reformulation
+    chain_position: post
+    composes:
+    - "PATTERN-024 (scientific_amnesia_precheck \u2014 run before EVERY iterate)"
+    - "PATTERN-018 (structural_residual_analogy \u2014 the cross-field isomorphism\
+      \ iterates)"
+    - darwin_idea_killer (the recursive MD-kill of each iterate)
+    - "META-PATTERN-022 (gowers_first + content composition \u2014 each iterate is\
+      \ pencil-first)"
+    - "META-PATTERN-023 (multi_scope \u2014 each iterate verified at 4 scopes)"
+    - "PATTERN-005 (falsifiable_asymmetry \u2014 the transverse escape must be falsifiable)"
+    - "PATTERN-008 (three_leg_verification \u2014 LEG1/2/3 on the fixed-point claim)"
+    - "PATTERN-012 (prediction_ledger \u2014 contract each iterate; calibration converges)"
+    related_patterns:
+    - "PATTERN-020 (meta_arc_stall_resolution \u2014 weaker predecessor": detects
+        stall, not the structural cause)
+    falsifiable_test: 'Once wired as a post-position convergence audit, over N>=8
+      residuals that hit the
+
+      trigger (>=3 distinct reformulations each Meta-Darwin-collapsing to the same
+
+      residual), firing the pattern must produce a proved Phi-invariance theorem PLUS
+      a
+
+      finite enumerated transverse-channel set in >=75% of cases, AND must cut the
+
+      number of subsequent same-axis reformulation ticks on that residual to <=0.3x
+      the
+
+      count observed on matched pre-wiring residuals (the NS strict-margin baseline:
+
+      ~10 reformulations / >=4 vocabulary drifts on one atom before the loop was
+
+      named). If firing the pattern does not yield a proved fixed point in >=75% of
+
+      triggered cases, or does not cut same-axis reformulation ticks to at most 0.3x
+
+      baseline, it neither stops the laundering loop nor distinguishes it from a stall,
+
+      and demotes.
+
+      metric_source: fixed_point_convergence_report_v1 outputs (Phi-invariance proof
+
+      present, transverse-channel enumeration) joined to per-residual
+
+      reformulation-tick counts from pattern_deployment_ledger.jsonl /
+
+      EXPERIMENT_TRACK_RECORD.md; matched pre-wiring residuals as control.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-028:
+    source_file: org/patterns/recursive_tool_depth_loop.md
+    id: PATTERN-028
+    name: recursive_tool_depth_loop
+    version: 2
+    status: active
+    discovered: 2026-05-20
+    discovered_reason: 'Hard residual ticks repeatedly produced a shallow sequence:
+      pencil sketch,
+
+      single formal edit, then close pressure.  TICK663/TICK664 showed the better
+
+      sequence: pencil work exposed the candidate interface, the domain workbench
+
+      and reusable primitives caught declaration-only or under-separated fields,
+
+      Lean encoded the corrected surface, and a second tool pass checked the patch.
+
+      '
+    triggers:
+      lexical:
+      - depth-n
+      - recursive work
+      - workbench
+      - primitives
+      - tool underuse
+      - formal frontier
+      - proof frontier
+      structural:
+      - hard_residual_has_domain_tools_available
+      - formal_edit_planned_after_single_pencil_pass
+      - workbench_or_primitives_exist_but_are_not_consumed
+      - tool_output_names_missing_discriminator
+      - close_pressure_before_second_stress_pass
+      problem_classes:
+      - hard_mathematical_residual
+      - hard_research_residual
+      - proof_frontier
+      - formal_frontier
+    composition:
+      complements:
+      - PATTERN-011
+      - PATTERN-025
+      mitigates:
+      - ANTI-PATTERN-018
+    spawn:
+      mode: recursive_research_loop
+      output_schema: research_depth_receipt_loop_v1
+    chain_position: in_tick
+    related_patterns:
+    - id: PATTERN-011
+      relation: swarm breadth; one or more lanes can each run this loop
+    - id: PATTERN-025
+      relation: pencil-first supplies the first orientation artifact
+    references:
+    - "AGENTS.md \xA70a2 2d1/2e1/2e2"
+    - org/mandates/research_director_mandate.md v1.66/v1.69
+    - org/anti-patterns/tool_underuse_formal_satisficing.md
+    falsifiable_test: 'Once wired as an in-tick loop, over N>=15 hard-residual ticks
+      with available
+
+      domain tools, ticks running >=2 explicit research loops (per the five-leg
+
+      structure) must close with a checked artifact that changed the residual graph
+      OR
+
+      a named-primitive kill in >=70% of cases, versus a matched baseline of
+
+      single-pencil-pass / single-compile ticks on comparable residuals; the deep-loop
+
+      graph-change rate must exceed the shallow baseline by >=25 percentage points.
+
+      Additionally, class-matched tools skipped without a logged why_not must be 0
+
+      across the N. If the deep-loop graph-change rate is within 25 points of the
+
+      shallow baseline, the second loop surfaces no new information and the pattern
+
+      demotes.
+
+      metric_source: research_depth_receipt_loop_v1 outputs (loop count, tool why_not
+
+      lines, stop-rule classification) joined to F-rows / architecture graph deltas;
+
+      PATTERN-028 ticks tagged in pattern_deployment_ledger.jsonl.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-003:
     source_file: org/patterns/reducer.md
     id: PATTERN-003
@@ -247,11 +1977,116 @@ patterns:
     - claim_uses_future_vocabulary: at least one elite noun present
     chain_position: terminal
     related_patterns:
-    - "PATTERN-004 (vocabulary_quarantine \u2014 prompt-time guardrail)"
-    - "PATTERN-005 (falsifiable_asymmetry \u2014 output-time guardrail)"
+    - PATTERN-004 (vocabulary_quarantine, prompt-time guardrail)
+    - PATTERN-005 (falsifiable_asymmetry, output-time guardrail)
     references:
     - https://github.com/anthropics/skills (SKILL.md format precedent)
     - tonight's catch
+    falsifiable_test: 'Over N>=15 reducer audits of future-vocabulary candidates,
+      the reducer''s
+
+      LAUNDERED verdicts must agree with an independent cross-family re-audit
+
+      (PATTERN-014) on >=80% of cases, AND the reducer must return at least one
+
+      non-LAUNDERED verdict (GENUINE-BUT-VACUOUS or GENUINE-AND-PREDICTIVE) across
+      any
+
+      15-dispatch window. If cross-family agreement drops below 80%, or the reducer
+
+      outputs LAUNDERED on 15/15 (its own DEFAULT-TO-LAUNDERED anti-pattern), demote.
+
+      metric_source: reducer_verdict_v1 outputs vs cross-family re-audit verdicts;
+      both
+
+      tagged in pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-003) and
+
+      external_prover_ledger.jsonl.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-024:
+    source_file: org/patterns/scientific_amnesia_precheck.md
+    id: PATTERN-024
+    name: scientific_amnesia_precheck
+    version: 1
+    status: active
+    discovered: 2026-05-14
+    triggers:
+      lexical:
+      - been_here_before
+      - repeat_branch
+      - prior_arc
+      - deja_vu
+      - overlap
+      - history_audit
+      structural:
+      - branch_choice_before_querying_prior_evidence
+      - operator_flags_prior_work_after_agent_has_selected_next_move
+      - proof_frontier_terms_overlap_prior_EF_rows_or_code_declarations
+      - new_artifact_claim_without_nearest_prior_basin_pointers
+      problem_classes:
+      - hard_mathematical_residual
+      - apparatus_self_audit
+      - too_complex_direct_attack
+    spawn:
+      mode: agentic_pre_tick
+      primary: agent_reasoning_against_artifact_graph
+      weak_signal_only:
+        module: src.ztare.research_director.scientific_amnesia
+        cli:
+          generic: scripts/public/control/scientific_amnesia_precheck.py
+          ns_defaults: scripts/public/projects/ns/ns_scientific_amnesia_precheck.py
+        role: lexical/embedding overlap = WEAK PRIOR. Never branch on the score. False
+          != novel; True-generic != safe.
+      output_schema: scientific_amnesia_report_v1
+      storage_path: analytics/public/queries/scientific_amnesia/<substrate>_latest.json
+    chain_position: pre
+    related_patterns:
+    - PATTERN-012
+    - PATTERN-017
+    - PATTERN-023
+    - ANTI-PATTERN-011
+    references:
+    - src/ztare/research_director/scientific_amnesia.py
+    - scripts/public/control/scientific_amnesia_precheck.py
+    - scripts/public/projects/ns/ns_scientific_amnesia_precheck.py
+    - research_areas/EXPERIMENT_TRACK_RECORD.md
+    - analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md
+    falsifiable_test: 'Once wired as a pre-tick step, over N>=20 branch queries with
+      known historical
+
+      overlap, the precheck must (a) surface >=1 exact prior E/F row or code
+
+      declaration above threshold AND (b) cause the RD to record a non-no_close_prior
+
+      classification (repeat/reuse/adjacent_but_distinct) in >=80% of those cases;
+      AND
+
+      the rate of basin re-visits later caught by the operator ("have we been here
+
+      before?") must drop to <=0.5x the pre-wiring re-visit rate. If overlap-bearing
+
+      queries yield a prior-pointer-backed reclassification in <80% of cases, or
+
+      operator-caught re-visits do not halve, the precheck does not displace operator
+
+      memory and demotes.
+
+      metric_source: scientific_amnesia_report_v1 outputs in
+
+      analytics/public/queries/scientific_amnesia/ joined to branch-note
+
+      classifications; operator-caught re-visit events from catch_ledger.jsonl
+
+      (amnesia-category catches).
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-007:
     source_file: org/patterns/smuggling_audit.md
     id: PATTERN-007
@@ -290,11 +2125,126 @@ patterns:
       relation: parent
       note: smuggling audit is darwin_idea_killer scoped to inversion-fallback failure
         mode
+    falsifiable_test: 'Over N>=12 Mungerian-inversion fallback paths audited, every
+      INVERSION-SMUGGLES
+
+      verdict must name a specific load-bearing step, and >=80% of those named steps
+
+      must be confirmed (by cross-family re-audit or a solved-regime counterexample)
+      to
+
+      actually require the bypassed obstruction. If confirmation falls below 80%,
+      or
+
+      any 12-dispatch window contains zero named load-bearing steps (over-paranoia
+
+      anti-pattern), demote.
+
+      metric_source: smuggling_verdict_v1 outputs (named step + confirmation status)
+      in
+
+      pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-007), cross-checked
+
+      against external_prover_ledger.jsonl re-audits.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-018:
+    source_file: org/patterns/structural_residual_analogy.md
+    id: PATTERN-018
+    name: structural_residual_analogy
+    version: 1
+    status: active
+    discovered: 2026-05-09
+    discovered_reason: 'META-DARWIN audit on pattern architecture (2026-05-09 evening)
+      flagged
+
+      src/ztare/fit/analogy.py (GP-164) as a missing pattern. Cross-domain
+
+      transfer mechanism that fires when the operator-curated grammar is
+
+      exhausted (no template passes holdout) AND a non-trivial residual
+
+      fingerprint exists. Distinct from PATTERN-014 (cold-shot is de-
+
+      anchoring; analogy is cross-domain transfer within the same substrate).
+
+      '
+    triggers:
+      lexical:
+      - analogy
+      - isomorphism
+      - cross-domain
+      - structural transfer
+      - residual fingerprint
+      structural:
+      - operator-curated grammar exhausted (no template passes holdout)
+      - non-trivial residual fingerprint exists
+      - light semantic domain hint available (physics / biology / math / social)
+      - imported frame can be compiled into a target-side receipt or falsifier
+      problem_classes:
+      - grammar_exhaustion
+      - cross_domain_transfer
+      - mutator_priming
+      - receipt_forced_transfer
+    spawn:
+      mode: kernel_call
+      module: src.ztare.fit.analogy
+      inputs:
+      - residual_fingerprint:
+        - regime_break_flag
+        - monotonicity_flag
+        - heavy_tail_flag
+      - light_semantic_domain_hint:
+          choices:
+          - physics
+          - biology
+          - math
+          - social
+      outputs:
+      - candidate_forms_for_compress
+      - target_side_receipt_obligation
+      default_mode: observe
+    related_patterns:
+    - id: PATTERN-014
+      relation: distinct
+    - id: PATTERN-019
+      relation: feeds
+    - id: PATTERN-005
+      relation: requires
+    references:
+    - existing kernel: src/ztare/fit/analogy.py
+    - GP-164 cross-domain transfer
+    falsifiable_test: 'Over N>=10 analogy deployments, candidate forms produced by
+      the analogy kernel
+
+      must pass the substrate holdout gate (or, for theorem work, force a concrete
+
+      target-side receipt that changes a branch decision) at a rate >=1.5x the
+
+      holdout-pass rate of randomly-sampled domain-template forms tested against the
+
+      same residual. If analogy candidates pass at <1.5x the random-template baseline,
+
+      the cross-domain transfer is noise and demotes.
+
+      metric_source: analogy candidate-form holdout-pass results vs random
+
+      domain-template control runs (COMPRESS-cycle holdout logs); receipt-bearing
+
+      deployments tracked via analogy_mapping_receipt artifacts.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-011:
     source_file: org/patterns/swarm_dispatch.md
     id: PATTERN-011
     name: swarm_dispatch
-    version: 1
+    version: 2
     status: active
     discovered: 2026-05-08
     triggers:
@@ -308,6 +2258,8 @@ patterns:
       - N_independent_subtasks
       - cross_family_validation_needed
       - exploration_value_high
+      - queueable_residual_stream
+      - station_bottleneck_visible
       problem_classes:
       - hard_mathematical_residual
       - pre_category_emergence
@@ -334,6 +2286,23 @@ patterns:
       - role: parallel_worker
         tools:
         - varies by variant
+    factory_overlay:
+      mode: flow_line
+      trigger: hard_residual_with_repeated_rows_or_candidates
+      stations:
+      - source_or_candidate_generation
+      - execution_or_compile
+      - governance_or_ratification
+      - residual_to_lever
+      - synthesis
+      required_metrics:
+      - lead_time
+      - cycle_time_per_station
+      - throughput_per_station
+      - WIP
+      - rework_rate
+      - bottleneck_station
+      queue_contract: durable_append_only_events_plus_claimed_work_queue
     output_schema: swarm_aggregate_v1
     fallback: PATTERN-001
     preconditions:
@@ -350,6 +2319,33 @@ patterns:
     - https://arxiv.org/html/2603.13327 (DOVA deliberation-first orchestration)
     - existing scripts/openmath_novel_ideas_swarm.py (PY LLM-based instance)
     - existing scripts/surgical_swarm_panel.py (PY LLM-based instance)
+    falsifiable_test: 'Over N>=8 swarm deployments using the factory overlay, measured
+      throughput at the
+
+      bottleneck station after adding a worker must increase by >=1.5x relative to
+      the
+
+      pre-add bottleneck throughput on the same queue; AND wallclock for the swarmed
+
+      task must be <=0.5x a matched serial baseline. If bottleneck throughput rises
+      by
+
+      <1.5x after worker-add (WIP inflation without throughput, the
+
+      WORKER-BEFORE-BOTTLENECK anti-pattern) or wallclock is not at least halved,
+
+      demote.
+
+      metric_source: swarm factory-overlay telemetry (throughput_per_station,
+
+      bottleneck_station, lead_time, cycle_time) recorded per the required_metrics
+
+      contract; swarm dispatches tagged PATTERN-011 in pattern_deployment_ledger.jsonl.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-006:
     source_file: org/patterns/tautology_trap.md
     id: PATTERN-006
@@ -385,6 +2381,83 @@ patterns:
     - id: PATTERN-002
       relation: parent
       note: tautology trap is one of darwin_idea_killer's failure-mode buckets
+    falsifiable_test: 'Over N>=15 proposed "falsifiable tests" screened by the detector,
+      claims it flags
+
+      TAUTOLOGICAL must, on independent re-check, contain a conjecture-named quantity
+
+      on the prediction RHS in >=85% of cases (precision floor), AND it must pass
+      at
+
+      least one genuinely non-tautological test per 15-dispatch window. Precision
+      below
+
+      85% or a 15/15 all-TAUTOLOGICAL run (over-stripping anti-pattern) triggers
+
+      demotion.
+
+      metric_source: tautology_verdict_v1 outputs vs manual/cross-family re-check,
+      both
+
+      logged in pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-006, or
+
+      PATTERN-002 with --mode=tautology).
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
+  PATTERN-027:
+    source_file: org/patterns/terminal_de_anonymization_reformulation.md
+    id: PATTERN-027
+    name: terminal_de_anonymization_reformulation
+    status: active
+    discovered: 2026-05-16
+    discovered_reason: "Direct comparison this session: at the isolated C7 atom I\
+      \ lapsed\ninto ANTI-PATTERN-014/016 (consensus-gravity terminus, G\xF6del-dodge:\n\
+      \"scaling-class wall, Clay-level unreachable\"). GPT-5.5, on the SAME\natom,\
+      \ instead STRIPPED the Navier-Stokes labels and recast it as a\nneutral scalar\
+      \ parabolic equation with a positive potential\n(\u2202t+b\xB7\u2207\u2212\u03BD\
+      \u0394)q=Vq, then identified the exact classical fixed point:\nthe parabolic\
+      \ Kato/Feynman-Kac / Hardy inverse-square critical\nthreshold (\u03BA_r(V_+)=O(1)\
+      \ critical, need <\u03BA*<1). This was a SHARPER\nnon-laundered endpoint than\
+      \ my pressure-nonlocality framing. The\ngap was NURTURE (a missing move), not\
+      \ a model ceiling: my tick584/\n586 estimate math was correct & I refuted a\
+      \ red-team arithmetic\nslip \u2014 capability was present; the de-anonymization\
+      \ move was not.\n"
+    falsifiable_test: 'Once wired to fire whenever an isolated atom approaches a terminus
+      declaration,
+
+      over N>=15 atoms at terminus-pressure, PATTERN-027 must produce a de-anonymized
+
+      neutral-field reformulation plus an exact named classical fixed-point (or exact
+
+      critical scalar) BEFORE any "open/terminus/unreachable" wording in >=80% of
+
+      cases; AND across that N the rate of terminus declarations later overturned
+      by a
+
+      cold-shot that found a reachable reformulation must be <=0.5x the pre-wiring
+
+      overturn rate. If the de-anonymized recast precedes terminus wording in <80%
+      of
+
+      atoms, or overturned-terminus events do not halve, the pattern does not displace
+
+      consensus-gravity termini and demotes.
+
+      metric_source: atom-isolation tick records / F-rows tagged PATTERN-027 (presence
+
+      of neutral-field recast + named fixed-point ahead of terminus wording);
+
+      overturned-terminus events from external_prover_ledger.jsonl and
+
+      catch_ledger.jsonl.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-008:
     source_file: org/patterns/three_leg_verification.md
     id: PATTERN-008
@@ -416,8 +2489,32 @@ patterns:
     - claim_is_substrate_testable: numerical / symbolic / computational
     chain_position: post
     related_patterns:
-    - "PATTERN-001 (friction_debate \u2014 typical predecessor)"
-    - "PATTERN-009 (independent_cas_verification \u2014 lighter variant)"
+    - PATTERN-001 (friction_debate, typical predecessor)
+    - PATTERN-009 (independent_cas_verification, lighter variant)
+    falsifiable_test: 'Over N>=10 conditional theorems that PASS all three legs, the
+      rate of subsequent
+
+      defect discovery (sign error, scope over-claim, trivially-fires bug) found after
+
+      F-row recording must be <=20% AND must be LOWER than the post-recording defect
+
+      rate for theorems recorded without 3-leg verification, by >=20 percentage points.
+
+      If 3-leg-passed theorems fail downstream at a rate within 20 points of unverified
+
+      theorems, the verification adds no grounding and demotes.
+
+      metric_source: F-rows for conditional theorems (verification status) joined
+      to
+
+      the catch ledger for post-recording defect catches; PATTERN-008 dispatches tagged
+
+      in pattern_deployment_ledger.jsonl.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary
   PATTERN-004:
     source_file: org/patterns/vocabulary_quarantine.md
     id: PATTERN-004
@@ -444,5 +2541,35 @@ patterns:
     - prompt_will_request_future_vocabulary: true
     chain_position: pre
     related_patterns:
-    - "PATTERN-003 (reducer \u2014 post-output enforcement)"
-    - "PATTERN-005 (falsifiable_asymmetry \u2014 output-time enforcement)"
+    - PATTERN-003 (reducer, post-output enforcement)
+    - PATTERN-005 (falsifiable_asymmetry, output-time enforcement)
+    falsifiable_test: 'Once wired into the future-vocabulary projector prompt chain,
+      across N>=15
+
+      future-vocab / paradigm-shift / naming-sprint dispatches that carry the
+
+      quarantine prompt-injection, downstream PATTERN-003 reducer LAUNDERED-verdict
+      rate
+
+      on the resulting candidates must be at least 25 percentage points LOWER than
+      the
+
+      matched LAUNDERED rate for projector outputs generated without the injection
+      (the
+
+      pre-P11 baseline; the 2026-05-08 first-fire showed 3/3 launderings still caught
+
+      but pre-constrained). If injected and non-injected outputs launder at rates
+
+      within 25 points of each other, the quarantine prevents nothing and demotes.
+
+      metric_source: pattern_deployment_ledger.jsonl (primary_pattern=PATTERN-004,
+
+      vocabulary_quarantine_injected flag per projector dispatch) joined to downstream
+
+      reducer_verdict_v1 LAUNDERED/GENUINE outcomes on the same dispatch_id chain.
+
+      '
+    last_reviewed: 2026-05-22
+    review_due: 2026-06-21
+    review_cadence: per_campaign_summary

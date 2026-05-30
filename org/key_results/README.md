@@ -25,7 +25,7 @@ org/key_results/<kr_id>.md
    │
    │  daemon polls measurement_source on review_overdue_threshold_days
    │  if measurement_source: daemon, daemon attempts re-measurement
-   │  if measurement_source: principal, daemon nudges via Telegram
+   │  if measurement_source: principal, daemon nudges via notification provider
    ▼
    status: done | failed   ← parent Objective closure scores 0.0–1.0
 ```
@@ -77,9 +77,9 @@ possible, write KRs whose measurement is something the daemon can
 poll (file count, git commits, external API).
 
 **`check_ins`** — append-only. The daemon adds entries when it
-re-measures; the principal can append entries via Telegram thumbs-up
-("confidence unchanged"). Two consecutive declining check-ins with no
-task work toward the KR triggers `at_risk` flag.
+re-measures; the principal can append entries via the configured notification
+provider. Two consecutive declining check-ins with no task work toward the KR
+triggers `at_risk` flag.
 
 ## Closure pressure
 
@@ -87,8 +87,8 @@ Daemon polls each KR on schedule. If `last_measured_utc` is older than
 `review_overdue_threshold_days`:
 - `measurement_source: daemon` → attempt re-measurement; on success
   update `last_measured_utc` and append check-in. On failure, flag
-  `at_risk`, surface in Telegram digest.
-- `measurement_source: principal` → nudge in Telegram digest;
+  `at_risk`, surface in the notification digest.
+- `measurement_source: principal` → nudge in the notification digest;
   principal can ack with thumbs-up to extend, or write the
   measurement, or accept `at_risk` flag.
 
@@ -118,5 +118,5 @@ parent Objective's closure prompt.
 
 - `org/objectives/README.md` — parent layer
 - `org/tasks/README.md` — child layer (tasks reference KRs via `kr_id`)
-- `research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md`
+- `GP-168 (internal seam)`
   — Panel B synthesis (KRs as files, measurement_locus, kr_type)

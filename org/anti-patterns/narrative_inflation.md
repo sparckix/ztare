@@ -28,17 +28,17 @@ mitigation:
   - "When a criterion-selection step was deployment-time, document this in the verdict and treat the criterion set as ~N/effective_sample_size axes."
 examples:
   - id: catch_24_overclaim
-    summary: "Mentioned in catch #25's running-count update: 'overclaim' as a recurring inflation mode in the catch ledger itself. Honest count after re-audit was 14 load-bearing post agent abcae9 audit (vs 22 raw)."
+    summary: "Mentioned in catch #25's running-count update: 'overclaim' as a recurring inflation mode in the catch ledger itself. Honest count after re-audit was 14 central post agent abcae9 audit (vs 22 raw)."
     file: anti_laundering_catch_25_lean_elaborator_rabbithole_2026_05_08.md
   - id: catch_30
-    summary: "Pincer GENUINE verdict — 'STRONG WEAK PASS' charity grade invented mid-audit; 5 criteria collapsed to ~3 effective axes via disjointness collusion; pre-registration timing was deployment-time. Verdict revised: GENUINE → PARTIAL/PROVISIONAL."
+    summary: "Pincer GENUINE verdict, 'STRONG WEAK PASS' charity grade invented mid-audit; 5 criteria collapsed to ~3 effective axes via disjointness collusion; pre-registration timing was deployment-time. Verdict revised: GENUINE → PARTIAL/PROVISIONAL."
     file: pincer_meta_darwin_audit_2026_05_08.md
   - id: catch_9_mathlib_pr_ready
     summary: "Claim 'Mathlib-PR-ready file shipped' for a sorry-bodied scaffold with forbidden namespace. Honest framing: scaffold pointing at the correct 5-PR split (PR-A0 through PR-C). Caught BEFORE submission."
     file: anti_laundering_catches_9_10_2026_05_08.md
 falsifiable_test:
-  description: "For any verdict label, look up the pre-registration's verdict alphabet (the explicit list of allowed grades). The anti-pattern fires iff the verdict label is NOT in that alphabet OR if the catch count includes entries that fail load-bearing audit."
-  binary_check: "verdict_label ∈ pre_registration_alphabet AND every_catch_in_count_is_load_bearing_per_audit — firing iff False."
+  description: "For any verdict label, look up the pre-registration's verdict alphabet (the explicit list of allowed grades). The anti-pattern fires iff the verdict label is NOT in that alphabet OR if the catch count includes entries that fail central audit."
+  binary_check: "verdict_label ∈ pre_registration_alphabet AND every_catch_in_count_is_load_bearing_per_audit, firing iff False."
   not_trivial: "Returns 'not firing' when the verdict respects the alphabet and the catch ledger survives audit. The pre-registration alphabet test discriminates STRONG PASS / WEAK PASS / FAIL (allowed) from STRONG WEAK PASS (rejected). NOT True := by trivial."
 chain_position: post  # runs AFTER any verdict, completion claim, or count summary
 references:
@@ -50,19 +50,19 @@ references:
   - "pincer_meta_darwin_audit_2026_05_08.md"
 ---
 
-# ANTI-PATTERN-005 — Narrative Inflation
+# ANTI-PATTERN-005, Narrative Inflation
 
 ## What it is
 
 Verdict labels, completion claims, or catch counts inflated above
-what the load-bearing evidence supports. Three sub-modes observed:
+what the central evidence supports. Three sub-modes observed:
 
 1. **Charity-grade hybrid label** (catch #30): a verdict label
    ("STRONG WEAK PASS") not in the pre-registration's verdict
    alphabet, retrofitted mid-audit to make a joint verdict appear
    stronger than the alphabet allows.
 2. **Catch count inflation** (catch #24 in #25): raw catch counts
-   that don't survive load-bearing audit. Tonight's raw count was
+   that don't survive central audit. Tonight's raw count was
    22; agent abcae9's audit found ~40% laundering across
    duplicates / bookkeeping / theatrical / deferred → honest count
    14 (later 16 with #23 + #25 + #26).
@@ -83,7 +83,7 @@ Inflation feeds itself: an inflated count of catches becomes
 evidence for the discipline working "well", which becomes evidence
 for the architecture being mature, which justifies further
 inflation. The META-DARWIN-HOFSTADTER discipline only works when
-inflation gets caught at every level (including the meta level —
+inflation gets caught at every level (including the meta level, 
 hence catch #30 on the audit's own positive verdict).
 
 ## Detection protocol
@@ -91,7 +91,7 @@ hence catch #30 on the audit's own positive verdict).
 Apply PATTERN-002 (DARWIN-IDEA-KILLER) with kill-bias on own
 positive verdicts:
 
-1. List the verdict's load-bearing claims (the inversion target).
+1. List the verdict's central claims (the inversion target).
 2. Cross-check verdict label against pre-registration's verdict
    alphabet.
 3. Disjointness audit: are the N supporting criteria independent,
@@ -110,7 +110,7 @@ positive verdicts:
 
 - Demote to honest pre-registration label.
 - Substitute scaffold framing for completion claims.
-- Re-issue catch ledger with load-bearing entries only.
+- Re-issue catch ledger with central entries only.
 - Document the deployment-time pre-spec as such; treat criteria
   set as ~effective_sample_size axes.
 
@@ -121,7 +121,7 @@ Firing iff False.
 
 NOT trivially True: tonight's catch ledger had STRONG WEAK PASS
 (not in alphabet → firing) and ~40% theatrical entries in raw
-count (not load-bearing → firing). After demotion the verdict
+count (not central → firing). After demotion the verdict
 respects the alphabet and the count survives audit (not firing).
 The test discriminates.
 

@@ -33,8 +33,8 @@ examples:
     file: anti_laundering_catch_25_lean_elaborator_rabbithole_2026_05_08.md
 falsifiable_test:
   description: "After N≥2 consecutive deployments of the same generative pattern (Pattern-1, tactic-debug, etc.) on the same residual, run a strip-and-compare on each output's residual class. The anti-pattern fires iff each output is RENAMED (synonymous-vocabulary unwrapping), not strictly smaller."
-  binary_check: "residual_class_strictly_smaller(output_n) compared with residual_class(output_{n-1}) — firing iff False for any n ≥ 2."
-  not_trivial: "Returns 'not firing' when the pattern produces genuine residual splits (Pattern-1 #2 produced Conditional Infinite-Σ Extension Theorem; Pattern-1 #6 produced Rank Dichotomy — both strictly smaller residual). The test discriminates between generative use and rabbit-hole use. NOT True := by trivial."
+  binary_check: "residual_class_strictly_smaller(output_n) compared with residual_class(output_{n-1}), firing iff False for any n ≥ 2."
+  not_trivial: "Returns 'not firing' when the pattern produces genuine residual splits (Pattern-1 #2 produced Conditional Infinite-Σ Extension Theorem; Pattern-1 #6 produced Rank Dichotomy, both strictly smaller residual). The test discriminates between generative use and rabbit-hole use. NOT True := by trivial."
 chain_position: pre  # runs BEFORE the N+1th deployment of the same pattern
 references:
   - "PATTERN-001 friction_debate (deployment-rule rule_3_recursion_depth + rule_4_10x_criteria)"
@@ -43,7 +43,7 @@ references:
   - "anti_laundering_catch_25_lean_elaborator_rabbithole_2026_05_08.md"
 ---
 
-# ANTI-PATTERN-004 — Pattern-1 Rabbit Hole
+# ANTI-PATTERN-004, Pattern-1 Rabbit Hole
 
 ## What it is
 
@@ -58,7 +58,7 @@ tonight:
    analysis question. Real score ~1.5/5 vs apparent 5/5.
 2. **IDE-level** (catch #25): a Lean elaborator unification failure
    debugged in main-thread for 6 attempts (rfl, unfold, show,
-   reducible, structure-literal-indirection) — fresh agent with no
+   reducible, structure-literal-indirection), fresh agent with no
    anchoring solved it in one shot.
 
 ## Why it appears
@@ -113,10 +113,10 @@ smaller residuals. Pattern-1 #3-5 did not. The test discriminates.
 
 ## Cross-references
 
-- PATTERN-001 (`org/patterns/pattern_1_friction_debate.md`) — the
+- PATTERN-001 (`org/patterns/pattern_1_friction_debate.md`), the
   pattern's own anti-pattern section names this; the catalog file
   formalizes detection.
-- PATTERN-011 (`org/patterns/swarm_dispatch.md`) — escalation
+- PATTERN-011 (`org/patterns/swarm_dispatch.md`), escalation
   primitive.
 - `projects/ns_millennium_hunt/workspace/research_notes/pattern1_rabbit_hole_catch_2026_05_08.md`
 - `projects/ns_millennium_hunt/workspace/research_notes/anti_laundering_catch_25_lean_elaborator_rabbithole_2026_05_08.md`

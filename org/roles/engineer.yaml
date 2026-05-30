@@ -10,7 +10,7 @@ description: >
 authorized_paths:
   - "src/"
   - "tests/"
-  - "scripts/"
+  - "scripts/public/"
   - "supervisor/"
   - "ztare_proofs/"   # GP-217 broadening 2026-05-05: 4 historical agent-driven F-rows on Lean proof scaffolding (engineer-side mechanization for GP-186 NS proof program)
 forbidden_paths:

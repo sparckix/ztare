@@ -18,23 +18,23 @@ detection_protocol:
   rule:
     - "When a docstring cites '[Author Year] §X.Y Lemma Z.W' for a result whose primary source is a journal paper, verify the textbook TOC against the cited indices."
     - "When the chapter numeral X disagrees with the inner numeral Z (e.g. §X.9 OP 9.3 while the actual item is X.9.4), hand-verify against TOC or third-party citing paper."
-    - "When the cited paper is paywalled with no open-access mirror, distinguish (i) bibliographic, (ii) subject-match, (iii) primary-PDF page verification — mark partial when only (i)+(ii) achievable."
+    - "When the cited paper is paywalled with no open-access mirror, distinguish (i) bibliographic, (ii) subject-match, (iii) primary-PDF page verification, mark partial when only (i)+(ii) achievable."
 mitigation:
   - "Substitute the verifiable primary source (e.g. Lions 1996 Vol 1 §IV.4 → Lions 1984 CCNL Part 1 Lemma I.1 p. 115)."
   - "If only secondary-corroborated, soften the page-level qualifier or add '(per secondary literature; primary PDF not accessed)'."
-  - "If unverifiable AND load-bearing, REMOVE the citation and re-derive or downgrade the dependent claim."
+  - "If unverifiable AND central, REMOVE the citation and re-derive or downgrade the dependent claim."
   - "Cascade scan: when one citation in a wall/atom is laundered, audit ALL siblings that share the same author/textbook framing (catch #28 cascade rule)."
 examples:
   - id: catch_17
-    summary: "Marchioro-Pulvirenti fabrication — citation could not be confirmed; substituted with explicit Kolmogorov-flow construction."
+    summary: "Marchioro-Pulvirenti fabrication, citation could not be confirmed; substituted with explicit Kolmogorov-flow construction."
   - id: catch_27
-    summary: "Lions 1996 Vol 1 §IV.4 Lemma 4.4 (tightness trichotomy) — book has 4 chapters; Ch. IV is Euler not NS. Substituted Lions 1984 CCNL Part 1 Lemma I.1 p. 115."
+    summary: "Lions 1996 Vol 1 §IV.4 Lemma 4.4 (tightness trichotomy), book has 4 chapters; Ch. IV is Euler not NS. Substituted Lions 1984 CCNL Part 1 Lemma I.1 p. 115."
     file: lions_tightness_lemma_verification_2026_05_08.md
   - id: catch_28
-    summary: "Galdi 2011 §X.9 'OP 9.3' — sub-label not found in any citing paper; actual item is Remark X.9.4 p. 729. Cosmetic but inheritance-prone."
+    summary: "Galdi 2011 §X.9 'OP 9.3', sub-label not found in any citing paper; actual item is Remark X.9.4 p. 729. Cosmetic but inheritance-prone."
     file: UCC_wall_citation_cascade_audit_2026_05_08.md
   - id: catch_29
-    summary: "DiPerna-Majda 1987 CMP 108:667-689 Theorem 1 p. 671 — venue + subject verified by 6 independent secondary sources; page-precise label could not be primary-verified (paywalled, no arXiv). Recorded as verification-confidence-gap, NOT misattribution."
+    summary: "DiPerna-Majda 1987 CMP 108:667-689 Theorem 1 p. 671, venue + subject verified by 6 independent secondary sources; page-precise label could not be primary-verified (paywalled, no arXiv). Recorded as verification-confidence-gap, NOT misattribution."
     file: diperna_majda_lemma_verification_2026_05_08.md
 falsifiable_test:
   description: "Open the cited textbook's TOC (or third-party citing paper) and locate the cited sub-label. If the sub-label does not appear OR the chapter index contradicts the result class (e.g. cited section is Euler but the result is NS), the anti-pattern is firing."
@@ -48,11 +48,11 @@ references:
   - "AGENTS.md §6c (citation hygiene)"
 ---
 
-# ANTI-PATTERN-001 — Citation Laundering
+# ANTI-PATTERN-001, Citation Laundering
 
 ## What it is
 
-A load-bearing literature citation in a docstring, axiom comment, or
+A central literature citation in a docstring, axiom comment, or
 proof that does not actually point at the cited result. Three sub-modes
 observed tonight:
 
@@ -81,7 +81,7 @@ exact label. The sub-label often gets reformatted (e.g. "X.9.4" →
 A misattributed citation in a Lean axiom docstring propagates: every
 downstream file that inherits the framing inherits the broken
 provenance. Catch #28 cascade audit found 10/11 UCC wall citations
-verified — but the 1 misattribution was structural-bookkeeping, not
+verified, but the 1 misattribution was structural-bookkeeping, not
 mathematical content. The danger is reviewer trust collapse on
 discovery, not (in this case) mathematical wrongness.
 
@@ -114,16 +114,16 @@ sub-mode:
 subject_mismatch}. The anti-pattern fires iff result is `not_found`
 or `subject_mismatch`.
 
-This test is NOT trivially True — empirically 10/11 UCC citations
+This test is NOT trivially True, empirically 10/11 UCC citations
 returned `found_matching` and the catalog declares those
 NOT-firing. The test discriminates.
 
 ## Cross-references
 
-- PATTERN-002 (`org/patterns/darwin_idea_killer.md`) — primary detector
-- PATTERN-009 (`org/patterns/independent_cas_verification.md`) — citation
+- PATTERN-002 (`org/patterns/darwin_idea_killer.md`), primary detector
+- PATTERN-009 (`org/patterns/independent_cas_verification.md`), citation
   as one independent leg of three
-- AGENTS.md §6c — citation hygiene (current single-line rule)
+- AGENTS.md §6c, citation hygiene (current single-line rule)
 - `projects/ns_millennium_hunt/workspace/research_notes/UCC_wall_citation_cascade_audit_2026_05_08.md`
 - `projects/ns_millennium_hunt/workspace/research_notes/lions_tightness_lemma_verification_2026_05_08.md`
 - `projects/ns_millennium_hunt/workspace/research_notes/diperna_majda_lemma_verification_2026_05_08.md`

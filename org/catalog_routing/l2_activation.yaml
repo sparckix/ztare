@@ -1,0 +1,23 @@
+# L2 (math-content) activation. Per cold GPT-5.5: L2 is the weakest
+# surface (prose mechanism, no native triggers) — do NOT embed over
+# prose; use a tiny hand-authored shim. Seeded sparse on purpose:
+# abstention is a valid, preferred output (flooding is a failed
+# membrane). Add ops here only with explicit input_signatures.
+- item_id: auxiliary_comparison_object_construction
+  layer: L2
+  typed_when: {declared_true: [math_estimate]}
+  catalog_anchor: "structural_language_catalog:pec_a"
+  activation:
+    - clause_id: needs_engineered_comparison_object
+      all: [math_estimate_goal]
+      # GP-241 #57: do NOT mint a mandatory successful-construction
+      # obligation when the goal declares/seeks an impossibility
+      # characterization — a negative-result tick legitimately
+      # constructs an object IN ORDER TO exclude it; its accountability
+      # is the forecast resolution + H6 catch, not this obligation.
+      none: [declares_impossible]
+      any_lexical: ["barrier", "intertwiner", "certificate", "test function", "auxiliary object", "comparison object", "majorant", "monotone quantity"]
+  obligation: "State why an engineered auxiliary/comparison object is the right structural move for this goal, and name the cheaper rival structural move and why it loses."
+  witness_schema:
+    required: [object_constructed, property_it_supplies, cheaper_rival_and_why_it_loses]
+  why_not_enum: [feature_absent, pure_classification_task, contradicted_by_goal, operator_scoped_out]
