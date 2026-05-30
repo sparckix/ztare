@@ -47,4 +47,4 @@ org/ (system of record, git-tracked)
 
 ## License
 
-Business Source License 1.1 — see LICENSE-BSL
+MIT — see [../LICENSE](../LICENSE).

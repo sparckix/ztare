@@ -1,5 +1,9 @@
 /**
  * Right pane: fast-layer damage signal feed + attention budget.
+ *
+ * Renders any damage signal kind generically; signal *families* (per
+ * GP-231/232 + C3) get a kind-prefix icon so a reviewer can scan the
+ * feed and see at a glance which subsystem is unhealthy.
  */
 import type { DamageSignal } from '../types/org'
 
@@ -17,6 +21,61 @@ const SEVERITY_ICONS: Record<string, string> = {
   critical: '🔴',
   warn: '🟡',
   info: '🔵',
+}
+
+/**
+ * Signal-family icons. Matched by prefix on signal.kind. The first
+ * matching prefix wins; signals that don't match any family fall back
+ * to the severity icon.
+ *
+ * Sources:
+ *   GP-231 MCP bridge: mcp_*
+ *   GP-232 Phase A obligation lifecycle: agent_obligation_*
+ *   GP-232 Phase B artifact deps: predicate_hash_drift, artifact_*
+ *   GP-232 Phase C saga: saga_*
+ *   C3 EU AI Act gate: eu_ai_act_*
+ *   GP-195 debate runner: debate_*
+ *   GP-228 portfolio: portfolio_*
+ *   GP-128 daemon: agent_utilization_*, mandate_drift, daemon_*
+ */
+const FAMILY_PREFIXES: Array<[string, string, string]> = [
+  // [prefix, icon, label]
+  ['mcp_call_failed', '🔌❌', 'MCP'],
+  ['mcp_call_dispatched_but_unverified', '🔌⏳', 'MCP'],
+  ['mcp_response_unprojectable', '🔌🚫', 'MCP'],
+  ['mcp_server_revoked', '🔌🚨', 'MCP'],
+  ['external_observation_diverged', '🌐⚖️', 'MCP'],
+  ['mcp_', '🔌', 'MCP'],
+  ['capability_violation_attempt', '🔐🚨', 'CAPABILITY'],
+  ['capability_', '🔐', 'CAPABILITY'],
+  ['agent_obligation_', '📋', 'OBLIGATION'],
+  ['saga_compensation_unfulfilled', '↩️🚨', 'SAGA'],
+  ['saga_compensation_emitted', '↩️', 'SAGA'],
+  ['saga_', '↩️', 'SAGA'],
+  ['predicate_hash_drift', '🔑⚠️', 'DEPENDENCY'],
+  ['artifact_', '📦', 'DEPENDENCY'],
+  ['eu_ai_act_mapping_missing', '🇪🇺❌', 'EU-AI-ACT'],
+  ['eu_ai_act_mapping_stale', '🇪🇺⚠️', 'EU-AI-ACT'],
+  ['eu_ai_act_mapping_freshness_review_due', '🇪🇺📅', 'EU-AI-ACT'],
+  ['eu_ai_act_', '🇪🇺', 'EU-AI-ACT'],
+  ['debate_budget_exhausted', '💬💸', 'DEBATE'],
+  ['debate_state_stuck', '💬🔒', 'DEBATE'],
+  ['debate_mono_family', '💬⚠️', 'DEBATE'],
+  ['debate_', '💬', 'DEBATE'],
+  ['agent_utilization_', '⏱️', 'CAPACITY'],
+  ['mandate_drift', '📜', 'MANDATE'],
+  ['mandate_', '📜', 'MANDATE'],
+  ['autonomous_scope_refused', '🚫', 'AUTH'],
+  ['portfolio_', '🗂️', 'PORTFOLIO'],
+]
+
+function familyFor(kind: string): { icon: string; label: string } | null {
+  for (const [prefix, icon, label] of FAMILY_PREFIXES) {
+    if (kind === prefix || kind.startsWith(prefix)) {
+      return { icon, label }
+    }
+  }
+  return null
 }
 
 export function DamageSignalFeed({ signals }: Props) {
@@ -54,7 +113,12 @@ export function DamageSignalFeed({ signals }: Props) {
         ⚡ Damage Signals
       </h2>
 
-      {signals.slice(0, 30).map((s, i) => (
+      {signals.slice(0, 30).map((s, i) => {
+        const fam = familyFor(s.kind)
+        const familyIcon = s.resolved
+          ? '✓'
+          : (fam ? fam.icon : (SEVERITY_ICONS[s.severity] || '●'))
+        return (
         <div key={i} style={{
           padding: '10px 12px',
           borderRadius: 8,
@@ -65,17 +129,28 @@ export function DamageSignalFeed({ signals }: Props) {
           background: '#161822',
           opacity: s.resolved ? 0.5 : 1,
         }}>
-          <div style={{ fontSize: 9, color: '#6b7394', fontFamily: 'monospace' }}>
-            {s.timestamp_utc}
+          <div style={{
+            display: 'flex', justifyContent: 'space-between',
+            fontSize: 9, color: '#6b7394', fontFamily: 'monospace',
+          }}>
+            <span>{s.timestamp_utc}</span>
+            {fam && !s.resolved && (
+              <span style={{
+                fontFamily: 'inherit', fontSize: 8, padding: '1px 6px',
+                background: '#1e2030', borderRadius: 8, color: '#8a92b3',
+                letterSpacing: 0.5,
+              }}>{fam.label}</span>
+            )}
           </div>
           <div style={{ fontWeight: 600, margin: '2px 0', color: s.resolved ? '#34d399' : '#e8eaf0' }}>
-            {s.resolved ? '✓' : SEVERITY_ICONS[s.severity] || '●'} {s.kind}
+            {familyIcon} {s.kind}
           </div>
           <div style={{ color: '#6b7394' }}>
             {s.detail.slice(0, 150)}{s.detail.length > 150 ? '...' : ''}
           </div>
         </div>
-      ))}
+        )
+      })}
 
       {signals.length === 0 && (
         <div style={{ color: '#4a5070', fontSize: 12, textAlign: 'center', padding: 20 }}>
