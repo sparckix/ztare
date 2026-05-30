@@ -25,11 +25,11 @@ Design constraints (from GP-102 seam):
 Usage:
   python -m src.ztare.validator.reflexive_audit \\
       --projects-dir projects/ \\
-      --primitives-catalog research_areas/private/philosophy/reflexive_engineering_primitives.md \\
+      --primitives-catalog [internal-ref] \\
       [--since 2026-04-01] \\
       [--K 5] \\
       [--stagnation-threshold 3] \\
-      [--output-dir research_areas/private/seams/reflexive/]
+      [--output-dir [internal-ref]]
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ import json
 import os
 import subprocess
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -75,7 +75,16 @@ _GATE_TO_LAYER: dict[str, str] = {
 
 @dataclass
 class ProjectTelemetrySummary:
-    """Per-project telemetry summary for the discriminator."""
+    """Per-project telemetry summary for the discriminator.
+
+    2026-05-06 modernization (GP-220-adjacent): added per-primitive
+    activity fields to consume telemetry surfaces that shipped after
+    the audit was originally written (cage_engagement, analogy_log,
+    contract_violations, dag_steering_log). All new fields are
+    non-load-bearing for the existing discriminator + classify_failure_mode
+    paths — they're additional context for Component 4 LLM proposals
+    and for downstream tools like GP-220's ROI scorecard.
+    """
     project_id: str
     workspace_path: Path
     stagnation_count: int
@@ -87,6 +96,14 @@ class ProjectTelemetrySummary:
     recovery_exhausted: bool              # proxy for "Component D / GP-087 had chances"
     latest_champion_expression: str | None
     latent_distance_trend: float | None   # slope of last-K latent distances; None if absent
+    # ---- 2026-05-06 modernization fields (default-empty for back-compat) ----
+    cage_engagement_summary: dict = field(default_factory=dict)
+    """{gate_name: {"engaged": int, "refused": int, "engagement_rate": float}}
+    Aggregates `workspace/cage_engagement.jsonl` over the last K iters."""
+    reflexive_primitive_activity: dict = field(default_factory=dict)
+    """{"analogy_fires": int, "contract_violations": int,
+        "dag_steering_fires": int, "fit_engine_dispatches": int}
+    Aggregates the per-primitive jsonl logs over the last K iters."""
 
 
 class AuditVerdict(Enum):
@@ -145,6 +162,46 @@ class AuditReport:
     projects_flagged: int
     results: list[ProjectAuditResult] = field(default_factory=list)
     artisan_activity: ArtisanActivitySummary | None = None
+    # ---- 2026-05-06 modernization: CANNOT-PATCH events ----
+    cannot_patch_events: list[dict] = field(default_factory=list)
+    """Recent CANNOT-PATCH events from typed_endpoint_failure_log.jsonl
+    (project-orthogonal — the typed_endpoint_pack runs across projects).
+    Provides ground-truth primitive_exhaustion observations to feed
+    Component 4 (LLM inception) without inferring from gate-failure
+    patterns alone. See GP-220 seam + projects/ns_millennium_hunt/workspace/queries/missing_primitives_backlog.md."""
+    cannot_patch_summary: dict = field(default_factory=dict)
+    """{"total_events": int, "by_category": {category: count},
+        "top_named_objects": [{name: str, count: int}, ...]}
+    Aggregated view of cannot_patch_events for quick principal scan."""
+    # ---- 2026-05-06 PM modernization: lemma-relevance ranker ROI ----
+    ranker_roi_summary: dict = field(default_factory=dict)
+    """Aggregated view of v* production-hit@k falsifier outputs.
+    Reads ``analytics/public/leanmill/results/v*_production_hit_at_k.json``
+    files. For each ranker version: test vs production hit@10, the
+    SHIP/PURSUE/DATA_SHIFT verdict, and the test-production delta.
+    Surfaces ranker-tool ROI alongside CANNOT-PATCH events so
+    Component 4 (LLM inception) can weigh "do we have a working
+    retrieval primitive yet" when proposing new primitives.
+
+    Schema:
+      {
+        "n_versions_seen": int,
+        "versions": [
+          {
+            "version": "v2"|"v4"|...,
+            "test_hit_at_10": float,
+            "production_hit_at_10": float,
+            "delta": float,
+            "verdict": "SHIP_V2"|"PURSUE_V4"|"DATA_SHIFT_DOMINATES",
+            "n_targets_evaluated": int,
+            "scan_utc": str,
+          }, ...
+        ],
+        "load_bearing_version": str | None,
+            # the most-recent version whose verdict is SHIP_V2 or PURSUE_V4;
+            # null means no ranker is currently load-bearing for production
+      }
+    """
 
 
 # ---------------------------------------------------------------------------
@@ -347,6 +404,14 @@ def _parse_project_telemetry(
             and stagnation_count >= stagnation_threshold
         )
 
+    # ---- 2026-05-06 modernization: per-primitive activity readers ----
+    # All readers below are BEST-EFFORT — missing files / malformed
+    # records do not break the audit (per constraint 6 of the GP-102
+    # spec). New surfaces won't exist on older runs; the dicts stay
+    # empty in that case.
+    cage_engagement_summary = _read_cage_engagement_summary(workspace, K=K)
+    reflexive_primitive_activity = _read_reflexive_primitive_activity(workspace, K=K)
+
     return ProjectTelemetrySummary(
         project_id=project_id,
         workspace_path=workspace,
@@ -359,7 +424,227 @@ def _parse_project_telemetry(
         recovery_exhausted=recovery_exhausted,
         latest_champion_expression=latest_champion_expression,
         latent_distance_trend=latent_distance_trend,
+        cage_engagement_summary=cage_engagement_summary,
+        reflexive_primitive_activity=reflexive_primitive_activity,
     )
+
+
+def _read_cage_engagement_summary(workspace: Path, *, K: int) -> dict:
+    """Aggregate `workspace/cage_engagement.jsonl` per gate over the
+    last K iters. Returns {gate_name: {engaged, refused, engagement_rate}}.
+
+    Each cage_engagement.jsonl record has shape:
+      {"iter": N, "engagements": {gate_name: {"ok": bool, "reason": str}, ...}, ...}
+    """
+    path = workspace / "cage_engagement.jsonl"
+    if not path.exists():
+        return {}
+    try:
+        lines = [
+            line.strip() for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        recent = lines[-K:] if len(lines) >= K else lines
+        per_gate: dict[str, dict[str, int]] = {}
+        n_iters = 0
+        for raw in recent:
+            try:
+                rec = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+            engagements = rec.get("engagements") or {}
+            if not isinstance(engagements, dict):
+                continue
+            n_iters += 1
+            for gate_name, info in engagements.items():
+                if not isinstance(info, dict):
+                    continue
+                bucket = per_gate.setdefault(gate_name, {"engaged": 0, "refused": 0})
+                if bool(info.get("ok", False)):
+                    bucket["engaged"] += 1
+                else:
+                    bucket["refused"] += 1
+        if n_iters == 0:
+            return {}
+        out: dict[str, dict] = {}
+        for gate_name, bucket in per_gate.items():
+            total = bucket["engaged"] + bucket["refused"]
+            out[gate_name] = {
+                "engaged": bucket["engaged"],
+                "refused": bucket["refused"],
+                "engagement_rate": (
+                    bucket["engaged"] / total if total > 0 else 0.0
+                ),
+            }
+        return out
+    except Exception:
+        return {}
+
+
+def _read_reflexive_primitive_activity(workspace: Path, *, K: int) -> dict:
+    """Count per-primitive jsonl activity over the last K events.
+
+    Surfaces:
+      - analogy_log.jsonl       (R15 ANALOGY)
+      - contract_violations.jsonl
+      - dag_steering_log.jsonl  (GP-180)
+      - fit_engine_dispatch.jsonl
+    """
+    activity = {
+        "analogy_fires": 0,
+        "contract_violations": 0,
+        "dag_steering_fires": 0,
+        "fit_engine_dispatches": 0,
+    }
+
+    def count_recent(path: Path, K: int) -> int:
+        if not path.exists():
+            return 0
+        try:
+            n = 0
+            for line in path.read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    n += 1
+            # Each line ≈ one event; cap at K to stay aligned with K-iter window
+            return min(n, K)
+        except Exception:
+            return 0
+
+    activity["analogy_fires"] = count_recent(workspace / "analogy_log.jsonl", K)
+    activity["contract_violations"] = count_recent(workspace / "contract_violations.jsonl", K)
+    activity["dag_steering_fires"] = count_recent(workspace / "dag_steering_log.jsonl", K)
+    activity["fit_engine_dispatches"] = count_recent(workspace / "fit_engine_dispatch.jsonl", K)
+    return activity
+
+
+def read_ranker_roi_summary(repo_root: Path) -> dict:
+    """Aggregate v* production-hit@k falsifier outputs into a ROI summary.
+
+    Reads ``analytics/public/leanmill/results/v*_production_hit_at_k.json``
+    (one per trained ranker version). Returns a summary dict with the
+    schema documented on ``AuditReport.ranker_roi_summary``.
+
+    Honest scope: the falsifier is best-effort. Its regex extraction
+    has known limitations (see local-hypothesis filter in
+    ``scripts/public/models/v2_production_hit10_falsifier.py``). The audit consumes
+    its verdict but does not re-validate.
+    """
+    gnn_dir = repo_root / "analytics" / "public" / "leanmill" / "gnn_ranker"
+    summary = {
+        "n_versions_seen": 0,
+        "versions": [],
+        "load_bearing_version": None,
+    }
+    if not gnn_dir.exists():
+        return summary
+
+    candidates = sorted(gnn_dir.glob("v*_production_hit_at_k.json"))
+    versions = []
+    for path in candidates:
+        try:
+            payload = json.loads(path.read_text())
+        except Exception:  # noqa: BLE001
+            continue
+        # Extract version from filename: v2_production_hit_at_k.json -> "v2"
+        stem = path.stem
+        version = stem.split("_")[0] if stem.startswith("v") else stem
+        prod_metrics = payload.get("production_metrics", {})
+        verdict = payload.get("verdict", "unknown")
+        test_h10 = float(payload.get("claimed_test_hit_at_10") or 0.0)
+        prod_h10 = float(prod_metrics.get("hit@10") or 0.0)
+        versions.append({
+            "version": version,
+            "test_hit_at_10": test_h10,
+            "production_hit_at_10": prod_h10,
+            "delta": round(prod_h10 - test_h10, 4),
+            "verdict": verdict,
+            "n_targets_evaluated": int(prod_metrics.get("n_targets_evaluated") or 0),
+            "checkpoint": payload.get("checkpoint", ""),
+        })
+    summary["n_versions_seen"] = len(versions)
+    summary["versions"] = versions
+    # Load-bearing = most-recent version whose verdict is SHIP_V2 / PURSUE_V4
+    # (NOT DATA_SHIFT_DOMINATES). Versions are sorted lexically by filename;
+    # higher v-numbers come last, so iterate in reverse for "most recent".
+    for v in reversed(versions):
+        if v["verdict"] in ("SHIP_V2", "PURSUE_V4"):
+            summary["load_bearing_version"] = v["version"]
+            break
+    return summary
+
+
+def read_cannot_patch_events(repo_root: Path, *, lookback_days: int = 28) -> tuple[list[dict], dict]:
+    """Read recent CANNOT-PATCH events from the typed_endpoint_pack
+    failure log + summarize.
+
+    Returns (events_list, summary_dict). events_list is a list of
+    raw event dicts; summary_dict has total_events / by_category /
+    top_named_objects.
+
+    Cross-project signal: the typed_endpoint_pack runs across projects
+    (currently NS Track B). CANNOT-PATCH events are deterministic
+    structured signals of primitive_exhaustion — feeds Component 4
+    (LLM inception) as ground truth without inferring from gate-failure
+    patterns alone.
+
+    Honest scope: 'lookback_days' is best-effort — not every event has
+    a parsable timestamp. If absent, all events in the file are
+    returned (caller decides recency by inspecting the file mtime).
+    """
+    failure_log = (
+        repo_root
+        / "projects/ns_millennium_hunt/workspace/queries/typed_endpoint_failure_log.jsonl"
+    )
+    if not failure_log.exists():
+        return [], {"total_events": 0, "by_category": {}, "top_named_objects": []}
+
+    cannot_patch_events: list[dict] = []
+    by_category: dict[str, int] = {}
+    name_counter: dict[str, int] = {}
+
+    try:
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=lookback_days)).isoformat()
+    except Exception:
+        cutoff = ""
+
+    try:
+        for raw in failure_log.read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            # Only collect events whose diagnosis is a CANNOT-PATCH or
+            # missing-primitive class — heuristic: presence of the
+            # `cannot_patch` flag OR `category` ∈ {missing_inequality,
+            # missing_constructor, source_provenance_bridge, instance_with_evidence}.
+            category = str(rec.get("category", "")).strip()
+            if not category and not rec.get("cannot_patch"):
+                continue
+            ts = str(rec.get("ts") or rec.get("timestamp_utc") or "")
+            if cutoff and ts and ts < cutoff:
+                continue
+            cannot_patch_events.append(rec)
+            if category:
+                by_category[category] = by_category.get(category, 0) + 1
+            named = rec.get("named") or rec.get("named_objects") or []
+            if isinstance(named, list):
+                for name in named:
+                    if isinstance(name, str) and name:
+                        name_counter[name] = name_counter.get(name, 0) + 1
+    except Exception:
+        return [], {"total_events": 0, "by_category": {}, "top_named_objects": []}
+
+    top_named = sorted(name_counter.items(), key=lambda kv: -kv[1])[:10]
+    summary = {
+        "total_events": len(cannot_patch_events),
+        "by_category": by_category,
+        "top_named_objects": [{"name": n, "count": c} for n, c in top_named],
+        "lookback_days": lookback_days,
+    }
+    return cannot_patch_events, summary
 
 
 # ---------------------------------------------------------------------------
@@ -780,8 +1065,8 @@ _LAYER_PATH_PREFIXES: dict[str, str] = {
     "src/ztare/common/": "Common",
     "config/": "Config",
     "rubrics/": "Rubrics",
-    "research_areas/private/seams/": "Seams",
-    "research_areas/private/specs/": "Specs",
+    "[internal-ref]": "Seams",
+    "[internal-ref]": "Specs",
     "supervisor/": "Supervisor",
 }
 
@@ -972,12 +1257,45 @@ def run_reflexive_audit(
             evidence_summary=diagnosis.evidence,
         ))
 
+    # 2026-05-06 modernization: read CANNOT-PATCH events as a
+    # cross-project, ground-truth primitive_exhaustion signal.
+    # Best-effort; missing log → empty list (no audit-side failure).
+    cannot_patch_events, cannot_patch_summary = read_cannot_patch_events(
+        repo_dir, lookback_days=28
+    )
+    if cannot_patch_summary["total_events"]:
+        print(
+            f"   CANNOT-PATCH events (last 28d): "
+            f"{cannot_patch_summary['total_events']} "
+            f"(by category: {cannot_patch_summary['by_category']})"
+        )
+
+    # 2026-05-06 PM: read lemma-relevance ranker ROI from v* falsifier
+    # outputs. Surfaces "is the retrieval primitive load-bearing?"
+    # alongside primitive_exhaustion signals.
+    ranker_roi = read_ranker_roi_summary(repo_dir)
+    if ranker_roi["n_versions_seen"]:
+        lb = ranker_roi.get("load_bearing_version") or "(none)"
+        print(
+            f"   ranker ROI: {ranker_roi['n_versions_seen']} version(s) "
+            f"evaluated; load-bearing={lb}"
+        )
+        for v in ranker_roi["versions"]:
+            print(
+                f"     {v['version']}: test hit@10={v['test_hit_at_10']:.3f} "
+                f"prod hit@10={v['production_hit_at_10']:.3f} "
+                f"(Δ={v['delta']:+.3f}) verdict={v['verdict']}"
+            )
+
     report = AuditReport(
         audit_timestamp_utc=timestamp,
         projects_scanned=len(summaries),
         projects_flagged=flagged,
         results=results,
         artisan_activity=artisan_activity,
+        cannot_patch_events=cannot_patch_events,
+        cannot_patch_summary=cannot_patch_summary,
+        ranker_roi_summary=ranker_roi,
     )
 
     # Write audit report to output dir
@@ -1012,6 +1330,13 @@ def _write_audit_report(report: AuditReport, output_dir: Path) -> None:
             "high_churn_layers": report.artisan_activity.high_churn_layers,
             "layer_churn": report.artisan_activity.layer_churn,
         } if report.artisan_activity else None,
+        # 2026-05-06 modernization: cross-project CANNOT-PATCH telemetry
+        "cannot_patch_summary": report.cannot_patch_summary,
+        # Cap raw events at 50 to keep the report file readable;
+        # full log lives at projects/ns_millennium_hunt/workspace/queries/typed_endpoint_failure_log.jsonl
+        "cannot_patch_events_sample": report.cannot_patch_events[:50],
+        # 2026-05-06 PM modernization: lemma-relevance ranker ROI
+        "ranker_roi_summary": report.ranker_roi_summary,
     }
     report_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(f"   Audit report written → {report_path.relative_to(REPO_ROOT)}")
